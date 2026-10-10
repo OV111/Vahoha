@@ -12,7 +12,7 @@ import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient, ObjectId } from 'mongodb'
 import {
-  getReadinessService,
+  getLayerProgressService,
   getLeaderboardService,
 } from '../../modules/coding-challenges/services/progressService.js'
 import { listChallengesService } from '../../modules/coding-challenges/services/challengeService.js'
@@ -112,17 +112,17 @@ const seedUser = async (username, overrides = {}) => {
 // ─────────────────────────────────────────────
 // Readiness
 // ─────────────────────────────────────────────
-describe('getReadinessService', () => {
+describe('getLayerProgressService', () => {
   it('reports hasLayer:false when the user has no active path', async () => {
     const userId = new ObjectId()
-    const result = await getReadinessService(db, userId.toString())
+    const result = await getLayerProgressService(db, userId.toString())
     expect(result).toEqual({ hasLayer: false })
   })
 
   it('reports hasLayer:false when the active path has no matching layer doc', async () => {
     const userId = new ObjectId()
     await seedProgress(userId) // no roadmap_layers seeded
-    const result = await getReadinessService(db, userId.toString())
+    const result = await getLayerProgressService(db, userId.toString())
     expect(result.hasLayer).toBe(false)
   })
 
@@ -144,7 +144,7 @@ describe('getReadinessService', () => {
       .collection('challengeResults')
       .insertMany([solveResult(userId, 'a'), solveResult(userId, 'b')])
 
-    const result = await getReadinessService(db, userId.toString())
+    const result = await getLayerProgressService(db, userId.toString())
 
     expect(result.hasLayer).toBe(true)
     expect(result.total).toBe(4)
@@ -166,7 +166,7 @@ describe('getReadinessService', () => {
       solveResult(otherId, 'b'),
     ])
 
-    const result = await getReadinessService(db, userId.toString())
+    const result = await getLayerProgressService(db, userId.toString())
     expect(result.solved).toBe(0)
     expect(result.percent).toBe(0)
   })
@@ -180,7 +180,7 @@ describe('getReadinessService', () => {
       .collection('challengeResults')
       .insertOne(solveResult(userId, 'a', { status: 'attempted', solvedAt: null }))
 
-    const result = await getReadinessService(db, userId.toString())
+    const result = await getLayerProgressService(db, userId.toString())
     expect(result.solved).toBe(0)
   })
 
@@ -198,7 +198,7 @@ describe('getReadinessService', () => {
       resolvedAt: null,
     })
 
-    const result = await getReadinessService(db, userId.toString())
+    const result = await getLayerProgressService(db, userId.toString())
     expect(result.message).toContain('errors')
   })
 
@@ -211,7 +211,7 @@ describe('getReadinessService', () => {
       .collection('challengeResults')
       .insertMany([solveResult(userId, 'a'), solveResult(userId, 'b')])
 
-    const result = await getReadinessService(db, userId.toString())
+    const result = await getLayerProgressService(db, userId.toString())
     expect(result.percent).toBe(100)
     expect(result.toGo).toBe(0)
     expect(result.message).toMatch(/exam-ready/)
@@ -222,7 +222,7 @@ describe('getReadinessService', () => {
     await seedLayer()
     await seedProgress(userId)
 
-    const result = await getReadinessService(db, userId.toString())
+    const result = await getLayerProgressService(db, userId.toString())
     expect(result.total).toBe(0)
     expect(result.percent).toBe(0)
     expect(result.toGo).toBe(0)

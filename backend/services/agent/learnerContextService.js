@@ -24,6 +24,7 @@ import {
 } from "../learnerMasteryService.js";
 import { toTopicSlug } from "../../utils/topicKey.js";
 import { getTeachingHistory, summarizeTeachingHistory } from "./teachingLogService.js";
+import { getMemberStats } from "../../modules/teams/index.js";
 
 /**
  * Layer-level exam summary, including direction of travel.
@@ -82,7 +83,7 @@ const summarizeChallenges = (challenges = []) => {
 export const getLearnerContext = async (db, userId) => {
   const uid = new ObjectId(userId);
 
-  const [progress, challenges, mastery, exams] = await Promise.all([
+  const [progress, challenges, mastery, exams, teamStats] = await Promise.all([
     getUserProgress(db, userId),
     getChallengeResults(db, userId),
     getMastery(db, userId),
@@ -94,6 +95,8 @@ export const getLearnerContext = async (db, userId) => {
       .limit(10)
       .project({ answers: 0 })
       .toArray(),
+    // One indexed query for the many learners on no team.
+    getMemberStats(db, userId),
   ]);
 
   const topics = mastery.length
@@ -130,6 +133,14 @@ export const getLearnerContext = async (db, userId) => {
     // never self-reported.
     teachingAttempts,
     challenges: summarizeChallenges(challenges),
+    // Counts only. The peer-rating average stays out of the prompt: it is
+    // private teammate feedback, not something to coach from.
+    teams: {
+      teamCount: teamStats.teamCount,
+      mergedPrs: teamStats.mergedPrs,
+      reviewsGiven: teamStats.reviewsGiven,
+      defensesPassed: teamStats.defensesPassed,
+    },
     activity: {
       lastExamAt: exams[0]?.takenAt ?? null,
       lastTeachBackAt: teachBackLatest?.startedAt ?? null,
@@ -192,7 +203,7 @@ export const getTopicDetail = async (db, userId, topicSlug) => {
  * learner has already mastered is not what the mentor needs to act on.
  */
 export const summarizeLearnerContext = (ctx, { maxTopics = 5 } = {}) => {
-  const { profile, exams, topics, challenges, nextAction, teachingAttempts } = ctx;
+  const { profile, exams, topics, challenges, nextAction, teachingAttempts, teams } = ctx;
 
   const lines = [
     `Path: ${profile.activePath ?? "none"} | Layer: ${profile.currentLayer ?? "-"} | Level: ${profile.skillLevel} | Streak: ${profile.streak}d`,
@@ -209,6 +220,12 @@ export const summarizeLearnerContext = (ctx, { maxTopics = 5 } = {}) => {
   if (challenges.attemptedCount) {
     lines.push(
       `Challenges: ${challenges.solvedCount}/${challenges.attemptedCount} solved, avg ${challenges.avgAttemptsPerSolve} attempts`,
+    );
+  }
+
+  if (teams?.teamCount) {
+    lines.push(
+      `Build Team: ${teams.mergedPrs} merged PR(s), ${teams.reviewsGiven} review(s) given, team defense ${teams.defensesPassed ? "passed" : "not passed yet"}`,
     );
   }
 

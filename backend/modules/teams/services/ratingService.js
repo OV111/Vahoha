@@ -50,6 +50,25 @@ export const listMyRatingsService = async (db, teamId, userId) => {
 };
 
 /**
+ * One member's received rating across all their teams: the mean of their
+ * per-team averages, counting only teams where at least MIN_RATERS rated them
+ * (same privacy rule as summarizeRatings). null when no team qualifies.
+ */
+export const averageReceivedRating = async (db, teamIds, userId) => {
+  const rows = await db
+    .collection(RATINGS)
+    .aggregate([
+      { $match: { teamId: { $in: teamIds }, rateeId: userId } },
+      { $group: { _id: "$teamId", average: { $avg: "$score" }, raters: { $sum: 1 } } },
+      { $match: { raters: { $gte: MIN_RATERS } } },
+    ])
+    .toArray();
+  if (!rows.length) return null;
+  const mean = rows.reduce((sum, r) => sum + r.average, 0) / rows.length;
+  return Math.round(mean * 10) / 10;
+};
+
+/**
  * Average received rating per member, hiding any with fewer than MIN_RATERS
  * ratings. Used by the evidence snapshot (stage 7); no route exposes it.
  */

@@ -22,7 +22,17 @@ describe('computeFunnel', () => {
     ]
     expect(computeFunnel(events)).toEqual({
       signedUp: 3, pathSelected: 2, examStarted: 1, examPassed: 1, returnedWithin7Days: 0, startedSecondLayer: 0,
+      solvedChallenge: 0, passedCapstone: 0, passedTeamDefense: 0,
     })
+  })
+
+  it('counts the proof pipeline past the first exam, once per user', () => {
+    const f = computeFunnel([
+      ev('a', 'signup'), ev('a', 'challenge_solved'), ev('a', 'challenge_solved'), ev('a', 'capstone_passed'),
+      ev('b', 'signup'), ev('b', 'team_defense_passed'),
+      ev('c', 'signup'),
+    ])
+    expect([f.solvedChallenge, f.passedCapstone, f.passedTeamDefense]).toEqual([1, 1, 1])
   })
 
   it('ignores users without a signup event (outside the cohort)', () => {

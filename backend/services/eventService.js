@@ -24,6 +24,9 @@ export const EVENT_TYPES = Object.freeze([
   "capstone_submitted",
   "capstone_passed",
   "capstone_failed",
+  "challenge_solved",
+  "team_defense_passed",
+  "team_evidence_issued",
 ]);
 
 const COLLECTION = "userEvents";
@@ -74,6 +77,10 @@ export const trackActiveDay = async (db, userId) => {
  * slugs, not numbers, so "the user moved on" is the honest thing to count.
  * "Returned within 7 days" means active on a later UTC day than signup, no
  * more than 7 days after it.
+ *
+ * The last three stages follow the proof pipeline past the first exam:
+ * challenge → capstone → team. They are not strictly ordered (a user can pass a
+ * capstone without solving a challenge); each counts users who reached it.
  */
 export const computeFunnel = (events) => {
   const byUser = new Map();
@@ -90,6 +97,9 @@ export const computeFunnel = (events) => {
     examPassed: 0,
     returnedWithin7Days: 0,
     startedSecondLayer: 0,
+    solvedChallenge: 0,
+    passedCapstone: 0,
+    passedTeamDefense: 0,
   };
 
   for (const userEvents of byUser.values()) {
@@ -113,6 +123,10 @@ export const computeFunnel = (events) => {
       userEvents.filter((e) => e.type === "exam_started").map((e) => `${e.meta?.path}/${e.meta?.layer}`),
     );
     if (layers.size >= 2) counts.startedSecondLayer++;
+
+    if (has("challenge_solved")) counts.solvedChallenge++;
+    if (has("capstone_passed")) counts.passedCapstone++;
+    if (has("team_defense_passed")) counts.passedTeamDefense++;
   }
 
   return counts;

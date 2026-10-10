@@ -142,6 +142,22 @@ export const listPublicCertificatesForUser = async (db, userId, username) => {
   return certs.filter((c) => !c.revokedAt).map((c) => toPublicCertificate(c, username));
 };
 
+/**
+ * This learner's capstone proof, as counts for the readiness model.
+ *
+ * A certificate exists only once the rubric AND the defense passed, so each
+ * live one is one passed capstone defense. Revoked and seeded-test
+ * certificates are left out: readiness only counts proof we would stand behind.
+ */
+export const getCapstoneEvidence = async (db, userId) => {
+  const passed = await db.collection(CERTIFICATES).countDocuments({
+    userId: new ObjectId(userId),
+    revokedAt: null,
+    testData: { $ne: true },
+  });
+  return { capstonePassed: passed > 0, defensesPassed: passed };
+};
+
 /** Everything here is safe to show anyone holding the link. No internal ids. */
 export const toPublicCertificate = (cert, username) => ({
   publicId: cert.publicId,

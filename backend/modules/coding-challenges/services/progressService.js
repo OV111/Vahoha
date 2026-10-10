@@ -23,7 +23,7 @@ const DAY_MS = 24 * 60 * 60 * 1000;
  * path — a 0% ring would read as "you have done nothing", when the truth is
  * "there is nothing to measure against yet".
  */
-export const getReadinessService = async (db, userId) => {
+export const getLayerProgressService = async (db, userId) => {
   const layer = await resolveActiveLayer(db, userId);
   if (!layer) return { hasLayer: false };
 

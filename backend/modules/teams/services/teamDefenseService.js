@@ -40,6 +40,8 @@ import {
   toPublicTeamDefense,
 } from "../lib/teamDefense.js";
 import { CONTRIBUTIONS, TEAMS, TEAM_DEFENSES, ensureIndexes, fail } from "./teamsData.js";
+import { trackEvent } from "../../../services/eventService.js";
+import { awardXp, XP_AMOUNTS } from "../../../services/xpService.js";
 
 const NOT_GRADED = ["generating", "active", "answered", "grading"];
 
@@ -296,6 +298,21 @@ export const gradeTeamDefenseService = async (db, teamId, userId) => {
       { returnDocument: "after" },
     );
     if (!graded) fail(409, "Your defense is already being graded");
+    if (graded.result.passed) {
+      await trackEvent(db, userId, "team_defense_passed", { teamId: String(graded.teamId), score: graded.result.score });
+      // Once per team (sourceId = team), however many sessions it took.
+      // Derived reward: never fail the grading response over it.
+      try {
+        await awardXp(db, userId, {
+          kind: "team_defense",
+          sourceId: String(graded.teamId),
+          amount: XP_AMOUNTS.teamDefense,
+          meta: { sessionId: String(graded._id), score: graded.result.score },
+        });
+      } catch (err) {
+        console.error("team defense XP award failed (grade already saved):", err);
+      }
+    }
     return view(graded, sessions.map((s) => (s._id.equals(graded._id) ? graded : s)));
   } catch (err) {
     await db

@@ -25,6 +25,7 @@ import contactRoutes from "./modules/contact/index.js";
 import capstoneRoutes from "./modules/capstone/index.js";
 import teamsRoutes from "./modules/teams/index.js";
 import recruiterRoutes from "./modules/recruiter/index.js";
+import readinessRoutes from "./modules/readiness/index.js";
 import { notFound } from "./middleware/notFound.js";
 
 export function createApp(db) {
@@ -103,6 +104,7 @@ export function createApp(db) {
   app.use("/api/capstone", capstoneRoutes);
   app.use("/api/teams", teamsRoutes);
   app.use("/api/recruiter", recruiterRoutes);
+  app.use("/api/readiness", readinessRoutes);
   app.use("/api/admin", analyticsRoutes);
 
   app.use(notFound)

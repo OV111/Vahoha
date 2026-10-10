@@ -18,7 +18,7 @@
 import { withLayerTitles } from "../../../services/examHistoryService.js";
 import { getMastery } from "../../../services/learnerMasteryService.js";
 import { listPublicCertificatesForUser } from "../../capstone/index.js";
-import { TEAMS, TEAM_EVIDENCE } from "../../teams/services/teamsData.js";
+import { listPublicTeamEvidenceForUser } from "../../teams/index.js";
 import { DEFAULT_RECRUITER_SETTINGS, RECRUITER_SETTINGS, ensureIndexes, fail } from "./recruiterData.js";
 
 const MAX_STRENGTHS = 8;
@@ -109,35 +109,6 @@ export const buildScorecard = ({ user, settings, progress, exams, certificates, 
   };
 };
 
-/** Teams this developer belongs to that have a public (issued, not revoked) evidence page. */
-const loadTeamEvidence = async (db, user) => {
-  const teams = await db.collection(TEAMS).find({ "members.userId": user._id }).toArray();
-  if (!teams.length) return [];
-  const evidence = await db
-    .collection(TEAM_EVIDENCE)
-    .find({ teamId: { $in: teams.map((t) => t._id) }, revoked: false })
-    .toArray();
-  const evidenceByTeam = new Map(evidence.map((e) => [e.teamId.toString(), e]));
-
-  return teams.flatMap((team) => {
-    const ev = evidenceByTeam.get(team._id.toString());
-    const login = team.members.find((m) => m.userId.equals(user._id))?.githubLogin;
-    const me = ev?.snapshot.members.find((m) => m.githubLogin === login);
-    if (!ev || !me) return [];
-    return [
-      {
-        name: team.name,
-        trackId: team.trackId,
-        evidencePath: `/evidence/${ev.publicId}`,
-        mergedPulls: me.mergedPulls,
-        reviewsGiven: me.reviewsGiven,
-        defense: me.defense?.passed ? me.defense : null, // verified results only
-        peerRating: me.peerRating,
-      },
-    ];
-  });
-};
-
 export const getScorecardService = async (db, username) => {
   await ensureIndexes(db);
   const user = await db
@@ -161,7 +132,7 @@ export const getScorecardService = async (db, username) => {
           .then((rows) => withLayerTitles(db, rows))
       : [],
     show.capstone ? listPublicCertificatesForUser(db, user._id, user.username) : [],
-    show.teams ? loadTeamEvidence(db, user) : [],
+    show.teams ? listPublicTeamEvidenceForUser(db, user._id) : [],
     show.strengths ? getMastery(db, user._id) : [],
   ]);
 

@@ -15,6 +15,7 @@ import { randomBytes } from "crypto";
 import { ObjectId } from "mongodb";
 import { CONTRIBUTIONS, TEAM_EVIDENCE, TEAMS, TEAM_DEFENSES, ensureIndexes, fail } from "./teamsData.js";
 import { summarizeRatings } from "./ratingService.js";
+import { trackEvent } from "../../../services/eventService.js";
 
 const newPublicId = () => randomBytes(9).toString("base64url"); // 12 chars, 72 bits
 
@@ -76,9 +77,10 @@ export const issueEvidenceService = async (db, adminId, teamId) => {
   // One evidence doc per team (unique teamId index). publicId is set only on
   // first insert; a publicId collision is astronomically unlikely, and the
   // unique index would turn it into an E11000 we simply retry once.
+  let firstIssue = false;
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      await db.collection(TEAM_EVIDENCE).updateOne(
+      const res = await db.collection(TEAM_EVIDENCE).updateOne(
         { teamId: team._id },
         {
           $set: { snapshot, updatedAt: now, issuedBy: new ObjectId(adminId) },
@@ -86,10 +88,18 @@ export const issueEvidenceService = async (db, adminId, teamId) => {
         },
         { upsert: true },
       );
+      firstIssue = res.upsertedCount === 1;
       break;
     } catch (err) {
       if (err.code !== 11000 || attempt === 1) throw err;
     }
+  }
+  // One event per member, on first issue only: re-issuing refreshes the
+  // snapshot, it does not publish anyone a second time.
+  if (firstIssue) {
+    await Promise.all(
+      team.members.map((m) => trackEvent(db, m.userId, "team_evidence_issued", { teamId: String(team._id) })),
+    );
   }
   const doc = await db.collection(TEAM_EVIDENCE).findOne({ teamId: team._id });
   return { publicId: doc.publicId, path: `/evidence/${doc.publicId}`, revoked: doc.revoked };
@@ -113,4 +123,39 @@ export const getPublicEvidenceService = async (db, publicId) => {
   const doc = await db.collection(TEAM_EVIDENCE).findOne({ publicId });
   if (!doc || doc.revoked) fail(404, "Evidence not found");
   return { publicId: doc.publicId, issuedAt: doc.issuedAt, updatedAt: doc.updatedAt, ...doc.snapshot };
+};
+
+/**
+ * The teams this user belongs to that have a public (issued, not revoked)
+ * evidence page, with this user's own row from each snapshot. Used by the
+ * recruiter scorecard; reads the snapshot, so it shows exactly what the public
+ * evidence page shows.
+ */
+export const listPublicTeamEvidenceForUser = async (db, userId) => {
+  const uid = new ObjectId(userId);
+  const teams = await db.collection(TEAMS).find({ "members.userId": uid }).toArray();
+  if (!teams.length) return [];
+  const evidence = await db
+    .collection(TEAM_EVIDENCE)
+    .find({ teamId: { $in: teams.map((t) => t._id) }, revoked: false })
+    .toArray();
+  const evidenceByTeam = new Map(evidence.map((e) => [e.teamId.toString(), e]));
+
+  return teams.flatMap((team) => {
+    const ev = evidenceByTeam.get(team._id.toString());
+    const login = team.members.find((m) => m.userId.equals(uid))?.githubLogin;
+    const me = ev?.snapshot.members.find((m) => m.githubLogin === login);
+    if (!ev || !me) return [];
+    return [
+      {
+        name: team.name,
+        trackId: team.trackId,
+        evidencePath: `/evidence/${ev.publicId}`,
+        mergedPulls: me.mergedPulls,
+        reviewsGiven: me.reviewsGiven,
+        defense: me.defense?.passed ? me.defense : null, // verified results only
+        peerRating: me.peerRating,
+      },
+    ];
+  });
 };

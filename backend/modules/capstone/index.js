@@ -25,3 +25,6 @@ export { getCapstoneMentorView, hasLiveDefense } from "./services/mentorService.
 
 // Used by the public profile (backend/services/userService.js).
 export { listPublicCertificatesForUser } from "./services/certificateService.js";
+
+// Used by the readiness module (modules/readiness).
+export { getCapstoneEvidence } from "./services/certificateService.js";

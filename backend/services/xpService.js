@@ -1,8 +1,9 @@
 import { ObjectId } from "mongodb";
 
 /**
- * XP awards for verified milestones: the first pass of a layer exam and the
- * first pass of a capstone.
+ * XP awards for verified milestones: the first pass of a layer exam, the
+ * first solve of a coding challenge, the first pass of a capstone, and the
+ * first passed defense on a Build Team.
  *
  * Rule from docs/XP_SYSTEM.md: XP measures effort, never proof. Awards here are
  * a reward for a result the SERVER already decided; XP never unlocks anything.
@@ -25,6 +26,7 @@ export const XP_AMOUNTS = Object.freeze({
   exam: 50,
   examHighScoreBonus: 25, // score >= EXAM_BONUS_SCORE
   capstone: 300,
+  teamDefense: 300, // same as a capstone: a defended team project is at least that much work
 });
 const EXAM_BONUS_SCORE = 90;
 
@@ -67,8 +69,9 @@ export const revokeCapstoneXp = async (db, rawUserId, attemptId) => {
 
 /**
  * Award XP once per (user, kind, source).
- * @param {"exam"|"capstone"} kind
- * @param {string} sourceId  "<path>:<layer>" for an exam, the track id for a capstone
+ * @param {"exam"|"challenge"|"capstone"|"team_defense"} kind
+ * @param {string} sourceId  "<path>:<layer>" for an exam, the challenge slug, the
+ *   track id for a capstone, the team id for a team defense
  * @returns {Promise<{ awarded: boolean, amount: number }>} awarded=false when it was already given
  */
 export const awardXp = async (db, rawUserId, { kind, sourceId, amount, meta = {} }) => {

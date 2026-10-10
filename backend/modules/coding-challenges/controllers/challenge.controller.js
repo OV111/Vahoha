@@ -6,7 +6,7 @@ import {
   getPersonalStatsService,
 } from "../services/challengeService.js";
 import {
-  getReadinessService,
+  getLayerProgressService,
   getLeaderboardService,
 } from "../services/progressService.js";
 
@@ -57,9 +57,9 @@ export const getPersonalStats = async (req, res) => {
   }
 };
 
-export const getReadiness = async (req, res) => {
+export const getLayerProgress = async (req, res) => {
   try {
-    const data = await getReadinessService(
+    const data = await getLayerProgressService(
       req.app.locals.db,
       req.user._id.toString(),
     );

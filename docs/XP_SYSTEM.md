@@ -4,6 +4,18 @@
 
 ## Current state (verified in code)
 
+> **Update 2026-10-10:** this table describes 2026-10-01. Since then every XP source goes through one ledger, `backend/services/xpService.js` (`awardXp`, `xpAwards` collection, one row per user + kind + source):
+>
+> | Kind | Amount | Once per |
+> | --- | --- | --- |
+> | `exam` | 50, +25 at 90%+ | layer |
+> | `challenge` | the challenge's own `xp` | challenge |
+> | `capstone` | 300 | track |
+> | `team_defense` | 300 | team |
+>
+> Hints still spend XP directly in `attemptService.js`.
+
+
 | What | Where |
 | --- | --- |
 | XP is stored as `userProgress.xpTotal` | `backend/services/userProgressService.js` |

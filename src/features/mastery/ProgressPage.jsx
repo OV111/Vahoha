@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { AlertTriangle, Map as MapIcon } from "lucide-react";
 import useMastery from "./hooks/useMastery";
+import useReadiness from "./hooks/useReadiness";
 import MasterySummary from "./components/MasterySummary";
 import NextStepCard from "./components/NextStepCard";
 import TopicList from "./components/TopicList";
 import LockedTopics from "./components/LockedTopics";
+import ReadinessCard from "./components/ReadinessCard";
 
 /**
  * "What do I actually know?" — the learner-facing side of the adaptive engine.
@@ -14,6 +16,8 @@ import LockedTopics from "./components/LockedTopics";
  */
 const ProgressPage = () => {
   const { data, loading, error, reload } = useMastery();
+  // Separate request: readiness failing must not hide the mastery view, and vice versa.
+  const readiness = useReadiness();
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-16 pt-28 sm:px-8">
@@ -72,6 +76,21 @@ const ProgressPage = () => {
             <LockedTopics count={data.lockedTopicCount} />
           )}
         </div>
+      )}
+
+      {/* Waits for the mastery view so the page doesn't jump while loading. */}
+      {!loading && readiness.data && (
+        <div className="mt-6">
+          <ReadinessCard readiness={readiness.data} />
+        </div>
+      )}
+      {!loading && readiness.error && (
+        <p role="alert" className="mt-6 text-[13px] text-amber-200">
+          {readiness.error.message}{" "}
+          <button type="button" onClick={readiness.reload} className="font-medium underline">
+            Retry
+          </button>
+        </p>
       )}
     </div>
   );

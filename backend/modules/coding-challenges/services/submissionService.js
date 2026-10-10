@@ -3,6 +3,8 @@ import { runHiddenTests, describeRunner } from "./runnerService.js";
 import { consumeSubmission, limitMessage } from "./submissionQuotaService.js";
 import { getUserPlan } from "../../billing/index.js";
 import { saveChallengeResult } from "../../../services/challengeResultService.js";
+import { trackEvent } from "../../../services/eventService.js";
+import { awardXp } from "../../../services/xpService.js";
 
 /**
  * Submission grading.
@@ -101,7 +103,35 @@ export const submitAttemptService = async (db, userId, attemptId) => {
   });
   const alreadySolved = previous?.status === "solved";
 
-  const xpEarned = passed ? awardFor(challenge, alreadySolved) : 0;
+  const xpDue = passed ? awardFor(challenge, alreadySolved) : 0;
+
+  // Through the XP ledger, like exams and capstones. Its unique
+  // (user, "challenge", slug) row means two passing submissions racing each
+  // other can both see "not solved yet" above, but only one of them gets paid.
+  let xpEarned = 0;
+  if (xpDue > 0) {
+    try {
+      // awardXp credits an existing userProgress document and never creates
+      // one, so make sure it exists (and record the activity) first.
+      await db
+        .collection("userProgress")
+        .updateOne(
+          { userId: new ObjectId(userId) },
+          { $set: { lastActiveAt: new Date(), updatedAt: new Date() } },
+          { upsert: true },
+        );
+      const award = await awardXp(db, userId, {
+        kind: "challenge",
+        sourceId: challenge.slug,
+        amount: xpDue,
+        meta: { path: challenge.trackId, layer: challenge.layerId },
+      });
+      xpEarned = award.amount;
+    } catch (err) {
+      // Derived reward: never fail the learner's submission over it.
+      console.error("challenge XP award failed (result still saved):", err);
+    }
+  }
 
   // `saveChallengeResult` overwrites the fields it is given, so the running
   // total has to be carried forward — otherwise re-submitting a solved
@@ -121,19 +151,6 @@ export const submitAttemptService = async (db, userId, attemptId) => {
     ),
     attempts: 1,
   });
-
-  if (xpEarned > 0) {
-    await db
-      .collection("userProgress")
-      .updateOne(
-        { userId: new ObjectId(userId) },
-        {
-          $inc: { xpTotal: xpEarned },
-          $set: { lastActiveAt: new Date(), updatedAt: new Date() },
-        },
-        { upsert: true },
-      );
-  }
 
   // Count a solve once per user, so the public solve count means "people who
   // solved this", not "submissions that happened to pass".
@@ -157,6 +174,15 @@ export const submitAttemptService = async (db, userId, attemptId) => {
       $inc: { runs: 1 },
     },
   );
+
+  // First solve only, same rule as the public solve count.
+  if (passed && !alreadySolved) {
+    await trackEvent(db, userId, "challenge_solved", {
+      challengeId: challenge.slug,
+      path: challenge.trackId,
+      layer: challenge.layerId,
+    });
+  }
 
   return {
     passed,
