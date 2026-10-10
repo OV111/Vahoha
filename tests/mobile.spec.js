@@ -13,13 +13,13 @@ test.describe('Mobile - Navbar', () => {
   });
 
   test('desktop nav links are hidden on mobile', async ({ page }) => {
-    // Categories button is hidden on mobile (sm:flex hidden)
+    // Desktop menu triggers are hidden on mobile
     await expect(page.locator('button.hidden.sm\\:flex')).not.toBeVisible();
   });
 
   test('hamburger opens mobile menu', async ({ page }) => {
     await page.locator('button.md\\:hidden').click();
-    await expect(page.getByText('Categories')).toBeVisible();
+    await expect(page.getByRole('button', { name: /career tracks/i })).toBeVisible();
   });
 
   test('hamburger closes mobile menu when clicked again', async ({ page }) => {
@@ -28,9 +28,9 @@ test.describe('Mobile - Navbar', () => {
     await expect(page.locator('ul.md\\:hidden')).not.toBeVisible();
   });
 
-  test('categories dropdown works in mobile menu', async ({ page }) => {
+  test('career tracks list works in mobile menu', async ({ page }) => {
     await page.locator('button.md\\:hidden').click();
-    await page.getByRole('button', { name: /categories/i }).click();
+    await page.getByRole('button', { name: /career tracks/i }).click();
     await expect(page.getByRole('link', { name: 'Full Stack' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Backend' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'DevOps' })).toBeVisible();
@@ -38,7 +38,7 @@ test.describe('Mobile - Navbar', () => {
 
   test('navigating to a category from mobile menu works', async ({ page }) => {
     await page.locator('button.md\\:hidden').click();
-    await page.getByRole('button', { name: /categories/i }).click();
+    await page.getByRole('button', { name: /career tracks/i }).click();
     await page.getByRole('link', { name: 'Full Stack' }).click();
     await expect(page).toHaveURL('/categories/fullstack');
   });
