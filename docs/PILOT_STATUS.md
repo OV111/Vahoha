@@ -17,6 +17,10 @@ The technical prep for the pilot is mostly done. What's left is mostly yours: co
 | Event tracking (7 events) + admin funnel | `c89aadf` | `GET /api/admin/funnel?days=30` |
 | Blog posts tagged with roadmap layers; "Posts for this layer" in the layer drawer | `39d6023` | `layerIds` on posts, `GET /blogs?layer=<id>`, layer picker in the blog editors. SEO for the blog (pre-rendering) deliberately left until after the pilot |
 | Docs: critique, exam integrity, outreach kit, XP system | `3c4a6f7`, `1a8c5d2` | Also tabs in the online critique doc |
+| Readiness wired to real data; mentor sees team work | uncommitted (2026-10-10) | `GET /api/readiness/me` + "Job readiness" card on `/progress`. Capstone and teams each expose one function (`getCapstoneEvidence`, `getMemberStats`); recruiter no longer reads teams collections directly. Private only, not on the scorecard. Shows "none" until a real team exists |
+| Funnel follows the proof pipeline | uncommitted (2026-10-10) | New events `challenge_solved` (first solve), `team_defense_passed`, `team_evidence_issued` (first issue, one per member). `GET /api/admin/funnel` adds `solvedChallenge`, `passedCapstone`, `passedTeamDefense` |
+| All XP through one ledger | uncommitted (2026-10-10) | Challenge XP now uses `awardXp` (kind `challenge`, same amounts); fixes double pay when two passing submissions race. New: 300 XP for the first passed defense per team (kind `team_defense`). Test: `challengeXp.integration.test.js` |
+| Capstone → Teams pointer; challenge "readiness" renamed | uncommitted (2026-10-10) | `NextTeamCard` after a passed capstone. `getReadinessService` → `getLayerProgressService` in coding-challenges (URL unchanged) |
 
 ## Left before the first user
 
@@ -56,4 +60,4 @@ Against the "no new features until pilot data" rule and the advice in `docs/STAR
 
 ## Frozen until pilot data says otherwise
 
-Voice exam, Arena features, new paths, awards, XP changes (`docs/XP_SYSTEM.md`), group chat, further Teams work beyond the MVP above, and employer tiers.
+Voice exam, Arena features, new paths, awards, further XP changes (`docs/XP_SYSTEM.md`; the founder unfroze two on 2026-10-10: challenge XP through the ledger, and 300 XP per passed team defense), group chat, further Teams work beyond the MVP above, and employer tiers.
