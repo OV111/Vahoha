@@ -2,8 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { GraduationCap, Mic, MicOff, Sparkles } from "lucide-react";
 import { API_BASE_URL, authHeaders } from "../../../../constants/api";
-import { useSpeechDictation } from "../../AI-Agent/lib/useSpeechDictation";
-import TeachBackCard from "../../AI-Agent/components/TeachBackCard";
+import { useSpeechDictation } from "../../ai-agent/lib/useSpeechDictation";
+import TeachBackCard from "../../ai-agent/components/TeachBackCard";
 
 /**
  * Teach-Back, inline on the exam results screen — no navigation to /ai-agent.

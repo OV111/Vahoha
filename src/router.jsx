@@ -20,22 +20,22 @@ const ReadMore = lazy(() => import("./components/blog/ReadMore"));
 const NotFound = lazy(() => import("./components/feedback/NotFound"));
 
 const UserProfile = lazy(() => import("./pages/Users/UserProfile"));
-const Followers = lazy(() => import("./pages/My-Profile/Followers"));
-const Favorites = lazy(() => import("./pages/My-Profile/Favorites"));
-const AddBlog = lazy(() => import("./pages/My-Profile/AddBlog"));
-const EditBlog = lazy(() => import("./pages/My-Profile/EditBlog"));
-const MyBlogs = lazy(() => import("./pages/My-Profile/MyBlogs"));
-const Chats = lazy(() => import("./pages/My-Profile/chat/Chats"));
-const Notifications = lazy(() => import("./pages/My-Profile/Notifications"));
-const Settings = lazy(() => import("./pages/My-Profile/Settings"));
-const BlockedUsers = lazy(() => import("./pages/My-Profile/BlockedUsers"));
+const Followers = lazy(() => import("./pages/my-profile/Followers"));
+const Favorites = lazy(() => import("./pages/my-profile/Favorites"));
+const AddBlog = lazy(() => import("./pages/my-profile/AddBlog"));
+const EditBlog = lazy(() => import("./pages/my-profile/EditBlog"));
+const MyBlogs = lazy(() => import("./pages/my-profile/MyBlogs"));
+const Chats = lazy(() => import("./pages/my-profile/chat/Chats"));
+const Notifications = lazy(() => import("./pages/my-profile/Notifications"));
+const Settings = lazy(() => import("./pages/my-profile/Settings"));
+const BlockedUsers = lazy(() => import("./pages/my-profile/BlockedUsers"));
 const ConnectedAccounts = lazy(
-  () => import("./pages/My-Profile/ConnectedAccounts"),
+  () => import("./pages/my-profile/ConnectedAccounts"),
 );
 
 const Blogs = lazy(() => import("./features/blogs/Blogs"));
-const RoadmapPage = lazy(() => import("./features/Roadmap/RoadmapPage"));
-const ExamPage = lazy(() => import("./features/Roadmap/ExamPage"));
+const RoadmapPage = lazy(() => import("./features/roadmap/RoadmapPage"));
+const ExamPage = lazy(() => import("./features/roadmap/ExamPage"));
 const LibsPage = lazy(() => import("./features/coding-libs/LibsPage"));
 const BookDetailPage = lazy(() => import("./features/coding-libs/BookDetailPage"));
 const CodingChallenges = lazy(
@@ -50,7 +50,7 @@ const ProposeChallenge = lazy(
 const ReviewProposals = lazy(
   () => import("./features/coding-challenges/pages/ReviewProposals"),
 );
-const AiAgent = lazy(() => import("./features/AI-Agent/AiAgent"));
+const AiAgent = lazy(() => import("./features/ai-agent/AiAgent"));
 const CapstonePage = lazy(() => import("./features/capstone/CapstonePage"));
 const CertificatePage = lazy(() => import("./features/capstone/CertificatePage"));
 const TeamPage = lazy(() => import("./features/teams/TeamPage"));
@@ -58,7 +58,7 @@ const TeamAdminPage = lazy(() => import("./features/teams/TeamAdminPage"));
 const EvidencePage = lazy(() => import("./features/teams/EvidencePage"));
 const CandidatePage = lazy(() => import("./features/recruiter/CandidatePage"));
 const CapstoneAdminPage = lazy(() => import("./features/capstone/CapstoneAdminPage"));
-const VoiceReviewPage = lazy(() => import("./features/VoiceReview/VoiceReviewPage"));
+const VoiceReviewPage = lazy(() => import("./features/voice-review/VoiceReviewPage"));
 const PricingPage = lazy(() => import("./features/billing/PricingPage"));
 const BillingPage = lazy(() => import("./features/billing/BillingPage"));
 const ProgressPage = lazy(() => import("./features/mastery/ProgressPage"));

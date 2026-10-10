@@ -9,7 +9,7 @@ import BlogCard from "@/components/blog/BlogCard";
 import useProfileStore from "@/stores/useProfileStore";
 import ProfileSkeleton from "./ProfileSkeleton";
 import SOCIAL_LINKS from "../../../constants/SocialLinks";
-import { SectionHeader, ForHiringPanel } from "../My-Profile/components/ProfileSections";
+import { SectionHeader, ForHiringPanel } from "../my-profile/components/ProfileSections";
 import { CertificateCard, EmptyState, ExamRow } from "@/features/profile/components/ProfileProgress";
 import ProfileBanner from "@/features/profile/components/ProfileBanner";
 import { formatLastActive, summarizeProfile } from "@/features/profile/lib/profileSummary";

@@ -5,11 +5,11 @@
 | # | Issue | Status | Evidence |
 |---|---|---|---|
 | 1 | Roadmap data bundle size | **Fixed** (a variant of Option A) | Each category is a JSON file in `src/data/roadmaps/` and `RoadmapTree` loads only the selected one with a dynamic `import()`. Tracks and layers are also seeded into MongoDB (`npm run seed:roadmap`) |
-| 2 | Horizontal `flex-wrap` layer cards | **Superseded** | Replaced by the tree layout (`features/Roadmap/components/tree/`, `rf/`) in the roadmap UI refactor |
+| 2 | Horizontal `flex-wrap` layer cards | **Superseded** | Replaced by the tree layout (`features/roadmap/components/tree/`, `rf/`) in the roadmap UI refactor |
 | 3 | No progress persistence | **Fixed** | Progress is saved server-side through `/api/roadmaps/progress`; guests get a read-only preview |
 | 4 | Inline `<style>` in `CategoryBar` and `TrackSelector` | **Resolved by removal; cleanup left** | Both `<style>` blocks are commented out. Delete the commented code |
 | 5 | No `exit` animation on `RoadmapTree` | **Open** | No `exit` prop in `RoadmapTree.jsx` |
-| 6 | No Escape key on `LayerDetail` | **Open** | No `keydown` handler in `features/Roadmap` |
+| 6 | No Escape key on `LayerDetail` | **Open** | No `keydown` handler in `features/roadmap` |
 
 Nothing here blocks the pilot. Issues 5 and 6 are about 10 minutes each.
 
