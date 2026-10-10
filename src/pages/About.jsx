@@ -82,7 +82,7 @@ const SectionTitle = ({ children }) => (
 const About = () => (
   <div className="mx-auto flex max-w-5xl flex-col gap-16 px-4 py-12 sm:gap-28 sm:px-6 sm:py-20">
     {/* Hero */}
-    <section className="flex flex-col items-center gap-6 text-center">
+    <section className="flex flex-col items-center gap-4 text-center">
       <Motion.span
         className="text-sm font-medium text-neutral-400"
         {...fadeUp()}
@@ -100,9 +100,8 @@ const About = () => (
         className="max-w-2xl text-lg leading-relaxed text-neutral-300"
         {...fadeUp(0.2)}
       >
-        Courses, tutorials and roadmaps all share one gap: nothing checks
-        whether you actually understood. You can finish them all and only find
-        out what you missed in an interview. Vahoha closes that gap.
+        Courses show you what to learn. Nothing checks if you understood it,
+        until an interview does. Vahoha checks first.
       </Motion.p>
     </section>
 

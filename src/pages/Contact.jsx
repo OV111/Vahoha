@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion as Motion } from "motion/react";
-import { Mail, Send, Github, CheckCircle2 } from "lucide-react";
+import { Mail, Send, Github, CheckCircle2, ChevronDown } from "lucide-react";
 import XLogo from "../components/ui/XLogo";
 import { API_BASE_URL } from "../../constants/api";
 import { SITE } from "../../constants/site";
@@ -142,23 +142,36 @@ const Contact = () => {
               </div>
 
               <Field label="Topic" htmlFor="contact-topic" error={fieldError("topic")}>
-                <select
-                  id="contact-topic"
-                  name="topic"
-                  value={form.topic}
-                  onChange={handleChange}
-                  required
-                  className={`${inputClass} cursor-pointer`}
-                >
-                  <option value="" disabled>
-                    Select a topic…
-                  </option>
-                  {TOPICS.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
+                {/* Native <select> on purpose: keyboard, screen readers and the
+                    phone's own picker for free. appearance-none drops the
+                    browser arrow for our own; color-scheme:dark makes the open
+                    list dark instead of the OS's white popup. */}
+                <div className="relative">
+                  <select
+                    id="contact-topic"
+                    name="topic"
+                    value={form.topic}
+                    onChange={handleChange}
+                    required
+                    className={`${inputClass.replace("text-white", "")} cursor-pointer appearance-none pr-10 [color-scheme:dark] ${
+                      form.topic ? "text-white" : "text-neutral-500"
+                    }`}
+                  >
+                    <option value="" disabled className="bg-neutral-900 text-neutral-500">
+                      Select a topic…
                     </option>
-                  ))}
-                </select>
+                    {TOPICS.map((t) => (
+                      <option key={t} value={t} className="bg-neutral-900 text-white">
+                        {t}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={16}
+                    aria-hidden="true"
+                    className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-neutral-500"
+                  />
+                </div>
               </Field>
 
               <Field label="Message" htmlFor="contact-message" error={fieldError("message")}>

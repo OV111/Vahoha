@@ -206,7 +206,7 @@ const BillingPage = () => {
                     className="mt-0.5 shrink-0 text-zinc-500"
                     aria-hidden="true"
                   />
-                  <p className="text-base text-[#A1A0AB] md:text-[13px]">
+                  <p className="text-base text-[#A1A0AB] md:text-[13px] w-sm">
                     {hasBillingAccount
                       ? "Update your card, download invoices or cancel your subscription in the secure billing portal."
                       : "You don't have a billing account yet. It's created when you subscribe."}
