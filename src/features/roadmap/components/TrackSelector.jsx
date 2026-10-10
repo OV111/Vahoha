@@ -42,7 +42,7 @@ const TrackSelector = () => {
                 relative px-4 py-2 rounded-lg border text-[14px] cursor-pointer font-medium tracking-[0.1px] transition-colors duration-200
                 ${
                   isLocked
-                    ? "border-dashed border-neutral-300 dark:border-neutral-700 text-neutral-400 dark:text-neutral-400 opacity-50 cursor-not-allowed"
+                    ? "border-dashed border-neutral-300 dark:border-neutral-700 text-neutral-400 dark:text-neutral-400 opacity-80 cursor-not-allowed"
                     : isSelected
                       ? "bg-teal-500/10 border-teal-500 text-teal-500"
                       : "rm-edge bg-neutral-100 border-neutral-200 text-neutral-600 hover:border-neutral-300 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:text-white dark:hover:border-neutral-500"
@@ -51,8 +51,8 @@ const TrackSelector = () => {
               >
                 {track.title}
                 {isLocked && (
-                  <span className="ml-2 text-[10px] uppercase tracking-wide opacity-70">
-                    Soon
+                  <span className="ml-2 rounded-full bg-purple-500/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-purple-400">
+                    Coming soon
                   </span>
                 )}
               </button>

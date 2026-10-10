@@ -16,17 +16,22 @@ export default function TrackCard({ track, onSelect }) {
     <button
       type="button"
       disabled={locked}
+      aria-label={locked ? `${track.title}, coming soon` : undefined}
       onClick={() => onSelect(track)}
       className={`${SURFACE} group flex h-full w-full flex-col p-5 text-left transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-500 ${
         locked
-          ? "cursor-not-allowed opacity-50"
+          ? "cursor-not-allowed border-dashed opacity-80"
           : "cursor-pointer hover:-translate-y-0.5 hover:border-white/20"
       }`}
     >
       <div className="flex items-start justify-between gap-3">
         <h3 className="text-base font-medium text-white">{track.title}</h3>
         {locked ? (
-          <span className="shrink-0 text-xs text-neutral-400">Soon</span>
+          // Planned track: readable (it advertises what's coming), but clearly
+          // not clickable yet.
+          <span className="shrink-0 rounded-full border border-purple-500/40 bg-purple-500/10 px-2 py-0.5 text-[11px] font-medium text-purple-300">
+            Coming soon
+          </span>
         ) : (
           <ArrowUpRight
             size={16}

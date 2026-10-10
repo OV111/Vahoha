@@ -147,7 +147,9 @@ export const FUNDAMENTALS_CONCEPTS = [
 
 export const CATEGORY_OPTIONS2 = [
   { id: "languages", title: "Languages", slug: "languages" },
+  { id: "cs", title: "CS & Interviews", slug: "cs" },
   { id: "fullstack", title: "Full Stack", slug: "fullstack" },
+  { id: "frontend", title: "Frontend", slug: "frontend" },
   { id: "backend", title: "Backend", slug: "backend" },
   { id: "mobile", title: "Mobile", slug: "mobile" },
   { id: "aiml", title: "AI & ML", slug: "ai&ml" },
