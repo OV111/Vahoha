@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { ObjectId } from 'mongodb'
-import { getUserProfileService, PUBLIC_USER_FIELDS } from '../../services/userService.js'
+import { getUserProfileService, PUBLIC_USER_FIELDS } from '../../modules/users/services/userService.js'
 
 // Every collection the service touches answers "nothing found", except
 // `users`, which returns the profile owner.

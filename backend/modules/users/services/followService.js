@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { verifyToken } from "../utils/jwtToken.js";
+import { verifyToken } from "../../../utils/jwtToken.js";
 
 export const getAuthToken = (authorization = "") => {
   if (!authorization.startsWith("Bearer ")) {

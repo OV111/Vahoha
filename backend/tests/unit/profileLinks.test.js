@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { sanitizeProfileLink } from '../../services/profileService.js'
+import { sanitizeProfileLink } from '../../modules/profile/services/profileService.js'
 
 describe('sanitizeProfileLink', () => {
   it('keeps http and https URLs', () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { ObjectId } from 'mongodb'
-import { getFollowersData, getFollowingData } from '../../services/followService.js'
+import { getFollowersData, getFollowingData } from '../../modules/users/services/followService.js'
 
 // A tiny fake: the page query (sorted/paged) and the relation query (a filter
 // with `$in`) get different answers, like the real collection would give.

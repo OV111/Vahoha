@@ -3,8 +3,8 @@ import { v2 as cloudinary } from "cloudinary";
 import {
   getFollowersData,
   getFollowingData,
-} from "./followService.js";
-import { sanitizeUsername } from "../utils/username.js";
+} from "../../users/index.js";
+import { sanitizeUsername } from "../../../utils/username.js";
 
 export const PROFILE_LINK_FIELDS = [
   "githubLink",

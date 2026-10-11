@@ -12,7 +12,7 @@ import {
   getFollowers,
   getMutualFollowers,
   getChatReceiverStats,
-} from "../controllers/profileController.js";
+} from "../controllers/profile.controller.js";
 import {
   createGroup,
   addGroupMember,
@@ -21,7 +21,7 @@ import {
   setGroupAdmin,
   updateGroup,
   getGroupDetails,
-} from "../controllers/groupChatController.js";
+} from "../../chat/index.js";
 import {
   muteRoom,
   clearRoom,
@@ -29,7 +29,7 @@ import {
   getBlockedUserList,
   blockChatUser,
   unblockChatUser,
-} from "../controllers/chatControlsController.js";
+} from "../../chat/index.js";
 
 const router = Router();
 

@@ -6,7 +6,7 @@ import {
   markAllNotificationsRead,
   deleteNotification,
   NOTIFICATION_LIMIT,
-} from '../../services/notificationService.js'
+} from '../../modules/notifications/services/notificationService.js'
 
 const makeDb = ({ matched = 1, modified = 1, deleted = 1 } = {}) => {
   const col = {

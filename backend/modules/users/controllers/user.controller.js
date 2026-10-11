@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { verifyToken } from "../utils/jwtToken.js";
+import { verifyToken } from "../../../utils/jwtToken.js";
 import {
   getUserProfileService,
   followUserService,

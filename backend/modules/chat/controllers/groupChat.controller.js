@@ -1,5 +1,5 @@
-import { getAuthToken } from "../services/followService.js";
-import { notifyUsers } from "../websocket/connectionRegistry.js";
+import { getAuthToken } from "../../users/index.js";
+import { notifyUsers } from "../../../websocket/connectionRegistry.js";
 import {
   createGroupService,
   addGroupMemberService,

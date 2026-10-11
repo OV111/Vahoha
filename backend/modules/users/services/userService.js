@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
-import notificationQueue from "../queues/notificationQueue.js";
+import notificationQueue from "../../../queues/notificationQueue.js";
 
-import { withLayerTitles } from "./examHistoryService.js";
-import { listPublicCertificatesForUser } from "../modules/capstone/index.js";
+import { withLayerTitles } from "../../../services/examHistoryService.js";
+import { listPublicCertificatesForUser } from "../../capstone/index.js";
 
 // What ANY logged-in viewer may see about another user's account record.
 // An explicit allow-list: the old `{ password: 0, googleId: 0, githubId: 0 }`

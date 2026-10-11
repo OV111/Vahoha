@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import busboy from "busboy";
-import { verifyToken } from "../utils/jwtToken.js";
-import { getAuthToken } from "../services/followService.js";
+import { verifyToken } from "../../../utils/jwtToken.js";
+import { getAuthToken } from "../../users/index.js";
 import {
   getProfileService,
   updateLastActiveService,
@@ -18,7 +18,7 @@ import {
   markNotificationRead,
   markAllNotificationsRead,
   deleteNotification,
-} from "../services/notificationService.js";
+} from "../../notifications/index.js";
 
 export const getProfile = async (req, res) => {
   try {

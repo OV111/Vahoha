@@ -16,7 +16,7 @@ import { MongoClient, ObjectId } from 'mongodb'
 import process from 'node:process'
 import { signUp } from '../../modules/auth/controllers/auth.controller.js'
 import connectDB from '../../config/db.js'
-import { getFollowersData, getFollowingData } from '../../services/followService.js'
+import { getFollowersData, getFollowingData } from '../../modules/users/services/followService.js'
 
 let mongod
 let client

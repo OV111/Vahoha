@@ -8,7 +8,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient } from 'mongodb'
-import { getFollowersData, getFollowingData } from '../../services/followService.js'
+import { getFollowersData, getFollowingData } from '../../modules/users/services/followService.js'
 
 let mongod
 let client

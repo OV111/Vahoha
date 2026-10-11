@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { ObjectId } from 'mongodb'
 import jwt from 'jsonwebtoken'
 import process from 'node:process'
-import { getAuthToken, getFollowersData, getFollowingData } from '../../services/followService.js'
+import { getAuthToken, getFollowersData, getFollowingData } from '../../modules/users/services/followService.js'
 
 // setup.js sets JWT_Secret before this runs
 const SECRET = process.env.JWT_Secret || 'test-secret-key-for-unit-tests-only'

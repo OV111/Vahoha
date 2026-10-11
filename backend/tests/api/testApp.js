@@ -16,7 +16,7 @@ import {
   getAuthToken,
   getFollowersData,
   getFollowingData,
-} from '../../services/followService.js'
+} from '../../modules/users/services/followService.js'
 
 export function createApp(db) {
   const app = express()

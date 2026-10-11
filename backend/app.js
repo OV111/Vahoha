@@ -8,8 +8,8 @@ import { swaggerSpec } from "./config/swagger.js";
 
 import authRoutes from "./modules/auth/index.js";
 import postRoutes from "./routes/post.routes.js";
-import profileRoutes from "./routes/profile.routes.js";
-import userRoutes from "./routes/user.routes.js";
+import profileRoutes from "./modules/profile/index.js";
+import userRoutes from "./modules/users/index.js";
 import searchRoutes from "./modules/search/index.js";
 import accountRoutes from "./modules/account/index.js";
 import blogRoutes from "./routes/blogs.routes.js";

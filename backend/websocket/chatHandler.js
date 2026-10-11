@@ -5,7 +5,7 @@ import {
   saveMessage,
   loadMessages,
   loadRoomsForUser,
-} from "../services/chatService.js";
+} from "../modules/chat/index.js";
 
 // Transport layer only: socket presence, broadcasting and notification
 // fan-out. All persistence lives in services/chatService.js.

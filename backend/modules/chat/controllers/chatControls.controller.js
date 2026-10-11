@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { getAuthToken } from "../services/followService.js";
+import { getAuthToken } from "../../users/index.js";
 import {
   setRoomMuted,
   clearRoomForUser,

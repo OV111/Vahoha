@@ -1,5 +1,5 @@
 import { Worker } from "bullmq";
-import { createNotification } from "../services/notificationService.js";
+import { createNotification } from "../modules/notifications/index.js";
 import connectDB from "../config/db.js";
 import { getWss } from "../websocket/index.js";
 import { redisConnection } from "../config/redis.js";

@@ -7,7 +7,7 @@ import {
   clearRoomForUser,
   blockUser,
   listBlockedUsers,
-} from '../../services/chatService.js'
+} from '../../modules/chat/services/chatService.js'
 
 // Minimal fake db: `rooms` holds at most one existing room.
 const makeDb = (existingRoom = null) => {
