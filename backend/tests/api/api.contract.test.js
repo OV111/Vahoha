@@ -145,28 +145,25 @@ describe('POST /login', () => {
     expect(res.body.userId).toBeTruthy()
   })
 
+  // Wrong password and unknown email must be indistinguishable, so the login
+  // endpoint can't be used to find out which emails are registered.
   it('returns 401 for the correct email with a wrong password', async () => {
     const res = await request
       .post('/login')
       .send({ email: BASE_USER.email, password: 'wrongpass' })
 
     expect(res.status).toBe(401)
-    expect(res.body).toMatchObject({
-      status: 401,
-      message: expect.stringMatching(/incorrect/i),
-    })
+    expect(res.body).toMatchObject({ status: 401, message: 'Invalid email or password' })
   })
 
-  it('returns 404 for an email that is not registered', async () => {
-    const res = await request
-      .post('/login')
-      .send({ email: 'ghost@test.com', password: 'anypass' })
+  it('answers an unregistered email exactly like a wrong password', async () => {
+    const [unknown, wrong] = await Promise.all([
+      request.post('/login').send({ email: 'ghost@test.com', password: 'anypass' }),
+      request.post('/login').send({ email: BASE_USER.email, password: 'wrongpass' }),
+    ])
 
-    expect(res.status).toBe(404)
-    expect(res.body).toMatchObject({
-      status: 404,
-      message: expect.stringMatching(/not found/i),
-    })
+    expect(unknown.status).toBe(401)
+    expect(unknown.body).toEqual(wrong.body)
   })
 
   it('response never contains a password field', async () => {
