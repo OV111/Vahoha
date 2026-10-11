@@ -13,13 +13,13 @@
 | --- | --- |
 | Community Platform (blogs, profiles, chat, auth) | Built. Chat room-join hole fixed. Blogs can be tagged to roadmap layers (`layerIds`) |
 | Roadmap | Built: tracks and layers seeded into MongoDB, progress server-side (`/api/roadmaps`), tree UI, "Posts for this layer" in the layer drawer |
-| Exam Engine | Built (`/api/exams`): server-graded, 15 questions per attempt, pass at 80, shuffled choices, unseen-first, cooldown on, integrity flags. Banks must be seeded and hand-checked per layer (`docs/EXAM_INTEGRITY.md`) |
+| Exam Engine | Built (`/api/exams`): server-graded, 15 questions per attempt, pass at 80, shuffled choices, unseen-first, cooldown on, integrity flags. Banks must be seeded and hand-checked per layer (`docs/product/EXAM_INTEGRITY.md`) |
 | Exam History, Weak Spots, Mastery | Built and wired; `modules/mastery` exposes per-topic status |
 | Dev Library | Built (`/library`); layer linking and content depth still to do |
 | AI Mentor | Built and verified: `/api/ai-agent`, sessions, SSE streaming, tool loop, learner context, 30/day cap, per-user burst limit |
-| Teach-Back | One-topic slice built; full voice exam is a spec (`docs/VOICE_EXAM_SPEC.md`) |
+| Teach-Back | One-topic slice built; full voice exam is a spec (`docs/product/VOICE_EXAM_SPEC.md`) |
 | Problem Solving Arena | Built (`modules/coding-challenges`): catalog, `isolated-vm` grading, proposals, XP hints, daily submission cap. Built early, against this plan's own deferral rule |
-| Billing | Built on Polar, sandbox-verified, inert (`docs/BILLING.md`) |
+| Billing | Built on Polar, sandbox-verified, inert (`docs/engineering/BILLING.md`) |
 | Analytics | Built: 7 events, admin funnel |
 | Ship It Capstone | UI shell only |
 | Admin Panel, Public Progress Profiles, Weekly Challenges, Platform Intelligence | Not started |
@@ -151,7 +151,7 @@ Goal: Learn → Build → Break → Fix → Evaluate → Defend → Improve → 
 | 8 | Per-skill progression view with history | Mastery view | Small (snapshot per recompute) | **V2**, after rubric calibration |
 | 9 | Evidence profile (skill + linked evidence) | Public profiles (Phase 9), certificates | Medium | **Future** |
 | 10 | Production-incident scenarios (leak, race, bottleneck, failed deploy) | Extension of 6 | Medium | **Future** |
-| 11 | Build Teams grouped by shared aim | `FUTURE_IDEAS.md` | New collection | **MVP built 2026-10-04** (see `docs/FUTURE_IDEAS.md`), untested on real data; team 1 run by hand |
+| 11 | Build Teams grouped by shared aim | `docs/product/FUTURE_IDEAS.md` | New collection | **MVP built 2026-10-04** (see `docs/product/FUTURE_IDEAS.md`), untested on real data; team 1 run by hand |
 | 12 | Employer-run assessments | Screening-as-a-Service | Large | **Future** |
 | 13 | Numeric skill scores, "worth returning to" effect, injected bugs in learner repos | — | — | **Experiment** with users |
 

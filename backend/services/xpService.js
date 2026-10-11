@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
  * first solve of a coding challenge, the first pass of a capstone, and the
  * first passed defense on a Build Team.
  *
- * Rule from docs/XP_SYSTEM.md: XP measures effort, never proof. Awards here are
+ * Rule from docs/product/XP_SYSTEM.md: XP measures effort, never proof. Awards here are
  * a reward for a result the SERVER already decided; XP never unlocks anything.
  *
  * Why a separate `xpAwards` collection instead of only `$inc: { xpTotal }`:

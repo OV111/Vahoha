@@ -1,6 +1,6 @@
 # Outreach Kit — Fix 1: Get a Real Payment Signal
 
-> Date: 2026-10-01 · Context: fix #1 in `docs/STARTUP_CRITIQUE_2026-10.md`
+> Date: 2026-10-01 · Context: fix #1 in `docs/strategy/STARTUP_CRITIQUE_2026-10.md`
 > Goal: 15 interviews in 3 weeks → at least 3 people pay. Zero payers = pivot or stop.
 
 ## Who to find
@@ -52,7 +52,7 @@ Ask about **what they did in the past, not what they'd do in the future**. "Woul
 3. The ask:
 > I'm opening 20 early-access spots: $29 for 3 months of everything, full refund anytime if it's not useful. Want one?
 
-Use a **Polar checkout link** (billing runs on Polar; see `docs/BILLING.md`). Make a one-off $29 product in Polar and share its checkout link. No new code needed. "Maybe later" counts as a no.
+Use a **Polar checkout link** (billing runs on Polar; see `docs/engineering/BILLING.md`). Make a one-off $29 product in Polar and share its checkout link. No new code needed. "Maybe later" counts as a no.
 
 ## Tracker
 
@@ -66,4 +66,4 @@ Use a **Polar checkout link** (billing runs on Polar; see `docs/BILLING.md`). Ma
 | --- | --- | --- |
 | ≥ 3 of 15 paid | Real signal | Keep going: widen to 50 users, stay on the Backend path |
 | 1–2 paid, or ≥ 40% "very disappointed" | Weak signal | Fix the top 3 problems you saw in demos, run 10 more interviews |
-| 0 paid, or most say the pain is "getting interviews" | No signal for this product | Pivot (e.g. the "flight simulator" idea in `STARTUP_REVIEW_2026-10.md` §12) or treat it as a portfolio project |
+| 0 paid, or most say the pain is "getting interviews" | No signal for this product | Pivot (e.g. the "flight simulator" idea in `docs/strategy/STARTUP_REVIEW_2026-10.md` §12) or treat it as a portfolio project |

@@ -29,9 +29,9 @@
 | Area | Risk | Status |
 |---|---|---|
 | **Arena code runner** (`modules/coding-challenges/services/runnerService.js`) executes submitted code | Still the largest attack surface | **Contained by design, not independently reviewed.** Code runs in an `isolated-vm` V8 isolate (64 MB, 5 s). If that native addon fails to build, production refuses submissions (fails closed) instead of using the weaker child-process fallback, unless `ALLOW_UNSAFE_RUNNER=true` (never set it). Check `GET /api/challenges/submissions/runner` reports `isolated-vm` after each deploy. A second look at the isolate is still worth doing before public traffic |
-| **Billing webhook** (`/api/billing/webhook`) | Forged webhooks could grant Pro | Signature verified over the raw body; fails closed with no secret (503), 403 on bad signature (`docs/BILLING.md`). Gating is inert until `BILLING_ENFORCED=true` |
+| **Billing webhook** (`/api/billing/webhook`) | Forged webhooks could grant Pro | Signature verified over the raw body; fails closed with no secret (503), 403 on bad signature (`docs/engineering/BILLING.md`). Gating is inert until `BILLING_ENFORCED=true` |
 | **LLM endpoints** (mentor, teach-back) | Quota exhaustion, runaway cost | Per-user burst and daily limits added; mentor also has its 30/day cap. Counters are in memory |
-| **Exam integrity** | Credential can be faked | Answer keys server-side, choices shuffled, unseen-first, cooldown on; tab-switch and paste counts recorded as flags only. Multiple-choice cannot be made ChatGPT-proof (`docs/EXAM_INTEGRITY.md`) |
+| **Exam integrity** | Credential can be faked | Answer keys server-side, choices shuffled, unseen-first, cooldown on; tab-switch and paste counts recorded as flags only. Multiple-choice cannot be made ChatGPT-proof (`docs/product/EXAM_INTEGRITY.md`) |
 | **Admin endpoints** (`/api/admin/funnel`, challenge review) | Privilege escalation | `requireAdmin` re-reads the role from the database on every request and answers 404 to non-admins. First admin is created with `npm run admin:grant` |
 | **Attachments to the mentor** | Prompt injection | Client extraction, server-enforced size caps, prompt-injection fencing |
 

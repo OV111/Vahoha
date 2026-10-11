@@ -48,7 +48,7 @@ Vahoha is a learning platform for developers who want proof they actually unders
 - **Learning roadmaps:** 15 categories of visual paths with tracks and layers. Each layer is locked until you pass its exam; progress is saved server-side
 - **Exam engine:** server-graded multiple choice, 15 questions per attempt, pass mark 80. Answer keys never leave the server, choices are shuffled per attempt, unseen questions are served first, 3 attempts per day plus a cooldown after a fail
 - **AI mentor:** per-user agent with tools into your progress, exam history and weak spots. Socratic (guides, doesn't hand over answers); streaming, sessions, 30 messages a day
-- **Teach-back:** explain a topic in your own words and get it graded against a rubric. One slice shipped; the full voice exam is a spec (`docs/VOICE_EXAM_SPEC.md`)
+- **Teach-back:** explain a topic in your own words and get it graded against a rubric. One slice shipped; the full voice exam is a spec (`docs/product/VOICE_EXAM_SPEC.md`)
 - **Mastery:** per-topic status and a "next step" derived from exams, teach-back and challenge results
 - **Dev library:** curated books, docs and guides mapped to roadmap layers
 - **Blog posts tagged to layers:** a layer shows the posts written for it
@@ -101,7 +101,7 @@ npm run seed:roadmap                     # tracks and layers
 npm run seed:challenges                  # Arena challenges
 npm run seed:concepts                    # concept definitions for the mentor
 npm run seed:rubrics                     # teach-back rubrics
-node backend/seeders/examSeeder.js       # exam banks via Groq; see docs/EXAM_INTEGRITY.md
+node backend/seeders/examSeeder.js       # exam banks via Groq; see docs/product/EXAM_INTEGRITY.md
 npm run admin:grant -- you@example.com   # make yourself an admin
 ```
 
@@ -194,7 +194,7 @@ CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
 RESEND_API_KEY=
 
-# Billing (see docs/BILLING.md); keep BILLING_ENFORCED=false during the pilot
+# Billing (see docs/engineering/BILLING.md); keep BILLING_ENFORCED=false during the pilot
 POLAR_ACCESS_TOKEN=
 POLAR_PRO_PRODUCT_ID=
 POLAR_WEBHOOK_SECRET=
@@ -242,21 +242,24 @@ Backend on Render (`render.yaml`), frontend on Vercel (`vercel.json`), database 
 
 ## Docs
 
+Full index: [`docs/README.md`](docs/README.md).
+
 | Doc | What it is |
 |---|---|
 | `docs/strategy/VISION.md` | Business and product framing |
 | `docs/PILOT_STATUS.md` | What's done, what's left before the first user |
-| `docs/STARTUP_CRITIQUE_2026-10.md` | Brutally honest review of the project |
-| `docs/STARTUP_REVIEW_2026-10.md` | Competitive review and 90-day plan |
-| `docs/OUTREACH_KIT.md` | How to find and interview the first users |
-| `docs/EXAM_INTEGRITY.md` | Anti-cheating plan and its honest limits |
-| `docs/XP_SYSTEM.md` | XP ideas, each with a critique |
-| `docs/ROADMAP_BUILD_PLAN.md` | Build status and phase plan |
-| `docs/VOICE_EXAM_SPEC.md` | Spoken teach-back exam spec |
-| `docs/BILLING.md`, `docs/DEPLOYMENT.md` | Operations |
-| `docs/FUTURE_IDEAS.md` | Unscoped ideas, parked until the pilot |
-| `docs/ARCHITECTURE.md`, `docs/Security.md`, `docs/ISSUES.md` | Technical status |
+| `docs/strategy/STARTUP_CRITIQUE_2026-10.md` | Brutally honest review of the project |
+| `docs/strategy/STARTUP_REVIEW_2026-10.md` | Competitive review and 90-day plan |
+| `docs/strategy/OUTREACH_KIT.md` | How to find and interview the first users |
+| `docs/product/EXAM_INTEGRITY.md` | Anti-cheating plan and its honest limits |
+| `docs/product/XP_SYSTEM.md` | XP ideas, each with a critique |
+| `docs/engineering/ROADMAP_BUILD_PLAN.md` | Build status and phase plan |
+| `docs/product/VOICE_EXAM_SPEC.md` | Spoken teach-back exam spec |
+| `docs/engineering/BILLING.md` | Billing setup and operations |
+| `docs/product/FUTURE_IDEAS.md` | Unscoped ideas, parked until the pilot |
+| `docs/engineering/ARCHITECTURE.md`, `docs/engineering/SECURITY.md`, `docs/engineering/ISSUES.md` | Technical status |
 | `docs/strategy/BUSINESS_MODEL.md`, `docs/strategy/GROWTH_PLAYBOOK.md`, `docs/strategy/ADVISORY_BOARD_REPORT.md`, `docs/strategy/STARTUP_ADVISOR_ANALYSIS.md` | Strategy |
+| `docs/founder/` | Founder-skill outputs: idea validation, personas, interview script, competitor matrix |
 
 ---
 

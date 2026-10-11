@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 
 /**
- * Product events for the pilot (docs/STARTUP_CRITIQUE_2026-10.md, fix 1).
+ * Product events for the pilot (docs/strategy/STARTUP_CRITIQUE_2026-10.md, fix 1).
  *
  * Recorded server-side on purpose: the browser can't be trusted, ad-blockers
  * drop client analytics, and every one of these actions already passes

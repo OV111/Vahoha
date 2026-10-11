@@ -1,6 +1,6 @@
 # Pilot Status
 
-> Updated: 2026-10-02 · Tracks the pre-pilot checklist (`docs/strategy/ADVISORY_BOARD_REPORT.md` §9) and the fixes from `docs/STARTUP_CRITIQUE_2026-10.md`.
+> Updated: 2026-10-02 · Tracks the pre-pilot checklist (`docs/strategy/ADVISORY_BOARD_REPORT.md` §9) and the fixes from `docs/strategy/STARTUP_CRITIQUE_2026-10.md`.
 
 The technical prep for the pilot is mostly done. What's left is mostly yours: content review, setup, and talking to users.
 
@@ -30,15 +30,15 @@ The technical prep for the pilot is mostly done. What's left is mostly yours: co
 | 2 | Hand-check every question marked `reviewed: false` | You | About 135 questions. A wrong answer key on a gated exam destroys trust |
 | 3 | Make yourself admin so you can read the funnel | You | `npm run admin:grant -- you@example.com` |
 | 4 | ~~Pick one product name~~ | Done | Vahoha. README, VISION and strategy docs updated 2026-10-02 |
-| 5 | Remove "AI-proctored" and "hard to fake" claims | You or Claude | `docs/strategy/VISION.md` §5; see `docs/EXAM_INTEGRITY.md` |
+| 5 | Remove "AI-proctored" and "hard to fake" claims | You or Claude | `docs/strategy/VISION.md` §5; see `docs/product/EXAM_INTEGRITY.md` |
 | 6 | Confirm Redis is on in production | You | Auth rate-limit counters depend on it |
 | 7 | Check Groq limits for about 10 concurrent users | You | Move to the paid tier if the free tier rate-limits |
-| 8 | Create the $29 one-off product in Polar | You | For the payment test in `docs/OUTREACH_KIT.md` |
+| 8 | Create the $29 one-off product in Polar | You | For the payment test in `docs/strategy/OUTREACH_KIT.md` |
 | 9 | Run the full loop yourself on production with a new account | You | Sign up, pick a path, take an exam, ask the mentor, then check the funnel shows it |
 
 ## Then: the pilot
 
-- Send 5 DMs a day (`docs/OUTREACH_KIT.md`). Target: 15 interviews in 3 weeks.
+- Send 5 DMs a day (`docs/strategy/OUTREACH_KIT.md`). Target: 15 interviews in 3 weeks.
 - **Pass:** at least 3 of 15 pay $29. **Kill/pivot:** zero payers.
 - Read the funnel weekly. The number that matters: share of users who return within 7 days and start a second layer.
 
@@ -50,7 +50,7 @@ The technical prep for the pilot is mostly done. What's left is mostly yours: co
 
 ## Decision: Build Teams MVP built ahead of pilot data (2026-10-04)
 
-Against the "no new features until pilot data" rule and the advice in `docs/STARTUP_CRITIQUE_2026-10.md` / the validate-idea verdict (pivot, 19/35), the founder chose to build Build Teams now. Risk raised once: the pool of capstone passers is empty. Status: all 8 stages written, ESLint and `vite build` pass; never run against GitHub, the database or the model, and not committed.
+Against the "no new features until pilot data" rule and the advice in `docs/strategy/STARTUP_CRITIQUE_2026-10.md` / the validate-idea verdict (pivot, 19/35), the founder chose to build Build Teams now. Risk raised once: the pool of capstone passers is empty. Status: all 8 stages written, ESLint and `vite build` pass; never run against GitHub, the database or the model, and not committed.
 
 - **Backend:** `backend/modules/teams` at `/api/teams`. Team record (admin-only writes), contribution sync from merged PRs, per-member defense on their own PR diffs, peer ratings, public evidence snapshot.
 - **Frontend:** `src/features/teams`: `/team` (entry: card on the profile page) and public `/evidence/:publicId`.
@@ -60,4 +60,4 @@ Against the "no new features until pilot data" rule and the advice in `docs/STAR
 
 ## Frozen until pilot data says otherwise
 
-Voice exam, Arena features, new paths, awards, further XP changes (`docs/XP_SYSTEM.md`; the founder unfroze two on 2026-10-10: challenge XP through the ledger, and 300 XP per passed team defense), group chat, further Teams work beyond the MVP above, and employer tiers.
+Voice exam, Arena features, new paths, awards, further XP changes (`docs/product/XP_SYSTEM.md`; the founder unfroze two on 2026-10-10: challenge XP through the ledger, and 300 XP per passed team defense), group chat, further Teams work beyond the MVP above, and employer tiers.

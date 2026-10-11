@@ -6,7 +6,7 @@
 > **Date:** 2026-10-01 (supersedes the 2026-06-03 edition)
 > **Prepared by:** Virtual C-Suite Advisory Board
 > **Project:** Vahoha — AI-Integrated Developer Learning Platform (homepage now brands it **Vahoha**; see Decision Log)
-> **Basis:** `git log` through 2026-10-01, `backend/app.js` route mounts, `docs/ROADMAP_BUILD_PLAN.md`, `docs/strategy/VISION.md` (2026-09-30), and a read of the services named below. Nothing here was verified by running the app or against production data, so "built" means "code exists and is mounted", not "tested with real users".
+> **Basis:** `git log` through 2026-10-01, `backend/app.js` route mounts, `docs/engineering/ROADMAP_BUILD_PLAN.md`, `docs/strategy/VISION.md` (2026-09-30), and a read of the services named below. Nothing here was verified by running the app or against production data, so "built" means "code exists and is mounted", not "tested with real users".
 
 ---
 
@@ -49,12 +49,12 @@ The June report said the risk was **last-mile paralysis**: excellent services wi
 
 **The one question that matters now:** *Will a person who is not you finish Layer 1, come back for Layer 2, and tell you what confused them?* You cannot answer it today.
 
-**What the docs now get right.** `docs/strategy/VISION.md` was cleaned up on 2026-09-30 and honestly states "zero real users yet; zero revenue yet". `docs/ROADMAP_BUILD_PLAN.md` holds the build detail. That separation is good. Keep it.
+**What the docs now get right.** `docs/strategy/VISION.md` was cleaned up on 2026-09-30 and honestly states "zero real users yet; zero revenue yet". `docs/engineering/ROADMAP_BUILD_PLAN.md` holds the build detail. That separation is good. Keep it.
 
 **What to fix.**
 
 - **Scope discipline.** The Deferred Backlog has entry criteria for a reason. Arena, group chat and voice review all bypassed them. Re-adopt the rule: *no new feature without a user who asked for it*.
-- **README still overstates.** It marks the AI agent as "persistent context" ✅ while `ROADMAP_BUILD_PLAN.md` lists cross-session memory as *not built* (Stage 7). Align it, and decide the product name first.
+- **README still overstates.** It marks the AI agent as "persistent context" ✅ while `docs/engineering/ROADMAP_BUILD_PLAN.md` lists cross-session memory as *not built* (Stage 7). Align it, and decide the product name first.
 - **Pick the name.** Homepage says Vahoha; every strategy doc, the README and the repo say Vahoha. Decide before the first public post, because the Reddit and X audience will attach to whatever name they first see.
 
 **CEO directive:** The loop is built. Recruit 10 users by hand, watch them, fix the top 3 problems. Nothing new gets built until that is done.
@@ -224,7 +224,7 @@ The June "8-day MVP loop" is done. The remaining path is short:
 [x] Record 7 core events (userEvents) + admin funnel (GET /api/admin/funnel)
 [x] Rate-limit the LLM routes (mentor stream, teach-back)
 [ ] Make yourself admin (npm run admin:grant) and run the full loop on production as a fresh account
-[ ] Recruit users: 15 interviews + $29 payment test (docs/OUTREACH_KIT.md)
+[ ] Recruit users: 15 interviews + $29 payment test (docs/strategy/OUTREACH_KIT.md)
 ```
 
 ---
@@ -254,7 +254,7 @@ The June "8-day MVP loop" is done. The remaining path is short:
 | `backend/seeders/examSeeder.js` | Generates banks with Groq `openai/gpt-oss-120b` |
 | `backend/controllers/authController.js` | `secure: true`; still calls `connectDB()` directly |
 | `backend/routes/auth.routes.js` | Redis counters + `express-rate-limit` fallback on login/signup/reset |
-| `docs/ROADMAP_BUILD_PLAN.md` | Source of truth for build status |
+| `docs/engineering/ROADMAP_BUILD_PLAN.md` | Source of truth for build status |
 | `docs/strategy/VISION.md` | Business/product framing, last updated 2026-09-30 |
 
 ---

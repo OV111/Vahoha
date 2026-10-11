@@ -1,6 +1,6 @@
 # Vahoha (formerly DevsWebs) — Startup Advisor Analysis
 
-> **Update 2026-10-02:** this analysis predates three changes: billing now exists on Polar (not Stripe) but is inert, analytics events are built, and the name is decided (Vahoha). Where it says "Stripe" read "Polar", and treat "Not built" for analytics as done. The sharper critique is `docs/STARTUP_CRITIQUE_2026-10.md`; the competitive review is `docs/STARTUP_REVIEW_2026-10.md`.
+> **Update 2026-10-02:** this analysis predates three changes: billing now exists on Polar (not Stripe) but is inert, analytics events are built, and the name is decided (Vahoha). Where it says "Stripe" read "Polar", and treat "Not built" for analytics as done. The sharper critique is `docs/strategy/STARTUP_CRITIQUE_2026-10.md`; the competitive review is `docs/strategy/STARTUP_REVIEW_2026-10.md`.
 
 > **Classification:** Founder-Only Strategic Document
 > **Date:** 2026-06-11 · **Updated:** 2026-10-01

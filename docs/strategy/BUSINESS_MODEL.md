@@ -5,12 +5,12 @@
 
 > ### What changed on 2026-10-02
 >
-> - **Billing is built, but inert.** Polar (Merchant of Record) checkout, signed webhook and subscription state live in `backend/modules/billing`, verified end to end with a real sandbox checkout. Stripe direct was ruled out because Armenia is not supported. `canAccess()` returns true for everyone until `BILLING_ENFORCED=true`, so the pilot runs fully free. See `docs/BILLING.md`.
+> - **Billing is built, but inert.** Polar (Merchant of Record) checkout, signed webhook and subscription state live in `backend/modules/billing`, verified end to end with a real sandbox checkout. Stripe direct was ruled out because Armenia is not supported. `canAccess()` returns true for everyone until `BILLING_ENFORCED=true`, so the pilot runs fully free. See `docs/engineering/BILLING.md`.
 > - **Pilot analytics exist.** Seven server-side events and an admin funnel (`eventService.js`, `GET /api/admin/funnel`).
-> - **Exam integrity is stronger but still not proof.** Unseen-first sampling from a larger bank, cooldown back on, integrity flags. A multiple-choice exam still cannot stop a second-screen LLM, so any "verified credential" revenue line (certificates, Employer Access, Teams reports) is **not supported by what is built**. See `docs/EXAM_INTEGRITY.md`.
-> - **Revenue numbers below are ambitions, not forecasts.** The $15,000–75,000/month range in the opportunity-cost table needs 1,000–5,000 paying users from a base of zero. Free-to-Pro conversion of 8–12% is optimistic (consumer freemium usually converts 2–5%). Users who get hired will cancel, so the 5% monthly churn target is also unproven. `docs/STARTUP_CRITIQUE_2026-10.md` goes through each.
+> - **Exam integrity is stronger but still not proof.** Unseen-first sampling from a larger bank, cooldown back on, integrity flags. A multiple-choice exam still cannot stop a second-screen LLM, so any "verified credential" revenue line (certificates, Employer Access, Teams reports) is **not supported by what is built**. See `docs/product/EXAM_INTEGRITY.md`.
+> - **Revenue numbers below are ambitions, not forecasts.** The $15,000–75,000/month range in the opportunity-cost table needs 1,000–5,000 paying users from a base of zero. Free-to-Pro conversion of 8–12% is optimistic (consumer freemium usually converts 2–5%). Users who get hired will cancel, so the 5% monthly churn target is also unproven. `docs/strategy/STARTUP_CRITIQUE_2026-10.md` goes through each.
 > - **Product name:** Vahoha (formerly DevsWebs).
-> - **First payment test:** before relying on any price here, ask 15 interviewed target users to pay $29 for 3 months through a Polar checkout link (`docs/OUTREACH_KIT.md`).
+> - **First payment test:** before relying on any price here, ask 15 interviewed target users to pay $29 for 3 months through a Polar checkout link (`docs/strategy/OUTREACH_KIT.md`).
 >
 > ### What changed in the 2026-10-01 update
 >
@@ -58,7 +58,7 @@ This is where the platform's core value lives. Pro is not "more content" — it 
 
 **What Pro unlocks:**
 - Full roadmap access — all layers unlockable after passing their exams
-- AI Agent — higher daily limit than free (free is 30/day today). Cross-session "memory of your entire journey" is **not built yet** (mentor Stage 7 in `docs/ROADMAP_BUILD_PLAN.md`); today the mentor re-reads your progress, exam history and weak spots through tools each turn, plus a learner-context summary
+- AI Agent — higher daily limit than free (free is 30/day today). Cross-session "memory of your entire journey" is **not built yet** (mentor Stage 7 in `docs/engineering/ROADMAP_BUILD_PLAN.md`); today the mentor re-reads your progress, exam history and weak spots through tools each turn, plus a learner-context summary
 - More exam attempts (today everyone gets 3 attempts/day per layer; a 30-minute cooldown applies after a failed attempt)
 - Full Dev Library access — all entries, cross-referenced with your current roadmap layer
 - Certificates on path completion (requires passing all exams and a capstone project)
@@ -260,13 +260,13 @@ The risk is time-to-revenue. The mitigation is launching with Free + Pro as earl
 | 2. AI mentor | ✅ Done (`/api/ai-agent`, Groq, tool-use loop) |
 | 3. Exam engine (not in the June list, but required for the gate) | ✅ Done (`/api/exams`) |
 | 4. **Event tracking** | ✅ Done (`eventService.js`, admin funnel) |
-| 4b. **Pilot: 15 interviews + a $29 early-access payment test** | ❌ **Next.** See `docs/OUTREACH_KIT.md` |
-| 5. Billing (Polar) | ✅ Built and sandbox-verified, inert (`docs/BILLING.md`) |
+| 4b. **Pilot: 15 interviews + a $29 early-access payment test** | ❌ **Next.** See `docs/strategy/OUTREACH_KIT.md` |
+| 5. Billing (Polar) | ✅ Built and sandbox-verified, inert (`docs/engineering/BILLING.md`) |
 | 5b. Feature gating on routes | ❌ Not wired. `canAccess()` exists but no route calls it; enable only after the pilot supports a paid tier |
 | 6. Launch with Free + Pro only | ❌ Not started (flip `BILLING_ENFORCED` and add gates) |
 
 ### Step 4 — Pilot and Instrument
-No one can pay for what nobody has validated. The events are now recorded server-side (signup, path selected, exam started, exam submitted with score, mentor message, teach-back, active day). Recruit users by hand (`docs/strategy/GROWTH_PLAYBOOK.md`, `docs/OUTREACH_KIT.md`) and read the funnel for Layer 1 → Layer 2 return. Do not rely on that number alone: ten polite hand-picked users returning is not evidence anyone will pay, so also collect a real payment.
+No one can pay for what nobody has validated. The events are now recorded server-side (signup, path selected, exam started, exam submitted with score, mentor message, teach-back, active day). Recruit users by hand (`docs/strategy/GROWTH_PLAYBOOK.md`, `docs/strategy/OUTREACH_KIT.md`) and read the funnel for Layer 1 → Layer 2 return. Do not rely on that number alone: ten polite hand-picked users returning is not evidence anyone will pay, so also collect a real payment.
 
 ### Step 5 — Billing and Feature Gating
 Checkout, the webhook handler and subscription state are built on Polar (`backend/modules/billing`: `checkoutService`, `webhookService`, `subscriptionService`, `featureGateService`). **What remains is gating:** deciding what Pro actually unlocks (candidates: higher mentor cap, detailed exam review and the topic-level mastery map, library entries marked non-free, Arena submission cap, voice-exam extras) and calling `canAccess(db, userId, "pro")` from those routes. All roadmaps stay free by decision.
@@ -354,7 +354,7 @@ The frontend reads the `upgrade_required` error code and shows the upgrade modal
 | Churn spike when AI agent underdelivers | HIGH | The agent must be genuinely useful before it is gated behind Pro. A mediocre AI agent at launch will destroy the conversion story permanently |
 | Competing with freeCodeCamp / The Odin Project | LOW | Both are passive content and free, which anchors willingness to pay at zero |
 | **Competing with roadmap.sh and Boot.dev** | HIGH *(new)* | roadmap.sh has an AI tutor and quizzes at about $10/month and the audience; Boot.dev owns gamified backend learning. Differentiation must come from verified understanding (spoken teach-back), which is unbuilt |
-| **The credential can be faked** | HIGH *(new)* | Multiple choice is answerable by an LLM. Position the exam as practice and self-diagnosis; only teach-back counts as proof (`docs/EXAM_INTEGRITY.md`) |
+| **The credential can be faked** | HIGH *(new)* | Multiple choice is answerable by an LLM. Position the exam as practice and self-diagnosis; only teach-back counts as proof (`docs/product/EXAM_INTEGRITY.md`) |
 | **Users cancel when they get hired** | MEDIUM *(new)* | Success ends the subscription for a job-hunting audience. Model churn accordingly and consider annual or cohort pricing |
 | Solo-founder execution risk | MEDIUM | The build order is designed to get to revenue as fast as possible. Do not build all 12 phases before charging anyone. Get Pro live, get 50 paying users, validate, then continue |
 
@@ -368,7 +368,7 @@ To stay focused, it is worth being explicit about what Vahoha must not become:
 - **Not a content mill** — The curriculum is curated. Quality over volume. A roadmap layer with 3 excellent posts is better than 20 mediocre ones.
 - **Not ad-supported** — Ads on a learning platform destroy the user experience and signal low confidence in the subscription model. If the product is good, people pay for it.
 - **Not a bootcamp** — No live cohorts, no human instructors, no scheduled sessions. The AI agent is the mentor. Scale requires removing humans from the delivery loop.
-  > **Note (2026-10-01):** there is an open idea to integrate **real senior engineers** alongside the AI mentor (e.g. listening to top students' best voice-exam answers, giving top performers an opportunity, human review of flagged exams). Not a decision and not in scope for the MVP — it would soften this bullet if adopted. See `docs/VOICE_EXAM_SPEC.md` §20.
+  > **Note (2026-10-01):** there is an open idea to integrate **real senior engineers** alongside the AI mentor (e.g. listening to top students' best voice-exam answers, giving top performers an opportunity, human review of flagged exams). Not a decision and not in scope for the MVP — it would soften this bullet if adopted. See `docs/product/VOICE_EXAM_SPEC.md` §20.
 - **Not a certification farm** — Certificates are earned through a rigorous gated system. If every user who signs up eventually gets a certificate, the certificate is worthless. The pass threshold (80, configurable once moved to `platformConfig`) and capstone requirement (not built) exist specifically to prevent this.
 
 ---

@@ -1,6 +1,6 @@
 # XP System — Ideas and Critique
 
-> Date: 2026-10-01 · Status: ideas only. Nothing here should be built before the pilot has retention data (`docs/STARTUP_CRITIQUE_2026-10.md`).
+> Date: 2026-10-01 · Status: ideas only. Nothing here should be built before the pilot has retention data (`docs/strategy/STARTUP_CRITIQUE_2026-10.md`).
 
 ## Current state (verified in code)
 
@@ -38,7 +38,7 @@ So the roadmap, the exams and teach-back, which make up the core loop, give **no
 | Can be bought | Never with money | Never |
 | Who sees it | Mainly the learner | Learner, and employers later |
 
-If XP can unlock, skip or prove anything, the "earned roadmap" stops meaning anything. That's the same integrity problem as `docs/EXAM_INTEGRITY.md`, just in a different place.
+If XP can unlock, skip or prove anything, the "earned roadmap" stops meaning anything. That's the same integrity problem as `docs/product/EXAM_INTEGRITY.md`, just in a different place.
 
 ## Ideas, by area
 
@@ -79,7 +79,7 @@ Verdict: **Now** = cheap and safe for the pilot · **Later** = only if pilot dat
 | XP leaderboards | Competition motivates some learners | With 10 users it looks empty. It discourages beginners, and cheaters rise to the top. The Arena already has a leaderboard API that nobody uses | **Later**: weekly, opt-in, grouped by level |
 | XP for writing blog posts or answering others | Grows community content | Encourages spam and low-effort posts, and needs moderation. The community features are frozen | **Later**, only for content an admin approved |
 | XP for approved challenge proposals | Admin review already exists | Fine, because a human checks quality | **Later** (small) |
-| XP for referrals (`docs/FUTURE_IDEAS.md:214`) | Growth | XP is worth nothing to a newcomer unless it buys something real. Encourages spam. Subscription credit (a free month) works better | **Later**, as Pro credit, not XP |
+| XP for referrals (`docs/product/FUTURE_IDEAS.md:214`) | Growth | XP is worth nothing to a newcomer unless it buys something real. Encourages spam. Subscription credit (a free month) works better | **Later**, as Pro credit, not XP |
 
 ### 5. Money (Pro and billing)
 

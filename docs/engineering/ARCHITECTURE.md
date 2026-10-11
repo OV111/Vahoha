@@ -28,19 +28,19 @@ Single-instance Express 5 + MongoDB (native driver) + Redis/BullMQ, with WebSock
 | Groq `openai/gpt-oss-120b` for the mentor | Chosen 2026-09-26 because Groq has a free tier and a solo pre-revenue project is cost-bound. `MODEL` lives in one place (`services/agent/streamService.js`); Groq retires models, so 404s mean check `/models` first |
 | BullMQ | Notification jobs retry and survive restarts; in-process queues would lose them on a crash |
 | Zustand | Stores are small (auth, roadmap, agent session, notifications); no Redux boilerplate |
-| Polar (Merchant of Record) | Handles VAT and sales tax, and pays out to Armenia, which direct Stripe does not support (`docs/BILLING.md`) |
+| Polar (Merchant of Record) | Handles VAT and sales tax, and pays out to Armenia, which direct Stripe does not support (`docs/engineering/BILLING.md`) |
 | Zod at the route boundary | Used on new routes (agent, billing, challenges, mastery). Old community routes are not backfilled |
 
 ### The hardest technical problems
 
 1. **Agent tool-use loop with streaming.** The mentor calls backend tools (progress, exam history, weak spots, posts, library, profile) while streaming. Tool results must be interleaved into history before the next model call; the frontend SSE hook handles aborts and incremental chunks.
-2. **Exam integrity.** Answer keys never leave the server: the client submits answers and the server grades. Choices are shuffled per attempt, unseen questions are served first, and attempts are limited. Honest limit: a multiple-choice exam cannot be made ChatGPT-proof (`docs/EXAM_INTEGRITY.md`).
+2. **Exam integrity.** Answer keys never leave the server: the client submits answers and the server grades. Choices are shuffled per attempt, unseen questions are served first, and attempts are limited. Honest limit: a multiple-choice exam cannot be made ChatGPT-proof (`docs/product/EXAM_INTEGRITY.md`).
 3. **Server-authoritative progression.** Layer N+1 unlocks only when the exam is passed at `PASS_THRESHOLD = 80`, stored in `userProgress` server-side. The threshold is a hardcoded constant in `examEngineService.js`; the planned `platformConfig` collection was never built.
 4. **Learner model.** Mastery per topic is derived from exams, teach-back and challenge results (`learnerMasteryService`, `modules/mastery`) and fed to the mentor as context, so its answers are grounded in what the learner actually struggled with.
 
 ### Planned extensions (direction, not built)
 
-`learnerMastery` is the single evidence spine: exams, teach-back and challenge results already feed it, and the Capstone review (rubric scores 0–4 per criterion) and defense are the next evidence sources. New features should write evidence into this spine through `recomputeMastery`, not into a parallel score or progress store. Per-skill progression (e.g. "databases 6.4 → 7.3") would be a derived view over that evidence with a snapshot per recompute. Content completion and demonstrated mastery stay separate signals. See `docs/ROADMAP_BUILD_PLAN.md` ("Loop strengthening") for what is MVP, V2, future or experiment.
+`learnerMastery` is the single evidence spine: exams, teach-back and challenge results already feed it, and the Capstone review (rubric scores 0–4 per criterion) and defense are the next evidence sources. New features should write evidence into this spine through `recomputeMastery`, not into a parallel score or progress store. Per-skill progression (e.g. "databases 6.4 → 7.3") would be a derived view over that evidence with a snapshot per recompute. Content completion and demonstrated mastery stay separate signals. See `docs/engineering/ROADMAP_BUILD_PLAN.md` ("Loop strengthening") for what is MVP, V2, future or experiment.
 
 ---
 
@@ -106,7 +106,7 @@ Single-instance Express 5 + MongoDB (native driver) + Redis/BullMQ, with WebSock
 
 - **One process.** HTTP, WebSocket and the BullMQ worker share one instance; the WebSocket `rooms` map and the rate-limit counters are in memory. Pin to one instance, or move counters to Redis before scaling out.
 - **Funnel query loads the whole signup cohort into memory** (`getFunnel`). Fine for a pilot; use an aggregation pipeline before thousands of users.
-- **The Arena executes submitted code** inside an `isolated-vm` isolate. In production it fails closed (submissions refused) if that native addon did not build, unless `ALLOW_UNSAFE_RUNNER=true`. The isolate has not had an independent security review (see `docs/Security.md`).
+- **The Arena executes submitted code** inside an `isolated-vm` isolate. In production it fails closed (submissions refused) if that native addon did not build, unless `ALLOW_UNSAFE_RUNNER=true`. The isolate has not had an independent security review (see `docs/engineering/SECURITY.md`).
 - **Rate limits are per process,** so a restart resets them.
 
 ## Open fixes, in priority order

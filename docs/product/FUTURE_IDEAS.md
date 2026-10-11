@@ -1,6 +1,6 @@
 # Future Ideas — Not Scoped, Not Committed
 
-> Moved out of docs/strategy/VISION.md 2026-09-30 to keep that document investor-readable. These are speculative concepts kept so the idea isn't lost — none are in scope until the MVP loop (see `ROADMAP_BUILD_PLAN.md`) is validated with real users.
+> Moved out of docs/strategy/VISION.md 2026-09-30 to keep that document investor-readable. These are speculative concepts kept so the idea isn't lost — none are in scope until the MVP loop (see `docs/engineering/ROADMAP_BUILD_PLAN.md`) is validated with real users.
 
 ---
 
@@ -167,7 +167,7 @@
 
 ## Voice AI Progress Review / Teach-Back
 
-> **Status 2026-09-27:** A minimal one-topic vertical slice (JWT Signature only) has actually shipped — see `ROADMAP_BUILD_PLAN.md` / the AI Mentor section for what's real. This entry is the original product reasoning and the parts still not built.
+> **Status 2026-09-27:** A minimal one-topic vertical slice (JWT Signature only) has actually shipped — see `docs/engineering/ROADMAP_BUILD_PLAN.md` / the AI Mentor section for what's real. This entry is the original product reasoning and the parts still not built.
 
 ### Reframe: it's a learning mechanic, not a voice feature
 
@@ -217,7 +217,7 @@ MCQ tests recognition and is gameable; explaining a concept out loud (or in writ
 
 ## Production Incident Scenarios (2026-10-04)
 
-The learner has a working app, then an incident: "API response time went from 100ms to 4s." They inspect, reason, find the cause, fix it and explain it (observe → reproduce → hypothesise → gather evidence → test → fix → verify). Candidates: memory leak, race condition, database bottleneck, broken auth, failed deploy, cache invalidation, API timeout, queue failure, bad error handling. This is the later tier of scenario challenges (`ROADMAP_BUILD_PLAN.md`, Loop strengthening), an extension of Coding Challenges and Capstones rather than a new subsystem. Open: curated sandbox projects versus injecting faults into the learner's own repo (experiment).
+The learner has a working app, then an incident: "API response time went from 100ms to 4s." They inspect, reason, find the cause, fix it and explain it (observe → reproduce → hypothesise → gather evidence → test → fix → verify). Candidates: memory leak, race condition, database bottleneck, broken auth, failed deploy, cache invalidation, API timeout, queue failure, bad error handling. This is the later tier of scenario challenges (`docs/engineering/ROADMAP_BUILD_PLAN.md`, Loop strengthening), an extension of Coding Challenges and Capstones rather than a new subsystem. Open: curated sandbox projects versus injecting faults into the learner's own repo (experiment).
 
 ---
 

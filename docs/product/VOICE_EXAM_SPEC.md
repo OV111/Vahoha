@@ -1,7 +1,7 @@
 # Voice Exam — Product & Technical Spec
 
 > **Status: DRAFT for approval. No implementation exists.** Written 2026-10-01.
-> Sources read: `docs/strategy/VISION.md` (repo root, not `docs/`), `docs/ROADMAP_BUILD_PLAN.md`, `docs/FUTURE_IDEAS.md`, `docs/ARCHITECTURE.md`, `docs/strategy/BUSINESS_MODEL.md`, and the live exam / teach-back / mastery / mentor code.
+> Sources read: `docs/strategy/VISION.md` (repo root, not `docs/`), `docs/engineering/ROADMAP_BUILD_PLAN.md`, `docs/product/FUTURE_IDEAS.md`, `docs/engineering/ARCHITECTURE.md`, `docs/strategy/BUSINESS_MODEL.md`, and the live exam / teach-back / mastery / mentor code.
 > Tooling note: the Product Management `write-spec` skill and the `frontend-design` skill are **not installed** in this environment. The spec follows a write-spec-style structure by hand; §16 describes screens in prose rather than a designed mockup.
 > **Decisions recorded 2026-10-01:** (1) **soft gate** — MCQ still unlocks the next layer, voice exam adds "verified" status; (2) **Free tier gets ≥3 graded voice exams/month** (quota per account across all tracks — to confirm); (3) every core prompt covers all `mustHave` concepts (Q2 = A); (4) examiner TTS **deferred**, and where used it should be a **free option** (browser `speechSynthesis` or self-hosted open-source), not a paid vendor; (5) human senior mentors / exemplar answers are a **future idea** (§20), not V1.
 > Pricing figures in §11–12 are approximate list prices from memory — **re-verify every number before committing to a provider.**

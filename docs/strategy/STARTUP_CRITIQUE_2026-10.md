@@ -4,13 +4,13 @@
 
 Verdict: the engineering is strong, there is no evidence anyone wants this, and the main credential claim is false today.
 
-This review was written from the critic's side: it looks for why the startup fails, not for what to praise. Sources read: `README.md`, `docs/strategy/VISION.md`, `docs/strategy/BUSINESS_MODEL.md`, `docs/strategy/GROWTH_PLAYBOOK.md`, `docs/STARTUP_REVIEW_2026-10.md`, `git log` since June 2026, and `backend/services/examEngineService.js`. The app was not run, and no user or usage data exists to check.
+This review was written from the critic's side: it looks for why the startup fails, not for what to praise. Sources read: `README.md`, `docs/strategy/VISION.md`, `docs/strategy/BUSINESS_MODEL.md`, `docs/strategy/GROWTH_PLAYBOOK.md`, `docs/strategy/STARTUP_REVIEW_2026-10.md`, `git log` since June 2026, and `backend/services/examEngineService.js`. The app was not run, and no user or usage data exists to check.
 
 ## 1. Top 5 fatal risks, ranked
 
 The biggest risk is that you are writing strategy instead of talking to users. It ranks first because it blocks the fix for every other risk.
 
-1. **Writing strategy instead of talking to users.** On 2026-10-01, `docs/STARTUP_REVIEW_2026-10.md` §6 said: _"STOP writing strategy documents. There are now ~10. The next document should be interview notes."_ Later that same day came a 5,400-word `VOICE_EXAM_SPEC.md`, edits to 4 strategy docs, and two more reviews, this one included.
+1. **Writing strategy instead of talking to users.** On 2026-10-01, `docs/strategy/STARTUP_REVIEW_2026-10.md` §6 said: _"STOP writing strategy documents. There are now ~10. The next document should be interview notes."_ Later that same day came a 5,400-word `docs/product/VOICE_EXAM_SPEC.md`, edits to 4 strategy docs, and two more reviews, this one included.
    - That makes about 40,000 words of strategy and zero interview notes.
    - In June the playbook said to recruit 10 users. Since then `git log` shows 54 commits: the Arena, a code sandbox, community proposals, group chat, 7 commits setting page backgrounds to `bg-black`, and a rebrand. Users recruited: zero.
 2. **The credential is easy to fake, and the long-term plan depends on it.** `examEngineService.js:28` sets `QUESTIONS_PER_EXAM = 15` and serves the _whole_ bank every attempt.
@@ -64,7 +64,7 @@ The docs make no convincing case for why you would win. The only open slot is or
 | HackerRank Chakra     | Voice interviews graded against a rubric, sold to employers                   | Strategic              |
 | CodeSignal Cosmo      | AI tutor plus an assessment business                                          | Medium                 |
 
-Competitor details come from `docs/STARTUP_REVIEW_2026-10.md` §7 and its sources. They were not checked again for this review.
+Competitor details come from `docs/strategy/STARTUP_REVIEW_2026-10.md` §7 and its sources. They were not checked again for this review.
 
 ## 6. Product
 
@@ -95,7 +95,7 @@ Fix demand, exam integrity and time discipline, in that order. Each fix has a pa
 
 | #   | Fix                                                         | How                                                                                                                                                                                  | Test (how you'll know it's fixed)                                                                                    |
 | --- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| 1   | Get a real payment signal                                   | Interview 15 people who match your target user, then send a Polar checkout link ($29 for 3 months, refundable). No new code (see `docs/OUTREACH_KIT.md`)                                                      | At least 3 of 15 pay within 3 weeks. Zero payers means pivot or stop                                                 |
+| 1   | Get a real payment signal                                   | Interview 15 people who match your target user, then send a Polar checkout link ($29 for 3 months, refundable). No new code (see `docs/strategy/OUTREACH_KIT.md`)                                                      | At least 3 of 15 pay within 3 weeks. Zero payers means pivot or stop                                                 |
 | 2   | Make the exam hard to fake, or stop calling it a credential | Have a friend who hasn't studied take Layer 1 with ChatGPT open. If they pass, grow the bank well past 15, add teach-back or randomization, or reposition the exam as self-diagnosis | The friend scores under 80. You can run this today in 20 minutes                                                     |
 | 3   | Time-box the experiment, with kill criteria set first       | Write down hours per week, a Day-60 date, and what result means you stop                                                                                                             | For the next 3 weeks, every commit maps to a pilot checklist item, and your log has more conversations than new docs |
 

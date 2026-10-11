@@ -13,7 +13,7 @@
  *
  * Wording is deliberately honest: "AI-reviewed", never "verified" or
  * "proctored" — a typed defense can be helped by another AI, so we do not
- * claim more than the process proves (see docs/EXAM_INTEGRITY.md).
+ * claim more than the process proves (see docs/product/EXAM_INTEGRITY.md).
  */
 
 import { randomBytes } from "crypto";

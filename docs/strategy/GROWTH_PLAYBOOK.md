@@ -7,7 +7,7 @@
 >
 > **What changed in this update:** the learning loop this playbook told you to build in Week 1 is now built (roadmap, exam engine, AI mentor). The plan therefore starts at *Week 0: pre-pilot hardening*, then goes straight to recruiting. Acquisition tactics (sections 2–3) are unchanged because they never depended on the build state. The pricing and timeline in Week 3 and the table below were revised: there is still no billing code, and the $15 price was set when AI costs were higher (see `docs/strategy/BUSINESS_MODEL.md`). **Also decide the product name first** (homepage says Vahoha, everything else says Vahoha).
 >
-> **Update 2026-10-02:** the Week 0 hardening is mostly done (helmet, cooldown, rate limits on LLM routes, server-side event tracking and an admin funnel). Billing now exists on Polar (not Stripe, which doesn't support Armenia) but is inert. The product name is **Vahoha**. Recruiting now has a working kit: `docs/OUTREACH_KIT.md` (DM scripts, interview questions, payment test, Day-21 decision). The plan also changed in one important way: **test payment before wiring gates**, and don't treat "10 users returned" as enough evidence anyone will pay.
+> **Update 2026-10-02:** the Week 0 hardening is mostly done (helmet, cooldown, rate limits on LLM routes, server-side event tracking and an admin funnel). Billing now exists on Polar (not Stripe, which doesn't support Armenia) but is inert. The product name is **Vahoha**. Recruiting now has a working kit: `docs/strategy/OUTREACH_KIT.md` (DM scripts, interview questions, payment test, Day-21 decision). The plan also changed in one important way: **test payment before wiring gates**, and don't treat "10 users returned" as enough evidence anyone will pay.
 
 ---
 
@@ -41,7 +41,7 @@ Do **not** extend the Arena, group chat, voice review, XP, or anything from the 
 
 ### Week 1–3 — Interview, Observe, Ask for Money
 
-Not friends who will be nice. Developers who match the persona: self-taught, aiming at backend, applying for 3+ months without an offer. Find them with the kit in `docs/OUTREACH_KIT.md`: r/learnprogramming and r/cscareerquestions (DM, don't post links), The Odin Project and 100Devs Discords, your own network. Five DMs a day.
+Not friends who will be nice. Developers who match the persona: self-taught, aiming at backend, applying for 3+ months without an offer. Find them with the kit in `docs/strategy/OUTREACH_KIT.md`: r/learnprogramming and r/cscareerquestions (DM, don't post links), The Odin Project and 100Devs Discords, your own network. Five DMs a day.
 
 - **Interview first (15 minutes).** Ask about what they did, not what they would do. The kit has 10 questions.
 - **Then watch them take the Layer 1 exam.** Don't help. Write down every hesitation.
@@ -80,7 +80,7 @@ This builds an audience before you need one. When you launch on Reddit or Produc
 |---|---|
 | 0 | Pre-pilot hardening: mostly done; seed and check Backend Layers 1–3 (the remaining work) |
 | 1–3 | 15 interviews, observe exams, ask for the $29 payment; fix the top 3 issues |
-| Day 21 | Decision: 3+ of 15 paid = widen; 1–2 = fix and repeat; 0 = pivot or stop (`docs/OUTREACH_KIT.md`) |
+| Day 21 | Decision: 3+ of 15 paid = widen; 1–2 = fix and repeat; 0 = pivot or stop (`docs/strategy/OUTREACH_KIT.md`) |
 | 4–6 | Fix what breaks, get to the first paying users |
 | Month 2–3 | Widen to 50 users, decide on a second path from data |
 | Month 4–6 | Revisit Awards / Teams / employer conversations only if retention supports them |
