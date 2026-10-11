@@ -6,7 +6,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient } from 'mongodb'
-import { getBlogsService } from '../../services/blogService.js'
+import { getBlogsService } from '../../modules/blogs/services/blogService.js'
 
 let mongod
 let client

@@ -7,12 +7,11 @@ import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger.js";
 
 import authRoutes from "./modules/auth/index.js";
-import postRoutes from "./routes/post.routes.js";
+import { blogRoutes, postRoutes } from "./modules/blogs/index.js";
 import profileRoutes from "./modules/profile/index.js";
 import userRoutes from "./modules/users/index.js";
 import searchRoutes from "./modules/search/index.js";
 import accountRoutes from "./modules/account/index.js";
-import blogRoutes from "./routes/blogs.routes.js";
 import libraryRoutes from "./modules/library/index.js";
 import aiAgentRoutes from "./routes/aiAgent.routes.js";
 import roadmapRoutes from "./routes/roadmap.routes.js";

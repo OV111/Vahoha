@@ -3,7 +3,7 @@ import {
   getDefaultPostsByCategory,
   getPostsByCategory,
   createPost,
-} from "../controllers/postController.js";
+} from "../controllers/post.controller.js";
 
 const router = Router();
 

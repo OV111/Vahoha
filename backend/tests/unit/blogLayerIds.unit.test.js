@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { normalizeLayerIds } from '../../services/blogService.js'
+import { normalizeLayerIds } from '../../modules/blogs/services/blogService.js'
 
 describe('normalizeLayerIds', () => {
   it('keeps valid layer ids from an array', () => {

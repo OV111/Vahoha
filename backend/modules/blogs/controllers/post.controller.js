@@ -1,4 +1,4 @@
-import { verifyToken } from "../utils/jwtToken.js";
+import { verifyToken } from "../../../utils/jwtToken.js";
 import {
   getDefaultPostsByCategoryService,
   getPostsByCategoryService,

@@ -12,14 +12,14 @@ import {
   updateBlog,
   getMyBlogs,
   deleteBlog,
-} from "../controllers/blogController.js";
+} from "../controllers/blog.controller.js";
 import {
   getComments,
   postComment,
   deleteComment,
-} from "../controllers/commentController.js";
+} from "../controllers/comment.controller.js";
 import { Router } from "express";
-import { authenticate } from "../middleware/authenticate.js";
+import { authenticate } from "../../../middleware/authenticate.js";
 
 const router = Router();
 

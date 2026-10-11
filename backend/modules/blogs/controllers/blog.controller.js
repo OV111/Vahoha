@@ -1,6 +1,6 @@
 import Busboy from "busboy";
 import { ObjectId } from "mongodb";
-import { uploadImage } from "../utils/uploadImage.js";
+import { uploadImage } from "../../../utils/uploadImage.js";
 
 const ALLOWED_IMAGE_MIME_TYPES = new Set([
   "image/jpeg",
