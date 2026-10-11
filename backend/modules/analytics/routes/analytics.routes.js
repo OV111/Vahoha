@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { authenticate } from "../middleware/authenticate.js";
-import { requireAdmin } from "../middleware/requireAdmin.js";
-import { getFunnel } from "../services/eventService.js";
+import { authenticate } from "../../../middleware/authenticate.js";
+import { requireAdmin } from "../../../middleware/requireAdmin.js";
+import { getFunnel } from "../../../services/eventService.js";
 
 const router = Router();
 

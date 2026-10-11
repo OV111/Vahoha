@@ -6,8 +6,8 @@ import {
   getResourceCounts,
   toggleSaveResource,
   getSavedResourceIds,
-} from "../controllers/libraryController.js";
-import { authenticate } from "../middleware/authenticate.js";
+} from "../controllers/library.controller.js";
+import { authenticate } from "../../../middleware/authenticate.js";
 
 const router = Router();
 

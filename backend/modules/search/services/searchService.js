@@ -1,5 +1,5 @@
-import { CATEGORY_OPTIONS } from "../../constants/Categories.js";
-import { escapeRegex } from "../utils/regex.js";
+import { CATEGORY_OPTIONS } from "../../../../constants/Categories.js";
+import { escapeRegex } from "../../../utils/regex.js";
 
 export const searchUsers = async (db, query) => {
   const users = db.collection("users");
