@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { verifyToken } from "../utils/jwtToken.js";
+import { verifyToken } from "../../../utils/jwtToken.js";
 import { deleteAccountService } from "../services/accountService.js";
 
 export const deleteAccount = async (req, res) => {

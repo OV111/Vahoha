@@ -2,9 +2,9 @@ import process from "node:process";
 import crypto from "node:crypto";
 import bcrypt from "bcrypt";
 import { ObjectId } from "mongodb";
-import { sendPasswordResetEmail } from "../utils/emailService.js";
-import connectDB from "../config/db.js";
-import { verifyToken, verifyRefreshToken } from "../utils/jwtToken.js";
+import { sendPasswordResetEmail } from "../../../utils/emailService.js";
+import connectDB from "../../../config/db.js";
+import { verifyToken, verifyRefreshToken } from "../../../utils/jwtToken.js";
 import {
   issueTokenPair,
   rotateRefreshToken,
@@ -12,8 +12,8 @@ import {
   revokeAllRefreshTokens,
 } from "../services/refreshTokenService.js";
 import { OAuth2Client } from "google-auth-library";
-import { sanitizeUsername } from "../utils/username.js";
-import { trackEvent, trackActiveDay } from "../services/eventService.js";
+import { sanitizeUsername } from "../../../utils/username.js";
+import { trackEvent, trackActiveDay } from "../../../services/eventService.js";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 

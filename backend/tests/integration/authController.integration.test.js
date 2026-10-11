@@ -8,7 +8,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import process from 'node:process'
-import { signUp, login } from '../../controllers/authController.js'
+import { signUp, login } from '../../modules/auth/controllers/auth.controller.js'
 import connectDB from '../../config/db.js'
 import { verifyToken } from '../../utils/jwtToken.js'
 

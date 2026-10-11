@@ -15,11 +15,11 @@ import {
   githubCallback,
   forgotPassword,
   resetPassword,
-} from "../controllers/authController.js";
-import { verifyToken } from "../utils/jwtToken.js";
-import { redisConnection } from "../config/redis.js";
-import { validate } from "../middleware/validate.js";
-import { signupSchema, loginSchema } from "../validation/auth.schemas.js";
+} from "../controllers/auth.controller.js";
+import { verifyToken } from "../../../utils/jwtToken.js";
+import { redisConnection } from "../../../config/redis.js";
+import { validate } from "../../../middleware/validate.js";
+import { signupSchema, loginSchema } from "../schemas/auth.schemas.js";
 
 // Sends the controller's result as JSON but strips the refresh token first —
 // it must only ever leave the server as the httpOnly cookie already set by

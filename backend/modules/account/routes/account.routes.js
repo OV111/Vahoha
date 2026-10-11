@@ -1,6 +1,6 @@
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
-import { deleteAccount } from "../controllers/accountController.js";
+import { deleteAccount } from "../controllers/account.controller.js";
 
 const router = Router();
 

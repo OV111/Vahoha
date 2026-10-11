@@ -31,7 +31,7 @@ import { MongoClient } from 'mongodb'
 import process from 'node:process'
 import { createApp } from '../api/testApp.js'
 import connectDB from '../../config/db.js'
-import { signUp } from '../../controllers/authController.js'
+import { signUp } from '../../modules/auth/controllers/auth.controller.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Lifecycle

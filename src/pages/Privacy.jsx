@@ -3,7 +3,7 @@ import { SITE } from "../../constants/site";
 
 // Every statement here must match the code. If you add a per-user collection,
 // a third-party service or a cookie, update this page — and for new per-user
-// data, USER_KEYED_COLLECTIONS in backend/services/accountService.js, which
+// data, USER_KEYED_COLLECTIONS in backend/modules/account/services/accountService.js, which
 // backs the "delete your account" promise below.
 const EFFECTIVE_DATE = "October 2, 2026";
 

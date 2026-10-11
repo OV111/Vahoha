@@ -95,7 +95,7 @@ const ConnectedAccounts = () => {
   const connectGitHub = () => {
     // Identity for this redirect is proven server-side via the httpOnly
     // refresh cookie (sent automatically on this same-site navigation),
-    // not a token in the URL — see githubLinkRedirect in authController.js.
+    // not a token in the URL — see githubLinkRedirect in backend/modules/auth/controllers/auth.controller.js.
     window.location.href = `${API_BASE_URL}/auth/github/link`;
   };
 

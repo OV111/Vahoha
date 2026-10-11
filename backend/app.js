@@ -6,12 +6,12 @@ import process from "process";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger.js";
 
-import authRoutes from "./routes/auth.routes.js";
+import authRoutes from "./modules/auth/index.js";
 import postRoutes from "./routes/post.routes.js";
 import profileRoutes from "./routes/profile.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import searchRoutes from "./modules/search/index.js";
-import accountRoutes from "./routes/account.routes.js";
+import accountRoutes from "./modules/account/index.js";
 import blogRoutes from "./routes/blogs.routes.js";
 import libraryRoutes from "./modules/library/index.js";
 import aiAgentRoutes from "./routes/aiAgent.routes.js";

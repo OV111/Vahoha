@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import crypto from "node:crypto";
-import { createAccessToken, createRefreshToken, REFRESH_TOKEN_TTL_MS } from "../utils/jwtToken.js";
+import { createAccessToken, createRefreshToken, REFRESH_TOKEN_TTL_MS } from "../../../utils/jwtToken.js";
 
 // Tracks issued refresh tokens by their jti so logout / password-reset can
 // actually revoke a session instead of just deleting the client-side copy.

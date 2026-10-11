@@ -9,7 +9,7 @@ const OAuthSuccess = () => {
 
   useEffect(() => {
     // GitHub OAuth sets the httpOnly refresh cookie server-side (see
-    // githubCallback in authController.js) and redirects here with no token
+    // githubCallback in backend/modules/auth/controllers/auth.controller.js) and redirects here with no token
     // in the URL. init() exchanges that cookie for an access token the same
     // way a normal page-load does.
     const linked = searchParams.get("linked");

@@ -12,7 +12,7 @@ vi.mock('bcrypt', () => ({
   default: { hash: mockBcryptHash, compare: mockBcryptCompare },
 }))
 
-import { signUp, login } from '../../controllers/authController.js'
+import { signUp, login } from '../../modules/auth/controllers/auth.controller.js'
 
 // --- helpers ---
 const MOCK_OID = '507f1f77bcf86cd799439011'

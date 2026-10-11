@@ -8,7 +8,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient, ObjectId } from 'mongodb'
 import bcrypt from 'bcrypt'
-import { deleteAccountService } from '../../services/accountService.js'
+import { deleteAccountService } from '../../modules/account/services/accountService.js'
 
 const PER_USER = [
   'userProgress', 'exam_attempts', 'examHistory', 'weakSpots', 'learnerMastery',

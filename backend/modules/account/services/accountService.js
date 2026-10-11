@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
-import { getPolar } from "../modules/billing/services/polarClient.js";
-import { deleteCloudinaryAssets } from "./cloudinaryCleanup.js";
+import { getPolar } from "../../billing/services/polarClient.js";
+import { deleteCloudinaryAssets } from "../../../services/cloudinaryCleanup.js";
 
 // Polar statuses that no longer bill. Anything else (active, trialing,
 // past_due, unpaid...) must be cancelled before the account disappears.

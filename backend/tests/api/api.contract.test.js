@@ -19,7 +19,7 @@ import process from 'node:process'
 import { createApp } from './testApp.js'
 import connectDB from '../../config/db.js'
 // import { createToken } from '../../utils/jwtToken.js'
-import { signUp } from '../../controllers/authController.js'
+import { signUp } from '../../modules/auth/controllers/auth.controller.js'
 
 let mongod
 let client

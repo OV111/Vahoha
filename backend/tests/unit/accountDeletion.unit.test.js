@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { cancelBillingSubscription } from '../../services/accountService.js'
+import { cancelBillingSubscription } from '../../modules/account/services/accountService.js'
 
 const dbWith = (sub) => ({ collection: () => ({ findOne: vi.fn().mockResolvedValue(sub) }) })
 const clientWith = (revoke) => () => ({ subscriptions: { revoke } })

@@ -4,7 +4,7 @@ import process from "process";
 
 // Access tokens are short-lived and held in memory by the client.
 // Refresh tokens are long-lived, httpOnly-cookie only, and revocable via the
-// refreshTokens collection (see services/refreshTokenService.js).
+// refreshTokens collection (see modules/auth/services/refreshTokenService.js).
 export const ACCESS_TOKEN_TTL = "15m";
 export const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 

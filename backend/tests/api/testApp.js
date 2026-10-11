@@ -10,7 +10,7 @@
  */
 import express from 'express'
 import { ObjectId } from 'mongodb'
-import { signUp, login } from '../../controllers/authController.js'
+import { signUp, login } from '../../modules/auth/controllers/auth.controller.js'
 import { verifyToken } from '../../utils/jwtToken.js'
 import {
   getAuthToken,
@@ -25,7 +25,7 @@ export function createApp(db) {
   // ── POST /get-started ── register ──────────────────────────────────────────
   app.post('/get-started', async (req, res) => {
     const result = await signUp(req.body)
-    // authController uses `status` for expected errors, `code` for catch-block
+    // auth.controller.js uses `status` for expected errors, `code` for catch-block
     const httpStatus = result.status ?? result.code ?? 500
     res.status(httpStatus).json(result)
   })

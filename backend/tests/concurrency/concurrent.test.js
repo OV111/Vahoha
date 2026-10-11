@@ -14,7 +14,7 @@ import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient, ObjectId } from 'mongodb'
 import process from 'node:process'
-import { signUp } from '../../controllers/authController.js'
+import { signUp } from '../../modules/auth/controllers/auth.controller.js'
 import connectDB from '../../config/db.js'
 import { getFollowersData, getFollowingData } from '../../services/followService.js'
 
