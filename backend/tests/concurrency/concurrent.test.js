@@ -98,18 +98,15 @@ describe('signUp — concurrent unique-email requests', () => {
 })
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 2. signUp — TOCTOU race: same email, concurrent requests
+// 2. signUp — same email, concurrent requests
 //
-// The current code does: findOne(email) → if not found → insertOne(...)
-// Without a unique index this is NOT atomic.  Under concurrent load both
-// requests may pass the findOne check and both insertOne calls may succeed,
-// creating duplicate users for the same email.
-//
-// FIX RECOMMENDATION: add a unique index →
-//   db.collection('users').createIndex({ email: 1 }, { unique: true })
+// signUp checks findOne(email) and then inserts, which on its own is a race:
+// several requests can pass the check together. The unique index on
+// users.email (created by connectDB) closes it: one insert wins and the rest
+// get a duplicate-key error, which signUp reports as 409.
 // ─────────────────────────────────────────────────────────────────────────────
-describe('signUp — TOCTOU race on duplicate email', () => {
-  it('WITHOUT unique index: documents that a duplicate may be inserted (known vulnerability)', async () => {
+describe('signUp — race on duplicate email', () => {
+  it('concurrent signups with the same email create exactly one user', async () => {
     const payload = {
       firstName: 'Race',
       lastName: 'Condition',
@@ -118,27 +115,15 @@ describe('signUp — TOCTOU race on duplicate email', () => {
       username: 'race',
     }
 
-    await Promise.all([signUp(payload), signUp(payload), signUp(payload)])
+    const results = await Promise.all([signUp(payload), signUp(payload), signUp(payload)])
 
     const count = await db.collection('users').countDocuments({ email: payload.email })
-
-    // Document the actual behavior — may be > 1 without unique index
-    // This test exists to surface the vulnerability, not assert it is fixed
-    expect(count).toBeGreaterThanOrEqual(1)
-
-    // If > 1 user was created, flag it clearly
-    if (count > 1) {
-      console.warn(
-        `⚠ RACE CONDITION DETECTED: ${count} users created for ${payload.email}. ` +
-        'Add a unique index on users.email to prevent this.',
-      )
-    }
+    expect(count).toBe(1)
+    expect(results.filter((r) => r.status === 201)).toHaveLength(1)
+    expect(results.filter((r) => r.status === 409)).toHaveLength(2)
   })
 
-  it('WITH unique index: only exactly 1 signUp succeeds for the same email', async () => {
-    // Add the recommended unique index for this test
-    await db.collection('users').createIndex({ email: 1 }, { unique: true })
-
+  it('five concurrent signups: one succeeds, the rest get 409', async () => {
     const payload = {
       firstName: 'Safe',
       lastName: 'User',
@@ -147,22 +132,12 @@ describe('signUp — TOCTOU race on duplicate email', () => {
       username: 'safeuser',
     }
 
-    const results = await Promise.all([
-      signUp(payload),
-      signUp(payload),
-      signUp(payload),
-      signUp(payload),
-      signUp(payload),
-    ])
+    const results = await Promise.all(Array.from({ length: 5 }, () => signUp(payload)))
 
-    const successes = results.filter((r) => r.status === 201)
     const count = await db.collection('users').countDocuments({ email: payload.email })
-
     expect(count).toBe(1)
-    expect(successes).toHaveLength(1)
-
-    // Clean up index so it doesn't affect other tests
-    await db.collection('users').dropIndex('email_1')
+    expect(results.filter((r) => r.status === 201)).toHaveLength(1)
+    expect(results.filter((r) => r.status === 409)).toHaveLength(4)
   })
 })
 
@@ -193,7 +168,9 @@ describe('signUp — username uniqueness under concurrent load', () => {
     expect(uniqueUsernames.size).toBe(N)
   })
 
-  it('all generated usernames match the expected pattern', async () => {
+  // The requested name goes to one signup; the rest get the next free number
+  // (alice, alice1, alice2 ...), never a duplicate.
+  it('generated usernames are the base name or base + number, all distinct', async () => {
     const N = 5
     const payloads = Array.from({ length: N }, (_, i) => ({
       firstName: 'Alice',
@@ -206,10 +183,11 @@ describe('signUp — username uniqueness under concurrent load', () => {
     await Promise.all(payloads.map((p) => signUp(p)))
 
     const users = await db.collection('users').find({}).toArray()
-    users.forEach((u) => {
-      // Pattern: <base>_<digits>  e.g. alice_12345678
-      expect(u.username).toMatch(/^[a-z0-9]+_\d+$/)
-    })
+    const usernames = users.map((u) => u.username)
+    expect(users).toHaveLength(N)
+    expect(new Set(usernames).size).toBe(N)
+    usernames.forEach((name) => expect(name).toMatch(/^alice\d*$/))
+    expect(usernames.filter((name) => name === 'alice')).toHaveLength(1)
   })
 })
 
@@ -293,11 +271,13 @@ describe('follow counts — $inc atomicity', () => {
 //   )
 // ─────────────────────────────────────────────────────────────────────────────
 describe('duplicate follows — concurrent follow requests', () => {
-  it('WITHOUT unique index: documents that duplicate follow docs can be inserted', async () => {
+  // connectDB creates the unique index on follows, so the race is closed:
+  // concurrent duplicates are rejected and exactly one document survives.
+  it('concurrent duplicate follows are rejected by the unique index', async () => {
     const followerId = new ObjectId()
     const followingId = new ObjectId()
 
-    await Promise.all(
+    const results = await Promise.allSettled(
       Array.from({ length: 4 }, () =>
         db.collection('follows').insertOne({
           followerId,
@@ -308,15 +288,10 @@ describe('duplicate follows — concurrent follow requests', () => {
     )
 
     const count = await db.collection('follows').countDocuments({ followerId, followingId })
-
-    if (count > 1) {
-      console.warn(
-        `⚠ DUPLICATE FOLLOW DETECTED: ${count} follow docs for the same pair. ` +
-        'Add a unique index on follows.{followerId, followingId} to prevent this.',
-      )
-    }
-    // The race exists — confirm it is surfaced
-    expect(count).toBeGreaterThanOrEqual(1)
+    expect(count).toBe(1)
+    const rejected = results.filter((r) => r.status === 'rejected')
+    expect(rejected).toHaveLength(3)
+    rejected.forEach((r) => expect(r.reason.code).toBe(11000))
   })
 
   it('WITH unique index: only 1 follow document is created for the same pair', async () => {

@@ -73,6 +73,29 @@ const findUniqueUsername = async (users, base) => {
   return `${base}${i}`;
 };
 
+const MAX_USERNAME_TRIES = 25;
+const isDuplicateKey = (err, field) => err?.code === 11000 && Boolean(err.keyPattern?.[field]);
+
+/**
+ * Insert a new user with a free username. findUniqueUsername alone is a
+ * check-then-insert race: concurrent signups can all see the same name as
+ * free. The unique index on users.username (config/db.js) is the real guard;
+ * the loser of a race gets a duplicate-key error, picks the next free name and
+ * tries again. A duplicate email is not retried: the caller reports it.
+ */
+const insertUser = async (users, doc, baseUsername) => {
+  for (let attempt = 0; attempt < MAX_USERNAME_TRIES; attempt++) {
+    const username = await findUniqueUsername(users, baseUsername);
+    try {
+      const result = await users.insertOne({ ...doc, username });
+      return { insertedId: result.insertedId, username };
+    } catch (err) {
+      if (!isDuplicateKey(err, "username")) throw err;
+    }
+  }
+  throw new Error("Could not find a free username");
+};
+
 const hashPassword = async (password) => {
   const saltRounds = 13;
   const hashedPasswd = await bcrypt.hash(password, saltRounds);
@@ -122,16 +145,21 @@ const signUp = async (data) => {
       sanitizeUsername(username) ||
       sanitizeUsername(`${firstName}${lastName}`) ||
       "dev";
-    const finalUsername = await findUniqueUsername(users, baseUsername);
-
-    const result = await users.insertOne({
-      firstName,
-      lastName,
-      username: finalUsername,
-      email,
-      password: await hashPassword(password),
-      // confirmPassword,
-    });
+    let result;
+    try {
+      result = await insertUser(
+        users,
+        { firstName, lastName, email, password: await hashPassword(password) },
+        baseUsername,
+      );
+    } catch (err) {
+      // Lost a race with a concurrent signup for the same email: same answer
+      // as the findOne check above.
+      if (isDuplicateKey(err, "email")) {
+        return { status: 409, message: "User with that Email already registered" };
+      }
+      throw err;
+    }
     // here also insert userStats (with default starting values )
     await usersStats.insertOne(buildDefaultUserStats(result.insertedId));
     await trackEvent(db, result.insertedId, "signup", { provider: "email" });
@@ -217,16 +245,11 @@ const googleAuth = async (data) => {
         sanitizeUsername(given_name) ||
         sanitizeUsername(`${given_name}${family_name}`) ||
         "dev";
-      const finalUsername = await findUniqueUsername(users, baseUsername);
-      const result = await users.insertOne({
-        firstName: given_name,
-        lastName: family_name,
-        username: finalUsername,
-        email,
-        password: null,
-        googleId,
-        provider: "google",
-      });
+      const result = await insertUser(
+        users,
+        { firstName: given_name, lastName: family_name, email, password: null, googleId, provider: "google" },
+        baseUsername,
+      );
       await usersStats.insertOne(buildDefaultUserStats(result.insertedId));
       await trackEvent(db, result.insertedId, "signup", { provider: "google" });
       user = await users.findOne({ _id: result.insertedId });
@@ -365,15 +388,17 @@ const githubCallback = async (req, res) => {
     let user = await users.findOne({ $or: matchers });
     if (!user) {
       const baseUsername = sanitizeUsername(githubLogin) || "dev";
-      const finalUsername = await findUniqueUsername(users, baseUsername);
-      const result = await users.insertOne({
-        username: finalUsername,
-        email: primaryEmail ? primaryEmail.toLowerCase() : null,
-        githubId,
-        githubLogin,
-        provider: "github",
-        password: null,
-      });
+      const result = await insertUser(
+        users,
+        {
+          email: primaryEmail ? primaryEmail.toLowerCase() : null,
+          githubId,
+          githubLogin,
+          provider: "github",
+          password: null,
+        },
+        baseUsername,
+      );
       await usersStats.insertOne(buildDefaultUserStats(result.insertedId));
       await trackEvent(db, result.insertedId, "signup", { provider: "github" });
       user = { _id: result.insertedId };

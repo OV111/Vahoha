@@ -17,7 +17,18 @@ const connectDB = async () => {
     console.log("MongoDB connected successfully!");
     db = client.db("DevsBlog"); // store reference to DB
 
-    await Promise.all([
+    // allSettled, not all: one index that can't be built (for example over
+    // existing duplicate data) is logged, but must not stop the server from
+    // starting or leave it half connected.
+    const indexResults = await Promise.allSettled([
+      // Unique accounts. findUniqueUsername / the email check in signUp are
+      // check-then-insert races on their own; these indexes are the guard.
+      // Email is unique only where it is a string: GitHub users may have none.
+      db.collection("users").createIndex({ username: 1 }, { unique: true }),
+      db.collection("users").createIndex(
+        { email: 1 },
+        { unique: true, partialFilterExpression: { email: { $type: "string" } } },
+      ),
       db.collection("follows").createIndex({ followerId: 1, followingId: 1 }, { unique: true }),
       db.collection("notifications").createIndex({ targetUserId: 1, createdAt: -1 }),
       // Chat blocks: unique pair so a repeated block can't duplicate; the
@@ -56,6 +67,9 @@ const connectDB = async () => {
         { unique: true, partialFilterExpression: { type: "active_day" } },
       ),
     ]);
+    for (const r of indexResults) {
+      if (r.status === "rejected") console.error("MongoDB index creation failed:", r.reason?.message);
+    }
 
     return db;
   } catch (err) {
