@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { pickQuestions, sanitizeIntegrity } from '../../services/examEngineService.js'
+import { pickQuestions, sanitizeIntegrity } from '../../modules/exams/services/examEngineService.js'
 
 const bank = Array.from({ length: 60 }, (_, i) => ({ id: `l1-q${i + 1}` }))
 const idsOf = (qs) => qs.map((q) => q.id)

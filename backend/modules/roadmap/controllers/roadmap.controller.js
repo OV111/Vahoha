@@ -2,8 +2,8 @@ import {
   getUserProgress,
   createUserProgress,
   updateUserProgress,
-} from "../services/userProgressService.js";
-import { trackEvent } from "../services/eventService.js";
+} from "../../../services/userProgressService.js";
+import { trackEvent } from "../../../services/eventService.js";
 
 export const getProgress = async (req, res) => {
   try {

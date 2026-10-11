@@ -3,12 +3,12 @@ import {
   getLastExam,
   withLayerTitles,
   saveExamResult,
-} from "../services/examHistoryService.js";
+} from "../../../services/examHistoryService.js";
 import {
   getWeakSpots,
   addWeakSpot,
   resolveWeakSpot,
-} from "../services/weakSpotService.js";
+} from "../../../services/weakSpotService.js";
 
 // ── Exam History ──────────────────────────────────────────────
 

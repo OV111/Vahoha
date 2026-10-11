@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { shuffle, shuffleChoices } from '../../services/examEngineService.js'
+import { shuffle, shuffleChoices } from '../../modules/exams/services/examEngineService.js'
 
 describe('shuffleChoices', () => {
   const q = {

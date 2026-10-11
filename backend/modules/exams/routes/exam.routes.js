@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { authenticate } from "../middleware/authenticate.js";
-import { aiBurstLimiter, teachBackDailyLimiter } from "../middleware/aiRateLimit.js";
+import { authenticate } from "../../../middleware/authenticate.js";
+import { aiBurstLimiter, teachBackDailyLimiter } from "../../../middleware/aiRateLimit.js";
 import {
   getHistory,
   getLastExamResult,
@@ -8,8 +8,8 @@ import {
   listWeakSpots,
   addWeakSpotRoute,
   resolveWeakSpotRoute,
-} from "../controllers/examController.js";
-import { generate, submit, submitTeachBackAnswer, submitTeachBackFollowUpAnswer } from "../controllers/examEngineController.js";
+} from "../controllers/exam.controller.js";
+import { generate, submit, submitTeachBackAnswer, submitTeachBackFollowUpAnswer } from "../controllers/examEngine.controller.js";
 
 const router = Router();
 

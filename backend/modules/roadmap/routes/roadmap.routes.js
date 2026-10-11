@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { authenticate } from "../middleware/authenticate.js";
-import { getProgress, startPath, saveProgress } from "../controllers/roadmapController.js";
+import { authenticate } from "../../../middleware/authenticate.js";
+import { getProgress, startPath, saveProgress } from "../controllers/roadmap.controller.js";
 
 const router = Router();
 

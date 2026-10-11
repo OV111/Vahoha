@@ -1,5 +1,5 @@
 import { generateAttempt, submitAttempt, submitTeachBack, submitTeachBackFollowUp } from "../services/examEngineService.js";
-import { trackEvent } from "../services/eventService.js";
+import { trackEvent } from "../../../services/eventService.js";
 
 export const generate = async (req, res) => {
   try {

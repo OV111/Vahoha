@@ -1,13 +1,13 @@
 import { ObjectId } from "mongodb";
-import { saveExamResult } from "./examHistoryService.js";
-import { addWeakSpot, resolveWeakSpot } from "./weakSpotService.js";
-import { updateUserProgress } from "./userProgressService.js";
-import { getRubric, listRubricsForLayer } from "./rubricService.js";
-import { evaluateTeachBack, generateFollowUp } from "./teachBackEvaluatorService.js";
-import { toTopicSlug } from "../utils/topicKey.js";
-import { recomputeMastery } from "./learnerMasteryService.js";
-import { trackEvent } from "./eventService.js";
-import { awardXp, examXp } from "./xpService.js";
+import { saveExamResult } from "../../../services/examHistoryService.js";
+import { addWeakSpot, resolveWeakSpot } from "../../../services/weakSpotService.js";
+import { updateUserProgress } from "../../../services/userProgressService.js";
+import { getRubric, listRubricsForLayer } from "../../../services/rubricService.js";
+import { evaluateTeachBack, generateFollowUp } from "../../../services/teachBackEvaluatorService.js";
+import { toTopicSlug } from "../../../utils/topicKey.js";
+import { recomputeMastery } from "../../../services/learnerMasteryService.js";
+import { trackEvent } from "../../../services/eventService.js";
+import { awardXp, examXp } from "../../../services/xpService.js";
 
 /**
  * Refresh the Adaptive Engine's view of this learner after new evidence lands.
