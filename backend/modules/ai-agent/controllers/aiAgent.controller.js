@@ -10,17 +10,17 @@ import {
   deleteSession,
   MAX_TURNS,
   DAILY_MESSAGE_CAP,
-} from "../services/agent/sessionService.js";
+} from "../services/sessionService.js";
 import {
   streamAgentResponse,
   composeUserMessage,
   MODEL,
-} from "../services/agent/streamService.js";
-import { generateTitle } from "../services/agent/titleService.js";
-import { toolDefinitions } from "../tools/agentTools.js";
-import { ATTACHMENT_LIMITS } from "../validation/aiAgent.schemas.js";
-import { trackEvent } from "../services/eventService.js";
-import { hasLiveDefense } from "../modules/capstone/index.js";
+} from "../services/streamService.js";
+import { generateTitle } from "../services/titleService.js";
+import { toolDefinitions } from "../services/agentTools.js";
+import { ATTACHMENT_LIMITS } from "../schemas/aiAgent.schemas.js";
+import { trackEvent } from "../../../services/eventService.js";
+import { hasLiveDefense } from "../../capstone/index.js";
 
 export const createSession = async (req, res) => {
   try {

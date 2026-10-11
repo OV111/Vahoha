@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { ObjectId } from 'mongodb'
 import { buildEvidence, buildReadinessView } from '../../modules/readiness/lib/readinessView.js'
 import { countContributions } from '../../modules/teams/services/memberStatsService.js'
-import { summarizeLearnerContext } from '../../services/agent/learnerContextService.js'
+import { summarizeLearnerContext } from '../../modules/ai-agent/services/learnerContextService.js'
 
 const noCapstone = { capstonePassed: false, defensesPassed: 0 }
 const noTeams = { teamCount: 0, mergedPrs: 0, reviewsGiven: 0, defensesPassed: 0, peerAverage: null }

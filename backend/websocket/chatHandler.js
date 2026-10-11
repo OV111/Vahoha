@@ -8,7 +8,7 @@ import {
 } from "../modules/chat/index.js";
 
 // Transport layer only: socket presence, broadcasting and notification
-// fan-out. All persistence lives in services/chatService.js.
+// fan-out. All persistence lives in modules/chat/services/chatService.js.
 
 const rooms = new Map(); // roomId -> Set<ws> (sockets currently viewing that room)
 

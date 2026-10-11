@@ -81,7 +81,7 @@ When one real user can do that on production, Vahoha exists. Until then, it's a 
 ### Standing decisions
 
 4. **Process topology:** pin to 1 instance. HTTP/WebSocket/BullMQ worker share one process; `rooms` Map is in-memory. Revisit when concurrent WebSocket connections approach one instance's limits, or notifications start lagging.
-5. **AI provider: Groq, not Anthropic** (decided 2026-09-26, supersedes an earlier Anthropic recommendation). Groq has a free tier; the Anthropic API does not — for a solo pre-revenue project, cost is the binding constraint. Model: `openai/gpt-oss-120b` (131K context) for agent conversations, `openai/gpt-oss-20b` for cheap calls (conversation titling). Groq retires models periodically — if streaming starts 404ing, check `GET https://api.groq.com/openai/v1/models` and update `MODEL` in `services/agent/streamService.js`.
+5. **AI provider: Groq, not Anthropic** (decided 2026-09-26, supersedes an earlier Anthropic recommendation). Groq has a free tier; the Anthropic API does not — for a solo pre-revenue project, cost is the binding constraint. Model: `openai/gpt-oss-120b` (131K context) for agent conversations, `openai/gpt-oss-20b` for cheap calls (conversation titling). Groq retires models periodically — if streaming starts 404ing, check `GET https://api.groq.com/openai/v1/models` and update `MODEL` in `modules/ai-agent/services/streamService.js`.
 6. **Exam integrity:** reviewed question bank per layer + AI-generated per-attempt variation, all state server-side. Generate with Haiku/equivalent, review once by hand, store server-side; sample + vary per attempt; answers never leave the server. Pass threshold default 80 (configurable).
 7. **Agent cost controls:** 30 messages/day free-tier cap, 20-turn conversation window before summarization, Haiku-class fallback for low-stakes turns if costs spike. These ship in the same PR as the first streaming route, not "later."
 8. **Input validation:** Zod, at the route boundary, for every new route starting from the roadmap/exam/agent phases. Don't backfill existing community routes. `mongoose` is installed but unused (native driver everywhere) — remove it.
@@ -95,11 +95,11 @@ When one real user can do that on production, Vahoha exists. Until then, it's a 
 
 > Re-audited 2026-09-27 against the running code.
 
-Live today: `routes/aiAgent.routes.js` mounted at `/api/ai-agent` with 7 authenticated routes — `GET /context`, `GET /sessions`, `GET /sessions/:id`, `POST /sessions`, `PATCH /sessions/:id`, `DELETE /sessions/:id`, `POST /stream`. All Zod-validated.
+Live today: `modules/ai-agent/routes/aiAgent.routes.js` mounted at `/api/ai-agent` with 7 authenticated routes — `GET /context`, `GET /sessions`, `GET /sessions/:id`, `POST /sessions`, `PATCH /sessions/:id`, `DELETE /sessions/:id`, `POST /stream`. All Zod-validated.
 
 Verified working (live against Groq): streaming, the multi-round tool-use loop, all 7 tools returning real MongoDB data, session persistence, the 30/day cap returning 429 + `resetAt`, and the Socratic refusal guardrail (asked point-blank for an exam answer, the agent refused and redirected with a question).
 
-**Tools (`backend/tools/agentTools.js`):** `get_user_progress`, `get_exam_history`, `get_weak_spots`, `log_weak_spot`, `search_posts`, `search_library`, `get_user_profile`.
+**Tools (`backend/modules/ai-agent/services/agentTools.js`):** `get_user_progress`, `get_exam_history`, `get_weak_spots`, `log_weak_spot`, `search_posts`, `search_library`, `get_user_profile`.
 
 **Shipped since first audit:** session rename/delete/pin, auto-generated conversation titles, the `/context` command + endpoint, text file attachments (client extraction, server-enforced caps, prompt-injection fencing), Markdown rendering with syntax highlighting, and Teach-Back grading (`POST /api/exams/submit-teach-back` + `…-followup`).
 

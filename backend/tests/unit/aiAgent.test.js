@@ -5,11 +5,11 @@ import {
   sessionIdParamSchema,
   updateSessionSchema,
   streamSchema,
-} from '../../validation/aiAgent.schemas.js'
-import { appendMessages, checkDailyLimit, incrementUsage, updateSession, deleteSession } from '../../services/agent/sessionService.js'
-import { executeTool, toolDefinitions } from '../../tools/agentTools.js'
-import { composeUserMessage } from '../../services/agent/streamService.js'
-import { sanitizeTitle } from '../../services/agent/titleService.js'
+} from '../../modules/ai-agent/schemas/aiAgent.schemas.js'
+import { appendMessages, checkDailyLimit, incrementUsage, updateSession, deleteSession } from '../../modules/ai-agent/services/sessionService.js'
+import { executeTool, toolDefinitions } from '../../modules/ai-agent/services/agentTools.js'
+import { composeUserMessage } from '../../modules/ai-agent/services/streamService.js'
+import { sanitizeTitle } from '../../modules/ai-agent/services/titleService.js'
 
 const VALID_OID = '507f1f77bcf86cd799439011'
 const OTHER_OID = '507f1f77bcf86cd799439022'

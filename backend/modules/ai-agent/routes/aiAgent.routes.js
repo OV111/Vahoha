@@ -1,13 +1,13 @@
 import { Router } from "express";
-import { authenticate } from "../middleware/authenticate.js";
-import { validate } from "../middleware/validate.js";
-import { aiBurstLimiter } from "../middleware/aiRateLimit.js";
+import { authenticate } from "../../../middleware/authenticate.js";
+import { validate } from "../../../middleware/validate.js";
+import { aiBurstLimiter } from "../../../middleware/aiRateLimit.js";
 import {
   createSessionSchema,
   sessionIdParamSchema,
   updateSessionSchema,
   streamSchema,
-} from "../validation/aiAgent.schemas.js";
+} from "../schemas/aiAgent.schemas.js";
 import {
   createSession,
   getSessions,
@@ -16,7 +16,7 @@ import {
   updateSessionById,
   deleteSessionById,
   stream,
-} from "../controllers/aiAgentController.js";
+} from "../controllers/aiAgent.controller.js";
 
 const router = Router();
 

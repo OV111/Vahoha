@@ -20,10 +20,10 @@ router.use("/", capstoneRoutes);
 
 export default router;
 
-// Used by the AI mentor (backend/tools/agentTools.js, aiAgentController.js).
+// Used by the AI mentor (backend/modules/ai-agent: services/agentTools.js, controllers/aiAgent.controller.js).
 export { getCapstoneMentorView, hasLiveDefense } from "./services/mentorService.js";
 
-// Used by the public profile (backend/services/userService.js).
+// Used by the public profile (backend/modules/users/services/userService.js).
 export { listPublicCertificatesForUser } from "./services/certificateService.js";
 
 // Used by the readiness module (modules/readiness).

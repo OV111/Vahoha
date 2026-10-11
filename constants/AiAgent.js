@@ -13,7 +13,7 @@ import {
 /**
  * Attachment limits.
  *
- * These mirror the server-side limits in backend/validation/aiAgent.schemas.js —
+ * These mirror the server-side limits in backend/modules/ai-agent/schemas/aiAgent.schemas.js —
  * the UI copy exists only to fail fast and show a friendly message. The server
  * is the enforcing authority; never rely on these alone.
  *

@@ -1,17 +1,17 @@
-import connectDB from "../config/db.js";
-import { getUserProgress } from "../services/userProgressService.js";
-import { getExamHistory } from "../services/examHistoryService.js";
-import { getWeakSpots, addWeakSpot } from "../services/weakSpotService.js";
+import connectDB from "../../../config/db.js";
+import { getUserProgress } from "../../../services/userProgressService.js";
+import { getExamHistory } from "../../../services/examHistoryService.js";
+import { getWeakSpots, addWeakSpot } from "../../../services/weakSpotService.js";
 import {
   getLearnerContext,
   getTopicDetail,
-} from "../services/agent/learnerContextService.js";
-import { recomputeMastery, getMastery } from "../services/learnerMasteryService.js";
-import { getConcept, getConcepts } from "../services/conceptService.js";
-import { logTeachingAttempt } from "../services/agent/teachingLogService.js";
-import { toTopicSlug } from "../utils/topicKey.js";
-import { escapeRegex } from "../utils/regex.js";
-import { getCapstoneMentorView } from "../modules/capstone/index.js";
+} from "./learnerContextService.js";
+import { recomputeMastery, getMastery } from "../../../services/learnerMasteryService.js";
+import { getConcept, getConcepts } from "../../../services/conceptService.js";
+import { logTeachingAttempt } from "./teachingLogService.js";
+import { toTopicSlug } from "../../../utils/topicKey.js";
+import { escapeRegex } from "../../../utils/regex.js";
+import { getCapstoneMentorView } from "../../capstone/index.js";
 
 export const toolDefinitions = [
   {

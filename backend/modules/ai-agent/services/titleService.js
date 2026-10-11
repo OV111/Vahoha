@@ -1,4 +1,4 @@
-import { getGroqClient } from "../../config/groq.js";
+import { getGroqClient } from "../../../config/groq.js";
 
 /**
  * Conversation titling.

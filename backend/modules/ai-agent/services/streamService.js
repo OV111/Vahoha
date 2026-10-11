@@ -1,10 +1,10 @@
-import { getGroqClient } from "../../config/groq.js";
-import { toolDefinitions, executeTool } from "../../tools/agentTools.js";
+import { getGroqClient } from "../../../config/groq.js";
+import { toolDefinitions, executeTool } from "./agentTools.js";
 import {
   getLearnerContext,
   summarizeLearnerContext,
 } from "./learnerContextService.js";
-import { toTopicSlug } from "../../utils/topicKey.js";
+import { toTopicSlug } from "../../../utils/topicKey.js";
 
 // Groq retires models periodically — `llama-3.3-70b-versatile` was removed and
 // started returning 404 model_not_found. Check console.groq.com/docs/models (or

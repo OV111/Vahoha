@@ -21,7 +21,7 @@
  */
 
 import { ObjectId } from "mongodb";
-import { toTopicSlug } from "../../utils/topicKey.js";
+import { toTopicSlug } from "../../../utils/topicKey.js";
 
 const COLLECTION = "mentor_teaching_log";
 

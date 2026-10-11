@@ -4,7 +4,7 @@
  * This service owns two things the AI mentor deliberately does not:
  *
  *   1. The POLICY that turns raw evidence into a mastery status. It lives here,
- *      in a platform service, rather than under services/agent/, because "is
+ *      in a platform service, rather than under modules/ai-agent/services/, because "is
  *      this learner solid on JWT signatures" is a fact about the learner that
  *      the roadmap UI, the exam gate and the mentor must all agree on. If the
  *      mentor owned it, the mentor's opinion would be the truth.

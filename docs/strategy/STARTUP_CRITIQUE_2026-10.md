@@ -4,7 +4,7 @@
 
 Verdict: the engineering is strong, there is no evidence anyone wants this, and the main credential claim is false today.
 
-This review was written from the critic's side: it looks for why the startup fails, not for what to praise. Sources read: `README.md`, `docs/strategy/VISION.md`, `docs/strategy/BUSINESS_MODEL.md`, `docs/strategy/GROWTH_PLAYBOOK.md`, `docs/strategy/STARTUP_REVIEW_2026-10.md`, `git log` since June 2026, and `backend/services/examEngineService.js`. The app was not run, and no user or usage data exists to check.
+This review was written from the critic's side: it looks for why the startup fails, not for what to praise. Sources read: `README.md`, `docs/strategy/VISION.md`, `docs/strategy/BUSINESS_MODEL.md`, `docs/strategy/GROWTH_PLAYBOOK.md`, `docs/strategy/STARTUP_REVIEW_2026-10.md`, `git log` since June 2026, and `backend/modules/exams/services/examEngineService.js`. The app was not run, and no user or usage data exists to check.
 
 ## 1. Top 5 fatal risks, ranked
 

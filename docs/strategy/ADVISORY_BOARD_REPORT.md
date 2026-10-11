@@ -248,12 +248,12 @@ The June "8-day MVP loop" is done. The remaining path is short:
 | File | Note |
 |---|---|
 | `backend/app.js` | Mounts `/api/ai-agent`, `/api/roadmaps`, `/api/exams`, `/api/challenges` |
-| `backend/services/examEngineService.js` | `PASS_THRESHOLD = 80`, `COOLDOWN_ENABLED = true`, 3 attempts/day, 15 questions, 600 s |
-| `backend/services/agent/sessionService.js` | `MAX_TURNS = 20`, `DAILY_MESSAGE_CAP = 30` |
-| `backend/services/agent/streamService.js` | Holds `MODEL` (Groq) |
+| `backend/modules/exams/services/examEngineService.js` | `PASS_THRESHOLD = 80`, `COOLDOWN_ENABLED = true`, 3 attempts/day, 15 questions, 600 s |
+| `backend/modules/ai-agent/services/sessionService.js` | `MAX_TURNS = 20`, `DAILY_MESSAGE_CAP = 30` |
+| `backend/modules/ai-agent/services/streamService.js` | Holds `MODEL` (Groq) |
 | `backend/seeders/examSeeder.js` | Generates banks with Groq `openai/gpt-oss-120b` |
-| `backend/controllers/authController.js` | `secure: true`; still calls `connectDB()` directly |
-| `backend/routes/auth.routes.js` | Redis counters + `express-rate-limit` fallback on login/signup/reset |
+| `backend/modules/auth/controllers/auth.controller.js` | `secure: true`; still calls `connectDB()` directly |
+| `backend/modules/auth/routes/auth.routes.js` | Redis counters + `express-rate-limit` fallback on login/signup/reset |
 | `docs/engineering/ROADMAP_BUILD_PLAN.md` | Source of truth for build status |
 | `docs/strategy/VISION.md` | Business/product framing, last updated 2026-09-30 |
 

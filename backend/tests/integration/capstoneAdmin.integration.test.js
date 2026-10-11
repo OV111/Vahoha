@@ -15,7 +15,7 @@ let base
 const { ensureIndexes } = await import('../../modules/capstone/services/capstoneData.js')
 const admin = await import('../../modules/capstone/services/adminService.js')
 const { getCapstoneMentorView, hasLiveDefense } = await import('../../modules/capstone/index.js')
-const { executeTool } = await import('../../tools/agentTools.js')
+const { executeTool } = await import('../../modules/ai-agent/services/agentTools.js')
 const { createAccessToken } = await import('../../utils/jwtToken.js')
 
 const learnerId = new ObjectId()

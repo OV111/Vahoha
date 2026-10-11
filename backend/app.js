@@ -13,7 +13,7 @@ import userRoutes from "./modules/users/index.js";
 import searchRoutes from "./modules/search/index.js";
 import accountRoutes from "./modules/account/index.js";
 import libraryRoutes from "./modules/library/index.js";
-import aiAgentRoutes from "./routes/aiAgent.routes.js";
+import aiAgentRoutes from "./modules/ai-agent/index.js";
 import roadmapRoutes from "./modules/roadmap/index.js";
 import examRoutes from "./modules/exams/index.js";
 import analyticsRoutes from "./modules/analytics/index.js";

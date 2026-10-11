@@ -16,7 +16,7 @@
 | 5 | OAuth auto-link by email | High | **Open** | GitHub sign-in still matches `{ $or: [{ githubId }, { email }] }` and Google matches by `email`, so someone controlling a matching email on the provider side gets the existing account. The CSRF `state` problem is fixed (single-use nonce), but the nonce store is in memory, so it fails across restarts or multiple instances |
 | 6 | NoSQL operator injection on auth routes | High | **Open** | No type validation on auth bodies and no Zod schema on those routes. Login happens to throw on a non-string `email` before querying (500, not 400); signup and forgot-password were not re-tested |
 | 7 | `PUT /my-profile/` trusts a body `id` | High | **Partly fixed** | `updateLastActive` now derives the id from the verified token. The `/my-profile` router still doesn't mount the `authenticate` middleware; each controller parses the token itself |
-| 8 | Session cookie `secure: false` | Medium | **Fixed** | The plaintext user-id session cookie is gone; the refresh cookie is `httpOnly`, `secure: true` (`authController.js`) |
+| 8 | Session cookie `secure: false` | Medium | **Fixed** | The plaintext user-id session cookie is gone; the refresh cookie is `httpOnly`, `secure: true` (`modules/auth/controllers/auth.controller.js`) |
 | 9 | Username enumeration on login | Medium | **Open** | Login still returns `404 "User is not Found!"` vs `401 "Password is incorrect"` |
 | 10 | Internal `err.message` leaked | Medium | **Open** | Several handlers still return `error: err.message` (e.g. `signUp`, login route). No global error handler |
 | 11 | No rate limiting outside login/signup; Redis failure → 500 | Medium | **Partly fixed** | Added: login/signup/reset limiters, billing limits (10/min), LLM routes (mentor stream, teach-back: 10/min per user, 40/day teach-back), daily cap on Arena submissions. Redis calls on login are null-guarded. Still unlimited: search, comments, blog creation, WebSocket. Counters are in memory |
@@ -103,7 +103,7 @@ Derive `roomId` server-side from the sorted pair of user IDs and reject any room
 
 ### 🟠 HIGH — JWT delivers no revocation and `/verify-token` is trust-only
 
-📍 **Location:** `backend/utils/jwtToken.js`, `backend/routes/auth.routes.js` — `GET /verify-token`
+📍 **Location:** `backend/utils/jwtToken.js`, `backend/modules/auth/routes/auth.routes.js` — `GET /verify-token`
 
 💥 **Attack scenario:** `/verify-token` only validates the signature and returns `{valid:true/false}` — it doesn't confirm the user still exists or isn't deleted/banned. Combined with 7-day tokens, no refresh, and no revocation/blacklist, a stolen token is valid for a week with no way to kill it. There's also no token versioning, so rotating the secret is your only revocation tool.
 
@@ -113,7 +113,7 @@ Derive `roomId` server-side from the sorted pair of user IDs and reject any room
 
 ### 🟠 HIGH — JWT delivered via URL query string on OAuth success
 
-📍 **Location:** `backend/controllers/authController.js:304` (GitHub callback), `src/components/feedback/OAuthSuccess.jsx`
+📍 **Location:** `backend/modules/auth/controllers/auth.controller.js:304` (GitHub callback), `src/components/feedback/OAuthSuccess.jsx`
 
 💥 **Attack scenario:** GitHub callback redirects to `/oauth-success?token=<JWT>`. Tokens in URLs leak through browser history, the `Referer` header to any third-party resource on that page, server access logs, and proxy logs. Anyone who reads one of those gets a 7-day valid session.
 
@@ -123,9 +123,9 @@ Derive `roomId` server-side from the sorted pair of user IDs and reject any room
 
 ### 🟠 HIGH — OAuth account auto-linking by email → account takeover
 
-📍 **Location:** `backend/controllers/authController.js:286` — `githubCallback` sign-in mode
+📍 **Location:** `backend/modules/auth/controllers/auth.controller.js:286` — `githubCallback` sign-in mode
 
-💥 **Attack scenario:** Sign-in matches `{$or:[{githubId},{email: primaryEmail}]}`. If a victim registered with email/password, an attacker who creates a GitHub account using the victim's email address is handed the victim's existing account — no password needed. The `state`-based link flow (`authController.js:196`) is also a base64 JWT with no CSRF/nonce protection, making it vulnerable to OAuth login-CSRF.
+💥 **Attack scenario:** Sign-in matches `{$or:[{githubId},{email: primaryEmail}]}`. If a victim registered with email/password, an attacker who creates a GitHub account using the victim's email address is handed the victim's existing account — no password needed. The `state`-based link flow (`modules/auth/controllers/auth.controller.js:196`) is also a base64 JWT with no CSRF/nonce protection, making it vulnerable to OAuth login-CSRF.
 
 🛡️ **Fix:** Never auto-link accounts by email alone — require the logged-in user to explicitly link, or force email re-verification before merging. Use a signed, single-use `state` nonce for CSRF protection on the OAuth flow rather than embedding the JWT.
 
@@ -133,7 +133,7 @@ Derive `roomId` server-side from the sorted pair of user IDs and reject any room
 
 ### 🟠 HIGH — NoSQL operator injection in login / forgot-password
 
-📍 **Location:** `backend/controllers/authController.js` — `login`, `forgotPassword`, `signUp`
+📍 **Location:** `backend/modules/auth/controllers/auth.controller.js` — `login`, `forgotPassword`, `signUp`
 
 💥 **Attack scenario:** `email` and `password` come straight from `req.body` into `users.findOne({ email })` without type validation. Sending `{"email": {"$gt": ""}}` makes Mongo match the first user in the collection. For `forgotPassword` this lets an attacker trigger a password reset against an arbitrary matched user. The pattern exists anywhere `req.body` fields flow directly into MongoDB queries.
 
@@ -147,7 +147,7 @@ if (typeof email !== "string" || typeof password !== "string")
 
 ### 🟠 HIGH — Broken/missing auth on `PUT /my-profile/` (updateLastActive) + inconsistent auth pattern
 
-📍 **Location:** `backend/controllers/profileController.js:32`, `backend/routes/profile.routes.js`
+📍 **Location:** `backend/modules/profile/controllers/profile.controller.js:32`, `backend/modules/profile/routes/profile.routes.js`
 
 💥 **Attack scenario:** `PUT /my-profile/` has no auth middleware and takes `id` directly from the request body. Any anonymous caller can write `lastActive` for any user ID. More broadly, none of the `/my-profile` routes mount the `authenticate` middleware — each controller re-implements token parsing inconsistently (`replace("Bearer ")` vs `split(" ")[1]`), creating gaps and inconsistencies.
 
@@ -156,7 +156,7 @@ if (typeof email !== "string" || typeof password !== "string")
 // profile.routes.js
 router.use(authenticate); // apply once for all routes
 
-// profileController.js — updateLastActive
+// modules/profile/controllers/profile.controller.js — updateLastActive
 export const updateLastActive = async (req, res) => {
   const { lastActive } = req.body; // id comes from req.user._id
   const result = await updateLastActiveService(req.app.locals.db, req.user._id, lastActive);
@@ -168,7 +168,7 @@ export const updateLastActive = async (req, res) => {
 
 ### 🟡 MEDIUM — Insecure session cookie flags
 
-📍 **Location:** `backend/routes/auth.routes.js:208` — login route
+📍 **Location:** `backend/modules/auth/routes/auth.routes.js:208` — login route
 
 💥 **Attack scenario:** The session cookie is set with `secure: false` and stores the raw user ID as plaintext. Over plain HTTP the cookie travels in cleartext. Even though JWT is the primary auth mechanism, shipping `secure: false` in production enables interception and exposes internal user IDs unnecessarily.
 
@@ -187,7 +187,7 @@ res.cookie("session", String(result.userId), {
 
 ### 🟡 MEDIUM — Username enumeration via differentiated login error messages
 
-📍 **Location:** `backend/controllers/authController.js:110-122` — `login`
+📍 **Location:** `backend/modules/auth/controllers/auth.controller.js:110-122` — `login`
 
 💥 **Attack scenario:** Login returns `404 "User is not Found!"` when the email doesn't exist, but `401 "Password is incorrect"` when it does. An attacker can enumerate which email addresses have registered accounts. (`forgotPassword` correctly uses a uniform message — match that behavior here.)
 
@@ -216,7 +216,7 @@ Remove all `error: err.message` from production response bodies.
 
 ### 🟡 MEDIUM — No rate limiting outside login/signup; Redis failure causes 500
 
-📍 **Location:** `backend/routes/auth.routes.js`, `backend/routes/blogs.routes.js`, WebSocket
+📍 **Location:** `backend/modules/auth/routes/auth.routes.js`, `backend/modules/blogs/routes/blogs.routes.js`, WebSocket
 
 💥 **Attack scenario:** `forgot-password`, `reset-password`, comment posting, blog creation, search, and the WebSocket have no rate limits — enabling password-reset email bombing, comment/blog spam, and brute-force of reset tokens. Additionally, the login/signup handlers call `redisConnection.get(...)` directly without the null guard used by `redisIncr`; if Redis is unavailable these routes throw and return 500, a self-inflicted DoS. `express-rate-limit` is installed but not applied globally.
 

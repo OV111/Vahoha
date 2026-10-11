@@ -14,17 +14,17 @@
  */
 
 import { ObjectId } from "mongodb";
-import { getUserProgress } from "../userProgressService.js";
-import { getChallengeResults } from "../challengeResultService.js";
+import { getUserProgress } from "../../../services/userProgressService.js";
+import { getChallengeResults } from "../../../services/challengeResultService.js";
 import {
   getMastery,
   buildTopicStates,
   loadTopicEvidence,
   deriveNextAction,
-} from "../learnerMasteryService.js";
-import { toTopicSlug } from "../../utils/topicKey.js";
+} from "../../../services/learnerMasteryService.js";
+import { toTopicSlug } from "../../../utils/topicKey.js";
 import { getTeachingHistory, summarizeTeachingHistory } from "./teachingLogService.js";
-import { getMemberStats } from "../../modules/teams/index.js";
+import { getMemberStats } from "../../teams/index.js";
 
 /**
  * Layer-level exam summary, including direction of travel.

@@ -21,7 +21,7 @@
 | XP is stored as `userProgress.xpTotal` | `backend/services/userProgressService.js` |
 | **Earned only** by solving Arena coding challenges | `modules/coding-challenges/services/submissionService.js` (`$inc: { xpTotal: xpEarned }`) |
 | **Spent only** on Arena hints, with a guarded update so the balance can't go negative | `modules/coding-challenges/services/attemptService.js` (`xpTotal: { $gte: cost }`) |
-| The mentor can see it | `services/agent/learnerContextService.js` |
+| The mentor can see it | `modules/ai-agent/services/learnerContextService.js` |
 | `incrementXP()` exists but is never called, and it has no guard against going negative | `userProgressService.js` |
 
 So the roadmap, the exams and teach-back, which make up the core loop, give **no XP**. Today XP only means something to Arena users.

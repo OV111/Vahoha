@@ -10,7 +10,7 @@
 | # | Feature | Status |
 |---|---------|--------|
 | 1 | Like / Reaction System | **Built, differently from this design.** Likes are stored as a `likes` array on each blog and toggled by `POST /blogs/:id/like` (`blogService.js`); there is no `reactions` collection and only the single "like" type |
-| 2 | Notification System (BullMQ + WebSocket) | **Built.** `queues/notificationQueue.js`, `workers/notificationWorker.js`, `services/notificationService.js`, `GET` notifications under `/my-profile/notifications`, live delivery over WebSocket |
+| 2 | Notification System (BullMQ + WebSocket) | **Built.** `queues/notificationQueue.js`, `workers/notificationWorker.js`, `modules/notifications/services/notificationService.js`, `GET` notifications under `/my-profile/notifications`, live delivery over WebSocket |
 
 Other integrations that now exist but were never in this backlog: Groq (mentor and exam seeding), Polar (billing, `docs/engineering/BILLING.md`), Resend (email), Cloudinary (images), Google and GitHub OAuth. Deployment is described in `docs/DEPLOYMENT.md`.
 

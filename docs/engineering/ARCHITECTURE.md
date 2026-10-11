@@ -25,7 +25,7 @@ Single-instance Express 5 + MongoDB (native driver) + Redis/BullMQ, with WebSock
 | Choice | Reasoning |
 |---|---|
 | MongoDB native driver | Document-shaped data (layers, attempts, weak spots); keeps queries close to the data model. `mongoose` is not used anywhere |
-| Groq `openai/gpt-oss-120b` for the mentor | Chosen 2026-09-26 because Groq has a free tier and a solo pre-revenue project is cost-bound. `MODEL` lives in one place (`services/agent/streamService.js`); Groq retires models, so 404s mean check `/models` first |
+| Groq `openai/gpt-oss-120b` for the mentor | Chosen 2026-09-26 because Groq has a free tier and a solo pre-revenue project is cost-bound. `MODEL` lives in one place (`modules/ai-agent/services/streamService.js`); Groq retires models, so 404s mean check `/models` first |
 | BullMQ | Notification jobs retry and survive restarts; in-process queues would lose them on a crash |
 | Zustand | Stores are small (auth, roadmap, agent session, notifications); no Redux boilerplate |
 | Polar (Merchant of Record) | Handles VAT and sales tax, and pays out to Armenia, which direct Stripe does not support (`docs/engineering/BILLING.md`) |
@@ -48,20 +48,26 @@ Single-instance Express 5 + MongoDB (native driver) + Redis/BullMQ, with WebSock
 
 ### Backend (`backend/`)
 
+Since 2026-10-11 every feature is a module under `backend/modules/<name>/` with the same shape: `routes/`, `controllers/` (`<name>.controller.js`), `services/`, and where needed `schemas/` (Zod) and `lib/` (pure logic). Each module's `index.js` is its only public entry point: `app.js` mounts the router from it, and other modules import only what it exports.
+
+Modules: account, ai-agent, analytics, auth, billing, blogs, capstone, chat, coding-challenges, contact, exams, library, mastery, notifications, profile, readiness, recruiter, roadmap, search, teams, users, voice-review.
+
+Outside `modules/`: `services/` keeps the shared learning core that several modules read (userProgress, learnerMastery, examHistory, weakSpot, challengeResult, concept, rubric, teach-back evaluator, xp, event, cloudinaryCleanup); `middleware/`, `config/`, `utils/`, `websocket/`, `queues/` and `workers/` are infrastructure.
+
 | Area | Where | Notes |
 |---|---|---|
 | App wiring | `app.js`, `server.js` | `app.js` builds the Express app (helmet, CORS, routes); `server.js` adds HTTP + WebSocket + workers |
-| Auth | `routes/auth.routes.js`, `controllers/authController.js`, `services/refreshTokenService.js` | 15-minute access tokens, 7-day rotating refresh tokens in an httpOnly cookie; Google and GitHub OAuth; Redis login throttling with `express-rate-limit` fallback |
+| Auth | `modules/auth/routes/auth.routes.js`, `modules/auth/controllers/auth.controller.js`, `modules/auth/services/refreshTokenService.js` | 15-minute access tokens, 7-day rotating refresh tokens in an httpOnly cookie; Google and GitHub OAuth; Redis login throttling with `express-rate-limit` fallback |
 | Community | `blogs`, `posts`, `profile`, `user`, `search`, `account` routes | Blogs can be tagged with roadmap layers (`layerIds`) |
 | Roadmap | `/api/roadmaps` | Tracks and layers seeded into MongoDB; user progress is server-side |
-| Exams | `/api/exams`, `services/examEngineService.js` | Generate, submit, teach-back, history, weak spots; integrity flags recorded per attempt |
-| Mentor | `/api/ai-agent`, `services/agent/*`, `tools/agentTools.js` | Sessions, SSE streaming, tool loop, 20-turn window, 30 messages/day |
+| Exams | `/api/exams`, `modules/exams/services/examEngineService.js` | Generate, submit, teach-back, history, weak spots; integrity flags recorded per attempt |
+| Mentor | `/api/ai-agent`, `modules/ai-agent/services/*`, `modules/ai-agent/services/agentTools.js` | Sessions, SSE streaming, tool loop, 20-turn window, 30 messages/day |
 | Mastery | `modules/mastery` | Per-topic status and next action |
 | Challenges (Arena) | `modules/coding-challenges` | Catalog, grading in an `isolated-vm` sandbox, proposals with admin review, XP-priced hints, daily submission cap |
 | Capstone | `modules/capstone` | Repo review, timed technical defense, certificates, admin overrides |
 | Build Teams | `modules/teams`, `/api/teams` | Built 2026-10-04, not yet run on real data. Admin-created team on one GitHub repo; merged PRs synced per member; per-member defense on their own PR diffs (reuses capstone helpers, capstone code untouched); peer ratings; public evidence snapshot at `GET /api/teams/evidence/:publicId` |
 | Billing | `modules/billing` | Polar checkout, signed webhook, subscription state. **Inert** until `BILLING_ENFORCED=true` |
-| Analytics | `services/eventService.js`, `routes/analytics.routes.js` | 7 server-side events and an admin-only funnel at `GET /api/admin/funnel` |
+| Analytics | `services/eventService.js`, `modules/analytics/routes/analytics.routes.js` | 14 server-side event types and an admin-only funnel at `GET /api/admin/funnel` (signup to team defense) |
 | Real time | `websocket/`, `workers/notificationWorker.js`, `queues/` | DMs and group chat; notifications via BullMQ |
 | Rate limits | `middleware/aiRateLimit.js` plus per-module limiters | Per-user limits on LLM routes; in-memory store (single instance only) |
 
@@ -88,7 +94,7 @@ Single-instance Express 5 + MongoDB (native driver) + Redis/BullMQ, with WebSock
 |---|---|---|
 | `useRoadmapStore` mixes state and persistence | **Partly open.** Progress is now saved through the API, but the store still calls a persistence helper itself | `stores/useRoadmapStore.js` (`persistProgress`) |
 | Onboarding answers go nowhere | **Fixed** | `startPath` stores `skillLevel` |
-| JWT in localStorage | **Fixed** | Access token in memory; httpOnly refresh cookie (`constants/api.js`, `authController.js`) |
+| JWT in localStorage | **Fixed** | Access token in memory; httpOnly refresh cookie (`constants/api.js`, `modules/auth/controllers/auth.controller.js`) |
 | `/api` prefix mismatch | **Decided and applied** to all new routes; legacy routes stay bare (`/blogs`, `/library`, auth) | `app.js` |
 | WebSocket rooms Map never shrinks | **Fixed** | `removeFromRooms` on close (`websocket/index.js`) |
 | Layer gating relied on localStorage | **Fixed**, server-authoritative | `userProgress`, `examEngineService.js` |
