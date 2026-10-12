@@ -56,3 +56,13 @@ export const statusSchema = z.object({ status: z.enum(TEAM_STATUSES) });
 
 // GET /api/teams/admin/users?q= (admin)
 export const userSearchSchema = z.object({ q: z.string().trim().min(2).max(60) });
+
+// GET /api/teams/leaderboard?track=api-dev (optional track filter)
+export const leaderboardQuerySchema = z.object({
+  track: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "Invalid track id")
+    .max(40)
+    .optional(),
+});

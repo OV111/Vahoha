@@ -8,6 +8,7 @@ import {
   addMemberSchema,
   defenseAnswerSchema,
   evidenceRevokeSchema,
+  leaderboardQuerySchema,
   createTeamSchema,
   memberParamSchema,
   publicIdParamSchema,
@@ -30,6 +31,8 @@ import {
   listTeams,
   searchUsers,
   getEvidenceStatus,
+  getAdminOverview,
+  getLeaderboard,
   issueEvidence,
   listContributions,
   listMyRatings,
@@ -60,6 +63,10 @@ router.use(authenticate);
 // Admin reads. Both sit above "/:teamId" so "admin" is not read as an id.
 router.get("/", requireAdmin, listTeams);
 router.get("/admin/users", requireAdmin, validate({ query: userSearchSchema }), searchUsers);
+router.get("/admin/overview", requireAdmin, getAdminOverview);
+
+// Any signed-in user. Fixed path, so it also sits above "/:teamId".
+router.get("/leaderboard", validate({ query: leaderboardQuerySchema }), getLeaderboard);
 
 router.get("/mine", getMyTeam); // before "/:teamId" so "mine" is not read as an id
 router.get("/:teamId", validate({ params: teamParamSchema }), getTeam);

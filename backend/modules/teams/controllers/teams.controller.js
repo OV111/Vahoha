@@ -24,6 +24,7 @@ import {
   setStatusService,
 } from "../services/teamsService.js";
 import { listContributionsService, syncContributionsService } from "../services/contributionService.js";
+import { getAdminOverviewService, getLeaderboardService } from "../services/teamStatsService.js";
 
 const handle = (fn) => async (req, res) => {
   try {
@@ -71,3 +72,5 @@ export const setStatus = handle((req) => setStatusService(db(req), req.params.te
 
 export const listTeams = handle((req) => listTeamsService(db(req)));
 export const searchUsers = handle((req) => searchUsersService(db(req), req.query));
+export const getAdminOverview = handle((req) => getAdminOverviewService(db(req)));
+export const getLeaderboard = handle((req) => getLeaderboardService(db(req), req.user._id, { trackId: req.query.track }));

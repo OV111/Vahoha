@@ -40,6 +40,8 @@ export const teamsApi = {
   mine: () => request("/mine"),
   get: (teamId) => request(team(teamId)),
   contributions: (teamId) => request(`${team(teamId)}/contributions`),
+  leaderboard: (track) =>
+    request(track ? `/leaderboard?track=${encodeURIComponent(track)}` : "/leaderboard"),
 
   defense: (teamId) => request(`${team(teamId)}/defense`),
   startDefense: (teamId) =>
@@ -58,6 +60,7 @@ export const teamsApi = {
 
   // Admin only: the server answers 404/403 to everyone else.
   list: () => request("/"),
+  adminOverview: () => request("/admin/overview"),
   searchUsers: (q) => request(`/admin/users?q=${encodeURIComponent(q)}`),
   create: (body) => request("/", { method: "POST", body }),
   setRepo: (teamId, repoUrl) =>

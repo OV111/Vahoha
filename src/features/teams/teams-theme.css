@@ -7,7 +7,7 @@
 
 .teams-theme {
   /* Surfaces: void -> carbon -> obsidian -> slate */
-  --t-void: #08090a;
+  --t-void: #000000; /* matches MainLayout bg-black so there is no seam */
   --t-carbon: #0f1011;
   --t-obsidian: #161718;
   --t-slate: #23252a;
@@ -220,3 +220,219 @@
   outline: 2px solid var(--t-accent-text);
   outline-offset: 2px;
 }
+
+/* ---- Admin page pieces ---- */
+
+/* Status dot: neutral by default, green/red only when the status means it */
+.teams-theme .t-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--t-ash);
+  flex-shrink: 0;
+}
+.teams-theme .t-dot-active { background: var(--t-green); }
+.teams-theme .t-dot-defending { background: var(--t-accent-text); }
+.teams-theme .t-dot-completed { background: var(--t-mist); }
+.teams-theme .t-dot-disbanded { background: var(--t-red); }
+
+/* Segmented control: one row of options, the selected one gets a raised surface */
+.teams-theme .t-seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 8px;
+  background: var(--t-carbon);
+  box-shadow: inset 0 0 0 1px var(--t-border);
+}
+.teams-theme .t-seg button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  color: var(--t-fog);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 120ms, color 120ms;
+}
+.teams-theme .t-seg button:hover:not(:disabled) { color: var(--t-paper); }
+.teams-theme .t-seg button[aria-pressed="true"] {
+  background: var(--t-slate);
+  color: var(--t-paper);
+}
+.teams-theme .t-seg button:disabled { cursor: not-allowed; opacity: 0.6; }
+
+/* Setup rail: the four steps a team needs before it can be shown publicly */
+.teams-theme .t-rail {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-radius: 12px;
+  background: var(--t-carbon);
+  box-shadow: inset 0 0 0 1px var(--t-border);
+  overflow: hidden;
+}
+.teams-theme .t-step {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  text-align: left;
+  border-left: 1px solid var(--t-border);
+  cursor: pointer;
+  transition: background 120ms;
+}
+.teams-theme .t-step:first-child { border-left: 0; }
+.teams-theme .t-step:hover { background: rgba(255, 255, 255, 0.02); }
+.teams-theme .t-step-bar {
+  height: 2px;
+  border-radius: 2px;
+  background: var(--t-slate);
+}
+.teams-theme .t-step[data-done="true"] .t-step-bar { background: var(--t-accent); }
+.teams-theme .t-step[data-current="true"] .t-step-bar {
+  background: linear-gradient(90deg, var(--t-accent-text) 40%, var(--t-slate) 40%);
+}
+@media (max-width: 640px) {
+  .teams-theme .t-rail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .teams-theme .t-step:nth-child(3) { border-left: 0; }
+  .teams-theme .t-step:nth-child(n + 3) { border-top: 1px solid var(--t-border); }
+}
+
+/* Member slots: six segments, filled ones are taken */
+.teams-theme .t-slots { display: flex; gap: 3px; }
+.teams-theme .t-slots span {
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--t-slate);
+}
+.teams-theme .t-slots span[data-on="true"] { background: var(--t-mist); }
+
+.teams-theme .t-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  background: var(--t-slate);
+  color: var(--t-mist);
+  font-size: 12px;
+  font-weight: 510;
+  flex-shrink: 0;
+}
+
+/* Toast: result of the last action, bottom of the viewport */
+.teams-theme .t-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100vw - 32px);
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--t-obsidian);
+  box-shadow: inset 0 0 0 1px var(--t-border-strong), 0 8px 24px rgba(0, 0, 0, 0.5);
+  color: var(--t-mist);
+  font-size: 14px;
+  transform: translateX(-50%);
+  animation: t-toast-in 160ms ease-out;
+}
+@keyframes t-toast-in {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .teams-theme .t-toast { animation: none; }
+}
+
+/* ---- Leaderboard ---- */
+
+/* Score bar: neutral fill; only the viewer's own team uses the accent */
+.teams-theme .t-bar {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--t-slate);
+  overflow: hidden;
+}
+.teams-theme .t-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--t-mist);
+}
+.teams-theme .t-bar > span[data-mine="true"] { background: var(--t-accent-text); }
+.teams-theme .t-bar-thin { height: 4px; }
+.teams-theme .t-bar-thin > span { background: var(--t-fog); }
+
+.teams-theme .t-lb {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  background: var(--t-carbon);
+  box-shadow: inset 0 0 0 1px var(--t-border);
+  overflow: hidden;
+}
+.teams-theme .t-lb-row + .t-lb-row { border-top: 1px solid var(--t-border); }
+.teams-theme .t-lb-row > button { transition: background 120ms; }
+.teams-theme .t-lb-row > button:hover { background: rgba(255, 255, 255, 0.02); }
+.teams-theme .t-lb-mine {
+  background: rgba(216, 180, 254, 0.04);
+  box-shadow: inset 2px 0 0 var(--t-accent-text);
+}
+.teams-theme .t-details > summary { list-style: none; }
+.teams-theme .t-details > summary::-webkit-details-marker { display: none; }
+.teams-theme .t-details[open] {
+  flex-basis: 100%;
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--t-carbon);
+  box-shadow: inset 0 0 0 1px var(--t-border);
+}
+
+/* ---- Admin table ---- */
+
+.teams-theme .t-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: var(--t-mist);
+}
+.teams-theme .t-table th {
+  padding: 0;
+  background: var(--t-carbon);
+  border-bottom: 1px solid var(--t-border);
+  font-weight: 400;
+}
+.teams-theme .t-table th > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 40px;
+  padding: 0 16px;
+  color: var(--t-ash);
+  font-size: 12px;
+  cursor: pointer;
+}
+.teams-theme .t-table th.text-right > button { flex-direction: row-reverse; }
+.teams-theme .t-table th > button:hover,
+.teams-theme .t-table th > button[data-active="true"] { color: var(--t-paper); }
+.teams-theme .t-table td {
+  padding: 10px 16px;
+  border-top: 1px solid var(--t-border);
+  vertical-align: middle;
+}
+.teams-theme .t-table tbody tr:first-child td { border-top: 0; }
+.teams-theme .t-table tbody tr { transition: background 120ms; }
+.teams-theme .t-table tbody tr:hover { background: rgba(255, 255, 255, 0.02); }
+.teams-theme .t-table tbody tr[aria-selected="true"] { background: rgba(255, 255, 255, 0.05); }
+.teams-theme .t-row-link { display: block; max-width: 260px; text-align: left; cursor: pointer; }
+/* Whole row is clickable via the name button's stretched hit area */
+.teams-theme .t-table tbody tr { position: relative; }
+.teams-theme .t-row-link::after { content: ""; position: absolute; inset: 0; }

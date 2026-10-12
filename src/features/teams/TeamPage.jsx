@@ -4,6 +4,7 @@ import { ExternalLink, Github } from "lucide-react";
 import { teamsApi } from "./teamsApi";
 import TeamDefense from "./components/TeamDefense";
 import PeerRatings from "./components/PeerRatings";
+import Leaderboard from "./components/Leaderboard";
 import "./teams-theme.css";
 
 /**
@@ -77,7 +78,14 @@ export default function TeamPage() {
 
   if (error) return shell(<p className="text-sm text-[var(--t-red)]">{error}</p>);
   if (team === undefined) return shell(<p className="t-muted">Loading…</p>);
-  if (team === null) return shell(<NoTeam />);
+  if (team === null) {
+    return shell(
+      <>
+        <NoTeam />
+        <Leaderboard />
+      </>,
+    );
+  }
 
   const active = team.members.filter((m) => m.status === "active");
   const teammates = active.filter((m) => m.userId !== team.viewerId);
@@ -144,6 +152,8 @@ export default function TeamPage() {
           </ul>
         )}
       </Section>
+
+      <Leaderboard />
     </>,
   );
 }
