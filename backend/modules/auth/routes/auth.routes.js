@@ -315,13 +315,18 @@ router.delete("/log-out", async (req, res) => {
  *     responses:
  *       200:
  *         description: Returns a new access token
+ *       204:
+ *         description: No refresh cookie, so the visitor is simply logged out
  *       401:
- *         description: Missing, invalid, expired, or already-used refresh token
+ *         description: Invalid, expired, or already-used refresh token
  */
 router.post("/refresh", async (req, res) => {
   const refreshTokenValue = req.cookies?.[REFRESH_COOKIE_NAME];
+  // No cookie is the normal state for a guest, not an error. The app calls this
+  // on every page load, so a 401 here put a red error in every guest's console.
+  // 401 stays for a cookie that is present but bad.
   if (!refreshTokenValue) {
-    return res.status(401).json({ message: "No refresh token", code: 401 });
+    return res.status(204).end();
   }
 
   const result = await refreshAccessToken(refreshTokenValue);

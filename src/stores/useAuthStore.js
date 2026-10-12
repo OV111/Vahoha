@@ -37,7 +37,9 @@ const useAuthStore = create((set) => ({
         method: "POST",
         credentials: "include",
       });
-      if (!request.ok) {
+      // 204 = no session cookie (a guest). It counts as `ok`, so check it
+      // before reading a body that isn't there.
+      if (request.status === 204 || !request.ok) {
         clearAccessToken();
         writeHint(false);
         set({ auth: false, sessionHint: false });
