@@ -32,7 +32,7 @@ export function createApp(db) {
 
   app.locals.db = db;
 
-  // Render (and Railway) put exactly one proxy in front of the app. Trusting
+  // Render puts exactly one proxy in front of the app. Trusting
   // that single hop makes req.ip the real client IP, so the rate limiters key
   // per user instead of lumping everyone under the proxy's IP. Don't use
   // `true`: that trusts any client-sent X-Forwarded-For, letting an attacker

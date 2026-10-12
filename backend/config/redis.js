@@ -14,7 +14,7 @@ const OPTIONS = { maxRetriesPerRequest: null };
  * queue and its worker). Building it in one place is what keeps credentials
  * consistent — the queue used to build its own connection without the password.
  *
- * Hosted Redis (Render Key Value, Upstash, Railway) hands out a single URL that
+ * Hosted Redis (Render Key Value, Upstash) hands out a single URL that
  * carries host, port, password and TLS, so REDIS_URL wins when present; the
  * host/port/password variables remain for local Docker Redis.
  */

@@ -1,4 +1,4 @@
-# Backend image (alternative to Render's native Node runtime / Railway Nixpacks).
+# Backend image, for running the API in Docker (local or any container host).
 FROM node:22-alpine
 
 # isolated-vm (the code-runner sandbox) is a native addon and compiles on install.

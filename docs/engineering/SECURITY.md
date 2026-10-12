@@ -80,7 +80,7 @@ echo "backend/.env" >> .gitignore
 ```bash
 node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 ```
-4. Move secrets to the host's secret manager (Railway/Render env vars), never a file in the tree.
+4. Move secrets to the host's secret manager (Render and Vercel env vars), never a file in the tree.
 
 ---
 

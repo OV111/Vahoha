@@ -236,7 +236,7 @@ Day-to-day status and the pre-pilot checklist: `docs/PILOT_STATUS.md`.
 
 ## Deployment
 
-Backend on Render (`render.yaml`), frontend on Vercel (`vercel.json`), database on MongoDB Atlas. Railway still works (`railway.json`, `nixpacks.toml`, `Dockerfile`). Full steps: `docs/DEPLOYMENT.md`.
+Backend on Render (`render.yaml`), frontend on Vercel (`vercel.json`), database on MongoDB Atlas. A `Dockerfile` is included for running the API in a container. Full steps: `docs/DEPLOYMENT.md`.
 
 ---
 
