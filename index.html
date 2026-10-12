@@ -46,13 +46,26 @@
     <link rel="preconnect" href="https://eu-assets.i.posthog.com" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- While prerendered HTML is on the page, keep the booting app hidden. -->
-    <style>#prerender ~ #root { display: none; }</style>
+    <style>
+      #prerender ~ #root { display: none; }
+      /* The prerendered navbar is the guest one. A returning user (session
+         hint set by useAuthStore) shouldn't see its links flash, so they stay
+         hidden (space kept, no layout shift) until the live app takes over. */
+      .has-session #prerender .nav-guest { visibility: hidden; }
+    </style>
     <title data-seo-static>Vahoha</title>
   </head>
   <body>
     <script>
-      const t = localStorage.getItem("theme") || "dark";
-      if (t === "dark") document.documentElement.classList.add("dark");
+      try {
+        const t = localStorage.getItem("theme") || "dark";
+        if (t === "dark") document.documentElement.classList.add("dark");
+        if (localStorage.getItem("hasSession") === "1") {
+          document.documentElement.classList.add("has-session");
+        }
+      } catch {
+        document.documentElement.classList.add("dark");
+      }
     </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>

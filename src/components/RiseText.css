@@ -74,7 +74,8 @@
   transform: translateY(10px);
   filter: blur(4px);
   animation: rt-fade-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  animation-delay: var(--delay, 0ms);
+  /* --intro-offset: see PrerenderHandoff (continues the intro after the swap). */
+  animation-delay: calc(var(--delay, 0ms) - var(--intro-offset, 0ms));
 }
 
 @keyframes rt-fade-in {

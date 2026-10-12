@@ -40,7 +40,10 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
-  const { auth, isLoading, logout } = useAuthStore();
+  const { auth, isLoading, sessionHint, logout } = useAuthStore();
+  // Wait for the session check only if this browser had a session last time.
+  // Everyone else gets the guest layout immediately, matching the prerendered HTML.
+  const authPending = isLoading && sessionHint;
 
   // One name at a time: a group label ("Learn", "Tracks"...) | "avatar" | "search" | null.
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -190,10 +193,12 @@ const Navbar = () => {
         />
       </div>
 
-      {/* Center: nav links (desktop). Nothing renders until the session check
-          finishes, so a logged-in user never sees the guest links flash first. */}
-      {!isLoading && (
-        <ul className="hidden items-center gap-0.5 text-sm font-medium text-gray-100 md:flex">
+      {/* Center: nav links (desktop). Hidden only while a returning user's session
+          is being checked, so they never see the guest links flash first. */}
+      {!authPending && (
+        <ul
+          className={`hidden items-center gap-0.5 text-sm font-medium text-gray-100 md:flex ${auth ? "" : "nav-guest"}`}
+        >
           {auth ? (
             <>
               {NAV_GROUPS_AUTH.map(renderGroupMenu)}
@@ -260,7 +265,7 @@ const Navbar = () => {
           </div>
         )}
 
-        {isLoading ? null : auth ? (
+        {authPending ? null : auth ? (
           <>
             <div
               className="relative ml-1 hidden md:block"
@@ -305,7 +310,7 @@ const Navbar = () => {
             </div>
           </>
         ) : (
-          <GuestActions className="ml-2 hidden md:flex" />
+          <GuestActions className="nav-guest ml-2 hidden md:flex" />
         )}
 
         <button

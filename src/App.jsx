@@ -11,7 +11,7 @@ import useProfileStore from "./stores/useProfileStore";
 
 
 const App = () => {
-  const { isLoading, init, auth, session } = useAuthStore();
+  const { init, auth, session } = useAuthStore();
   const { connectWs, disconnectWs, clearNotifications } = useNotificationStore();
   const { fetchInteractions, reset } = useBlogInteractionsStore();
   const { fetchProfile, clearProfile } = useProfileStore();
@@ -35,7 +35,8 @@ const App = () => {
       clearNotifications();
     }
   }, [auth, session, clearNotifications, clearProfile, connectWs, disconnectWs, fetchInteractions, fetchProfile, reset]);
-  if (isLoading) return <LoadingSuspense />;
+  // No early return while the session check runs: public pages render right
+  // away, and only the auth-dependent parts (route guards, navbar) wait on it.
 
   return (
     <React.Fragment>

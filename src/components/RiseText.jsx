@@ -41,7 +41,7 @@ const RiseText = ({
                     key={wordInLine}
                     className="rt-word"
                     style={{
-                      animationDelay: `${delay}ms`,
+                      animationDelay: `calc(${delay}ms - var(--intro-offset, 0ms))`,
                       animationDuration: `${duration}ms`,
                     }}
                   >
@@ -49,7 +49,7 @@ const RiseText = ({
                       <span
                         className="rt-highlight"
                         style={{
-                          "--rt-underline-delay": `${delay + duration}ms`,
+                          "--rt-underline-delay": `calc(${delay + duration}ms - var(--intro-offset, 0ms))`,
                         }}
                       >
                         {core}
