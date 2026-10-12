@@ -3,6 +3,7 @@ import {
   getProfile,
   updateLastActive,
   updateSettings,
+  removeCv,
   checkUsernameAvailable,
   getNotifications,
   readNotification,
@@ -114,6 +115,21 @@ const router = Router();
 
 /**
  * @openapi
+ * /my-profile/cv:
+ *   delete:
+ *     tags: [Profile]
+ *     summary: Remove the current user's CV from their profile
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: CV removed
+ *       401:
+ *         description: Unauthorized
+ */
+
+/**
+ * @openapi
  * /my-profile/notifications:
  *   get:
  *     tags: [Profile]
@@ -186,6 +202,7 @@ const router = Router();
 router.get("/", getProfile);
 router.put("/", updateLastActive);
 router.put("/settings", updateSettings);
+router.delete("/cv", removeCv);
 router.get("/username-available", checkUsernameAvailable);
 router.get("/notifications", getNotifications);
 router.patch("/notifications/read-all", readAllNotifications);

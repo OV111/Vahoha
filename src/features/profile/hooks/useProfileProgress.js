@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { capstoneApi } from "@/features/capstone/capstoneApi";
+import { teamsApi } from "@/features/teams/teamsApi";
 import { fetchChallengeStats, fetchExamHistory } from "@/services/profileApi";
 
 /**
@@ -15,6 +16,7 @@ const LOADERS = {
   challenges: () => fetchChallengeStats(),
   certificates: () => capstoneApi.certificates(),
   exams: () => fetchExamHistory(10),
+  team: () => teamsApi.mine(), // null when not on a team
 };
 
 const LOADING = { status: "loading", data: null, error: null };

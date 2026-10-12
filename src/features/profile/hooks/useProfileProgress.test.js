@@ -4,12 +4,16 @@ import { renderHook, waitFor, act } from "@testing-library/react";
 vi.mock("@/features/capstone/capstoneApi", () => ({
   capstoneApi: { overview: vi.fn(), certificates: vi.fn() },
 }));
+vi.mock("@/features/teams/teamsApi", () => ({
+  teamsApi: { mine: vi.fn() },
+}));
 vi.mock("@/services/profileApi", () => ({
   fetchExamHistory: vi.fn(),
   fetchChallengeStats: vi.fn(),
 }));
 
 import { capstoneApi } from "@/features/capstone/capstoneApi";
+import { teamsApi } from "@/features/teams/teamsApi";
 import { fetchChallengeStats, fetchExamHistory } from "@/services/profileApi";
 import useProfileProgress from "./useProfileProgress";
 
@@ -19,10 +23,11 @@ beforeEach(() => {
   capstoneApi.certificates.mockResolvedValue([]);
   fetchExamHistory.mockResolvedValue([{ _id: "e1" }]);
   fetchChallengeStats.mockResolvedValue({ solved: 1 });
+  teamsApi.mine.mockResolvedValue(null);
 });
 
 const allSettled = (result) =>
-  ["tracks", "challenges", "certificates", "exams"].every(
+  ["tracks", "challenges", "certificates", "exams", "team"].every(
     (k) => result.current[k].status !== "loading",
   );
 

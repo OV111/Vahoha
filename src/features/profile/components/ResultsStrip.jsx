@@ -43,7 +43,7 @@ export default function ResultsStrip({ summary, xp, loading }) {
       <Tile label="Layers passed" value={summary.layersPassed} />
       <Tile label="Capstones" value={summary.capstones} />
       {/* xp stays undefined until the challenges request lands: show a dash, not a false 0. */}
-      <Tile label="Challenge XP" value={xp ?? "—"} muted />
+      <Tile label="XP" value={xp ?? "—"} muted />
     </section>
   );
 }

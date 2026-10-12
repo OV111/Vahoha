@@ -17,33 +17,18 @@ export function SectionHeader({ title, right }) {
 }
 
 /**
- * CV + an honest summary of what the profile proves. Only claims what the
- * platform really does: capstones are AI-reviewed against a fixed rubric and
- * link to the exact commit. The CV itself is self-uploaded.
+ * The CV, plus optional `children` under it (the owner's recruiter settings
+ * on /my-profile). `editable` is the owner's view: upload and remove.
  */
-export function ForHiringPanel({ editable = false, cvUrl = null, onCvUpload }) {
+export function ForHiringPanel({ editable = false, cvUrl = null, onCvUpload, onCvRemove, children }) {
   return (
     <div className="rounded-2xl border border-white/10 px-4 py-4">
-      <p className="text-sm text-gray-400 mb-4">
-        Capstones are AI-reviewed against a fixed rubric and link to the exact
-        commit, so anyone can check the work. The CV is uploaded by the owner.
-      </p>
-
       <p className="text-xs font-semibold uppercase tracking-wide mb-2 text-gray-400">
         CV
       </p>
-      <CvFileCard editable={editable} cvUrl={cvUrl} onUpload={onCvUpload ?? (() => {})} />
+      <CvFileCard editable={editable} cvUrl={cvUrl} onUpload={onCvUpload} onRemove={onCvRemove} />
 
-      {!editable && cvUrl && (
-        <a
-          href={cvUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-3 flex w-full items-center justify-center rounded-lg border border-purple-500/50 py-2 text-sm font-medium text-purple-300 transition-colors hover:bg-purple-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
-        >
-          Download CV ↗
-        </a>
-      )}
+      {children && <div className="mt-4 border-t border-white/10 pt-4">{children}</div>}
     </div>
   );
 }

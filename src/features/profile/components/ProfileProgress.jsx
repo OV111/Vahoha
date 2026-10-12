@@ -227,6 +227,76 @@ export function CertificateCard({ cert }) {
   );
 }
 
+// Team statuses from backend/modules/teams/services/teamsData.js.
+const TEAM_STATE = {
+  forming: { label: "Forming", tone: "neutral" },
+  active: { label: "Building", tone: "purple" },
+  defending: { label: "Defending", tone: "purple" },
+  completed: { label: "Completed", tone: "green" },
+  disbanded: { label: "Disbanded", tone: "red" },
+};
+
+/** The signed-in user's build team (the `GET /api/teams/mine` shape). */
+export function TeamCard({ team }) {
+  const state = TEAM_STATE[team.status] ?? TEAM_STATE.forming;
+  const members = team.members.filter((m) => m.status === "active");
+  const viewerId = String(team.viewerId);
+
+  return (
+    <article className={`${SURFACE} flex flex-col gap-4 p-5`}>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="text-[13px] font-medium dark:text-purple-600">
+          {team.trackId} build team
+        </span>
+        <Chip tone={state.tone}>{state.label}</Chip>
+      </div>
+
+      <div>
+        <h3 className="text-[17px] font-semibold leading-snug text-white">
+          {team.name}
+        </h3>
+        <p className="mt-1.5 text-[13px] text-neutral-400">
+          {members.length} {members.length === 1 ? "member" : "members"}
+          {" · "}
+          Merged PRs, a defense on your own changes, and peer ratings
+        </p>
+      </div>
+
+      {members.length > 0 && (
+        <ul className="flex flex-wrap gap-2" aria-label="Team members">
+          {members.map((m) => (
+            <li key={String(m.userId)}>
+              <Chip tone={String(m.userId) === viewerId ? "purple" : "neutral"}>
+                <span className="font-mono">@{m.githubLogin}</span>
+              </Chip>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        <Link
+          to="/team"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3.5 py-2 text-[13px] font-medium text-neutral-100 transition-colors hover:border-purple-400/50 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
+        >
+          Open team <ArrowUpRight size={14} aria-hidden="true" />
+        </Link>
+        {team.repo && (
+          <a
+            href={team.repo.url}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex min-w-0 max-w-full items-center gap-1.5 rounded-lg border border-white/10 px-3.5 py-2 text-[13px] font-medium text-neutral-300 transition-colors hover:border-white/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
+          >
+            <Github size={14} aria-hidden="true" />
+            <span className="truncate font-mono">{team.repo.fullName}</span>
+          </a>
+        )}
+      </div>
+    </article>
+  );
+}
+
 /** One exam attempt. `layerTitle` is joined by the API; the raw id is the fallback. */
 export function ExamRow({ exam }) {
   const title = exam.layerTitle ?? exam.layer;

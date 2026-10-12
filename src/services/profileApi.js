@@ -47,6 +47,16 @@ export const saveSettings = async (formData) => {
   return data;
 };
 
+export const removeCv = async () => {
+  const res = await fetch(`${API_BASE_URL}/my-profile/cv`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  const data = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(data?.message || "Couldn't remove the CV");
+  return data;
+};
+
 /** The learner's own recent exam attempts (newest first), with `layerTitle` joined in. */
 export const fetchExamHistory = async (limit = 10) => {
   const res = await fetch(`${API_BASE_URL}/api/exams/history?limit=${limit}`, {

@@ -28,18 +28,35 @@ function FileIcon({ label, color = "#9333ea" }) {
   );
 }
 
-export default function CvFileCard({ editable = false, cvUrl = null, onUpload }) {
-  const [file, setFile] = useState(null);
+// Small visible buttons with an invisible 44px tap area on mobile.
+const SMALL_BTN =
+  "relative rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 disabled:opacity-50 max-md:after:absolute max-md:after:-inset-2";
+
+/**
+ * The card only shows what the server has: `cvUrl` from the profile. While an
+ * upload or removal runs it shows a busy state, so a failed upload never looks
+ * like a saved one. `onUpload(file)` and `onRemove()` return promises.
+ */
+export default function CvFileCard({ editable = false, cvUrl = null, onUpload, onRemove }) {
+  const [busy, setBusy] = useState(null); // null | "uploading" | "removing"
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef(null);
 
-  const hasFile = file || cvUrl;
-  const fileName = file?.name ?? (cvUrl ? cvUrl.split("/").pop() : null);
+  const fileName = cvUrl ? decodeURIComponent(cvUrl.split("/").pop()) : null;
   const ext = fileName?.split(".").pop()?.toUpperCase() ?? "PDF";
   const extColor = ext === "PDF" ? "#9333ea" : ext === "DOCX" || ext === "DOC" ? "#2563eb" : "#6b7280";
 
+  const run = async (kind, action) => {
+    setBusy(kind);
+    try {
+      await action();
+    } finally {
+      setBusy(null);
+    }
+  };
+
   const handleFile = (f) => {
-    if (!f) return;
+    if (!f || busy) return;
     const allowed = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
     if (!allowed.includes(f.type)) {
       toast.error("Only PDF or Word documents allowed");
@@ -49,8 +66,7 @@ export default function CvFileCard({ editable = false, cvUrl = null, onUpload })
       toast.error("File must be under 10 MB");
       return;
     }
-    setFile(f);
-    onUpload?.(f);
+    run("uploading", () => onUpload?.(f));
   };
 
   const handleDrop = (e) => {
@@ -60,34 +76,35 @@ export default function CvFileCard({ editable = false, cvUrl = null, onUpload })
   };
 
   // ── Uploaded state ──────────────────────────────────────────────────────────
-  if (hasFile) {
+  if (cvUrl) {
     return (
-      <div className="flex items-center gap-4 px-3 py-3 rounded-sm border border-gray-800 bg-gray-900/40 group">
-        <div className="w-10 h-12 shrink-0">
+      <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3">
+        <div className="h-12 w-10 shrink-0">
           <FileIcon label={ext} color={extColor} />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-[12px] font-semibold text-gray-100 truncate">{fileName}</p>
-          <p className="text-[10px] font-mono text-gray-600 mt-0.5">{ext} · ready to share</p>
+          <p className="truncate text-[13px] font-semibold text-neutral-100" title={fileName}>
+            {fileName}
+          </p>
+          <p className="mt-0.5 text-xs text-neutral-500">{ext}</p>
         </div>
-        <div className="flex flex-col gap-1.5 shrink-0">
-          {cvUrl && (
-            <a
-              href={cvUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="text-[10px] px-2 py-1 rounded-sm border border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500 transition-colors"
-            >
-              ↗ view
-            </a>
-          )}
+        <div className="flex shrink-0 flex-col gap-1.5">
+          <a
+            href={cvUrl}
+            target="_blank"
+            rel="noreferrer"
+            className={`${SMALL_BTN} border-white/10 text-center text-neutral-300 hover:border-purple-400/50 hover:text-white`}
+          >
+            View ↗
+          </a>
           {editable && (
             <button
               type="button"
-              onClick={() => { setFile(null); onUpload?.(null); }}
-              className="text-[10px] px-2 py-1 rounded-sm border border-gray-800 text-gray-600 hover:text-red-400 hover:border-red-900 transition-colors"
+              disabled={busy !== null}
+              onClick={() => run("removing", () => onRemove?.())}
+              className={`${SMALL_BTN} border-white/10 text-neutral-500 hover:border-red-500/50 hover:text-red-400`}
             >
-              remove
+              {busy === "removing" ? "Removing…" : "Remove"}
             </button>
           )}
         </div>
@@ -98,41 +115,52 @@ export default function CvFileCard({ editable = false, cvUrl = null, onUpload })
   // ── Empty / upload state ────────────────────────────────────────────────────
   if (!editable) {
     return (
-      <div className="flex flex-col items-center gap-2 px-3 py-6 rounded-sm border border-dashed border-gray-800 text-center">
-        <div className="w-10 h-12 opacity-20">
+      <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-white/10 px-3 py-6 text-center">
+        <div className="h-12 w-10 opacity-20">
           <FileIcon label="PDF" />
         </div>
-        <p className="text-[11px] text-gray-600">No CV uploaded yet</p>
+        <p className="text-[13px] text-neutral-500">No CV uploaded yet</p>
       </div>
     );
   }
 
   return (
     <div
-      onClick={() => inputRef.current?.click()}
       onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
       onDragLeave={() => setIsDragging(false)}
       onDrop={handleDrop}
-      className={`flex flex-col items-center gap-3 px-3 py-6 rounded-sm border border-dashed cursor-pointer transition-colors ${
-        isDragging
-          ? "border-violet-500 bg-violet-950/20"
-          : "border-gray-700 hover:border-violet-700 hover:bg-violet-950/10"
-      }`}
     >
-      <div className="w-10 h-12">
-        <FileIcon label="PDF" />
-      </div>
-      <div className="text-center">
-        <p className="text-[11px] font-medium text-violet-400">Click to upload</p>
-        <p className="text-[10px] text-gray-600 mt-0.5">or drag & drop</p>
-        <p className="text-[10px] text-gray-700 mt-1">PDF · DOC · DOCX — max 10 MB</p>
-      </div>
+      {/* A real button: reachable with Tab and opened with Enter/Space. */}
+      <button
+        type="button"
+        disabled={busy !== null}
+        onClick={() => inputRef.current?.click()}
+        className={`flex w-full flex-col items-center gap-3 rounded-xl border border-dashed px-3 py-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 disabled:cursor-wait ${
+          isDragging
+            ? "border-purple-500 bg-purple-500/10"
+            : "border-white/15 hover:border-purple-500/60 hover:bg-purple-500/5"
+        }`}
+      >
+        <div className="h-12 w-10">
+          <FileIcon label="PDF" />
+        </div>
+        <div className="text-center">
+          <p className="text-[13px] font-medium text-purple-400">
+            {busy === "uploading" ? "Uploading…" : "Upload your CV"}
+          </p>
+          <p className="mt-0.5 text-xs text-neutral-500">Click or drag a file here</p>
+          <p className="mt-1 text-xs text-neutral-600">PDF, DOC or DOCX, up to 10 MB</p>
+        </div>
+      </button>
       <input
         ref={inputRef}
         type="file"
         accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         className="hidden"
-        onChange={(e) => handleFile(e.target.files?.[0])}
+        onChange={(e) => {
+          handleFile(e.target.files?.[0]);
+          e.target.value = ""; // so picking the same file again still fires
+        }}
       />
     </div>
   );

@@ -35,18 +35,21 @@ const SECTIONS = [
 /**
  * "Show me to recruiters": off by default. The developer chooses what the
  * public scorecard shows. Weak spots are never part of it.
+ * `framed={false}` drops the card border when it sits inside another panel.
  */
-export default function RecruiterSettings({ username }) {
+export default function RecruiterSettings({ username, framed = true }) {
   const [settings, setSettings] = useState(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const load = () => {
+    setError(null);
     recruiterApi
       .getSettings()
       .then(setSettings)
       .catch((err) => setError(err.message));
-  }, []);
+  };
+  useEffect(load, []);
 
   const save = async (next) => {
     const previous = settings;
@@ -65,14 +68,21 @@ export default function RecruiterSettings({ username }) {
 
   if (!settings) {
     return error ? (
-      <p className="text-sm text-red-400">{error}</p>
+      <p className="text-sm text-red-400">
+        {error}{" "}
+        <button type="button" onClick={load} className="underline hover:text-red-300">
+          Try again
+        </button>
+      </p>
     ) : (
       <p className="text-sm text-neutral-500">Loading…</p>
     );
   }
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-neutral-800 p-4">
+    <div
+      className={`flex flex-col gap-3 ${framed ? "rounded-xl border border-neutral-800 p-4" : ""}`}
+    >
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">
           <p
@@ -136,7 +146,7 @@ export default function RecruiterSettings({ username }) {
             <div className="flex flex-wrap items-center gap-3">
               <Link
                 to={`/candidate/${username}`}
-                className="text-sm text-purple-300 hover:text-purple-200"
+                className="text-sm break-all text-purple-300 hover:text-purple-200"
               >
                 Preview: /candidate/{username}
               </Link>

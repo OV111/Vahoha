@@ -6,6 +6,7 @@ import {
   getProfileService,
   updateLastActiveService,
   updateSettingsService,
+  removeCvService,
   checkUsernameAvailableService,
   uploadToCloudinary,
   getFollowingService,
@@ -68,9 +69,26 @@ export const checkUsernameAvailable = async (req, res) => {
   }
 };
 
+export const removeCv = async (req, res) => {
+  try {
+    const verified = verifyToken(req.headers.authorization?.split(" ")[1]);
+    if (!verified) return res.status(401).json({ message: "Unauthorized" });
+
+    await removeCvService(req.app.locals.db, new ObjectId(verified.id));
+    res.status(200).json({ message: "CV removed" });
+  } catch {
+    res.status(500).json({ message: "Couldn't remove the CV" });
+  }
+};
+
+// Only these multipart file fields are uploaded; anything else is drained and dropped.
+const UPLOAD_FIELDS = new Set(["profileImage", "bannerImage", "cvFile"]);
+
 export const updateSettings = (req, res) => {
-  const token = req.headers.authorization?.replace("Bearer ", "");
-  if (!token) return res.status(401).json({ message: "Unauthorized: Invalid Token!" });
+  // Verify BEFORE reading the body: files stream to Cloudinary as they arrive,
+  // so checking later would let an invalid token still upload.
+  const verified = verifyToken(req.headers.authorization?.replace("Bearer ", ""));
+  if (!verified) return res.status(401).json({ message: "Unauthorized: Invalid Token!" });
 
   const bb = busboy({ headers: req.headers, limits: { fileSize: 10 * 1024 * 1024 } });
   const fields = {};
@@ -78,9 +96,10 @@ export const updateSettings = (req, res) => {
   let fileTooLarge = false;
 
   bb.on("file", (fieldname, file) => {
+    if (!UPLOAD_FIELDS.has(fieldname)) return file.resume();
     file.on("limit", () => {
       fileTooLarge = true;
-      res.status(400).json({ message: "File too large. Maximum size is 5 MB." });
+      res.status(400).json({ message: "File too large. Maximum size is 10 MB." });
       file.resume();
     });
     fileUploads[fieldname] = uploadToCloudinary(file);
@@ -93,9 +112,6 @@ export const updateSettings = (req, res) => {
   bb.on("finish", async () => {
     if (fileTooLarge) return;
     try {
-      const verified = verifyToken(token);
-      if (!verified) return res.status(401).json({ message: "Unauthorized: Invalid Token!" });
-
       const resolved = {};
       for (const [key, promise] of Object.entries(fileUploads)) {
         resolved[key] = await promise;

@@ -138,6 +138,31 @@ export const updateSettingsService = async (db, userId, fields, files) => {
   return { user: updatedUser, stats: statsResult.value || statsResult };
 };
 
+// A Cloudinary delivery URL carries what destroy() needs:
+// .../<resource_type>/upload/v123/<public_id>[.ext]. Raw files keep the
+// extension in their public_id; images and videos don't.
+export const cloudinaryIdFromUrl = (url) => {
+  const match = /\/(image|raw|video)\/upload\/(?:v\d+\/)?(.+)$/.exec(url ?? "");
+  if (!match) return null;
+  const [, resourceType, path] = match;
+  return { resourceType, publicId: resourceType === "raw" ? path : path.replace(/\.[^./]+$/, "") };
+};
+
+// Clears the CV link, then deletes the file. The delete is best-effort: if
+// Cloudinary fails, the CV is still gone from the profile (only an unlisted file is left).
+export const removeCvService = async (db, userId) => {
+  const stats = await db
+    .collection("usersStats")
+    .findOneAndUpdate({ userId }, { $unset: { cvUrl: "" } }, { projection: { cvUrl: 1 } });
+  const id = cloudinaryIdFromUrl((stats?.value ?? stats)?.cvUrl);
+  if (!id) return;
+  try {
+    await cloudinary.uploader.destroy(id.publicId, { resource_type: id.resourceType });
+  } catch (err) {
+    console.error("cv delete from Cloudinary failed:", err.message);
+  }
+};
+
 export const checkUsernameAvailableService = async (db, userId, rawUsername) => {
   const users = db.collection("users");
   const clean = sanitizeUsername(rawUsername);
@@ -157,7 +182,8 @@ export const checkUsernameAvailableService = async (db, userId, rawUsername) => 
 export const uploadToCloudinary = (file) =>
   new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
-      { folder: "devs_website" },
+      // "auto": images stay images; PDF/DOCX become the right type (the default "image" rejects Word files).
+      { folder: "devs_website", resource_type: "auto" },
       (error, result) => {
         if (error) return reject(error);
         resolve(result.secure_url);

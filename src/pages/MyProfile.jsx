@@ -6,7 +6,7 @@ import SideBar from "./my-profile/components/SideBar";
 import useProfileStore from "@/stores/useProfileStore";
 import useAuthStore from "@/stores/useAuthStore";
 import BlogCard from "@/components/blog/BlogCard";
-import { updateLastActive, saveSettings } from "@/services/profileApi";
+import { updateLastActive, saveSettings, removeCv } from "@/services/profileApi";
 import { Toaster, toast } from "react-hot-toast";
 import { Pencil } from "lucide-react";
 import { SectionHeader, ForHiringPanel } from "./my-profile/components/ProfileSections";
@@ -22,6 +22,7 @@ import {
   ChallengeStats,
   EmptyState,
   ExamRow,
+  TeamCard,
   TrackRow,
 } from "@/features/profile/components/ProfileProgress";
 import { BlogCardSkeletonGrid } from "@/components/blog/BlogCardSkeleton";
@@ -41,7 +42,7 @@ const MyProfile = () => {
     fetchUserBlogs,
   } = useProfileStore();
 
-  const { tracks, challenges, certificates, exams, reload } =
+  const { tracks, challenges, certificates, exams, team, reload } =
     useProfileProgress();
 
   // Headline and counts come from data the page already loaded.
@@ -74,8 +75,9 @@ const MyProfile = () => {
     if (now) updateStats({ lastActive: now });
   };
 
+  // The CV card shows only what the server confirmed (stats.cvUrl), so these
+  // update the store on success and leave it alone on failure.
   const handleCvUpload = async (file) => {
-    if (!file) return;
     try {
       const fd = new FormData();
       fd.append("cvFile", file);
@@ -84,6 +86,16 @@ const MyProfile = () => {
       toast.success("CV uploaded!");
     } catch {
       toast.error("Failed to upload CV");
+    }
+  };
+
+  const handleCvRemove = async () => {
+    try {
+      await removeCv();
+      updateStats({ cvUrl: null });
+      toast.success("CV removed");
+    } catch (err) {
+      toast.error(err.message);
     }
   };
 
@@ -263,8 +275,11 @@ const MyProfile = () => {
             <ForHiringPanel
               editable
               onCvUpload={handleCvUpload}
+              onCvRemove={handleCvRemove}
               cvUrl={stats?.cvUrl ?? null}
-            />
+            >
+              <RecruiterSettings username={user?.username} framed={false} />
+            </ForHiringPanel>
 
             <SectionHeader title="Achievements" />
             <AchievementsPanel
@@ -309,6 +324,27 @@ const MyProfile = () => {
               </AsyncSection>
             </section>
 
+            {/* BUILD TEAM: next step after a capstone, so it sits right under it */}
+            <section>
+              <SectionHeader title="Build team" right="real repo, real PRs" />
+              <AsyncSection
+                {...team}
+                rows={1}
+                onRetry={() => reload("team")}
+                isEmpty={!team.data}
+                empty={
+                  <EmptyState
+                    title="Not on a team yet"
+                    body="After you pass a capstone, you can build one real project with a small team, defend your own pull requests, and get a public evidence page."
+                    to="/team"
+                    cta="About build teams"
+                  />
+                }
+              >
+                {team.data && <TeamCard team={team.data} />}
+              </AsyncSection>
+            </section>
+
             {/* TRACKS */}
             <section>
               <SectionHeader title="Tracks" />
@@ -335,16 +371,7 @@ const MyProfile = () => {
 
             {/* CODING CHALLENGES */}
             <section>
-              <SectionHeader
-                title="Coding challenges"
-                right={
-                  challenges.data ? (
-                    <span className="font-semibold text-fuchsia-600">
-                      {challenges.data.xpTotal} XP
-                    </span>
-                  ) : undefined
-                }
-              />
+              <SectionHeader title="Coding challenges" />
               <AsyncSection
                 {...challenges}
                 rows={1}
@@ -385,20 +412,6 @@ const MyProfile = () => {
                   ))}
                 </ul>
               </AsyncSection>
-            </section>
-
-            {/* SHARE AND VISIBILITY */}
-            <section>
-              <SectionHeader title="Share and visibility" right="you choose" />
-              <div className="space-y-3">
-                <RecruiterSettings username={user?.username} />
-                <Link
-                  to="/team"
-                  className="block rounded-xl border border-neutral-800 p-4 text-sm text-neutral-300 transition-colors hover:border-purple-500/50"
-                >
-                  Open your build team: your defense, peer ratings and merged work.
-                </Link>
-              </div>
             </section>
 
             {/* BLOGS */}
