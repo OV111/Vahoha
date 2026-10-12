@@ -37,7 +37,9 @@ const Blogs = lazy(() => import("./features/blogs/Blogs"));
 const RoadmapPage = lazy(() => import("./features/roadmap/RoadmapPage"));
 const ExamPage = lazy(() => import("./features/roadmap/ExamPage"));
 const LibsPage = lazy(() => import("./features/coding-libs/LibsPage"));
-const BookDetailPage = lazy(() => import("./features/coding-libs/BookDetailPage"));
+const BookDetailPage = lazy(
+  () => import("./features/coding-libs/BookDetailPage"),
+);
 const CodingChallenges = lazy(
   () => import("./features/coding-challenges/CodingChallenges"),
 );
@@ -52,18 +54,26 @@ const ReviewProposals = lazy(
 );
 const AiAgent = lazy(() => import("./features/ai-agent/AiAgent"));
 const CapstonePage = lazy(() => import("./features/capstone/CapstonePage"));
-const CertificatePage = lazy(() => import("./features/capstone/CertificatePage"));
+const CertificatePage = lazy(
+  () => import("./features/capstone/CertificatePage"),
+);
 const TeamPage = lazy(() => import("./features/teams/TeamPage"));
 const TeamAdminPage = lazy(() => import("./features/teams/TeamAdminPage"));
 const EvidencePage = lazy(() => import("./features/teams/EvidencePage"));
 const CandidatePage = lazy(() => import("./features/recruiter/CandidatePage"));
-const CapstoneAdminPage = lazy(() => import("./features/capstone/CapstoneAdminPage"));
-const VoiceReviewPage = lazy(() => import("./features/voice-review/VoiceReviewPage"));
+const CapstoneAdminPage = lazy(
+  () => import("./features/capstone/CapstoneAdminPage"),
+);
+const VoiceReviewPage = lazy(
+  () => import("./features/voice-review/VoiceReviewPage"),
+);
 const PricingPage = lazy(() => import("./features/billing/PricingPage"));
 const BillingPage = lazy(() => import("./features/billing/BillingPage"));
 const ProgressPage = lazy(() => import("./features/mastery/ProgressPage"));
 
-const FoundationsPage = lazy(() => import("./features/foundations/FoundationsPage"));
+const FoundationsPage = lazy(
+  () => import("./features/foundations/FoundationsPage"),
+);
 const FullStack = lazy(() => import("./pages/CategoryPages/FullStack"));
 const Backend = lazy(() => import("./pages/CategoryPages/Backend"));
 const Mobile = lazy(() => import("./pages/CategoryPages/Mobile"));
@@ -114,7 +124,10 @@ export const routes = [
         path: "categories",
         children: [
           // Old URL kept as a redirect so existing links and the navbar don't 404.
-          { path: "fundamentals", element: <Navigate to="/foundations" replace /> },
+          {
+            path: "fundamentals",
+            element: <Navigate to="/foundations" replace />,
+          },
           { path: "fullstack", element: <FullStack /> },
           { path: "backend", element: <Backend /> },
           { path: "mobile", element: <Mobile /> },
@@ -142,7 +155,10 @@ export const routes = [
           // not a separate route. /ai-agent/chat is kept as a redirect so
           // existing links and bookmarks don't 404.
           { path: "ai-agent", element: <AiAgent /> },
-          { path: "ai-agent/chat", element: <Navigate to="/ai-agent" replace /> },
+          {
+            path: "ai-agent/chat",
+            element: <Navigate to="/ai-agent" replace />,
+          },
           // /capstone shows the default track (api-dev) directly, no redirect;
           // /capstone/:trackId serves other tracks once they have a brief.
           { path: "capstone", element: <CapstonePage /> },
@@ -180,5 +196,6 @@ export const routes = [
 ];
 
 // createBrowserRouter touches window, so only create it in the browser.
-const router = typeof window !== "undefined" ? createBrowserRouter(routes) : null;
+const router =
+  typeof window !== "undefined" ? createBrowserRouter(routes) : null;
 export default router;
