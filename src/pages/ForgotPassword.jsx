@@ -20,9 +20,9 @@ export default function ForgotPassword() {
       const res = await requestPasswordReset(email);
       const result = await res.json();
       if (res.ok) setSent(true);
-      else toast.error(result.message);
+      else toast.error(result.message || "Couldn't send the reset email. Try again.");
     } catch {
-      toast.error("Server Unavailable");
+      toast.error("Server unavailable. Try again later.");
     }
     setIsLoading(false);
   };
@@ -36,9 +36,9 @@ export default function ForgotPassword() {
 
             {sent ? (
               <div className="flex flex-col items-center text-center space-y-4 py-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-fuchsia-50 dark:bg-fuchsia-950/40">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-purple-50 dark:bg-purple-950/40">
                   <svg
-                    className="h-7 w-7 text-fuchsia-500"
+                    className="h-7 w-7 text-purple-600 dark:text-purple-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -63,7 +63,7 @@ export default function ForgotPassword() {
                 </p>
                 <Link
                   to="/get-started"
-                  className="text-sm text-fuchsia-600 dark:text-fuchsia-400 hover:underline font-medium"
+                  className="text-sm text-purple-600 dark:text-purple-400 hover:underline font-medium"
                 >
                   Back to login
                 </Link>
@@ -100,8 +100,8 @@ export default function ForgotPassword() {
                     disabled={isLoading}
                     className={`w-full mt-2 py-2.5 px-4 rounded-md text-sm font-semibold text-white transition-colors duration-150 ${
                       isLoading
-                        ? "bg-fuchsia-300 dark:bg-fuchsia-950 cursor-not-allowed"
-                        : "bg-purple-600 hover:bg-purple-500 active:bg-fuchsia-800 cursor-pointer"
+                        ? "bg-purple-300 dark:bg-purple-950 cursor-not-allowed"
+                        : "bg-purple-600 hover:bg-purple-700 active:bg-purple-800 cursor-pointer"
                     }`}
                   >
                     {isLoading ? "Sending…" : "Send reset link"}
@@ -112,7 +112,7 @@ export default function ForgotPassword() {
                   Remember your password?{" "}
                   <Link
                     to="/get-started"
-                    className="text-fuchsia-600 dark:text-fuchsia-400 font-medium hover:underline"
+                    className="text-purple-600 dark:text-purple-400 font-medium hover:underline"
                   >
                     Sign in
                   </Link>

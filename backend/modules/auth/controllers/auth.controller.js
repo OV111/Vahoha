@@ -413,75 +413,86 @@ const githubCallback = async (req, res) => {
   }
 };
 
-const forgotPassword = async (data) => {
+const RESET_TOKEN_TTL_MINUTES = 60;
+// One answer whether or not the email is registered (and whether or not the
+// email actually went out), so this endpoint can't be used to probe for accounts.
+const RESET_SENT = {
+  status: 200,
+  message: "If that email has an account, a reset link is on its way.",
+};
+
+// Only the SHA-256 of a token is stored: a leaked DB dump can't be used to
+// reset anyone's password. sha256 (not bcrypt) is fine here because the token
+// is 256 random bits, not a guessable human password.
+const hashResetToken = (raw) => crypto.createHash("sha256").update(raw).digest("hex");
+
+// `email` arrives trimmed + lowercased by forgotPasswordSchema.
+const forgotPassword = async ({ email }) => {
   try {
     const db = await connectDB();
-    const { email } = data;
-    const users = db.collection("users");
-    const passwordResets = db.collection("passwordResets");
-    const user = await users.findOne({ email });
-    if (!user)
-      return {
-        status: 200,
-        message: "If email exists,a reset link has been sent.",
-      };
+    const user = await db.collection("users").findOne({ email });
+    if (!user) return RESET_SENT;
 
+    const passwordResets = db.collection("passwordResets");
+    // A new link replaces any older one, so only the latest email works.
     await passwordResets.deleteMany({ userId: user._id });
 
     const rawToken = crypto.randomBytes(32).toString("hex");
-    const tokenHash = crypto
-      .createHash("sha256")
-      .update(rawToken)
-      .digest("hex");
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
-
-    await passwordResets.insertOne({ userId: user._id, tokenHash, expiresAt });
+    await passwordResets.insertOne({
+      userId: user._id,
+      tokenHash: hashResetToken(rawToken),
+      expiresAt: new Date(Date.now() + RESET_TOKEN_TTL_MINUTES * 60 * 1000),
+    });
 
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${rawToken}`;
-    await sendPasswordResetEmail(email, resetUrl);
-    return {
-      status: 200,
-      message: "If email exists,a reset link has been sent.",
-    };
+    try {
+      await sendPasswordResetEmail(email, {
+        resetUrl,
+        firstName: user.firstName,
+        expiresInMinutes: RESET_TOKEN_TTL_MINUTES,
+      });
+    } catch (err) {
+      // The user still gets the generic answer (see RESET_SENT), so the failure
+      // has to be loud here instead. The token is useless without the email.
+      console.error("[password-reset] email failed for user", String(user._id), "-", err.message);
+      await passwordResets.deleteMany({ userId: user._id });
+    }
+    return RESET_SENT;
   } catch (err) {
-    console.error(err);
-    return {
-      status: 500,
-      message: "Something went wrong.",
-      error: err.message,
-    };
+    console.error("[password-reset] forgotPassword failed:", err);
+    return { status: 500, message: "Something went wrong. Please try again." };
   }
 };
 
-const resetPassword = async (data) => {
+// `token` (64 hex chars) and `newPassword` (signup policy) are already
+// validated by resetPasswordSchema.
+const resetPassword = async ({ token, newPassword }) => {
   try {
     const db = await connectDB();
-    const users = db.collection("users");
-    const { token, newPassword } = data;
-    const passwordResets = db.collection("passwordResets");
-
-    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
-    // check if token is valid
-    const record = await passwordResets.findOne({ tokenHash });
-
-    if (!record || record.expiresAt < new Date()) {
+    // findOneAndDelete is atomic: find + consume in one step, so two requests
+    // racing with the same link can't both succeed. The expiry check is part
+    // of the query for the same reason.
+    const record = await db.collection("passwordResets").findOneAndDelete({
+      tokenHash: hashResetToken(token),
+      expiresAt: { $gt: new Date() },
+    });
+    if (!record) {
       return { status: 400, message: "Reset link is invalid or has expired." };
     }
 
-    await users.updateOne(
+    await db.collection("users").updateOne(
       { _id: record.userId },
       { $set: { password: await hashPassword(newPassword) } },
     );
-    await passwordResets.deleteOne({ tokenHash });
     // A password reset means the user believes their credentials — or an
     // active session — may be compromised. Kill every outstanding refresh
     // token so a stolen one stops working immediately instead of surviving
     // up to its remaining lifetime.
     await revokeAllRefreshTokens(db, record.userId);
-    return { status: 200, message: "Password updated successfully." };
+    return { status: 200, message: "Password updated. You can sign in now." };
   } catch (err) {
-    console.error(err);
-    return { status: 500, message: "Server error", error: err.message };
+    console.error("[password-reset] resetPassword failed:", err);
+    return { status: 500, message: "Something went wrong. Please try again." };
   }
 };
 

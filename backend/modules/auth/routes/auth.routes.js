@@ -19,7 +19,12 @@ import {
 import { verifyToken } from "../../../utils/jwtToken.js";
 import { redisConnection } from "../../../config/redis.js";
 import { validate } from "../../../middleware/validate.js";
-import { signupSchema, loginSchema } from "../schemas/auth.schemas.js";
+import {
+  signupSchema,
+  loginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+} from "../schemas/auth.schemas.js";
 
 // Sends the controller's result as JSON but strips the refresh token first —
 // it must only ever leave the server as the httpOnly cookie already set by
@@ -57,12 +62,24 @@ const signupLimiter = rateLimit({
   message: { message: "Too many sign-up attempts. Try again later.", code: 429 },
 });
 
-const passwordResetLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
+// Two limiters, not one shared one: a shared counter meant a few "send link"
+// clicks could lock someone out of actually using the link.
+// Sending is the abusable action (it emails someone), so it is the tighter one.
+const forgotPasswordLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
   max: 5,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { message: "Too many password reset requests. Try again later.", code: 429 },
+  message: { message: "Too many reset emails requested. Try again in an hour.", code: 429 },
+});
+// Guessing a 256-bit token is hopeless, so this only stops hammering; it leaves
+// room for someone retyping a password that failed the policy.
+const resetPasswordLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many attempts. Try again in a few minutes.", code: 429 },
 });
 
 const getClientIp = (req) =>
@@ -417,13 +434,23 @@ router.get("/auth/github", githubRedirect);
 router.get("/auth/github/link", githubLinkRedirect);
 router.delete("/auth/github/disconnect", githubDisconnect);
 router.get("/auth/github/callback", githubCallback);
-router.post("/forgot-password", passwordResetLimiter, async (req, res) => {
-  const result = await forgotPassword(req.body);
-  res.status(result.status).json(result);
-});
-router.post("/reset-password", passwordResetLimiter, async (req, res) => {
-  const result = await resetPassword(req.body);
-  res.status(result.status).json(result);
-});
+router.post(
+  "/forgot-password",
+  forgotPasswordLimiter,
+  validate({ body: forgotPasswordSchema }),
+  async (req, res) => {
+    const result = await forgotPassword(req.body);
+    res.status(result.status).json(result);
+  },
+);
+router.post(
+  "/reset-password",
+  resetPasswordLimiter,
+  validate({ body: resetPasswordSchema }),
+  async (req, res) => {
+    const result = await resetPassword(req.body);
+    res.status(result.status).json(result);
+  },
+);
 
 export default router;

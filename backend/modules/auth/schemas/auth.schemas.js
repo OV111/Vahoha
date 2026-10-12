@@ -56,3 +56,16 @@ export const loginSchema = z.object({
     .min(1, "Password is required.")
     .max(1024, "Invalid credentials."),
 });
+
+// Same normalised email as signup/login, so "Me@X.com" finds the "me@x.com" account.
+export const forgotPasswordSchema = z.object({ email });
+
+// The reset token is 32 random bytes as hex (see forgotPassword), so anything
+// else can be rejected without a DB lookup. The new password must meet the
+// signup policy: otherwise "reset" would be a way around it.
+export const resetPasswordSchema = z.object({
+  token: z
+    .string({ required_error: "Reset link is invalid or has expired." })
+    .regex(/^[a-f0-9]{64}$/, "Reset link is invalid or has expired."),
+  newPassword: signupPasswordSchema,
+});

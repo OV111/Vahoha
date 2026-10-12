@@ -40,8 +40,12 @@ export default function ResetPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (newPassword !== confirmPassword) return toast.error("Passwords don't match.");
+    // Same rules as signup (backend signupPasswordSchema). The server checks them
+    // again; this just saves a round trip and gives the message straight away.
     if (newPassword.length < 6) return toast.error("At least 6 characters.");
+    if (!/[!@#$%^&*()]/.test(newPassword))
+      return toast.error("Include at least one symbol (!@#$%^&*()).");
+    if (newPassword !== confirmPassword) return toast.error("Passwords don't match.");
     setIsLoading(true);
     try {
       const res = await confirmPasswordReset(token, newPassword);
@@ -83,7 +87,7 @@ export default function ResetPassword() {
                     required
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Min. 6 characters"
+                    placeholder="6+ characters, one symbol"
                     className={`${inputBase} ${inputNormal} pr-10`}
                   />
                   <button
@@ -126,8 +130,8 @@ export default function ResetPassword() {
                 disabled={isLoading}
                 className={`w-full mt-2 py-2.5 px-4 rounded-md text-sm font-semibold text-white transition-colors duration-150 ${
                   isLoading
-                    ? "bg-fuchsia-300 dark:bg-fuchsia-950 cursor-not-allowed"
-                    : "bg-purple-600 hover:bg-purple-500 active:bg-fuchsia-800 cursor-pointer"
+                    ? "bg-purple-300 dark:bg-purple-950 cursor-not-allowed"
+                    : "bg-purple-600 hover:bg-purple-700 active:bg-purple-800 cursor-pointer"
                 }`}
               >
                 {isLoading ? "Updating…" : "Update password"}

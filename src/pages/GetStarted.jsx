@@ -264,7 +264,7 @@ const GetStarted = () => {
                   {!isSignedUp && (
                     <Link
                       to="/forgot-password"
-                      className="inline-flex min-h-11 items-center text-sm sm:text-[13px] text-fuchsia-600 dark:text-fuchsia-400 hover:underline"
+                      className="inline-flex min-h-11 items-center text-sm sm:text-[13px] text-purple-600 dark:text-purple-400 hover:underline"
                     >
                       Forgot your password?
                     </Link>
@@ -427,7 +427,7 @@ const GetStarted = () => {
               <button
                 type="button"
                 onClick={toggleLink}
-                className="min-h-11 px-1 text-fuchsia-600 dark:text-fuchsia-400 font-medium hover:underline cursor-pointer"
+                className="min-h-11 px-1 text-purple-600 dark:text-purple-400 font-medium hover:underline cursor-pointer"
               >
                 {isSignedUp ? "Sign in" : "Create account"}
               </button>

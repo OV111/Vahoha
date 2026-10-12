@@ -25,6 +25,11 @@ const connectDB = async () => {
       // check-then-insert races on their own; these indexes are the guard.
       // Email is unique only where it is a string: GitHub users may have none.
       db.collection("users").createIndex({ username: 1 }, { unique: true }),
+      // Reset links are looked up by token hash. The TTL index lets Mongo
+      // delete expired links on its own (it sweeps about once a minute; the
+      // query still checks expiresAt, so a not-yet-swept link never works).
+      db.collection("passwordResets").createIndex({ tokenHash: 1 }, { unique: true }),
+      db.collection("passwordResets").createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 }),
       db.collection("users").createIndex(
         { email: 1 },
         { unique: true, partialFilterExpression: { email: { $type: "string" } } },
