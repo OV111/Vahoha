@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion as Motion } from "motion/react";
-import { Mail, Send, Github, CheckCircle2, ChevronDown } from "lucide-react";
+import { Mail, Send, Github, Instagram, CheckCircle2, ChevronDown } from "lucide-react";
 import XLogo from "../components/ui/XLogo";
 import { API_BASE_URL } from "../../constants/api";
 import { SITE } from "../../constants/site";
@@ -13,6 +13,7 @@ const EMPTY_FORM = { name: "", email: "", topic: "", message: "", website: "" };
 
 const SOCIALS = [
   { label: "X", ...SITE.socials.x, Icon: XLogo },
+  { label: "Instagram", ...SITE.socials.instagram, Icon: Instagram },
   { label: "GitHub", ...SITE.socials.github, Icon: Github },
 ];
 

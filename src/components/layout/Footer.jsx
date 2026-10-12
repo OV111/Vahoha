@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { Github, Mail } from "lucide-react";
+import { Github, Instagram, Mail } from "lucide-react";
 import useAuthStore from "../../stores/useAuthStore";
 import { isNavLinkActive } from "@/utils/navigation";
 import Divider from "@/components/ui/Divider";
@@ -8,19 +8,28 @@ import XLogo from "@/components/ui/XLogo";
 import { SITE } from "../../../constants/site";
 import { CATEGORY_OPTIONS } from "../../../constants/Categories";
 
-// Guests only get public routes — anything behind ProtectedLayout would bounce
-// them to the login wall. Members get the core learning loop instead.
+// Guests see the same features as members: a protected page sends them to
+// /get-started, which works as a sign-up funnel. Only account pages (progress,
+// billing) are member-only; guests get Foundations and Pricing in their place.
 const PRODUCT_LINKS_GUEST = [
   { title: "Roadmaps", to: "/roadmaps" },
-  { title: "How it works", to: "/#how-it-works" },
+  { title: "Foundations", to: "/foundations" },
+  { title: "Challenges", to: "/coding-challenges" },
+  { title: "Build Team", to: "/team" },
+  { title: "Capstone", to: "/capstone" },
   { title: "Pricing", to: "/pricing" },
 ];
 const PRODUCT_LINKS_AUTH = [
   { title: "Roadmaps", to: "/roadmaps" },
   { title: "Challenges", to: "/coding-challenges" },
+  { title: "Build Team", to: "/team" },
   { title: "Capstone", to: "/capstone" },
   { title: "My Progress", to: "/progress" },
   { title: "Billing", to: "/billing" },
+];
+const AI_LINKS = [
+  { title: "AI Mentor", to: "/ai-agent" },
+  { title: "Explain it back (soon)", to: "/voice-review" },
 ];
 const COMPANY_LINKS = [
   { title: "About", to: "/about" },
@@ -64,7 +73,7 @@ const LinkColumn = ({
       >
         {links.map(({ title, to }, index) => (
           <NavLink
-            key={to}
+            key={title}
             to={to}
             className={({ isActive }) =>
               `items-center py-1 text-sm transition hover:text-purple-500 sm:py-0 ${
@@ -84,10 +93,10 @@ const LinkColumn = ({
   );
 };
 
-// Heading only for now — content to come.
-const AiColumn = () => (
-  <div className="hidden flex-col gap-1 sm:flex">
-    <h2 className={headingClass}>In the AI era</h2>
+// Hidden on phones, as before; the wrapper keeps that without restyling LinkColumn.
+const AiColumn = ({ links }) => (
+  <div className="hidden sm:block">
+    <LinkColumn title="In the AI era" links={links} />
   </div>
 );
 
@@ -102,7 +111,7 @@ const Footer = () => {
           <div className="col-span-2 flex flex-col items-start sm:col-span-4 lg:col-span-1">
             <Wordmark className="mb-4" />
             <p className="mb-6 max-w-sm text-sm leading-6 text-[#A1A0AB]">
-              Learn, build, and grow as a developer.
+              Learn it, prove it, get seen for it.
             </p>
 
             <p className="mb-4 text-xs font-semibold tracking-[0.22em] text-[#F7F7F8] uppercase">
@@ -119,6 +128,18 @@ const Footer = () => {
               >
                 <XLogo
                   size={15}
+                  className="text-[#A1A0AB] transition group-hover:text-white"
+                />
+              </a>
+              <a
+                href={SITE.socials.instagram.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Vahoha on Instagram"
+                className={iconClass}
+              >
+                <Instagram
+                  size={16}
                   className="text-[#A1A0AB] transition group-hover:text-white"
                 />
               </a>
@@ -151,7 +172,7 @@ const Footer = () => {
             title="Product"
             links={auth ? PRODUCT_LINKS_AUTH : PRODUCT_LINKS_GUEST}
           />
-          <AiColumn />
+          <AiColumn links={AI_LINKS} />
           <LinkColumn title="Company" links={COMPANY_LINKS} />
           <LinkColumn
             title="Topics"

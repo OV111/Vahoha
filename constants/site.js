@@ -7,5 +7,6 @@ export const SITE = {
   socials: {
     x: { handle: "@vahoha_", href: "https://x.com/vahoha_" },
     github: { handle: "OV111", href: "https://github.com/OV111" },
+    instagram: { handle: "@vahoha_", href: "https://www.instagram.com/vahoha_/" },
   },
 };
