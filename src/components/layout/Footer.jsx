@@ -6,7 +6,7 @@ import Divider from "@/components/ui/Divider";
 import Wordmark from "@/components/ui/Wordmark";
 import XLogo from "@/components/ui/XLogo";
 import { SITE } from "../../../constants/site";
-import { CATEGORY_OPTIONS } from "../../../constants/Categories";
+import { CATEGORY_OPTIONS, categoryHref } from "../../../constants/categories";
 
 // Guests see the same features as members: a protected page sends them to
 // /get-started, which works as a sign-up funnel. Only account pages (progress,
@@ -37,9 +37,9 @@ const COMPANY_LINKS = [
   { title: "Privacy Policy", to: "/privacy" },
   { title: "Terms of Service", to: "/terms" },
 ];
-const CATEGORY_LINKS = CATEGORY_OPTIONS.map(({ title, slug }) => ({
-  title,
-  to: `/categories/${slug}`,
+const CATEGORY_LINKS = CATEGORY_OPTIONS.map((category) => ({
+  title: category.title,
+  to: categoryHref(category),
 }));
 
 // Small, medium-weight headings (Stripe/Vercel/Linear style): the links are

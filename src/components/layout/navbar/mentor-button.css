@@ -1,0 +1,59 @@
+/* Pill with a gradient line travelling around its border.
+   --mentor-angle is registered with @property so the browser can
+   interpolate it; a plain custom property would just jump. */
+
+@property --mentor-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.mentor-pill {
+  position: relative;
+  isolation: isolate;
+  border-radius: 9999px;
+  background: rgb(168 85 247 / 0.1);
+  transition: background-color 150ms ease;
+}
+
+.mentor-pill:hover,
+.mentor-pill.active {
+  background: rgb(168 85 247 / 0.2);
+}
+
+/* The border: a conic gradient on a pseudo-element, with the middle masked
+   out so only a 1px ring shows. Works on any navbar background. */
+.mentor-pill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--mentor-angle),
+    rgb(168 85 247 / 0.25) 0deg,
+    rgb(168 85 247 / 0.25) 220deg,
+    #c084fc 280deg,
+    #93c5fd 320deg,
+    #f5d0fe 350deg,
+    rgb(168 85 247 / 0.25) 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mentor-pill::before {
+    animation: mentor-spin 4s linear infinite;
+  }
+}
+
+@keyframes mentor-spin {
+  to {
+    --mentor-angle: 360deg;
+  }
+}

@@ -7,7 +7,7 @@ import {
   NAV_GROUPS_GUEST,
   NAV_LINKS_GUEST,
   TRACK_LINKS,
-} from "../../../../constants/Navbar";
+} from "../../../../constants/navbar";
 import SearchBar from "../../search/SearchBar";
 import NavSearchResults from "./NavSearchResults";
 import UserSummary from "./UserSummary";
@@ -88,8 +88,6 @@ export default function MobileMenu({ auth, showSearch, searchValue, onSearchChan
             <NavSearchResults query={searchValue} />
           </li>
         )}
-
-        <MobileNavLink to="/">Home</MobileNavLink>
 
         {/* Headed sections instead of accordions: the whole map is visible in
             one scroll, no extra taps. Same data as desktop, so guests see the

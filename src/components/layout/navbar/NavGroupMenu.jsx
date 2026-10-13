@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { ChevronDown, Lock } from "lucide-react";
-import { TRACK_LINKS } from "../../../../constants/Navbar";
+import { TRACK_LINKS } from "../../../../constants/navbar";
 import { navItemPath } from "@/utils/navigation";
 import DropdownPanel from "./DropdownPanel";
 import { focusRing } from "./styles";
@@ -94,7 +94,7 @@ const NavGroupMenu = ({ group, activePath, isOpen, onOpen, onClose, onTriggerCli
         open={isOpen}
         id={id}
         className={`left-1/2 -translate-x-1/2 p-2 ${
-          tracks.length ? "w-[34rem]" : isRich ? "w-80" : "w-44"
+          tracks.length ? "w-[32rem]" : isRich ? "w-72" : "w-40"
         }`}
       >
         <div className={tracks.length ? "grid grid-cols-[1fr_11rem] gap-2" : ""}>

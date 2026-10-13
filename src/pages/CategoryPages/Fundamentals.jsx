@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-import { FUNDAMENTALS_CONCEPTS } from "../../../constants/Categories";
+import { TOPICS } from "../../features/foundations/topics/topics";
 
 export default function Fundamentals() {
   return (
@@ -54,7 +54,7 @@ export default function Fundamentals() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, delay: 0.25 }}
       >
-        {FUNDAMENTALS_CONCEPTS.map((concept, i) => (
+        {TOPICS.map((concept, i) => (
           <motion.div
             key={concept.title}
             initial={{ opacity: 0, y: 16 }}
@@ -80,7 +80,7 @@ export default function Fundamentals() {
               </span>
             </div>
             <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed">
-              {concept.desc}
+              {concept.summary}
             </p>
           </motion.div>
         ))}

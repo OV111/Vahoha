@@ -1,4 +1,4 @@
-import { CATEGORY_OPTIONS2 } from "../../../../constants/Categories";
+import { ROADMAP_DOMAINS } from "../../../../constants/categories";
 import useRoadmapStore from "../../../stores/useRoadmapStore";
 
 const CategoryBar = () => {
@@ -15,7 +15,7 @@ const CategoryBar = () => {
       `}</style> */}
 
       <div className="flex flex-wrap gap-2 justify-center items-center mx-auto">
-        {CATEGORY_OPTIONS2.map((category) => {
+        {ROADMAP_DOMAINS.map((category) => {
           const isSelected = selectedCategory?.id === category.id;
           return (
             <button

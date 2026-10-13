@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { Search, SlidersHorizontal, X } from "lucide-react";
-import { TABS } from "../../../constants/LibsPage";
+import { TABS } from "../../../constants/libsPage";
 import { LIBS_DATA } from "../../../constants/libs";
 import {
   fetchLibraryResourceCounts,

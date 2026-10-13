@@ -67,12 +67,16 @@ const CapstoneAdminPage = lazy(
 const VoiceReviewPage = lazy(
   () => import("./features/voice-review/VoiceReviewPage"),
 );
+const VoiceExamPage = lazy(() => import("./features/voice-exam/VoiceExamPage"));
 const PricingPage = lazy(() => import("./features/billing/PricingPage"));
 const BillingPage = lazy(() => import("./features/billing/BillingPage"));
 const ProgressPage = lazy(() => import("./features/mastery/ProgressPage"));
 
 const FoundationsPage = lazy(
   () => import("./features/foundations/FoundationsPage"),
+);
+const FoundationTopicPage = lazy(
+  () => import("./features/foundations/TopicPage"),
 );
 const FullStack = lazy(() => import("./pages/CategoryPages/FullStack"));
 const Backend = lazy(() => import("./pages/CategoryPages/Backend"));
@@ -120,12 +124,19 @@ export const routes = [
       // Public on purpose, but only for developers who opted in (the API answers 404 otherwise).
       { path: "candidate/:username", element: <CandidatePage /> },
       { path: "foundations", element: <FoundationsPage /> },
+      { path: "foundations/:slug", element: <FoundationTopicPage /> },
       {
         path: "categories",
         children: [
+          // No category index page: bare /categories is a 404, not a blank page.
+          { index: true, element: <NotFound /> },
           // Old URL kept as a redirect so existing links and the navbar don't 404.
           {
             path: "fundamentals",
+            element: <Navigate to="/foundations" replace />,
+          },
+          {
+            path: "foundations",
             element: <Navigate to="/foundations" replace />,
           },
           { path: "fullstack", element: <FullStack /> },
@@ -170,6 +181,7 @@ export const routes = [
           { path: "billing", element: <BillingPage /> },
           { path: "progress", element: <ProgressPage /> },
           { path: "voice-review", element: <VoiceReviewPage /> },
+          { path: "voice-exam/:layerId", element: <VoiceExamPage /> },
           { path: "users/:username", element: <UserProfile /> },
           {
             path: "my-profile",

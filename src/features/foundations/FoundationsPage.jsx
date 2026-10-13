@@ -6,82 +6,55 @@ import {
   AnimatePresence,
   MotionConfig,
 } from "motion/react";
+import { ArrowRight } from "lucide-react";
 import { Reveal } from "../../components/motion/Reveal.jsx";
-import { useReveal } from "../../components/motion/useReveal.js";
 import "./foundations-theme.css";
-import { buildFoundations, FOUNDATIONS_FAQ } from "./foundationsData.js";
+import { FOUNDATIONS_FAQ } from "./faq.js";
+import { TOPICS, TOPIC_GROUPS } from "./topics/topics.js";
 
-const GROUP_FILTERS = [
-  { id: "all", label: "All" },
-  { id: "core", label: "Core" },
-  { id: "eng", label: "Engineering" },
-  { id: "ai", label: "AI era" },
-];
+const GROUP_FILTERS = [{ id: "all", label: "All" }, ...TOPIC_GROUPS];
 const LEVEL_FILTERS = ["beginner", "medium", "hard"];
-
-// One entry per group = one section. Order here is the order on the page.
-const SECTIONS = [
-  {
-    id: "ai",
-    eyebrow: "New",
-    title: "Skills for the AI era",
-    sub: "Work that exists because AI now writes code.",
-  },
-  {
-    id: "core",
-    eyebrow: "Core",
-    title: "Core fundamentals",
-    sub: "What every developer needs, and why it matters more now.",
-  },
-  {
-    id: "eng",
-    eyebrow: "Engineering",
-    title: "Beyond the code",
-    sub: "System design, architecture and the habits that keep real software running.",
-  },
-];
-
 const EASE = [0.22, 1, 0.36, 1];
-const CARD_STAGGER = 0.08; // seconds between neighbours in a row
-const COLUMNS = 3; // matches the grid on desktop; extra delay on narrow screens is harmless
 
-function FoundationCard({ card, index }) {
-  // Cards are individually observed (the grid is too tall for one 20% trigger on
-  // phones), so the 80ms stagger comes from each card's position in its row.
-  const reveal = useReveal({ delay: (index % COLUMNS) * CARD_STAGGER });
+// The number is the topic's place in the whole syllabus, so it stays the same
+// when filters hide other rows ("07" is always Package Management).
+const NUMBERED = TOPICS.map((t, i) => ({ ...t, num: String(i + 1).padStart(2, "0") }));
+const LESSON_COUNT = TOPICS.filter((t) => t.lesson).length;
+const FIRST_LESSON = TOPICS.find((t) => t.lesson);
+
+function SyllabusRow({ topic }) {
+  const body = (
+    <>
+      <span className="f-row-num">{topic.num}</span>
+      <span className="f-row-main">
+        <span className="f-row-title">{topic.title}</span>
+        <span className="f-row-summary">{topic.summary}</span>
+      </span>
+      <span className={`f-row-level f-level-${topic.difficulty}`}>{topic.difficulty}</span>
+      <span className="f-row-end" aria-hidden="true">
+        {topic.lesson ? <ArrowRight size={16} /> : "Soon"}
+      </span>
+    </>
+  );
+
   return (
-    <motion.article
+    <motion.li
       layout
-      {...reveal}
-      exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.15 } }}
-      whileHover={{ y: -4 }}
-      transition={{
-        ...reveal.transition,
-        layout: { duration: 0.35, ease: EASE },
-      }}
-      className={`f-card ${card.group === "ai" ? "f-card-ai" : ""}`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: 0.12 } }}
+      transition={{ layout: { duration: 0.3, ease: EASE } }}
     >
-      <div className="f-card-top">
-        <span className="f-icon" aria-hidden="true">
-          {card.icon}
-        </span>
-        <span className="f-card-tags" style={{ display: "flex", gap: 6 }}>
-          {card.group === "ai" && <span className="f-tag f-tag-ai">AI era</span>}
-          {card.group === "eng" && <span className="f-tag">Engineering</span>}
-          <span className={`f-tag f-tag-${card.difficulty}`}>
-            {card.difficulty}
-          </span>
-        </span>
-      </div>
-      <h3 className="f-card-title">{card.title}</h3>
-      <p className="f-card-desc">{card.desc}</p>
-      {card.aiNote && (
-        <p className="f-ai-note">
-          <b>In the AI era</b>
-          {card.aiNote}
-        </p>
+      {/* Only topics with a written lesson link anywhere; the rest are visible
+          so learners see the whole path, but not clickable dead ends. */}
+      {topic.lesson ? (
+        <Link to={`/foundations/${topic.slug}`} className="f-row">
+          {body}
+        </Link>
+      ) : (
+        <div className="f-row f-row-soon">{body}</div>
       )}
-    </motion.article>
+    </motion.li>
   );
 }
 
@@ -147,28 +120,24 @@ export default function FoundationsPage() {
   const [group, setGroup] = useState("all");
   const [level, setLevel] = useState(null);
 
-  const cards = useMemo(() => buildFoundations(), []);
   const visible = useMemo(
     () =>
-      cards.filter(
-        (c) =>
-          (group === "all" || c.group === group) &&
-          (!level || c.difficulty === level),
+      NUMBERED.filter(
+        (t) =>
+          (group === "all" || t.group === group) &&
+          (!level || t.difficulty === level),
       ),
-    [cards, group, level],
+    [group, level],
   );
 
   return (
-    // reducedMotion="user" also covers the hover lift and layout moves; the
-    // Reveal helpers check useReducedMotion themselves because "user" only
-    // disables transforms, not opacity.
+    // reducedMotion="user" also covers the layout moves; the Reveal helpers
+    // check useReducedMotion themselves because "user" only disables
+    // transforms, not opacity.
     <MotionConfig reducedMotion="user">
       <div className="foundations-theme">
         <div className="f-wrap">
           <Reveal as="header" className="f-hero" stagger={0.1} onLoad>
-            <Reveal.Item as="span" className="f-eyebrow">
-              <span className="f-dot" /> Free · No account needed
-            </Reveal.Item>
             <Reveal.Item as="h1" className="f-display">
               The foundations every developer still needs.
             </Reveal.Item>
@@ -177,19 +146,27 @@ export default function FoundationsPage() {
               skills to direct, review and trust what AI builds.
             </Reveal.Item>
             <Reveal.Item className="f-actions">
-              <a href="#core" className="f-btn f-btn-primary">
-                Start learning
-              </a>
-              <Link to="/roadmaps" className="f-btn f-btn-ghost">
-                Browse roadmaps
+              <Link
+                to={`/foundations/${FIRST_LESSON.slug}`}
+                className="f-btn f-btn-primary"
+              >
+                Start with {FIRST_LESSON.title}
               </Link>
+              <a href="#syllabus" className="f-btn f-btn-ghost">
+                See the syllabus
+              </a>
             </Reveal.Item>
             <Reveal.Item as="p" className="f-meta">
-              {cards.length} topics | Core, Engineering, AI era | Free forever
+              {TOPICS.length} topics · {LESSON_COUNT} lessons ready · Free
             </Reveal.Item>
           </Reveal>
 
-          <div className="f-filters" role="group" aria-label="Filter foundations">
+          <div
+            id="syllabus"
+            className="f-filters"
+            role="group"
+            aria-label="Filter topics"
+          >
             {GROUP_FILTERS.map((f) => (
               <FilterPill
                 key={f.id}
@@ -217,23 +194,23 @@ export default function FoundationsPage() {
             <p className="f-empty">Nothing matches those filters.</p>
           )}
 
-          {SECTIONS.map((s) => {
-            const items = visible.filter((c) => c.group === s.id);
+          {TOPIC_GROUPS.map((g) => {
+            const items = visible.filter((t) => t.group === g.id);
             if (items.length === 0) return null;
             return (
-              <section key={s.id} id={s.id} className="f-section">
+              <section key={g.id} id={g.id} className="f-section">
                 <Reveal>
-                  <p className="f-section-eyebrow">{s.eyebrow}</p>
-                  <h2 className="f-section-title">{s.title}</h2>
-                  <p className="f-section-sub">{s.sub}</p>
+                  <p className="f-section-eyebrow">{g.label}</p>
+                  <h2 className="f-section-title">{g.title}</h2>
+                  <p className="f-section-sub">{g.sub}</p>
                 </Reveal>
-                <div className="f-grid">
-                  <AnimatePresence mode="popLayout">
-                    {items.map((c, i) => (
-                      <FoundationCard key={c.title} card={c} index={i} />
+                <ol className="f-syllabus">
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    {items.map((t) => (
+                      <SyllabusRow key={t.slug} topic={t} />
                     ))}
                   </AnimatePresence>
-                </div>
+                </ol>
               </section>
             );
           })}

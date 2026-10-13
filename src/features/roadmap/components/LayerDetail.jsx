@@ -10,10 +10,12 @@ import {
   Check,
   ChevronRight,
   Lock,
+  Mic,
 } from "lucide-react";
 import useRoadmapStore from "@/stores/useRoadmapStore";
 import useAuthStore from "@/stores/useAuthStore";
 import LayerPosts from "./LayerPosts";
+import { hasVoiceExam } from "@/features/voice-exam/lib/pilotLayers";
 
 const resourceTypeColor = {
   docs: "bg-blue-900/30 text-blue-400 border border-blue-800/50",
@@ -30,7 +32,6 @@ const LayerDetail = () => {
     activeLayer,
     closePanel,
     layerProgress,
-    setLayerStatus,
     selectedCategory,
   } = useRoadmapStore();
   const { auth } = useAuthStore();
@@ -40,10 +41,6 @@ const LayerDetail = () => {
   const currentStatus =
     layerProgress[activeLayer.id] ?? activeLayer.status ?? "locked";
   const isDone = currentStatus === "done";
-
-  const toggleComplete = () => {
-    setLayerStatus(activeLayer.id, isDone ? "in-progress" : "done");
-  };
 
   return (
     <>
@@ -190,36 +187,49 @@ const LayerDetail = () => {
           </div>
         ) : (
           <div className="px-6 py-4 border-t border-neutral-800 flex items-center justify-between gap-3">
-            <button
-              onClick={toggleComplete}
-              className={`
-              flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-xl border transition-all duration-200
-              ${
-                isDone
-                  ? "bg-purple-600/20 border-purple-600/50 text-purple-300 hover:bg-purple-600/30"
-                  : "bg-neutral-900 border-neutral-700 text-neutral-400 hover:border-neutral-500 hover:text-neutral-200"
-              }
-            `}
+            {/* Read-only on purpose: a layer is completed only by passing its
+                exam, never by clicking. */}
+            <span
+              className={`flex items-center gap-2 text-sm font-medium ${
+                isDone ? "text-purple-300" : "text-neutral-400"
+              }`}
             >
-              <Check
-                size={14}
-                className={isDone ? "text-purple-400" : "text-neutral-600"}
-              />
-              {isDone ? "Completed" : "Mark complete"}
-            </button>
+              {isDone ? (
+                <Check size={14} className="text-purple-400" aria-hidden="true" />
+              ) : (
+                <Lock size={14} className="text-neutral-600" aria-hidden="true" />
+              )}
+              {isDone ? "Completed" : "Pass the exam to complete"}
+            </span>
 
-            <button
-              onClick={() => {
-                closePanel();
-                navigate(
-                  `/roadmaps/exam/${activeLayer.id}?path=${selectedCategory?.id ?? "backend"}`,
-                );
-              }}
-              className="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white transition-colors duration-200"
-            >
-              Take Exam
-              <ChevronRight size={14} />
-            </button>
+            <div className="flex items-center gap-2">
+              {hasVoiceExam(activeLayer.id) && (
+                <button
+                  onClick={() => {
+                    closePanel();
+                    navigate(
+                      `/voice-exam/${activeLayer.id}?path=${selectedCategory?.id ?? "backend"}`,
+                    );
+                  }}
+                  className="flex min-h-11 items-center gap-2 text-sm font-medium px-4 py-2 rounded-xl border border-purple-600/50 text-purple-300 hover:bg-purple-600/20 transition-colors duration-200"
+                >
+                  <Mic size={14} aria-hidden="true" />
+                  Voice exam
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  closePanel();
+                  navigate(
+                    `/roadmaps/exam/${activeLayer.id}?path=${selectedCategory?.id ?? "backend"}`,
+                  );
+                }}
+                className="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white transition-colors duration-200"
+              >
+                Take Exam
+                <ChevronRight size={14} />
+              </button>
+            </div>
           </div>
         )}
       </motion.div>

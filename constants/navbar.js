@@ -15,12 +15,12 @@ import {
   TrendingUp,
   PenLine,
 } from "lucide-react";
-import { CATEGORY_OPTIONS } from "./Categories";
+import { CATEGORY_OPTIONS, categoryHref } from "./categories";
 
 // Career-track pages, shared by the Learn menu and the guests' Tracks menu.
-export const TRACK_LINKS = CATEGORY_OPTIONS.map(({ title, slug }) => ({
-  label: title,
-  to: `/categories/${slug}`,
+export const TRACK_LINKS = CATEGORY_OPTIONS.map((category) => ({
+  label: category.title,
+  to: categoryHref(category),
 }));
 
 // Paths are absolute on purpose: a relative `to` resolves against the route
@@ -90,10 +90,3 @@ export const AVATAR_MENU_ITEMS = [
   { label: "Billing", to: "/billing", icon: CreditCard },
   { label: "Settings", to: "/my-profile/settings", icon: SettingsIcon },
 ];
-
-export const LIBS_OPTIONS = [
-    { title: "Books", slug: "books" },
-    { title: "Documents", slug: "docs" },
-    { title: "Guides", slug: "guides" },
-    { title: "Sheets", slug: "sheets" },
-  ];

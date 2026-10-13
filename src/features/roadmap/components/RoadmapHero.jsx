@@ -1,12 +1,12 @@
 import { motion as Motion, useReducedMotion } from "framer-motion";
-import { CATEGORY_OPTIONS2 } from "../../../../constants/Categories";
+import { ROADMAP_DOMAINS } from "../../../../constants/categories";
 import { TRACKS } from "../../../../constants/roadmapPaths.js";
 
 // Counts come from the same constants the page renders, so the meta strip
 // can't drift from what the user will actually see.
 const ALL_TRACKS = Object.values(TRACKS).flat();
 const META = [
-  `${CATEGORY_OPTIONS2.length} domains`,
+  `${ROADMAP_DOMAINS.length} domains`,
   `${ALL_TRACKS.length} tracks`,
   `${ALL_TRACKS.filter((t) => t.available).length} available`,
 ];

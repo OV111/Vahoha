@@ -13,7 +13,7 @@ import {
   SORT_OPTIONS,
   DIFFICULTIES,
   READ_TIMES,
-} from "../../../constants/Blogs";
+} from "../../../constants/blogs";
 
 const PAGE_SIZE = 12; // divisible by 2 and 3, so the grid never ends on a gap
 const DEFAULTS = { sort: "Newest", page: "1" };

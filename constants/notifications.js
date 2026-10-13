@@ -1,6 +1,6 @@
 import { UserPlus, MessageCircle, Heart, FileText } from "lucide-react";
 
-export const FILTERS = ["All", "Unread", "Follows", "Messages", "Likes"];
+export const FILTERS = ["All", "Unread", "Follows", "Messages", "Likes", "Posts"];
 
 export const TYPE_META = {
   follow: {
@@ -33,4 +33,5 @@ export const FILTER_TYPE_MAP = {
   Follows: "follow",
   Messages: "new_message",
   Likes: "post_like",
+  Posts: "new_post",
 };

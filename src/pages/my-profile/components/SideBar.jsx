@@ -1,4 +1,4 @@
-import { sidebarArr } from "../../../../constants/Sidebars.jsx";
+import { sidebarArr } from "../../../../constants/sidebars";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useAuthStore from "../../../stores/useAuthStore.js";
 import Skeleton from "react-loading-skeleton";
@@ -121,7 +121,9 @@ export default function SideBar() {
               <p className="hidden px-2 py-0 text-[11px] uppercase tracking-wider text-[#8A8A93] font-semibold lg:block lg:py-0.5">
                 {group.section}
               </p>
-              {group.items.map((item) => (
+              {group.items.map((item) => {
+                const Icon = item.icon;
+                return (
                 <NavLink
                   key={`${item.to}-${item.label}`}
                   to={item.to}
@@ -142,10 +144,13 @@ export default function SideBar() {
                     })()
                   }
                 >
-                  <p className="flex items-center">{item.icon}</p>
+                  <p className="flex items-center">
+                    <Icon size={22} aria-hidden="true" />
+                  </p>
                   <p className="hidden text-[14px] lg:block">{item.label}</p>
                 </NavLink>
-              ))}
+                );
+              })}
             </div>
           ))}
         </nav>

@@ -12,14 +12,17 @@ import { FaGithub } from "react-icons/fa";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const inputBase =
-  "min-h-11 w-full px-3.5 py-2.5 text-base sm:text-sm text-[#30313d] dark:text-white bg-white dark:bg-zinc-800 border rounded-md placeholder:text-[#a3acb9] dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-fuchsia-100 dark:focus:ring-fuchsia-900/30 transition-all duration-150";
+  "min-h-10 w-full px-3.5 py-2 text-base sm:text-sm text-[#30313d] dark:text-white bg-white dark:bg-zinc-800 border rounded-md placeholder:text-[#a3acb9] dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-fuchsia-100 dark:focus:ring-fuchsia-900/30 transition-all duration-150";
 const inputNormal =
   "border-[#e0e0e0] dark:border-zinc-700 focus:border-fuchsia-500 dark:focus:border-fuchsia-400";
 const inputError =
   "border-red-400 dark:border-red-500 focus:border-red-400 dark:focus:border-red-500 focus:ring-red-100 dark:focus:ring-red-900/30";
 const labelClass =
   "block text-sm font-medium text-[#30313d] dark:text-zinc-300 mb-1.5";
-const errorClass = "text-red-500 dark:text-red-400 text-sm sm:text-xs mt-1";
+const errorClass = "text-red-500 dark:text-red-400 text-xs mt-1";
+// Invisible 44px tap area on mobile; the visible control stays compact.
+const tapArea =
+  "max-md:after:absolute max-md:after:-inset-y-1 max-md:after:inset-x-0";
 // Icon-only buttons need a 44px hit area even though the glyph stays 16px.
 const eyeBtnClass =
   "absolute right-0 top-0 flex h-11 w-11 items-center justify-center text-[#a3acb9] dark:text-zinc-500 hover:text-[#697386] dark:hover:text-zinc-400 cursor-pointer transition-colors";
@@ -154,7 +157,7 @@ const GetStarted = () => {
             <h1 className="flex justify-center text-[22px] sm:text-[24px] font-semibold leading-tight text-[#1a1f36] dark:text-white mb-1">
               {isSignedUp ? "Create your account" : "Sign in to your account"}
             </h1>
-            <p className="flex justify-center text-base sm:text-[13.5px] text-[#697386] dark:text-zinc-400 mb-7 text-center">
+            <p className="flex justify-center text-[13.5px] text-[#697386] dark:text-zinc-400 mb-6 text-center">
               {isSignedUp
                 ? "Join Vahoha and start building today."
                 : "Welcome back! Enter your details below."}
@@ -162,7 +165,7 @@ const GetStarted = () => {
 
             {/* Error banner */}
             {authUiMessage && (
-              <div className="mb-5 rounded-md border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 px-3.5 py-2.5 text-base sm:text-sm text-red-600 dark:text-red-400">
+              <div className="mb-5 rounded-md border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 px-3.5 py-2.5 text-sm text-red-600 dark:text-red-400">
                 {authUiMessage}
               </div>
             )}
@@ -264,7 +267,7 @@ const GetStarted = () => {
                   {!isSignedUp && (
                     <Link
                       to="/forgot-password"
-                      className="inline-flex min-h-11 items-center text-sm sm:text-[13px] text-purple-600 dark:text-purple-400 hover:underline"
+                      className="relative inline-flex items-center text-[13px] max-md:after:absolute max-md:after:-inset-x-1 max-md:after:-inset-y-3 text-purple-600 dark:text-purple-400 hover:underline"
                     >
                       Forgot your password?
                     </Link>
@@ -361,7 +364,7 @@ const GetStarted = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full min-h-11 mt-2 py-2.5 px-4 rounded-md text-base sm:text-sm font-semibold text-white transition-colors duration-150 ${
+                className={`relative w-full min-h-10 mt-2 py-2 px-4 rounded-md text-sm font-semibold ${tapArea} text-white transition-colors duration-150 ${
                   isLoading
                     ? "bg-fuchsia-300 dark:bg-fuchsia-950 cursor-not-allowed"
                     : "bg-fuchsia-600 hover:bg-fuchsia-700 active:bg-fuchsia-800 cursor-pointer"
@@ -385,7 +388,7 @@ const GetStarted = () => {
             </div>
 
             {/* Social buttons */}
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-col gap-2.5 sm:flex-row">
               {/* Hidden real Google button */}
               <div ref={googleBtnRef} className="hidden">
                 <GoogleLogin
@@ -401,7 +404,7 @@ const GetStarted = () => {
                     ?.querySelector("div[role=button]")
                     ?.click()
                 }
-                className="flex min-h-11 w-full cursor-pointer items-center justify-center gap-2.5 rounded-md border border-[#e0e0e0] dark:border-zinc-700 bg-white dark:bg-zinc-800 py-2.5 px-4 text-base sm:text-sm font-medium text-[#30313d] dark:text-zinc-200 transition hover:bg-gray-50 dark:hover:bg-zinc-700"
+                className={`relative flex min-h-10 w-full cursor-pointer items-center justify-center gap-2.5 rounded-md border border-[#e0e0e0] dark:border-zinc-700 bg-white dark:bg-zinc-800 py-2 px-4 text-sm ${tapArea} font-medium text-[#30313d] dark:text-zinc-200 transition hover:bg-gray-50 dark:hover:bg-zinc-700`}
               >
                 <FcGoogle size={18} />
                 Continue with Google
@@ -412,7 +415,7 @@ const GetStarted = () => {
                 onClick={() => {
                   window.location.href = `${API_BASE_URL}/auth/github`;
                 }}
-                className="flex min-h-11 w-full cursor-pointer items-center justify-center gap-2.5 rounded-md border border-[#30363d] dark:border-zinc-700 bg-[#24292e] dark:bg-zinc-800 py-2.5 px-4 text-base sm:text-sm font-medium text-white dark:text-zinc-200 transition hover:bg-[#2f363d] dark:hover:bg-zinc-700"
+                className={`relative flex min-h-10 w-full cursor-pointer items-center justify-center gap-2.5 rounded-md border border-[#30363d] dark:border-zinc-700 bg-[#24292e] dark:bg-zinc-800 py-2 px-4 text-sm ${tapArea} font-medium text-white dark:text-zinc-200 transition hover:bg-[#2f363d] dark:hover:bg-zinc-700`}
               >
                 <FaGithub size={18} />
                 Continue with GitHub
@@ -420,14 +423,14 @@ const GetStarted = () => {
             </div>
 
             {/* Toggle */}
-            <p className="mt-6 text-center text-base sm:text-[13.5px] text-[#697386] dark:text-zinc-400">
+            <p className="mt-5 text-center text-[13.5px] text-[#697386] dark:text-zinc-400">
               {isSignedUp
                 ? "Already have an account? "
                 : "Don't have an account? "}
               <button
                 type="button"
                 onClick={toggleLink}
-                className="min-h-11 px-1 text-purple-600 dark:text-purple-400 font-medium hover:underline cursor-pointer"
+                className="relative px-1 text-purple-600 max-md:after:absolute max-md:after:-inset-x-1 max-md:after:-inset-y-3 dark:text-purple-400 font-medium hover:underline cursor-pointer"
               >
                 {isSignedUp ? "Sign in" : "Create account"}
               </button>

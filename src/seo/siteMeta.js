@@ -6,6 +6,8 @@
 // and the home-page tagline. Review and rewrite them (title < 60 chars,
 // description < 155 chars) before expecting them to rank.
 
+import { TOPICS } from "../features/foundations/topics/topics.js";
+
 export const SITE_URL = "https://vahoha.com";
 export const SITE_NAME = "Vahoha";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
@@ -22,6 +24,16 @@ const category = (label, slug) => ({
     description: `Follow the ${label} roadmap on ${SITE_NAME}: pass graded exams to unlock each layer, with an AI mentor.`,
   },
 });
+
+// One public page per Foundations topic that has a written lesson. Topics
+// without one 404, so they must stay out of the sitemap.
+const foundationLessons = () =>
+  Object.fromEntries(
+    TOPICS.filter((t) => t.lesson).map((t) => [
+      `/foundations/${t.slug}`,
+      { title: `${t.title} | Foundations | ${SITE_NAME}`, description: t.summary },
+    ]),
+  );
 
 // Public, indexable pages. Key = pathname.
 export const PUBLIC_PAGES = {
@@ -55,6 +67,7 @@ export const PUBLIC_PAGES = {
     title: `Terms of Service | ${SITE_NAME}`,
     description: `The terms that apply when you use ${SITE_NAME}.`,
   },
+  ...foundationLessons(),
   ...category("Full Stack", "fullstack"),
   ...category("Backend", "backend"),
   ...category("Mobile", "mobile"),
@@ -94,6 +107,17 @@ export const isPrivatePath = (pathname) =>
 // JSON-LD per page type. Uses only facts already on the page (name, description).
 // The home page's WebSite + Organization graph lives in index.html.
 export const jsonLdFor = ({ title, description, path }) => {
+  if (path.startsWith("/foundations/")) {
+    return {
+      "@context": "https://schema.org",
+      "@type": "LearningResource",
+      name: title.replace(/ \|.*$/, ""),
+      description,
+      url: `${SITE_URL}${path}`,
+      isAccessibleForFree: true,
+      provider: { "@id": `${SITE_URL}/#organization` },
+    };
+  }
   if (path.startsWith("/categories/")) {
     return {
       "@context": "https://schema.org",

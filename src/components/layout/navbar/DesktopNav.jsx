@@ -5,7 +5,7 @@ import {
   NAV_GROUPS_GUEST,
   NAV_LINKS_GUEST,
   TRACK_LINKS,
-} from "../../../../constants/Navbar";
+} from "../../../../constants/navbar";
 import NavGroupMenu from "./NavGroupMenu";
 import MentorButton from "./MentorButton";
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import SOCIAL_LINKS from "../../constants/SocialLinks";
+import SOCIAL_LINKS from "../../constants/socialLinks";
 import LoadingSuspense from "../components/feedback/LoadingSuspense";
 import SideBar from "./my-profile/components/SideBar";
 import useProfileStore from "@/stores/useProfileStore";
@@ -243,7 +243,9 @@ const MyProfile = () => {
                 ))}
               </div>
               <div className="flex items-center gap-6 text-2xl text-gray-600 dark:text-gray-400">
-                {SOCIAL_LINKS.filter((item) => stats?.[item.key]).map((item) => (
+                {SOCIAL_LINKS.filter((item) => stats?.[item.key]).map((item) => {
+                  const Icon = item.icon;
+                  return (
                   <a
                     key={item.key}
                     href={stats[item.key]}
@@ -252,9 +254,10 @@ const MyProfile = () => {
                     aria-label={item.label}
                     className={`relative transition after:absolute after:-inset-2.5 ${item.hover}`}
                   >
-                    {item.icon}
+                    <Icon size={22} />
                   </a>
-                ))}
+                  );
+                })}
                 {!SOCIAL_LINKS.some((item) => stats?.[item.key]) && (
                   <Link
                     to="settings"

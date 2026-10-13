@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Plus, ChevronRight } from "lucide-react";
-import { DROPDOWN_ITEMS } from "../../../../constants/AiAgent";
+import { DROPDOWN_ITEMS } from "../../../../constants/aiAgent";
 
 /**
  * The "+" menu next to the composer.

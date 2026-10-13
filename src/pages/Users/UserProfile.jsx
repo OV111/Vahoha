@@ -8,7 +8,7 @@ import { fetchUserBlogs } from "@/services/blogsApi";
 import BlogCard from "@/components/blog/BlogCard";
 import useProfileStore from "@/stores/useProfileStore";
 import ProfileSkeleton from "./ProfileSkeleton";
-import SOCIAL_LINKS from "../../../constants/SocialLinks";
+import SOCIAL_LINKS from "../../../constants/socialLinks";
 import { SectionHeader, ForHiringPanel } from "../my-profile/components/ProfileSections";
 import { CertificateCard, EmptyState, ExamRow } from "@/features/profile/components/ProfileProgress";
 import ProfileBanner from "@/features/profile/components/ProfileBanner";
@@ -319,7 +319,9 @@ export default function UserProfile() {
 
               {/* Only links the user actually set, like /my-profile (no greyed-out dead icons). */}
               <div className="flex items-center gap-6 text-2xl text-gray-600 dark:text-gray-400">
-                {SOCIAL_LINKS.filter((item) => stats?.[item.key]).map((item) => (
+                {SOCIAL_LINKS.filter((item) => stats?.[item.key]).map((item) => {
+                  const Icon = item.icon;
+                  return (
                   <a
                     key={item.key}
                     href={stats[item.key]}
@@ -328,9 +330,10 @@ export default function UserProfile() {
                     aria-label={item.label}
                     className={`relative transition after:absolute after:-inset-2.5 ${item.hover}`}
                   >
-                    {item.icon}
+                    <Icon size={22} />
                   </a>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>

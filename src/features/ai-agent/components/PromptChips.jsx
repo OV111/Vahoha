@@ -1,4 +1,4 @@
-import { CHIPS } from "../../../../constants/AiAgent";
+import { CHIPS } from "../../../../constants/aiAgent";
 
 /**
  * Quick-prompt chips for the empty state.

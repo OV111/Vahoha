@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { Toaster, toast } from "react-hot-toast";
-import CategoryBar from "./components/CategotyBar";
+import CategoryBar from "./components/CategoryBar";
 import TrackSelector from "./components/TrackSelector";
 import RoadmapTree from "./components/RoadmapTree";
 import useRoadmapStore from "../../stores/useRoadmapStore";

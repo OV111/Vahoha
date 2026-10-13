@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { Search, X } from "lucide-react";
 import TrackCard from "./TrackCard";
 import { buildCatalog, countByDomain, filterCatalog } from "../lib/catalog";
-import { CATEGORY_OPTIONS2 } from "../../../../constants/Categories";
+import { ROADMAP_DOMAINS } from "../../../../constants/categories";
 
 const CATALOG = buildCatalog();
 const COUNTS = countByDomain(CATALOG);
@@ -99,7 +99,7 @@ export default function TrackCatalog({ onSelect }) {
         >
           All <span className="font-mono text-xs opacity-70">{CATALOG.length}</span>
         </button>
-        {CATEGORY_OPTIONS2.map((domain) => (
+        {ROADMAP_DOMAINS.map((domain) => (
           <button
             key={domain.id}
             type="button"

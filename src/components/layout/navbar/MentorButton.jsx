@@ -1,19 +1,15 @@
 import { NavLink } from "react-router-dom";
 import { Sparkles } from "lucide-react";
+import "./mentor-button.css";
 
-// Styled like the other section links so the bar reads as one row; only the
-// sparkle marks it as the AI feature. Static on purpose: no idle animation
-// repainting on every page.
+// Mentor is the flagship feature, so it sits in a pill with a light line
+// travelling around the border. CSS-only and respects reduced motion.
 const MentorButton = ({ className = "" }) => (
   <NavLink
     to="/ai-agent"
-    className={({ isActive }) =>
-      `flex items-center gap-1 rounded transition focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none ${
-        isActive ? "text-purple-500" : "hover:text-purple-500"
-      } ${className}`
-    }
+    className={`mentor-pill flex items-center gap-1 px-2.5 py-0.5 font-semibold text-purple-200 focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none ${className}`}
   >
-    <Sparkles size={13} className="text-purple-600" />
+    <Sparkles size={13} className="text-purple-400" />
     Mentor
   </NavLink>
 );

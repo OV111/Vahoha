@@ -64,28 +64,6 @@
   padding: 120px 0 64px;
   isolation: isolate;
 }
-.foundations-theme .f-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--f-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--f-ash);
-  background: rgba(27, 28, 30, 0.7);
-  border: 1px solid var(--f-border);
-  border-radius: 9999px;
-  padding: 6px 14px;
-  margin-bottom: 28px;
-  backdrop-filter: blur(12px);
-}
-.foundations-theme .f-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  background: var(--f-accent-glow);
-}
 .foundations-theme .f-display {
   /* The original Fundamentals headline gradient (amber-400 / orange-400 /
      amber-500), eased halfway toward a lighter amber-200 / orange-300 / amber-300. */
@@ -230,93 +208,404 @@
   color: var(--f-ash);
 }
 
-/* Cards: the "key cap" treatment */
-.foundations-theme .f-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+/* Syllabus: a numbered table of contents, not a card grid. Hairline rows,
+   mono numbers, and the title is the only bright text in a row. */
+.foundations-theme .f-syllabus {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--f-badge);
 }
-.foundations-theme .f-card {
+.foundations-theme .f-syllabus > li {
+  border-bottom: 1px solid var(--f-badge);
+}
+.foundations-theme .f-row {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto 40px;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 8px;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.foundations-theme a.f-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+.foundations-theme a.f-row:hover .f-row-title {
+  color: var(--f-accent-text);
+}
+.foundations-theme a.f-row:hover .f-row-end {
+  color: var(--f-white);
+  transform: translateX(3px);
+}
+.foundations-theme .f-row-num {
+  font-family: var(--f-mono);
+  font-size: 13px;
+  color: var(--f-smoke);
+}
+.foundations-theme .f-row-main {
   display: flex;
   flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.foundations-theme .f-row-title {
+  color: var(--f-white);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.3;
+  transition: color 0.2s;
+}
+.foundations-theme .f-row-summary {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--f-ash);
+}
+.foundations-theme .f-row-level {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.foundations-theme .f-row-end {
+  justify-self: end;
+  display: flex;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--f-smoke);
+  transition: color 0.2s, transform 0.2s;
+}
+.foundations-theme .f-row-soon .f-row-title {
+  color: var(--f-mist);
+}
+.foundations-theme .f-level-beginner { color: var(--f-green); }
+.foundations-theme .f-level-medium { color: var(--f-amber); }
+.foundations-theme .f-level-hard { color: var(--f-red); }
+
+/* Lesson page: one readable column */
+.foundations-theme .f-lesson {
+  max-width: 720px;
+  padding-top: 112px;
+}
+.foundations-theme .f-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--f-ash);
+  text-decoration: none;
+}
+.foundations-theme .f-back:hover {
+  color: var(--f-white);
+}
+.foundations-theme .f-lesson-head {
+  margin: 32px 0 56px;
+}
+.foundations-theme .f-lesson-head .f-lede {
+  margin-top: 16px;
+  max-width: none;
+}
+.foundations-theme .f-lesson-title {
+  color: var(--f-white);
+  font-size: clamp(36px, 6vw, 52px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.foundations-theme .f-lesson-section {
+  margin-top: 56px;
+}
+.foundations-theme .f-lesson-section h2 {
+  color: var(--f-white);
+  font-size: 22px;
+  font-weight: 500;
+  margin: 0 0 16px;
+}
+.foundations-theme .f-lesson-section p {
+  margin: 0 0 16px;
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--f-mist);
+}
+.foundations-theme .f-why-now {
+  padding-left: 20px;
+  border-left: 2px solid var(--f-accent);
+}
+.foundations-theme .f-ideas {
+  margin: 0;
+  border-top: 1px solid var(--f-badge);
+}
+.foundations-theme .f-idea {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 24px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--f-badge);
+}
+.foundations-theme .f-idea dt {
+  color: var(--f-white);
+  font-weight: 500;
+}
+.foundations-theme .f-idea dd {
+  margin: 0;
+  line-height: 1.65;
+  color: var(--f-ash);
+}
+.foundations-theme .f-lesson-section .f-hint {
+  font-size: 14px;
+  color: var(--f-smoke);
+}
+.foundations-theme .f-checks,
+.foundations-theme .f-practice {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.foundations-theme .f-check {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--f-badge);
+}
+.foundations-theme .f-lesson-section .f-check-q {
+  display: flex;
   gap: 12px;
-  /* Original Fundamentals card look: bg-neutral-900, border-neutral-800,
-     rounded-2xl, hover:border-amber-700. */
-  padding: 20px;
-  border-radius: 16px;
-  border: 1px solid #262626;
-  background: #171717;
-  transition: border-color 0.2s;
+  margin: 0;
+  color: var(--f-white);
 }
-.foundations-theme .f-card:hover {
-  border-color: #b45309;
+.foundations-theme .f-check-num {
+  font-family: var(--f-mono);
+  font-size: 13px;
+  color: var(--f-smoke);
+  padding-top: 4px;
 }
-.foundations-theme .f-card-top {
+.foundations-theme .f-lesson-section .f-check-a {
+  margin: 12px 0 0 36px;
+  color: var(--f-ash);
+}
+.foundations-theme .f-check-reveal {
+  margin: 12px 0 0 36px;
+  min-height: 44px; /* comfortable tap target on phones */
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--f-border);
+  background: transparent;
+  color: var(--f-ash);
+  font-family: var(--f-sans);
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.foundations-theme .f-check-reveal:hover {
+  color: var(--f-white);
+  border-color: var(--f-ash);
+}
+.foundations-theme .f-practice-link {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-}
-.foundations-theme .f-icon {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 9999px;
-  font-size: 22px;
-  background: var(--f-recessed);
-  box-shadow: rgba(255, 255, 255, 0.1) 0 1px 0 0 inset;
-}
-.foundations-theme .f-card-title {
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--f-badge);
   color: var(--f-white);
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  margin: 4px 0 0;
+  text-decoration: none;
 }
-.foundations-theme .f-card-desc {
-  font-size: 15px;
-  line-height: 1.55;
-  color: var(--f-ash);
+.foundations-theme .f-practice-link:hover {
+  color: var(--f-accent-text);
+}
+.foundations-theme .f-practice-kind {
+  display: inline-block;
+  width: 96px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--f-smoke);
+}
+/* Try it: hairline list like Key ideas, with a code block and a guess row */
+.foundations-theme .f-tries {
+  list-style: none;
   margin: 0;
-}
-.foundations-theme .f-ai-note {
-  margin: auto 0 0;
-  padding-top: 14px;
+  padding: 0;
   border-top: 1px solid var(--f-badge);
-  font-size: 13px;
-  line-height: 1.5;
+}
+.foundations-theme .f-try {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--f-badge);
+}
+.foundations-theme .f-try-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 8px !important;
+}
+.foundations-theme .f-try-type {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--f-accent-text);
+}
+.foundations-theme .f-lesson-section .f-try-title {
+  color: var(--f-white);
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0 0 14px;
+}
+.foundations-theme .f-try-steps {
+  margin: 0 0 16px;
+  padding-left: 22px;
+  color: var(--f-mist);
+  font-size: 17px;
+  line-height: 1.65;
+}
+.foundations-theme .f-try-steps li {
+  margin-bottom: 6px;
+  padding-left: 4px;
+}
+.foundations-theme .f-code {
+  position: relative;
+  margin: 0 0 16px;
+  border-radius: 10px;
+  background: var(--f-card);
+  box-shadow: var(--f-key);
+}
+.foundations-theme .f-code pre {
+  margin: 0;
+  padding: 16px 96px 16px 16px;
+  overflow-x: auto;
+  font-family: var(--f-mono);
+  font-size: 14px;
+  line-height: 1.6;
   color: var(--f-mist);
 }
-.foundations-theme .f-ai-note b {
+.foundations-theme .f-copy {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px; /* comfortable tap target on phones */
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--f-ash);
+  font-family: var(--f-sans);
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+.foundations-theme .f-copy:hover {
+  color: var(--f-white);
+  background: rgba(255, 255, 255, 0.06);
+}
+.foundations-theme .f-lesson-section .f-try-note {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--f-ash);
+  margin: 0 0 12px;
+}
+.foundations-theme .f-try-note b,
+.foundations-theme .f-explain-answer b,
+.foundations-theme .f-predict-label {
   display: block;
   font-family: var(--f-mono);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--f-accent-text);
+  color: var(--f-smoke);
   margin-bottom: 4px;
 }
-
-/* Badges */
-.foundations-theme .f-tag {
-  font-family: var(--f-mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  background: var(--f-badge);
-  border-radius: 6px;
-  padding: 4px 8px;
-  white-space: nowrap;
+.foundations-theme .f-predict {
+  margin: 0 0 16px;
 }
-.foundations-theme .f-tag-beginner { color: var(--f-green); }
-.foundations-theme .f-tag-medium { color: var(--f-amber); }
-.foundations-theme .f-tag-hard { color: var(--f-red); }
-.foundations-theme .f-tag-ai {
+.foundations-theme .f-predict-label {
+  margin: 0 0 8px;
+}
+.foundations-theme .f-predict-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.foundations-theme .f-predict-option {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1px solid var(--f-border);
+  background: transparent;
+  color: var(--f-mist);
+  font-family: var(--f-sans);
+  font-size: 15px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.foundations-theme .f-predict-option:hover:not(:disabled) {
+  border-color: var(--f-ash);
+  color: var(--f-white);
+}
+.foundations-theme .f-predict-option:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.foundations-theme .f-predict-option.is-answer {
+  opacity: 1;
+  border-color: var(--f-green);
+  color: var(--f-green);
+}
+.foundations-theme .f-predict-option.is-wrong {
+  opacity: 1;
+  border-color: var(--f-red);
+  color: var(--f-red);
+}
+.foundations-theme .f-lesson-section .f-predict-why {
+  margin: 14px 0 0;
+  font-size: 16px;
+  color: var(--f-ash);
+}
+.foundations-theme .f-predict-why b {
+  color: var(--f-white);
+}
+.foundations-theme .f-lesson-section .f-explain-prompt {
+  color: var(--f-white);
+  font-size: 19px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+.foundations-theme .f-lesson-section .f-explain-answer {
+  margin-left: 0;
+}
+
+.foundations-theme .f-lesson-nav {
+  margin-top: 80px;
+}
+.foundations-theme .f-next {
+  display: block;
+  padding: 28px;
+  border-radius: 16px;
+  background: var(--f-card);
+  box-shadow: var(--f-key);
+  text-decoration: none;
+}
+.foundations-theme .f-next .f-section-eyebrow {
+  margin-bottom: 8px;
+}
+.foundations-theme .f-next-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--f-white);
+  font-size: 22px;
+  font-weight: 500;
+}
+.foundations-theme .f-next:hover .f-next-title {
   color: var(--f-accent-text);
-  background: rgba(147, 51, 234, 0.16);
 }
 
 /* FAQ */
@@ -395,5 +684,25 @@
   .foundations-theme .f-cta {
     margin-top: 72px;
     padding: 48px 20px;
+  }
+  /* Rows: number | title + summary | arrow, with the level moved under the
+     summary so the title keeps the full width. Text stays desktop size. */
+  .foundations-theme .f-row {
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    grid-template-areas: "num main end" "num level end";
+    row-gap: 6px;
+    column-gap: 12px;
+    padding: 16px 4px;
+  }
+  .foundations-theme .f-row-num { grid-area: num; align-self: start; padding-top: 3px; }
+  .foundations-theme .f-row-main { grid-area: main; }
+  .foundations-theme .f-row-level { grid-area: level; }
+  .foundations-theme .f-row-end { grid-area: end; }
+  .foundations-theme .f-lesson {
+    padding-top: 88px;
+  }
+  .foundations-theme .f-idea {
+    grid-template-columns: 1fr;
+    gap: 6px;
   }
 }

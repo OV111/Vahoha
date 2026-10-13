@@ -1,4 +1,4 @@
-import { CATEGORY_OPTIONS } from "../../../../constants/Categories.js";
+import { CATEGORY_OPTIONS, categoryHref } from "../../../../constants/categories.js";
 import { escapeRegex } from "../../../utils/regex.js";
 
 export const searchUsers = async (db, query) => {
@@ -37,5 +37,6 @@ export const searchCategories = (query) => {
     type: "category",
     title: category.title,
     slug: category.slug,
+    path: categoryHref(category),
   }));
 };

@@ -1,29 +1,29 @@
-import { FaGithub, FaLinkedin, FaMedium } from "react-icons/fa";
-import XIcon from "@mui/icons-material/X";
+import { Github, Linkedin, BookOpen } from "lucide-react";
+import XIcon from "../src/components/icons/XIcon";
 
 const SOCIAL_LINKS = [
   {
     key: "githubLink",
     label: "GitHub",
-    icon: <FaGithub />,
+    icon: Github,
     hover: "hover:text-gray-900 dark:hover:text-gray-100",
   },
   {
     key: "linkedinLink",
     label: "LinkedIn",
-    icon: <FaLinkedin />,
+    icon: Linkedin,
     hover: "hover:text-blue-600 dark:hover:text-blue-400",
   },
   {
     key: "twitterLink",
     label: "Twitter / X",
-    icon: <XIcon fontSize="inherit" />,
+    icon: XIcon,
     hover: "hover:text-gray-900 dark:hover:text-gray-100",
   },
   {
     key: "mediumLink",
     label: "Medium",
-    icon: <FaMedium />,
+    icon: BookOpen,
     hover: "hover:text-gray-900 dark:hover:text-gray-100",
   },
 ];

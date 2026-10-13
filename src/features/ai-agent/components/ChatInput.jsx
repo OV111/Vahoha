@@ -3,7 +3,7 @@ import { ArrowUp, Mic, MicOff, AudioLines, FileText, X } from "lucide-react";
 import {
   DROPDOWN_ITEMS,
   ATTACHMENT_ACCEPTED_EXTENSIONS,
-} from "../../../../constants/AiAgent";
+} from "../../../../constants/aiAgent";
 import { readAttachments, formatBytes } from "../lib/readAttachment";
 import { useSpeechDictation } from "../lib/useSpeechDictation";
 import AgentMenu from "./AgentMenu";

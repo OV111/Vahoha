@@ -3,6 +3,8 @@ import { useRef, useState } from "react";
 
 import { UploadCloud, X } from "lucide-react";
 const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+// Must match what the server accepts (backend/utils/fileSignature.js).
+const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 const ImageDropZone = ({ label, hint, image, currentUrl, onImageChange }) => {
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef(null);
@@ -16,8 +18,8 @@ const ImageDropZone = ({ label, hint, image, currentUrl, onImageChange }) => {
 
   const handleFile = (file) => {
     if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      toast.error("Only image files are allowed");
+    if (!ACCEPTED_TYPES.includes(file.type)) {
+      toast.error("Images must be JPEG, PNG, GIF or WebP");
       return;
     }
     if (file.size > MAX_SIZE) {
@@ -98,7 +100,7 @@ const ImageDropZone = ({ label, hint, image, currentUrl, onImageChange }) => {
         <input
           ref={inputRef}
           type="file"
-          accept="image/*"
+          accept={ACCEPTED_TYPES.join(",")}
           className="hidden"
           onChange={(e) => handleFile(e.target.files?.[0])}
         />

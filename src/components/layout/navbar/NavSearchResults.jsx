@@ -10,7 +10,7 @@ export default function NavSearchResults({ query, boundaryRef }) {
   const handleSelect = (item) => {
     if (item.type === "user") navigate(`/users/${item.username}`);
     else if (item.type === "post") navigate(`/?search=${encodeURIComponent(item.title)}`);
-    else if (item.type === "category") navigate(`/categories/${item.slug}`);
+    else if (item.type === "category") navigate(item.path ?? `/categories/${item.slug}`);
   };
 
   return (

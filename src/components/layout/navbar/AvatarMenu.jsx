@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { LogOut } from "lucide-react";
-import { AVATAR_MENU_ITEMS } from "../../../../constants/Navbar";
+import { AVATAR_MENU_ITEMS } from "../../../../constants/navbar";
 import AvatarImage from "./AvatarImage";
 import UserSummary from "./UserSummary";
 import DropdownPanel from "./DropdownPanel";

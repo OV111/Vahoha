@@ -1,12 +1,12 @@
 import { TRACKS } from "../../../../constants/roadmapPaths.js";
-import { CATEGORY_OPTIONS2 } from "../../../../constants/Categories.js";
+import { ROADMAP_DOMAINS } from "../../../../constants/categories.js";
 
 // The roadmaps page browses ONE flat catalog of tracks (each tagged with the
 // domain it belongs to) instead of two levels of pills. Filtering is plain
 // array work: with ~170 items there is nothing to gain from indexing.
 
 /** Flatten `{ domainId: [track] }` into `[{ ...track, domain }]`, in domain order. */
-export const buildCatalog = (tracksByDomain = TRACKS, domains = CATEGORY_OPTIONS2) =>
+export const buildCatalog = (tracksByDomain = TRACKS, domains = ROADMAP_DOMAINS) =>
   domains.flatMap((domain) =>
     (tracksByDomain[domain.id] ?? []).map((track) => ({ ...track, domain })),
   );
