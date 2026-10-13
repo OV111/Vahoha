@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import {
   getOrCreateRoomForMember,
+  directRoomId,
   saveMessage,
   loadMessages,
   setRoomMuted,
@@ -9,18 +10,30 @@ import {
   listBlockedUsers,
 } from '../../modules/chat/services/chatService.js'
 
-// Minimal fake db: `rooms` holds at most one existing room.
-const makeDb = (existingRoom = null) => {
+// Minimal fake db: `rooms` holds at most one existing room. `follows` is a set
+// of "follower>following" pairs; `blocked` makes every block lookup hit.
+const makeDb = (existingRoom = null, { follows = [], blocked = false } = {}) => {
   const rooms = {
     findOne: vi.fn().mockResolvedValue(existingRoom),
     insertOne: vi.fn().mockResolvedValue({}),
     updateOne: vi.fn().mockResolvedValue({}),
   }
   const messages = { insertOne: vi.fn().mockResolvedValue({ insertedId: 'm1' }) }
-  const db = { rooms, messages, blocks: { findOne: vi.fn().mockResolvedValue(null) } }
+  const followsCol = {
+    findOne: vi.fn(async ({ followerId, followingId }) =>
+      follows.includes(`${followerId}>${followingId}`) ? { _id: 'f' } : null),
+  }
+  const blocks = { findOne: vi.fn().mockResolvedValue(blocked ? { _id: 'b' } : null) }
+  const db = { rooms, messages, follows: followsCol, blocks }
   db.collection = (name) => db[name]
   return db
 }
+
+// Real ObjectId strings: a first DM validates the receiver id.
+const ALICE = '64b000000000000000000001'
+const BOB = '64b000000000000000000002'
+const MALLORY = '64b000000000000000000003'
+const mutual = (a, b) => [`${a}>${b}`, `${b}>${a}`]
 
 const room = { _id: 'r1', members: ['alice', 'bob'] }
 
@@ -44,11 +57,52 @@ describe('getOrCreateRoomForMember', () => {
       .toEqual({ error: 'Room does not exist' })
   })
 
-  it('creates a direct room for the first DM', async () => {
-    const db = makeDb(null)
-    const { room: created } = await getOrCreateRoomForMember(db, { roomId: 'r2', userId: 'alice', receiverId: 'bob' })
-    expect(created).toMatchObject({ _id: 'r2', type: 'direct', members: ['bob', 'alice'] })
+  it('creates a direct room for the first DM between mutual followers', async () => {
+    const db = makeDb(null, { follows: mutual(ALICE, BOB) })
+    const roomId = directRoomId(ALICE, BOB)
+    const { room: created } = await getOrCreateRoomForMember(db, { roomId, userId: ALICE, receiverId: BOB })
+    expect(created).toMatchObject({ _id: roomId, type: 'direct', members: [BOB, ALICE] })
     expect(db.rooms.insertOne).toHaveBeenCalledOnce()
+  })
+
+  it("refuses to create another pair's room (squatting)", async () => {
+    // Mallory follows Bob mutually, but asks for Alice and Bob's room id.
+    const db = makeDb(null, { follows: mutual(MALLORY, BOB) })
+    const result = await getOrCreateRoomForMember(db, {
+      roomId: directRoomId(ALICE, BOB),
+      userId: MALLORY,
+      receiverId: BOB,
+    })
+    expect(result).toEqual({ error: 'Access denied' })
+    expect(db.rooms.insertOne).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['only one side follows', { follows: [`${MALLORY}>${BOB}`] }, BOB],
+    ['nobody follows', {}, BOB],
+    ['they follow each other but one blocked the other', { follows: mutual(MALLORY, BOB), blocked: true }, BOB],
+  ])('refuses a first DM when %s', async (_label, state, receiverId) => {
+    const db = makeDb(null, state)
+    const result = await getOrCreateRoomForMember(db, {
+      roomId: directRoomId(MALLORY, receiverId),
+      userId: MALLORY,
+      receiverId,
+    })
+    expect(result).toEqual({ error: "You can't message this user" })
+    expect(db.rooms.insertOne).not.toHaveBeenCalled()
+  })
+
+  it('refuses a malformed receiver id or a DM to yourself', async () => {
+    for (const receiverId of ['not-an-id', MALLORY]) {
+      const db = makeDb(null)
+      const result = await getOrCreateRoomForMember(db, {
+        roomId: directRoomId(MALLORY, receiverId),
+        userId: MALLORY,
+        receiverId,
+      })
+      expect(result.error).toBeDefined()
+      expect(db.rooms.insertOne).not.toHaveBeenCalled()
+    }
   })
 })
 

@@ -2,7 +2,6 @@ import {
   getExamHistory,
   getLastExam,
   withLayerTitles,
-  saveExamResult,
 } from "../../../services/examHistoryService.js";
 import {
   getWeakSpots,
@@ -37,64 +36,6 @@ export const getLastExamResult = async (req, res) => {
   } catch (err) {
     console.error("getLastExam error:", err);
     res.status(500).json({ message: "Failed to fetch last exam" });
-  }
-};
-
-export const submitExamResult = async (req, res) => {
-  try {
-    const db = req.app.locals.db;
-    const userId = req.user._id.toString();
-    const {
-      path,
-      layer,
-      score,
-      passed,
-      totalQuestions,
-      correctAnswers,
-      missedTopics,
-      timeTakenSecs,
-    } = req.body;
-
-    if (!path || !layer || score == null || totalQuestions == null) {
-      return res.status(400).json({
-        message: "path, layer, score, and totalQuestions are required",
-      });
-    }
-
-    if (typeof score !== "number" || score < 0 || score > 100) {
-      return res.status(400).json({ message: "score must be a number 0–100" });
-    }
-
-    const result = await saveExamResult(db, userId, {
-      path,
-      layer,
-      score,
-      passed,
-      totalQuestions,
-      correctAnswers,
-      missedTopics,
-      timeTakenSecs,
-    });
-
-    // auto-record weak spots for every missed topic
-    if (Array.isArray(missedTopics) && missedTopics.length > 0) {
-      await Promise.all(
-        missedTopics.map((topic) => {
-          if (typeof topic !== "string" || !topic.trim()) return null;
-          return addWeakSpot(db, userId, {
-            topic: topic.trim(),
-            path,
-            layer,
-            source: "exam",
-          });
-        }),
-      );
-    }
-
-    res.status(201).json({ result });
-  } catch (err) {
-    console.error("submitExamResult error:", err);
-    res.status(500).json({ message: "Failed to save exam result" });
   }
 };
 

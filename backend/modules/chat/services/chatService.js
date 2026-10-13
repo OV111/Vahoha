@@ -18,6 +18,24 @@ const ROOM_LIST_PROJECTION = {
   updatedAt: 1,
 };
 
+// Must match how the client derives a direct room id (Chats.jsx).
+export const directRoomId = (a, b) => [String(a), String(b)].sort().join("_");
+
+// A first DM is only allowed between two mutual followers where neither has
+// blocked the other — the same rule the chat sidebar's contact list uses.
+async function canStartDirectChat(db, userId, receiverId) {
+  if (!ObjectId.isValid(receiverId) || String(receiverId) === String(userId)) return false;
+  const me = new ObjectId(String(userId));
+  const them = new ObjectId(String(receiverId));
+  const follows = db.collection("follows");
+  const [iFollow, theyFollow] = await Promise.all([
+    follows.findOne({ followerId: me, followingId: them }, { projection: { _id: 1 } }),
+    follows.findOne({ followerId: them, followingId: me }, { projection: { _id: 1 } }),
+  ]);
+  if (!iFollow || !theyFollow) return false;
+  return !(await isBlockedEitherWay(db, String(userId), String(receiverId)));
+}
+
 // Returns the room if `userId` may enter it. A missing room is only created
 // implicitly for the direct-chat flow (first DM between two mutual followers,
 // signalled by `receiverId`) — groups must be created via the REST endpoint
@@ -34,6 +52,15 @@ export async function getOrCreateRoomForMember(db, { roomId, userId, receiverId 
   }
 
   if (!receiverId) return { error: "Room does not exist" };
+
+  // Direct room ids are predictable (the pair's ids, sorted), so the id must be
+  // the one for THIS pair. Otherwise anyone could create another pair's room
+  // first and sit in it, locking the real pair out of their own chat.
+  if (id !== directRoomId(userId, receiverId)) return { error: "Access denied" };
+  if (!(await canStartDirectChat(db, userId, receiverId))) {
+    // Same wording as a blocked send, so this can't be used to learn who blocked whom.
+    return { error: "You can't message this user" };
+  }
 
   const newRoom = {
     _id: id,

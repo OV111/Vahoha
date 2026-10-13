@@ -9,6 +9,7 @@ import {
   removeCvService,
   checkUsernameAvailableService,
   uploadToCloudinary,
+  UPLOAD_KINDS,
   getFollowingService,
   getFollowersService,
   getMutualFollowersService,
@@ -81,8 +82,6 @@ export const removeCv = async (req, res) => {
   }
 };
 
-// Only these multipart file fields are uploaded; anything else is drained and dropped.
-const UPLOAD_FIELDS = new Set(["profileImage", "bannerImage", "cvFile"]);
 
 export const updateSettings = (req, res) => {
   // Verify BEFORE reading the body: files stream to Cloudinary as they arrive,
@@ -96,13 +95,19 @@ export const updateSettings = (req, res) => {
   let fileTooLarge = false;
 
   bb.on("file", (fieldname, file) => {
-    if (!UPLOAD_FIELDS.has(fieldname)) return file.resume();
+    // Only known fields are uploaded; anything else is drained and dropped.
+    const kind = UPLOAD_KINDS[fieldname];
+    if (!kind) return file.resume();
     file.on("limit", () => {
       fileTooLarge = true;
       res.status(400).json({ message: "File too large. Maximum size is 10 MB." });
       file.resume();
     });
-    fileUploads[fieldname] = uploadToCloudinary(file);
+    const upload = uploadToCloudinary(file, kind);
+    // Not every upload gets awaited below (an early return, or an earlier one
+    // failing first); without this, its rejection would crash the process.
+    upload.catch(() => {});
+    fileUploads[fieldname] = upload;
   });
 
   bb.on("field", (fieldname, val) => {

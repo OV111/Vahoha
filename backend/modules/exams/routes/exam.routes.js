@@ -4,7 +4,6 @@ import { aiBurstLimiter, teachBackDailyLimiter } from "../../../middleware/aiRat
 import {
   getHistory,
   getLastExamResult,
-  submitExamResult,
   listWeakSpots,
   addWeakSpotRoute,
   resolveWeakSpotRoute,
@@ -22,7 +21,8 @@ router.post("/submit-teach-back-followup", authenticate, aiBurstLimiter, teachBa
 // Exam history
 router.get("/history", authenticate, getHistory);
 router.get("/history/last", authenticate, getLastExamResult);
-router.post("/result", authenticate, submitExamResult);
+// No client-writable result route: exam rows feed the public recruiter
+// scorecard, so only the server-graded POST /submit may create them.
 
 // Weak spots
 router.get("/weak-spots", authenticate, listWeakSpots);

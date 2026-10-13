@@ -1,10 +1,12 @@
 import { ObjectId } from "mongodb";
+import { Buffer } from "node:buffer";
 import { v2 as cloudinary } from "cloudinary";
 import {
   getFollowersData,
   getFollowingData,
 } from "../../users/index.js";
 import { sanitizeUsername } from "../../../utils/username.js";
+import { sniffFileKind, SNIFF_BYTES } from "../../../utils/fileSignature.js";
 
 export const PROFILE_LINK_FIELDS = [
   "githubLink",
@@ -36,7 +38,10 @@ export const getProfileService = async (db, userId) => {
   const usersStats = db.collection("usersStats");
 
   const [user, stats] = await Promise.all([
-    users.findOne({ _id: userId }),
+    // Projected out in the query, so the hash never leaves the database.
+    // (Destructuring it away after the read is easy to get wrong: renaming the
+    // variable to `_password` silently removed a field that doesn't exist.)
+    users.findOne({ _id: userId }, { projection: { password: 0 } }),
     usersStats.findOne({ userId }),
   ]);
 
@@ -47,8 +52,7 @@ export const getProfileService = async (db, userId) => {
     { $set: { lastActive: new Date() } },
   );
 
-  const { _password, ...userWithoutPassword } = user;
-  return { userWithoutPassword, stats };
+  return { userWithoutPassword: user, stats };
 };
 
 export const updateLastActiveService = async (db, id, lastActive) => {
@@ -179,17 +183,52 @@ export const checkUsernameAvailableService = async (db, userId, rawUsername) => 
   return { available: !existing, username: clean };
 };
 
-export const uploadToCloudinary = (file) =>
+// What each profile upload field may hold, and how Cloudinary stores it.
+// Images are forced to resource_type "image" (Cloudinary decodes them, so a
+// fake image fails there too). The CV stays "auto" so PDF and Word both work:
+// safe only because its bytes were checked to be a PDF/Word file first.
+export const UPLOAD_KINDS = { profileImage: "image", bannerImage: "image", cvFile: "document" };
+
+const CLOUDINARY_OPTIONS = {
+  image: { folder: "devs_website", resource_type: "image", allowed_formats: ["jpg", "png", "gif", "webp"] },
+  document: { folder: "devs_website", resource_type: "auto" },
+};
+
+const WRONG_TYPE_MESSAGE = {
+  image: "Images must be JPEG, PNG, GIF or WebP.",
+  document: "Your CV must be a PDF or Word file.",
+};
+
+// Reads the first bytes, checks them, and only then opens the Cloudinary
+// stream, so a refused file never reaches Cloudinary at all.
+export const uploadToCloudinary = (file, kind, uploader = cloudinary.uploader) =>
   new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      // "auto": images stay images; PDF/DOCX become the right type (the default "image" rejects Word files).
-      { folder: "devs_website", resource_type: "auto" },
-      (error, result) => {
-        if (error) return reject(error);
-        resolve(result.secure_url);
-      },
-    );
-    file.pipe(stream);
+    let head = Buffer.alloc(0);
+
+    const start = (ended) => {
+      file.off("data", onData);
+      file.off("end", onEnd);
+      if (sniffFileKind(head) !== kind) {
+        file.resume(); // drain the rest so the multipart parser can finish
+        const err = new Error(WRONG_TYPE_MESSAGE[kind]);
+        err.status = 400;
+        return reject(err);
+      }
+      const stream = uploader.upload_stream(CLOUDINARY_OPTIONS[kind], (error, result) =>
+        error ? reject(error) : resolve(result.secure_url),
+      );
+      if (ended) return stream.end(head);
+      stream.write(head);
+      file.pipe(stream);
+    };
+    const onData = (chunk) => {
+      head = Buffer.concat([head, chunk]);
+      if (head.length >= SNIFF_BYTES) start(false);
+    };
+    const onEnd = () => start(true);
+
+    file.on("data", onData);
+    file.on("end", onEnd);
   });
 
 export const getFollowingService = (db, userId, page, limit) =>

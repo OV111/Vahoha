@@ -53,6 +53,10 @@ import initWebSocketServer from '../../websocket/index.js'
 /**
  * Mint a valid JWT for the given user id (defaults to a realistic ObjectId string).
  */
+// A direct room id is the pair's ids sorted and joined (see directRoomId).
+const OTHER_USER = '507f1f77bcf86cd799439012'
+const PAIR_ROOM = '507f1f77bcf86cd799439011_507f1f77bcf86cd799439012'
+
 const makeToken = (id = '507f1f77bcf86cd799439011') =>
   jwt.sign({ id, type: 'access' }, process.env.JWT_Secret, { expiresIn: '1h' })
 
@@ -67,6 +71,10 @@ const makeMockDb = (overrides = {}) => {
       insertOne: overrides.roomsInsertOne ?? mockInsertOne,
       updateOne: overrides.roomsUpdateOne ?? mockUpdateOne,
       find:      overrides.roomsFind      ?? mockFind,
+    },
+    // A first DM needs a mutual follow; by default every pair follows back.
+    follows: {
+      findOne: overrides.followsFindOne ?? vi.fn().mockResolvedValue({ _id: 'follow' }),
     },
     messages: {
       findOne:   overrides.messagesFindOne   ?? mockFindOne,
@@ -276,12 +284,12 @@ describe('WebSocket — join_room', () => {
       waitForMsg(ws, 'message_history'),
       // Trigger after both listeners are registered.
       Promise.resolve().then(() =>
-        send(ws, { type: 'join_room', roomId: 'room-success', receiverId: 'user-receiver' }),
+        send(ws, { type: 'join_room', roomId: PAIR_ROOM, receiverId: OTHER_USER }),
       ),
     ])
 
     expect(joinedRoom.type).toBe('joined_room')
-    expect(joinedRoom.roomId).toBe('room-success')
+    expect(joinedRoom.roomId).toBe(PAIR_ROOM)
     expect(messageHistory.type).toBe('message_history')
     expect(Array.isArray(messageHistory.messageHistory)).toBe(true)
   })
@@ -301,12 +309,12 @@ describe('WebSocket — send_message', () => {
       waitForMsg(ws, 'joined_room'),
       waitForMsg(ws, 'message_history'),
       Promise.resolve().then(() =>
-        send(ws, { type: 'join_room', roomId: 'room1', receiverId: 'user-recv' }),
+        send(ws, { type: 'join_room', roomId: PAIR_ROOM, receiverId: OTHER_USER }),
       ),
     ])
 
     // Send without the required `text` field.
-    send(ws, { type: 'send_message', roomId: 'room1' })
+    send(ws, { type: 'send_message', roomId: PAIR_ROOM })
     const msg = await waitForMsg(ws, 'error')
     expect(msg.message).toMatch(/missing required fields/i)
   })

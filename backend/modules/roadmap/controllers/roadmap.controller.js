@@ -4,6 +4,7 @@ import {
   updateUserProgress,
 } from "../../../services/userProgressService.js";
 import { trackEvent } from "../../../services/eventService.js";
+import { sanitizeLayerProgress, doneLayerIds } from "../services/layerProgress.js";
 
 export const getProgress = async (req, res) => {
   try {
@@ -70,11 +71,14 @@ export const saveProgress = async (req, res) => {
       return res.status(400).json({ message: "layerProgress object is required" });
     }
 
-    const completedLayers = Object.entries(layerProgress)
+    // "done" is earned by passing the exam, never reported by the client.
+    const existing = await getUserProgress(db, userId);
+    const safeProgress = sanitizeLayerProgress(layerProgress, doneLayerIds(existing));
+    const completedLayers = Object.entries(safeProgress)
       .filter(([, status]) => status === "done")
       .map(([id]) => id);
 
-    const fields = { layerProgress, completedLayers };
+    const fields = { layerProgress: safeProgress, completedLayers };
     if (activePath) fields.activePath = activePath;
     if (currentLayer != null) fields.currentLayer = currentLayer;
 
