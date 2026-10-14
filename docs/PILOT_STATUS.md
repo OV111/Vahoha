@@ -37,6 +37,7 @@ The technical prep for the pilot is mostly done. What's left is mostly yours: co
 | 7 | Check Groq limits for about 10 concurrent users | You | Move to the paid tier if the free tier rate-limits |
 | 8 | Create the $29 one-off product in Polar | You | For the payment test in `docs/strategy/OUTREACH_KIT.md` |
 | 9 | Run the full loop yourself on production with a new account | You | Sign up, pick a path, take an exam, ask the mentor, then check the funnel shows it |
+| 10 | **Set up real email sending** (blocks password reset and magic-link sign-in) | You | In Resend, verify `vahoha.com` (DNS records), then set `EMAIL_FROM="Vahoha <no-reply@vahoha.com>"` and `RESEND_API_KEY` on Render. Until then mail comes from Resend's test sender (`onboarding@resend.dev`), which delivers only to the Resend account owner, so no real user gets a reset or sign-in email. Test locally with your own address |
 
 ## Then: the pilot
 

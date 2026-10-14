@@ -20,6 +20,7 @@ Start with [`PILOT_STATUS.md`](PILOT_STATUS.md): what is done, what is left befo
 | [`EXAM_INTEGRITY.md`](product/EXAM_INTEGRITY.md) | Anti-cheating plan and its honest limits |
 | [`XP_SYSTEM.md`](product/XP_SYSTEM.md) | XP rules, current ledger, ideas with critiques |
 | [`VOICE_EXAM_SPEC.md`](product/VOICE_EXAM_SPEC.md) | Spoken teach-back exam spec (frozen) |
+| [`VERIFICATION_PRACTICE_IDEAS.md`](product/VERIFICATION_PRACTICE_IDEAS.md) | Bug hunt, peer code review, oral defense, explain-back (ideas, parked) |
 | [`FUTURE_IDEAS.md`](product/FUTURE_IDEAS.md) | Unscoped ideas, parked until the pilot |
 
 ## strategy/ — why, for whom, and how to grow

@@ -51,6 +51,10 @@ services:
         sync: false
       - key: RESEND_API_KEY
         sync: false
+      - key: EMAIL_FROM             # e.g. "Vahoha <no-reply@vahoha.com>"; needs vahoha.com verified in Resend, or reset and sign-in emails reach no one
+        sync: false
+      - key: CANDIDATES_ENABLED     # recruiter candidates list API; leave unset (closed) until the page is switched on
+        sync: false
       - key: CLOUDINARY_CLOUD_NAME
         sync: false
       - key: CLOUDINARY_API_KEY
