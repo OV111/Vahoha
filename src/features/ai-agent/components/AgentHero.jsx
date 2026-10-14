@@ -17,9 +17,23 @@ function getGreeting() {
  * state, not a page. Making it a component is what let the sidebar stay
  * mounted and removed the navigate-with-router-state handoff entirely.
  */
-export default function AgentHero() {
+export default function AgentHero({ compact = false }) {
   const { user } = useProfileStore();
   const greeting = `${getGreeting()}, ${user?.firstName || "there"}`;
+
+  // Narrow side-panel variant (the challenge arena): one small greeting and a
+  // plain line about the challenge, no oversized heading or typing animation.
+  if (compact) {
+    return (
+      <div className="flex w-full flex-col items-center gap-2 px-4 text-center">
+        <img src={hexLogo} alt="" className="h-9 w-9 rounded-full object-contain" />
+        <h1 className="text-lg font-semibold tracking-tight text-white">{greeting}</h1>
+        <p className="text-sm leading-relaxed text-white/50">
+          Ask about this challenge: why a test fails, what a hint means, or how to approach it.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-2xl mx-auto px-4">

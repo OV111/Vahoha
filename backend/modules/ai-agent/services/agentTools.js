@@ -12,8 +12,24 @@ import { logTeachingAttempt } from "./teachingLogService.js";
 import { toTopicSlug } from "../../../utils/topicKey.js";
 import { escapeRegex } from "../../../utils/regex.js";
 import { getCapstoneMentorView } from "../../capstone/index.js";
+import { getChallengeMentorView } from "../../coding-challenges/index.js";
 
 export const toolDefinitions = [
+  {
+    type: "function",
+    function: {
+      name: "get_challenge_attempt",
+      description:
+        "Get the learner's own attempt at one coding challenge: their current code, which tests failed on their last submission and why, and how many hints they bought. Call this when they ask for help with a challenge (the current one's slug is in the learner state when they came from the challenge page). Coach with questions and pointers to the failing line or idea — never write the fixed function or paste a working solution; hints cost XP on the challenge page.",
+      parameters: {
+        type: "object",
+        properties: {
+          challengeSlug: { type: "string", description: "The challenge slug, e.g. 'async-handler'." },
+        },
+        required: ["challengeSlug"],
+      },
+    },
+  },
   {
     type: "function",
     function: {
@@ -343,6 +359,11 @@ export async function executeTool(name, args, ctx = {}) {
   if (name === "get_capstone_status") {
     if (!userId) return { error: "Not authenticated" };
     return getCapstoneMentorView(db, userId);
+  }
+
+  if (name === "get_challenge_attempt") {
+    if (!userId) return { error: "Not authenticated" };
+    return getChallengeMentorView(db, userId, args.challengeSlug);
   }
 
   return { error: `Unknown tool: ${name}` };

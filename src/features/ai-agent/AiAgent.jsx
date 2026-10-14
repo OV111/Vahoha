@@ -23,7 +23,13 @@ const placeholderTitle = (text) => {
   return `${lastSpace > 20 ? cut.slice(0, lastSpace) : cut}…`;
 };
 
-export default function AiAgent() {
+/**
+ * `embedded` renders the chat inside another page (the challenge arena's side
+ * panel): no sessions sidebar, fills its parent instead of the viewport, and
+ * starts a fresh conversation tied to `challengeContext`, which is what the
+ * full page receives through router state when navigated to.
+ */
+export default function AiAgent({ embedded = false, challengeContext = null }) {
   // The composer draft lives here because the hero's prompt chips sit outside
   // ChatInput and need to write into it.
   const [draft, setDraft] = useState("");
@@ -47,6 +53,13 @@ export default function AiAgent() {
       const { path, layer, topic } = location.state.teachBack;
       setTeachBackContext({ mode: "initial", path, layer, topic });
       setOriginContext({ surface: "exam-results", path, layer, topic });
+      setFocusToken((n) => n + 1);
+      navigate(".", { replace: true, state: {} });
+    } else if (location.state?.challenge) {
+      // Arriving from the challenge arena's "Ask mentor": the slug lets the
+      // mentor fetch the attempt itself, so nothing else is passed along.
+      const { path, layer, topic, challengeSlug } = location.state.challenge;
+      setOriginContext({ surface: "challenge", path, layer, topic, challengeSlug });
       setFocusToken((n) => n + 1);
       navigate(".", { replace: true, state: {} });
     }
@@ -88,11 +101,29 @@ export default function AiAgent() {
   // from the scrolled landing page would drop you into this full-height chat view
   // already scrolled down. Same fix ChallengeArena.jsx uses.
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    if (!embedded) window.scrollTo(0, 0);
+  }, [embedded]);
 
-  // load sessions list on mount
+  // Embedded in a challenge: every challenge gets its own fresh conversation,
+  // so a transcript from another challenge (or the full page) never claims to
+  // be about this one. The slug lets the mentor fetch the attempt itself.
+  const ctxSlug = challengeContext?.challengeSlug;
+  const ctxPath = challengeContext?.path;
+  const ctxLayer = challengeContext?.layer;
+  const ctxTopic = challengeContext?.topic;
   useEffect(() => {
+    if (!embedded || !ctxSlug) return;
+    setActiveSession(null);
+    useAiAgentStore.getState().setMessages([]);
+    setError(null);
+    setOriginContext({ surface: "challenge", path: ctxPath, layer: ctxLayer, topic: ctxTopic, challengeSlug: ctxSlug });
+    setFocusToken((n) => n + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [embedded, ctxSlug, ctxPath, ctxLayer, ctxTopic]);
+
+  // load sessions list on mount (the embedded chat has no sessions list)
+  useEffect(() => {
+    if (embedded) return;
     const loadSessions = async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/api/ai-agent/sessions`, { headers: authHeaders() });
@@ -102,7 +133,7 @@ export default function AiAgent() {
       } catch { /* non-fatal */ }
     };
     loadSessions();
-  }, [setSessions]);
+  }, [embedded, setSessions]);
 
   const handleSelectSession = async (sessionId) => {
     // Ignore a click on the session that's already open — it would clear a
@@ -352,21 +383,26 @@ export default function AiAgent() {
 
   return (
     <div
-      className="flex h-[calc(100dvh-var(--navbar-h,44px))] bg-black text-[#e5e5e5] md:h-[calc(100vh-44px)]"
+      className={`flex bg-black text-[#e5e5e5] ${
+        embedded ? "h-full" : "h-[calc(100dvh-var(--navbar-h,44px))] md:h-[calc(100vh-44px)]"
+      }`}
     >
-      <SessionsSidebar
-        sessions={sessions}
-        activeSessionId={activeSessionId}
-        onSelectSession={handleSelectSession}
-        onNewSession={handleNewSession}
-        onRenameSession={handleRenameSession}
-        onDeleteSession={handleDeleteSession}
-        onTogglePinSession={handleTogglePinSession}
-        mobileOpen={sessionsOpen}
-        onMobileClose={() => setSessionsOpen(false)}
-      />
+      {!embedded && (
+        <SessionsSidebar
+          sessions={sessions}
+          activeSessionId={activeSessionId}
+          onSelectSession={handleSelectSession}
+          onNewSession={handleNewSession}
+          onRenameSession={handleRenameSession}
+          onDeleteSession={handleDeleteSession}
+          onTogglePinSession={handleTogglePinSession}
+          mobileOpen={sessionsOpen}
+          onMobileClose={() => setSessionsOpen(false)}
+        />
+      )}
 
       <div className="flex-1 flex flex-col min-w-0 relative">
+        {!embedded && (
         <button
           type="button"
           onClick={() => setSessionsOpen(true)}
@@ -375,6 +411,7 @@ export default function AiAgent() {
         >
           <PanelLeft size={18} strokeWidth={2} />
         </button>
+        )}
         {activeTitle && (
           <div className="absolute top-0 inset-x-0 z-20">
             <ChatTopBar title={activeTitle} messages={messages} />
@@ -424,7 +461,7 @@ export default function AiAgent() {
           }`}
         >
           {isEmptyChat ? (
-            <AgentHero />
+            <AgentHero compact={embedded} />
           ) : (
             <MessageList
               messages={messages}
@@ -458,9 +495,9 @@ export default function AiAgent() {
             value={draft}
             onValueChange={setDraft}
             focusToken={focusToken}
-            spacious={isEmptyChat}
+            spacious={isEmptyChat && !embedded}
             />
-            {isEmptyChat && <PromptChips onSelectPrompt={insertPrompt} />}
+            {isEmptyChat && !embedded && <PromptChips onSelectPrompt={insertPrompt} />}
 
         </div>
       </div>

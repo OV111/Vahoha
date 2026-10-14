@@ -42,7 +42,7 @@ export const updateSessionSchema = z
   });
 
 /**
- * Attachment limits — the ENFORCING copy. `constants/AiAgent.js` mirrors these
+ * Attachment limits — the ENFORCING copy. `constants/aiAgent.js` mirrors these
  * for UI feedback only; a client can send anything, so these are what count.
  * Keep the two in sync if you change them.
  *
@@ -78,6 +78,8 @@ export const activitySchema = z.object({
   layer: z.string().trim().max(60).optional(),
   // Display spelling; the server slugifies it to join against mastery/concepts.
   topic: z.string().trim().max(120).optional(),
+  // Slug charset only: it is echoed into the prompt, so no free text.
+  challengeSlug: z.string().trim().max(80).regex(/^[a-z0-9-]+$/).optional(),
 });
 
 // POST /api/ai-agent/stream
