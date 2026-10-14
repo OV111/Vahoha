@@ -5,6 +5,13 @@ import { navItemPath } from "@/utils/navigation";
 import DropdownPanel from "./DropdownPanel";
 import { focusRing } from "./styles";
 
+// Which motion each dropdown icon plays on hover (defined in index.css).
+const ICON_MOTION = {
+  Roadmaps: "sway", "Code Library": "wiggle", Blog: "wiggle", Challenges: "code",
+  Exams: "hop", Mentor: "wiggle", Capstone: "launch", Team: "pulse",
+  Progress: "rise", Candidates: "sway",
+};
+
 const itemClass = ({ isActive }) =>
   `flex rounded-md px-3 py-2 text-sm transition-colors ${
     isActive ? "text-purple-400" : "text-gray-200 hover:bg-white/5 hover:text-white"
@@ -16,11 +23,14 @@ const itemClass = ({ isActive }) =>
 const RichItem = ({ label, to, icon: Icon, description, locked, isActive }) => (
   <NavLink
     to={to}
+    data-motion-host
     className={itemClass({ isActive })}
     aria-label={locked ? `${label}: sign up to use` : undefined}
   >
     <span className="mt-0.5 mr-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-white/10 bg-white/5 text-purple-600">
-      <Icon size={16} />
+      <span data-motion={ICON_MOTION[label] ?? "pulse"} className="flex">
+        <Icon size={16} />
+      </span>
     </span>
     <span>
       <span className="flex items-center gap-1.5 font-medium">

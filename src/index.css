@@ -182,3 +182,39 @@ input:-webkit-autofill:focus {
   -webkit-text-fill-color: white;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+/* Navbar dropdown icons: each plays one short motion while its row is hovered
+   or focused. The row sets [data-motion-host]; the icon wrapper carries
+   [data-motion="name"]. Skipped for people who ask for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes nav-wiggle { 0%,100% { transform: rotate(0) } 25% { transform: rotate(-14deg) } 75% { transform: rotate(14deg) } }
+  @keyframes nav-ring { 0%,100% { transform: rotate(0) } 15% { transform: rotate(18deg) } 35% { transform: rotate(-16deg) } 55% { transform: rotate(10deg) } 75% { transform: rotate(-6deg) } }
+  @keyframes nav-hop { 0%,100% { transform: translateY(0) } 40% { transform: translateY(-4px) } 70% { transform: translateY(1px) } }
+  @keyframes nav-launch { 0% { transform: translate(0,0) } 45% { transform: translate(4px,-4px) } 55% { transform: translate(-3px,3px) } 100% { transform: translate(0,0) } }
+  @keyframes nav-pulse { 0%,100% { transform: scale(1) } 50% { transform: scale(1.25) } }
+  @keyframes nav-spin { to { transform: rotate(180deg) } }
+  @keyframes nav-sway { 0%,100% { transform: translateX(0) } 30% { transform: translateX(-3px) } 70% { transform: translateX(3px) } }
+  @keyframes nav-rise { 0% { transform: translate(0,0) } 50% { transform: translate(2px,-3px) } 100% { transform: translate(0,0) } }
+  @keyframes nav-drop { 0%,100% { transform: translateY(0) } 40% { transform: translateY(3px) } }
+  @keyframes nav-slide { 0%,100% { transform: translateX(0) } 50% { transform: translateX(4px) } }
+
+  /* </> : the brackets spread apart and snap back while the slash tilts. */
+  @keyframes nav-code-open { 0%,100% { transform: translateX(0) } 45% { transform: translateX(-2.5px) } }
+  @keyframes nav-code-close { 0%,100% { transform: translateX(0) } 45% { transform: translateX(2.5px) } }
+  @keyframes nav-code-slash { 0%,100% { transform: rotate(0) } 45% { transform: rotate(12deg) } }
+  [data-motion-host]:is(:hover, :focus-visible) [data-motion="code"] path { transform-box: fill-box; transform-origin: center; }
+  [data-motion-host]:is(:hover, :focus-visible) [data-motion="code"] path:nth-child(1) { animation: nav-code-close .6s ease-in-out; }
+  [data-motion-host]:is(:hover, :focus-visible) [data-motion="code"] path:nth-child(2) { animation: nav-code-open .6s ease-in-out; }
+  [data-motion-host]:is(:hover, :focus-visible) [data-motion="code"] path:nth-child(3) { animation: nav-code-slash .6s ease-in-out; }
+
+  [data-motion-host]:is(:hover, :focus-visible) [data-motion="wiggle"] { animation: nav-wiggle .5s ease-in-out; }
+  [data-motion-host]:is(:hover, :focus-visible) [data-motion="ring"] { animation: nav-ring .7s ease-in-out; transform-origin: 50% 10%; }
+  [data-motion-host]:is(:hover, :focus-visible) [data-motion="hop"] { animation: nav-hop .5s ease-out; }
+  [data-motion-host]:is(:hover, :focus-visible) [data-motion="launch"] { animation: nav-launch .6s ease-in-out; }
+  [data-motion-host]:is(:hover, :focus-visible) [data-motion="pulse"] { animation: nav-pulse .5s ease-in-out; }
+  [data-motion-host]:is(:hover, :focus-visible) [data-motion="spin"] { animation: nav-spin .6s ease-in-out; }
+  [data-motion-host]:is(:hover, :focus-visible) [data-motion="sway"] { animation: nav-sway .55s ease-in-out; }
+  [data-motion-host]:is(:hover, :focus-visible) [data-motion="rise"] { animation: nav-rise .5s ease-in-out; }
+  [data-motion-host]:is(:hover, :focus-visible) [data-motion="drop"] { animation: nav-drop .45s ease-in-out; }
+  [data-motion-host]:is(:hover, :focus-visible) [data-motion="slide"] { animation: nav-slide .45s ease-in-out; }
+}
