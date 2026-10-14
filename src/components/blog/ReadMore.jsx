@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { DynamicIslandTOC } from "@/components/ui/dynamic-island-toc";
-import { ArrowLeft } from "lucide-react";
-import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa6";
-import { FiShare } from "react-icons/fi";
+import { ArrowLeft, Heart, MessageCircle, Share2 } from "lucide-react";
 import useAuthStore from "../../stores/useAuthStore";
 import { fetchComments } from "../../services/commentsApi";
 import CommentPopover from "./CommentPopover";
@@ -225,7 +223,7 @@ function LoadedPost({ id, raw }) {
                 title={actions.canInteract ? undefined : "Sign in to like user posts"}
                 className={`flex w-full items-center justify-center gap-2 rounded-xl bg-purple-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-purple-500 ${dimmed || "cursor-pointer"}`}
               >
-                {actions.liked ? <FaHeart /> : <FaRegHeart />}
+                <Heart size={16} fill={actions.liked ? "currentColor" : "none"} aria-hidden="true" />
                 {actions.liked ? "Liked" : "Like this post"}
               </button>
 
@@ -240,7 +238,7 @@ function LoadedPost({ id, raw }) {
                   aria-expanded={commentOpen}
                   className={`flex w-full items-center justify-center gap-2 rounded-xl border border-violet-200 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-violet-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 ${canComment ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
                 >
-                  <FaRegComment /> {auth ? "Leave a comment" : "Comments"}
+                  <MessageCircle size={16} aria-hidden="true" /> {auth ? "Leave a comment" : "Comments"}
                 </button>
                 {commentOpen && canComment && (
                   <CommentPopover
@@ -261,7 +259,7 @@ function LoadedPost({ id, raw }) {
                   aria-expanded={shareOpen}
                   className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-violet-200 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-violet-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
                 >
-                  <FiShare /> Share
+                  <Share2 size={16} aria-hidden="true" /> Share
                 </button>
                 {shareOpen && (
                   <SharePopover

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import { confirmPasswordReset } from "@/services/authApi";
 
@@ -64,7 +64,6 @@ export default function ResetPassword() {
 
   return (
     <>
-      <Toaster position="top-center" />
       <div className="min-h-dvh flex items-center justify-center px-4 py-8 sm:py-12">
         <div className="w-full max-w-[440px]">
           <div className="dark:bg-zinc-900 rounded-xl px-5 py-8 sm:px-8 sm:py-10">

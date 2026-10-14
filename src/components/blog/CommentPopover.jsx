@@ -3,7 +3,7 @@ import { Send, Trash2, Loader2 } from "lucide-react";
 import { fetchComments, postComment, deleteComment } from "../../services/commentsApi";
 import useAuthStore from "../../stores/useAuthStore";
 import useProfileStore from "../../stores/useProfileStore";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import Popover from "./Popover";
 
 function timeAgo(dateStr) {

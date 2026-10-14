@@ -7,7 +7,7 @@ import useProfileStore from "@/stores/useProfileStore";
 import useAuthStore from "@/stores/useAuthStore";
 import BlogCard from "@/components/blog/BlogCard";
 import { updateLastActive, saveSettings, removeCv } from "@/services/profileApi";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { Pencil } from "lucide-react";
 import { SectionHeader, ForHiringPanel } from "./my-profile/components/ProfileSections";
 import useProfileProgress from "@/features/profile/hooks/useProfileProgress";
@@ -83,9 +83,9 @@ const MyProfile = () => {
       fd.append("cvFile", file);
       const result = await saveSettings(fd);
       if (result?.stats?.cvUrl) updateStats({ cvUrl: result.stats.cvUrl });
-      toast.success("CV uploaded!");
+      toast.success("Resume uploaded!");
     } catch {
-      toast.error("Failed to upload CV");
+      toast.error("Failed to upload resume");
     }
   };
 
@@ -93,7 +93,7 @@ const MyProfile = () => {
     try {
       await removeCv();
       updateStats({ cvUrl: null });
-      toast.success("CV removed");
+      toast.success("Resume removed");
     } catch (err) {
       toast.error(err.message);
     }
@@ -134,8 +134,6 @@ const MyProfile = () => {
 
   return (
     <div className="flex">
-      {/* Without a Toaster, the "CV uploaded" / failure toasts never appear. */}
-      <Toaster position="top-center" />
       <SideBar
         isOpen={isSideBarOpened}
         onClose={() => setIsSideBarOpened(false)}
@@ -197,16 +195,16 @@ const MyProfile = () => {
 
         {/* Profile header */}
         <div className="px-4 pt-16 sm:px-6 lg:px-10 lg:pt-20">
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
-            <div className="space-y-1 max-w-2xl">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5 lg:gap-8">
+            <div className="min-w-0 space-y-1 max-w-2xl">
               <div className="flex flex-wrap items-center gap-3">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                <h1 className="min-w-0 break-words text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {user?.firstName} {user?.lastName}
                 </h1>
                 {/* Visible on touch too — the banner/avatar pencils are hover-only. */}
                 <Link
                   to="settings"
-                  className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 text-sm font-medium text-gray-100 transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-400"
+                  className="relative inline-flex h-8 items-center gap-1.5 max-sm:after:absolute max-sm:after:-inset-y-1.5 max-sm:after:inset-x-0 rounded-lg border border-white/10 bg-white/5 px-3 text-sm font-medium text-gray-100 transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-400"
                 >
                   <Pencil size={14} />
                   Edit profile
@@ -217,7 +215,7 @@ const MyProfile = () => {
                   {summary.headline}
                 </p>
               )}
-              <p className="text-gray-700 dark:text-gray-300">
+              <p className="break-words text-gray-700 dark:text-gray-300">
                 {stats?.bio ||
                   "Tell others a bit about yourself - add a bio in settings."}
               </p>
@@ -225,14 +223,14 @@ const MyProfile = () => {
                 Last active: {formatLastActive(stats?.lastActive)}
               </p>
             </div>
-            <div className="flex flex-col items-start lg:items-end gap-6">
-              <div className="flex gap-8">
+            <div className="flex w-full flex-col items-start lg:w-auto lg:items-end gap-5 lg:gap-6">
+              <div className="grid w-full grid-cols-3 gap-2 lg:flex lg:w-auto lg:gap-8">
                 {[
                   { label: "Followers", value: stats?.followersCount ?? 0 },
                   { label: "Following", value: stats?.followingsCount ?? 0 },
                   { label: "Posts", value: stats?.postsCount ?? 0 },
                 ].map((item) => (
-                  <div key={item.label} className="text-center">
+                  <div key={item.label} className="text-center max-lg:rounded-xl max-lg:border max-lg:border-white/10 max-lg:bg-white/5 max-lg:py-2">
                     <p className="text-base font-bold text-gray-900 dark:text-gray-100 lg:text-xl">
                       {item.value}
                     </p>
@@ -242,7 +240,7 @@ const MyProfile = () => {
                   </div>
                 ))}
               </div>
-              <div className="flex items-center gap-6 text-2xl text-gray-600 dark:text-gray-400">
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-2xl text-gray-600 dark:text-gray-400">
                 {SOCIAL_LINKS.filter((item) => stats?.[item.key]).map((item) => {
                   const Icon = item.icon;
                   return (

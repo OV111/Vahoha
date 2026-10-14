@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import useAuthStore from "../../../stores/useAuthStore";
 import { deleteAccount } from "../../../services/profileApi";
 

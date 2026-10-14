@@ -4,6 +4,7 @@ import "./index.css";
 
 import router from "./router";
 import LoadingSuspense from "./components/feedback/LoadingSuspense";
+import AppToaster from "./components/feedback/AppToaster";
 import useAuthStore from "./stores/useAuthStore";
 import useNotificationStore from "./stores/useNotificationStore";
 import useBlogInteractionsStore from "./stores/useBlogInteractionsStore";
@@ -12,7 +13,7 @@ import useProfileStore from "./stores/useProfileStore";
 
 const App = () => {
   const { init, auth, session } = useAuthStore();
-  const { connectWs, disconnectWs, clearNotifications } = useNotificationStore();
+  const { connectWs, disconnectWs, clearNotifications, loadNotifications } = useNotificationStore();
   const { fetchInteractions, reset } = useBlogInteractionsStore();
   const { fetchProfile, clearProfile } = useProfileStore();
 
@@ -26,6 +27,7 @@ const App = () => {
       clearProfile();
       clearNotifications();
       connectWs();
+      loadNotifications();
       fetchInteractions();
       fetchProfile();
     } else {
@@ -34,12 +36,15 @@ const App = () => {
       clearProfile();
       clearNotifications();
     }
-  }, [auth, session, clearNotifications, clearProfile, connectWs, disconnectWs, fetchInteractions, fetchProfile, reset]);
+  }, [auth, session, clearNotifications, loadNotifications, clearProfile, connectWs, disconnectWs, fetchInteractions, fetchProfile, reset]);
   // No early return while the session check runs: public pages render right
   // away, and only the auth-dependent parts (route guards, navbar) wait on it.
 
   return (
     <React.Fragment>
+      {/* The only Toaster in the app. Pages just call toast(); a second one
+          mounted anywhere would render every toast twice. */}
+      <AppToaster />
       <Suspense fallback={<LoadingSuspense />}>
         <RouterProvider router={router}></RouterProvider>
       </Suspense>

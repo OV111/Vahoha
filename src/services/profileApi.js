@@ -53,7 +53,7 @@ export const removeCv = async () => {
     headers: authHeaders(),
   });
   const data = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(data?.message || "Couldn't remove the CV");
+  if (!res.ok) throw new Error(data?.message || "Couldn't remove the resume");
   return data;
 };
 

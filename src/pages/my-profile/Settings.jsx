@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useBlocker } from "react-router-dom";
 import DeleteAccount from "@/features/profile/components/DeleteAccount";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import PageShell from "./components/PageShell";
 import SaveBar from "./components/SaveBar";
 import useProfileStore from "@/stores/useProfileStore";
@@ -47,24 +47,41 @@ const TextField = ({
   );
 };
 
-// IANA zones from the browser, labelled with today's UTC offset. Built once.
+// IANA zones from the browser, labelled "(UTC+04:00) Asia/Yerevan" with today's
+// offset and sorted by it, like Google Calendar / Windows, so a person can find
+// theirs by offset instead of hunting through region names. Built once.
 const TIMEZONES = (() => {
   if (typeof Intl.supportedValuesOf !== "function") return [];
   const now = new Date();
-  const offset = (timeZone) => {
+
+  // "GMT+5:30" -> 330 minutes. A zone on UTC itself comes back as plain "GMT".
+  const offsetMinutes = (timeZone) => {
     try {
       const part = new Intl.DateTimeFormat("en", { timeZone, timeZoneName: "shortOffset" })
         .formatToParts(now)
-        .find((p) => p.type === "timeZoneName");
-      return part ? part.value.replace("GMT", "UTC") : "";
+        .find((p) => p.type === "timeZoneName")?.value;
+      const m = /GMT([+-])(\d{1,2})(?::(\d{2}))?/.exec(part ?? "");
+      if (!m) return 0;
+      return (m[1] === "-" ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3] ?? 0));
     } catch {
-      return "";
+      return 0;
     }
   };
-  return Intl.supportedValuesOf("timeZone").map((tz) => ({
-    value: tz,
-    label: `${tz.replace(/_/g, " ")} (${offset(tz) || "UTC"})`,
-  }));
+  const format = (mins) => {
+    const abs = Math.abs(mins);
+    const hh = String(Math.floor(abs / 60)).padStart(2, "0");
+    const mm = String(abs % 60).padStart(2, "0");
+    return `UTC${mins < 0 ? "-" : "+"}${hh}:${mm}`;
+  };
+
+  const zones = [...new Set(["UTC", ...Intl.supportedValuesOf("timeZone")])];
+  return zones
+    .map((tz) => ({ tz, mins: offsetMinutes(tz) }))
+    .sort((x, y) => x.mins - y.mins || x.tz.localeCompare(y.tz))
+    .map(({ tz, mins }) => ({
+      value: tz,
+      label: `(${format(mins)}) ${tz.replace(/_/g, " ")}`,
+    }));
 })();
 
 // Users type "github.com/x" without a scheme; the server only accepts http(s),

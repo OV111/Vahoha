@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { AlertTriangle, Check, CreditCard, Info } from "lucide-react";
 import useBilling from "./hooks/useBilling";
 import { PLANS_BY_ID } from "./plans";
@@ -93,7 +93,6 @@ const BillingPage = () => {
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-16 pt-28 sm:px-8">
-      <Toaster position="top-center" containerStyle={{ top: "max(1rem, env(safe-area-inset-top))" }} />
 
       <header className="mb-8">
         <h1 className="text-3xl font-semibold text-[#F7F7F8]">Billing</h1>

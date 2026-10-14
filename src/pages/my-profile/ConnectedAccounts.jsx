@@ -3,8 +3,8 @@ import SideBar from "./components/SideBar";
 import useProfileStore from "@/stores/useProfileStore";
 import useThemeStore from "@/stores/useThemeStore";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import XIcon from "@mui/icons-material/X";
-import toast from "react-hot-toast";
+import XLogo from "@/components/ui/XLogo";
+import { toast } from "sonner";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { getAccessToken } from "../../../constants/api";
@@ -27,7 +27,7 @@ const SOCIAL_FIELDS = [
   {
     key: "twitterLink",
     label: "Twitter / X",
-    icon: <XIcon sx={{ fontSize: 16 }} />,
+    icon: <XLogo size={16} />,
     placeholder: "https://x.com/username",
   },
   {

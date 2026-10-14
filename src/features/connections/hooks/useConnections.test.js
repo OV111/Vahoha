@@ -6,10 +6,10 @@ vi.mock("@/services/followersApi", () => ({
   fetchFollowing: vi.fn(),
   toggleFollow: vi.fn(),
 }));
-vi.mock("react-hot-toast", () => ({ default: { error: vi.fn() } }));
+vi.mock("sonner", () => ({ toast: { error: vi.fn() } }));
 
 import { fetchFollowers, toggleFollow } from "@/services/followersApi";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import useConnections from "./useConnections";
 
 const person = (id, over = {}) => ({

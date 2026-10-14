@@ -24,7 +24,7 @@ export function ForHiringPanel({ editable = false, cvUrl = null, onCvUpload, onC
   return (
     <div className="rounded-2xl border border-white/10 px-4 py-4">
       <p className="text-xs font-semibold uppercase tracking-wide mb-2 text-gray-400">
-        CV
+        Career
       </p>
       <CvFileCard editable={editable} cvUrl={cvUrl} onUpload={onCvUpload} onRemove={onCvRemove} />
 

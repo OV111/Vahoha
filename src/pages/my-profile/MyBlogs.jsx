@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { Pencil, Trash2, Send, Eye, FileText } from "lucide-react";
 import PageShell from "./components/PageShell";
 import {

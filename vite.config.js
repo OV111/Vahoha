@@ -26,10 +26,9 @@ export default defineConfig(({ isSsrBuild }) => ({
         manualChunks: {
           "vendor-react": ["react", "react-dom", "react-router-dom"],
           "vendor-motion": ["framer-motion"],
-          "vendor-mui": ["@mui/material", "@mui/icons-material"],
           "vendor-gsap": ["gsap"],
           "vendor-icons": ["react-icons"],
-          "vendor-toast": ["react-hot-toast"],
+          "vendor-toast": ["sonner"],
           "vendor-forms": ["react-hook-form"],
         },
       },

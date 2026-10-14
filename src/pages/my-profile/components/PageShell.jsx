@@ -1,4 +1,3 @@
-import { Toaster } from "react-hot-toast";
 import SideBar from "./SideBar";
 
 /**
@@ -9,7 +8,6 @@ import SideBar from "./SideBar";
 export default function PageShell({ title, subtitle, actions, children }) {
   return (
     <div className="flex min-h-dvh">
-      <Toaster position="top-center" />
       <SideBar />
       <main className="min-w-0 flex-1 px-4 py-8 sm:px-6 lg:px-10">
         <header className="flex flex-wrap items-end justify-between gap-4">

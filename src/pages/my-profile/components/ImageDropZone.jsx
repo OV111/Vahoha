@@ -1,4 +1,4 @@
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { useRef, useState } from "react";
 
 import { UploadCloud, X } from "lucide-react";

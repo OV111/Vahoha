@@ -4,7 +4,7 @@ import useAuthStore from "../../../stores/useAuthStore.js";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import useThemeStore from "../../../stores/useThemeStore.js";
 import { LogOut, Sun, Moon } from "lucide-react";
 import useProfileStore from "@/stores/useProfileStore.js";
@@ -121,9 +121,7 @@ export default function SideBar() {
               <p className="hidden px-2 py-0 text-[11px] uppercase tracking-wider text-[#8A8A93] font-semibold lg:block lg:py-0.5">
                 {group.section}
               </p>
-              {group.items.map((item) => {
-                const Icon = item.icon;
-                return (
+              {group.items.map((item) => (
                 <NavLink
                   key={`${item.to}-${item.label}`}
                   to={item.to}
@@ -144,13 +142,10 @@ export default function SideBar() {
                     })()
                   }
                 >
-                  <p className="flex items-center">
-                    <Icon size={22} aria-hidden="true" />
-                  </p>
+                  <p className="flex items-center">{item.icon}</p>
                   <p className="hidden text-[14px] lg:block">{item.label}</p>
                 </NavLink>
-                );
-              })}
+              ))}
             </div>
           ))}
         </nav>

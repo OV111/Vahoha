@@ -1,10 +1,9 @@
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { FaRegBookmark, FaBookmark, FaRegComment, FaRegHeart, FaHeart } from "react-icons/fa6";
-import { FiShare } from "react-icons/fi";
+import { Bookmark, Heart, MessageCircle, Share2 } from "lucide-react";
 import SharePopover from "./SharePopover";
 import CommentPopover from "./CommentPopover";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import useAuthStore from "../../stores/useAuthStore";
 import useBlogInteractionsStore from "../../stores/useBlogInteractionsStore";
 import { API_BASE_URL, authHeaders } from "../../../constants/api";
@@ -190,10 +189,10 @@ const BlogCard = ({ card }) => {
           aria-label={saved ? "Remove from saved" : "Save post"}
           aria-pressed={saved}
           className={`absolute top-3 right-3 z-10 rounded-full bg-black/60 p-2 backdrop-blur-sm transition-colors max-md:after:absolute max-md:after:-inset-2 ${
-            saved ? "text-purple-400" : "text-white hover:text-purple-300"
+            saved ? "text-purple-600" : "text-white hover:text-purple-500"
           } ${canInteract ? "cursor-pointer" : "cursor-not-allowed"}`}
         >
-          {saved ? <FaBookmark size={13} /> : <FaRegBookmark size={13} />}
+          <Bookmark size={14} fill={saved ? "currentColor" : "none"} aria-hidden="true" />
         </button>
       </div>
 
@@ -278,7 +277,7 @@ const BlogCard = ({ card }) => {
             aria-pressed={liked}
             className={iconBtn(liked, "text-rose-500")}
           >
-            {liked ? <FaHeart className="h-3.5 w-3.5" /> : <FaRegHeart className="h-3.5 w-3.5" />}
+            <Heart className="h-3.5 w-3.5" fill={liked ? "currentColor" : "none"} aria-hidden="true" />
             {likesCount > 0 && <span className="text-xs">{likesCount}</span>}
           </button>
 
@@ -293,7 +292,7 @@ const BlogCard = ({ card }) => {
               aria-expanded={commentOpen}
               className={iconBtn(commentOpen, "text-sky-500")}
             >
-              <FaRegComment className="h-3.5 w-3.5" />
+              <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
               {commentsCount > 0 && <span className="text-xs">{commentsCount}</span>}
             </button>
             {commentOpen && !post.isDefault && (
@@ -318,7 +317,7 @@ const BlogCard = ({ card }) => {
                 shareOpen ? "text-emerald-500" : "hover:text-neutral-900 dark:hover:text-white"
               }`}
             >
-              <FiShare className="h-3.5 w-3.5" />
+              <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
             {shareOpen && (
               <SharePopover

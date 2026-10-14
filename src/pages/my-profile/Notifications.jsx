@@ -6,7 +6,7 @@ import { Bell, CheckCheck, Trash2 } from "lucide-react";
 import PageShell from "./components/PageShell";
 import { SURFACE } from "@/components/ui/surface";
 import { timeAgo } from "@/features/connections/lib/connections";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import {
   getNotifications,
   markNotificationRead,

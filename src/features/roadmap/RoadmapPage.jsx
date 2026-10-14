@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "sonner";
 import CategoryBar from "./components/CategoryBar";
 import TrackSelector from "./components/TrackSelector";
 import RoadmapTree from "./components/RoadmapTree";
@@ -105,7 +105,6 @@ export default function RoadmapPage() {
         )}
       </AnimatePresence>
 
-      <Toaster position="top-center" />
     </div>
   );
 }

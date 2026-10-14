@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { Toaster, toast } from "react-hot-toast";
-import { FiMapPin, FiMessageSquare } from "react-icons/fi";
-import { Ellipsis, Pencil } from "lucide-react";
+import { toast } from "sonner";
+import { Ellipsis, MapPin, MessageSquare, Pencil } from "lucide-react";
 import { fetchUserProfile, toggleFollow } from "@/services/usersApi";
 import { fetchUserBlogs } from "@/services/blogsApi";
 import BlogCard from "@/components/blog/BlogCard";
@@ -36,6 +35,9 @@ const UserNotFound = () => (
 );
 
 // Same outlined button the owner's page uses for "Edit profile".
+const MENU_ITEM =
+  "w-full cursor-pointer rounded-lg border border-transparent bg-white/5 px-3 py-2 text-left text-sm font-medium text-white/80 transition-all duration-200 hover:border-white/10 hover:bg-white/10";
+
 const OUTLINE_BUTTON =
   "inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 text-sm font-medium text-gray-100 transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-400";
 
@@ -149,7 +151,6 @@ export default function UserProfile() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black">
-      <Toaster position="top-center" reverseOrder />
 
       <div className="max-w-6xl mx-auto">
         <ProfileBanner url={stats?.bannerImage}>
@@ -192,7 +193,7 @@ export default function UserProfile() {
               <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
                 {stats?.location && (
                   <span className="flex items-center gap-1.5">
-                    <FiMapPin className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                    <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                     {stats.location}
                   </span>
                 )}
@@ -236,7 +237,7 @@ export default function UserProfile() {
                     </button>
 
                     <Link to="/my-profile/chats" className={OUTLINE_BUTTON}>
-                      <FiMessageSquare className="h-3.5 w-3.5" aria-hidden="true" />
+                      <MessageSquare className="h-3.5 w-3.5" aria-hidden="true" />
                       Message
                     </Link>
                   </>
@@ -247,14 +248,15 @@ export default function UserProfile() {
                     type="button"
                     aria-label="More options"
                     aria-expanded={isMenuOpen}
+                    aria-haspopup="menu"
                     onClick={() => setIsMenuOpen((prev) => !prev)}
-                    className={`${OUTLINE_BUTTON} w-9 cursor-pointer justify-center px-0`}
+                    className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-2xl bg-white/5 text-white/70 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-400"
                   >
-                    <Ellipsis className="h-4 w-4" />
+                    <Ellipsis className="h-4 w-4 lg:h-5 lg:w-5" />
                   </button>
 
                   {isMenuOpen && (
-                    <ul className="absolute right-0 z-10 mt-2 grid w-52 gap-1 overflow-hidden rounded-xl border border-white/10 bg-gray-950 p-2 shadow-xl shadow-black/40">
+                    <ul role="menu" className="absolute right-0 z-10 mt-2 grid w-52 gap-1 overflow-hidden rounded-2xl border border-white/10 bg-black/95 p-2 shadow-xl shadow-black/40 backdrop-blur-sm">
                       {[
                         {
                           label: "Copy profile link",
@@ -277,11 +279,12 @@ export default function UserProfile() {
                           },
                         },
                       ].map((item) => (
-                        <li key={item.label}>
+                        <li key={item.label} role="none">
                           <button
                             type="button"
+                            role="menuitem"
                             onClick={item.onClick}
-                            className="w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm text-gray-200 transition-colors hover:bg-white/10"
+                            className={MENU_ITEM}
                           >
                             {item.label}
                           </button>
@@ -289,11 +292,12 @@ export default function UserProfile() {
                       ))}
                       {!isOwnProfile &&
                         ["Report user", "Block user"].map((label) => (
-                          <li key={label}>
+                          <li key={label} role="none">
                             <button
                               type="button"
+                              role="menuitem"
                               onClick={() => setIsMenuOpen(false)}
-                              className="w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm text-red-300 transition-colors hover:bg-red-500/10"
+                              className={`${MENU_ITEM} text-red-300! hover:bg-red-950/40!`}
                             >
                               {label}
                             </button>

@@ -1,7 +1,7 @@
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { Send, Eye, Pencil, ChevronDown, Check } from "lucide-react";
-import SaveAsOutlinedIcon from "@mui/icons-material/SaveAsOutlined";
-import { toast } from "react-hot-toast";
+import { Save } from "lucide-react";
+import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import SideBar from "./components/SideBar";
 import ImageDropZone from "./components/ImageDropZone";
@@ -240,7 +240,7 @@ export default function AddBlog() {
               disabled={isSubmitting}
               className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-100 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 cursor-pointer"
             >
-              <SaveAsOutlinedIcon sx={{ fontSize: 16 }} />
+              <Save size={16} aria-hidden="true" />
               Save draft
             </button>
             <button

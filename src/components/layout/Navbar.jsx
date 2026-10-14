@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
 import useAuthStore from "../../stores/useAuthStore";
 import Wordmark from "@/components/ui/Wordmark";
 import DesktopNav from "./navbar/DesktopNav";
@@ -94,7 +93,19 @@ const Navbar = () => {
           aria-controls="mobile-menu"
           className={`-mr-2 flex h-11 w-11 items-center justify-center rounded-full transition hover:bg-white/10 md:hidden ${focusRing}`}
         >
-          {menus.isMobileOpen ? <X size={22} /> : <Menu size={22} />}
+          {/* Three bars that morph into an X (instead of swapping two icons). */}
+          <span className="relative block h-3 w-4" aria-hidden="true">
+            {[
+              menus.isMobileOpen ? "top-1/2 -translate-y-1/2 rotate-45" : "top-0",
+              menus.isMobileOpen ? "top-1/2 -translate-y-1/2 opacity-0" : "top-1/2 -translate-y-1/2",
+              menus.isMobileOpen ? "top-1/2 -translate-y-1/2 -rotate-45" : "bottom-0",
+            ].map((pos, i) => (
+              <span
+                key={i}
+                className={`absolute left-0 block h-[1.5px] w-full rounded-full bg-current transition-all duration-300 ${pos}`}
+              />
+            ))}
+          </span>
         </button>
       </div>
 

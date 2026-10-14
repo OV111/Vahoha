@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import useAuthStore from "../stores/useAuthStore";
@@ -147,7 +147,6 @@ const GetStarted = () => {
 
   return (
     <React.Fragment>
-      <Toaster position="top-center" reverseOrder={false} />
 
       <div className="min-h-dvh flex items-center justify-center px-4 py-8 sm:py-12">
         <div className="w-full max-w-[520px]">

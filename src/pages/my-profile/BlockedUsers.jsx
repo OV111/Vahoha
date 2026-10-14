@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import PageShell from "./components/PageShell";
 import { SURFACE } from "@/components/ui/surface";
 import ConnectionsSkeleton from "@/features/connections/components/ConnectionsSkeleton";

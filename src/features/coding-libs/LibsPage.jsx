@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { TABS } from "../../../constants/libsPage";
 import { LIBS_DATA } from "../../../constants/libs";
@@ -126,7 +126,6 @@ export default function LibsPage() {
 
   return (
     <div className="flex bg-black text-neutral-200">
-      <Toaster position="top-center" />
 
       {/* Desktop: always-visible filter rail */}
       <aside

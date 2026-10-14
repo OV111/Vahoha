@@ -114,9 +114,7 @@ const Footer = () => {
               Learn it, prove it, get seen for it.
             </p>
 
-            <p className="mb-4 text-xs font-semibold tracking-[0.22em] text-[#F7F7F8] uppercase">
-              Follow Us
-            </p>
+            <h2 className={headingClass}>Follow us</h2>
             <div className="flex items-center gap-3">
               {/* External: plain <a> + new tab. <Link> is for in-app routes. */}
               <a

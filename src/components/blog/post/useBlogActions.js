@@ -1,5 +1,5 @@
 import { useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import useAuthStore from "../../../stores/useAuthStore";
 import useBlogInteractionsStore from "../../../stores/useBlogInteractionsStore";
 import { API_BASE_URL, authHeaders } from "../../../../constants/api";

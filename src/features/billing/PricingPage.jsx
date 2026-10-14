@@ -1,4 +1,4 @@
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { Info } from "lucide-react";
 import useAuthStore from "../../stores/useAuthStore";
 import useBilling from "./hooks/useBilling";
@@ -48,7 +48,6 @@ const PricingPage = () => {
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-16 pt-28 sm:px-8">
-      <Toaster position="top-center" containerStyle={{ top: "max(1rem, env(safe-area-inset-top))" }} />
 
       <header className="mb-10 text-center">
         <h1 className="mb-2 text-3xl font-semibold text-[#F7F7F8]">

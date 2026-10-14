@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Mail } from "lucide-react";
 import { FaFacebook, FaLinkedinIn } from "react-icons/fa6";
-import { FiMail } from "react-icons/fi";
 import XLogo from "../ui/XLogo";
 import Popover from "./Popover";
 
@@ -48,7 +47,7 @@ const SharePopover = ({ url, title, onClose }) => {
     },
     {
       label: "Share by email",
-      icon: <FiMail className="h-4 w-4" />,
+      icon: <Mail className="h-4 w-4" aria-hidden="true" />,
       href: `mailto:?subject=${encodedTitle}&body=${encoded}`,
       hover: "hover:border-purple-500 hover:text-purple-500 dark:hover:text-purple-400",
     },
