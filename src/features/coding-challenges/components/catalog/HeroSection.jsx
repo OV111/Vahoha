@@ -2,6 +2,7 @@ import { motion as Motion } from "framer-motion";
 import EyebrowBadge from "@/components/ui/EyebrowBadge";
 import TextType from "@/components/effects/TextType";
 import StatCell from "./StatCell";
+import StatCellSkeleton from "./StatCellSkeleton";
 import DailyChallengeCard from "./DailyChallengeCard";
 
 const fadeUp = (delay = 0) => ({
@@ -39,16 +40,18 @@ const buildStats = (stats) => [
   },
 ];
 
-export default function HeroSection({ daily, stats, heroRef }) {
+export default function HeroSection({ daily, stats, loading, challengeCount, heroRef }) {
   const statCells = buildStats(stats);
   return (
     <div ref={heroRef} className="px-6 sm:px-10 lg:px-14 pt-10 pb-8 lg:mb-14">
       <div className="flex flex-col mr-10 lg:flex-row items-start">
         <div className="flex-1 min-w-0">
           <Motion.div {...fadeUp(0)} className="mb-6">
+            {/* A live count instead of a made-up version number: it tells the
+                visitor something true. The pulse dot reads as "live". */}
             <EyebrowBadge
-              label="v0.12"
-              text="problems · path-specific · agent-guided"
+              dot
+              text={`${challengeCount > 0 ? `${challengeCount} challenges · ` : ""}tied to your roadmap · mentor-guided`}
               color="purple"
             />
           </Motion.div>
@@ -87,20 +90,24 @@ export default function HeroSection({ daily, stats, heroRef }) {
           </Motion.p>
 
           <div className="grid grid-cols-2 sm:grid-cols-4">
-            {statCells.map(({ value, unit, label, sub }, i) => (
-              <StatCell
-                key={label}
-                value={value}
-                unit={unit}
-                label={label}
-                sub={sub}
-                index={i}
-              />
-            ))}
+            {/* Skeletons until the first response: real zeros would count up
+                and then jump to the real numbers. */}
+            {loading && !stats
+              ? statCells.map(({ label }) => <StatCellSkeleton key={label} />)
+              : statCells.map(({ value, unit, label, sub }, i) => (
+                  <StatCell
+                    key={label}
+                    value={value}
+                    unit={unit}
+                    label={label}
+                    sub={sub}
+                    index={i}
+                  />
+                ))}
           </div>
         </div>
 
-        <DailyChallengeCard daily={daily} fadeUp={fadeUp} />
+        <DailyChallengeCard daily={daily} loading={loading} fadeUp={fadeUp} />
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { EditorView } from "@codemirror/view";
 import { HighlightStyle, syntaxHighlighting } from "@codemirror/language";
 import { tags as t } from "@lezer/highlight";
+import { C } from "./arenaTheme";
 
 /**
  * CodeMirror theme for the arena editor.
@@ -15,20 +16,12 @@ import { tags as t } from "@lezer/highlight";
  */
 
 export const ARENA_COLORS = {
-  bg: "#0a0a0c",
-  surface: "#111115",
-  border: "#1f1f26",
-  purple: "#a855f7",
-  green: "#2dd46a",
-  amber: "#ffb347",
-  text: "#e2e2e8",
-  muted: "#6b6b7b",
-  faint: "#3a3a4a",
-  gutterBg: "#0c0c11",
-  gutterText: "#3a3a52",
-  plain: "#c9c9d8",
+  ...C,
+  gutterBg: "#050505",
+  gutterText: "#3a3a3a",
+  plain: "#d4d4d4",
   func: "#60a5fa",
-  comment: "#4a4a5c",
+  comment: "#525252",
 };
 
 const FONT_MONO = "'Geist Mono', 'Fira Code', 'JetBrains Mono', monospace";

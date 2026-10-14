@@ -107,7 +107,7 @@ export default function SolvedPanel({ verdict, onDismiss }) {
               <pre
                 className="text-[12px] leading-relaxed p-4 rounded-lg overflow-x-auto"
                 style={{
-                  background: "#0e0e14",
+                  background: "#0a0a0a",
                   border: `1px solid ${C.border}`,
                   color: "#b0b0c0",
                   fontFamily: FONT_MONO,

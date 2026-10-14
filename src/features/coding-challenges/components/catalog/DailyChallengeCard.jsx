@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { formatTitle } from "../../lib/formatTitle";
 import { motion as Motion } from "framer-motion";
 import useUtcMidnightCountdown from "../../hooks/useUtcMidnightCountdown";
 
-export default function DailyChallengeCard({ daily, fadeUp }) {
+export default function DailyChallengeCard({ daily, loading, fadeUp }) {
   const navigate = useNavigate();
   const countdown = useUtcMidnightCountdown();
 
@@ -24,31 +25,47 @@ export default function DailyChallengeCard({ daily, fadeUp }) {
         </div>
       </div>
 
-      <p className="text-[16px] font-bold text-white leading-snug">
-        {daily?.title ?? "Loading today's challenge…"}
-      </p>
+      {daily ? (
+        <>
+          <p className="text-[16px] font-bold text-white leading-snug">{formatTitle(daily.title)}</p>
 
-      <p className="text-[12px] leading-relaxed text-white/75">
-        {daily?.summary ?? ""}
-      </p>
+          <p className="text-[12px] leading-relaxed text-white/75">{daily.summary ?? ""}</p>
 
-      <div className="flex flex-wrap gap-1.5">
-        {(daily?.tags ?? []).map((t) => (
-          <span
-            key={t}
-            className="text-[9px] font-bold px-2 bg-black/25 text-white rounded-xl"
-          >
-            {t}
-          </span>
-        ))}
-      </div>
+          <div className="flex flex-wrap gap-1.5">
+            {(daily.tags ?? []).map((t) => (
+              <span
+                key={t}
+                className="text-[9px] font-bold px-2 bg-black/25 text-white rounded-xl"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        </>
+      ) : loading ? (
+        // Bars sized to the title, two summary lines and the tag row, so the
+        // card doesn't grow when the real challenge arrives.
+        <div className="flex flex-col gap-3 animate-pulse" aria-hidden="true">
+          <div className="h-[18px] w-4/5 rounded-sm bg-white/20" />
+          <div className="flex flex-col gap-1.5">
+            <div className="h-3 w-full rounded-sm bg-white/15" />
+            <div className="h-3 w-2/3 rounded-sm bg-white/15" />
+          </div>
+          <div className="flex gap-1.5">
+            <div className="h-3.5 w-12 rounded-xl bg-black/25" />
+            <div className="h-3.5 w-16 rounded-xl bg-black/25" />
+          </div>
+        </div>
+      ) : (
+        <p className="text-[13px] text-white/75">No daily challenge today. Check back after the reset.</p>
+      )}
 
       <div className="flex items-center gap-3 mt-1">
         <button
           type="button"
           disabled={!daily}
           onClick={() => daily && navigate(`/coding-challenges/${daily.slug}`)}
-          className="flex justify-center items-center gap-1.5 flex-1 py-2 text-[13px] font-bold rounded-sm transition-opacity hover:opacity-90 cursor-pointer bg-white text-purple-600"
+          className="flex justify-center items-center gap-1.5 flex-1 py-2 text-[13px] font-bold rounded-sm transition-opacity hover:opacity-90 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 bg-white text-purple-600"
         >
           <p>$ start solving</p>
           <ArrowRight size={14} />

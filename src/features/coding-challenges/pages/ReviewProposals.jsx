@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { API_BASE_URL, authHeaders } from "../../../../constants/api";
+import Badge from "../components/Badge";
+import { DIFFICULTY, TYPE_TONE } from "../lib/challengeTones";
 
 const C = {
-  bg:       "#0a0a0c",
-  surface:  "#111115",
-  border:   "#1f1f26",
+  bg:       "#000000",
+  surface:  "#0d0d0d",
+  border:   "#1a1a1a",
   purple:   "#a855f7",
   green:    "#2dd46a",
   amber:    "#ffb347",
@@ -16,17 +18,6 @@ const C = {
 
 const FONT_SANS = "'Geist', 'Inter', system-ui, sans-serif";
 const FONT_MONO = "'Geist Mono', 'Fira Code', 'JetBrains Mono', monospace";
-
-function Badge({ children, color, bg, border }) {
-  return (
-    <span
-      className="text-[10px] font-bold px-2 py-0.5 rounded-sm tracking-widest"
-      style={{ color, background: bg, border: `1px solid ${border}` }}
-    >
-      {children}
-    </span>
-  );
-}
 
 function SectionHead({ children }) {
   return (
@@ -41,7 +32,7 @@ function SectionHead({ children }) {
 
 function CodeBlock({ code }) {
   return (
-    <div className="overflow-x-auto rounded-lg" style={{ background: "#0e0e14", border: `1px solid ${C.border}` }}>
+    <div className="overflow-x-auto rounded-lg" style={{ background: "#0a0a0a", border: `1px solid ${C.border}` }}>
       <pre
         className="text-[12px] leading-relaxed p-4 whitespace-pre"
         style={{ color: "#b0b0c0", fontFamily: FONT_MONO }}
@@ -118,10 +109,10 @@ function ProposalCard({ proposal, onApprove, onReject }) {
       {/* Header */}
       <div className="p-5 flex flex-col gap-3">
         <div className="flex flex-wrap gap-1.5">
-          <Badge color={C.text}   bg="#18181f" border={C.faint}>{proposal.slug}</Badge>
-          <Badge color={C.green}  bg="#06190f" border="#0e3d1e">{proposal.type}</Badge>
-          <Badge color={C.amber}  bg="#190f00" border="#3d2700">{proposal.difficulty}</Badge>
-          <Badge color={C.purple} bg="#160828" border="#3b1e6e">+{proposal.xp} XP</Badge>
+          <Badge mono>{proposal.slug}</Badge>
+          <Badge tone={TYPE_TONE[proposal.type] ?? "purple"}>{proposal.type}</Badge>
+          <Badge tone={DIFFICULTY[proposal.difficulty]?.tone ?? "neutral"}>{proposal.difficulty}</Badge>
+          <Badge tone="purple">+{proposal.xp} xp</Badge>
         </div>
 
         <h3 className="text-[16px] font-bold leading-snug" style={{ color: C.text }}>
@@ -246,7 +237,7 @@ function ProposalCard({ proposal, onApprove, onReject }) {
             placeholder="Explain why this proposal is being rejected — the submitter will see this."
             rows={2}
             className="text-[12px] px-3 py-2 rounded outline-none resize-y w-full"
-            style={{ background: "#0e0e14", border: `1px solid ${C.border}`, color: C.text, fontFamily: FONT_SANS }}
+            style={{ background: "#0a0a0a", border: `1px solid ${C.border}`, color: C.text, fontFamily: FONT_SANS }}
           />
           <button
             onClick={reject}

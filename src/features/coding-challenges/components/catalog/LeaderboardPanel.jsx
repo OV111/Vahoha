@@ -1,9 +1,14 @@
+import { Fragment } from "react";
+import { Trophy } from "lucide-react";
+
+const RANGE_LABEL = { "7d": "this week", "30d": "this month", all: "all time" };
+
 const LeaderboardSkeleton = () => (
   <div className="flex flex-col gap-1 animate-pulse">
     {[0, 1, 2, 3, 4].map((i) => (
-      <div key={i} className="flex items-center gap-2 px-2 py-1.5">
+      <div key={i} className="flex items-center gap-2 px-2 py-2">
         <div className="h-3 w-5 shrink-0 rounded-sm bg-[#1a1a1a]" />
-        <div className="h-5 w-5 shrink-0 rounded-full bg-[#1a1a1a]" />
+        <div className="h-6 w-6 shrink-0 rounded-full bg-[#1a1a1a]" />
         <div className="h-3 flex-1 rounded-sm bg-[#1a1a1a]" />
         <div className="h-3 w-8 shrink-0 rounded-sm bg-[#1a1a1a]" />
       </div>
@@ -11,83 +16,100 @@ const LeaderboardSkeleton = () => (
   </div>
 );
 
+const Avatar = ({ initial, profileImage, you }) => (
+  <div
+    className={`flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full text-[11px] font-bold ${
+      you ? "bg-purple-600 text-white" : "bg-[#1a1a1a] text-[#8a8a8a]"
+    }`}
+  >
+    {profileImage ? (
+      <img
+        src={profileImage.replace("/upload/", "/upload/w_48,h_48,c_fill,f_auto,q_auto/")}
+        alt=""
+        className="h-full w-full object-cover"
+      />
+    ) : (
+      initial
+    )}
+  </div>
+);
+
+const Row = ({ rank, initial, name, score, solves, you, profileImage }) => (
+  <li
+    className={`flex items-center gap-2 rounded-sm border px-2 py-2 ${
+      you ? "border-purple-600/40 bg-purple-600/10" : "border-transparent"
+    }`}
+    aria-current={you ? "true" : undefined}
+  >
+    <span
+      className={`w-6 shrink-0 text-right text-[12px] tabular-nums ${
+        rank <= 3 ? "font-bold text-purple-400" : "text-[#8a8a8a]"
+      }`}
+    >
+      {rank}
+    </span>
+    <Avatar initial={initial} profileImage={profileImage} you={you} />
+    <div className="min-w-0 flex-1">
+      <p className={`truncate text-[12px] leading-tight ${you ? "font-semibold text-[#e5e5e5]" : "text-[#c4c4c4]"}`}>
+        {you ? "You" : name}
+      </p>
+      <p className="text-[11px] leading-tight text-[#8a8a8a]">
+        {solves} {solves === 1 ? "solve" : "solves"}
+      </p>
+    </div>
+    <span className={`shrink-0 text-[12px] font-semibold tabular-nums ${you ? "text-purple-400" : "text-[#c4c4c4]"}`}>
+      {score.toLocaleString()}
+      <span className="ml-0.5 text-[10px] font-medium text-[#8a8a8a]">xp</span>
+    </span>
+  </li>
+);
+
 /**
  * Ranked by XP earned from solves in the window — the same rule the server
  * documents, so a user can check their own row against their solve history.
+ *
+ * The server appends the learner's own row when they fall outside the top
+ * slice; a gap marker then shows that their rank is not the next one down.
  */
 export default function LeaderboardPanel({ leaderboard, loading }) {
   const rows = leaderboard?.rows ?? [];
-
-  const scopeLabel = [
-    leaderboard?.layerOrder ? `layer ${leaderboard.layerOrder}` : "global",
-    leaderboard?.range,
-  ]
-    .filter(Boolean)
-    .join(" · ");
+  const scope = leaderboard?.layerOrder ? `Layer ${leaderboard.layerOrder}` : "Global";
+  const period = RANGE_LABEL[leaderboard?.range] ?? "";
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        <p className="text-[10px] font-mono text-[#444]">// LEADERBOARD</p>
+    <section aria-labelledby="leaderboard-title">
+      <div className="mb-2 flex items-baseline justify-between gap-2">
+        <h2 id="leaderboard-title" className="flex items-center gap-1.5 text-[13px] font-semibold text-[#e5e5e5]">
+          <Trophy size={13} className="text-purple-400" aria-hidden="true" />
+          Leaderboard
+        </h2>
         {!loading && rows.length > 0 && (
-          <span className="text-[10px] text-[#2a2a2a]">{scopeLabel}</span>
+          <span className="text-[11px] text-[#8a8a8a]">
+            {scope} · {period}
+          </span>
         )}
       </div>
 
       {loading && rows.length === 0 ? (
         <LeaderboardSkeleton />
       ) : rows.length === 0 ? (
-        <p className="px-2 text-[11px] text-[#444]">
-          No solves yet this week — be the first.
+        <p className="px-2 text-[12px] leading-relaxed text-[#8a8a8a]">
+          No solves {period || "yet"}. Solve a challenge to take the first spot.
         </p>
       ) : (
-        <div className="flex flex-col gap-1">
-          {rows.map(({ rank, initial, name, score, you, profileImage }) => (
-            <div
-              key={`${rank}-${name}`}
-              className={`flex items-center gap-2 px-2 py-1.5 rounded-sm border ${
-                you
-                  ? "bg-[#0f0b1a] border-[#2d1b4e]"
-                  : "bg-transparent border-transparent"
-              }`}
-            >
-              <span
-                className={`text-[10px] w-5 shrink-0 tabular-nums text-right ${rank <= 3 ? "text-purple-600" : "text-[#333]"}`}
-              >
-                {rank <= 3 ? String(rank).padStart(2, "0") : `#${rank}`}
-              </span>
-              <div
-                className={`w-5 h-5 rounded-full overflow-hidden flex items-center justify-center text-[10px] font-bold shrink-0 ${
-                  you ? "bg-purple-600 text-white" : "bg-[#1a1a1a] text-[#666]"
-                }`}
-              >
-                {profileImage ? (
-                  <img
-                    src={profileImage.replace(
-                      "/upload/",
-                      "/upload/w_40,h_40,c_fill,f_auto,q_auto/",
-                    )}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  initial
-                )}
-              </div>
-              <span
-                className={`flex-1 text-[11px] truncate ${you ? "text-[#e5e5e5]" : "text-[#555]"}`}
-              >
-                {name}
-              </span>
-              <span
-                className={`text-[11px] font-semibold tabular-nums shrink-0 ${you ? "text-purple-600" : "text-[#444]"}`}
-              >
-                {score.toLocaleString()}
-              </span>
-            </div>
+        <ol className="flex flex-col gap-0.5">
+          {rows.map((row, i) => (
+            <Fragment key={`${row.rank}-${row.name}`}>
+              {i > 0 && row.rank > rows[i - 1].rank + 1 && (
+                <li aria-hidden="true" className="px-2 text-center text-[12px] leading-none text-[#555]">
+                  ⋯
+                </li>
+              )}
+              <Row {...row} />
+            </Fragment>
           ))}
-        </div>
+        </ol>
       )}
-    </div>
+    </section>
   );
 }

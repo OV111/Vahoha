@@ -8,10 +8,9 @@ import { API_BASE_URL, authHeaders } from "../../../../constants/api";
  * `estimatedMins` and `stats.solves` directly. Nothing is renamed on the way
  * in — one set of field names across the stack.
  *
- * Filtering stays client-side for now. The published set is small, and the
- * filter UI speaks in layer *numbers* ("3", "4+") while the API speaks in
- * layer *ids* ("api-dev-3"). Pushing filters server-side is worth doing once
- * the bank is large enough to paginate for real.
+ * The catalog is filtered and paged on the server: the client holds one
+ * growing page set, never the whole bank. (It used to fetch ?limit=100 and
+ * filter locally, which silently hid everything past the first 100.)
  */
 
 const request = async (path, options = {}) => {
@@ -31,8 +30,27 @@ const request = async (path, options = {}) => {
   return body;
 };
 
+// The in-flight list request. A new filter aborts it, so a slow response for
+// an old filter can never land on top of the current one.
+let listController = null;
+
 const useChallengeStore = create((set, get) => ({
+  // Catalog list: the pages loaded so far for the current filters.
   challenges: [],
+  total: 0,
+  page: 0,
+  pages: 0,
+  // The path the list is showing ("all" or a trackId), as resolved by the
+  // server, and the learner's own path (null before they pick one).
+  track: null,
+  myTrack: null,
+  listQuery: "",
+  listLoading: false,
+  loadingMore: false,
+  listError: null,
+
+  // Path filter options from /tracks.
+  tracks: [],
   topics: [],
   daily: null,
   challenge: null,
@@ -47,37 +65,78 @@ const useChallengeStore = create((set, get) => ({
   loading: false,
   error: null,
 
-  loadList: async () => {
+  /** Everything on the catalog page except the list. Loaded once. */
+  loadMeta: async () => {
     set({ loading: true, error: null });
+    // Each part fails on its own: a 500 from the leaderboard must not blank
+    // out the rest of the page.
+    const [topics, daily, stats, readiness, leaderboard, tracks] = await Promise.all(
+      [
+        "/topics",
+        "/daily",
+        "/stats/me",
+        "/readiness",
+        "/leaderboard?scope=layer&range=7d&limit=5",
+        "/tracks",
+      ].map((path) => request(path).catch(() => null)),
+    );
+    set({
+      topics: topics?.tags ?? [],
+      daily: daily?.data ?? null,
+      stats: stats?.data ?? null,
+      readiness: readiness?.data ?? null,
+      leaderboard: leaderboard?.data ?? null,
+      tracks: tracks?.data?.tracks ?? [],
+      loading: false,
+    });
+  },
+
+  /**
+   * First page for a filter set. `query` is a URLSearchParams string built by
+   * useChallengeFilters; keeping it a string makes "same filters?" a cheap
+   * equality check.
+   */
+  loadChallenges: async (query) => {
+    listController?.abort();
+    listController = new AbortController();
+    set({ listQuery: query, listLoading: true, listError: null });
     try {
-      // The list is the page; everything else decorates it. Only the list is
-      // allowed to fail the whole load — a 500 from the leaderboard must not
-      // blank out the challenges, which is exactly what a single Promise.all
-      // across all six would do.
-      const [list, ...extras] = await Promise.all([
-        request("?limit=100"),
-        ...[
-          "/topics",
-          "/daily",
-          "/stats/me",
-          "/readiness",
-          "/leaderboard?scope=layer&range=7d&limit=5",
-        ].map((path) => request(path).catch(() => null)),
-      ]);
-
-      const [topics, daily, stats, readiness, leaderboard] = extras;
-
+      const body = await request(`?${query}${query ? "&" : ""}page=1`, {
+        signal: listController.signal,
+      });
       set({
-        challenges: list.items ?? [],
-        topics: topics?.tags ?? [],
-        daily: daily?.data ?? null,
-        stats: stats?.data ?? null,
-        readiness: readiness?.data ?? null,
-        leaderboard: leaderboard?.data ?? null,
-        loading: false,
+        challenges: body.items ?? [],
+        total: body.total ?? 0,
+        page: body.page ?? 1,
+        pages: body.pages ?? 0,
+        track: body.track ?? null,
+        myTrack: body.myTrack ?? null,
+        listLoading: false,
       });
     } catch (err) {
-      set({ error: err.message, loading: false });
+      if (err.name === "AbortError") return;
+      set({ listError: err.message, listLoading: false });
+    }
+  },
+
+  /** Appends the next page for the current filters. */
+  loadMore: async () => {
+    const { listQuery, page, pages, loadingMore, listLoading } = get();
+    if (loadingMore || listLoading || page >= pages) return;
+    set({ loadingMore: true });
+    const signal = listController?.signal;
+    try {
+      const body = await request(`?${listQuery}${listQuery ? "&" : ""}page=${page + 1}`, { signal });
+      // Filters changed while this was in flight: drop it.
+      if (get().listQuery !== listQuery) return;
+      set((state) => ({
+        challenges: [...state.challenges, ...(body.items ?? [])],
+        page: body.page ?? page + 1,
+        loadingMore: false,
+      }));
+    } catch (err) {
+      if (err.name === "AbortError") return set({ loadingMore: false });
+      set({ listError: err.message, loadingMore: false });
     }
   },
 

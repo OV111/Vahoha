@@ -30,7 +30,7 @@ export default function SubBar({ breadcrumb, challengeId, pager, onBack }) {
         <button
           className="flex items-center gap-0.5 px-2 py-0.5 rounded transition-colors cursor-pointer"
           style={{ border: `1px solid ${C.faint}` }}
-          onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#4a4a5a"; e.currentTarget.style.color = C.text; }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#4a4a4a"; e.currentTarget.style.color = C.text; }}
           onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.faint; e.currentTarget.style.color = C.muted; }}
         >
           <ChevronLeft size={11} /> Prev
@@ -43,7 +43,7 @@ export default function SubBar({ breadcrumb, challengeId, pager, onBack }) {
         <button
           className="flex items-center gap-0.5 px-2 py-0.5 rounded transition-colors cursor-pointer"
           style={{ border: `1px solid ${C.faint}` }}
-          onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#4a4a5a"; e.currentTarget.style.color = C.text; }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#4a4a4a"; e.currentTarget.style.color = C.text; }}
           onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.faint; e.currentTarget.style.color = C.muted; }}
         >
           Next <ChevronRight size={11} />

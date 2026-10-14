@@ -10,7 +10,7 @@ export function renderInlineCode(html) {
   return html
     .replace(
       /<code>/g,
-      `<code style="background:#1e0a3c;border:1px solid #3b1e6e;border-radius:3px;padding:0 4px;color:${C.purple};font-family:${FONT_MONO};font-size:0.85em">`,
+      `<code style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.28);border-radius:4px;padding:1px 5px;color:#d8b4fe;font-family:${FONT_MONO};font-size:0.88em;overflow-wrap:anywhere">`,
     )
     .replace(/<\/code>/g, "</code>");
 }

@@ -1,7 +1,7 @@
-import { Play, RotateCcw } from "lucide-react";
+import { Play, RotateCcw, Sparkles } from "lucide-react";
 import { C, FONT_MONO } from "../../lib/arenaTheme";
 
-export default function ActionBar({ testResults, onRun, running, onSubmit, submitting, lastRunAt, verdict, onViewSolution }) {
+export default function ActionBar({ testResults, onRun, running, onSubmit, submitting, lastRunAt, verdict, onViewSolution, onAskMentor }) {
   const passed = testResults.filter((r) => r.passed).length;
   const total = testResults.length;
 
@@ -47,6 +47,16 @@ export default function ActionBar({ testResults, onRun, running, onSubmit, submi
           </button>
         )}
         <button
+          onClick={onAskMentor}
+          className="flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded transition-colors cursor-pointer"
+          style={{ border: `1px solid ${C.faint}`, color: C.purple }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.purple; }}
+          onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.faint; }}
+        >
+          <Sparkles size={11} />
+          Ask mentor
+        </button>
+        <button
           onClick={onRun}
           disabled={running}
           className="flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded transition-colors cursor-pointer"
@@ -54,7 +64,7 @@ export default function ActionBar({ testResults, onRun, running, onSubmit, submi
             border: `1px solid ${running ? C.purple : C.faint}`,
             color: running ? C.purple : C.muted,
           }}
-          onMouseEnter={(e) => { if (running) return; e.currentTarget.style.borderColor = "#4a4a5a"; e.currentTarget.style.color = C.text; }}
+          onMouseEnter={(e) => { if (running) return; e.currentTarget.style.borderColor = "#4a4a4a"; e.currentTarget.style.color = C.text; }}
           onMouseLeave={(e) => { if (running) return; e.currentTarget.style.borderColor = C.faint; e.currentTarget.style.color = C.muted; }}
         >
           <RotateCcw size={11} />

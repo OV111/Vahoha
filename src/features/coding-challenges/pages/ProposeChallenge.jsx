@@ -16,9 +16,9 @@ import posthog, { isPostHogConfigured } from "@/lib/posthog";
  */
 
 const C = {
-  bg:       "#0a0a0c",
-  surface:  "#111115",
-  border:   "#1f1f26",
+  bg:       "#000000",
+  surface:  "#0d0d0d",
+  border:   "#1a1a1a",
   purple:   "#a855f7",
   green:    "#2dd46a",
   amber:    "#ffb347",
@@ -39,14 +39,14 @@ const emptyHiddenTest = () => ({ name: "", code: "" });
 const emptyHint = () => ({ cost: 10, text: "" });
 
 const inputStyle = {
-  background: "#16161c",
+  background: "#111111",
   border: `1px solid ${C.border}`,
   color: C.text,
   fontFamily: FONT_SANS,
 };
 
 const codeAreaStyle = {
-  background: "#0e0e14",
+  background: "#0a0a0a",
   border: `1px solid ${C.border}`,
   color: C.text,
   fontFamily: FONT_MONO,

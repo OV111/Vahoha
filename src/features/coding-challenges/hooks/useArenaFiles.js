@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * Owns the editor's local file state: seeds it from the saved draft (or the
@@ -44,5 +44,16 @@ export default function useArenaFiles({ challenge, attempt, saveDraft }) {
     return () => clearTimeout(id);
   }, [files, attempt, saveDraft]);
 
-  return { files, updateFile };
+  // Skips the debounce: used before leaving the Arena (e.g. "Ask mentor"),
+  // where the pending timer would be cleared on unmount and the last edit lost.
+  const saveNow = useCallback(async () => {
+    const editable = files.filter((f) => f.lang !== "test");
+    if (!attempt || editable.length === 0) return;
+    const payload = JSON.stringify(editable.map(({ name, code }) => ({ name, code })));
+    if (payload === savedRef.current) return;
+    savedRef.current = payload;
+    await saveDraft(JSON.parse(payload));
+  }, [files, attempt, saveDraft]);
+
+  return { files, updateFile, saveNow };
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bot, Eye, Lock } from "lucide-react";
+import { Eye, Lock } from "lucide-react";
 import { C, FONT_MONO } from "../../lib/arenaTheme";
 import { renderInlineCode } from "../../lib/richText";
 
@@ -18,18 +18,10 @@ export default function HintsPanel({ hints, onReveal }) {
   };
 
   return (
-    <div className="flex flex-col h-full" style={{ background: C.surface }}>
-      <div className="px-4 py-3 border-b shrink-0" style={{ borderColor: C.border }}>
-        <div className="flex items-center gap-2 mb-1">
-          <Bot size={13} style={{ color: C.purple }} />
-          <span className="text-[10px] font-bold tracking-[0.18em] uppercase" style={{ color: C.purple, fontFamily: FONT_MONO }}>
-            Agent Hints
-          </span>
-        </div>
-        <p className="text-[11px] leading-relaxed" style={{ color: C.muted }}>
-          Socratic — guides, never gives the answer. Hints unlock progressively.
-        </p>
-      </div>
+    <div className="flex h-full flex-col" style={{ background: C.surface }}>
+      <p className="shrink-0 border-b px-4 py-3 text-[12px] leading-relaxed" style={{ color: C.muted, borderColor: C.border }}>
+        Hints guide you without giving the answer, and unlock one at a time.
+      </p>
 
       <div
         className="thin-scrollbar flex flex-col divide-y flex-1 overflow-y-auto"
@@ -53,7 +45,7 @@ export default function HintsPanel({ hints, onReveal }) {
             {hint.revealed ? (
               <p
                 className="text-[13px] leading-relaxed"
-                style={{ color: "#aaaabc" }}
+                style={{ color: "#b4b4b4" }}
                 dangerouslySetInnerHTML={{ __html: renderInlineCode(hint.text) }}
               />
             ) : (
@@ -65,14 +57,14 @@ export default function HintsPanel({ hints, onReveal }) {
             )}
 
             <div className="flex items-center justify-between">
-              <span className="text-[11px]" style={{ color: hint.revealed ? C.faint : "#7a7a8a", fontFamily: FONT_MONO }}>
+              <span className="text-[11px]" style={{ color: hint.revealed ? C.faint : "#7a7a7a", fontFamily: FONT_MONO }}>
                 cost:{" "}
                 <span style={{ color: hint.revealed ? C.faint : hint.cost === 0 ? C.green : C.rose }}>
                   {hint.cost === 0 ? "0 xp" : `-${hint.cost} xp`}
                 </span>
                 {" · "}
                 <span style={{ color: C.faint }}>
-                  {hint.revealed ? "unlocked free" : hint.cost === 0 ? "free" : "still passable"}
+                  {hint.cost === 0 ? "free" : hint.revealed ? "paid" : "still passable"}
                 </span>
               </span>
 
@@ -87,10 +79,10 @@ export default function HintsPanel({ hints, onReveal }) {
                   className="flex items-center gap-1.5 text-[11px] px-3 py-1 rounded transition-colors cursor-pointer"
                   style={{
                     border: `1px solid ${pending === hint.id ? C.purple : C.faint}`,
-                    color: pending === hint.id ? C.purple : "#9a9aaa",
+                    color: pending === hint.id ? C.purple : "#9a9a9a",
                   }}
                   onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.purple; e.currentTarget.style.color = C.purple; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.faint; e.currentTarget.style.color = "#9a9aaa"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.faint; e.currentTarget.style.color = "#9a9a9a"; }}
                 >
                   <Eye size={10} />
                   reveal — {hint.cost === 0 ? "free" : `${hint.cost} xp`}
