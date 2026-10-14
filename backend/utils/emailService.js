@@ -147,6 +147,101 @@ export async function sendPasswordResetEmail(toEmail, { resetUrl, firstName, exp
   });
 }
 
+/**
+ * Magic-link sign-in email. Same constraints as the reset email (tables and
+ * inline styles only, plus a plain-text part). The link opens a page with a
+ * "Confirm sign in" button rather than signing in directly: mail scanners and
+ * link previews fetch URLs before the person does, and a link that signed in
+ * on GET would be used up (or worse, used) by the scanner.
+ */
+export async function sendLoginLinkEmail(toEmail, { loginUrl, expiresInMinutes }) {
+  const url = escapeHtml(loginUrl);
+
+  const html = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign in to Vahoha</title>
+  </head>
+  <body style="margin:0;padding:0;background:#f4f4f5;">
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;">
+      Your sign-in link for Vahoha. It expires in ${expiresInMinutes} minutes.
+    </div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;">
+      <tr>
+        <td align="center" style="padding:32px 16px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+            style="max-width:480px;background:#ffffff;border:1px solid #e4e4e7;border-radius:12px;">
+            <tr>
+              <td style="padding:32px 32px 8px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+                <div style="font-size:20px;font-weight:700;color:#18181b;letter-spacing:-0.02em;">Vahoha</div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:16px 32px 0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#3f3f46;font-size:15px;line-height:24px;">
+                <h1 style="margin:0 0 16px;font-size:22px;line-height:30px;color:#18181b;font-weight:600;">Sign in to Vahoha</h1>
+                <p style="margin:0 0 24px;">Use the button below to sign in. No password needed.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:0 32px;">
+                <table role="presentation" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="background:${BRAND};border-radius:8px;">
+                      <a href="${url}" target="_blank"
+                        style="display:inline-block;padding:12px 28px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:8px;">
+                        Sign in
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:24px 32px 0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#71717a;font-size:13px;line-height:20px;">
+                <p style="margin:0 0 12px;">This link expires in <strong style="color:#3f3f46;">${expiresInMinutes} minutes</strong> and works only once.</p>
+                <p style="margin:0 0 4px;">Button not working? Paste this link into your browser:</p>
+                <p style="margin:0;word-break:break-all;"><a href="${url}" target="_blank" style="color:${BRAND};">${url}</a></p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:24px 32px 32px;">
+                <div style="border-top:1px solid #e4e4e7;padding-top:16px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#71717a;font-size:13px;line-height:20px;">
+                  Didn't ask for this? You can ignore this email. Nobody can sign in without the link.
+                </div>
+              </td>
+            </tr>
+          </table>
+          <p style="margin:16px 0 0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#a1a1aa;font-size:12px;">
+            Vahoha · <a href="https://vahoha.com" style="color:#a1a1aa;">vahoha.com</a>
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`;
+
+  const text = [
+    "Use this link to sign in to Vahoha. No password needed:",
+    "",
+    loginUrl,
+    "",
+    `The link expires in ${expiresInMinutes} minutes and works only once.`,
+    "",
+    "Didn't ask for this? You can ignore this email. Nobody can sign in without the link.",
+    "",
+    "Vahoha · vahoha.com",
+  ].join("\n");
+
+  return sendEmail({
+    to: toEmail,
+    subject: "Your Vahoha sign-in link",
+    html,
+    text,
+  });
+}
+
 // Contact-form messages go to the team inbox. Reply-To is the sender, so
 // hitting "Reply" in the inbox answers them directly.
 export async function sendContactNotification({ name, email, topic, message }) {

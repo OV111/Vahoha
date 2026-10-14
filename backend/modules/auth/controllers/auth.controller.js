@@ -2,7 +2,7 @@ import process from "node:process";
 import crypto from "node:crypto";
 import bcrypt from "bcrypt";
 import { ObjectId } from "mongodb";
-import { sendPasswordResetEmail } from "../../../utils/emailService.js";
+import { sendPasswordResetEmail, sendLoginLinkEmail } from "../../../utils/emailService.js";
 import connectDB from "../../../config/db.js";
 import { verifyToken, verifyRefreshToken } from "../../../utils/jwtToken.js";
 import {
@@ -188,9 +188,21 @@ const login = async (data) => {
   // const decoded = verifyToken(localStorage.getItem("JWT"))
   // if !decoded return 403 forbidden
 
-  // Same status and message for "no such user", "OAuth-only account (no
-  // password)" and "wrong password", so the response can't be used to find
-  // out which emails are registered.
+  // An account created with Google has no password to check. Telling the
+  // person so is what lets them recover: "Invalid email or password" sends them
+  // round in circles typing a password that was never set. It does confirm the
+  // email is registered, but signUp already answers 409 for a taken email, so
+  // nothing new is revealed. "No such user" and "wrong password" still share
+  // one generic message.
+  if (user && !user.password) {
+    return {
+      status: 401,
+      code: "GOOGLE_ONLY",
+      message:
+        "This account was created with Google. Continue with Google, or use Forgot password to add a password.",
+    };
+  }
+
   const isMatch = user?.password
     ? await verifyPassword(password, user.password)
     : false;
@@ -496,6 +508,125 @@ const resetPassword = async ({ token, newPassword }) => {
   }
 };
 
+const LOGIN_LINK_TTL_MINUTES = 10;
+// Sending is the abusable action (it emails a stranger), so a second request
+// for the same address inside this window is answered but not sent again.
+const LOGIN_LINK_COOLDOWN_MS = 60 * 1000;
+// The same answer whether the address has an account, is new, was just emailed,
+// or the send failed, so this endpoint can't be used to probe for accounts.
+const LOGIN_LINK_SENT = {
+  status: 200,
+  message: "If that email can sign in, a link is on its way. Check your inbox.",
+};
+
+// `email` arrives trimmed + lowercased by loginLinkRequestSchema.
+const requestLoginLink = async ({ email }) => {
+  try {
+    const db = await connectDB();
+    const loginLinks = db.collection("loginLinks");
+
+    const recent = await loginLinks.findOne({
+      email,
+      createdAt: { $gt: new Date(Date.now() - LOGIN_LINK_COOLDOWN_MS) },
+    });
+    if (recent) return LOGIN_LINK_SENT;
+
+    // A new link replaces any older one, so only the latest email works.
+    await loginLinks.deleteMany({ email });
+
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    await loginLinks.insertOne({
+      email,
+      tokenHash: hashResetToken(rawToken),
+      createdAt: new Date(),
+      expiresAt: new Date(Date.now() + LOGIN_LINK_TTL_MINUTES * 60 * 1000),
+    });
+
+    // The link opens a page with a "Confirm sign in" button (the frontend then
+    // POSTs the token), so a mail scanner that GETs the URL cannot use it up.
+    const loginUrl = `${process.env.FRONTEND_URL}/login-link?token=${rawToken}`;
+    try {
+      await sendLoginLinkEmail(email, { loginUrl, expiresInMinutes: LOGIN_LINK_TTL_MINUTES });
+    } catch (err) {
+      console.error("[login-link] email failed:", err.message);
+    }
+    return LOGIN_LINK_SENT;
+  } catch (err) {
+    console.error("[login-link] requestLoginLink failed:", err);
+    return { status: 500, message: "Something went wrong. Please try again." };
+  }
+};
+
+/**
+ * Consumes a magic link and signs the person in, creating the account if the
+ * email is new. The account is created here, not when the link is requested,
+ * so requesting links for other people's addresses leaves nothing behind.
+ * Clicking the link proves the address is theirs, which is why no password
+ * or separate verification step is needed.
+ */
+const confirmLoginLink = async ({ token }) => {
+  try {
+    const db = await connectDB();
+    // findOneAndDelete is atomic: two requests racing with the same link can't
+    // both succeed. The expiry check is part of the query for the same reason.
+    const record = await db.collection("loginLinks").findOneAndDelete({
+      tokenHash: hashResetToken(token),
+      expiresAt: { $gt: new Date() },
+    });
+    if (!record) {
+      return {
+        status: 400,
+        message: "This sign-in link is invalid or has expired. Request a new one.",
+      };
+    }
+
+    const users = db.collection("users");
+    const usersStats = db.collection("usersStats");
+    const { email } = record;
+
+    let user = await users.findOne({ email });
+    let isNewUser = false;
+    if (!user) {
+      try {
+        const result = await insertUser(
+          users,
+          {
+            firstName: "",
+            lastName: "",
+            email,
+            password: null,
+            provider: "email-link",
+            emailVerified: true,
+          },
+          sanitizeUsername(email.split("@")[0]) || "dev",
+        );
+        await usersStats.insertOne(buildDefaultUserStats(result.insertedId));
+        await trackEvent(db, result.insertedId, "signup", { provider: "email-link" });
+        user = { _id: result.insertedId };
+        isNewUser = true;
+      } catch (err) {
+        // Lost a race with another signup for this email: sign in to that one.
+        if (!isDuplicateKey(err, "email")) throw err;
+        user = await users.findOne({ email });
+      }
+    }
+
+    await trackActiveDay(db, user._id);
+    const { accessToken, refreshToken } = await issueTokenPair(db, user._id);
+    return {
+      status: 200,
+      message: isNewUser ? "Account created" : "Signed in",
+      accessToken,
+      refreshToken,
+      userId: user._id,
+      isNewUser,
+    };
+  } catch (err) {
+    console.error("[login-link] confirmLoginLink failed:", err);
+    return { status: 500, message: "Something went wrong. Please try again." };
+  }
+};
+
 /**
  * Exchanges a valid, unused refresh token (from the httpOnly cookie) for a
  * new access + refresh token pair, rotating the refresh token in the
@@ -541,4 +672,6 @@ export {
   githubCallback,
   forgotPassword,
   resetPassword,
+  requestLoginLink,
+  confirmLoginLink,
 };

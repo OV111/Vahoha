@@ -164,6 +164,21 @@ describe('login', () => {
     expect(result.message).toBe('Invalid email or password')
   })
 
+  it('tells a Google-only account to use Google or set a password, not "invalid password"', async () => {
+    mockConnectDB.mockResolvedValue(
+      makeDb({ usersFindOnce: [{ ...storedUser, password: null, provider: 'google' }] }),
+    )
+
+    const result = await login(credentials)
+
+    expect(result.status).toBe(401)
+    expect(result.code).toBe('GOOGLE_ONLY')
+    expect(result.message).toContain('Google')
+    expect(result.message).toContain('Forgot password')
+    // No password to compare against, so bcrypt must never be asked
+    expect(mockBcryptCompare).not.toHaveBeenCalled()
+  })
+
   it('returns 401 when the password is incorrect', async () => {
     mockConnectDB.mockResolvedValue(makeDb({ usersFindOnce: [storedUser] }))
     mockBcryptCompare.mockResolvedValue(false)

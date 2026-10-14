@@ -30,6 +30,11 @@ const connectDB = async () => {
       // query still checks expiresAt, so a not-yet-swept link never works).
       db.collection("passwordResets").createIndex({ tokenHash: 1 }, { unique: true }),
       db.collection("passwordResets").createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 }),
+      // Magic sign-in links: looked up by token hash, expired by TTL, and by
+      // email + createdAt for the resend cooldown.
+      db.collection("loginLinks").createIndex({ tokenHash: 1 }, { unique: true }),
+      db.collection("loginLinks").createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 }),
+      db.collection("loginLinks").createIndex({ email: 1, createdAt: -1 }),
       db.collection("users").createIndex(
         { email: 1 },
         { unique: true, partialFilterExpression: { email: { $type: "string" } } },

@@ -15,6 +15,8 @@ import {
   githubCallback,
   forgotPassword,
   resetPassword,
+  requestLoginLink,
+  confirmLoginLink,
 } from "../controllers/auth.controller.js";
 import { verifyToken } from "../../../utils/jwtToken.js";
 import { redisConnection } from "../../../config/redis.js";
@@ -24,6 +26,8 @@ import {
   loginSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
+  loginLinkRequestSchema,
+  loginLinkConfirmSchema,
 } from "../schemas/auth.schemas.js";
 
 // Sends the controller's result as JSON but strips the refresh token first —
@@ -77,6 +81,23 @@ const forgotPasswordLimiter = rateLimit({
 const resetPasswordLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many attempts. Try again in a few minutes.", code: 429 },
+});
+
+// Per IP; the per-email cooldown lives in requestLoginLink. Confirming is a
+// 256-bit token guess, so its limiter only stops hammering.
+const loginLinkRequestLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many sign-in links requested. Try again in an hour.", code: 429 },
+});
+const loginLinkConfirmLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20,
   standardHeaders: true,
   legacyHeaders: false,
   message: { message: "Too many attempts. Try again in a few minutes.", code: 429 },
@@ -455,6 +476,51 @@ router.post(
   async (req, res) => {
     const result = await resetPassword(req.body);
     res.status(result.status).json(result);
+  },
+);
+
+/**
+ * @openapi
+ * /login-link:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Email a one-time sign-in link (creates the account on first use)
+ *     responses:
+ *       200:
+ *         description: Always the same answer, whether or not the email has an account
+ *       429:
+ *         description: Too many links requested
+ */
+router.post(
+  "/login-link",
+  loginLinkRequestLimiter,
+  validate({ body: loginLinkRequestSchema }),
+  async (req, res) => {
+    const result = await requestLoginLink(req.body);
+    res.status(result.status).json(result);
+  },
+);
+
+/**
+ * @openapi
+ * /login-link/confirm:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Exchange a sign-in link token for a session
+ *     responses:
+ *       200:
+ *         description: Signed in; sets the refresh cookie
+ *       400:
+ *         description: Link invalid, expired, or already used
+ */
+router.post(
+  "/login-link/confirm",
+  loginLinkConfirmLimiter,
+  validate({ body: loginLinkConfirmSchema }),
+  async (req, res) => {
+    const result = await confirmLoginLink(req.body);
+    if (result.status === 200) setRefreshCookie(res, result.refreshToken);
+    respondWithoutRefreshToken(res, result);
   },
 );
 

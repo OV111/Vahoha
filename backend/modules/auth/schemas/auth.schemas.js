@@ -69,3 +69,12 @@ export const resetPasswordSchema = z.object({
     .regex(/^[a-f0-9]{64}$/, "Reset link is invalid or has expired."),
   newPassword: signupPasswordSchema,
 });
+
+// Magic sign-in link. Requesting needs only the email; confirming needs the
+// 32-byte hex token from the email (anything else is rejected before a DB call).
+export const loginLinkRequestSchema = z.object({ email });
+export const loginLinkConfirmSchema = z.object({
+  token: z
+    .string({ required_error: "This sign-in link is invalid or has expired." })
+    .regex(/^[a-f0-9]{64}$/, "This sign-in link is invalid or has expired."),
+});
