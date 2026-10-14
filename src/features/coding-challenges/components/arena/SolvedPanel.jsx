@@ -120,7 +120,7 @@ export default function SolvedPanel({ verdict, onDismiss }) {
         </div>
 
         <div
-          className="flex items-center justify-end gap-2 px-5 py-3"
+          className="flex flex-wrap items-center justify-end gap-2 px-5 py-3"
           style={{ borderTop: `1px solid ${C.border}` }}
         >
           <button

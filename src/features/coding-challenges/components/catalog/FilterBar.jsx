@@ -46,7 +46,9 @@ export default function FilterBar({ filters, topics, tracks, shownTrack }) {
   ];
 
   return (
-    <div className="sticky top-[var(--navbar-h)] z-30 px-6 sm:px-10 lg:px-14 py-3 flex flex-wrap items-center gap-3 backdrop-blur-sm border-b border-[#1a1a1a]">
+    // Not sticky on phones: the wrapped toolbar is several rows tall and would
+    // eat the screen. `relative` there anchors the full-width dropdowns below.
+    <div className="relative sm:sticky sm:top-[var(--navbar-h)] z-30 px-6 sm:px-10 lg:px-14 py-3 flex flex-wrap items-center gap-2 sm:gap-3 backdrop-blur-sm border-b border-[#1a1a1a]">
       <FilterGroup
         label="Path"
         allLabel="All paths"
@@ -122,14 +124,14 @@ export default function FilterBar({ filters, topics, tracks, shownTrack }) {
         </button>
       )}
 
-      <div className="ml-auto flex items-center gap-2 rounded-md border border-[#1f1f1f] bg-[#141414] px-3 py-2">
+      <div className="order-first flex w-full items-center gap-2 rounded-md border border-[#1f1f1f] bg-[#141414] px-3 py-2 sm:order-none sm:ml-auto sm:w-auto">
         <Search className="h-3.5 w-3.5 shrink-0 text-[#555]" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search challenges..."
-          className="min-w-0 w-[220px] bg-transparent text-sm text-[#e5e5e5] placeholder-[#555] outline-none"
+          className="min-w-0 flex-1 bg-transparent text-base sm:w-[220px] sm:flex-none sm:text-sm text-[#e5e5e5] placeholder-[#555] outline-none"
         />
         {searchQuery && (
           <button

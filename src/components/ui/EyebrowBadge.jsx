@@ -78,12 +78,12 @@ export default function EyebrowBadge({
         letterSpacing:  "0.04em",
         color:          "#94a3b8",
         userSelect:     "none",
-        whiteSpace:     "nowrap",
+        maxWidth:       "100%",
       }}
     >
       {dot ? (
         /* Animated pulse dot — Linear live-status style */
-        <span style={{ position: "relative", display: "inline-flex", width: 7, height: 7 }}>
+        <span style={{ position: "relative", display: "inline-flex", width: 7, height: 7, flexShrink: 0 }}>
           <span
             style={{
               position:        "absolute",
@@ -131,7 +131,7 @@ export default function EyebrowBadge({
         </span>
       )}
 
-      <span style={{ color: "#64748b", fontFamily: "monospace", fontSize: 11 }}>
+      <span style={{ color: "#64748b", fontFamily: "monospace", fontSize: 11, lineHeight: 1.4, minWidth: 0 }}>
         {text}
       </span>
     </span>

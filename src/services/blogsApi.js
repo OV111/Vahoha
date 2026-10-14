@@ -71,15 +71,6 @@ export const fetchFavourites = async () => {
   return data.data;
 };
 
-export const fetchMyBlogs = async () => {
-  const res = await fetch(`${API_BASE_URL}/blogs/my-blogs`, {
-    headers: authHeaders(),
-  });
-  const data = await res.json();
-  if (!data.success) throw new Error("Failed to fetch your blogs");
-  return data.data;
-};
-
 export const updateBlog = async (id, formData) => {
   const res = await fetch(`${API_BASE_URL}/blogs/${id}`, {
     method: "PUT",

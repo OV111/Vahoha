@@ -44,7 +44,7 @@ export default function HeroSection({ daily, stats, loading, challengeCount, her
   const statCells = buildStats(stats);
   return (
     <div ref={heroRef} className="px-6 sm:px-10 lg:px-14 pt-10 pb-8 lg:mb-14">
-      <div className="flex flex-col mr-10 lg:flex-row items-start">
+      <div className="flex flex-col lg:mr-10 lg:flex-row lg:items-start gap-8 lg:gap-0">
         <div className="flex-1 min-w-0">
           <Motion.div {...fadeUp(0)} className="mb-6">
             {/* A live count instead of a made-up version number: it tells the
@@ -57,7 +57,7 @@ export default function HeroSection({ daily, stats, loading, challengeCount, her
           </Motion.div>
 
           <Motion.div {...fadeUp(0.08)} className="mb-4">
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] text-white">
+            <h1 className="text-4xl min-[400px]:text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] text-white">
               Coding
               <TextType
                 as="span"

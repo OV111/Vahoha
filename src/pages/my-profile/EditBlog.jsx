@@ -75,7 +75,7 @@ export default function EditBlog() {
         });
       } catch {
         toast.error("Could not load blog");
-        navigate("/my-profile/my-blogs");
+        navigate("/my-profile");
       } finally {
         setIsFetching(false);
       }
@@ -135,7 +135,7 @@ export default function EditBlog() {
 
       await updateBlog(id, formData);
       toast.success(status === "draft" ? "Draft updated" : "Blog published!");
-      navigate("/my-profile/my-blogs");
+      navigate("/my-profile");
     } catch {
       toast.error("Something went wrong");
     } finally {

@@ -19,7 +19,7 @@ export default function CodePanel({ files, onChangeFile }) {
         className="flex items-center justify-between border-b shrink-0"
         style={{ borderColor: C.border, background: C.surface }}
       >
-        <div className="flex">
+        <div className="flex min-w-0 overflow-x-auto">
           {files.map((f, i) => {
             const meta = FILE_META[f.lang] || FILE_META.js;
             const isActive = active === i;
@@ -41,7 +41,7 @@ export default function CodePanel({ files, onChangeFile }) {
             );
           })}
         </div>
-        <span className="px-4 text-[11px]" style={{ color: C.faint, fontFamily: FONT_MONO }}>
+        <span className="px-4 text-[11px] whitespace-nowrap max-md:hidden" style={{ color: C.faint, fontFamily: FONT_MONO }}>
           {(FILE_META[file.lang] || FILE_META.js).label}
         </span>
       </div>

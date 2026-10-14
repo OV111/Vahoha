@@ -26,7 +26,7 @@ export default function MoreFiltersPopover({
   }, [open]);
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="max-sm:static sm:relative" ref={ref}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -52,7 +52,7 @@ export default function MoreFiltersPopover({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.97 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="absolute left-0 z-50 mt-1.5 w-64 overflow-hidden rounded-md border border-[#1f1f1f] bg-[#0d0d0d] p-3 shadow-lg shadow-black/30"
+            className="absolute left-0 z-50 mt-1.5 w-64 max-sm:left-6 max-sm:right-6 max-sm:w-auto overflow-hidden rounded-md border border-[#1f1f1f] bg-[#0d0d0d] p-3 shadow-lg shadow-black/30"
           >
             <div className="mb-3">
               <p className="mb-1.5 text-[10px] font-bold tracking-widest uppercase text-[#555]">

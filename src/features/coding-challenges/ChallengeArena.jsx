@@ -17,6 +17,12 @@ import RightPanel from "./components/arena/RightPanel";
 import ActionBar from "./components/arena/ActionBar";
 import SolvedPanel from "./components/arena/SolvedPanel";
 
+const MOBILE_TABS = [
+  { key: "problem", label: "Problem" },
+  { key: "code", label: "Code" },
+  { key: "side", label: "Hints & mentor" },
+];
+
 export default function ChallengeArena() {
   const { id: slug } = useParams();
   const navigate = useNavigate();
@@ -104,9 +110,12 @@ export default function ChallengeArena() {
   // It opens in the side panel instead of navigating away, so the code and the
   // problem stay on screen while you talk.
   const [sideTab, setSideTab] = useState("hints");
+  // Below 1100px the three columns become one full-height pane at a time.
+  const [mobileTab, setMobileTab] = useState("code");
   const askMentor = async () => {
     await saveNow();
     setSideTab("mentor");
+    setMobileTab("side");
     if (hintsCollapsed) toggleHints();
     hintsPane.ensureWidth(MENTOR_MIN_WIDTH);
   };
@@ -179,20 +188,40 @@ export default function ChallengeArena() {
         onBack={() => navigate("/coding-challenges")}
       />
 
+      <div className="arena-mobile-tabs shrink-0" role="tablist" aria-label="Arena sections" style={{ borderBottom: `1px solid ${C.border}`, background: C.surface }}>
+        {MOBILE_TABS.map(({ key, label }) => (
+          <button
+            key={key}
+            type="button"
+            role="tab"
+            aria-selected={mobileTab === key}
+            onClick={() => setMobileTab(key)}
+            className="flex-1 cursor-pointer border-b-2 py-2.5 text-[12px] font-medium transition-colors"
+            style={{
+              borderColor: mobileTab === key ? C.purple : "transparent",
+              color: mobileTab === key ? C.text : C.muted,
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
       <div
+        data-tab={mobileTab}
         className={`arena-workspace thin-scrollbar flex-1 min-h-0 overflow-hidden ${dragging ? "is-dragging" : ""}`}
         style={{ display: "grid", gridTemplateColumns: `${problemPane.width}px 1fr ${hintsCollapsed ? RAIL_WIDTH : hintsPane.width}px` }}
       >
-        <div className="relative h-full overflow-hidden flex flex-col" style={{ borderRight: `1px solid ${C.border}` }}>
+        <div data-pane="problem" className="relative h-full overflow-hidden flex flex-col" style={{ borderRight: `1px solid ${C.border}` }}>
           <div {...problemPane.handleProps} className="arena-resize-handle edge-right" />
           <ProblemPanel challenge={challenge} />
         </div>
 
-        <div className="h-full overflow-hidden flex flex-col" style={{ borderRight: `1px solid ${C.border}` }}>
+        <div data-pane="code" className="h-full overflow-hidden flex flex-col" style={{ borderRight: `1px solid ${C.border}` }}>
           <CodePanel key={challenge.slug} files={files} onChangeFile={handleChangeFile} />
         </div>
 
-        <div className="relative h-full overflow-hidden flex flex-col">
+        <div data-pane="side" className="relative h-full overflow-hidden flex flex-col">
           {!hintsCollapsed && <div {...hintsPane.handleProps} className="arena-resize-handle" />}
           <RightPanel
             tab={sideTab}
@@ -225,7 +254,7 @@ export default function ChallengeArena() {
         onAskMentor={askMentor}
       />
 
-      {/* Responsive: below 1100px allow scroll */}
+      {/* Responsive: below 1100px the columns become tabs */}
       <style>{`
         .arena-workspace { transition: grid-template-columns 0.2s ease; }
         .arena-workspace.is-dragging { transition: none; user-select: none; cursor: col-resize; }
@@ -253,16 +282,16 @@ export default function ChallengeArena() {
           .hints-toggle { display: none; }
           .arena-resize-handle { display: none; }
         }
+        .arena-mobile-tabs { display: none; }
+        /* One pane at a time, each filling the workspace, so the editor and
+           the mentor chat keep a real height instead of collapsing. */
         @media (max-width: 1100px) {
-          .arena-workspace {
-            grid-template-columns: 1fr !important;
-            overflow-y: auto !important;
-          }
-          .arena-workspace > * {
-            height: auto !important;
-            min-height: 400px;
-            overflow: visible !important;
-          }
+          .arena-mobile-tabs { display: flex; }
+          .arena-workspace { grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: minmax(0, 1fr); }
+          .arena-workspace > [data-pane] { display: none; border-right: 0 !important; }
+          .arena-workspace[data-tab="problem"] > [data-pane="problem"],
+          .arena-workspace[data-tab="code"] > [data-pane="code"],
+          .arena-workspace[data-tab="side"] > [data-pane="side"] { display: flex; }
         }
       `}</style>
     </div>

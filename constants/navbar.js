@@ -13,7 +13,6 @@ import {
   Rocket,
   Users,
   TrendingUp,
-  PenLine,
   UserSearch,
 } from "lucide-react";
 import { CATEGORY_OPTIONS, categoryHref } from "./categories";
@@ -90,7 +89,6 @@ export const NAV_LINKS_GUEST = [{ label: "Pricing", to: "/pricing" }];
 // is listed twice.
 export const AVATAR_MENU_ITEMS = [
   { label: "My Profile", to: "/my-profile", icon: User },
-  { label: "My Blogs", to: "/my-profile/my-blogs", icon: PenLine },
   { label: "Notifications", to: "/my-profile/notifications", icon: Bell },
   { label: "Favourites", to: "/my-profile/favourites", icon: Bookmark },
   { label: "Billing", to: "/billing", icon: CreditCard },

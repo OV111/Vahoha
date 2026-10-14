@@ -25,7 +25,6 @@ const Followers = lazy(() => import("./pages/my-profile/Followers"));
 const Favorites = lazy(() => import("./pages/my-profile/Favorites"));
 const AddBlog = lazy(() => import("./pages/my-profile/AddBlog"));
 const EditBlog = lazy(() => import("./pages/my-profile/EditBlog"));
-const MyBlogs = lazy(() => import("./pages/my-profile/MyBlogs"));
 const Chats = lazy(() => import("./pages/my-profile/chat/Chats"));
 const Notifications = lazy(() => import("./pages/my-profile/Notifications"));
 const Settings = lazy(() => import("./pages/my-profile/Settings"));
@@ -197,7 +196,6 @@ export const routes = [
               { path: "following", element: <Followers /> },
               { path: "add-blog", element: <AddBlog /> },
               { path: "edit-blog/:id", element: <EditBlog /> },
-              { path: "my-blogs", element: <MyBlogs /> },
               { path: "chats", element: <Chats /> },
               { path: "notifications", element: <Notifications /> },
               { path: "favourites", element: <Favorites /> },

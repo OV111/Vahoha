@@ -63,7 +63,7 @@ export default function CodingChallenges() {
 
       <FilterBar filters={filters} topics={topics} tracks={tracks} shownTrack={track} />
 
-      <div className="flex gap-6 px-6 sm:px-10 lg:px-14 py-6">
+      <div className="flex flex-col lg:flex-row gap-6 px-6 sm:px-10 lg:px-14 py-6">
         <ChallengeGrid
           challenges={challenges}
           total={total}

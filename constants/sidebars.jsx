@@ -1,10 +1,9 @@
 import {
   Bell,
   Bookmark,
-  FilePlus,
+  Highlighter,
   Link2,
   MessageSquare,
-  PenLine,
   Settings,
   User,
   UserX,
@@ -43,13 +42,8 @@ export const sidebarArr = [
       {
         to: "/my-profile/add-blog",
         activePaths: ["/my-profile/add-blog"],
-        icon: icon(FilePlus),
+        icon: icon(Highlighter),
         label: "Add Blog",
-      },
-      {
-        to: "/my-profile/my-blogs",
-        icon: icon(PenLine),
-        label: "My Blogs",
       },
       {
         to: "/my-profile/chats",

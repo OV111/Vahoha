@@ -7,8 +7,8 @@ export default function ActionBar({ testResults, onRun, running, onSubmit, submi
 
   return (
     <div
-      className="flex items-center justify-between px-4 shrink-0"
-      style={{ height: "44px", borderTop: `1px solid ${C.border}`, background: C.surface }}
+      className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 px-4 py-1.5 shrink-0"
+      style={{ minHeight: "44px", borderTop: `1px solid ${C.border}`, background: C.surface }}
     >
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-1">
@@ -25,12 +25,12 @@ export default function ActionBar({ testResults, onRun, running, onSubmit, submi
           <span style={{ color: total > 0 && passed === total ? C.green : C.muted }}>
             {passed}/{total} tests pass
           </span>
-          {lastRunAt ? ` · last run ${lastRunAt}` : ""}
+          <span className="max-sm:hidden">{lastRunAt ? ` · last run ${lastRunAt}` : ""}</span>
         </span>
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="text-[11px] mr-1" style={{ color: C.faint, fontFamily: FONT_MONO }}>
+        <span className={`text-[11px] mr-1 ${verdict ? "" : "max-sm:hidden"}`} style={{ color: C.faint, fontFamily: FONT_MONO }}>
           {verdict?.error
             ? verdict.error
             : verdict?.passed

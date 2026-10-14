@@ -23,7 +23,7 @@ export default function FilterGroup({
   const buttonText = active === "all" || active == null ? (allLabel ?? label) : (current?.label ?? active);
 
   return (
-    <div className="relative" onMouseEnter={onOpen} onMouseLeave={onClose}>
+    <div className="max-sm:static sm:relative" onMouseEnter={onOpen} onMouseLeave={onClose}>
       <button
         type="button"
         className="flex cursor-pointer items-center gap-1.5 rounded-md border border-[#1f1f1f] bg-[#141414] px-2.5 py-1.5 text-xs font-medium text-[#888] transition-all duration-200 hover:border-purple-900/60 hover:bg-purple-950/40 hover:text-purple-300 sm:px-3"
@@ -44,14 +44,14 @@ export default function FilterGroup({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.96 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="absolute left-0 z-50 mt-1.5 min-w-[120px] whitespace-nowrap overflow-hidden rounded-md border border-[#1f1f1f] bg-[#0d0d0d] shadow-lg shadow-black/30"
+            className="absolute left-0 z-50 mt-1.5 min-w-[120px] max-sm:left-6 max-sm:right-6 whitespace-nowrap overflow-hidden rounded-md border border-[#1f1f1f] bg-[#0d0d0d] shadow-lg shadow-black/30"
           >
             {opts.map((opt) => (
               <li key={opt.value}>
                 <button
                   type="button"
                   onClick={() => onSelect(opt.value)}
-                  className="flex w-full cursor-pointer items-center justify-between gap-4 px-3 py-2 text-xs font-medium text-[#888] transition-colors hover:bg-purple-950/40 hover:text-purple-300"
+                  className="flex w-full cursor-pointer items-center justify-between gap-4 px-3 py-2.5 text-xs sm:py-2 font-medium text-[#888] transition-colors hover:bg-purple-950/40 hover:text-purple-300"
                 >
                   <span>{opt.label}</span>
                   <span className="flex items-center gap-2">
