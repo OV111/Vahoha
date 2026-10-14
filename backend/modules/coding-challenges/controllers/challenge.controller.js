@@ -1,5 +1,6 @@
 import {
   listChallengesService,
+  listTracksService,
   getChallengeBySlugService,
   getTagCountsService,
   getDailyChallengeService,
@@ -18,6 +19,15 @@ export const listChallenges = async (req, res) => {
       req.user._id.toString(),
     );
     res.json({ success: true, ...result });
+  } catch (err) {
+    res.status(err.status ?? 500).json({ success: false, message: err.message });
+  }
+};
+
+export const listTracks = async (req, res) => {
+  try {
+    const data = await listTracksService(req.app.locals.db, req.user._id.toString());
+    res.json({ success: true, data });
   } catch (err) {
     res.status(err.status ?? 500).json({ success: false, message: err.message });
   }

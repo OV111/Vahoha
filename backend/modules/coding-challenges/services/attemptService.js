@@ -19,6 +19,8 @@ const COL = "challenge_attempts";
 const CHALLENGES = "challenges";
 const PROGRESS = "userProgress";
 
+export const SAFE_FILE_NAME = /^[A-Za-z_$][\w$]{0,63}\.js$/;
+
 // One attempt per (user, challenge) — the unique index is what makes the
 // create/resume path safe under a double POST, not the findOne before it.
 let indexesReady = null;
@@ -116,6 +118,9 @@ export const saveAttemptCodeService = async (db, userId, attemptId, code) => {
     ) {
       fail(400, "each file needs a string name and string code");
     }
+    // Starter files are always `<identifier>.js`. Anything else is not a file
+    // the editor can produce, and a name is later used as a JS identifier.
+    if (!SAFE_FILE_NAME.test(file.name)) fail(400, "Invalid file name");
     return { name: file.name, code: file.code };
   });
 

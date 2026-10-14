@@ -22,3 +22,6 @@ router.use("/proposals", proposalRoutes);
 router.use("/", challengeRoutes);
 
 export default router;
+
+// Used by the AI mentor (modules/ai-agent) to coach on a learner's attempt.
+export { getChallengeMentorView } from "./services/mentorService.js";

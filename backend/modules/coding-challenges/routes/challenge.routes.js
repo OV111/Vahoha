@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { authenticate } from "../../../middleware/authenticate.js";
+import { validate } from "../../../middleware/validate.js";
+import { listQuerySchema } from "../schemas/challenge.schemas.js";
 import {
   listChallenges,
+  listTracks,
   getChallenge,
   getTagCounts,
   getDailyChallenge,
@@ -21,7 +24,8 @@ router.get("/stats/me", authenticate, getPersonalStats);
 router.get("/readiness", authenticate, getLayerProgress);
 router.get("/leaderboard", authenticate, getLeaderboard);
 router.get("/topics", authenticate, getTagCounts);
-router.get("/", authenticate, listChallenges);
+router.get("/tracks", authenticate, listTracks);
+router.get("/", authenticate, validate({ query: listQuerySchema }), listChallenges);
 router.get("/:slug", authenticate, getChallenge);
 
 export default router;

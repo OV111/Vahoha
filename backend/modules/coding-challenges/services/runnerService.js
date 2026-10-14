@@ -91,7 +91,37 @@ export const describeRunner = () => ({
  */
 const buildProgram = (userCode, exportName, hiddenTests) => `
 (async () => {
-  const __results = [];
+  // The learner's code runs in this same realm, so everything the report
+  // depends on is taken before it loads. The reporter is removed from the
+  // global object (otherwise the code could call it with a fake report, or
+  // replace it), and the report is built by string concatenation on
+  // primitives, so no prototype method the code might override is involved.
+  // Promise is frozen because \`await\` consults Promise.prototype.constructor
+  // and .then: replacing them could turn a failing test into a passing one.
+  const __send = globalThis.__REPORT;
+  delete globalThis.__REPORT;
+  const __quote = JSON.stringify; // only ever called on primitive strings
+  const __String = String;
+  const __now = Date.now;
+  Object.freeze(Promise.prototype);
+  Object.freeze(Promise);
+
+  let __out = "";
+  const __add = (name, passed, ms, message) => {
+    let entry = '{"name":' + __quote(__String(name)) + ',"passed":' + (passed ? "true" : "false") + ',"ms":' + ms;
+    if (message !== undefined) entry += ',"message":' + __quote(message);
+    __out += (__out === "" ? "" : ",") + entry + "}";
+  };
+  const __finish = (fatal) => __send('{"results":[' + __out + '],"fatal":' + (fatal ? "true" : "false") + "}");
+  // An error message comes from the learner's code (a getter or toString can
+  // run, or throw), so it is read defensively and only ever as text.
+  const __messageOf = (err) => {
+    try {
+      return __String((err && err.message) || err);
+    } catch {
+      return "Unreadable error";
+    }
+  };
 
   function assert(cond, message) {
     if (!cond) throw new Error(message || "Assertion failed");
@@ -122,13 +152,8 @@ const buildProgram = (userCode, exportName, hiddenTests) => `
       Object.assign(globalThis, __module.exports);
     }
   } catch (err) {
-    __results.push({
-      name: "module_loads",
-      passed: false,
-      ms: 0,
-      message: "Your file threw while loading: " + (err && err.message),
-    });
-    __REPORT(JSON.stringify({ results: __results, fatal: true }));
+    __add("module_loads", false, 0, "Your file threw while loading: " + __messageOf(err));
+    __finish(true);
     return;
   }
 
@@ -138,13 +163,13 @@ const buildProgram = (userCode, exportName, hiddenTests) => `
   const ${exportName} = __exported;
 
   if (typeof ${exportName} !== "function" && typeof ${exportName} !== "object") {
-    __results.push({
-      name: "module_exports_something_usable",
-      passed: false,
-      ms: 0,
-      message: "Expected module.exports to be a function or an object, got " + typeof ${exportName} + ".",
-    });
-    __REPORT(JSON.stringify({ results: __results, fatal: true }));
+    __add(
+      "module_exports_something_usable",
+      false,
+      0,
+      "Expected module.exports to be a function or an object, got " + typeof ${exportName} + ".",
+    );
+    __finish(true);
     return;
   }
 
@@ -161,21 +186,16 @@ const buildProgram = (userCode, exportName, hiddenTests) => `
   ];
 
   for (let i = 0; i < __bodies.length; i++) {
-    const started = Date.now();
+    const started = __now();
     try {
       await __bodies[i]();
-      __results.push({ name: __tests[i], passed: true, ms: Date.now() - started });
+      __add(__tests[i], true, __now() - started);
     } catch (err) {
-      __results.push({
-        name: __tests[i],
-        passed: false,
-        ms: Date.now() - started,
-        message: (err && err.message) || String(err),
-      });
+      __add(__tests[i], false, __now() - started, __messageOf(err));
     }
   }
 
-  __REPORT(JSON.stringify({ results: __results, fatal: false }));
+  __finish(false);
 })();
 `;
 

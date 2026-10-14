@@ -299,7 +299,7 @@ describe('GET / (list)', () => {
       solvedAt: new Date(),
     })
 
-    const res = await auth(request(app).get('/api/challenges?limit=100'))
+    const res = await auth(request(app).get('/api/challenges?limit=50'))
     const bySlug = (s) => res.body.items.find((i) => i.slug === s)
 
     expect(bySlug('solved')).toMatchObject({ done: true, inProgress: false, hot: false })
@@ -313,7 +313,7 @@ describe('GET / (list)', () => {
       hiddenTests: [{ name: 't', code: 'x' }],
     })
 
-    const res = await auth(request(app).get('/api/challenges?limit=100'))
+    const res = await auth(request(app).get('/api/challenges?limit=50'))
     const item = res.body.items.find((i) => i.slug === 'secret')
     expect(item.solution).toBeUndefined()
     expect(item.hiddenTests).toBeUndefined()

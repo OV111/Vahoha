@@ -11,7 +11,7 @@ import { MongoClient, ObjectId } from 'mongodb'
 
 vi.mock('../../modules/coding-challenges/services/runnerService.js', () => ({
   describeRunner: () => ({ available: true }),
-  runHiddenTests: async (_code, _name, tests) => ({ results: tests.map(() => ({ passed: true })) }),
+  runHiddenTests: async (_code, _name, tests) => ({ results: tests.map((t) => ({ name: t.name, passed: true })) }),
 }))
 vi.mock('../../modules/billing/index.js', () => ({ getUserPlan: async () => 'free' }))
 
@@ -50,6 +50,7 @@ const seed = async () => {
     trackId: 'frontend',
     layerId: 'frontend-2',
     xp: 40,
+    starterFiles: [{ name: 'debounce.js', lang: 'js', code: '' }],
     hiddenTests: [{ name: 'a' }, { name: 'b' }],
     stats: { attempts: 0, solves: 0 },
   })

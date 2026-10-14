@@ -25,7 +25,12 @@ const CHALLENGES = "challenges";
  * XP earned. Full value the first time, nothing on a re-solve — otherwise a
  * solved challenge becomes an infinite XP faucet.
  */
-const awardFor = (challenge, alreadySolved) =>
+export const matchesHiddenTests = (results, hiddenTests) =>
+  Array.isArray(results) &&
+  results.length === hiddenTests.length &&
+  results.every((r, i) => r?.name === hiddenTests[i].name);
+
+const awardFor =(challenge, alreadySolved) =>
   alreadySolved ? 0 : (challenge.xp ?? 0);
 
 export const submitAttemptService = async (db, userId, attemptId) => {
@@ -57,8 +62,12 @@ export const submitAttemptService = async (db, userId, attemptId) => {
 
   // The student edits exactly one module; the test file is read-only client
   // side and irrelevant here since grading uses the hidden set.
-  const source = (attempt.code ?? []).find((f) => f.lang !== "test") ??
-    (attempt.code ?? [])[0];
+  //
+  // Which file is graded, and the export name, come from the challenge's own
+  // starter file, never from the attempt: the attempt is user-written, and the
+  // export name is spliced into the harness as an identifier.
+  const mainFile = challenge.starterFiles?.[0]?.name ?? "";
+  const source = (attempt.code ?? []).find((f) => f.name === mainFile);
   if (!source?.code?.trim()) {
     const err = new Error("There is no code to submit yet.");
     err.status = 400;
@@ -66,7 +75,7 @@ export const submitAttemptService = async (db, userId, attemptId) => {
   }
 
   // Export name is derived from the file name: asyncHandler.js -> asyncHandler.
-  const exportName = source.name.replace(/\.[^.]+$/, "");
+  const exportName = mainFile.replace(/\.[^.]+$/, "");
 
   // Check the runner BEFORE spending quota: if submissions are disabled (no
   // sandbox in production) the learner must not lose one of today's tries.
@@ -93,8 +102,12 @@ export const submitAttemptService = async (db, userId, attemptId) => {
   );
 
   const total = challenge.hiddenTests?.length ?? 0;
-  const passedCount = run.results.filter((r) => r.passed).length;
-  const passed = !run.fatal && total > 0 && passedCount === total;
+  if (!Array.isArray(run.results)) run.results = [];
+  const passedCount = run.results.filter((r) => r?.passed === true).length;
+  // The sandbox runs the learner's code, so its report is untrusted: it must
+  // name exactly the hidden tests, in order, before any of it counts.
+  const passed =
+    !run.fatal && total > 0 && passedCount === total && matchesHiddenTests(run.results, challenge.hiddenTests);
 
   // Was this already solved on a previous submission?
   const previous = await db.collection("challengeResults").findOne({
