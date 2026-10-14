@@ -59,10 +59,10 @@ export default function AttachMenu({ onFile, busy }) {
           className="absolute bottom-full left-0 z-10 mb-2 w-40 rounded-2xl border border-white/10 bg-black/95 p-1 shadow-xl shadow-black/40 backdrop-blur-sm"
         >
           <button type="button" role="menuitem" className={ITEM} onClick={() => photoRef.current?.click()}>
-            <ImageIcon size={16} className="text-fuchsia-400" /> Photo
+            <ImageIcon size={16} className="text-purple-600" /> Photo
           </button>
           <button type="button" role="menuitem" className={ITEM} onClick={() => fileRef.current?.click()}>
-            <FileText size={16} className="text-fuchsia-400" /> File
+            <FileText size={16} className="text-purple-600" /> File
           </button>
         </div>
       )}

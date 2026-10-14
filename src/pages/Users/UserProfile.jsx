@@ -236,7 +236,19 @@ export default function UserProfile() {
                       )}
                     </button>
 
-                    <Link to="/my-profile/chats" className={OUTLINE_BUTTON}>
+                    <Link
+                      to="/my-profile/chats"
+                      state={{
+                        chatWith: {
+                          _id: user._id,
+                          firstName: user.firstName,
+                          lastName: user.lastName,
+                          username: user.username,
+                          stats: { profileImage: stats?.profileImage ?? null },
+                        },
+                      }}
+                      className={OUTLINE_BUTTON}
+                    >
                       <MessageSquare className="h-3.5 w-3.5" aria-hidden="true" />
                       Message
                     </Link>

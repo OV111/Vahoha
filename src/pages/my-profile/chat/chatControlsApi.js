@@ -67,3 +67,19 @@ export const sendVoiceMessage = async (roomId, blob, durationMs) => {
   if (!res.ok) throw new Error(data.message || "Couldn't send voice message");
   return data.message;
 };
+
+// Message requests: a stranger's first message waits until the receiver answers.
+// Returns { incoming, outgoing, accepted }; accepted are requests that became chats.
+export const getChatRequests = () => request("/requests");
+
+export const acceptChatRequest = (roomId) =>
+  request(`/requests/${roomId}/accept`, { method: "POST" });
+
+export const declineChatRequest = (roomId) =>
+  request(`/requests/${roomId}/decline`, { method: "POST" });
+
+// Who may send me a message request: "everyone" | "followers" | "nobody".
+export const getMessagePolicy = () => request("/policy");
+
+export const setMessagePolicy = (policy) =>
+  request("/policy", { method: "PUT", body: JSON.stringify({ policy }) });

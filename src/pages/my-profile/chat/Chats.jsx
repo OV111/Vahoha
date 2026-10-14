@@ -1,9 +1,13 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { Search } from "lucide-react";
 import Sidebar from "../components/SideBar";
-import { BellOff, ChevronDown, SquarePen, Users } from "lucide-react";
+import { BellOff, ChevronDown, Send, SquarePen, Users } from "lucide-react";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 import {
+  getChatRequests,
+  acceptChatRequest,
+  declineChatRequest,
   setRoomMuted,
   clearRoom,
   getBlockedIds,
@@ -65,6 +69,23 @@ const Chats = () => {
   // Ids of users I've blocked (string ids). Blocked-by-them is deliberately not
   // exposed — the server just rejects the send, so it can't be probed.
   const [blockedIds, setBlockedIds] = useState([]);
+  // Message requests from people I'm not mutual followers with. `tab` switches
+  // the left column between normal chats and the incoming requests to answer.
+  const [requests, setRequests] = useState({ incoming: [], outgoing: [], accepted: [] });
+  const [tab, setTab] = useState("chats"); // "chats" | "requests"
+  const location = useLocation();
+
+  const loadRequests = useCallback(async () => {
+    try {
+      setRequests(await getChatRequests());
+    } catch (err) {
+      console.error("Failed to load message requests:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadRequests();
+  }, [loadRequests]);
 
   const isGroupActive = activeConversation?.kind === "group";
   const activeUser = activeConversation?.kind === "direct" ? activeConversation.user : null;
@@ -131,8 +152,31 @@ const Chats = () => {
       };
     });
 
-    return [...groupItems, ...directItems];
-  }, [rooms, mutualFollowers, roomsById, senderId]);
+    // People who aren't mutual followers but have a request with me (sent by me,
+    // or accepted by either side) still need a place in the list.
+    const knownIds = new Set(mutualFollowers.map((u) => String(u._id)));
+    const requestItems = [...requests.accepted, ...requests.outgoing]
+      .filter((r) => !knownIds.has(String(r.user._id)))
+      .map((r) => {
+        const room = roomsById[r.roomId];
+        const text = room?.lastMessage?.text ?? r.preview;
+        const label =
+          r.status === "declined" ? "Request declined" : r.status === "pending" ? `Pending · ${text}` : text;
+        return {
+          kind: "direct",
+          key: `direct-${r.user._id}`,
+          muted: Boolean(room?.mySettings?.muted),
+          title: `${r.user.firstName ?? ""} ${r.user.lastName ?? ""}`.trim(),
+          avatar: r.user.stats?.profileImage,
+          user: r.user,
+          preview: text || r.status === "declined"
+            ? { text: label, updatedAt: room?.updatedAt ?? r.updatedAt }
+            : null,
+        };
+      });
+
+    return [...groupItems, ...directItems, ...requestItems];
+  }, [rooms, mutualFollowers, roomsById, senderId, requests]);
 
   const filteredConversations = useMemo(() => {
     // Sort by the last message time. Conversations with no messages yet have
@@ -255,6 +299,32 @@ const Chats = () => {
         : [...prev, { _id: id, type: direct ? "direct" : "group", ...patch }],
     );
 
+  // Where the open chat stands in the message-request flow, if it is one:
+  // "incoming" = they asked me (Accept / Decline), "sent" = I asked and wait,
+  // "declined" = they said no. null = a normal chat (or my first message).
+  const activeId = activeUser?._id ? String(activeUser._id) : null;
+  const incomingRequest = activeId
+    ? requests.incoming.find((r) => String(r.user._id) === activeId)
+    : null;
+  const outgoingRequest = activeId
+    ? requests.outgoing.find((r) => String(r.user._id) === activeId)
+    : null;
+  const isRequestChat =
+    activeId &&
+    !mutualFollowers.some((u) => String(u._id) === activeId) &&
+    !requests.accepted.some((r) => String(r.user._id) === activeId);
+  const sentMessageToThem = chatMessages.some((m) => String(m.senderId) === String(senderId));
+  let requestState = null;
+  if (incomingRequest) requestState = "incoming";
+  else if (outgoingRequest?.status === "declined") requestState = "declined";
+  else if (outgoingRequest || (isRequestChat && sentMessageToThem)) requestState = "sent";
+
+  // After the first message to a non-mutual person, refresh so the request shows.
+  const messageCount = chatMessages.length;
+  useEffect(() => {
+    if (isRequestChat) loadRequests();
+  }, [isRequestChat, messageCount, loadRequests]);
+
   const activeRoomDoc = roomId ? roomsById[roomId] : null;
   const isMuted = Boolean(activeRoomDoc?.mySettings?.muted);
   const isBlockedByMe = Boolean(receiverId && blockedIds.includes(String(receiverId)));
@@ -306,6 +376,36 @@ const Chats = () => {
       .then(({ blockedIds: ids }) => setBlockedIds(ids.map(String)))
       .catch((err) => console.error("Failed to load blocked users:", err));
   }, []);
+
+  // "Message" on someone's profile arrives with that person in router state, so
+  // the chat opens even when they aren't a mutual follower (first message = request).
+  useEffect(() => {
+    const target = location.state?.chatWith;
+    if (target?._id) setActiveConversation({ kind: "direct", user: target });
+  }, [location.state]);
+
+  const handleAcceptRequest = async (request) => {
+    try {
+      await acceptChatRequest(request.roomId);
+      toast.success("Request accepted");
+      await loadRequests();
+    } catch (err) {
+      toast.error(err.message || "Couldn't accept the request");
+    }
+  };
+
+  const handleDeclineRequest = async (request) => {
+    try {
+      await declineChatRequest(request.roomId);
+      toast.success("Request declined");
+      setActiveConversation((prev) =>
+        prev?.kind === "direct" && String(prev.user._id) === String(request.user._id) ? null : prev,
+      );
+      await loadRequests();
+    } catch (err) {
+      toast.error(err.message || "Couldn't decline the request");
+    }
+  };
 
   const handleSendMessage = () => {
     if (!draftMessage.trim() || !roomId) return;
@@ -447,10 +547,36 @@ const Chats = () => {
               </button>
             </div>
 
+            <div className="flex gap-1 px-3 pt-4" role="tablist" aria-label="Message folders">
+              {[
+                ["chats", "Chats"],
+                ["requests", "Requests"],
+              ].map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  role="tab"
+                  aria-selected={tab === id}
+                  onClick={() => setTab(id)}
+                  className={`flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-purple-500 ${
+                    tab === id ? "bg-white/10 text-white" : "text-[#8A8A93] hover:text-white"
+                  }`}
+                >
+                  {label}
+                  {id === "requests" && requests.incoming.length > 0 && (
+                    <span className="rounded-full bg-purple-600 px-1.5 text-xs font-semibold text-white">
+                      {requests.incoming.length}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {tab === "chats" && (
             <div className="px-3 pt-5">
               <label
                 htmlFor="chat-search"
-                className="flex items-center gap-2 rounded-2xl border border-gray-200 bg-gray-100/80 px-3 py-[3px] backdrop-blur transition focus-within:border-purple-400 dark:border-gray-700 dark:bg-gray-800/60"
+                className="flex items-center gap-2 rounded-2xl border border-gray-200 bg-gray-100 px-3 py-[3px] transition focus-within:border-purple-400 dark:border-white/10 dark:bg-white/5"
               >
                 <Search size={20} className="text-gray-400" aria-hidden="true" />
                 <input
@@ -467,10 +593,10 @@ const Chats = () => {
                 <button
                   type="button"
                   onClick={() => setIsSortOpen((prev) => !prev)}
-                  className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
+                  className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5"
                 >
                   <ArrowUpDown size={16} />
-                  <div className="flex items-center justify-center gap-1 hover:text-gray-500 dark:hover:text-gray-300">
+                  <div className="flex items-center justify-center gap-1 ">
                     <span>{sortOrder}</span>
                     <ChevronDown
                       size={16}
@@ -482,7 +608,7 @@ const Chats = () => {
                 </button>
 
                 {isSortOpen && (
-                  <div className="absolute top-full mt-0 w-36 overflow-hidden rounded-xl border border-gray-200 bg-white  dark:border-gray-700 dark:bg-gray-900">
+                  <div className="absolute top-full mt-0 w-36 overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/10 dark:bg-black">
                     {["Newest", "Oldest"].map((option) => (
                       <button
                         key={option}
@@ -491,9 +617,9 @@ const Chats = () => {
                           setSortOrder(option);
                           setIsSortOpen(false);
                         }}
-                        className={`block w-full px-3 py-2 text-left text-sm transition hover:bg-gray-50 dark:hover:bg-gray-800 ${
+                        className={`block w-full px-3 py-2 text-left text-sm transition hover:bg-gray-50 dark:hover:bg-white/5 ${
                           sortOrder === option
-                            ? "bg-purple-50 text-purple-600 dark:bg-gray-800 dark:text-purple-400"
+                            ? "bg-purple-50 text-purple-600 dark:bg-white/5 dark:text-purple-600"
                             : "text-gray-700 dark:text-gray-200"
                         }`}
                       >
@@ -505,8 +631,61 @@ const Chats = () => {
               </div>
             </div>
 
+            )}
+
             <div className="max-h-[calc(100dvh-180px)] overflow-y-auto bg-white dark:bg-black">
-              {isLoadingChats ? (
+              {tab === "requests" ? (
+                requests.incoming.length === 0 ? (
+                  <p className="px-3 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                    No message requests
+                  </p>
+                ) : (
+                  requests.incoming.map((request) => {
+                    const name = `${request.user.firstName} ${request.user.lastName}`.trim();
+                    return (
+                      <div key={request.roomId} className="border-b border-white/5 px-3 py-3">
+                        <button
+                          type="button"
+                          onClick={() => setActiveConversation({ kind: "direct", user: request.user })}
+                          className="flex w-full items-center gap-3 text-left focus-visible:outline-2 focus-visible:outline-purple-500"
+                        >
+                          {request.user.stats?.profileImage ? (
+                            <img
+                              src={request.user.stats.profileImage}
+                              alt=""
+                              className="h-8 w-8 shrink-0 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fuchsia-950/40 text-fuchsia-300">
+                              {name[0]?.toUpperCase()}
+                            </div>
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-medium text-gray-100">{name}</p>
+                            <p className="truncate text-xs text-[#8A8A93]">{request.preview}</p>
+                          </div>
+                        </button>
+                        <div className="mt-2 flex gap-2 pl-11">
+                          <button
+                            type="button"
+                            onClick={() => handleAcceptRequest(request)}
+                            className="cursor-pointer rounded-lg bg-purple-600 px-3 py-1 text-sm font-medium text-white transition-colors hover:bg-purple-500"
+                          >
+                            Accept
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeclineRequest(request)}
+                            className="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-3 py-1 text-sm font-medium text-white transition-colors hover:bg-white/10"
+                          >
+                            Decline
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })
+                )
+              ) : isLoadingChats ? (
                 <div className="flex justify-center items-center px-3 py-6 text-sm text-gray-500 dark:text-gray-100">
                   <LoadingChatSuspense />
                 </div>
@@ -613,14 +792,16 @@ const Chats = () => {
               )}
             </div>
           </div>
-          <div className="hidden lg:m-4 lg:mx-auto lg:flex items-center  ">
+          <div className="hidden min-w-0 flex-1 items-center justify-center p-4 lg:flex">
             <div className="mx-auto grid items-center justify-center text-center text-gray-500 dark:text-gray-400">
-              {/* <img src={VoiceChatSvg} alt="select a chat" /> */}
+              <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border-[0.5px] border-white text-white">
+                <Send size={44} strokeWidth={1.5} aria-hidden="true" />
+              </div>
               <h2 className="pt-2 text-xl font-semibold text-gray-800 dark:text-gray-100">
-                Select a chat
+                Your messages
               </h2>
               <p className=" mt-2">
-                Choose a conversation from the left to start messaging.
+                Send a message to start a chat.
               </p>
             </div>
           </div>
@@ -646,6 +827,9 @@ const Chats = () => {
             onSendAttachment={handleSendAttachment}
             isMuted={isMuted}
             isBlockedByMe={isBlockedByMe}
+            requestState={requestState}
+            onAcceptRequest={() => incomingRequest && handleAcceptRequest(incomingRequest)}
+            onDeclineRequest={() => incomingRequest && handleDeclineRequest(incomingRequest)}
             onToggleMute={handleToggleMute}
             onClearChat={handleClearChat}
             onToggleBlock={handleToggleBlock}

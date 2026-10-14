@@ -9,6 +9,8 @@ import { ObjectId } from "mongodb";
 const ROOM_LIST_PROJECTION = {
   _id: 1,
   type: 1,
+  status: 1,
+  requestedBy: 1,
   name: 1,
   avatar: 1,
   members: 1,
@@ -21,10 +23,18 @@ const ROOM_LIST_PROJECTION = {
 // Must match how the client derives a direct room id (Chats.jsx).
 export const directRoomId = (a, b) => [String(a), String(b)].sort().join("_");
 
-// A first DM is only allowed between two mutual followers where neither has
-// blocked the other — the same rule the chat sidebar's contact list uses.
-async function canStartDirectChat(db, userId, receiverId) {
-  if (!ObjectId.isValid(receiverId) || String(receiverId) === String(userId)) return false;
+// Who may message whom. Mutual followers chat freely ("active"). Anyone else
+// can send ONE message request ("pending") if the receiver's policy allows it,
+// and the receiver must accept before the conversation continues. A block in
+// either direction always wins. Returns "active" | "pending" | null (refused).
+export const MESSAGE_POLICIES = ["everyone", "followers", "nobody"];
+const DEFAULT_MESSAGE_POLICY = "everyone";
+const MAX_OPEN_REQUESTS = 20; // unanswered requests one sender may have at once
+
+async function directChatAccess(db, userId, receiverId) {
+  if (!ObjectId.isValid(receiverId) || String(receiverId) === String(userId)) return null;
+  if (await isBlockedEitherWay(db, String(userId), String(receiverId))) return null;
+
   const me = new ObjectId(String(userId));
   const them = new ObjectId(String(receiverId));
   const follows = db.collection("follows");
@@ -32,12 +42,42 @@ async function canStartDirectChat(db, userId, receiverId) {
     follows.findOne({ followerId: me, followingId: them }, { projection: { _id: 1 } }),
     follows.findOne({ followerId: them, followingId: me }, { projection: { _id: 1 } }),
   ]);
-  if (!iFollow || !theyFollow) return false;
-  return !(await isBlockedEitherWay(db, String(userId), String(receiverId)));
+  if (iFollow && theyFollow) return "active";
+
+  const policy = await getMessagePolicy(db, receiverId);
+  if (policy === "nobody") return null;
+  if (policy === "followers" && !iFollow) return null;
+
+  // Cap unanswered requests so one account can't flood strangers' inboxes.
+  const open = await db
+    .collection("rooms")
+    .countDocuments({
+      type: "direct",
+      status: "pending",
+      requestSent: true,
+      requestedBy: String(userId),
+    });
+  return open >= MAX_OPEN_REQUESTS ? null : "pending";
+}
+
+export async function getMessagePolicy(db, userId) {
+  if (!ObjectId.isValid(userId)) return DEFAULT_MESSAGE_POLICY;
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(String(userId)) }, { projection: { messagePolicy: 1 } });
+  return MESSAGE_POLICIES.includes(user?.messagePolicy) ? user.messagePolicy : DEFAULT_MESSAGE_POLICY;
+}
+
+export async function setMessagePolicy(db, { userId, policy }) {
+  if (!MESSAGE_POLICIES.includes(policy)) throw serviceError("Invalid policy", 400);
+  await db
+    .collection("users")
+    .updateOne({ _id: new ObjectId(String(userId)) }, { $set: { messagePolicy: policy } });
+  return { policy };
 }
 
 // Returns the room if `userId` may enter it. A missing room is only created
-// implicitly for the direct-chat flow (first DM between two mutual followers,
+// implicitly for the direct-chat flow (first DM or message request,
 // signalled by `receiverId`) — groups must be created via the REST endpoint
 // first, since they need a name/admins.
 export async function getOrCreateRoomForMember(db, { roomId, userId, receiverId }) {
@@ -57,7 +97,8 @@ export async function getOrCreateRoomForMember(db, { roomId, userId, receiverId 
   // the one for THIS pair. Otherwise anyone could create another pair's room
   // first and sit in it, locking the real pair out of their own chat.
   if (id !== directRoomId(userId, receiverId)) return { error: "Access denied" };
-  if (!(await canStartDirectChat(db, userId, receiverId))) {
+  const access = await directChatAccess(db, userId, receiverId);
+  if (!access) {
     // Same wording as a blocked send, so this can't be used to learn who blocked whom.
     return { error: "You can't message this user" };
   }
@@ -66,6 +107,9 @@ export async function getOrCreateRoomForMember(db, { roomId, userId, receiverId 
     _id: id,
     members: [receiverId.toString(), userId.toString()],
     type: "direct",
+    // "pending" = a message request the receiver hasn't answered yet.
+    status: access,
+    ...(access === "pending" && { requestedBy: userId.toString() }),
     admins: [],
     name: null,
     avatar: null,
@@ -108,7 +152,7 @@ export async function getSendableRoom(db, { roomId, senderId }) {
   const rooms = db.collection("rooms");
   const room = await rooms.findOne(
     { _id: roomId.toString() },
-    { projection: { members: 1, type: 1, memberSettings: 1 } },
+    { projection: { members: 1, type: 1, memberSettings: 1, status: 1, requestedBy: 1 } },
   );
   if (!room || !room.members.includes(senderId.toString())) {
     return { error: "Access denied" };
@@ -118,6 +162,23 @@ export async function getSendableRoom(db, { roomId, senderId }) {
     if (other && (await isBlockedEitherWay(db, senderId.toString(), other))) {
       // Same wording for both directions so a blocked user can't tell who blocked whom.
       return { error: "You can't message this user" };
+    }
+    if (room.status === "declined") return { error: "You can't message this user" };
+    if (room.status === "pending") {
+      // The requester gets exactly one message; the receiver must accept first.
+      if (room.requestedBy !== senderId.toString()) {
+        return { error: "Accept this message request to reply" };
+      }
+      // Atomic claim of the single allowed message, so two quick sends can't both pass.
+      const claimed = await db
+        .collection("rooms")
+        .updateOne(
+          { _id: roomId.toString(), status: "pending", requestSent: { $ne: true } },
+          { $set: { requestSent: true } },
+        );
+      if (!claimed.modifiedCount) {
+        return { error: "Wait for them to accept your message request" };
+      }
     }
   }
   return { room };
@@ -347,3 +408,93 @@ export async function unblockUser(db, { blockerId, blockedId }) {
     blockedId: blockedId.toString(),
   });
 }
+
+// Message requests, split by state. Incoming = waiting for my answer; outgoing
+// = ones I sent that are pending or declined; accepted = requests that became
+// real conversations (these people are not mutual followers, so the chat list
+// can't find them any other way). A room the requester opened but never sent
+// anything in is not a request yet. Each item carries the other person's
+// profile info so the UI can render it without extra calls.
+export async function listChatRequests(db, userId) {
+  const uid = userId.toString();
+  const rooms = await db
+    .collection("rooms")
+    .find({
+      type: "direct",
+      members: uid,
+      $or: [
+        { status: "declined" },
+        { status: "pending", requestSent: true },
+        { status: "active", requestedBy: { $exists: true } },
+      ],
+    })
+    .project({ members: 1, status: 1, requestedBy: 1, lastMessage: 1, updatedAt: 1 })
+    .sort({ updatedAt: -1 })
+    .toArray();
+
+  const otherIds = rooms.map((r) => r.members.find((m) => m !== uid)).filter(ObjectId.isValid);
+  const objectIds = otherIds.map((id) => new ObjectId(id));
+  const [users, stats] = objectIds.length
+    ? await Promise.all([
+        db
+          .collection("users")
+          .find({ _id: { $in: objectIds } })
+          .project({ firstName: 1, lastName: 1, username: 1 })
+          .toArray(),
+        db
+          .collection("usersStats")
+          .find({ userId: { $in: objectIds } })
+          .project({ userId: 1, profileImage: 1 })
+          .toArray(),
+      ])
+    : [[], []];
+  const userById = new Map(users.map((u) => [u._id.toString(), u]));
+  const imageById = new Map(stats.map((s) => [s.userId.toString(), s.profileImage ?? null]));
+
+  const incoming = [];
+  const outgoing = [];
+  const accepted = [];
+  for (const room of rooms) {
+    const otherId = room.members.find((m) => m !== uid);
+    const user = userById.get(otherId);
+    if (!user) continue;
+    const item = {
+      roomId: room._id,
+      status: room.status,
+      preview: room.lastMessage?.text ?? "",
+      updatedAt: room.updatedAt ?? null,
+      user: {
+        _id: otherId,
+        firstName: user.firstName ?? "",
+        lastName: user.lastName ?? "",
+        username: user.username ?? "",
+        stats: { profileImage: imageById.get(otherId) ?? null },
+      },
+    };
+    if (room.status === "active") accepted.push(item);
+    else if (room.requestedBy === uid) outgoing.push(item);
+    else if (room.status === "pending") incoming.push(item);
+  }
+  return { incoming, outgoing, accepted };
+}
+
+// Only the receiver of a pending request can answer it. Accepting opens the
+// conversation for both sides; declining closes it for good (the requester can't
+// re-send, which also stops repeat requests).
+async function answerRequest(db, { roomId, userId, status }) {
+  const result = await db.collection("rooms").updateOne(
+    {
+      _id: roomId.toString(),
+      type: "direct",
+      status: "pending",
+      members: userId.toString(),
+      requestedBy: { $ne: userId.toString() },
+    },
+    { $set: { status, updatedAt: new Date() } },
+  );
+  if (!result.matchedCount) throw serviceError("Request not found", 404);
+  return { roomId: roomId.toString(), status };
+}
+
+export const acceptChatRequest = (db, args) => answerRequest(db, { ...args, status: "active" });
+export const declineChatRequest = (db, args) => answerRequest(db, { ...args, status: "declined" });

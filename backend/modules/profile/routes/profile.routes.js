@@ -32,6 +32,11 @@ import {
   unblockChatUser,
   sendVoiceMessage,
   sendAttachment,
+  getChatRequests,
+  acceptRequest,
+  declineRequest,
+  getMyMessagePolicy,
+  setMyMessagePolicy,
 } from "../../chat/index.js";
 
 const router = Router();
@@ -291,6 +296,65 @@ router.get("/chats/blocks", getBlockedUsers);
 router.get("/blocked-users", getBlockedUserList);
 router.put("/chats/blocks/:userId", blockChatUser);
 router.delete("/chats/blocks/:userId", unblockChatUser);
+
+/**
+ * @openapi
+ * /my-profile/chats/requests:
+ *   get:
+ *     tags: [Profile]
+ *     summary: Message requests, split into incoming (awaiting my answer) and outgoing
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: "{ incoming: [...], outgoing: [...] }"
+ * /my-profile/chats/requests/{roomId}/accept:
+ *   post:
+ *     tags: [Profile]
+ *     summary: Accept a pending message request (receiver only)
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Request accepted, the conversation is open
+ *       404:
+ *         description: No such pending request for the caller
+ * /my-profile/chats/requests/{roomId}/decline:
+ *   post:
+ *     tags: [Profile]
+ *     summary: Decline a pending message request (receiver only)
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Request declined; the sender cannot message again
+ *       404:
+ *         description: No such pending request for the caller
+ * /my-profile/chats/policy:
+ *   get:
+ *     tags: [Profile]
+ *     summary: Who may send the caller a message request
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: "{ policy: everyone | followers | nobody }"
+ *   put:
+ *     tags: [Profile]
+ *     summary: Change who may send the caller a message request
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Policy saved
+ *       400:
+ *         description: Invalid policy
+ */
+router.get("/chats/requests", getChatRequests);
+router.post("/chats/requests/:roomId/accept", acceptRequest);
+router.post("/chats/requests/:roomId/decline", declineRequest);
+router.get("/chats/policy", getMyMessagePolicy);
+router.put("/chats/policy", setMyMessagePolicy);
 
 /**
  * @openapi

@@ -7,7 +7,13 @@ import {
   listBlockedUsers,
   blockUser,
   unblockUser,
+  listChatRequests,
+  acceptChatRequest,
+  declineChatRequest,
+  getMessagePolicy,
+  setMessagePolicy,
 } from "../services/chatService.js";
+import { messagePolicySchema } from "../schemas/chat.schemas.js";
 
 // Per-user chat controls: mute, clear-for-me and block. Services throw errors
 // carrying a `.status`; this just maps them to HTTP.
@@ -104,6 +110,64 @@ export const unblockChatUser = async (req, res) => {
     }
     await unblockUser(req.app.locals.db, { blockerId: auth.userId, blockedId: userId });
     res.status(200).json({ blocked: false });
+  } catch (err) {
+    handleServiceError(res, err);
+  }
+};
+
+// Message requests: a stranger's first message waits here until the receiver
+// answers. The rules (who may ask, one message only) live in chatService.
+export const getChatRequests = async (req, res) => {
+  try {
+    const auth = authenticate(req, res);
+    if (!auth) return;
+    res.status(200).json(await listChatRequests(req.app.locals.db, auth.userId));
+  } catch (err) {
+    handleServiceError(res, err);
+  }
+};
+
+const answer = (service) => async (req, res) => {
+  try {
+    const auth = authenticate(req, res);
+    if (!auth) return;
+    const result = await service(req.app.locals.db, {
+      roomId: req.params.roomId,
+      userId: auth.userId,
+    });
+    res.status(200).json(result);
+  } catch (err) {
+    handleServiceError(res, err);
+  }
+};
+
+export const acceptRequest = answer(acceptChatRequest);
+export const declineRequest = answer(declineChatRequest);
+
+export const getMyMessagePolicy = async (req, res) => {
+  try {
+    const auth = authenticate(req, res);
+    if (!auth) return;
+    const policy = await getMessagePolicy(req.app.locals.db, auth.userId);
+    res.status(200).json({ policy });
+  } catch (err) {
+    handleServiceError(res, err);
+  }
+};
+
+export const setMyMessagePolicy = async (req, res) => {
+  try {
+    const auth = authenticate(req, res);
+    if (!auth) return;
+    const parsed = messagePolicySchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ message: "policy must be everyone, followers or nobody" });
+    }
+    const result = await setMessagePolicy(req.app.locals.db, {
+      userId: auth.userId,
+      policy: parsed.data.policy,
+    });
+    res.status(200).json(result);
   } catch (err) {
     handleServiceError(res, err);
   }

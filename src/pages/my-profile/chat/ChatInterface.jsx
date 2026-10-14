@@ -81,6 +81,9 @@ const ChatInterface = ({
   onSendAttachment,
   isMuted = false,
   isBlockedByMe = false,
+  requestState = null, // "incoming" | "sent" | "declined" | null
+  onAcceptRequest,
+  onDeclineRequest,
   onToggleMute,
   onClearChat,
   onToggleBlock,
@@ -496,11 +499,13 @@ const ChatInterface = ({
             ) : (
               <div className="flex h-full items-center justify-center py-16">
                 <div className="rounded-3xl bg-transparent px-6 py-8 text-center">
-                  {/* <img src={StartChatSvg} alt="no messages" /> */}
-                  <p className="text-sm font-medium text-white/80">
+                  <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border-[0.5px] border-white text-white">
+                    <Send size={44} strokeWidth={1.5} aria-hidden="true" />
+                  </div>
+                  <p className="mt-4 text-xl font-semibold text-white">
                     No messages yet
                   </p>
-                  <p className="mt-1 text-xs text-[#8A8A93]">
+                  <p className="mt-2 text-sm text-[#8A8A93]">
                     Start the conversation with your first message.
                   </p>
                 </div>
@@ -522,6 +527,36 @@ const ChatInterface = ({
             >
               Unblock
             </button>
+          </div>
+        ) : requestState === "incoming" ? (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 bg-black px-4 py-3">
+            <p className="text-sm text-[#8A8A93]">
+              {clickedUser} wants to message you. They can&apos;t send more until you accept.
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={onAcceptRequest}
+                className="cursor-pointer rounded-lg bg-purple-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-purple-500 focus-visible:outline-2 focus-visible:outline-purple-400"
+              >
+                Accept
+              </button>
+              <button
+                type="button"
+                onClick={onDeclineRequest}
+                className="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-purple-400"
+              >
+                Decline
+              </button>
+            </div>
+          </div>
+        ) : requestState ? (
+          <div className="border-t border-white/10 bg-black px-4 py-3">
+            <p className="text-sm text-[#8A8A93]">
+              {requestState === "declined"
+                ? "Your message request was declined."
+                : "Message request sent. You can keep chatting once they accept."}
+            </p>
           </div>
         ) : (
         /* A real <form>: Enter submits natively, so no key handler is needed. */

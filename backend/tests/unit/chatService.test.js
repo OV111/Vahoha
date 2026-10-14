@@ -1,6 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
 import {
   getOrCreateRoomForMember,
+  listChatRequests,
+  acceptChatRequest,
+  declineChatRequest,
+  setMessagePolicy,
   directRoomId,
   saveMessage,
   setMessageReaction,
@@ -12,11 +16,21 @@ import {
 } from '../../modules/chat/services/chatService.js'
 
 // Minimal fake db: `rooms` holds at most one existing room. `follows` is a set
-// of "follower>following" pairs; `blocked` makes every block lookup hit.
-const makeDb = (existingRoom = null, { follows = [], blocked = false } = {}) => {
+// of "follower>following" pairs; `blocked` makes every block lookup hit;
+// `policy` is the receiver's message policy; `openRequests` is how many
+// unanswered requests the sender already has.
+const makeDb = (
+  existingRoom = null,
+  { follows = [], blocked = false, policy = undefined, openRequests = 0 } = {},
+) => {
   const rooms = {
     findOne: vi.fn().mockResolvedValue(existingRoom),
     insertOne: vi.fn().mockResolvedValue({}),
+    updateOne: vi.fn().mockResolvedValue({ modifiedCount: 1, matchedCount: 1 }),
+    countDocuments: vi.fn().mockResolvedValue(openRequests),
+  }
+  const users = {
+    findOne: vi.fn().mockResolvedValue(policy ? { messagePolicy: policy } : {}),
     updateOne: vi.fn().mockResolvedValue({}),
   }
   const messages = { insertOne: vi.fn().mockResolvedValue({ insertedId: 'm1' }) }
@@ -25,7 +39,7 @@ const makeDb = (existingRoom = null, { follows = [], blocked = false } = {}) => 
       follows.includes(`${followerId}>${followingId}`) ? { _id: 'f' } : null),
   }
   const blocks = { findOne: vi.fn().mockResolvedValue(blocked ? { _id: 'b' } : null) }
-  const db = { rooms, messages, follows: followsCol, blocks }
+  const db = { rooms, messages, users, follows: followsCol, blocks }
   db.collection = (name) => db[name]
   return db
 }
@@ -78,16 +92,36 @@ describe('getOrCreateRoomForMember', () => {
     expect(db.rooms.insertOne).not.toHaveBeenCalled()
   })
 
+  it('creates an active room for mutual followers even if their policy is "nobody"', async () => {
+    const db = makeDb(null, { follows: mutual(MALLORY, BOB), policy: 'nobody' })
+    const { room: created } = await getOrCreateRoomForMember(db, {
+      roomId: directRoomId(MALLORY, BOB), userId: MALLORY, receiverId: BOB,
+    })
+    expect(created.status).toBe('active')
+    expect(created.requestedBy).toBeUndefined()
+  })
+
   it.each([
-    ['only one side follows', { follows: [`${MALLORY}>${BOB}`] }, BOB],
-    ['nobody follows', {}, BOB],
-    ['they follow each other but one blocked the other', { follows: mutual(MALLORY, BOB), blocked: true }, BOB],
-  ])('refuses a first DM when %s', async (_label, state, receiverId) => {
+    ['nobody follows (default policy: everyone)', {}],
+    ['only the sender follows', { follows: [`${MALLORY}>${BOB}`] }],
+    ['the policy is "followers" and the sender follows', { follows: [`${MALLORY}>${BOB}`], policy: 'followers' }],
+  ])('opens a pending message request when %s', async (_label, state) => {
+    const db = makeDb(null, state)
+    const { room: created } = await getOrCreateRoomForMember(db, {
+      roomId: directRoomId(MALLORY, BOB), userId: MALLORY, receiverId: BOB,
+    })
+    expect(created).toMatchObject({ status: 'pending', requestedBy: MALLORY })
+  })
+
+  it.each([
+    ['the receiver\'s policy is "nobody"', { policy: 'nobody' }],
+    ['the policy is "followers" and the sender does not follow', { policy: 'followers' }],
+    ['either side blocked the other', { follows: mutual(MALLORY, BOB), blocked: true }],
+    ['the sender already has 20 unanswered requests', { openRequests: 20 }],
+  ])('refuses a first DM when %s', async (_label, state) => {
     const db = makeDb(null, state)
     const result = await getOrCreateRoomForMember(db, {
-      roomId: directRoomId(MALLORY, receiverId),
-      userId: MALLORY,
-      receiverId,
+      roomId: directRoomId(MALLORY, BOB), userId: MALLORY, receiverId: BOB,
     })
     expect(result).toEqual({ error: "You can't message this user" })
     expect(db.rooms.insertOne).not.toHaveBeenCalled()
@@ -130,6 +164,49 @@ describe('saveMessage', () => {
     expect(await saveMessage(db, { roomId: 'r1', senderId: 'alice', text: 'hi' }))
       .toEqual({ error: "You can't message this user" })
     expect(db.messages.insertOne).not.toHaveBeenCalled()
+  })
+
+  describe('message requests', () => {
+    const pending = { _id: 'r1', type: 'direct', members: ['alice', 'bob'], status: 'pending', requestedBy: 'alice' }
+
+    it('lets the requester send exactly one message', async () => {
+      const db = makeDb(pending)
+      const result = await saveMessage(db, { roomId: 'r1', senderId: 'alice', text: 'hi' })
+      expect(result.message).toMatchObject({ text: 'hi' })
+      expect(db.rooms.updateOne).toHaveBeenCalledWith(
+        { _id: 'r1', status: 'pending', requestSent: { $ne: true } },
+        { $set: { requestSent: true } },
+      )
+    })
+
+    it('refuses a second message while the request is unanswered', async () => {
+      const db = makeDb(pending)
+      db.rooms.updateOne.mockResolvedValueOnce({ modifiedCount: 0 })
+      expect(await saveMessage(db, { roomId: 'r1', senderId: 'alice', text: 'again' }))
+        .toEqual({ error: 'Wait for them to accept your message request' })
+      expect(db.messages.insertOne).not.toHaveBeenCalled()
+    })
+
+    it('stops the receiver replying until they accept', async () => {
+      const db = makeDb(pending)
+      expect(await saveMessage(db, { roomId: 'r1', senderId: 'bob', text: 'hello' }))
+        .toEqual({ error: 'Accept this message request to reply' })
+      expect(db.messages.insertOne).not.toHaveBeenCalled()
+    })
+
+    it('refuses everyone in a declined request', async () => {
+      const db = makeDb({ ...pending, status: 'declined' })
+      for (const senderId of ['alice', 'bob']) {
+        expect(await saveMessage(db, { roomId: 'r1', senderId, text: 'x' }))
+          .toEqual({ error: "You can't message this user" })
+      }
+    })
+
+    it('treats a room with no status (created before requests existed) as active', async () => {
+      const db = makeDb({ _id: 'r1', type: 'direct', members: ['alice', 'bob'] })
+      const result = await saveMessage(db, { roomId: 'r1', senderId: 'bob', text: 'hey' })
+      expect(result.message).toMatchObject({ text: 'hey' })
+    })
   })
 
   it('reports which members muted the room so no notification is queued for them', async () => {
@@ -282,5 +359,65 @@ describe('setMessageReaction', () => {
     db.messages.updateOne = vi.fn().mockResolvedValue({ matchedCount: 0 })
     const res = await setMessageReaction(db, { roomId: 'r1', messageId: MSG, userId: 'alice', emoji: '👍' })
     expect(res.error).toBe('Message not found')
+  })
+})
+
+describe('answering message requests', () => {
+  it('accepts only for the receiver of a pending request', async () => {
+    const db = makeDb()
+    expect(await acceptChatRequest(db, { roomId: 'r1', userId: 'bob' }))
+      .toEqual({ roomId: 'r1', status: 'active' })
+    const [filter] = db.rooms.updateOne.mock.calls[0]
+    expect(filter).toMatchObject({ status: 'pending', members: 'bob', requestedBy: { $ne: 'bob' } })
+  })
+
+  it('declining sets the declined status', async () => {
+    const db = makeDb()
+    expect(await declineChatRequest(db, { roomId: 'r1', userId: 'bob' }))
+      .toEqual({ roomId: 'r1', status: 'declined' })
+  })
+
+  it('404s when nothing matches (not a member, own request, or already answered)', async () => {
+    const db = makeDb()
+    db.rooms.updateOne.mockResolvedValueOnce({ matchedCount: 0 })
+    await expect(acceptChatRequest(db, { roomId: 'r1', userId: 'alice' })).rejects.toMatchObject({ status: 404 })
+  })
+})
+
+describe('setMessagePolicy', () => {
+  it('rejects unknown values', async () => {
+    await expect(setMessagePolicy(makeDb(), { userId: ALICE, policy: 'friends' })).rejects.toMatchObject({ status: 400 })
+  })
+
+  it('saves a valid policy on the user', async () => {
+    const db = makeDb()
+    expect(await setMessagePolicy(db, { userId: ALICE, policy: 'followers' })).toEqual({ policy: 'followers' })
+    expect(db.users.updateOne).toHaveBeenCalledOnce()
+  })
+})
+
+describe('listChatRequests', () => {
+  it('splits incoming from outgoing and skips users that no longer exist', async () => {
+    const rooms = [
+      { _id: 'a', members: [BOB, ALICE], status: 'pending', requestedBy: BOB, lastMessage: { text: 'hi' } },
+      { _id: 'b', members: [ALICE, MALLORY], status: 'pending', requestedBy: ALICE, lastMessage: { text: 'yo' } },
+      { _id: 'c', members: [ALICE, '64b000000000000000000009'], status: 'declined', requestedBy: ALICE },
+    ]
+    const chain = (rows) => ({ project: () => ({ sort: () => ({ toArray: async () => rows }), toArray: async () => rows }) })
+    const cols = {
+      rooms: { find: () => chain(rooms) },
+      users: {
+        find: () => chain([
+          { _id: { toString: () => BOB }, firstName: 'Bob' },
+          { _id: { toString: () => MALLORY }, firstName: 'Mal' },
+        ]),
+      },
+      usersStats: { find: () => chain([]) },
+    }
+    const db = { collection: (name) => cols[name] }
+    const { incoming, outgoing } = await listChatRequests(db, ALICE)
+    expect(incoming.map((r) => r.roomId)).toEqual(['a'])
+    expect(incoming[0]).toMatchObject({ preview: 'hi', user: { _id: BOB, firstName: 'Bob' } })
+    expect(outgoing.map((r) => r.roomId)).toEqual(['b'])
   })
 })
