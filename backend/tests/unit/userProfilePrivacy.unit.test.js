@@ -8,6 +8,7 @@ const makeDb = (target) => {
   const usersFindOne = vi.fn().mockResolvedValue(target)
   const empty = () => ({
     findOne: vi.fn().mockResolvedValue(null),
+    countDocuments: vi.fn().mockResolvedValue(0),
     find: vi.fn().mockReturnValue({
       sort: vi.fn().mockReturnThis(),
       limit: vi.fn().mockReturnThis(),

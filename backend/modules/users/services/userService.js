@@ -36,7 +36,7 @@ export const getUserProfileService = async (db, userName, currentUserId) => {
     throw { status: 404, message: "Not Found" };
   }
 
-  const [followDoc, reverseDoc, stats, progress, exams, certificates] = await Promise.all([
+  const [followDoc, reverseDoc, stats, progress, exams, certificates, postsCount] = await Promise.all([
     follows.findOne({ followerId: currentUserId, followingId: targetUser._id }),
     follows.findOne({ followerId: targetUser._id, followingId: currentUserId }),
     userStats.findOne({ userId: targetUser._id }),
@@ -48,11 +48,13 @@ export const getUserProfileService = async (db, userName, currentUserId) => {
       .toArray()
       .then((rows) => withLayerTitles(db, rows)),
     listPublicCertificatesForUser(db, targetUser._id, targetUser.username),
+    // Live count of published blogs (the stored postsCount was never updated).
+    db.collection("blogs").countDocuments({ author: targetUser._id, status: "published" }),
   ]);
 
   return {
     targetUser,
-    stats,
+    stats: stats && { ...stats, postsCount },
     progress: progress ?? null,
     examHistory: exams,
     certificates,
