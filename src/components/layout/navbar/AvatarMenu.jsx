@@ -4,7 +4,9 @@ import { AVATAR_MENU_ITEMS } from "../../../../constants/navbar";
 import AvatarImage from "./AvatarImage";
 import UserSummary from "./UserSummary";
 import DropdownPanel from "./DropdownPanel";
+import UnreadBadge from "./UnreadBadge";
 import { focusRing } from "./styles";
+
 
 // Desktop avatar button and its dropdown (profile links + logout).
 export default function AvatarMenu({ isOpen, onOpen, onClose, onTriggerClick, onLogout }) {
@@ -16,9 +18,10 @@ export default function AvatarMenu({ isOpen, onOpen, onClose, onTriggerClick, on
         aria-haspopup="menu"
         aria-expanded={isOpen}
         aria-controls="avatar-dropdown"
-        className={`flex cursor-pointer items-center rounded-full ${focusRing}`}
+        className={`relative flex cursor-pointer items-center rounded-full ${focusRing}`}
       >
         <AvatarImage />
+        <UnreadBadge dot />
       </button>
 
       <DropdownPanel open={isOpen} id="avatar-dropdown" className="right-0 w-52">
@@ -35,6 +38,7 @@ export default function AvatarMenu({ isOpen, onOpen, onClose, onTriggerClick, on
           >
             <Icon size={15} />
             {label}
+            {to === "/my-profile/notifications" && <UnreadBadge />}
           </NavLink>
         ))}
         <button

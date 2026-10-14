@@ -10,6 +10,7 @@ import {
 } from "../../../../constants/navbar";
 import SearchBar from "../../search/SearchBar";
 import NavSearchResults from "./NavSearchResults";
+import UnreadBadge from "./UnreadBadge";
 import UserSummary from "./UserSummary";
 import GuestActions from "./GuestActions";
 
@@ -124,6 +125,7 @@ export default function MobileMenu({ auth, showSearch, searchValue, onSearchChan
               <MobileNavLink key={to} to={to} className="flex items-center gap-2">
                 <Icon size={14} />
                 {label}
+                {to === "/my-profile/notifications" && <UnreadBadge />}
               </MobileNavLink>
             ))}
 

@@ -34,7 +34,6 @@ const NotificationWorker = REDIS_ENABLED ? new Worker(
             client.send(
               JSON.stringify({ type: "notification", data: newNotification }),
             );
-            break;
           }
         }
       }
