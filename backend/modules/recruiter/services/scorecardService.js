@@ -109,14 +109,12 @@ export const buildScorecard = ({ user, settings, progress, exams, certificates, 
   };
 };
 
-export const getScorecardService = async (db, username) => {
-  await ensureIndexes(db);
-  const user = await db
-    .collection("users")
-    .findOne({ username }, { projection: { username: 1, firstName: 1, lastName: 1 } });
-  const stored = user ? await db.collection(RECRUITER_SETTINGS).findOne({ userId: user._id }) : null;
-  if (!user || !stored?.enabled) fail(404, "Scorecard not found");
-
+/**
+ * Load one opted-in developer's scorecard. The single place that applies the
+ * per-section visibility, shared by the scorecard page and the candidates list
+ * so the two can never disagree about what a developer chose to show.
+ */
+export const loadScorecard = async (db, user, stored) => {
   const settings = { ...DEFAULT_RECRUITER_SETTINGS, ...stored, show: { ...DEFAULT_RECRUITER_SETTINGS.show, ...stored.show } };
   const { show } = settings;
 
@@ -137,4 +135,14 @@ export const getScorecardService = async (db, username) => {
   ]);
 
   return buildScorecard({ user, settings, progress, exams, certificates, teams, mastery });
+};
+
+export const getScorecardService = async (db, username) => {
+  await ensureIndexes(db);
+  const user = await db
+    .collection("users")
+    .findOne({ username }, { projection: { username: 1, firstName: 1, lastName: 1 } });
+  const stored = user ? await db.collection(RECRUITER_SETTINGS).findOne({ userId: user._id }) : null;
+  if (!user || !stored?.enabled) fail(404, "Scorecard not found");
+  return loadScorecard(db, user, stored);
 };

@@ -38,6 +38,8 @@ export const recruiterApi = {
   // Public: a recruiter opens the link with no account.
   scorecard: (username) =>
     request(`/scorecards/${encodeURIComponent(username)}`, { auth: false }),
+  // Signed in. `query` is the page's own query string (see useCandidates).
+  candidates: (query = "") => request(`/candidates${query ? `?${query}` : ""}`),
   getSettings: () => request("/settings"),
   saveSettings: (settings) =>
     request("/settings", { method: "PUT", body: settings }),

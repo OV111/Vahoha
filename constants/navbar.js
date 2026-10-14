@@ -14,8 +14,10 @@ import {
   Users,
   TrendingUp,
   PenLine,
+  UserSearch,
 } from "lucide-react";
 import { CATEGORY_OPTIONS, categoryHref } from "./categories";
+import { FEATURES } from "./features";
 
 // Career-track pages, shared by the Learn menu and the guests' Tracks menu.
 export const TRACK_LINKS = CATEGORY_OPTIONS.map((category) => ({
@@ -61,6 +63,10 @@ export const NAV_GROUPS_AUTH = [
       { label: "Capstone", to: "/capstone", icon: Rocket, description: "Ship a real project for your track" },
       { label: "Team", to: "/team", icon: Users, description: "Merge PRs with a team, earn public evidence" },
       { label: "Progress", to: "/progress", icon: TrendingUp, description: "Your XP, streaks and mastery" },
+      // For recruiters: the rated, filterable list of developers who opted in. Closed until FEATURES.candidates is on.
+      ...(FEATURES.candidates
+        ? [{ label: "Candidates", to: "/candidates", icon: UserSearch, description: "Rated developers who chose to be found" }]
+        : []),
     ],
   },
 ];

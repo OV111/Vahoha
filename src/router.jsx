@@ -10,6 +10,7 @@ import PublicOnlyRoute from "./layouts/PublicOnlyRoute";
 
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import { FEATURES } from "../constants/features";
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Privacy = lazy(() => import("./pages/Privacy"));
@@ -61,6 +62,7 @@ const TeamPage = lazy(() => import("./features/teams/TeamPage"));
 const TeamAdminPage = lazy(() => import("./features/teams/TeamAdminPage"));
 const EvidencePage = lazy(() => import("./features/teams/EvidencePage"));
 const CandidatePage = lazy(() => import("./features/recruiter/CandidatePage"));
+const CandidatesPage = lazy(() => import("./features/recruiter/CandidatesPage"));
 const CapstoneAdminPage = lazy(
   () => import("./features/capstone/CapstoneAdminPage"),
 );
@@ -180,6 +182,9 @@ export const routes = [
           { path: "team/admin", element: <TeamAdminPage /> },
           { path: "billing", element: <BillingPage /> },
           { path: "progress", element: <ProgressPage /> },
+          // Signed in only. The list holds only developers who opted in to recruiters.
+          // Closed for now: without the route /candidates is the normal 404.
+          ...(FEATURES.candidates ? [{ path: "candidates", element: <CandidatesPage /> }] : []),
           { path: "voice-review", element: <VoiceReviewPage /> },
           { path: "voice-exam/:layerId", element: <VoiceExamPage /> },
           { path: "users/:username", element: <UserProfile /> },
