@@ -10,6 +10,7 @@ import connectDB, { closeDB } from "./config/db.js";
 import { redisConnection } from "./config/redis.js";
 import { createApp } from "./app.js";
 import initWebSocketServer from "./websocket/index.js";
+import { deliverChatMessage } from "./websocket/chatHandler.js";
 import NotificationWorker from "./workers/notificationWorker.js";
 import notificationQueue from "./queues/notificationQueue.js";
 import { assertJwtSecrets } from "./utils/jwtToken.js";
@@ -42,6 +43,10 @@ const startServer = async () => {
       }
       return app(req, res);
     });
+
+    // Handed to HTTP controllers (voice notes) so they can broadcast without
+    // importing the websocket layer, which would be a circular import.
+    app.locals.deliverChatMessage = deliverChatMessage;
 
     const wss = initWebSocketServer(server);
 

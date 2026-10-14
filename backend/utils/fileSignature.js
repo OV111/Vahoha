@@ -16,7 +16,11 @@ const FORMATS = [
   { kind: "document", test: (b) => startsWith(b, ascii("%PDF-")) },
   { kind: "document", test: (b) => startsWith(b, [0x50, 0x4b, 0x03, 0x04]) }, // DOCX (a zip)
   { kind: "document", test: (b) => startsWith(b, [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1]) }, // legacy .doc
+  // Voice notes: WebM (Chrome/Firefox MediaRecorder), MP4/M4A (Safari), Ogg.
+  { kind: "audio", test: (b) => startsWith(b, [0x1a, 0x45, 0xdf, 0xa3]) },
+  { kind: "audio", test: (b) => startsWith(b, ascii("ftyp"), 4) },
+  { kind: "audio", test: (b) => startsWith(b, ascii("OggS")) },
 ];
 
-/** "image" | "document" | null */
+/** "image" | "document" | "audio" | null */
 export const sniffFileKind = (buf) => FORMATS.find((f) => f.test(buf))?.kind ?? null;

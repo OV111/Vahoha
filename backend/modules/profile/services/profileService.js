@@ -37,12 +37,15 @@ export const getProfileService = async (db, userId) => {
   const users = db.collection("users");
   const usersStats = db.collection("usersStats");
 
-  const [user, stats] = await Promise.all([
+  const [user, stats, postsCount] = await Promise.all([
     // Projected out in the query, so the hash never leaves the database.
     // (Destructuring it away after the read is easy to get wrong: renaming the
     // variable to `_password` silently removed a field that doesn't exist.)
     users.findOne({ _id: userId }, { projection: { password: 0 } }),
     usersStats.findOne({ userId }),
+    // Counted from the blogs themselves: the stored usersStats.postsCount was
+    // never updated when a blog was published, so it always read 0.
+    db.collection("blogs").countDocuments({ author: userId, status: "published" }),
   ]);
 
   if (!user) throw { status: 404, message: "User Not Found!" };
@@ -52,7 +55,7 @@ export const getProfileService = async (db, userId) => {
     { $set: { lastActive: new Date() } },
   );
 
-  return { userWithoutPassword: user, stats };
+  return { userWithoutPassword: user, stats: stats && { ...stats, postsCount } };
 };
 
 export const updateLastActiveService = async (db, id, lastActive) => {
@@ -192,31 +195,52 @@ export const UPLOAD_KINDS = { profileImage: "image", bannerImage: "image", cvFil
 const CLOUDINARY_OPTIONS = {
   image: { folder: "devs_website", resource_type: "image", allowed_formats: ["jpg", "png", "gif", "webp"] },
   document: { folder: "devs_website", resource_type: "auto" },
+  // Cloudinary stores audio under resource_type "video".
+  audio: { folder: "devs_website/voice", resource_type: "video" },
+};
+
+// Chat attachments: the kind is decided by the sniffed bytes, not requested.
+// Documents are stored "raw" so Cloudinary serves the original file as-is.
+const ATTACHMENT_OPTIONS = {
+  image: { folder: "devs_website/chat", resource_type: "image", allowed_formats: ["jpg", "png", "gif", "webp"] },
+  document: { folder: "devs_website/chat", resource_type: "raw" },
 };
 
 const WRONG_TYPE_MESSAGE = {
   image: "Images must be JPEG, PNG, GIF or WebP.",
   document: "Your CV must be a PDF or Word file.",
+  audio: "That doesn't look like an audio recording.",
+  attachment: "Only photos (JPEG, PNG, GIF, WebP) and PDF or Word files can be sent.",
 };
 
 // Reads the first bytes, checks them, and only then opens the Cloudinary
 // stream, so a refused file never reaches Cloudinary at all.
-export const uploadToCloudinary = (file, kind, uploader = cloudinary.uploader) =>
+// kind "attachment" accepts a photo or a document; what it turned out to be
+// (and the photo's size) is written onto `meta` for the caller.
+export const uploadToCloudinary = (file, kind, uploader = cloudinary.uploader, meta = {}) =>
   new Promise((resolve, reject) => {
     let head = Buffer.alloc(0);
 
     const start = (ended) => {
       file.off("data", onData);
       file.off("end", onEnd);
-      if (sniffFileKind(head) !== kind) {
+      const sniffed = sniffFileKind(head);
+      const isAttachment = kind === "attachment";
+      const accepted = isAttachment ? sniffed === "image" || sniffed === "document" : sniffed === kind;
+      if (!accepted) {
         file.resume(); // drain the rest so the multipart parser can finish
         const err = new Error(WRONG_TYPE_MESSAGE[kind]);
         err.status = 400;
         return reject(err);
       }
-      const stream = uploader.upload_stream(CLOUDINARY_OPTIONS[kind], (error, result) =>
-        error ? reject(error) : resolve(result.secure_url),
-      );
+      const options = isAttachment ? ATTACHMENT_OPTIONS[sniffed] : CLOUDINARY_OPTIONS[kind];
+      meta.kind = sniffed === "document" ? "file" : sniffed;
+      const stream = uploader.upload_stream(options, (error, result) => {
+        if (error) return reject(error);
+        meta.width = result.width;
+        meta.height = result.height;
+        resolve(result.secure_url);
+      });
       if (ended) return stream.end(head);
       stream.write(head);
       file.pipe(stream);

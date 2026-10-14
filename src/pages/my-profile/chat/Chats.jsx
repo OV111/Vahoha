@@ -1,14 +1,16 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
-import SearchIcon from "@mui/icons-material/Search";
+import { Search } from "lucide-react";
 import Sidebar from "../components/SideBar";
 import { BellOff, ChevronDown, SquarePen, Users } from "lucide-react";
-import toast, { Toaster } from "react-hot-toast";
+import { toast } from "sonner";
 import {
   setRoomMuted,
   clearRoom,
   getBlockedIds,
   blockUser,
   unblockUser,
+  sendVoiceMessage,
+  sendAttachment,
 } from "./chatControlsApi";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import { ArrowUpDown } from "lucide-react";
@@ -173,6 +175,16 @@ const Chats = () => {
         toast.error(payload.message || "Something went wrong");
       } else if (payload.type === "sended_message") {
         setChatMessages((prev) => [...prev, payload.message]);
+      } else if (payload.type === "message_reaction") {
+        setChatMessages((prev) =>
+          prev.map((m) => {
+            if (String(m._id) !== payload.messageId) return m;
+            const reactions = { ...m.reactions };
+            if (payload.emoji) reactions[payload.userId] = payload.emoji;
+            else delete reactions[payload.userId];
+            return { ...m, reactions };
+          }),
+        );
       } else if (payload.type === "message_history") {
         setChatMessages(payload.messageHistory || []);
         setIsLoadingHistory(false);
@@ -307,6 +319,35 @@ const Chats = () => {
     setDraftMessage("");
   };
 
+  // emoji === null removes my reaction. The server broadcasts the result back
+  // (including to me), so state updates in one place: the message_reaction case.
+  const handleReact = (messageId, emoji) => {
+    if (!roomId || !socket) return;
+    socket.send(
+      JSON.stringify({ type: "react_message", roomId, messageId, emoji }),
+    );
+  };
+
+  // The server saves the clip and broadcasts it over the socket, so the new
+  // bubble arrives through the same "sended_message" path as text.
+  const handleSendVoice = async (blob, durationMs) => {
+    if (!roomId) return;
+    try {
+      await sendVoiceMessage(roomId, blob, durationMs);
+    } catch (err) {
+      toast.error(err.message || "Couldn't send voice message");
+    }
+  };
+
+  const handleSendAttachment = async (file) => {
+    if (!roomId) return;
+    try {
+      await sendAttachment(roomId, file);
+    } catch (err) {
+      toast.error(err.message || "Couldn't send file");
+    }
+  };
+
   const fetchUsers = useCallback(async () => {
     setIsLoadingChats(true);
     try {
@@ -383,7 +424,6 @@ const Chats = () => {
   }, []);
   return (
     <div className="flex min-h-dvh">
-      <Toaster position="top-center" />
       <Sidebar />
       {!activeConversation ? (
         <>
@@ -412,10 +452,7 @@ const Chats = () => {
                 htmlFor="chat-search"
                 className="flex items-center gap-2 rounded-2xl border border-gray-200 bg-gray-100/80 px-3 py-[3px] backdrop-blur transition focus-within:border-purple-400 dark:border-gray-700 dark:bg-gray-800/60"
               >
-                <SearchIcon
-                  className="text-gray-400"
-                  sx={{ fontSize: "20px" }}
-                />
+                <Search size={20} className="text-gray-400" aria-hidden="true" />
                 <input
                   id="chat-search"
                   type="text"
@@ -604,6 +641,9 @@ const Chats = () => {
             draftMessage={draftMessage}
             setDraftMessage={setDraftMessage}
             handleSendMessage={handleSendMessage}
+            onReact={handleReact}
+            onSendVoice={handleSendVoice}
+            onSendAttachment={handleSendAttachment}
             isMuted={isMuted}
             isBlockedByMe={isBlockedByMe}
             onToggleMute={handleToggleMute}

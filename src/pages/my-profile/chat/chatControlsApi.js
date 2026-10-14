@@ -36,3 +36,34 @@ export const getBlockedUserList = async () => {
   if (!res.ok) throw new Error(data.message || "Failed to load blocked users");
   return data.users;
 };
+
+// Photo or PDF/Word file. The server tells them apart by their bytes and
+// broadcasts the saved message over the websocket.
+export const sendAttachment = async (roomId, file) => {
+  const form = new FormData();
+  form.append("file", file, file.name);
+  const res = await fetch(`${API_BASE_URL}/my-profile/chats/rooms/${roomId}/attachment`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: form,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || "Couldn't send file");
+  return data.message;
+};
+
+// Voice note: multipart so the browser sets the boundary itself (no manual
+// Content-Type). The server broadcasts the saved message over the websocket.
+export const sendVoiceMessage = async (roomId, blob, durationMs) => {
+  const form = new FormData();
+  form.append("durationMs", String(durationMs));
+  form.append("audio", blob, "voice");
+  const res = await fetch(`${API_BASE_URL}/my-profile/chats/rooms/${roomId}/voice`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: form,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || "Couldn't send voice message");
+  return data.message;
+};

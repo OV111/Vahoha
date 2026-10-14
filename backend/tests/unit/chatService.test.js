@@ -3,6 +3,7 @@ import {
   getOrCreateRoomForMember,
   directRoomId,
   saveMessage,
+  setMessageReaction,
   loadMessages,
   setRoomMuted,
   clearRoomForUser,
@@ -199,5 +200,87 @@ describe('listBlockedUsers', () => {
   it('returns an empty list without querying users when nothing is blocked', async () => {
     const db = { collection: () => ({ find: () => ({ sort: () => ({ toArray: async () => [] }) }) }) }
     expect(await listBlockedUsers(db, 'me')).toEqual([])
+  })
+})
+
+describe('saveMessage: voice notes', () => {
+  it('stores a voice message with its audio and a text-free preview', async () => {
+    const db = makeDb(room)
+    const result = await saveMessage(db, {
+      roomId: 'r1', senderId: 'alice', voice: { url: 'https://cdn/x.webm', durationMs: 4200 },
+    })
+    expect(result.message).toMatchObject({
+      type: 'voice', text: '', audio: { url: 'https://cdn/x.webm', durationMs: 4200 },
+    })
+    expect(db.rooms.updateOne.mock.calls[0][1].$set.lastMessage.text).toBe('🎤 Voice message')
+  })
+
+  it('still denies non-members', async () => {
+    const db = makeDb(room)
+    const result = await saveMessage(db, {
+      roomId: 'r1', senderId: 'mallory', voice: { url: 'u', durationMs: 1000 },
+    })
+    expect(result).toEqual({ error: 'Access denied' })
+    expect(db.messages.insertOne).not.toHaveBeenCalled()
+  })
+})
+
+describe('saveMessage: attachments', () => {
+  it('stores a photo message and previews it as a photo', async () => {
+    const db = makeDb(room)
+    const result = await saveMessage(db, {
+      roomId: 'r1', senderId: 'alice', attachment: { kind: 'image', url: 'https://cdn/p.png', width: 800, height: 600 },
+    })
+    expect(result.message).toMatchObject({ type: 'image', text: '', image: { url: 'https://cdn/p.png', width: 800, height: 600 } })
+    expect(db.rooms.updateOne.mock.calls[0][1].$set.lastMessage.text).toBe('📷 Photo')
+  })
+
+  it('stores a file message with its name and size', async () => {
+    const db = makeDb(room)
+    const result = await saveMessage(db, {
+      roomId: 'r1', senderId: 'alice', attachment: { kind: 'file', url: 'https://cdn/cv.pdf', name: 'cv.pdf', size: 2048 },
+    })
+    expect(result.message).toMatchObject({ type: 'file', file: { name: 'cv.pdf', size: 2048 } })
+    expect(db.rooms.updateOne.mock.calls[0][1].$set.lastMessage.text).toBe('📎 cv.pdf')
+  })
+})
+
+describe('setMessageReaction', () => {
+  const MSG = '64b0000000000000000000aa'
+  const memberRoom = { _id: 'r1', members: ['alice', 'bob'] }
+
+  it('sets the caller\'s reaction on a message in the room', async () => {
+    const db = makeDb(memberRoom)
+    db.messages.updateOne = vi.fn().mockResolvedValue({ matchedCount: 1 })
+    const res = await setMessageReaction(db, { roomId: 'r1', messageId: MSG, userId: 'alice', emoji: '❤️' })
+    expect(res).toEqual({ messageId: MSG, userId: 'alice', emoji: '❤️' })
+    expect(db.messages.updateOne.mock.calls[0][1]).toEqual({ $set: { 'reactions.alice': '❤️' } })
+    expect(db.messages.updateOne.mock.calls[0][0].roomId).toBe('r1')
+  })
+
+  it('removes the reaction when emoji is null', async () => {
+    const db = makeDb(memberRoom)
+    db.messages.updateOne = vi.fn().mockResolvedValue({ matchedCount: 1 })
+    await setMessageReaction(db, { roomId: 'r1', messageId: MSG, userId: 'alice', emoji: null })
+    expect(db.messages.updateOne.mock.calls[0][1]).toEqual({ $unset: { 'reactions.alice': '' } })
+  })
+
+  it('rejects emoji outside the allowed set', async () => {
+    const db = makeDb(memberRoom)
+    const res = await setMessageReaction(db, { roomId: 'r1', messageId: MSG, userId: 'alice', emoji: '<script>' })
+    expect(res.error).toBe('Unsupported reaction')
+  })
+
+  it('denies non-members', async () => {
+    const db = makeDb(memberRoom)
+    const res = await setMessageReaction(db, { roomId: 'r1', messageId: MSG, userId: 'mallory', emoji: '👍' })
+    expect(res.error).toBe('Access denied')
+  })
+
+  it('errors when the message is not in that room', async () => {
+    const db = makeDb(memberRoom)
+    db.messages.updateOne = vi.fn().mockResolvedValue({ matchedCount: 0 })
+    const res = await setMessageReaction(db, { roomId: 'r1', messageId: MSG, userId: 'alice', emoji: '👍' })
+    expect(res.error).toBe('Message not found')
   })
 })

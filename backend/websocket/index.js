@@ -1,5 +1,5 @@
 import { WebSocketServer } from "ws";
-import { joinRoom, loadLastMessages, sendMessage, removeFromRooms } from "./chatHandler.js";
+import { joinRoom, loadLastMessages, sendMessage, reactToMessage, removeFromRooms } from "./chatHandler.js";
 import { registerUserSocket, unregisterUserSocket } from "./connectionRegistry.js";
 import { verifyToken } from "../utils/jwtToken.js";
 import { isOriginAllowed } from "./origin.js";
@@ -33,6 +33,8 @@ export default function initWebSocketServer(server) {
             await joinRoom(ws, data);
           } else if (data.type === "send_message") {
             await sendMessage(ws, data);
+          } else if (data.type === "react_message") {
+            await reactToMessage(ws, data);
           } else if (data.type === "load_last_messages") {
             await loadLastMessages(ws);
           }

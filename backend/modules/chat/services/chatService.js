@@ -98,18 +98,21 @@ async function isBlockedEitherWay(db, a, b) {
 // Persists a message after re-checking membership (a socket can outlive its
 // membership), and bumps the room's lastMessage preview. Returns the room's
 // members too, so the caller can notify whoever isn't online.
-export async function saveMessage(db, { roomId, senderId, text }) {
-  const rooms = db.collection("rooms");
-  const id = roomId.toString();
+// Voice notes carry `voice: { url, durationMs }` instead of text.
+export const VOICE_PREVIEW = "🎤 Voice message";
+export const MAX_VOICE_MS = 2 * 60 * 1000;
 
+// Shared gate for text and voice: the sender must be in the room, and a direct
+// room must not have a block either way. Returns the room or `{ error }`.
+export async function getSendableRoom(db, { roomId, senderId }) {
+  const rooms = db.collection("rooms");
   const room = await rooms.findOne(
-    { _id: id },
+    { _id: roomId.toString() },
     { projection: { members: 1, type: 1, memberSettings: 1 } },
   );
   if (!room || !room.members.includes(senderId.toString())) {
     return { error: "Access denied" };
   }
-
   if (room.type === "direct") {
     const other = room.members.find((m) => m !== senderId.toString());
     if (other && (await isBlockedEitherWay(db, senderId.toString(), other))) {
@@ -117,11 +120,31 @@ export async function saveMessage(db, { roomId, senderId, text }) {
       return { error: "You can't message this user" };
     }
   }
+  return { room };
+}
+
+// Photos and files carry `attachment: { kind: "image" | "file", url, ... }`.
+export const attachmentPreview = (a) => (a.kind === "image" ? "📷 Photo" : `📎 ${a.name}`);
+
+export async function saveMessage(db, { roomId, senderId, text = "", voice = null, attachment = null }) {
+  const rooms = db.collection("rooms");
+  const id = roomId.toString();
+
+  const { error, room } = await getSendableRoom(db, { roomId, senderId });
+  if (error) return { error };
 
   const messageDoc = {
     roomId: id,
     senderId: senderId.toString(),
-    text: text.trim(),
+    type: voice ? "voice" : attachment ? attachment.kind : "text",
+    text: voice || attachment ? "" : text.trim(),
+    ...(voice && { audio: { url: voice.url, durationMs: voice.durationMs } }),
+    ...(attachment?.kind === "image" && {
+      image: { url: attachment.url, width: attachment.width, height: attachment.height },
+    }),
+    ...(attachment?.kind === "file" && {
+      file: { url: attachment.url, name: attachment.name, size: attachment.size },
+    }),
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -132,7 +155,7 @@ export async function saveMessage(db, { roomId, senderId, text }) {
     {
       $set: {
         lastMessage: {
-          text: messageDoc.text,
+          text: voice ? VOICE_PREVIEW : attachment ? attachmentPreview(attachment) : messageDoc.text,
           senderId: messageDoc.senderId,
           createdAt: new Date(),
         },
@@ -150,6 +173,36 @@ export async function saveMessage(db, { roomId, senderId, text }) {
     mutedMembers,
     message: { _id: inserted.insertedId, ...messageDoc },
   };
+}
+
+// Quick-reaction set (Telegram/Instagram style). Anything else is rejected so
+// clients can't stuff arbitrary strings into a message document.
+export const ALLOWED_REACTIONS = ["👍", "❤️", "😂", "😮", "😢", "🙏", "🔥", "🎉"];
+
+// One reaction per user per message, stored as reactions: { [userId]: emoji }.
+// `emoji: null` removes the caller's reaction. The membership check re-runs on
+// every call, and the message must belong to the room, so a member of room A
+// can't react to a message in room B by guessing its id.
+export async function setMessageReaction(db, { roomId, messageId, userId, emoji }) {
+  if (emoji !== null && !ALLOWED_REACTIONS.includes(emoji)) {
+    return { error: "Unsupported reaction" };
+  }
+  if (!ObjectId.isValid(messageId)) return { error: "Message not found" };
+
+  const room = await db
+    .collection("rooms")
+    .findOne({ _id: roomId.toString() }, { projection: { members: 1 } });
+  if (!room || !room.members.includes(userId.toString())) {
+    return { error: "Access denied" };
+  }
+
+  const field = `reactions.${userId}`;
+  const result = await db.collection("messages").updateOne(
+    { _id: new ObjectId(messageId), roomId: roomId.toString() },
+    emoji === null ? { $unset: { [field]: "" } } : { $set: { [field]: emoji } },
+  );
+  if (result.matchedCount === 0) return { error: "Message not found" };
+  return { messageId: String(messageId), userId: userId.toString(), emoji };
 }
 
 // Latest `limit` messages, returned oldest-first for display. `after` is the

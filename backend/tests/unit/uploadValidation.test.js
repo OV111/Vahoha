@@ -89,3 +89,39 @@ describe('uploadToCloudinary', () => {
     expect(up.upload_stream).not.toHaveBeenCalled()
   })
 })
+
+describe('sniffFileKind: voice notes', () => {
+  const pad = (bytes) => Buffer.concat([Buffer.from(bytes), Buffer.alloc(12)])
+  it('accepts WebM, MP4/M4A and Ogg recordings as audio', () => {
+    expect(sniffFileKind(pad([0x1a, 0x45, 0xdf, 0xa3]))).toBe('audio')
+    expect(sniffFileKind(Buffer.concat([Buffer.from([0, 0, 0, 0x20]), Buffer.from('ftypM4A '), Buffer.alloc(4)]))).toBe('audio')
+    expect(sniffFileKind(Buffer.concat([Buffer.from('OggS'), Buffer.alloc(12)]))).toBe('audio')
+  })
+  it('does not call HTML or text audio', () => {
+    expect(sniffFileKind(Buffer.from('<html><script>'))).toBeNull()
+  })
+})
+
+describe('uploadToCloudinary: chat attachments', () => {
+  it('accepts a photo, stores it as an image and reports the kind', async () => {
+    const up = fakeUploader()
+    const meta = {}
+    await expect(uploadToCloudinary(fileStream(PNG), 'attachment', up, meta)).resolves.toMatch(/^https:/)
+    expect(meta.kind).toBe('image')
+    expect(up.calls[0].options.resource_type).toBe('image')
+  })
+
+  it('accepts a Word file, stores it raw and reports it as a file', async () => {
+    const up = fakeUploader()
+    const meta = {}
+    await uploadToCloudinary(fileStream(DOCX), 'attachment', up, meta)
+    expect(meta.kind).toBe('file')
+    expect(up.calls[0].options.resource_type).toBe('raw')
+  })
+
+  it('refuses HTML and never reaches Cloudinary', async () => {
+    const up = fakeUploader()
+    await expect(uploadToCloudinary(fileStream(HTML), 'attachment', up, {})).rejects.toMatchObject({ status: 400 })
+    expect(up.upload_stream).not.toHaveBeenCalled()
+  })
+})

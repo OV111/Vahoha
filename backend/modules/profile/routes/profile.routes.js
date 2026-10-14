@@ -30,6 +30,8 @@ import {
   getBlockedUserList,
   blockChatUser,
   unblockChatUser,
+  sendVoiceMessage,
+  sendAttachment,
 } from "../../chat/index.js";
 
 const router = Router();
@@ -283,6 +285,8 @@ router.get("/chats/:receiverId/stats", getChatReceiverStats);
  */
 router.patch("/chats/rooms/:roomId/mute", muteRoom);
 router.post("/chats/rooms/:roomId/clear", clearRoom);
+router.post("/chats/rooms/:roomId/voice", sendVoiceMessage);
+router.post("/chats/rooms/:roomId/attachment", sendAttachment);
 router.get("/chats/blocks", getBlockedUsers);
 router.get("/blocked-users", getBlockedUserList);
 router.put("/chats/blocks/:userId", blockChatUser);
