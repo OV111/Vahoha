@@ -195,7 +195,7 @@ export default function TrackOnboardingPanel({ track, onClose, onStart, submitti
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed top-0 right-0 h-full w-full max-w-sm z-50 flex flex-col"
+        className="fixed top-0 right-0 h-full w-full max-w-sm z-50 flex flex-col pt-[env(safe-area-inset-top)] pr-[env(safe-area-inset-right)]"
         style={{ backgroundColor: "#0c0c0c", borderLeft: "1px solid #1c1c1c" }}
       >
         {/* Header */}
@@ -324,7 +324,7 @@ export default function TrackOnboardingPanel({ track, onClose, onStart, submitti
 
         {/* Footer */}
         <div
-          className="px-6 py-4 flex items-center justify-between"
+          className="px-6 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] flex items-center justify-between"
           style={{ borderTop: "1px solid #1a1a1a" }}
         >
           <button

@@ -55,7 +55,7 @@ const LayerDetail = () => {
 
       {/* Drawer */}
       <motion.div
-        className="fixed top-0 right-0 z-50 h-full w-full max-w-md bg-neutral-950 border-l border-neutral-800 shadow-2xl flex flex-col"
+        className="fixed top-0 right-0 z-50 h-full w-full max-w-md pt-[env(safe-area-inset-top)] pr-[env(safe-area-inset-right)] bg-neutral-950 border-l border-neutral-800 shadow-2xl flex flex-col"
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
@@ -84,7 +84,7 @@ const LayerDetail = () => {
         </div>
 
         {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+        <div className="flex-1 overflow-y-auto px-6 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] space-y-6">
           {/* Tech pills */}
           <div className="flex flex-wrap gap-2">
             {activeLayer.techs.map((t) => (

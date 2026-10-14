@@ -69,7 +69,7 @@ export default function RoadmapPage() {
           disabled={!selectedTrack}
           title={selectedTrack ? undefined : "Choose a track first"}
           onClick={() => { closePanel(); setPanelOpen(true); }} // close any open layer sidebar first
-          className={`fixed right-0 top-1/4 -translate-y-1/2 z-4
+          className={`fixed right-[env(safe-area-inset-right)] top-1/4 -translate-y-1/2 z-4
           flex items-center gap-2
           px-3 py-2 rounded-l-lg
           text-[13px] font-medium transition-all ${

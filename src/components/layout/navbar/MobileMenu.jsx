@@ -76,7 +76,7 @@ export default function MobileMenu({ auth, showSearch, searchValue, onSearchChan
         id="mobile-menu"
         // Capped to the viewport and scrollable, so an expanded Categories
         // list on a short phone can't push links off-screen.
-        className="absolute top-full left-0 z-50 flex max-h-[calc(100dvh-var(--navbar-h))] w-full flex-col overflow-y-auto overscroll-contain rounded-b-2xl border-y border-white/10 bg-black px-4 pt-3 pb-5 text-gray-100 shadow-xl md:hidden"
+        className="absolute top-full left-0 z-50 flex max-h-[calc(100dvh-var(--navbar-h))] w-full flex-col overflow-y-auto overscroll-contain rounded-b-2xl border-y border-white/10 bg-black pt-3 pr-[max(1rem,env(safe-area-inset-right))] pb-[max(1.25rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))] text-gray-100 shadow-xl md:hidden"
       >
         {showSearch && (
           <li className="relative mb-1">

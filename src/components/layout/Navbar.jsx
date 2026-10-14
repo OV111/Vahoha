@@ -39,7 +39,7 @@ const Navbar = () => {
   return (
     <nav
       ref={navRef}
-      className="sticky top-0 z-50 flex w-full items-center bg-black px-4 py-2 text-white backdrop-blur-md lg:px-6"
+      className="sticky top-0 z-50 flex w-full items-center bg-black pt-[calc(0.5rem+env(safe-area-inset-top))] pb-2 pr-[max(1rem,env(safe-area-inset-right))] pl-[max(1rem,env(safe-area-inset-left))] text-white backdrop-blur-md lg:px-6"
     >
       {/* Left: logo */}
       <div className="flex-1">
