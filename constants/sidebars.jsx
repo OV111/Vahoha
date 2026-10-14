@@ -4,7 +4,7 @@ import {
   Highlighter,
   Link2,
   MessageSquare,
-  Settings,
+  TrendingUp,
   User,
   UserX,
   Users,
@@ -22,6 +22,11 @@ export const sidebarArr = [
         icon: icon(User),
         label: "Profile",
         end: true,
+      },
+      {
+        to: "/progress",
+        icon: icon(TrendingUp),
+        label: "Progress",
       },
       {
         to: "/my-profile/followers",
@@ -51,14 +56,14 @@ export const sidebarArr = [
         label: "Chats",
       },
       {
-        to: "/my-profile/favourites",
+        to: "/my-profile/favorites",
         icon: icon(Bookmark),
-        label: "Favourites",
+        label: "Favorites",
       },
     ],
   },
   {
-    section: "Privacy",
+    section: "Account",
     items: [
       {
         to: "/my-profile/connected-accounts",
@@ -69,16 +74,6 @@ export const sidebarArr = [
         to: "/my-profile/blocked",
         icon: icon(UserX),
         label: "Blocked Users",
-      },
-    ],
-  },
-  {
-    section: "Security",
-    items: [
-      {
-        to: "/my-profile/settings",
-        icon: icon(Settings),
-        label: "Settings",
       },
     ],
   },

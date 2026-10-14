@@ -13,6 +13,8 @@ import { saveSettings, checkUsernameAvailable } from "@/services/profileApi";
 import { Loader2, Check, X } from "lucide-react";
 import { INPUT_CLASS } from "@/components/ui/field";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import SearchSelect from "@/components/ui/SearchSelect";
+import MessagePolicySetting from "./components/MessagePolicySetting";
 
 const LABEL_CLASS = "text-sm font-medium text-gray-700 dark:text-gray-300";
 
@@ -113,6 +115,15 @@ const Settings = () => {
     twitterLink: "",
     mediumLink: "",
   });
+
+  // Keep a legacy free-text value (e.g. "UTC +4") selectable instead of dropping it.
+  const timezoneOptions = useMemo(
+    () =>
+      formData.timezone && !TIMEZONES.some((t) => t.value === formData.timezone)
+        ? [{ value: formData.timezone, label: formData.timezone }, ...TIMEZONES]
+        : TIMEZONES,
+    [formData.timezone],
+  );
   const [originalData, setOriginalData] = useState({});
   const [profileImage, setProfileImage] = useState(null);
   const [bannerImage, setBannerImage] = useState(null);
@@ -425,27 +436,22 @@ const Settings = () => {
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2 max-w-[880px]">
-              <TextField
-                id="timezone"
-                label="Time zone"
-                loading={isLoading}
-                skeletonProps={skeletonProps}
-                as="select"
-                value={formData.timezone}
-                onChange={(e) => handleChange("timezone", e.target.value)}
-              >
-                <option value="">Select a time zone</option>
-                {/* Keep a legacy free-text value (e.g. "UTC +4") selectable. */}
-                {formData.timezone &&
-                  !TIMEZONES.some((t) => t.value === formData.timezone) && (
-                    <option value={formData.timezone}>{formData.timezone}</option>
-                  )}
-                {TIMEZONES.map((t) => (
-                  <option key={t.value} value={t.value}>
-                    {t.label}
-                  </option>
-                ))}
-              </TextField>
+              <div className="grid gap-2 w-full">
+                <label htmlFor="timezone" className={LABEL_CLASS}>
+                  Time zone
+                </label>
+                {isLoading ? (
+                  <Skeleton height={38} {...skeletonProps} />
+                ) : (
+                  <SearchSelect
+                    id="timezone"
+                    options={timezoneOptions}
+                    value={formData.timezone}
+                    onChange={(tz) => handleChange("timezone", tz)}
+                    placeholder="Search a time zone"
+                  />
+                )}
+              </div>
               <TextField
                 id="location"
                 label="Location"
@@ -506,6 +512,8 @@ const Settings = () => {
                 onChange={(e) => handleChange("mediumLink", e.target.value)}
               />
             </div>
+
+            <MessagePolicySetting />
 
             <DeleteAccount />
           </div>

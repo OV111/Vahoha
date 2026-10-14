@@ -2,7 +2,6 @@ import {
   User,
   Settings as SettingsIcon,
   Bell,
-  Bookmark,
   CreditCard,
   Map,
   Library,
@@ -90,7 +89,6 @@ export const NAV_LINKS_GUEST = [{ label: "Pricing", to: "/pricing" }];
 export const AVATAR_MENU_ITEMS = [
   { label: "My Profile", to: "/my-profile", icon: User },
   { label: "Notifications", to: "/my-profile/notifications", icon: Bell },
-  { label: "Favourites", to: "/my-profile/favourites", icon: Bookmark },
   { label: "Billing", to: "/billing", icon: CreditCard },
   { label: "Settings", to: "/my-profile/settings", icon: SettingsIcon },
 ];

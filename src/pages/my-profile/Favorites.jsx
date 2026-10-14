@@ -8,7 +8,7 @@ import { BlogCardSkeletonGrid } from "@/components/blog/BlogCardSkeleton";
 import { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import useThemeStore from "@/stores/useThemeStore";
-const Favourites = () => {
+const Favorites = () => {
   const { theme } = useThemeStore();
   const isDarkMode = theme === "dark";
   const [blogs, setBlogs] = useState([]);
@@ -22,7 +22,7 @@ const Favourites = () => {
   }, []);
 
   return (
-    <PageShell title="Favourites" subtitle="Posts you saved for later">
+    <PageShell title="Favorites" subtitle="Posts you saved for later">
       <div className="mt-8">
         {isLoading ? (
           <SkeletonTheme
@@ -44,7 +44,7 @@ const Favourites = () => {
               Tap the bookmark icon on any post to save it here.
             </p>
             <Link
-              to="/"
+              to="/blogs"
               className="mt-5 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-purple-500"
             >
               Browse posts
@@ -62,4 +62,4 @@ const Favourites = () => {
   );
 };
 
-export default Favourites;
+export default Favorites;

@@ -15,6 +15,7 @@ import {
   Trophy,
   Users,
 } from "lucide-react";
+import { FEATURES } from "../../../constants/features";
 
 /**
  * "How it works" as a branching path diagram (from the founder's sketch):
@@ -60,16 +61,31 @@ const N = {
 const R = 28; // node circle radius in grid units, so lines stop at the edge
 const D = R * 0.7; // offset to the circle's diagonal edge (45 degrees)
 
+// Where each step leads. Exams live inside a layer, so "Pass the exam" opens the
+// roadmaps, where the layer (and its exam) is picked. "Get seen" goes to the
+// candidates list when that feature is on, otherwise to the user's own profile.
+const TO = {
+  root: "/roadmaps",
+  study: "/roadmaps",
+  practice: "/coding-challenges",
+  voice: "/voice-review",
+  exam: "/roadmaps",
+  mentor: "/ai-agent",
+  teams: "/team",
+  capstone: "/capstone",
+  recruiters: FEATURES.candidates ? "/candidates" : "/my-profile",
+};
+
 const MOBILE_STEPS = [
-  { title: "Pick a path", body: "Choose your track.", icon: MapIcon },
-  { title: "Study the layer", body: "10 layers in a track.", icon: BookOpen },
-  { title: "Practice it", body: "Solve real coding challenges.", icon: Code2 },
-  { title: "Explain it back", body: "Say it out loud. Your mentor checks you get it.", icon: Mic, soon: true },
-  { title: "Pass the exam", body: "Score 80% to unlock the next layer.", icon: Lock },
-  { title: "AI mentor", body: "Finds your weak spots and helps you retry.", icon: Bot },
-  { title: "Join a Build Team", body: "Ship real PRs with other learners.", icon: Users },
-  { title: "Capstone", body: "Build and defend a real project.", icon: Trophy },
-  { title: "Get seen by recruiters", body: "Every PR and project becomes public proof.", icon: Briefcase },
+  { to: TO.root, title: "Pick a path", body: "Choose your track.", icon: MapIcon },
+  { to: TO.study, title: "Study the layer", body: "10 layers in a track.", icon: BookOpen },
+  { to: TO.practice, title: "Practice it", body: "Solve real coding challenges.", icon: Code2 },
+  { to: TO.voice, title: "Explain it back", body: "Say it out loud. Your mentor checks you get it.", icon: Mic, soon: true },
+  { to: TO.exam, title: "Pass the exam", body: "Score 80% to unlock the next layer.", icon: Lock },
+  { to: TO.mentor, title: "AI mentor", body: "Finds your weak spots and helps you retry.", icon: Bot },
+  { to: TO.teams, title: "Join a Build Team", body: "Ship real PRs with other learners.", icon: Users },
+  { to: TO.capstone, title: "Capstone", body: "Build and defend a real project.", icon: Trophy },
+  { to: TO.recruiters, title: "Get seen by recruiters", body: "Every PR and project becomes public proof.", icon: Briefcase },
 ];
 
 // The story loops while the section is on screen. A purple line travels from
@@ -317,7 +333,7 @@ const TEXT_SIDE = {
   right: "left-full top-1/2 ml-3 w-40 -translate-y-1/2 items-start text-left",
 };
 
-function Circle({ at, label, sub, children, side = "bottom", active = false, soon = false, inView, delay }) {
+function Circle({ at, to, label, sub, children, side = "bottom", active = false, soon = false, inView, delay }) {
   return (
     <motion.div
       className="absolute -translate-x-1/2 -translate-y-1/2"
@@ -326,20 +342,26 @@ function Circle({ at, label, sub, children, side = "bottom", active = false, soo
       animate={inView ? { opacity: 1, scale: 1 } : {}}
       transition={{ delay, duration: 0.35 }}
     >
-      <span
-        className={`relative flex h-14 w-14 items-center justify-center rounded-full border bg-black transition-[color,border-color,box-shadow] duration-500 ${
-          active
-            ? "border-purple-500 text-purple-300 shadow-[0_0_28px_-4px_rgba(168,85,247,0.6)]"
-            : "border-neutral-700 text-neutral-300"
-        }`}
+      <Link
+        to={to}
+        aria-label={label}
+        className="group block rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-500"
       >
-        {children}
-      </span>
-      <div className={`absolute flex flex-col ${TEXT_SIDE[side]}`}>
-        {soon && <SoonTag className="mb-1" />}
-        <span className="text-sm font-medium text-neutral-100">{label}</span>
-        {sub && <span className="mt-0.5 text-xs text-neutral-400">{sub}</span>}
-      </div>
+        <span
+          className={`relative flex h-14 w-14 items-center justify-center rounded-full border bg-black transition-[color,border-color,box-shadow] duration-500 group-hover:border-purple-400 group-hover:text-purple-200 ${
+            active
+              ? "border-purple-500 text-purple-300 shadow-[0_0_28px_-4px_rgba(168,85,247,0.6)]"
+              : "border-neutral-700 text-neutral-300"
+          }`}
+        >
+          {children}
+        </span>
+        <div className={`absolute flex flex-col ${TEXT_SIDE[side]}`}>
+          {soon && <SoonTag className="mb-1" />}
+          <span className="text-sm font-medium text-neutral-100">{label}</span>
+          {sub && <span className="mt-0.5 text-xs text-neutral-400">{sub}</span>}
+        </div>
+      </Link>
     </motion.div>
   );
 }
@@ -452,17 +474,18 @@ const HowItWorks = () => {
             />
           </svg>
 
-          <Circle at={N.root} label="Pick a path" sub="Choose your track." active={started} inView={appeared} delay={0}>
+          <Circle at={N.root} to={TO.root} label="Pick a path" sub="Choose your track." active={started} inView={appeared} delay={0}>
             <MapIcon size={22} aria-hidden="true" />
           </Circle>
-          <Circle at={N.study} label="Study the layer" sub="10 layers in a track." active={studied} inView={appeared} delay={0.3}>
+          <Circle at={N.study} to={TO.study} label="Study the layer" sub="10 layers in a track." active={studied} inView={appeared} delay={0.3}>
             <BookOpen size={22} aria-hidden="true" />
           </Circle>
-          <Circle at={N.practice} label="Practice it" sub="Solve real coding challenges." active={practiced} inView={appeared} delay={0.5}>
+          <Circle at={N.practice} to={TO.practice} label="Practice it" sub="Solve real coding challenges." active={practiced} inView={appeared} delay={0.5}>
             <SplitCode play={practiced} />
           </Circle>
           <Circle
             at={N.voice}
+            to={TO.voice}
             label="Explain it back"
             sub="Say it out loud. Your mentor checks you get it."
             side="top"
@@ -475,6 +498,7 @@ const HowItWorks = () => {
           </Circle>
           <Circle
             at={N.exam}
+            to={TO.exam}
             label="Pass the exam"
             sub="Score 80% to unlock the next layer."
             side="right"
@@ -484,17 +508,18 @@ const HowItWorks = () => {
           >
             {unlocked ? <LockOpen size={22} aria-hidden="true" /> : <Lock size={22} aria-hidden="true" />}
           </Circle>
-          <Circle at={N.mentor} label="AI mentor" sub="Finds your weak spots and helps you retry." active={retried} inView={appeared} delay={1.0}>
+          <Circle at={N.mentor} to={TO.mentor} label="AI mentor" sub="Finds your weak spots and helps you retry." active={retried} inView={appeared} delay={1.0}>
             <Bot size={22} aria-hidden="true" />
           </Circle>
-          <Circle at={N.teams} label="Join a Build Team" sub="Ship real PRs with other learners." side="top" active={proven} inView={appeared} delay={1.1}>
+          <Circle at={N.teams} to={TO.teams} label="Join a Build Team" sub="Ship real PRs with other learners." side="top" active={proven} inView={appeared} delay={1.1}>
             <JoinTeam play={proven} />
           </Circle>
-          <Circle at={N.capstone} label="Capstone" sub="Build and defend a real project." active={proven} inView={appeared} delay={1.1}>
+          <Circle at={N.capstone} to={TO.capstone} label="Capstone" sub="Build and defend a real project." active={proven} inView={appeared} delay={1.1}>
             <TrophyPop play={proven} />
           </Circle>
           <Circle
             at={N.recruiters}
+            to={TO.recruiters}
             label="Get seen by recruiters"
             sub="Every PR and project becomes public proof."
             active={seen}
@@ -528,18 +553,20 @@ const HowItWorks = () => {
 
         {/* Below lg: the same steps as a vertical list */}
         <ol className="mx-auto mt-12 max-w-sm space-y-6 lg:hidden">
-          {MOBILE_STEPS.map(({ title, body, icon: Icon, soon }) => (
-            <li key={title} className="flex items-center gap-4">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-neutral-700 bg-black text-neutral-300">
-                <Icon size={20} aria-hidden="true" />
-              </span>
-              <div>
-                <h3 className="text-lg font-medium text-neutral-100 md:text-base">
-                  {title}
-                  {soon && <SoonTag className="ml-2 align-middle" />}
-                </h3>
-                <p className="mt-0.5 text-base text-neutral-400 md:text-sm">{body}</p>
-              </div>
+          {MOBILE_STEPS.map(({ to, title, body, icon: Icon, soon }) => (
+            <li key={title}>
+              <Link to={to} className="group flex items-center gap-4">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-neutral-700 bg-black text-neutral-300 transition-colors group-hover:border-purple-400 group-hover:text-purple-200">
+                  <Icon size={20} aria-hidden="true" />
+                </span>
+                <div>
+                  <h3 className="text-lg font-medium text-neutral-100 md:text-base">
+                    {title}
+                    {soon && <SoonTag className="ml-2 align-middle" />}
+                  </h3>
+                  <p className="mt-0.5 text-base text-neutral-400 md:text-sm">{body}</p>
+                </div>
+              </Link>
             </li>
           ))}
         </ol>

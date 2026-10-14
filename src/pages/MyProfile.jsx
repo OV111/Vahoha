@@ -8,7 +8,7 @@ import useAuthStore from "@/stores/useAuthStore";
 import BlogCard from "@/components/blog/BlogCard";
 import { updateLastActive, saveSettings, removeCv } from "@/services/profileApi";
 import { toast } from "sonner";
-import { Pencil } from "lucide-react";
+import { Pencil, PenLine } from "lucide-react";
 import { SectionHeader, ForHiringPanel } from "./my-profile/components/ProfileSections";
 import useProfileProgress from "@/features/profile/hooks/useProfileProgress";
 import AchievementsPanel from "@/features/profile/components/AchievementsPanel";
@@ -422,12 +422,14 @@ const MyProfile = () => {
                 <BlogCardSkeletonGrid count={3} />
               ) : blogs.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 text-center">
-                  <div className="mb-4 text-5xl">✍️</div>
-                  <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                  <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full border-[0.5px] border-white text-white">
+                    <PenLine size={34} strokeWidth={1.5} aria-hidden="true" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
                     No posts yet
                   </h3>
-                  <p className="mt-1 text-sm text-gray-400">
-                    You haven't published anything yet.
+                  <p className="mt-2 max-w-xs text-sm text-gray-500 dark:text-[#8A8A93]">
+                    Share what you&apos;re learning. Your posts appear here for everyone to read.
                   </p>
                   <Link
                     to="add-blog"

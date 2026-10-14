@@ -1,27 +1,13 @@
 import { sidebarArr } from "../../../../constants/sidebars";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useAuthStore from "../../../stores/useAuthStore.js";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import useThemeStore from "../../../stores/useThemeStore.js";
-import { LogOut, Sun, Moon } from "lucide-react";
-import useProfileStore from "@/stores/useProfileStore.js";
+import { LogOut } from "lucide-react";
 
 export default function SideBar() {
-  const { user, stats, isLoading, fetchProfile } = useProfileStore();
-  const { theme } = useThemeStore();
-  const isDarkMode = theme === "dark";
   const navigate = useNavigate();
   const location = useLocation();
   const { logout } = useAuthStore();
-  const [openImage, setOpenImage] = useState(false);
-
-  const fullName =
-    `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim() || "Name Surname";
-  const email = user?.email ?? "example@.com";
-  const avatarSrc = stats?.profileImage ?? "";
 
   const handleLogOut = async () => {
     // useAuthStore.logout() now owns the DELETE /log-out call (it revokes
@@ -32,86 +18,9 @@ export default function SideBar() {
     navigate("/get-started");
   };
 
-  useEffect(() => {
-    if (!user) fetchProfile();
-  }, [fetchProfile]); // eslint-disable-line react-hooks/exhaustive-deps
-
   return (
     <>
       <aside className="flex min-h-screen w-10 flex-col overflow-hidden border-r border-white/10 bg-black transition-all duration-300 lg:w-56 lg:sticky lg:top-0">
-        <div className="py-3 border-b border-gray-100 dark:border-white/10 px-0 lg:px-3">
-          <div className="flex items-center justify-center gap-3 mx-auto">
-            <button
-              onClick={() => {
-                if (avatarSrc) setOpenImage(true);
-              }}
-              className={`relative shrink-0 ${isLoading ? "cursor-default" : "cursor-pointer"}`}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <div className="lg:mx-0 mx-auto w-8 h-8 rounded-full bg-gray-200 animate-pulse dark:bg-gray-700" />
-              ) : avatarSrc ? (
-                <img
-                  src={avatarSrc}
-                  alt="Profile"
-                  className="lg:mx-0 mx-auto w-8 h-8 object-cover rounded-full"
-                />
-              ) : (
-                <div className="lg:mx-0 mx-auto w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-700 flex items-center justify-center text-xs font-bold text-purple-700 dark:text-white">
-                  {user?.firstName?.[0]?.toUpperCase()}
-                  {user?.lastName?.[0]?.toUpperCase()}
-                </div>
-              )}
-              {/* Online status dot */}
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-gray-950" />
-            </button>
-
-            <div className="hidden lg:block min-w-0 overflow-hidden">
-              {isLoading ? (
-                <div className="space-y-1">
-                  <Skeleton
-                    width={172}
-                    height={16}
-                    borderRadius={8}
-                    baseColor={isDarkMode ? "#1f2937" : "#ebebeb"}
-                    highlightColor={isDarkMode ? "#374151" : "#f5f5f5"}
-                  />
-                  <Skeleton
-                    width={172}
-                    height={14}
-                    borderRadius={8}
-                    baseColor={isDarkMode ? "#1f2937" : "#ebebeb"}
-                    highlightColor={isDarkMode ? "#374151" : "#f5f5f5"}
-                  />
-                </div>
-              ) : (
-                <>
-                  <p className="truncate text-sm font-medium text-gray-800 dark:text-gray-100">
-                    {fullName}
-                  </p>
-                  <p className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
-                    {email}
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {openImage && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 pt-[max(1rem,env(safe-area-inset-top))] pr-[max(1rem,env(safe-area-inset-right))] pb-[max(1rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))]"
-            onClick={() => setOpenImage(false)}
-          >
-            <img
-              src={avatarSrc}
-              alt="Profile"
-              className="max-w-[70vw] max-h-[70vh] rounded-2xl transition duration-200 scale-100"
-              onClick={(e) => e.stopPropagation()}
-            />
-          </div>
-        )}
-
         <nav className="flex min-h-0 flex-1 flex-col mt-2 lg:mt-0 gap-3 lg:gap-0 py-0 lg:px-2 lg:py-2">
           {sidebarArr.map((group) => (
             <div
@@ -151,18 +60,6 @@ export default function SideBar() {
         </nav>
 
         <div className="mt-auto flex flex-col lg:mx-2 lg:mb-2">
-          {/* Theme toggle */}
-          <div className="flex items-center justify-center w-10 py-2 lg:mb-2 opacity-30 cursor-not-allowed lg:w-auto lg:justify-between lg:px-3 lg:rounded-lg">
-            <p className="hidden text-[14px] font-medium text-gray-100 dark:text-gray-100 lg:block">
-              {isDarkMode ? "Light mode" : "Dark mode"}
-            </p>
-            {isDarkMode ? (
-              <Sun size={16} className="text-gray-100" />
-            ) : (
-              <Moon size={16} className="text-gray-100" />
-            )}
-          </div>
-
           {/* Logout */}
           <button
             type="button"

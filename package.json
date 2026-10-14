@@ -60,6 +60,7 @@
     "@fontsource-variable/geist": "^5.3.0",
     "@fontsource-variable/geist-mono": "^5.3.0",
     "@google/generative-ai": "^0.24.1",
+    "@headlessui/react": "^2.2.10",
     "@lezer/highlight": "^1.2.4",
     "@polar-sh/sdk": "^1.0.1",
     "@react-oauth/google": "^0.13.5",

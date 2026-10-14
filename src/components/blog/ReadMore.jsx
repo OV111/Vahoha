@@ -150,7 +150,7 @@ function LoadedPost({ id, raw }) {
 
         <div className="grid gap-10 md:grid-cols-[1fr_240px]">
           <article>
-            <p className="mb-8 border-l-4 border-violet-500 pl-4 font-serif text-base italic sm:pl-5 sm:text-lg leading-relaxed text-slate-500 dark:text-slate-400">
+            <p className="mb-8 border-l-4 border-violet-500 pl-4 text-base sm:pl-5 sm:text-lg leading-relaxed text-slate-600 dark:text-slate-300">
               {post.description}
             </p>
             <PostMarkdown content={post.content} className={PROSE} />
