@@ -23,8 +23,8 @@ export default {
   categoryId: "devops",
   slug: "gcp-dev-cloudrun-pubsub-data-pipeline",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Cloud Run and Pub/Sub Event-Driven Pipeline on GCP",
   summary:
     "Build a containerized event-driven data ingestion pipeline on Google Cloud Platform using Terraform. " +

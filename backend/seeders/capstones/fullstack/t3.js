@@ -15,8 +15,8 @@ export default {
   categoryId: "fullstack",
   slug: "t3-reading-room",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Personal reading room",
   summary:
     "Build a type-safe reading room where users maintain a personal library, track reading progress, and " +

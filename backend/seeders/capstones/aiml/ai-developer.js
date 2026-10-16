@@ -23,8 +23,8 @@ export default {
   categoryId: "aiml",
   slug: "ai-developer-rag-agent-service",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Enterprise Knowledge Base RAG & Agent API",
   summary:
     "Build a production-grade backend service combining Retrieval-Augmented Generation (RAG) " +

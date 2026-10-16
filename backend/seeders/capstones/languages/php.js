@@ -23,8 +23,8 @@ export default {
   categoryId: "languages",
   slug: "php-restful-framework-core",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Modern PSR-Compliant REST API & Database Gateway",
   summary:
     "Build a lightweight, production-ready RESTful API service engine in modern PHP 8+. " +

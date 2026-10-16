@@ -23,8 +23,8 @@ export default {
   categoryId: "devops",
   slug: "devsecops-automated-security-pipeline",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Automated DevSecOps Security Pipeline and Policy Engine",
   summary:
     "Construct a secure delivery pipeline embedding automated security guardrails at every layer. " +

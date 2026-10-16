@@ -24,8 +24,8 @@ export default {
   categoryId: "mobile",
   slug: "ios-recipe-organizer",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Offline recipe organizer",
   summary:
     "Build a native SwiftUI recipe organizer for collecting, editing and cooking from recipes. The app must persist its data locally, optionally synchronize with a REST API, handle asynchronous states clearly and remain useful without a network connection. The implementation should demonstrate modern SwiftUI data flow and testable separation between views and application logic.",

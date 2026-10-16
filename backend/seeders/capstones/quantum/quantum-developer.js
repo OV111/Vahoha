@@ -23,8 +23,8 @@ export default {
   categoryId: "quantum",
   slug: "quantum-developer-job-runner",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Quantum Circuit Execution & Analytics REST Service",
   summary:
     "Build an asynchronous REST service that constructs, transpiles, and executes parameterized quantum circuits " +

@@ -23,8 +23,8 @@ export default {
   categoryId: "gamedev",
   slug: "godot-2d-metroidvania",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "2D Action Metroidvania in Godot 4 & GDScript",
   summary:
     "Build a 2D action Metroidvania featuring CharacterBody2D physics, custom signals, state-machine AI, " +

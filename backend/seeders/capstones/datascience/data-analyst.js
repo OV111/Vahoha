@@ -23,8 +23,8 @@ export default {
   categoryId: "datascience",
   slug: "data-analyst-e-commerce-churn-dashboard",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "E-Commerce Customer Churn and Retention Analytics Suite",
   summary:
     "Analyze subscription retention, clean raw transaction logs with Python, write dbt-style SQL transformation models, " +

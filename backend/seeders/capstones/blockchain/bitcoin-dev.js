@@ -25,8 +25,8 @@ export default {
   categoryId: "blockchain",
   slug: "bitcoin-dev-psbt-vault",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Build a Bitcoin PSBT multisignature vault",
   summary:
     "Build a Bitcoin application that creates and coordinates a small multisignature " +

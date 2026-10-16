@@ -23,8 +23,8 @@ export default {
   categoryId: "quantum",
   slug: "quantum-optimization-qubo-qaoa-platform",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Combinatorial Optimization Engine: QUBO, QAOA, and Quantum Annealing",
   summary:
     "Build a quantum-assisted combinatorial optimization platform that formulates complex NP-hard problems (Max-Cut, Portfolio, VRP) " +

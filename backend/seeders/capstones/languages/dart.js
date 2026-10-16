@@ -23,8 +23,8 @@ export default {
   categoryId: "languages",
   slug: "dart-async-data-pipeline",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Reactive Asynchronous Data Streaming & Caching Library",
   summary:
     "Build a pure Dart asynchronous event processing and caching library. " +

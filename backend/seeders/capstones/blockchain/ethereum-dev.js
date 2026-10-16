@@ -25,8 +25,8 @@ export default {
   categoryId: "blockchain",
   slug: "ethereum-dev-event-indexer",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Build an Ethereum event indexer and wallet activity API",
   summary:
     "Build a small Ethereum application that watches a deployed contract and turns its " +

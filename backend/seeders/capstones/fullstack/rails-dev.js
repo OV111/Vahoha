@@ -15,8 +15,8 @@ export default {
   categoryId: "fullstack",
   slug: "rails-dev-volunteer-board",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Volunteer opportunity board",
   summary:
     "Build a Rails application where organizations publish volunteer opportunities and users apply for them: " +

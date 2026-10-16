@@ -27,6 +27,10 @@ dotenv.config({ path: "./backend/.env" });
 import connectDB from "../config/db.js";
 import { briefs } from "./capstones/index.js";
 
+// Explicit opt-in: publish briefs before their exam banks exist. Learners see
+// the capstone but cannot unlock it until every layer exam is passable.
+const ALLOW_UNBANKED = process.env.ALLOW_UNBANKED_PUBLISH === "1";
+
 const validateBrief = (brief, layers) => {
   const errors = [];
   const trackLayerIds = new Set(layers.map((l) => l.layerId));
@@ -72,7 +76,9 @@ async function seed() {
         .collection("exam_question_banks")
         .distinct("layer", { layer: { $in: layers.map((l) => l.layerId) } });
       const missingBanks = layers.map((l) => l.layerId).filter((id) => !banked.includes(id));
-      if (missingBanks.length) {
+      if (missingBanks.length && ALLOW_UNBANKED) {
+        console.warn(`! ${brief.slug}: publishing WITHOUT exam banks for ${missingBanks.length} layer(s) (ALLOW_UNBANKED_PUBLISH=1)`);
+      } else if (missingBanks.length) {
         errors.push(`cannot publish: no exam bank for ${missingBanks.join(", ")} — run the exam seeder for this track first`);
       }
     }

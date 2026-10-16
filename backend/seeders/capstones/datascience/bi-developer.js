@@ -23,8 +23,8 @@ export default {
   categoryId: "datascience",
   slug: "bi-developer-enterprise-retail-analytics",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Enterprise Retail Executive Semantic Layer and BI Solution",
   summary:
     "Build an enterprise BI solution end-to-end: engineer an analytical SQL semantic layer, author complex DAX/LOD measures, " +

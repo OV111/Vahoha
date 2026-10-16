@@ -23,8 +23,8 @@ export default {
   categoryId: "gamedev",
   slug: "gameplay-engineer-action-platformer",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Modular Combat & Kinematic Controller Systems",
   summary:
     "Engineers an authoritative kinematic character controller, customizable combat combo system, " +

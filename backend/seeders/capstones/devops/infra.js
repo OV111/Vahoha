@@ -23,8 +23,8 @@ export default {
   categoryId: "devops",
   slug: "infra-multi-env-automation-framework",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title:
     "Multi-Environment Infrastructure Automation with Terraform and Ansible",
   summary:

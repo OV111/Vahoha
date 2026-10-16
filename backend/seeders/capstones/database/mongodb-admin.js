@@ -23,8 +23,8 @@ export default {
   categoryId: "database",
   slug: "mongodb-admin-sharded-cluster",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Sharded MongoDB Cluster with Replica Sets and RBAC Security",
   summary:
     "Deploy a production-ready MongoDB sharded cluster comprising config servers, mongos routers, and replica set shards. " +

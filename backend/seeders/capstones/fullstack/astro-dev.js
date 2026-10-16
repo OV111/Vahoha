@@ -15,8 +15,8 @@ export default {
   categoryId: "fullstack",
   slug: "astro-dev-documentation-portal",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Documentation portal",
   summary:
     "Build a documentation portal for a software project using Astro: structured content collections, " +

@@ -23,8 +23,8 @@ export default {
   categoryId: "qa",
   slug: "api-qa-test-automation-suite",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Multi-Protocol API Testing & Contract Suite",
   summary:
     "Build an automated API testing project using Java and REST Assured. " +

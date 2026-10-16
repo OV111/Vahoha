@@ -24,8 +24,8 @@ export default {
   categoryId: "mobile",
   slug: "swift-dev-habit-journal",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Offline habit journal",
   summary:
     "Build a native Swift application for tracking daily habits and short journal entries. The app must provide a SwiftUI interface, persist data locally, load and filter entries, and remain fully usable without network access. Use protocols, value types, modern concurrency and a testable architecture rather than coupling all behaviour to views.",

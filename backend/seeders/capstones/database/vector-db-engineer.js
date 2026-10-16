@@ -23,8 +23,8 @@ export default {
   categoryId: "database",
   slug: "vector-db-engineer-rag-search",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Production RAG Engine with Hybrid Vector Search and pgvector",
   summary:
     "Build a production-grade Retrieval-Augmented Generation (RAG) platform using pgvector and Qdrant/Weaviate. " +

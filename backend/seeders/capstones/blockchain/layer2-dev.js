@@ -25,8 +25,8 @@ export default {
   categoryId: "blockchain",
   slug: "layer2-dev-cross-layer-marketplace",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Build an L1-L2 escrow marketplace",
   summary:
     "Build a testnet-only dApp that demonstrates a complete L1-to-L2 asset lifecycle. " +

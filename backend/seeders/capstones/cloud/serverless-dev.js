@@ -23,8 +23,8 @@ export default {
   categoryId: "cloud",
   slug: "serverless-dev-event-driven-e-commerce",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Event-Driven Serverless E-Commerce Processing Service",
   summary:
     "Build an event-driven order processing system using the AWS Serverless Application Model (SAM). " +

@@ -23,8 +23,8 @@ export default {
   categoryId: "devops",
   slug: "platform-engineer-backstage-crossplane-idp",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Internal Developer Platform with Backstage, Crossplane, and GitOps",
   summary:
     "Construct an Internal Developer Platform (IDP) enabling self-service infrastructure and service scaffolding. " +

@@ -23,8 +23,8 @@ export default {
   categoryId: "devops",
   slug: "cicd-enterprise-gitops-pipeline",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Enterprise GitOps Release Pipeline with GitHub Actions and ArgoCD",
   summary:
     "Build an end-to-end multi-environment delivery pipeline using GitHub Actions, Jenkins, and ArgoCD. " +

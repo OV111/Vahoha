@@ -23,8 +23,8 @@ export default {
   categoryId: "qa",
   slug: "security-qa-dast-vulnerability-suite",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Automated DAST & Security Regression Suite",
   summary:
     "Design and implement an automated web security testing framework using OWASP ZAP, Python, and Selenium/Playwright. " +

@@ -15,8 +15,8 @@ export default {
   categoryId: "fullstack",
   slug: "fullstack-engineer-service-desk",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Internal service desk",
   summary:
     "Build a full-stack service desk where users submit support requests, staff manage tickets, and " +

@@ -1539,9 +1539,199 @@
       ]
     },
     {
+      "id": "quantum-developer-11",
+      "title": "Beyond Qiskit: Cirq, PennyLane, and Amazon Braket",
+      "order": 9,
+      "techs": [
+        "Python",
+        "Cirq",
+        "PennyLane"
+      ],
+      "description": "Learn that quantum programs are not tied to one toolkit. You will build the same circuits in Cirq and PennyLane, see how each models circuits and gradients, and run on a second cloud provider through Amazon Braket.",
+      "topics": [
+        "Cirq circuits, moments and devices",
+        "PennyLane QNodes and automatic differentiation",
+        "Hybrid quantum-classical models with PennyLane",
+        "Amazon Braket devices and tasks",
+        "OpenQASM as an exchange format",
+        "Choosing an SDK for a project"
+      ],
+      "resources": [
+        {
+          "label": "Cirq Documentation",
+          "platform": "quantumai.google",
+          "type": "docs"
+        },
+        {
+          "label": "PennyLane Documentation",
+          "platform": "pennylane.ai",
+          "type": "docs"
+        },
+        {
+          "label": "Amazon Braket Developer Guide",
+          "platform": "docs.aws.amazon.com",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Implement the same Bell-state and Grover circuit in Qiskit, Cirq and PennyLane, compare the results on simulators, then run one of them on an Amazon Braket simulator and write a short comparison of the three APIs.",
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Cirq",
+          "children": [
+            {
+              "title": "Circuits and moments",
+              "description": "Cirq groups gates into moments that run in parallel, which makes circuit depth and scheduling explicit and easy to reason about.",
+              "resources": [
+                {
+                  "label": "Cirq documentation",
+                  "url": "https://quantumai.google/cirq",
+                  "type": "docs"
+                },
+                {
+                  "label": "Cirq - GitHub",
+                  "url": "https://github.com/quantumlib/Cirq",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Devices and noise",
+              "description": "Cirq lets you describe a device's qubit layout and add noise models, so you can test how a circuit behaves on realistic hardware.",
+              "resources": [
+                {
+                  "label": "Cirq documentation",
+                  "url": "https://quantumai.google/cirq",
+                  "type": "docs"
+                },
+                {
+                  "label": "Cirq - GitHub",
+                  "url": "https://github.com/quantumlib/Cirq",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "PennyLane",
+          "children": [
+            {
+              "title": "QNodes and differentiation",
+              "description": "A QNode wraps a quantum function as a callable that supports gradients, so quantum circuits can be trained with the same tools as neural networks.",
+              "resources": [
+                {
+                  "label": "PennyLane documentation",
+                  "url": "https://docs.pennylane.ai/en/stable/",
+                  "type": "docs"
+                },
+                {
+                  "label": "PennyLane QML demos",
+                  "url": "https://pennylane.ai/qml/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Hybrid models",
+              "description": "PennyLane connects with PyTorch and JAX, so a quantum circuit can be a layer inside a classical model.",
+              "resources": [
+                {
+                  "label": "PennyLane documentation",
+                  "url": "https://docs.pennylane.ai/en/stable/",
+                  "type": "docs"
+                },
+                {
+                  "label": "PennyLane QML demos",
+                  "url": "https://pennylane.ai/qml/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Amazon Braket",
+          "children": [
+            {
+              "title": "Devices and tasks",
+              "description": "Braket gives one SDK access to simulators and several hardware providers. You submit a circuit as a task and read the results when it finishes.",
+              "resources": [
+                {
+                  "label": "Amazon Braket Developer Guide",
+                  "url": "https://docs.aws.amazon.com/braket/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Amazon Braket SDK - GitHub",
+                  "url": "https://github.com/amazon-braket/amazon-braket-sdk-python",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Cost and simulators",
+              "description": "Hardware tasks are billed per task and per shot, so develop on simulators first and run on hardware only for final results.",
+              "resources": [
+                {
+                  "label": "Amazon Braket",
+                  "url": "https://aws.amazon.com/braket/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Amazon Braket Developer Guide",
+                  "url": "https://docs.aws.amazon.com/braket/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Portability",
+          "children": [
+            {
+              "title": "OpenQASM",
+              "description": "OpenQASM is a text format for circuits that most toolkits can import and export, which makes it the bridge between SDKs.",
+              "resources": [
+                {
+                  "label": "OpenQASM",
+                  "url": "https://openqasm.com/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Amazon Braket Developer Guide",
+                  "url": "https://docs.aws.amazon.com/braket/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Choosing an SDK",
+              "description": "Pick by target hardware, by the community and algorithms you need, and by whether you need gradients. Keep the circuit logic separate so you can switch later.",
+              "resources": [
+                {
+                  "label": "PennyLane documentation",
+                  "url": "https://docs.pennylane.ai/en/stable/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Cirq documentation",
+                  "url": "https://quantumai.google/cirq",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "quantum-developer-9",
       "title": "Quantum Software Engineering Patterns",
-      "order": 9,
+      "order": 10,
       "techs": [
         "Qiskit",
         "Python",
@@ -1733,7 +1923,7 @@
     {
       "id": "quantum-developer-10",
       "title": "End-to-End Quantum Application Development",
-      "order": 10,
+      "order": 11,
       "techs": [
         "Qiskit",
         "IBM Q",

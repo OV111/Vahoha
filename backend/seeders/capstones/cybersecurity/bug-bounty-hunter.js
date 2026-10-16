@@ -23,8 +23,8 @@ export default {
   categoryId: "cybersecurity",
   slug: "bug-bounty-hunter-recon-automation",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Automated Bug Bounty Recon Pipeline & Vulnerability Scanner",
   summary:
     "Build a Python security reconnaissance framework that automates passive/active subdomain enumeration, " +

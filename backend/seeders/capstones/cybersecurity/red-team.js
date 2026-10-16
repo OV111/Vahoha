@@ -23,8 +23,8 @@ export default {
   categoryId: "cybersecurity",
   slug: "red-team-c2-framework-and-emulation",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Custom Command & Control (C2) Framework & Adversary Emulation Suite",
   summary:
     "Build a custom Command & Control (C2) framework featuring an encrypted teamserver, HTTP/HTTPS beacon implants, " +

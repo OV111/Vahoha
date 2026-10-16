@@ -23,8 +23,8 @@ export default {
   categoryId: "gamedev",
   slug: "unity-dungeon-crawler",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "3D Action Dungeon Crawler in Unity URP",
   summary:
     "Build a 3D isometric dungeon crawler featuring physics-based movement, state-driven AI, " +

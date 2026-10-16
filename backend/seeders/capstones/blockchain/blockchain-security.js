@@ -25,8 +25,8 @@ export default {
   categoryId: "blockchain",
   slug: "blockchain-security-vault-audit",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Audit and harden a vulnerable token vault",
   summary:
     "Build a small intentionally vulnerable Solidity token vault, then perform a structured " +

@@ -19,8 +19,8 @@ export default {
   categoryId: "backend",
   slug: "security-dev-hardened-file-share",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Secure file-sharing service, threat-modelled and tested",
   summary:
     "Build a small file-sharing web service and secure it the way a security engineer would: threat " +

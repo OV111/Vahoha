@@ -25,8 +25,8 @@ export default {
   categoryId: "blockchain",
   slug: "move-developer-membership-dao",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Build a Move membership and proposal system",
   summary:
     "Build a Move-based membership system for a small on-chain organization. Members receive " +

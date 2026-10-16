@@ -23,8 +23,8 @@ export default {
   categoryId: "web3",
   slug: "dao-developer-governance-framework",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "On-Chain DAO Governance Framework & Treasury",
   summary:
     "Build a complete decentralized autonomous organization (DAO) governance system using OpenZeppelin Governor and ERC-20Votes. " +

@@ -5,6 +5,7 @@ import { getUserPlan } from "../../billing/index.js";
 import { saveChallengeResult } from "../../../services/challengeResultService.js";
 import { trackEvent } from "../../../services/eventService.js";
 import { awardXp } from "../../../services/xpService.js";
+import { pickSubmissionSource } from "../lib/submissionSource.js";
 
 /**
  * Submission grading.
@@ -33,7 +34,7 @@ export const matchesHiddenTests = (results, hiddenTests) =>
 const awardFor =(challenge, alreadySolved) =>
   alreadySolved ? 0 : (challenge.xp ?? 0);
 
-export const submitAttemptService = async (db, userId, attemptId) => {
+export const submitAttemptService = async (db, userId, attemptId, language) => {
   if (!ObjectId.isValid(attemptId)) {
     const err = new Error("Attempt not found");
     err.status = 404;
@@ -66,16 +67,12 @@ export const submitAttemptService = async (db, userId, attemptId) => {
   // Which file is graded, and the export name, come from the challenge's own
   // starter file, never from the attempt: the attempt is user-written, and the
   // export name is spliced into the harness as an identifier.
-  const mainFile = challenge.starterFiles?.[0]?.name ?? "";
-  const source = (attempt.code ?? []).find((f) => f.name === mainFile);
-  if (!source?.code?.trim()) {
-    const err = new Error("There is no code to submit yet.");
-    err.status = 400;
-    throw err;
-  }
-
+  // The learner may have written the solution in JavaScript or TypeScript; the
+  // file graded is the one for the chosen language, and TypeScript has its types
+  // removed here, before any quota is spent, so a syntax error costs nothing.
   // Export name is derived from the file name: asyncHandler.js -> asyncHandler.
-  const exportName = mainFile.replace(/\.[^.]+$/, "");
+  const picked = pickSubmissionSource(challenge, attempt.code, language);
+  const exportName = picked.exportName;
 
   // Check the runner BEFORE spending quota: if submissions are disabled (no
   // sandbox in production) the learner must not lose one of today's tries.
@@ -96,7 +93,7 @@ export const submitAttemptService = async (db, userId, attemptId) => {
   }
 
   const run = await runHiddenTests(
-    source.code,
+    picked.code,
     exportName,
     challenge.hiddenTests,
   );

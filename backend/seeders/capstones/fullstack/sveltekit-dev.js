@@ -15,8 +15,8 @@ export default {
   categoryId: "fullstack",
   slug: "sveltekit-dev-habit-garden",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Habit garden",
   summary:
     "Build a personal habit tracker where users create habits, record completions, and inspect progress: " +

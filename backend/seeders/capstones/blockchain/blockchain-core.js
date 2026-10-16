@@ -25,8 +25,8 @@ export default {
   categoryId: "blockchain",
   slug: "blockchain-core-payment-chain",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Build a minimal peer-to-peer blockchain",
   summary:
     "Build a small educational blockchain node in Rust that accepts transactions, " +

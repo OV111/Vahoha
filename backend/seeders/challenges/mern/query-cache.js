@@ -73,8 +73,12 @@ const f = async () => ++calls;
 await c.fetchQuery(['a'], f); await c.fetchQuery(['a'], f);
 assert(calls === 2, 'always refetch when staleTime is 0');` },
     { name: "concurrent_calls_share_one_fetch", code: `let calls = 0; const c = createQueryCache({ now: () => 0 });
-const f = () => new Promise((r) => setTimeout(() => { calls++; r('x'); }, 10));
-const results = await Promise.all([c.fetchQuery(['a'], f), c.fetchQuery(['a'], f), c.fetchQuery(['a'], f)]);
+const releases = [];
+const f = () => new Promise((r) => { calls++; releases.push(() => r('x')); });
+const pending = [c.fetchQuery(['a'], f), c.fetchQuery(['a'], f), c.fetchQuery(['a'], f)];
+for (let i = 0; i < 10; i++) await Promise.resolve();
+releases.forEach((release) => release());
+const results = await Promise.all(pending);
 assert(calls === 1, 'one request for three callers, got ' + calls);
 assert(results.join('') === 'xxx', 'all receive the data');` },
     { name: "different_keys_are_independent", code: `let calls = 0; const c = createQueryCache({ now: () => 0 });

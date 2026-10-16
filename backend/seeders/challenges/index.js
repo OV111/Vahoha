@@ -184,6 +184,48 @@ import renderShader from "./web-game/render-shader.js";
 import valueNoise from "./web-game/value-noise.js";
 import waveSurface from "./web-game/wave-surface.js";
 
+// Layers 8-10 (networking, asset pipeline, optimization)
+import validateMove from "./web-game/validate-move.js";
+import lobbyRooms from "./web-game/lobby-rooms.js";
+import snapshotInterpolation from "./web-game/snapshot-interpolation.js";
+import reconcilePrediction from "./web-game/reconcile-prediction.js";
+import splitChunks from "./web-game/split-chunks.js";
+import textureMemory from "./web-game/texture-memory.js";
+import assetManifestDiff from "./web-game/asset-manifest-diff.js";
+import textureAtlasPacker from "./web-game/texture-atlas-packer.js";
+import moduleLoadOrder from "./web-game/module-load-order.js";
+import frameTimeStats from "./web-game/frame-time-stats.js";
+import cacheControlPlanner from "./web-game/cache-control-planner.js";
+import frameBudgetScheduler from "./web-game/frame-budget-scheduler.js";
+import drawCallBatcher from "./web-game/draw-call-batcher.js";
+
+// mern layers 5-7, 9-10 (Node/Express, MongoDB, security, testing, deployment)
+import mernValidateBody from "./mern/validate-request-body.js";
+import parsePagination from "./mern/parse-pagination.js";
+import restResourceHandlers from "./mern/rest-resource-handlers.js";
+import miniExpressRouter from "./mern/mini-express-router.js";
+import atomicJsonStore from "./mern/atomic-json-store.js";
+import buildMongoFilter from "./mern/build-mongo-filter.js";
+import mongooseStyleSchema from "./mern/mongoose-style-schema.js";
+import applyUpdateOperators from "./mern/apply-update-operators.js";
+import matchMongoQuery from "./mern/match-mongo-query.js";
+import recommendIndex from "./mern/recommend-index.js";
+import checkPasswordPolicy from "./mern/check-password-policy.js";
+import validateJwtClaims from "./mern/validate-jwt-claims.js";
+import sanitizeRequestInput from "./mern/sanitize-request-input.js";
+import slidingWindowRateLimiter from "./mern/sliding-window-rate-limiter.js";
+import roleBasedAccessControl from "./mern/role-based-access-control.js";
+import createMockFn from "./mern/create-mock-fn.js";
+import mernDeepEqual from "./mern/deep-equal-matcher.js";
+import fakeClock from "./mern/fake-clock.js";
+import miniTestRunner from "./mern/mini-test-runner.js";
+import mergeCoverageReports from "./mern/merge-coverage-reports.js";
+import mernLoadConfig from "./mern/load-env-config.js";
+import parseDockerfile from "./mern/parse-dockerfile.js";
+import nextSemverVersion from "./mern/next-semver-version.js";
+import planCiPipeline from "./mern/plan-ci-pipeline.js";
+import lintDockerfile from "./mern/lint-dockerfile.js";
+
 export const challenges = [
   asyncErrorWrapper,
   streamingFileUpload,
@@ -352,4 +394,42 @@ export const challenges = [
   renderShader,
   valueNoise,
   waveSurface,
+  validateMove,
+  lobbyRooms,
+  snapshotInterpolation,
+  reconcilePrediction,
+  splitChunks,
+  textureMemory,
+  assetManifestDiff,
+  textureAtlasPacker,
+  moduleLoadOrder,
+  frameTimeStats,
+  cacheControlPlanner,
+  frameBudgetScheduler,
+  drawCallBatcher,
+  mernValidateBody,
+  parsePagination,
+  restResourceHandlers,
+  miniExpressRouter,
+  atomicJsonStore,
+  buildMongoFilter,
+  mongooseStyleSchema,
+  applyUpdateOperators,
+  matchMongoQuery,
+  recommendIndex,
+  checkPasswordPolicy,
+  validateJwtClaims,
+  sanitizeRequestInput,
+  slidingWindowRateLimiter,
+  roleBasedAccessControl,
+  createMockFn,
+  mernDeepEqual,
+  fakeClock,
+  miniTestRunner,
+  mergeCoverageReports,
+  mernLoadConfig,
+  parseDockerfile,
+  nextSemverVersion,
+  planCiPipeline,
+  lintDockerfile,
 ];

@@ -23,8 +23,8 @@ export default {
   categoryId: "cybersecurity",
   slug: "security-architect-zerotrust-blueprint",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Zero Trust Enterprise Reference Architecture & Guardrails",
   summary:
     "Design and validate an enterprise cloud security architecture featuring a Zero Trust network layout, " +

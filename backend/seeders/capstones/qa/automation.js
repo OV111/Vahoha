@@ -23,8 +23,8 @@ export default {
   categoryId: "qa",
   slug: "automation-e2e-testing-framework",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "End-to-End & API Test Automation Framework",
   summary:
     "Build an enterprise-grade automated testing suite using Python, Playwright, and Pytest. " +

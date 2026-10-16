@@ -23,8 +23,8 @@ export default {
   categoryId: "gamedev",
   slug: "game-backend-authoritative-multiplayer",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Authoritative Game Server, Matchmaking & Real-Time State Service",
   summary:
     "Build an authoritative real-time game server and microservice suite in Node.js and WebSockets, " +

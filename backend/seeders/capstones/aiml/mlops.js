@@ -23,8 +23,8 @@ export default {
   categoryId: "aiml",
   slug: "mlops-automated-retraining-pipeline",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Automated ML Pipeline, Drift Detection, and Deployment Platform",
   summary:
     "Build a production-grade MLOps infrastructure featuring data and model versioning with DVC, " +

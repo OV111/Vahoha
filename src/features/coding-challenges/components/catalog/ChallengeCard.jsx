@@ -5,7 +5,7 @@ import { formatTitle } from "../../lib/formatTitle";
 
 export default function ChallengeCard({ c, trackLabel = null }) {
   return (
-    <div className="relative overflow-hidden rounded-sm p-4 h-full flex flex-col gap-2.5 border border-[#1a1a1a] bg-[#0d0d0d] transition-colors hover:border-[#2a2a2a]">
+    <div className="relative overflow-hidden rounded-4xl p-4 h-full flex flex-col gap-2.5 border border-[#1a1a1a] bg-[#0d0d0d] transition-colors hover:border-[#2a2a2a]">
       {c.hot && (
         // Clipped to its own corner box so the band can never spill outside
         // the card or block clicks on what sits underneath.

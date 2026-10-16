@@ -15,8 +15,8 @@ export default {
   categoryId: "backend",
   slug: "java-spring-library-system",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Library lending system with Spring Boot",
   summary:
     "Build the backend for a lending library: members borrow and return books, librarians manage the " +

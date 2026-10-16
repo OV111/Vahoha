@@ -23,8 +23,8 @@ export default {
   categoryId: "gamedev",
   slug: "tools-dev-pipeline-suite",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Level Design Brush & Asset Pipeline Automation Suite",
   summary:
     "Build a custom Unity/Unreal editor extension and standalone PySide/Qt desktop tool for procedural " +

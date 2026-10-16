@@ -37,7 +37,7 @@ import { arenaTheme, arenaHighlight } from "../../lib/editorTheme";
  *    is baked into the EditorState at construction, so a stale closure would
  *    otherwise keep calling the first render's handler forever.
  */
-export default function CodeEditor({ value, onChange, readOnly = false }) {
+export default function CodeEditor({ value, onChange, readOnly = false, typescript = false }) {
   const host = useRef(null);
   const view = useRef(null);
   const onChangeRef = useRef(onChange);
@@ -58,7 +58,7 @@ export default function CodeEditor({ value, onChange, readOnly = false }) {
         bracketMatching(),
         indentOnInput(),
         indentUnit.of("  "),
-        javascript(),
+        javascript({ typescript }),
         arenaHighlight,
         arenaTheme,
         // indentWithTab last so Tab indents instead of leaving the editor.
@@ -80,8 +80,9 @@ export default function CodeEditor({ value, onChange, readOnly = false }) {
       view.current?.destroy();
       view.current = null;
     };
-    // Rebuilt only when the read-only mode flips — switching files remounts
-    // this component via its key, so `value` is intentionally not a dependency.
+    // Rebuilt only when the read-only mode flips — switching files (and so the
+    // language) remounts this component via its key, so `value` and `typescript`
+    // are intentionally not dependencies.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [readOnly]);
 

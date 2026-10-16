@@ -23,8 +23,8 @@ export default {
   categoryId: "cybersecurity",
   slug: "appsec-engineer-devsecops-pipeline",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Automated DevSecOps Pipeline & Secure Software Gateway",
   summary:
     "Build an automated DevSecOps pipeline integration containing custom Semgrep SAST rules, container scanning, " +

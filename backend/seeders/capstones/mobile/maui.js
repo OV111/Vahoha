@@ -24,8 +24,8 @@ export default {
   categoryId: "mobile",
   slug: "maui-field-service-log",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Offline field service log",
   summary:
     "Build a .NET MAUI app for technicians to record field-service jobs, work notes and completion status. The app must remain usable without connectivity, persist jobs locally, synchronize with a REST API when possible and demonstrate clean MVVM, binding, navigation and platform-aware behaviour.",

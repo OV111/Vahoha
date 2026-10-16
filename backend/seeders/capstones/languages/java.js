@@ -23,8 +23,8 @@ export default {
   categoryId: "languages",
   slug: "java-financial-ledger-service",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Multi-Threaded Financial Transaction Processing Engine",
   summary:
     "Build a production-grade multi-threaded financial ledger and audit service in modern Java 21+. " +

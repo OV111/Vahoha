@@ -23,8 +23,8 @@ export default {
   categoryId: "languages",
   slug: "c-networked-key-value-store",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Multi-Process Concurrent In-Memory Cache & Storage Server",
   summary:
     "Build a low-level concurrent network cache server in POSIX C. " +

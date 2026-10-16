@@ -23,8 +23,8 @@ export default {
   categoryId: "quantum",
   slug: "quantum-algorithms-suite",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Quantum Algorithm Evaluation and Resource Estimation Suite",
   summary:
     "Build an algorithmic benchmarking engine that implements core quantum algorithms (QFT, Grover, Phase Estimation, and HHL), " +

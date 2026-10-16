@@ -23,8 +23,8 @@ export default {
   categoryId: "aiml",
   slug: "nlp-engineer-document-intelligence",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Document Intelligence and Domain NER Fine-Tuning Service",
   summary:
     "Build a production document processing system that fine-tunes a domain-specific Transformer model " +

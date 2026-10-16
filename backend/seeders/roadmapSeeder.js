@@ -77,12 +77,17 @@ const buildDocs = async (trackMeta) => {
         layerCount: layers.length,
       });
 
-      for (const layer of layers) {
+      layers.forEach((layer, index) => {
         layerDocs.push({
           layerId: layer.id,
           trackId,
           categoryId: meta?.categoryId ?? categoryId,
           order: layer.order,
+          // Optional graph fields. Authoring them is opt-in: a layer with none
+          // behaves exactly as before (needs the previous layer, is required).
+          requires: layer.requires ?? (index > 0 ? [layers[index - 1].id] : []),
+          required: layer.required !== false,
+          stage: layer.stage ?? null,
           title: layer.title,
           description: layer.description ?? "",
           techs: layer.techs ?? [],
@@ -93,7 +98,7 @@ const buildDocs = async (trackMeta) => {
           practicePrompt: layer.challenge ?? null,
           estimatedTime: layer.estimatedTime ?? null,
         });
-      }
+      });
     }
   }
 

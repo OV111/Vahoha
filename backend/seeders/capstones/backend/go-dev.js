@@ -15,8 +15,8 @@ export default {
   categoryId: "backend",
   slug: "go-dev-inventory-service",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Inventory service with concurrent stock reservations",
   summary:
     "Build a Go service that tracks product stock across warehouses and lets other services reserve " +

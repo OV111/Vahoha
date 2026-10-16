@@ -24,8 +24,8 @@ export default {
   categoryId: "mobile",
   slug: "android-pantry-inventory",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Offline pantry inventory",
   summary:
     "Build a native Android pantry inventory app where users track household food, quantities and expiration dates. The app must work offline, persist structured data locally, synchronize with a REST API when available and expose clear state-driven UI. The implementation should demonstrate modern Compose architecture rather than concentrating all logic inside composables.",

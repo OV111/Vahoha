@@ -23,7 +23,7 @@ export const getHistory = async (req, res) => {
     res.json({ history });
   } catch (err) {
     console.error("getHistory error:", err);
-    res.status(500).json({ message: "Failed to fetch exam history" });
+    res.status(500).json({ message: "Failed to fetch test history" });
   }
 };
 
@@ -35,7 +35,7 @@ export const getLastExamResult = async (req, res) => {
     res.json({ exam: last ?? null });
   } catch (err) {
     console.error("getLastExam error:", err);
-    res.status(500).json({ message: "Failed to fetch last exam" });
+    res.status(500).json({ message: "Failed to fetch last test" });
   }
 };
 

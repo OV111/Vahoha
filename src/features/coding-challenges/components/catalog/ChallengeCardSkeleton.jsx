@@ -7,7 +7,7 @@
  */
 export default function ChallengeCardSkeleton() {
   return (
-    <div className="relative overflow-hidden rounded-sm p-4 h-full flex flex-col gap-2.5 border border-[#1a1a1a] bg-[#0d0d0d] animate-pulse">
+    <div className="relative overflow-hidden rounded-4xl p-4 h-full flex flex-col gap-2.5 border border-[#1a1a1a] bg-[#0d0d0d] animate-pulse">
       <div className="flex items-center gap-2">
         <div className="h-3 w-24 rounded-sm bg-[#1a1a1a]" />
         <div className="h-4 w-12 rounded-sm bg-[#1a1a1a]" />

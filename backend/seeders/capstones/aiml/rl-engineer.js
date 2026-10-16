@@ -23,8 +23,8 @@ export default {
   categoryId: "aiml",
   slug: "rl-engineer-autonomous-control-system",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Autonomous Agent Control Platform and Distributed RL System",
   summary:
     "Develop a complete Reinforcement Learning training and evaluation system. You will create a custom " +

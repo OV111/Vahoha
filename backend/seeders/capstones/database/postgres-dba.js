@@ -23,8 +23,8 @@ export default {
   categoryId: "database",
   slug: "postgres-dba-ha-cluster",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "High-Availability PostgreSQL Cluster with Failover and PITR",
   summary:
     "Design and deploy a production-grade PostgreSQL cluster with automated failover, streaming replication, " +

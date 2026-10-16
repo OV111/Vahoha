@@ -23,8 +23,8 @@ export default {
   categoryId: "cloud",
   slug: "multi-cloud-architect-cross-cloud-mesh",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Multi-Cloud Kubernetes & Disaster Recovery Platform",
   summary:
     "Design and provision a resilient, multi-cloud platform across AWS (EKS) and Azure (AKS) using Terraform. " +

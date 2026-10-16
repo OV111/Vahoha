@@ -2473,9 +2473,199 @@
       ]
     },
     {
+      "id": "unreal-11",
+      "title": "Unreal C++ Gameplay Framework, Subsystems, and Delegates",
+      "order": 4,
+      "techs": [
+        "Unreal Engine",
+        "C++",
+        "Blueprints"
+      ],
+      "description": "Go beyond basic Unreal C++ and learn how a project is actually structured. You will use GameMode, GameState and PlayerController correctly, write subsystems for shared services, communicate with delegates, and load assets asynchronously.",
+      "topics": [
+        "GameMode, GameState, PlayerController and PlayerState",
+        "Components and composition over inheritance",
+        "Subsystems for game-wide services",
+        "Delegates and event dispatchers",
+        "Data assets and data-driven gameplay",
+        "Asynchronous asset loading and soft references"
+      ],
+      "resources": [
+        {
+          "label": "Unreal Engine C++ Programming Guide",
+          "platform": "dev.epicgames.com",
+          "type": "docs"
+        },
+        {
+          "label": "Gameplay Framework",
+          "platform": "dev.epicgames.com",
+          "type": "docs"
+        },
+        {
+          "label": "Unreal Engine C++ community tutorials",
+          "platform": "dev.epicgames.com",
+          "type": "article"
+        }
+      ],
+      "challenge": "Build a small game with an inventory: a UGameInstanceSubsystem that owns item data, a component on the player that talks to it through delegates, items defined as data assets, and icons loaded asynchronously through soft references.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Framework",
+          "children": [
+            {
+              "title": "Where each class belongs",
+              "description": "GameMode holds rules on the server, GameState holds shared match state, PlayerController handles input, and PlayerState holds per-player data that other players can see.",
+              "resources": [
+                {
+                  "label": "Gameplay Framework",
+                  "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-framework-in-unreal-engine",
+                  "type": "docs"
+                },
+                {
+                  "label": "Programming with C++",
+                  "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cplusplus-in-unreal-engine",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Components over inheritance",
+              "description": "Put reusable behavior like health or inventory in actor components and attach them to any actor, instead of building deep class hierarchies.",
+              "resources": [
+                {
+                  "label": "Programming with C++",
+                  "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cplusplus-in-unreal-engine",
+                  "type": "docs"
+                },
+                {
+                  "label": "Gameplay Framework",
+                  "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-framework-in-unreal-engine",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Services",
+          "children": [
+            {
+              "title": "Subsystems",
+              "description": "A subsystem is an automatically created object with the lifetime of the engine, game instance, world or local player. It replaces most singletons.",
+              "resources": [
+                {
+                  "label": "Programming Subsystems",
+                  "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-subsystems-in-unreal-engine",
+                  "type": "docs"
+                },
+                {
+                  "label": "Programming with C++",
+                  "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cplusplus-in-unreal-engine",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Choosing a subsystem type",
+              "description": "Match the subsystem to the data it manages: game instance for save data, world for per-level services, local player for per-user UI state.",
+              "resources": [
+                {
+                  "label": "Programming Subsystems",
+                  "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-subsystems-in-unreal-engine",
+                  "type": "docs"
+                },
+                {
+                  "label": "Gameplay Framework",
+                  "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-framework-in-unreal-engine",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Communication",
+          "children": [
+            {
+              "title": "Delegates",
+              "description": "Delegates let one object announce an event without knowing who listens. Dynamic multicast delegates can also be bound in Blueprints.",
+              "resources": [
+                {
+                  "label": "Programming with C++",
+                  "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cplusplus-in-unreal-engine",
+                  "type": "docs"
+                },
+                {
+                  "label": "Unreal community",
+                  "url": "https://dev.epicgames.com/community/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Avoiding tight coupling",
+              "description": "Prefer delegates and interfaces over direct references between systems, so UI, gameplay and audio can change independently.",
+              "resources": [
+                {
+                  "label": "Gameplay Framework",
+                  "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-framework-in-unreal-engine",
+                  "type": "docs"
+                },
+                {
+                  "label": "Unreal community",
+                  "url": "https://dev.epicgames.com/community/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Data and Loading",
+          "children": [
+            {
+              "title": "Data assets",
+              "description": "A data asset stores designer-editable data such as item stats outside the code, so changing a value does not need a recompile.",
+              "resources": [
+                {
+                  "label": "Programming with C++",
+                  "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cplusplus-in-unreal-engine",
+                  "type": "docs"
+                },
+                {
+                  "label": "Unreal community",
+                  "url": "https://dev.epicgames.com/community/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Soft references and async loading",
+              "description": "A soft reference names an asset without loading it. Load it asynchronously when needed so the game does not hitch and memory stays low.",
+              "resources": [
+                {
+                  "label": "Unreal community",
+                  "url": "https://dev.epicgames.com/community/",
+                  "type": "article"
+                },
+                {
+                  "label": "Programming with C++",
+                  "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cplusplus-in-unreal-engine",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "unreal-4",
       "title": "Collisions and Physics",
-      "order": 4,
+      "order": 5,
       "techs": [
         "C++",
         "Unreal Engine",
@@ -2665,7 +2855,7 @@
     {
       "id": "unreal-5",
       "title": "UI with UMG",
-      "order": 5,
+      "order": 6,
       "techs": [
         "Unreal Engine",
         "UMG",
@@ -2855,7 +3045,7 @@
     {
       "id": "unreal-6",
       "title": "Animation and Skeletal Meshes",
-      "order": 6,
+      "order": 7,
       "techs": [
         "Unreal Engine",
         "Animation Blueprint",
@@ -3045,7 +3235,7 @@
     {
       "id": "unreal-7",
       "title": "Materials and Nanite",
-      "order": 7,
+      "order": 8,
       "techs": [
         "Unreal Engine",
         "Nanite",
@@ -3235,7 +3425,7 @@
     {
       "id": "unreal-8",
       "title": "Gameplay Ability System",
-      "order": 8,
+      "order": 9,
       "techs": [
         "C++",
         "Unreal Engine",
@@ -3425,7 +3615,7 @@
     {
       "id": "unreal-9",
       "title": "Multiplayer and Replication",
-      "order": 9,
+      "order": 10,
       "techs": [
         "C++",
         "Unreal Engine",
@@ -3615,7 +3805,7 @@
     {
       "id": "unreal-10",
       "title": "Packaging and Optimization",
-      "order": 10,
+      "order": 11,
       "techs": [
         "Unreal Engine",
         "Insights",

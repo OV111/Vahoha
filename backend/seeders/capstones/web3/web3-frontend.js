@@ -23,8 +23,8 @@ export default {
   categoryId: "web3",
   slug: "web3-frontend-token-dashboard",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Multi-Chain Portfolio & Token Swap Dashboard",
   summary:
     "Build a Web3 frontend application using viem, wagmi, and RainbowKit. " +

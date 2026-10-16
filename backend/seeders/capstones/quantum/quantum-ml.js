@@ -23,8 +23,8 @@ export default {
   categoryId: "quantum",
   slug: "quantum-ml-classification-pipeline",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Hybrid Quantum-Classical Classification Platform",
   summary:
     "Develop a hybrid quantum machine learning framework in PennyLane that trains variational quantum classifiers (VQC) " +

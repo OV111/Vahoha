@@ -15,8 +15,8 @@ export default {
   categoryId: "backend",
   slug: "rust-dev-paste-service",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Async paste and snippet service",
   summary:
     "Build a Pastebin-style service in Rust: users store code snippets, share them by link and set " +

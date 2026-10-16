@@ -17,6 +17,7 @@ import RightPanel from "./components/arena/RightPanel";
 import ActionBar from "./components/arena/ActionBar";
 import SolvedPanel from "./components/arena/SolvedPanel";
 import ArenaTour from "./components/ArenaTour";
+import { DEFAULT_LANGUAGE, isChallengeLanguage } from "../../../constants/challengeLanguages";
 
 const MOBILE_TABS = [
   { key: "problem", label: "Problem" },
@@ -52,8 +53,30 @@ export default function ChallengeArena() {
     return clearChallenge;
   }, [slug, loadChallenge, clearChallenge, startAttempt]);
 
-  const { files, updateFile, saveNow } = useArenaFiles({ challenge, attempt, saveDraft });
+  // JavaScript or TypeScript, remembered across challenges. Storage can throw
+  // (private mode), so it is only ever a convenience.
+  const [language, setLanguage] = useState(() => {
+    try {
+      const saved = localStorage.getItem("arena:language");
+      return isChallengeLanguage(saved) ? saved : DEFAULT_LANGUAGE;
+    } catch {
+      return DEFAULT_LANGUAGE;
+    }
+  });
+
+  const { files, updateFile, saveNow } = useArenaFiles({ challenge, attempt, saveDraft, language });
   const { submit: runSubmit, submitting, verdict, setVerdict } = useArenaSubmit(submitAttempt);
+
+  const changeLanguage = (next) => {
+    // A verdict belongs to the code that was graded, in the language it was written.
+    setVerdict(null);
+    setLanguage(next);
+    try {
+      localStorage.setItem("arena:language", next);
+    } catch {
+      /* not persisted */
+    }
+  };
   const { hints, buyHint } = useArenaHints({ challenge, attempt, revealHint });
 
   // Remembered across challenges: someone who hides the hints wants them
@@ -104,7 +127,7 @@ export default function ChallengeArena() {
   const [showSolved, setShowSolved] = useState(true);
   const submit = async () => {
     setShowSolved(true);
-    await runSubmit();
+    await runSubmit(language);
   };
 
   // The mentor reads the saved attempt, so save first or it sees stale code.
@@ -219,7 +242,13 @@ export default function ChallengeArena() {
         </div>
 
         <div data-pane="code" data-tour="arena-code" className="h-full overflow-hidden flex flex-col" style={{ borderRight: `1px solid ${C.border}` }}>
-          <CodePanel key={challenge.slug} files={files} onChangeFile={handleChangeFile} />
+          <CodePanel
+            key={challenge.slug}
+            files={files}
+            onChangeFile={handleChangeFile}
+            language={language}
+            onLanguageChange={changeLanguage}
+          />
         </div>
 
         <div data-pane="side" className="relative h-full overflow-hidden flex flex-col">

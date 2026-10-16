@@ -23,8 +23,8 @@ export default {
   categoryId: "languages",
   slug: "swift-vapor-async-service",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Server-Side Swift Async Task & Notification Backend",
   summary:
     "Build a production-grade server-side REST API service using Vapor in modern Swift 5.10+/6. " +

@@ -23,8 +23,8 @@ export default {
   categoryId: "gamedev",
   slug: "web-game-threejs-space-runner",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "3D WebGL Space Runner in Three.js and WebGL",
   summary:
     "Build a 3D WebGL endless space runner featuring Three.js rendering, custom GLSL fragment shaders, " +

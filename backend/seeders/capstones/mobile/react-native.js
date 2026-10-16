@@ -24,8 +24,8 @@ export default {
   categoryId: "mobile",
   slug: "react-native-personal-expense-tracker",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Offline-first personal expense tracker",
   summary:
     "Build a mobile expense tracker that works reliably without a network connection: users record expenses, browse and filter their history, see spending totals and sync changes when the API becomes available. The app must feel like a real mobile product, with deliberate navigation, persisted state, native device integration and tests that do not require an emulator.",

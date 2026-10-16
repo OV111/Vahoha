@@ -23,8 +23,8 @@ export default {
   categoryId: "cloud",
   slug: "cloud-native-microservices-platform",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "GitOps-Driven Microservices Platform on Kubernetes with Istio",
   summary:
     "Build a production-grade Kubernetes microservices platform using modern cloud-native patterns. " +

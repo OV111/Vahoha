@@ -23,8 +23,8 @@ export default {
   categoryId: "aiml",
   slug: "ml-engineer-churn-prediction-system",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Production Customer Churn Prediction and Inference Pipeline",
   summary:
     "Build an end-to-end Machine Learning pipeline that trains, logs, optimizes, and serves " +

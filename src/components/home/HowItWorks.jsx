@@ -80,7 +80,7 @@ const TO = {
 
 const MOBILE_STEPS = [
   { to: TO.root, title: "Pick a path", body: "Choose your track.", icon: MapIcon },
-  { to: TO.study, title: "Study the layer", body: "10 layers in a track.", icon: BookOpen },
+  { to: TO.study, title: "Study the layer", body: "One layer at a time, in order.", icon: BookOpen },
   { to: TO.practice, title: "Practice it", body: "Solve real coding challenges.", icon: Code2 },
   { to: TO.voice, title: "Explain it back", body: "Say it out loud. Your mentor checks you get it.", icon: Mic, soon: true },
   { to: TO.exam, title: "Exam", body: "Test what you learned.", icon: ClipboardCheck },
@@ -491,7 +491,7 @@ const HowItWorks = () => {
           <Circle at={N.root} to={TO.root} label="Pick a path" sub="Choose your track." active={started} inView={appeared} delay={0}>
             <MapIcon size={22} aria-hidden="true" />
           </Circle>
-          <Circle at={N.study} to={TO.study} label="Study the layer" sub="10 layers in a track." active={studied} inView={appeared} delay={0.3}>
+          <Circle at={N.study} to={TO.study} label="Study the layer" sub="One layer at a time, in order." active={studied} inView={appeared} delay={0.3}>
             <BookOpen size={22} aria-hidden="true" />
           </Circle>
           <Circle at={N.practice} to={TO.practice} label="Practice it" sub="Solve real coding challenges." active={practiced} inView={appeared} delay={0.5}>

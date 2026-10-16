@@ -23,8 +23,8 @@ export default {
   categoryId: "datascience",
   slug: "data-architect-enterprise-platform-design",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Enterprise Data Platform Architecture and Governance Framework",
   summary:
     "Design a scalable enterprise data lakehouse platform architecture: produce formal Architecture Decision Records (ADRs), " +

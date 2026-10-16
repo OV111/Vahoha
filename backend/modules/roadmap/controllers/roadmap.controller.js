@@ -4,7 +4,7 @@ import {
   updateUserProgress,
 } from "../../../services/userProgressService.js";
 import { trackEvent } from "../../../services/eventService.js";
-import { sanitizeLayerProgress, doneLayerIds } from "../services/layerProgress.js";
+import { sanitizeLayerProgress, doneLayerIds } from "../../../services/layerProgress.js";
 
 export const getProgress = async (req, res) => {
   try {

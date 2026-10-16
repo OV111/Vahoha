@@ -15,8 +15,8 @@ export default {
   categoryId: "fullstack",
   slug: "jamstack-conference-site",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Conference content site",
   summary:
     "Build a content-driven conference website using JAMstack techniques: a React interface with Next.js " +

@@ -15,8 +15,8 @@ export default {
   categoryId: "fullstack",
   slug: "pern-expense-planner",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Shared expense planner",
   summary:
     "Build a full-stack expense planner where users can create groups, record expenses, split costs, and " +

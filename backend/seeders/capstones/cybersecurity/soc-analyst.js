@@ -23,8 +23,8 @@ export default {
   categoryId: "cybersecurity",
   slug: "soc-analyst-detection-triage-siem",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "SOC Incident Triage Pipeline & SIEM Detection Suite",
   summary:
     "Build a automated SOC incident triage platform that ingests multi-source logs, parses intrusion alerts, " +

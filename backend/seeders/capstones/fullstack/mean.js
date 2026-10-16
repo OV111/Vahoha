@@ -15,8 +15,8 @@ export default {
   categoryId: "fullstack",
   slug: "mean-event-hub",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Community event hub",
   summary:
     "Build a full-stack community event hub where users discover events, register for them, and manage " +

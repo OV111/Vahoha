@@ -25,8 +25,8 @@ export default {
   categoryId: "blockchain",
   slug: "smart-contract-testnet-escrow",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Build a trust-minimized milestone escrow",
   summary:
     "Build a Solidity escrow protocol for milestone-based payments where funds are " +

@@ -23,8 +23,8 @@ export default {
   categoryId: "qa",
   slug: "sdet-enterprise-automation-framework",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Enterprise Test Engineering Framework & Quality Pipeline",
   summary:
     "Build a production-grade test engineering framework in Java using Selenium, REST Assured, and Cucumber BDD. " +

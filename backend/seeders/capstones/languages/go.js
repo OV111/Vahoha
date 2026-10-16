@@ -23,8 +23,8 @@ export default {
   categoryId: "languages",
   slug: "go-concurrent-job-scheduler",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "High-Throughput Concurrent Task Queue & Worker Pool Engine",
   summary:
     "Build a production-ready concurrent job execution engine in Go. The system handles task submission, " +

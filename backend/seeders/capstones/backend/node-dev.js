@@ -14,8 +14,8 @@ export default {
   categoryId: "backend",
   slug: "node-dev-link-shortener",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Link shortener with click analytics",
   summary:
     "Build a production-style URL shortener: fast redirects served from a cache, clicks recorded " +

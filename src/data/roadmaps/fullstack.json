@@ -1,4 +1,2852 @@
 {
+  "frontend-dev": [
+    {
+      "id": "frontend-dev-1",
+      "title": "How the Web Works and Semantic HTML",
+      "order": 1,
+      "techs": [
+        "HTML",
+        "HTTP",
+        "DevTools"
+      ],
+      "description": "Understand what happens between typing a URL and seeing a page, then write HTML that describes content meaningfully. Semantic structure is the base for accessibility, SEO and every layer after this one.",
+      "topics": [
+        "Browsers, URLs, DNS and HTTP requests",
+        "Document structure and the HTML element model",
+        "Semantic elements: header, nav, main, article, section, footer",
+        "Headings, lists, links, images and media",
+        "Forms and native input types",
+        "Browser DevTools: Elements and Network panels"
+      ],
+      "resources": [
+        {
+          "label": "web.dev Learn HTML",
+          "platform": "web.dev",
+          "type": "docs"
+        },
+        {
+          "label": "MDN - HTML",
+          "platform": "developer.mozilla.org",
+          "type": "docs"
+        },
+        {
+          "label": "HTML for People",
+          "platform": "htmlforpeople.com",
+          "type": "article"
+        }
+      ],
+      "challenge": "Build a plain-HTML personal profile page with no CSS and no JavaScript: a correct heading outline, a navigation list, an article with an image and caption, and a contact form. Check it with the browser's accessibility tree and an HTML validator.",
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "How the Web Works",
+          "children": [
+            {
+              "title": "The request and response cycle",
+              "description": "A URL is resolved by DNS to an address, the browser sends an HTTP request and the server replies with a status code, headers and a body. Knowing this makes network errors much easier to debug.",
+              "resources": [
+                {
+                  "label": "MDN - How the web works",
+                  "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - HTTP overview",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "DevTools Network panel",
+              "description": "The Network panel shows every request a page makes, with timing, headers and payloads. It is the first place to look when something loads slowly or fails.",
+              "resources": [
+                {
+                  "label": "Chrome DevTools Network",
+                  "url": "https://developer.chrome.com/docs/devtools/network",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - HTTP",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Document Structure",
+          "children": [
+            {
+              "title": "Elements, attributes and the DOM tree",
+              "description": "Browsers parse HTML into a tree of elements. Nesting rules and valid attributes decide how that tree is built, and a malformed document is silently repaired in ways you did not intend.",
+              "resources": [
+                {
+                  "label": "MDN - HTML elements reference",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev Learn HTML",
+                  "url": "https://web.dev/learn/html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Metadata and the head",
+              "description": "The head holds the title, character set, viewport and social metadata. A missing viewport tag is why a page looks tiny on a phone.",
+              "resources": [
+                {
+                  "label": "MDN - Document metadata",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev Learn HTML",
+                  "url": "https://web.dev/learn/html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Semantics",
+          "children": [
+            {
+              "title": "Landmark elements",
+              "description": "header, nav, main, article, aside and footer tell browsers and assistive tools what each region is. Prefer them over generic divs wherever a region has a meaning.",
+              "resources": [
+                {
+                  "label": "MDN - HTML sections",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/main",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev - Semantic HTML",
+                  "url": "https://web.dev/learn/html/semantic-html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Headings and document outline",
+              "description": "Headings form the outline that screen reader users navigate by. Use one h1 per page and never skip levels just to get a smaller font.",
+              "resources": [
+                {
+                  "label": "MDN - Heading elements",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev Learn HTML",
+                  "url": "https://web.dev/learn/html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Forms and Media",
+          "children": [
+            {
+              "title": "Native form controls",
+              "description": "Labeled inputs, buttons and the built-in input types give you validation, keyboards on mobile and accessibility for free. Reach for them before building a custom control.",
+              "resources": [
+                {
+                  "label": "MDN - Web forms",
+                  "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev Learn Forms",
+                  "url": "https://web.dev/learn/forms",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Images, video and alt text",
+              "description": "Every informative image needs a text alternative, and decorative ones need an empty alt. Use the picture element and srcset to serve the right size.",
+              "resources": [
+                {
+                  "label": "MDN - Responsive images",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Responsive_images",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev Learn Images",
+                  "url": "https://web.dev/learn/images",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frontend-dev-2",
+      "title": "CSS Foundations: Cascade, Box Model, and Typography",
+      "order": 2,
+      "techs": [
+        "CSS",
+        "DevTools"
+      ],
+      "description": "Learn how CSS decides which rule wins and how every element becomes a box. Most CSS bugs come from the cascade, specificity or the box model, so this layer is about understanding them rather than memorizing properties.",
+      "topics": [
+        "Selectors, specificity and the cascade",
+        "Inheritance and the computed value",
+        "The box model: content, padding, border, margin",
+        "Units: px, rem, em, %, vw and the clamp function",
+        "Typography, web fonts and line length",
+        "Custom properties (CSS variables) and color"
+      ],
+      "resources": [
+        {
+          "label": "web.dev Learn CSS",
+          "platform": "web.dev",
+          "type": "docs"
+        },
+        {
+          "label": "MDN - CSS",
+          "platform": "developer.mozilla.org",
+          "type": "docs"
+        },
+        {
+          "label": "CSS for JavaScript Developers",
+          "platform": "css-for-js.dev",
+          "type": "article"
+        }
+      ],
+      "challenge": "Style the profile page from the last layer using only CSS you wrote: a type scale built on rem and custom properties, light and dark color themes switched with one attribute, and a stylesheet where no rule needs !important or an ID selector.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "The Cascade",
+          "children": [
+            {
+              "title": "Specificity and source order",
+              "description": "When two rules target the same element, specificity decides first and source order second. Keeping selectors flat and low-specificity avoids most override fights.",
+              "resources": [
+                {
+                  "label": "MDN - Specificity",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - The cascade",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Cascade",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Inheritance and cascade layers",
+              "description": "Some properties inherit and some do not. Cascade layers let you order whole groups of rules, such as resets, components and utilities, without raising specificity.",
+              "resources": [
+                {
+                  "label": "MDN - Inheritance",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Inheritance",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - @layer",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@layer",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "The Box Model",
+          "children": [
+            {
+              "title": "Content, padding, border and margin",
+              "description": "Every element is a rectangular box with four layers. box-sizing: border-box makes widths include padding and border, which is what you almost always want.",
+              "resources": [
+                {
+                  "label": "MDN - The box model",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_box_model/Introduction_to_the_CSS_box_model",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev Learn CSS - Box model",
+                  "url": "https://web.dev/learn/css/box-model",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Margin collapse",
+              "description": "Vertical margins between block elements can merge into one. Knowing when it happens explains spacing that seems to ignore your values.",
+              "resources": [
+                {
+                  "label": "MDN - Mastering margin collapsing",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_box_model/Mastering_margin_collapsing",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev Learn CSS",
+                  "url": "https://web.dev/learn/css",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Typography and Units",
+          "children": [
+            {
+              "title": "rem, em and fluid sizing",
+              "description": "rem scales with the user's font setting, which respects accessibility preferences. clamp lets a size grow smoothly between a minimum and a maximum without breakpoints.",
+              "resources": [
+                {
+                  "label": "MDN - CSS values and units",
+                  "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Values_and_units",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - clamp()",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/clamp",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Web fonts and readability",
+              "description": "Limit line length to a readable measure, give text enough line height and load fonts with font-display so text never stays invisible.",
+              "resources": [
+                {
+                  "label": "MDN - Web fonts",
+                  "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Text_styling/Web_fonts",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev Learn CSS - Typography",
+                  "url": "https://web.dev/learn/css",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Variables and Color",
+          "children": [
+            {
+              "title": "Custom properties",
+              "description": "CSS variables are live values that cascade, so changing one on a parent restyles everything inside it. They are the basis for themes and design tokens.",
+              "resources": [
+                {
+                  "label": "MDN - Custom properties",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev Learn CSS",
+                  "url": "https://web.dev/learn/css",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Color and contrast",
+              "description": "Choose colors with enough contrast against their background for readable text. Modern color functions such as oklch make predictable palettes easier.",
+              "resources": [
+                {
+                  "label": "MDN - CSS colors",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_colors",
+                  "type": "docs"
+                },
+                {
+                  "label": "WebAIM Contrast Checker",
+                  "url": "https://webaim.org/resources/contrastchecker/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frontend-dev-3",
+      "title": "Responsive Layout: Flexbox, Grid, and Container Queries",
+      "order": 3,
+      "techs": [
+        "CSS",
+        "Flexbox",
+        "Grid"
+      ],
+      "description": "Build layouts that work from a phone to a wide monitor. Flexbox arranges items in one dimension, Grid in two, and media and container queries adapt the design to the space it actually has.",
+      "topics": [
+        "Normal flow, display and positioning",
+        "Flexbox: axes, alignment, wrapping and sizing",
+        "CSS Grid: tracks, areas, auto-fit and minmax",
+        "Mobile-first design and media queries",
+        "Container queries and intrinsic layouts",
+        "Responsive images and the viewport"
+      ],
+      "resources": [
+        {
+          "label": "web.dev Learn Responsive Design",
+          "platform": "web.dev",
+          "type": "docs"
+        },
+        {
+          "label": "A Complete Guide to Flexbox",
+          "platform": "css-tricks.com",
+          "type": "article"
+        },
+        {
+          "label": "Every Layout",
+          "platform": "every-layout.dev",
+          "type": "book"
+        }
+      ],
+      "challenge": "Build a dashboard page that is usable at 320px and 1400px wide using one HTML file: a Grid page layout, a Flexbox toolbar, a card grid that reflows without a single media query, and a component that restyles itself with a container query.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Flexbox",
+          "children": [
+            {
+              "title": "Main axis and cross axis",
+              "description": "Flexbox works along a main axis and a cross axis. justify-content aligns along the main axis and align-items along the cross, which swap when you change direction.",
+              "resources": [
+                {
+                  "label": "MDN - Flexbox",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox",
+                  "type": "docs"
+                },
+                {
+                  "label": "CSS-Tricks - Flexbox guide",
+                  "url": "https://css-tricks.com/snippets/css/a-guide-to-flexbox/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "flex-grow, shrink and basis",
+              "description": "These three values decide how items share free space or give it up. Learning flex: 1 and min-width: 0 fixes most overflow surprises.",
+              "resources": [
+                {
+                  "label": "MDN - Controlling flex item ratios",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Controlling_ratios_of_flex_items_along_the_main_axis",
+                  "type": "docs"
+                },
+                {
+                  "label": "CSS-Tricks - Flexbox guide",
+                  "url": "https://css-tricks.com/snippets/css/a-guide-to-flexbox/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Grid",
+          "children": [
+            {
+              "title": "Tracks and areas",
+              "description": "Grid defines rows and columns, then places items by line number or named area. It is the right tool for whole-page layouts and anything with rows and columns.",
+              "resources": [
+                {
+                  "label": "MDN - CSS grid layout",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout",
+                  "type": "docs"
+                },
+                {
+                  "label": "CSS-Tricks - Grid guide",
+                  "url": "https://css-tricks.com/snippets/css/complete-guide-grid/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "auto-fit, minmax and fr",
+              "description": "repeat(auto-fit, minmax(240px, 1fr)) makes a card grid that adds and removes columns as space changes, with no media queries.",
+              "resources": [
+                {
+                  "label": "MDN - Grid layout and auto-placement",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/Auto-placement_in_grid_layout",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev Learn CSS - Grid",
+                  "url": "https://web.dev/learn/css/grid",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Responsive Design",
+          "children": [
+            {
+              "title": "Mobile-first and media queries",
+              "description": "Start with the small-screen layout and add complexity with min-width queries. Pick breakpoints where the content breaks, not at specific device sizes.",
+              "resources": [
+                {
+                  "label": "MDN - Media queries",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev Learn Responsive Design",
+                  "url": "https://web.dev/learn/design",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "The viewport and touch targets",
+              "description": "The viewport meta tag controls mobile scaling. Make tap targets large enough to hit with a thumb and avoid hover-only interactions.",
+              "resources": [
+                {
+                  "label": "MDN - Viewport meta",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Viewport_meta_element",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev - Accessible tap targets",
+                  "url": "https://web.dev/articles/accessible-tap-targets",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Modern Layout",
+          "children": [
+            {
+              "title": "Container queries",
+              "description": "A container query styles a component based on the size of its parent rather than the whole viewport, so the same card works in a sidebar and a main column.",
+              "resources": [
+                {
+                  "label": "MDN - Container queries",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev - Container queries",
+                  "url": "https://web.dev/blog/cq-stable",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Logical properties and intrinsic sizing",
+              "description": "Logical properties such as margin-inline and padding-block adapt to writing direction, and intrinsic sizing keywords let content decide its own size.",
+              "resources": [
+                {
+                  "label": "MDN - Logical properties",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_logical_properties_and_values",
+                  "type": "docs"
+                },
+                {
+                  "label": "Every Layout",
+                  "url": "https://every-layout.dev/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frontend-dev-4",
+      "title": "JavaScript for the Browser: Core Language, Async, and Modules",
+      "order": 4,
+      "techs": [
+        "JavaScript",
+        "ES Modules"
+      ],
+      "description": "Learn the parts of JavaScript that frontend code relies on every day: scope and closures, objects and arrays, asynchronous code and modules. This layer focuses on how the language behaves in the browser, not on syntax alone.",
+      "topics": [
+        "Variables, scope, closures and this",
+        "Objects, arrays and immutable update patterns",
+        "Array methods: map, filter, reduce and destructuring",
+        "The event loop, promises and async/await",
+        "Fetching data and handling errors",
+        "ES modules: import, export and dynamic import"
+      ],
+      "resources": [
+        {
+          "label": "The Modern JavaScript Tutorial",
+          "platform": "javascript.info",
+          "type": "article"
+        },
+        {
+          "label": "MDN - JavaScript",
+          "platform": "developer.mozilla.org",
+          "type": "docs"
+        },
+        {
+          "label": "You Don't Know JS Yet",
+          "platform": "GitHub",
+          "type": "book"
+        }
+      ],
+      "challenge": "Write a vanilla-JS module that fetches a paginated public API with fetch, retries on failure with a delay, cancels outdated requests with AbortController, and exposes a small pure function layer that you can run without a browser.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Language Core",
+          "children": [
+            {
+              "title": "Scope and closures",
+              "description": "A closure is a function that remembers the variables around where it was created. Closures explain callbacks, event handlers and every React hook.",
+              "resources": [
+                {
+                  "label": "javascript.info - Closure",
+                  "url": "https://javascript.info/closure",
+                  "type": "article"
+                },
+                {
+                  "label": "MDN - Closures",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Immutable updates",
+              "description": "Frontend frameworks detect changes by comparing references, so you update copies with spread and array methods instead of mutating objects in place.",
+              "resources": [
+                {
+                  "label": "MDN - Spread syntax",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax",
+                  "type": "docs"
+                },
+                {
+                  "label": "javascript.info - Destructuring",
+                  "url": "https://javascript.info/destructuring-assignment",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Arrays and Data",
+          "children": [
+            {
+              "title": "map, filter and reduce",
+              "description": "These methods turn data into new data without loops that mutate state. Most UI rendering is a map over an array.",
+              "resources": [
+                {
+                  "label": "MDN - Array methods",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+                  "type": "docs"
+                },
+                {
+                  "label": "javascript.info - Array methods",
+                  "url": "https://javascript.info/array-methods",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "JSON and structured data",
+              "description": "JSON is how almost every API sends data. Parsing it safely and shaping it for the UI is a daily task.",
+              "resources": [
+                {
+                  "label": "MDN - JSON",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+                  "type": "docs"
+                },
+                {
+                  "label": "javascript.info - JSON",
+                  "url": "https://javascript.info/json",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Asynchronous JavaScript",
+          "children": [
+            {
+              "title": "The event loop",
+              "description": "JavaScript runs one task at a time, and the event loop schedules callbacks and promise reactions around it. Understanding it explains why long loops freeze the page.",
+              "resources": [
+                {
+                  "label": "MDN - Event loop",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop",
+                  "type": "docs"
+                },
+                {
+                  "label": "javascript.info - Event loop",
+                  "url": "https://javascript.info/event-loop",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Promises and async/await",
+              "description": "A promise is a value that arrives later. async/await lets you write that code in a straight line, with try/catch for failures.",
+              "resources": [
+                {
+                  "label": "MDN - Using promises",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises",
+                  "type": "docs"
+                },
+                {
+                  "label": "javascript.info - Promises",
+                  "url": "https://javascript.info/promise-basics",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Network and Modules",
+          "children": [
+            {
+              "title": "fetch, errors and AbortController",
+              "description": "fetch only rejects on network failure, so you must check response.ok yourself. AbortController cancels requests that are no longer needed.",
+              "resources": [
+                {
+                  "label": "MDN - Fetch API",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - AbortController",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/AbortController",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "ES modules",
+              "description": "Modules give each file its own scope and explicit imports and exports. Dynamic import loads code on demand, which is the base of code splitting.",
+              "resources": [
+                {
+                  "label": "MDN - JavaScript modules",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules",
+                  "type": "docs"
+                },
+                {
+                  "label": "javascript.info - Modules",
+                  "url": "https://javascript.info/modules-intro",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frontend-dev-5",
+      "title": "The DOM, Events, and Browser APIs",
+      "order": 5,
+      "techs": [
+        "JavaScript",
+        "DOM",
+        "Web APIs"
+      ],
+      "description": "Learn what frameworks do for you by working with the DOM directly. You will select and change elements, handle events efficiently, and use the browser APIs for storage, observation and navigation.",
+      "topics": [
+        "Selecting, creating and updating DOM nodes",
+        "Events, bubbling and event delegation",
+        "Forms, validation and the FormData API",
+        "Web Storage, cookies and IndexedDB",
+        "Intersection and Resize observers",
+        "History API and client-side navigation"
+      ],
+      "resources": [
+        {
+          "label": "MDN - Document Object Model",
+          "platform": "developer.mozilla.org",
+          "type": "docs"
+        },
+        {
+          "label": "javascript.info - Browser: Document, Events, Interfaces",
+          "platform": "javascript.info",
+          "type": "article"
+        },
+        {
+          "label": "web.dev Learn JavaScript",
+          "platform": "web.dev",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Build a task manager in vanilla JavaScript with no framework: add, edit and delete tasks through one delegated event listener, keep the list in localStorage, lazy-load more items with an IntersectionObserver, and update the URL hash with the History API.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "The DOM",
+          "children": [
+            {
+              "title": "Selecting and changing nodes",
+              "description": "querySelector finds elements and properties such as textContent change them. Prefer textContent over innerHTML for user data to avoid injecting markup.",
+              "resources": [
+                {
+                  "label": "MDN - DOM scripting",
+                  "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/DOM_scripting",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - Document Object Model",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Reflow and repaint cost",
+              "description": "Reading layout values right after writing them forces the browser to recalculate layout. Batch your reads and writes to avoid slow interactions.",
+              "resources": [
+                {
+                  "label": "web.dev - Avoid large layouts",
+                  "url": "https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - Critical rendering path",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Critical_rendering_path",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Events",
+          "children": [
+            {
+              "title": "Bubbling and delegation",
+              "description": "Most events travel up the tree, so one listener on a parent can handle clicks for many children, including ones added later.",
+              "resources": [
+                {
+                  "label": "MDN - Event bubbling",
+                  "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Event_bubbling",
+                  "type": "docs"
+                },
+                {
+                  "label": "javascript.info - Event delegation",
+                  "url": "https://javascript.info/event-delegation",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Passive listeners and custom events",
+              "description": "Marking scroll and touch listeners passive keeps scrolling smooth, and custom events let separate parts of a page talk without direct references.",
+              "resources": [
+                {
+                  "label": "MDN - addEventListener",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - CustomEvent",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Storage",
+          "children": [
+            {
+              "title": "localStorage, sessionStorage and cookies",
+              "description": "Web Storage is synchronous and readable by any script on the page, so never put secrets in it. Cookies are sent with every request and can be marked HttpOnly.",
+              "resources": [
+                {
+                  "label": "MDN - Web Storage API",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - HTTP cookies",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "IndexedDB and caching",
+              "description": "IndexedDB stores large structured data asynchronously in the browser, and the Cache API stores responses for offline use.",
+              "resources": [
+                {
+                  "label": "MDN - IndexedDB",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - Cache API",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/Cache",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Observation and Navigation",
+          "children": [
+            {
+              "title": "Intersection and Resize observers",
+              "description": "Observers tell you when an element becomes visible or changes size, replacing scroll handlers that run constantly and hurt performance.",
+              "resources": [
+                {
+                  "label": "MDN - Intersection Observer",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - ResizeObserver",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "History API",
+              "description": "pushState and popstate change the URL without a reload. Routers in frameworks are built on top of these two pieces.",
+              "resources": [
+                {
+                  "label": "MDN - History API",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/History_API",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - window.history",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/history",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frontend-dev-6",
+      "title": "TypeScript for Frontend Developers",
+      "order": 6,
+      "techs": [
+        "TypeScript"
+      ],
+      "description": "Add static types to catch mistakes before they reach the browser. You will learn the type system features used daily in frontend code: unions, narrowing, generics and typing API data, then apply them to components.",
+      "topics": [
+        "Primitive, object and array types; type inference",
+        "Unions, intersections and literal types",
+        "Narrowing and discriminated unions",
+        "Generics and utility types",
+        "Typing API responses and runtime validation with Zod",
+        "tsconfig strict mode and type-only imports"
+      ],
+      "resources": [
+        {
+          "label": "TypeScript Handbook",
+          "platform": "typescriptlang.org",
+          "type": "docs"
+        },
+        {
+          "label": "React TypeScript guide",
+          "platform": "react.dev",
+          "type": "docs"
+        },
+        {
+          "label": "Total TypeScript",
+          "platform": "totaltypescript.com",
+          "type": "article"
+        }
+      ],
+      "challenge": "Type the data layer of your task manager: model task states as a discriminated union, write a generic fetchJson<T> helper, validate API responses with a Zod schema and derive the TypeScript type from it, and turn on strict mode with zero any.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Everyday Types",
+          "children": [
+            {
+              "title": "Inference and annotations",
+              "description": "TypeScript infers most types from values, so annotate function parameters and public boundaries and let it figure out the rest.",
+              "resources": [
+                {
+                  "label": "TypeScript - Everyday types",
+                  "url": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "TypeScript Handbook",
+                  "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Unions and literal types",
+              "description": "A union such as 'idle' | 'loading' | 'error' models the exact states a value can have, and the compiler checks you handle each one.",
+              "resources": [
+                {
+                  "label": "TypeScript - Narrowing",
+                  "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "TypeScript - Everyday types",
+                  "url": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Narrowing",
+          "children": [
+            {
+              "title": "Type guards and discriminated unions",
+              "description": "A shared literal field lets TypeScript narrow a union inside a switch. This pattern models loading, success and error states cleanly.",
+              "resources": [
+                {
+                  "label": "TypeScript - Narrowing",
+                  "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "TypeScript Handbook",
+                  "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "unknown instead of any",
+              "description": "unknown forces you to check a value before using it, while any switches off the checker. Use unknown for data you do not control.",
+              "resources": [
+                {
+                  "label": "TypeScript - Everyday types",
+                  "url": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Total TypeScript",
+                  "url": "https://www.totaltypescript.com/tutorials",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Generics",
+          "children": [
+            {
+              "title": "Generic functions and types",
+              "description": "Generics let one function or type work with many types while keeping the relationship between input and output. fetchJson<T> is the standard first example.",
+              "resources": [
+                {
+                  "label": "TypeScript - Generics",
+                  "url": "https://www.typescriptlang.org/docs/handbook/2/generics.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "TypeScript Handbook",
+                  "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Utility types",
+              "description": "Partial, Pick, Omit, Record and ReturnType derive new types from existing ones, so you change a type in one place instead of many.",
+              "resources": [
+                {
+                  "label": "TypeScript - Utility types",
+                  "url": "https://www.typescriptlang.org/docs/handbook/utility-types.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "TypeScript Handbook",
+                  "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Typing the Boundary",
+          "children": [
+            {
+              "title": "Runtime validation with Zod",
+              "description": "Types disappear at runtime, so data from an API is only trusted after validation. A Zod schema validates the data and gives you the matching type.",
+              "resources": [
+                {
+                  "label": "Zod documentation",
+                  "url": "https://zod.dev/",
+                  "type": "docs"
+                },
+                {
+                  "label": "TypeScript Handbook",
+                  "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "tsconfig and strict mode",
+              "description": "strict turns on the checks that make types trustworthy. Enable it from the start, since adding it later to a large project is painful.",
+              "resources": [
+                {
+                  "label": "TypeScript - tsconfig reference",
+                  "url": "https://www.typescriptlang.org/tsconfig",
+                  "type": "docs"
+                },
+                {
+                  "label": "TypeScript - Strict option",
+                  "url": "https://www.typescriptlang.org/tsconfig#strict",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frontend-dev-7",
+      "title": "React Fundamentals",
+      "order": 7,
+      "techs": [
+        "React",
+        "JSX",
+        "TypeScript"
+      ],
+      "description": "Think in components and state. You will build interfaces from small reusable pieces, pass data down with props, keep changing data in state, and render lists and conditional content correctly.",
+      "topics": [
+        "Components, JSX and props",
+        "State with useState and re-rendering",
+        "Lifting state up and one-way data flow",
+        "Rendering lists with keys and conditional rendering",
+        "Handling events and controlled inputs",
+        "Thinking in React: breaking a UI into components"
+      ],
+      "resources": [
+        {
+          "label": "Learn React",
+          "platform": "react.dev",
+          "type": "docs"
+        },
+        {
+          "label": "Thinking in React",
+          "platform": "react.dev",
+          "type": "docs"
+        },
+        {
+          "label": "React TypeScript Cheatsheets",
+          "platform": "react-typescript-cheatsheet.netlify.app",
+          "type": "article"
+        }
+      ],
+      "challenge": "Rebuild your task manager as a TypeScript React app: split it into components, hold the task list in state at the right level, support filtering and inline editing with controlled inputs, and render every list with stable keys.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Components",
+          "children": [
+            {
+              "title": "JSX and props",
+              "description": "JSX is JavaScript that describes UI. Props pass data from parent to child, and a child never changes its props directly.",
+              "resources": [
+                {
+                  "label": "React - Your first component",
+                  "url": "https://react.dev/learn/your-first-component",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - Passing props",
+                  "url": "https://react.dev/learn/passing-props-to-a-component",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Composition and children",
+              "description": "Components compose by nesting. The children prop lets a component wrap whatever you put inside it, which keeps layout components generic.",
+              "resources": [
+                {
+                  "label": "React - Learn",
+                  "url": "https://react.dev/learn",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - Passing props",
+                  "url": "https://react.dev/learn/passing-props-to-a-component",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Rendering",
+          "children": [
+            {
+              "title": "Lists and keys",
+              "description": "Each item in a rendered list needs a stable key so React can match items between renders. Using the array index breaks state when the list reorders.",
+              "resources": [
+                {
+                  "label": "React - Rendering lists",
+                  "url": "https://react.dev/learn/rendering-lists",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - Conditional rendering",
+                  "url": "https://react.dev/learn/conditional-rendering",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Render is a pure calculation",
+              "description": "A component should return the same UI for the same props and state, with no side effects while rendering. This is what makes React predictable.",
+              "resources": [
+                {
+                  "label": "React - Keeping components pure",
+                  "url": "https://react.dev/learn/keeping-components-pure",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - Learn",
+                  "url": "https://react.dev/learn",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "State",
+          "children": [
+            {
+              "title": "useState and re-rendering",
+              "description": "Calling a state setter schedules a re-render with the new value. State updates are snapshots, so the old value stays in the current render.",
+              "resources": [
+                {
+                  "label": "React - State: a component's memory",
+                  "url": "https://react.dev/learn/state-a-components-memory",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - State as a snapshot",
+                  "url": "https://react.dev/learn/state-as-a-snapshot",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Updating objects and arrays",
+              "description": "Never mutate state in place. Create a new object or array so React sees the change.",
+              "resources": [
+                {
+                  "label": "React - Updating objects in state",
+                  "url": "https://react.dev/learn/updating-objects-in-state",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - Updating arrays in state",
+                  "url": "https://react.dev/learn/updating-arrays-in-state",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Structure",
+          "children": [
+            {
+              "title": "Lifting state up",
+              "description": "When two components need the same data, move the state to their closest common parent and pass it down. Keep state as low as it can be.",
+              "resources": [
+                {
+                  "label": "React - Sharing state between components",
+                  "url": "https://react.dev/learn/sharing-state-between-components",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - Choosing the state structure",
+                  "url": "https://react.dev/learn/choosing-the-state-structure",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Thinking in React",
+              "description": "Break the UI into a component tree, build a static version, find the minimal state, and decide where it lives. This process is a repeatable method.",
+              "resources": [
+                {
+                  "label": "React - Thinking in React",
+                  "url": "https://react.dev/learn/thinking-in-react",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - Learn",
+                  "url": "https://react.dev/learn",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frontend-dev-8",
+      "title": "React in Depth: Effects, Hooks, and State Patterns",
+      "order": 8,
+      "techs": [
+        "React",
+        "Hooks",
+        "TypeScript"
+      ],
+      "description": "Go beyond basics to the parts of React that cause most bugs: effects, refs and context. You will learn when an effect is the wrong tool, how to write custom hooks, and how to manage shared state without chaos.",
+      "topics": [
+        "useEffect: synchronization and cleanup",
+        "You might not need an effect",
+        "useRef, useMemo and useCallback",
+        "Custom hooks for reusable logic",
+        "useReducer and context for shared state",
+        "State libraries: Zustand and when to use them"
+      ],
+      "resources": [
+        {
+          "label": "Escape Hatches",
+          "platform": "react.dev",
+          "type": "docs"
+        },
+        {
+          "label": "You Might Not Need an Effect",
+          "platform": "react.dev",
+          "type": "docs"
+        },
+        {
+          "label": "Zustand documentation",
+          "platform": "zustand.docs.pmnd.rs",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Add a search box to the task app that debounces input with a custom useDebouncedValue hook, loads results with an effect that cleans up stale requests, shares the current user through context, and moves the task list into a Zustand store with selectors.",
+      "estimatedTime": "3 weeks",
+      "sideLeft": [
+        {
+          "title": "Effects",
+          "children": [
+            {
+              "title": "Synchronizing with useEffect",
+              "description": "An effect keeps something outside React, such as a subscription or a document title, in sync with your state. Its cleanup function runs before the next effect and on unmount.",
+              "resources": [
+                {
+                  "label": "React - Synchronizing with effects",
+                  "url": "https://react.dev/learn/synchronizing-with-effects",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - useEffect reference",
+                  "url": "https://react.dev/reference/react/useEffect",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "You might not need an effect",
+              "description": "Derived values should be computed during render, and user-caused changes belong in event handlers. Reaching for an effect for these creates extra renders and bugs.",
+              "resources": [
+                {
+                  "label": "React - You might not need an effect",
+                  "url": "https://react.dev/learn/you-might-not-need-an-effect",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - Lifecycle of reactive effects",
+                  "url": "https://react.dev/learn/lifecycle-of-reactive-effects",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Hooks",
+          "children": [
+            {
+              "title": "useRef and useMemo",
+              "description": "A ref holds a value that survives renders without causing one, and useMemo caches a calculation. Measure before memoizing, since it has a cost too.",
+              "resources": [
+                {
+                  "label": "React - Referencing values with refs",
+                  "url": "https://react.dev/learn/referencing-values-with-refs",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - useMemo",
+                  "url": "https://react.dev/reference/react/useMemo",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Custom hooks",
+              "description": "A custom hook is a function that uses other hooks to share stateful logic. They are how you remove duplication without changing the component tree.",
+              "resources": [
+                {
+                  "label": "React - Reusing logic with custom hooks",
+                  "url": "https://react.dev/learn/reusing-logic-with-custom-hooks",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - Built-in hooks",
+                  "url": "https://react.dev/reference/react/hooks",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Shared State",
+          "children": [
+            {
+              "title": "useReducer",
+              "description": "A reducer centralizes how state changes in response to named actions, which keeps complex updates testable and easy to follow.",
+              "resources": [
+                {
+                  "label": "React - Extracting state logic into a reducer",
+                  "url": "https://react.dev/learn/extracting-state-logic-into-a-reducer",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - useReducer",
+                  "url": "https://react.dev/reference/react/useReducer",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Context and its limits",
+              "description": "Context passes data deeply without props, but every consumer re-renders when the value changes. Use it for slow-changing data such as theme or current user.",
+              "resources": [
+                {
+                  "label": "React - Passing data deeply with context",
+                  "url": "https://react.dev/learn/passing-data-deeply-with-context",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - Scaling up with reducer and context",
+                  "url": "https://react.dev/learn/scaling-up-with-reducer-and-context",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "State Libraries",
+          "children": [
+            {
+              "title": "Zustand",
+              "description": "Zustand keeps state in a small store outside React and lets components subscribe to just the slice they need, avoiding the context re-render problem.",
+              "resources": [
+                {
+                  "label": "Zustand docs",
+                  "url": "https://zustand.docs.pmnd.rs/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Zustand - GitHub",
+                  "url": "https://github.com/pmndrs/zustand",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Server state versus client state",
+              "description": "Data that lives on the server is a cache, not state you own. Keep it separate from UI state like open modals and form drafts.",
+              "resources": [
+                {
+                  "label": "TanStack Query - Overview",
+                  "url": "https://tanstack.com/query/latest/docs/framework/react/overview",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - Choosing the state structure",
+                  "url": "https://react.dev/learn/choosing-the-state-structure",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frontend-dev-9",
+      "title": "Routing, Forms, and Data Fetching",
+      "order": 9,
+      "techs": [
+        "React Router",
+        "TanStack Query",
+        "React Hook Form"
+      ],
+      "description": "Turn components into an application. You will add client-side routing, build forms with validation and good error states, and fetch server data with caching, loading states and mutations.",
+      "topics": [
+        "Client-side routing, nested routes and URL state",
+        "Protected routes and lazy-loaded pages",
+        "Controlled forms, validation and error messages",
+        "React Hook Form with Zod",
+        "Server state with TanStack Query: caching, refetching",
+        "Mutations, optimistic updates and error handling"
+      ],
+      "resources": [
+        {
+          "label": "React Router documentation",
+          "platform": "reactrouter.com",
+          "type": "docs"
+        },
+        {
+          "label": "TanStack Query documentation",
+          "platform": "tanstack.com",
+          "type": "docs"
+        },
+        {
+          "label": "React Hook Form",
+          "platform": "react-hook-form.com",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Add routes for a task list, a task detail page and a login page behind a protected route. Fetch and update tasks through TanStack Query with an optimistic toggle and rollback, and build the create-task form with React Hook Form and a Zod schema.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Routing",
+          "children": [
+            {
+              "title": "Nested routes and URL state",
+              "description": "Routes map URLs to components, and nested routes share layouts. Put filters and pagination in the URL so pages can be linked and refreshed.",
+              "resources": [
+                {
+                  "label": "React Router documentation",
+                  "url": "https://reactrouter.com/home",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - History API",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/History_API",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Lazy routes and guards",
+              "description": "Load each route's code only when it is visited, and redirect users who are not signed in before the page renders.",
+              "resources": [
+                {
+                  "label": "React - lazy",
+                  "url": "https://react.dev/reference/react/lazy",
+                  "type": "docs"
+                },
+                {
+                  "label": "React Router documentation",
+                  "url": "https://reactrouter.com/home",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Forms",
+          "children": [
+            {
+              "title": "Validation and error states",
+              "description": "Validate on the client for fast feedback and again on the server for safety. Connect each error message to its field with aria-describedby.",
+              "resources": [
+                {
+                  "label": "web.dev Learn Forms",
+                  "url": "https://web.dev/learn/forms",
+                  "type": "docs"
+                },
+                {
+                  "label": "React Hook Form",
+                  "url": "https://react-hook-form.com/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Schema-based validation",
+              "description": "One Zod schema can validate the form and type its values, so the rules live in a single place.",
+              "resources": [
+                {
+                  "label": "Zod documentation",
+                  "url": "https://zod.dev/",
+                  "type": "docs"
+                },
+                {
+                  "label": "React Hook Form - Resolvers",
+                  "url": "https://github.com/react-hook-form/resolvers",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Server State",
+          "children": [
+            {
+              "title": "Queries and caching",
+              "description": "TanStack Query caches responses by key, deduplicates identical requests and refetches stale data in the background, replacing hand-written loading and error state.",
+              "resources": [
+                {
+                  "label": "TanStack Query - Queries",
+                  "url": "https://tanstack.com/query/latest/docs/framework/react/guides/queries",
+                  "type": "docs"
+                },
+                {
+                  "label": "TanStack Query - Important defaults",
+                  "url": "https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Stale time and invalidation",
+              "description": "staleTime decides how long data counts as fresh, and invalidating a key after a mutation tells the cache to refetch what changed.",
+              "resources": [
+                {
+                  "label": "TanStack Query - Query invalidation",
+                  "url": "https://tanstack.com/query/latest/docs/framework/react/guides/query-invalidation",
+                  "type": "docs"
+                },
+                {
+                  "label": "TanStack Query - Overview",
+                  "url": "https://tanstack.com/query/latest/docs/framework/react/overview",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Mutations",
+          "children": [
+            {
+              "title": "Mutations and optimistic updates",
+              "description": "An optimistic update changes the UI immediately and rolls back if the request fails. It makes interactions feel instant when done carefully.",
+              "resources": [
+                {
+                  "label": "TanStack Query - Mutations",
+                  "url": "https://tanstack.com/query/latest/docs/framework/react/guides/mutations",
+                  "type": "docs"
+                },
+                {
+                  "label": "TanStack Query - Optimistic updates",
+                  "url": "https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Loading, empty and error states",
+              "description": "Every data view has four states: loading, empty, error and success. Designing all four is what separates an application from a demo.",
+              "resources": [
+                {
+                  "label": "web.dev - Loading states",
+                  "url": "https://web.dev/learn/design",
+                  "type": "article"
+                },
+                {
+                  "label": "TanStack Query - Queries",
+                  "url": "https://tanstack.com/query/latest/docs/framework/react/guides/queries",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frontend-dev-10",
+      "title": "Styling at Scale: Tailwind, CSS Architecture, and Design Systems",
+      "order": 10,
+      "techs": [
+        "Tailwind CSS",
+        "CSS Modules",
+        "Storybook"
+      ],
+      "description": "Keep styles maintainable as an application grows. You will compare utility-first CSS, CSS Modules and CSS-in-JS, then build a small design system with tokens, reusable components and documentation.",
+      "topics": [
+        "Utility-first CSS with Tailwind",
+        "CSS Modules and scoped styles",
+        "Design tokens and theming with custom properties",
+        "Component variants and accessible primitives",
+        "Dark mode and prefers-color-scheme",
+        "Documenting components with Storybook"
+      ],
+      "resources": [
+        {
+          "label": "Tailwind CSS documentation",
+          "platform": "tailwindcss.com",
+          "type": "docs"
+        },
+        {
+          "label": "Radix UI Primitives",
+          "platform": "radix-ui.com",
+          "type": "docs"
+        },
+        {
+          "label": "Storybook documentation",
+          "platform": "storybook.js.org",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Extract a small component library from your app: a themed Button with size and variant props, an accessible Dialog built on a headless primitive, tokens defined once as CSS variables, dark mode, and each component documented in Storybook.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Styling Approaches",
+          "children": [
+            {
+              "title": "Utility-first with Tailwind",
+              "description": "Tailwind composes styles from small utility classes in the markup, which removes naming and dead CSS. Extract repeated patterns into components, not into new CSS.",
+              "resources": [
+                {
+                  "label": "Tailwind CSS docs",
+                  "url": "https://tailwindcss.com/docs",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tailwind - Reusing styles",
+                  "url": "https://tailwindcss.com/docs/reusing-styles",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "CSS Modules",
+              "description": "CSS Modules scope class names to a component file at build time, so styles cannot leak. They keep normal CSS while avoiding global collisions.",
+              "resources": [
+                {
+                  "label": "CSS Modules - GitHub",
+                  "url": "https://github.com/css-modules/css-modules",
+                  "type": "article"
+                },
+                {
+                  "label": "Vite - CSS features",
+                  "url": "https://vite.dev/guide/features.html#css",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Design Tokens",
+          "children": [
+            {
+              "title": "Tokens as CSS variables",
+              "description": "Colors, spacing and type sizes defined once as variables are the vocabulary of a design system. Changing a token restyles every use of it.",
+              "resources": [
+                {
+                  "label": "MDN - Custom properties",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties",
+                  "type": "docs"
+                },
+                {
+                  "label": "Design Tokens Community Group",
+                  "url": "https://www.designtokens.org/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Theming and dark mode",
+              "description": "Switch themes by changing variables on the root element. Respect prefers-color-scheme as the default and let users override it.",
+              "resources": [
+                {
+                  "label": "MDN - prefers-color-scheme",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tailwind - Dark mode",
+                  "url": "https://tailwindcss.com/docs/dark-mode",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Components",
+          "children": [
+            {
+              "title": "Variants and composition",
+              "description": "A component exposes a small set of variants such as size and intent rather than arbitrary styles. A helper like class-variance-authority keeps the mapping tidy.",
+              "resources": [
+                {
+                  "label": "Tailwind - Reusing styles",
+                  "url": "https://tailwindcss.com/docs/reusing-styles",
+                  "type": "docs"
+                },
+                {
+                  "label": "shadcn/ui",
+                  "url": "https://ui.shadcn.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Headless, accessible primitives",
+              "description": "Libraries such as Radix provide behavior and accessibility for dialogs, menus and tabs without imposing a look, so you style them yourself.",
+              "resources": [
+                {
+                  "label": "Radix UI Primitives",
+                  "url": "https://www.radix-ui.com/primitives",
+                  "type": "docs"
+                },
+                {
+                  "label": "WAI-ARIA Authoring Practices",
+                  "url": "https://www.w3.org/WAI/ARIA/apg/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Documentation",
+          "children": [
+            {
+              "title": "Storybook",
+              "description": "Storybook renders components in isolation with their variants, which makes them easy to review, test and hand off.",
+              "resources": [
+                {
+                  "label": "Storybook docs",
+                  "url": "https://storybook.js.org/docs",
+                  "type": "docs"
+                },
+                {
+                  "label": "Storybook tutorials",
+                  "url": "https://storybook.js.org/tutorials/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Visual consistency checks",
+              "description": "A shared spacing scale, type scale and component set keeps screens consistent, and visual regression tests catch accidental changes.",
+              "resources": [
+                {
+                  "label": "Storybook - Visual tests",
+                  "url": "https://storybook.js.org/docs/writing-tests/visual-testing",
+                  "type": "docs"
+                },
+                {
+                  "label": "Playwright - Visual comparisons",
+                  "url": "https://playwright.dev/docs/test-snapshots",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frontend-dev-11",
+      "title": "Web Accessibility",
+      "order": 11,
+      "techs": [
+        "WCAG",
+        "ARIA",
+        "axe"
+      ],
+      "description": "Build interfaces that everyone can use, including people who rely on keyboards, screen readers and zoom. Accessibility is a requirement in many jobs and laws, and most of it comes from using HTML correctly.",
+      "topics": [
+        "WCAG principles: perceivable, operable, understandable, robust",
+        "Keyboard navigation and focus management",
+        "ARIA roles, states and when not to use them",
+        "Accessible forms, dialogs and live regions",
+        "Color contrast, motion and reduced-motion preferences",
+        "Testing with axe, Lighthouse and a screen reader"
+      ],
+      "resources": [
+        {
+          "label": "web.dev Learn Accessibility",
+          "platform": "web.dev",
+          "type": "docs"
+        },
+        {
+          "label": "WCAG 2.2 Quick Reference",
+          "platform": "w3.org",
+          "type": "docs"
+        },
+        {
+          "label": "WAI-ARIA Authoring Practices Guide",
+          "platform": "w3.org",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Audit your app: fix every issue axe finds, make all features usable with the keyboard alone, add a skip link and visible focus, build a modal dialog that traps and restores focus, and record what you hear using a screen reader on one full user flow.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Principles",
+          "children": [
+            {
+              "title": "WCAG in practice",
+              "description": "WCAG organizes requirements under four principles with levels A, AA and AAA. Level AA is the common legal and professional target.",
+              "resources": [
+                {
+                  "label": "WCAG 2.2 Quick Reference",
+                  "url": "https://www.w3.org/WAI/WCAG22/quickref/",
+                  "type": "docs"
+                },
+                {
+                  "label": "W3C - Accessibility principles",
+                  "url": "https://www.w3.org/WAI/fundamentals/accessibility-principles/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Semantic HTML first",
+              "description": "Native buttons, links, headings and form controls already carry roles, keyboard behavior and names. The first rule of ARIA is not to use it if a native element works.",
+              "resources": [
+                {
+                  "label": "web.dev Learn Accessibility",
+                  "url": "https://web.dev/learn/accessibility",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - Accessibility",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/Accessibility",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Keyboard and Focus",
+          "children": [
+            {
+              "title": "Focus order and visible focus",
+              "description": "Every interactive element must be reachable with Tab in a logical order and show a clear focus indicator. Never remove the outline without replacing it.",
+              "resources": [
+                {
+                  "label": "web.dev - Focus",
+                  "url": "https://web.dev/learn/accessibility/focus",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - :focus-visible",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Focus management in dialogs and routes",
+              "description": "Opening a dialog should move focus into it and closing should return it. After a route change, move focus to the new page heading so screen reader users know something changed.",
+              "resources": [
+                {
+                  "label": "WAI-ARIA APG - Dialog",
+                  "url": "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev Learn Accessibility",
+                  "url": "https://web.dev/learn/accessibility",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "ARIA",
+          "children": [
+            {
+              "title": "Roles, states and properties",
+              "description": "ARIA adds meaning that HTML cannot express, such as aria-expanded on a disclosure button. A wrong ARIA attribute is worse than none.",
+              "resources": [
+                {
+                  "label": "MDN - ARIA",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA",
+                  "type": "docs"
+                },
+                {
+                  "label": "WAI-ARIA Authoring Practices",
+                  "url": "https://www.w3.org/WAI/ARIA/apg/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Live regions and announcements",
+              "description": "A live region makes a screen reader announce changes, like a form error or a loaded result, that would otherwise be silent.",
+              "resources": [
+                {
+                  "label": "MDN - ARIA live regions",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Guides/Live_regions",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev Learn Accessibility",
+                  "url": "https://web.dev/learn/accessibility",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Perception and Testing",
+          "children": [
+            {
+              "title": "Contrast, zoom and reduced motion",
+              "description": "Text needs enough contrast, layouts must survive 200 percent zoom, and animations should respect prefers-reduced-motion.",
+              "resources": [
+                {
+                  "label": "MDN - prefers-reduced-motion",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion",
+                  "type": "docs"
+                },
+                {
+                  "label": "WebAIM Contrast Checker",
+                  "url": "https://webaim.org/resources/contrastchecker/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Automated and manual testing",
+              "description": "Tools like axe catch roughly a third of issues. The rest need keyboard testing and a screen reader such as NVDA, VoiceOver or TalkBack.",
+              "resources": [
+                {
+                  "label": "axe DevTools",
+                  "url": "https://www.deque.com/axe/",
+                  "type": "article"
+                },
+                {
+                  "label": "Lighthouse accessibility audits",
+                  "url": "https://developer.chrome.com/docs/lighthouse/accessibility/scoring",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frontend-dev-12",
+      "title": "Rendering Strategies and Next.js",
+      "order": 12,
+      "techs": [
+        "Next.js",
+        "React",
+        "SSR"
+      ],
+      "description": "Learn where and when pages are rendered. You will compare client-side rendering, server-side rendering, static generation and streaming, then build a Next.js application using the App Router and server components.",
+      "topics": [
+        "CSR, SSR, SSG and ISR trade-offs",
+        "Hydration and why it can fail",
+        "Next.js App Router, layouts and file-based routing",
+        "React Server Components versus client components",
+        "Data fetching, caching and revalidation",
+        "Metadata, SEO and Open Graph"
+      ],
+      "resources": [
+        {
+          "label": "Rendering on the Web",
+          "platform": "web.dev",
+          "type": "article"
+        },
+        {
+          "label": "Next.js Documentation",
+          "platform": "nextjs.org",
+          "type": "docs"
+        },
+        {
+          "label": "Learn Next.js",
+          "platform": "nextjs.org",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Rebuild your task app's public pages in Next.js: a statically generated landing page, a server-rendered detail page that fetches on the server, a client component only where interaction needs it, per-page metadata and a sitemap, then compare the JavaScript each approach ships.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Rendering Models",
+          "children": [
+            {
+              "title": "CSR, SSR, SSG and ISR",
+              "description": "Client rendering sends an empty shell and builds the page in the browser, server rendering sends HTML per request, and static generation builds HTML ahead of time. Each trades speed, freshness and cost differently.",
+              "resources": [
+                {
+                  "label": "web.dev - Rendering on the web",
+                  "url": "https://web.dev/articles/rendering-on-the-web",
+                  "type": "docs"
+                },
+                {
+                  "label": "Next.js - Rendering",
+                  "url": "https://nextjs.org/docs/app/building-your-application/rendering",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Hydration",
+              "description": "Hydration attaches React to server-rendered HTML. If the server and client output differ, React reports a hydration mismatch.",
+              "resources": [
+                {
+                  "label": "React - hydrateRoot",
+                  "url": "https://react.dev/reference/react-dom/client/hydrateRoot",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev - Rendering on the web",
+                  "url": "https://web.dev/articles/rendering-on-the-web",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Server Components",
+          "children": [
+            {
+              "title": "Server and client components",
+              "description": "Server components run only on the server and ship no JavaScript, so they can read the database directly. Mark a file with use client only where it needs state or events.",
+              "resources": [
+                {
+                  "label": "React - Server Components",
+                  "url": "https://react.dev/reference/rsc/server-components",
+                  "type": "docs"
+                },
+                {
+                  "label": "Next.js - Server and Client Components",
+                  "url": "https://nextjs.org/docs/app/building-your-application/rendering/server-components",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Composition boundaries",
+              "description": "Keep client components small and pass server-rendered content into them as children, so the interactive part of a page stays a thin layer.",
+              "resources": [
+                {
+                  "label": "Next.js - Composition patterns",
+                  "url": "https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns",
+                  "type": "docs"
+                },
+                {
+                  "label": "Next.js Documentation",
+                  "url": "https://nextjs.org/docs",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Next.js App Router",
+          "children": [
+            {
+              "title": "Routing, layouts and loading UI",
+              "description": "Folders define routes, layout files wrap their children and loading files give instant fallbacks while a segment streams in.",
+              "resources": [
+                {
+                  "label": "Next.js - Routing",
+                  "url": "https://nextjs.org/docs/app/building-your-application/routing",
+                  "type": "docs"
+                },
+                {
+                  "label": "Learn Next.js",
+                  "url": "https://nextjs.org/learn",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Data fetching and caching",
+              "description": "Pages fetch data on the server and Next.js can cache the result and revalidate it on a schedule or on demand.",
+              "resources": [
+                {
+                  "label": "Next.js - Data fetching",
+                  "url": "https://nextjs.org/docs/app/building-your-application/data-fetching",
+                  "type": "docs"
+                },
+                {
+                  "label": "Next.js - Caching",
+                  "url": "https://nextjs.org/docs/app/building-your-application/caching",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Search and Sharing",
+          "children": [
+            {
+              "title": "Metadata and SEO",
+              "description": "Titles, descriptions, canonical URLs and structured data come from the server render, which is why search engines prefer it over empty client shells.",
+              "resources": [
+                {
+                  "label": "Next.js - Metadata",
+                  "url": "https://nextjs.org/docs/app/building-your-application/optimizing/metadata",
+                  "type": "docs"
+                },
+                {
+                  "label": "Google Search Central - SEO starter guide",
+                  "url": "https://developers.google.com/search/docs/fundamentals/seo-starter-guide",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Open Graph and sitemaps",
+              "description": "Open Graph tags control how links preview when shared, and a sitemap helps crawlers find every page.",
+              "resources": [
+                {
+                  "label": "Open Graph protocol",
+                  "url": "https://ogp.me/",
+                  "type": "article"
+                },
+                {
+                  "label": "Next.js - Sitemap",
+                  "url": "https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frontend-dev-13",
+      "title": "Frontend Performance and Core Web Vitals",
+      "order": 13,
+      "techs": [
+        "Lighthouse",
+        "Core Web Vitals",
+        "Chrome DevTools"
+      ],
+      "description": "Measure and improve how fast a page loads and responds. You will use the Core Web Vitals as targets, find bottlenecks with the Performance panel, and fix them with image, bundle and rendering techniques.",
+      "topics": [
+        "Core Web Vitals: LCP, INP and CLS",
+        "Lighthouse and the Chrome Performance panel",
+        "Image formats, lazy loading and responsive sizes",
+        "Code splitting, tree shaking and bundle analysis",
+        "Caching, compression and CDNs",
+        "React performance: memoization and list virtualization"
+      ],
+      "resources": [
+        {
+          "label": "web.dev Learn Performance",
+          "platform": "web.dev",
+          "type": "docs"
+        },
+        {
+          "label": "Core Web Vitals",
+          "platform": "web.dev",
+          "type": "docs"
+        },
+        {
+          "label": "Chrome DevTools Performance",
+          "platform": "developer.chrome.com",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Take a deliberately slow page (large unoptimized images, one huge bundle, layout shifts) and fix it step by step. Record Lighthouse and field-style numbers for LCP, INP and CLS after each change and write up which change helped most.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Metrics",
+          "children": [
+            {
+              "title": "LCP, INP and CLS",
+              "description": "Largest Contentful Paint measures loading, Interaction to Next Paint measures responsiveness and Cumulative Layout Shift measures visual stability. Together they describe how the page feels.",
+              "resources": [
+                {
+                  "label": "web.dev - Core Web Vitals",
+                  "url": "https://web.dev/articles/vitals",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev - Optimize LCP",
+                  "url": "https://web.dev/articles/optimize-lcp",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Lab data versus field data",
+              "description": "Lighthouse gives repeatable lab numbers, while real-user data from the field shows what your visitors experience. Use lab data to debug and field data to decide.",
+              "resources": [
+                {
+                  "label": "web.dev - Lab and field data",
+                  "url": "https://web.dev/articles/lab-and-field-data-differences",
+                  "type": "docs"
+                },
+                {
+                  "label": "Lighthouse overview",
+                  "url": "https://developer.chrome.com/docs/lighthouse/overview",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Diagnosis",
+          "children": [
+            {
+              "title": "The Performance panel",
+              "description": "A recorded trace shows long tasks, layout work and what blocked the main thread. Long tasks over 50 milliseconds are what hurt responsiveness.",
+              "resources": [
+                {
+                  "label": "Chrome DevTools - Performance",
+                  "url": "https://developer.chrome.com/docs/devtools/performance",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev - Optimize INP",
+                  "url": "https://web.dev/articles/optimize-inp",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Layout shift debugging",
+              "description": "Images without dimensions, late-loading fonts and injected banners push content around. Reserve space for them to keep CLS low.",
+              "resources": [
+                {
+                  "label": "web.dev - Optimize CLS",
+                  "url": "https://web.dev/articles/optimize-cls",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev - Cumulative Layout Shift",
+                  "url": "https://web.dev/articles/cls",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Assets",
+          "children": [
+            {
+              "title": "Images, fonts and lazy loading",
+              "description": "Images are usually the largest bytes on a page. Serve modern formats at the right size, lazy-load below the fold and preload the hero image.",
+              "resources": [
+                {
+                  "label": "web.dev Learn Images",
+                  "url": "https://web.dev/learn/images",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - Lazy loading",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Lazy_loading",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Caching, compression and CDNs",
+              "description": "Fingerprinted files can be cached forever, text compresses well with Brotli and a CDN serves content close to the user.",
+              "resources": [
+                {
+                  "label": "web.dev - HTTP caching",
+                  "url": "https://web.dev/articles/http-cache",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - HTTP caching",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "JavaScript Cost",
+          "children": [
+            {
+              "title": "Code splitting and tree shaking",
+              "description": "Ship only the code a route needs. Dynamic imports split the bundle, and tree shaking removes exports you never use.",
+              "resources": [
+                {
+                  "label": "web.dev - Code splitting",
+                  "url": "https://web.dev/articles/reduce-javascript-payloads-with-code-splitting",
+                  "type": "docs"
+                },
+                {
+                  "label": "Vite - Building for production",
+                  "url": "https://vite.dev/guide/build.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "React rendering cost",
+              "description": "Profile before optimizing. Memoization, stable props and list virtualization help when a profile shows wasted renders, and hurt readability when added blindly.",
+              "resources": [
+                {
+                  "label": "React - Profiler",
+                  "url": "https://react.dev/reference/react/Profiler",
+                  "type": "docs"
+                },
+                {
+                  "label": "React - memo",
+                  "url": "https://react.dev/reference/react/memo",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frontend-dev-14",
+      "title": "Testing Frontend Applications",
+      "order": 14,
+      "techs": [
+        "Vitest",
+        "Testing Library",
+        "Playwright"
+      ],
+      "description": "Write tests that give you confidence to change code. You will test logic with unit tests, components the way users use them, and whole flows in a real browser, and mock the network instead of the code under test.",
+      "topics": [
+        "The testing trophy: unit, integration and end-to-end",
+        "Unit tests with Vitest",
+        "Component tests with Testing Library",
+        "Mocking the network with MSW",
+        "End-to-end tests with Playwright",
+        "CI, flaky tests and test coverage"
+      ],
+      "resources": [
+        {
+          "label": "Vitest Guide",
+          "platform": "vitest.dev",
+          "type": "docs"
+        },
+        {
+          "label": "Testing Library documentation",
+          "platform": "testing-library.com",
+          "type": "docs"
+        },
+        {
+          "label": "Playwright documentation",
+          "platform": "playwright.dev",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Cover your task app: unit tests for the reducer and validation helpers, component tests that find elements by role and text, an MSW-mocked network layer, and three Playwright flows (sign in, create a task, filter the list) running in CI on every push.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Strategy",
+          "children": [
+            {
+              "title": "What to test",
+              "description": "Test behavior users depend on, not implementation details. Tests that break on refactors without any behavior change cost more than they give.",
+              "resources": [
+                {
+                  "label": "Testing Library - Guiding principles",
+                  "url": "https://testing-library.com/docs/guiding-principles/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Kent C. Dodds - Write tests",
+                  "url": "https://kentcdodds.com/blog/write-tests",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Unit tests with Vitest",
+              "description": "Vitest runs fast, shares Vite's config and offers a Jest-compatible API. Pure functions like reducers and validators are the easiest and most valuable to test.",
+              "resources": [
+                {
+                  "label": "Vitest guide",
+                  "url": "https://vitest.dev/guide/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Vitest - Mocking",
+                  "url": "https://vitest.dev/guide/mocking",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Components",
+          "children": [
+            {
+              "title": "Queries by role",
+              "description": "Finding elements by accessible role and name makes tests resemble how users and screen readers see the page, and doubles as an accessibility check.",
+              "resources": [
+                {
+                  "label": "Testing Library - Queries",
+                  "url": "https://testing-library.com/docs/queries/about/",
+                  "type": "docs"
+                },
+                {
+                  "label": "React Testing Library intro",
+                  "url": "https://testing-library.com/docs/react-testing-library/intro/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "User events and async UI",
+              "description": "user-event simulates real interactions, and findBy and waitFor queries handle UI that updates after a promise resolves.",
+              "resources": [
+                {
+                  "label": "Testing Library - user-event",
+                  "url": "https://testing-library.com/docs/user-event/intro/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Testing Library - Async methods",
+                  "url": "https://testing-library.com/docs/dom-testing-library/api-async/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Network",
+          "children": [
+            {
+              "title": "Mock Service Worker",
+              "description": "MSW intercepts requests at the network level, so your components run their real fetch code against fake responses. The same handlers work in tests and in development.",
+              "resources": [
+                {
+                  "label": "MSW documentation",
+                  "url": "https://mswjs.io/docs/",
+                  "type": "docs"
+                },
+                {
+                  "label": "MSW - Getting started",
+                  "url": "https://mswjs.io/docs/getting-started",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Testing loading and error states",
+              "description": "Use handlers that delay, fail or return empty lists to check the states users rarely see but always notice when they break.",
+              "resources": [
+                {
+                  "label": "MSW documentation",
+                  "url": "https://mswjs.io/docs/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Testing Library - Async methods",
+                  "url": "https://testing-library.com/docs/dom-testing-library/api-async/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "End to End",
+          "children": [
+            {
+              "title": "Playwright",
+              "description": "Playwright drives real Chromium, Firefox and WebKit browsers, waits for elements automatically and records traces so failures are easy to debug.",
+              "resources": [
+                {
+                  "label": "Playwright - Getting started",
+                  "url": "https://playwright.dev/docs/intro",
+                  "type": "docs"
+                },
+                {
+                  "label": "Playwright - Best practices",
+                  "url": "https://playwright.dev/docs/best-practices",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "CI and flaky tests",
+              "description": "Run the suite on every push. A flaky test teaches people to ignore failures, so fix or delete it quickly and avoid fixed sleeps.",
+              "resources": [
+                {
+                  "label": "Playwright - Continuous integration",
+                  "url": "https://playwright.dev/docs/ci-intro",
+                  "type": "docs"
+                },
+                {
+                  "label": "GitHub Actions documentation",
+                  "url": "https://docs.github.com/en/actions",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frontend-dev-15",
+      "title": "Frontend Security, Build Tooling, and Production",
+      "order": 15,
+      "techs": [
+        "Vite",
+        "OWASP",
+        "CI/CD"
+      ],
+      "description": "Ship a frontend you can trust. You will protect against the common browser attacks, understand what a build tool does to your code, and deploy with a pipeline, environment configuration and error monitoring.",
+      "topics": [
+        "XSS, CSRF and how frameworks help",
+        "Content Security Policy, CORS and secure headers",
+        "Authentication tokens: where to store them and why",
+        "Vite: dev server, bundling and environment variables",
+        "CI/CD, preview deployments and rollbacks",
+        "Error monitoring, logging and web analytics"
+      ],
+      "resources": [
+        {
+          "label": "OWASP Cheat Sheet Series",
+          "platform": "owasp.org",
+          "type": "docs"
+        },
+        {
+          "label": "Vite Guide",
+          "platform": "vite.dev",
+          "type": "docs"
+        },
+        {
+          "label": "MDN - Web security",
+          "platform": "developer.mozilla.org",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Harden and ship your app: add a Content Security Policy and fix what it breaks, demonstrate and then block a stored XSS in a rich-text field, move auth to an HttpOnly cookie, build with Vite, deploy through a CI pipeline with preview URLs, and wire error monitoring that reports a real exception.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Browser Security",
+          "children": [
+            {
+              "title": "Cross-site scripting",
+              "description": "XSS runs an attacker's script on your page. React escapes text by default, so the danger is dangerouslySetInnerHTML, unsafe URLs and third-party scripts. Sanitize any HTML you must render.",
+              "resources": [
+                {
+                  "label": "OWASP - XSS prevention",
+                  "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - Cross-site scripting",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/XSS",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "CSRF and SameSite cookies",
+              "description": "A forged request rides on the user's logged-in cookies. SameSite cookies and anti-forgery tokens defend against it.",
+              "resources": [
+                {
+                  "label": "OWASP - CSRF prevention",
+                  "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - Cookies and SameSite",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Headers and Policies",
+          "children": [
+            {
+              "title": "Content Security Policy",
+              "description": "A CSP header limits where scripts, styles and connections may come from, which stops most injected scripts even if an XSS bug exists.",
+              "resources": [
+                {
+                  "label": "MDN - Content Security Policy",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP",
+                  "type": "docs"
+                },
+                {
+                  "label": "OWASP - CSP cheat sheet",
+                  "url": "https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "CORS",
+              "description": "CORS is the server telling the browser which other origins may read its responses. It is enforced by browsers and is not a replacement for authorization.",
+              "resources": [
+                {
+                  "label": "MDN - CORS",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev - Cross-origin resource sharing",
+                  "url": "https://web.dev/articles/cross-origin-resource-sharing",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Auth and Dependencies",
+          "children": [
+            {
+              "title": "Storing tokens",
+              "description": "Any script on the page can read localStorage, so a long-lived token there is stolen by one XSS bug. Prefer HttpOnly, Secure, SameSite cookies for session credentials.",
+              "resources": [
+                {
+                  "label": "OWASP - Session management",
+                  "url": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - Web Storage API",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Dependency risk",
+              "description": "Every npm package runs with your page's privileges. Audit and pin dependencies, review what you add and enable automated security updates.",
+              "resources": [
+                {
+                  "label": "npm audit",
+                  "url": "https://docs.npmjs.com/cli/commands/npm-audit",
+                  "type": "docs"
+                },
+                {
+                  "label": "OWASP - NPM security",
+                  "url": "https://cheatsheetseries.owasp.org/cheatsheets/NPM_Security_Cheat_Sheet.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Build and Ship",
+          "children": [
+            {
+              "title": "What Vite does",
+              "description": "Vite serves source files as native modules in development and bundles with Rollup for production. Variables prefixed VITE_ are exposed to the browser, so they must never hold secrets.",
+              "resources": [
+                {
+                  "label": "Vite guide",
+                  "url": "https://vite.dev/guide/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Vite - Env variables",
+                  "url": "https://vite.dev/guide/env-and-mode.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "CI/CD and monitoring",
+              "description": "A pipeline runs lint, tests and a build on every push, creates a preview URL for review and deploys on merge. Error monitoring tells you about failures real users hit.",
+              "resources": [
+                {
+                  "label": "GitHub Actions documentation",
+                  "url": "https://docs.github.com/en/actions",
+                  "type": "docs"
+                },
+                {
+                  "label": "Sentry for JavaScript",
+                  "url": "https://docs.sentry.io/platforms/javascript/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "mern": [
     {
       "id": "mern-1",

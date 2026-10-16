@@ -23,8 +23,8 @@ export default {
   categoryId: "aiml",
   slug: "cv-engineer-defect-detection",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Industrial Defect Detection and Real-Time Inspection System",
   summary:
     "Build a production computer vision pipeline that processes visual industrial inspections. " +

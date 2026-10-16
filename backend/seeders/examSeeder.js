@@ -21,11 +21,11 @@ import process from "process";
 import { readFile } from "fs/promises";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import { QUESTIONS_PER_LAYER, isValidQuestion, normalizeStem, nextQuestionNumber } from "./lib/examBank.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const GROQ_MODEL = "openai/gpt-oss-120b";
-const QUESTIONS_PER_LAYER = 60; // target bank size; the exam serves a random 15 of these
 // One call per 15 questions: 60 at once would exceed max_tokens, and a single
 // request larger than the free tier's 8000 TPM can never succeed, retries or not.
 const QUESTIONS_PER_CALL = 15;
@@ -69,16 +69,6 @@ const withRateLimitRetry = async (fn, { retries = 5 } = {}) => {
     }
   }
 };
-
-// A malformed question would crash or silently break a live exam, so drop it
-// here rather than trusting the model's JSON shape.
-const isValidQuestion = (q) =>
-  typeof q?.stem === "string" && q.stem.trim() !== "" &&
-  Array.isArray(q.choices) && q.choices.length === 4 &&
-  q.choices.every((c) => typeof c === "string" && c.trim() !== "") &&
-  Number.isInteger(q.answerIdx) && q.answerIdx >= 0 && q.answerIdx <= 3;
-
-const normalizeStem = (stem) => stem.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
 const generateQuestionsForLayer = async (layer, path, count, avoidStems = []) => {
   const topicList = layer.topics.join("\n- ");
@@ -153,16 +143,6 @@ Return a JSON array ONLY:
 
   // IDs are assigned by the caller, which knows what is already in the bank
   return questions.filter(isValidQuestion);
-};
-
-// Next free `<layer>-qN` number. Uses the highest existing N, not the count,
-// so a bank with hand-deleted questions never reuses an ID.
-const nextQuestionNumber = (layerId, questions) => {
-  const idPattern = new RegExp(`^${layerId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}-q(\\d+)$`);
-  const nums = questions
-    .map((q) => Number(q.id?.match(idPattern)?.[1]))
-    .filter(Number.isFinite);
-  return (nums.length ? Math.max(...nums) : 0) + 1;
 };
 
 // ── Main seeder ───────────────────────────────────────────────

@@ -23,8 +23,8 @@ export default {
   categoryId: "gamedev",
   slug: "game-designer-system-prototype",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Game Design Document & Playable System Prototype",
   summary:
     "Author a complete Game Design Document (GDD) and economic balance model alongside a playable " +

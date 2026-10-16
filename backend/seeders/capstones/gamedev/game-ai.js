@@ -23,8 +23,8 @@ export default {
   categoryId: "gamedev",
   slug: "game-ai-stealth-tactical-arena",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Tactical Stealth & Combat AI Simulation",
   summary:
     "Architect an AI framework featuring Behavior Trees, Goal-Oriented Action Planning (GOAP), " +

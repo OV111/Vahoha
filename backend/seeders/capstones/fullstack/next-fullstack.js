@@ -15,8 +15,8 @@ export default {
   categoryId: "fullstack",
   slug: "next-fullstack-invoice-desk",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Invoice desk",
   summary:
     "Build a full-stack invoice desk where authenticated users manage customers and invoices, generate " +

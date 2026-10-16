@@ -18755,5 +18755,2287 @@
         }
       ]
     }
+  ],
+  "ai-agents": [
+    {
+      "id": "ai-agents-1",
+      "title": "LLM APIs and Agent Foundations",
+      "order": 1,
+      "techs": [
+        "LLM APIs",
+        "Python",
+        "Streaming"
+      ],
+      "description": "Start with the building block: calling a language model reliably from code. You will manage messages, tokens and context windows, stream responses, handle errors and rate limits, and learn what an agent actually is.",
+      "topics": [
+        "Chat messages, roles and system prompts",
+        "Tokens, context windows and pricing",
+        "Sampling parameters and determinism",
+        "Streaming responses and cancellation",
+        "Errors, retries, rate limits and timeouts",
+        "What makes something an agent versus a workflow"
+      ],
+      "resources": [
+        {
+          "label": "Building Effective Agents",
+          "platform": "anthropic.com",
+          "type": "article"
+        },
+        {
+          "label": "Claude API documentation",
+          "platform": "docs.anthropic.com",
+          "type": "docs"
+        },
+        {
+          "label": "Prompt Engineering Guide",
+          "platform": "promptingguide.ai",
+          "type": "article"
+        }
+      ],
+      "challenge": "Write a small CLI chat client in Python or TypeScript that streams responses, trims history to a token budget, retries with backoff on rate limits, counts cost per conversation and lets the user cancel mid-stream.",
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Calling Models",
+          "children": [
+            {
+              "title": "Messages and roles",
+              "description": "A conversation is a list of messages with system, user and assistant roles. The model sees only what you send, so you manage the whole history.",
+              "resources": [
+                {
+                  "label": "Claude API - Messages",
+                  "url": "https://docs.anthropic.com/en/api/messages",
+                  "type": "docs"
+                },
+                {
+                  "label": "OpenAI API reference",
+                  "url": "https://platform.openai.com/docs/api-reference",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Tokens and context windows",
+              "description": "Cost and limits are measured in tokens. Long histories push out important information and raise cost, so you decide what to keep.",
+              "resources": [
+                {
+                  "label": "Claude docs - Context windows",
+                  "url": "https://docs.anthropic.com/en/docs/build-with-claude/context-windows",
+                  "type": "docs"
+                },
+                {
+                  "label": "Prompt Engineering Guide",
+                  "url": "https://www.promptingguide.ai/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Behavior",
+          "children": [
+            {
+              "title": "Sampling parameters",
+              "description": "Temperature and top-p control randomness. Use low values for extraction and tool calls, higher ones for creative text.",
+              "resources": [
+                {
+                  "label": "Prompt Engineering Guide",
+                  "url": "https://www.promptingguide.ai/",
+                  "type": "article"
+                },
+                {
+                  "label": "Claude API - Messages",
+                  "url": "https://docs.anthropic.com/en/api/messages",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Determinism and testing",
+              "description": "Outputs vary between calls, so tests check properties of the result rather than exact text.",
+              "resources": [
+                {
+                  "label": "Hamel Husain - Your AI product needs evals",
+                  "url": "https://hamel.dev/blog/posts/evals/",
+                  "type": "article"
+                },
+                {
+                  "label": "Prompt Engineering Guide",
+                  "url": "https://www.promptingguide.ai/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Reliability",
+          "children": [
+            {
+              "title": "Streaming",
+              "description": "Streaming shows tokens as they arrive, which makes slow responses feel fast. Handle partial output and client disconnects cleanly.",
+              "resources": [
+                {
+                  "label": "Claude docs - Streaming",
+                  "url": "https://docs.anthropic.com/en/api/messages-streaming",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - Server-sent events",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Errors, retries and rate limits",
+              "description": "Expect timeouts, overloaded responses and 429 errors. Retry with exponential backoff and jitter, and surface a clear failure to the user.",
+              "resources": [
+                {
+                  "label": "Claude docs - Rate limits",
+                  "url": "https://docs.anthropic.com/en/api/rate-limits",
+                  "type": "docs"
+                },
+                {
+                  "label": "AWS Builders' Library - Retries",
+                  "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Defining Agents",
+          "children": [
+            {
+              "title": "Workflows versus agents",
+              "description": "A workflow follows code-defined steps; an agent lets the model decide the next step. Use the simplest one that solves the problem.",
+              "resources": [
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "LangGraph documentation",
+                  "url": "https://langchain-ai.github.io/langgraph/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "When not to build an agent",
+              "description": "Agents trade cost, latency and predictability for flexibility. If a fixed pipeline works, it is faster, cheaper and easier to debug.",
+              "resources": [
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Prompt Engineering Guide",
+                  "url": "https://www.promptingguide.ai/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-agents-2",
+      "title": "Prompting and Structured Outputs",
+      "order": 2,
+      "techs": [
+        "Prompt Design",
+        "JSON Schema",
+        "Pydantic"
+      ],
+      "description": "Get dependable, machine-readable results from a model. You will write clear instructions, give examples, constrain output with schemas, and validate everything before your code trusts it.",
+      "topics": [
+        "Clear instructions, roles and delimiters",
+        "Few-shot examples and chain-of-thought",
+        "Structured output with JSON schemas",
+        "Validating and repairing model output",
+        "Prompt versioning and testing",
+        "Prompt caching and cost control"
+      ],
+      "resources": [
+        {
+          "label": "Prompt Engineering Guide",
+          "platform": "promptingguide.ai",
+          "type": "article"
+        },
+        {
+          "label": "Claude prompt engineering overview",
+          "platform": "docs.anthropic.com",
+          "type": "docs"
+        },
+        {
+          "label": "Pydantic documentation",
+          "platform": "docs.pydantic.dev",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Build an extractor that turns messy support emails into a validated JSON object (category, urgency, entities, next action). Measure accuracy on 50 labeled examples, iterate on the prompt, and add validation with a single repair retry.",
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Writing Prompts",
+          "children": [
+            {
+              "title": "Clarity and structure",
+              "description": "State the task, the audience and the output format explicitly, and separate instructions from data with delimiters.",
+              "resources": [
+                {
+                  "label": "Claude docs - Prompt engineering",
+                  "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview",
+                  "type": "docs"
+                },
+                {
+                  "label": "Prompt Engineering Guide",
+                  "url": "https://www.promptingguide.ai/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Few-shot examples",
+              "description": "A few input-output examples teach format and edge cases better than a long description. Choose examples that cover tricky cases.",
+              "resources": [
+                {
+                  "label": "Prompt Engineering Guide",
+                  "url": "https://www.promptingguide.ai/",
+                  "type": "article"
+                },
+                {
+                  "label": "Claude docs - Multishot prompting",
+                  "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/multishot-prompting",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Reasoning",
+          "children": [
+            {
+              "title": "Letting the model think",
+              "description": "Asking for step-by-step reasoning before the answer improves accuracy on hard tasks, at the cost of more tokens.",
+              "resources": [
+                {
+                  "label": "Chain-of-Thought paper",
+                  "url": "https://arxiv.org/abs/2201.11903",
+                  "type": "article"
+                },
+                {
+                  "label": "Prompt Engineering Guide",
+                  "url": "https://www.promptingguide.ai/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Separating reasoning from output",
+              "description": "Keep reasoning in a separate field or section so parsers read only the final answer.",
+              "resources": [
+                {
+                  "label": "Prompt Engineering Guide",
+                  "url": "https://www.promptingguide.ai/",
+                  "type": "article"
+                },
+                {
+                  "label": "Claude docs - Prompt engineering",
+                  "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Structured Output",
+          "children": [
+            {
+              "title": "JSON Schema",
+              "description": "A schema describes the exact shape you expect. Many APIs accept one directly, which makes output far more reliable than asking nicely.",
+              "resources": [
+                {
+                  "label": "Understanding JSON Schema",
+                  "url": "https://json-schema.org/understanding-json-schema",
+                  "type": "docs"
+                },
+                {
+                  "label": "OpenAI - Structured outputs",
+                  "url": "https://platform.openai.com/docs/guides/structured-outputs",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Validation with Pydantic or Zod",
+              "description": "Never trust model output. Validate it against a typed schema, and on failure retry once with the error message included.",
+              "resources": [
+                {
+                  "label": "Pydantic documentation",
+                  "url": "https://docs.pydantic.dev/latest/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Zod documentation",
+                  "url": "https://zod.dev/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Operations",
+          "children": [
+            {
+              "title": "Prompt versioning and tests",
+              "description": "Treat prompts like code: keep them in version control, run a fixed test set on every change and compare scores.",
+              "resources": [
+                {
+                  "label": "Hamel Husain - Evals",
+                  "url": "https://hamel.dev/blog/posts/evals/",
+                  "type": "article"
+                },
+                {
+                  "label": "Prompt Engineering Guide",
+                  "url": "https://www.promptingguide.ai/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Prompt caching",
+              "description": "Reusing a long, unchanged prefix such as instructions and tools can cut latency and cost substantially.",
+              "resources": [
+                {
+                  "label": "Claude docs - Prompt caching",
+                  "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching",
+                  "type": "docs"
+                },
+                {
+                  "label": "OpenAI - Prompt caching",
+                  "url": "https://platform.openai.com/docs/guides/prompt-caching",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-agents-3",
+      "title": "Tool Use and Function Calling",
+      "order": 3,
+      "techs": [
+        "Tool Use",
+        "Function Calling",
+        "JSON Schema"
+      ],
+      "description": "Give a model the ability to act. You will define tools with clear schemas, run the tool loop, handle errors and parallel calls, and design tool interfaces that models use correctly.",
+      "topics": [
+        "Defining tools: names, descriptions and input schemas",
+        "The tool-use loop: request, execute, return result",
+        "Parallel tool calls",
+        "Tool errors and returning useful failures",
+        "Designing tools for models, not humans",
+        "Side effects, permissions and confirmation"
+      ],
+      "resources": [
+        {
+          "label": "Claude tool use documentation",
+          "platform": "docs.anthropic.com",
+          "type": "docs"
+        },
+        {
+          "label": "Writing tools for agents",
+          "platform": "anthropic.com",
+          "type": "article"
+        },
+        {
+          "label": "OpenAI function calling guide",
+          "platform": "platform.openai.com",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Build an assistant with four tools (search notes, create calendar event, fetch a web page, calculate). Implement the loop from scratch without a framework, handle a failing tool and a model that calls two tools at once, and require confirmation before any write.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "The Loop",
+          "children": [
+            {
+              "title": "Request, execute, return",
+              "description": "The model asks for a tool by name and arguments, your code runs it, and you send the result back so the model can continue. You own every step.",
+              "resources": [
+                {
+                  "label": "Claude docs - Tool use",
+                  "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview",
+                  "type": "docs"
+                },
+                {
+                  "label": "OpenAI - Function calling",
+                  "url": "https://platform.openai.com/docs/guides/function-calling",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Parallel and sequential calls",
+              "description": "A model may request several independent tools in one turn. Run them concurrently and return all results together.",
+              "resources": [
+                {
+                  "label": "Claude docs - Tool use",
+                  "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview",
+                  "type": "docs"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Schemas",
+          "children": [
+            {
+              "title": "Writing good tool descriptions",
+              "description": "The name and description are the model's only manual. Say what the tool does, when to use it and what each argument means.",
+              "resources": [
+                {
+                  "label": "Anthropic - Writing tools for agents",
+                  "url": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+                  "type": "docs"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Typed arguments",
+              "description": "Constrain inputs with enums, ranges and required fields so invalid calls are rejected before they run.",
+              "resources": [
+                {
+                  "label": "Understanding JSON Schema",
+                  "url": "https://json-schema.org/understanding-json-schema",
+                  "type": "docs"
+                },
+                {
+                  "label": "Pydantic documentation",
+                  "url": "https://docs.pydantic.dev/latest/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Failure Handling",
+          "children": [
+            {
+              "title": "Returning errors the model can use",
+              "description": "Return a short, specific error such as 'date must be in the future' instead of a stack trace, so the model can correct itself.",
+              "resources": [
+                {
+                  "label": "Anthropic - Writing tools for agents",
+                  "url": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+                  "type": "docs"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Limits and loops",
+              "description": "Cap the number of tool calls and the total time, and detect repeated identical calls so a confused model cannot loop forever.",
+              "resources": [
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "LangGraph documentation",
+                  "url": "https://langchain-ai.github.io/langgraph/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Safety",
+          "children": [
+            {
+              "title": "Permissions and confirmation",
+              "description": "Separate read tools from write tools, run with least privilege, and ask the user before any irreversible action.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Validating arguments server-side",
+              "description": "Treat tool arguments as untrusted input. Check authorization and ownership in your code, never because the model said so.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                },
+                {
+                  "label": "OWASP - Input validation",
+                  "url": "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-agents-4",
+      "title": "Agent Architectures and Planning",
+      "order": 4,
+      "techs": [
+        "ReAct",
+        "Planning",
+        "LangGraph"
+      ],
+      "description": "Combine a model, tools and control flow into systems that complete multi-step tasks. You will study the main patterns (ReAct, plan-and-execute, routing, reflection) and implement an agent loop you fully understand.",
+      "topics": [
+        "ReAct: reasoning and acting",
+        "Plan-and-execute and task decomposition",
+        "Routing, prompt chaining and parallelization",
+        "Reflection and self-correction",
+        "State machines and graphs for control flow",
+        "Choosing a framework versus writing the loop"
+      ],
+      "resources": [
+        {
+          "label": "Building Effective Agents",
+          "platform": "anthropic.com",
+          "type": "article"
+        },
+        {
+          "label": "ReAct paper",
+          "platform": "arxiv.org",
+          "type": "article"
+        },
+        {
+          "label": "LangGraph documentation",
+          "platform": "langchain-ai.github.io",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Implement the same research task three ways (single prompt, prompt chain, ReAct-style agent with a search tool), compare success rate, tokens and latency over 20 questions, and write down when the agent was worth its extra cost.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Core Patterns",
+          "children": [
+            {
+              "title": "ReAct",
+              "description": "The model alternates between reasoning about what to do and calling a tool, then reads the result. It is the base of most agent loops.",
+              "resources": [
+                {
+                  "label": "ReAct paper",
+                  "url": "https://arxiv.org/abs/2210.03629",
+                  "type": "article"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Prompt chaining and routing",
+              "description": "Break a task into fixed steps, or classify an input and send it to a specialized prompt. These workflows are more predictable than a free agent.",
+              "resources": [
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "LangGraph documentation",
+                  "url": "https://langchain-ai.github.io/langgraph/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Planning",
+          "children": [
+            {
+              "title": "Plan-and-execute",
+              "description": "One step produces a plan and another executes each item, which keeps long tasks on track and lets you inspect the plan.",
+              "resources": [
+                {
+                  "label": "LangGraph - Plan and execute",
+                  "url": "https://langchain-ai.github.io/langgraph/tutorials/plan-and-execute/plan-and-execute/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Task decomposition",
+              "description": "Splitting a goal into smaller, checkable subtasks makes each model call easier and each failure easier to locate.",
+              "resources": [
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Prompt Engineering Guide",
+                  "url": "https://www.promptingguide.ai/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Improving Output",
+          "children": [
+            {
+              "title": "Reflection and critique",
+              "description": "Have the model review its own output against criteria and revise. It helps on writing and code but costs extra calls.",
+              "resources": [
+                {
+                  "label": "Reflexion paper",
+                  "url": "https://arxiv.org/abs/2303.11366",
+                  "type": "article"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Evaluator-optimizer loops",
+              "description": "One model produces, another judges, and the loop repeats until a quality bar or a retry limit is reached.",
+              "resources": [
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "LangGraph documentation",
+                  "url": "https://langchain-ai.github.io/langgraph/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Control Flow",
+          "children": [
+            {
+              "title": "Graphs and state machines",
+              "description": "Modeling an agent as nodes and edges with explicit state makes behavior inspectable, resumable and testable.",
+              "resources": [
+                {
+                  "label": "LangGraph documentation",
+                  "url": "https://langchain-ai.github.io/langgraph/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LangGraph concepts",
+                  "url": "https://langchain-ai.github.io/langgraph/concepts/low_level/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Framework or no framework",
+              "description": "Frameworks save boilerplate but hide prompts and loops. Start by writing the loop yourself so you understand what the framework does.",
+              "resources": [
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "LangGraph documentation",
+                  "url": "https://langchain-ai.github.io/langgraph/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-agents-5",
+      "title": "Retrieval and Knowledge for Agents",
+      "order": 5,
+      "techs": [
+        "RAG",
+        "Embeddings",
+        "Vector Search"
+      ],
+      "description": "Connect agents to your data. You will chunk and embed documents, retrieve with hybrid search and reranking, and let the agent decide when and what to retrieve, with citations the user can verify.",
+      "topics": [
+        "Chunking strategies and metadata",
+        "Embeddings and vector databases",
+        "Hybrid search (keyword plus vector) and reranking",
+        "Agentic retrieval: query rewriting and multi-step search",
+        "Citations and grounding",
+        "Measuring retrieval quality"
+      ],
+      "resources": [
+        {
+          "label": "Retrieval-Augmented Generation paper",
+          "platform": "arxiv.org",
+          "type": "article"
+        },
+        {
+          "label": "pgvector documentation",
+          "platform": "GitHub",
+          "type": "docs"
+        },
+        {
+          "label": "Anthropic - Contextual Retrieval",
+          "platform": "anthropic.com",
+          "type": "article"
+        }
+      ],
+      "challenge": "Build a question-answering agent over a documentation set: ingest and chunk it, implement hybrid retrieval with a reranker, let the agent search up to three times per question, return citations, and report recall at 5 on 30 labeled questions.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Indexing",
+          "children": [
+            {
+              "title": "Chunking",
+              "description": "Chunk size and boundaries decide what a retrieval can find. Split on structure such as headings and keep metadata with each chunk.",
+              "resources": [
+                {
+                  "label": "Anthropic - Contextual Retrieval",
+                  "url": "https://www.anthropic.com/news/contextual-retrieval",
+                  "type": "docs"
+                },
+                {
+                  "label": "Prompt Engineering Guide",
+                  "url": "https://www.promptingguide.ai/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Embeddings",
+              "description": "An embedding turns text into a vector so similar meanings are close. The same model must embed documents and queries.",
+              "resources": [
+                {
+                  "label": "OpenAI - Embeddings guide",
+                  "url": "https://platform.openai.com/docs/guides/embeddings",
+                  "type": "docs"
+                },
+                {
+                  "label": "pgvector",
+                  "url": "https://github.com/pgvector/pgvector",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Storage",
+          "children": [
+            {
+              "title": "Vector databases",
+              "description": "Approximate nearest-neighbor indexes such as HNSW make similarity search fast. Postgres with pgvector is often enough to start.",
+              "resources": [
+                {
+                  "label": "pgvector",
+                  "url": "https://github.com/pgvector/pgvector",
+                  "type": "docs"
+                },
+                {
+                  "label": "Qdrant documentation",
+                  "url": "https://qdrant.tech/documentation/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Keeping the index fresh",
+              "description": "Documents change. Track versions, re-embed changed chunks and remove deleted ones so answers do not cite stale text.",
+              "resources": [
+                {
+                  "label": "pgvector",
+                  "url": "https://github.com/pgvector/pgvector",
+                  "type": "docs"
+                },
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Retrieval Quality",
+          "children": [
+            {
+              "title": "Hybrid search and reranking",
+              "description": "Combining keyword and vector scores finds exact terms and similar meanings; a reranker reorders the top results for precision.",
+              "resources": [
+                {
+                  "label": "Anthropic - Contextual Retrieval",
+                  "url": "https://www.anthropic.com/news/contextual-retrieval",
+                  "type": "docs"
+                },
+                {
+                  "label": "Cohere - Rerank",
+                  "url": "https://docs.cohere.com/docs/rerank-overview",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Measuring retrieval",
+              "description": "Evaluate retrieval separately from generation using recall and precision at k on labeled questions. A bad retriever caps the whole system.",
+              "resources": [
+                {
+                  "label": "Hamel Husain - Evals",
+                  "url": "https://hamel.dev/blog/posts/evals/",
+                  "type": "article"
+                },
+                {
+                  "label": "Prompt Engineering Guide",
+                  "url": "https://www.promptingguide.ai/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Agentic Retrieval",
+          "children": [
+            {
+              "title": "Query rewriting and multi-step search",
+              "description": "The agent can rewrite a vague question, search several times and combine results, which beats a single fixed lookup.",
+              "resources": [
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "LangGraph documentation",
+                  "url": "https://langchain-ai.github.io/langgraph/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Citations and grounding",
+              "description": "Return the source for each claim and instruct the model to say when the documents do not contain the answer.",
+              "resources": [
+                {
+                  "label": "Claude docs - Citations",
+                  "url": "https://docs.anthropic.com/en/docs/build-with-claude/citations",
+                  "type": "docs"
+                },
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-agents-6",
+      "title": "Memory and Context Management",
+      "order": 6,
+      "techs": [
+        "Context Engineering",
+        "Memory",
+        "Summarization"
+      ],
+      "description": "Decide what the model sees at each step. You will manage short-term context, summarize long histories, add persistent memory across sessions, and control cost and quality as conversations grow.",
+      "topics": [
+        "Context engineering: what goes into each call",
+        "Truncation, summarization and sliding windows",
+        "Short-term versus long-term memory",
+        "Storing and retrieving user facts",
+        "Scratchpads and notes for long tasks",
+        "Memory privacy, correction and deletion"
+      ],
+      "resources": [
+        {
+          "label": "Effective context engineering",
+          "platform": "anthropic.com",
+          "type": "article"
+        },
+        {
+          "label": "Generative Agents paper",
+          "platform": "arxiv.org",
+          "type": "article"
+        },
+        {
+          "label": "Claude context windows",
+          "platform": "docs.anthropic.com",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Give your chat agent memory: keep a rolling summary of the conversation, extract durable user facts into a database with timestamps, retrieve only relevant facts per turn, let the user view and delete memories, and compare answer quality with and without memory on 20 multi-session scenarios.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Context",
+          "children": [
+            {
+              "title": "Context engineering",
+              "description": "The agent's quality depends on assembling the right instructions, tools, history and retrieved facts for each call, not on one clever prompt.",
+              "resources": [
+                {
+                  "label": "Anthropic - Effective context engineering",
+                  "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+                  "type": "docs"
+                },
+                {
+                  "label": "Prompt Engineering Guide",
+                  "url": "https://www.promptingguide.ai/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Truncation and summarization",
+              "description": "Drop or compress old turns before the window fills. Keep the system prompt, recent turns and a summary of what came before.",
+              "resources": [
+                {
+                  "label": "Claude docs - Context windows",
+                  "url": "https://docs.anthropic.com/en/docs/build-with-claude/context-windows",
+                  "type": "docs"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Cost",
+          "children": [
+            {
+              "title": "Token budgets",
+              "description": "Decide how many tokens each part of the prompt may use, and measure which parts of context actually improve answers.",
+              "resources": [
+                {
+                  "label": "Claude docs - Prompt caching",
+                  "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching",
+                  "type": "docs"
+                },
+                {
+                  "label": "Prompt Engineering Guide",
+                  "url": "https://www.promptingguide.ai/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Caching stable context",
+              "description": "Put unchanging content first so prompt caching can reuse it across turns.",
+              "resources": [
+                {
+                  "label": "Claude docs - Prompt caching",
+                  "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching",
+                  "type": "docs"
+                },
+                {
+                  "label": "OpenAI - Prompt caching",
+                  "url": "https://platform.openai.com/docs/guides/prompt-caching",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Long-Term Memory",
+          "children": [
+            {
+              "title": "Extracting and storing facts",
+              "description": "After a conversation, extract stable facts and preferences into structured records with a source and time rather than saving raw transcripts.",
+              "resources": [
+                {
+                  "label": "Generative Agents paper",
+                  "url": "https://arxiv.org/abs/2304.03442",
+                  "type": "article"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Retrieving relevant memory",
+              "description": "Search memories with embeddings and recency so the agent sees only what matters for the current question.",
+              "resources": [
+                {
+                  "label": "Generative Agents paper",
+                  "url": "https://arxiv.org/abs/2304.03442",
+                  "type": "article"
+                },
+                {
+                  "label": "pgvector",
+                  "url": "https://github.com/pgvector/pgvector",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Trust",
+          "children": [
+            {
+              "title": "Privacy, correction and deletion",
+              "description": "Users should see what is remembered, correct it and delete it. Store the least you need and honor deletion requests fully.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                },
+                {
+                  "label": "GDPR overview",
+                  "url": "https://gdpr.eu/what-is-gdpr/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Memory poisoning",
+              "description": "Anything saved to memory can later be read as instructions. Treat memory written from untrusted content as untrusted too.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                },
+                {
+                  "label": "Simon Willison - Prompt injection",
+                  "url": "https://simonwillison.net/series/prompt-injection/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-agents-7",
+      "title": "Model Context Protocol and Tool Ecosystems",
+      "order": 7,
+      "techs": [
+        "MCP",
+        "Tool Servers",
+        "OAuth"
+      ],
+      "description": "Use the open standard for connecting models to tools and data. You will consume existing MCP servers, build your own, and handle authentication, permissions and trust when tools come from outside.",
+      "topics": [
+        "MCP architecture: hosts, clients and servers",
+        "Tools, resources and prompts",
+        "Building an MCP server with an SDK",
+        "Transports: stdio and streamable HTTP",
+        "Authorization and securing tool access",
+        "Trusting third-party servers"
+      ],
+      "resources": [
+        {
+          "label": "Model Context Protocol documentation",
+          "platform": "modelcontextprotocol.io",
+          "type": "docs"
+        },
+        {
+          "label": "MCP servers repository",
+          "platform": "GitHub",
+          "type": "article"
+        },
+        {
+          "label": "MCP specification",
+          "platform": "modelcontextprotocol.io",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Build an MCP server that exposes your task database as two tools and one resource, connect it to a client, add authentication, write tests that call the tools directly, and review the risks if someone installed it from an untrusted source.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Architecture",
+          "children": [
+            {
+              "title": "Hosts, clients and servers",
+              "description": "A host application runs MCP clients, each connected to one server that exposes capabilities. The protocol standardizes the conversation between them.",
+              "resources": [
+                {
+                  "label": "Model Context Protocol",
+                  "url": "https://modelcontextprotocol.io/",
+                  "type": "docs"
+                },
+                {
+                  "label": "MCP architecture",
+                  "url": "https://modelcontextprotocol.io/docs/learn/architecture",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Tools, resources and prompts",
+              "description": "Tools perform actions, resources provide data to read and prompts are reusable templates. Choose the type that matches how the capability is used.",
+              "resources": [
+                {
+                  "label": "Model Context Protocol",
+                  "url": "https://modelcontextprotocol.io/",
+                  "type": "docs"
+                },
+                {
+                  "label": "MCP specification",
+                  "url": "https://modelcontextprotocol.io/specification",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Using Servers",
+          "children": [
+            {
+              "title": "Connecting existing servers",
+              "description": "Many ready-made servers exist for files, databases and APIs. Review what each one can do before enabling it.",
+              "resources": [
+                {
+                  "label": "MCP servers - GitHub",
+                  "url": "https://github.com/modelcontextprotocol/servers",
+                  "type": "article"
+                },
+                {
+                  "label": "Model Context Protocol",
+                  "url": "https://modelcontextprotocol.io/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Choosing a transport",
+              "description": "stdio runs a local server as a child process; streamable HTTP serves remote clients. The choice affects deployment and security.",
+              "resources": [
+                {
+                  "label": "MCP transports",
+                  "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/transports",
+                  "type": "docs"
+                },
+                {
+                  "label": "Model Context Protocol",
+                  "url": "https://modelcontextprotocol.io/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Building Servers",
+          "children": [
+            {
+              "title": "Using an SDK",
+              "description": "Official SDKs handle the protocol, so you describe tools with schemas and implement handlers.",
+              "resources": [
+                {
+                  "label": "MCP SDKs",
+                  "url": "https://modelcontextprotocol.io/docs/sdk",
+                  "type": "docs"
+                },
+                {
+                  "label": "Model Context Protocol",
+                  "url": "https://modelcontextprotocol.io/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Testing and debugging",
+              "description": "Call your tools directly in tests and use the MCP Inspector to see exactly what a client sees.",
+              "resources": [
+                {
+                  "label": "MCP Inspector",
+                  "url": "https://modelcontextprotocol.io/docs/tools/inspector",
+                  "type": "docs"
+                },
+                {
+                  "label": "Model Context Protocol",
+                  "url": "https://modelcontextprotocol.io/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Security",
+          "children": [
+            {
+              "title": "Authorization",
+              "description": "Remote servers should authenticate clients, commonly with OAuth, and enforce per-user permissions in the server, not in the prompt.",
+              "resources": [
+                {
+                  "label": "MCP authorization",
+                  "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization",
+                  "type": "docs"
+                },
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Trusting third-party tools",
+              "description": "A malicious tool description can instruct the model. Pin versions, review descriptions and limit what each server can reach.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                },
+                {
+                  "label": "Simon Willison - Prompt injection",
+                  "url": "https://simonwillison.net/series/prompt-injection/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-agents-8",
+      "title": "Multi-Agent Systems and Delegation",
+      "order": 8,
+      "techs": [
+        "Multi-Agent",
+        "Orchestration",
+        "Subagents"
+      ],
+      "description": "Know when several agents beat one. You will split work across specialized agents with an orchestrator, manage handoffs and shared state, control cost, and recognize the failure modes unique to multi-agent systems.",
+      "topics": [
+        "When to use multiple agents",
+        "Orchestrator-worker and handoff patterns",
+        "Subagents with isolated context",
+        "Shared state, messages and artifacts",
+        "Coordination failures and runaway cost",
+        "Human-in-the-loop checkpoints"
+      ],
+      "resources": [
+        {
+          "label": "How we built our multi-agent research system",
+          "platform": "anthropic.com",
+          "type": "article"
+        },
+        {
+          "label": "LangGraph multi-agent guides",
+          "platform": "langchain-ai.github.io",
+          "type": "docs"
+        },
+        {
+          "label": "Building Effective Agents",
+          "platform": "anthropic.com",
+          "type": "article"
+        }
+      ],
+      "challenge": "Build a research assistant with an orchestrator that spawns three parallel subagents, each with its own tools and a fresh context, then merges their findings. Compare quality, tokens and time against a single-agent version on 10 questions and decide which you would ship.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Patterns",
+          "children": [
+            {
+              "title": "Orchestrator and workers",
+              "description": "A lead agent breaks a task into parts, delegates them to workers and combines the results. It suits tasks that split into independent pieces.",
+              "resources": [
+                {
+                  "label": "Anthropic - Multi-agent research system",
+                  "url": "https://www.anthropic.com/engineering/multi-agent-research-system",
+                  "type": "docs"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Handoffs",
+              "description": "One agent transfers the conversation to a specialist with the needed context. Be explicit about what is passed and who owns the reply.",
+              "resources": [
+                {
+                  "label": "LangGraph documentation",
+                  "url": "https://langchain-ai.github.io/langgraph/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Isolation",
+          "children": [
+            {
+              "title": "Subagents with their own context",
+              "description": "A subagent works in a clean context window and returns only a short summary, which keeps the lead agent focused.",
+              "resources": [
+                {
+                  "label": "Anthropic - Multi-agent research system",
+                  "url": "https://www.anthropic.com/engineering/multi-agent-research-system",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code - Subagents",
+                  "url": "https://docs.anthropic.com/en/docs/claude-code/sub-agents",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Tool and permission scoping",
+              "description": "Give each agent only the tools its job needs. Fewer tools means fewer wrong choices and a smaller blast radius.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Coordination",
+          "children": [
+            {
+              "title": "Shared state and artifacts",
+              "description": "Agents share files, database rows or a state object instead of long messages, so work is inspectable and can be resumed.",
+              "resources": [
+                {
+                  "label": "LangGraph documentation",
+                  "url": "https://langchain-ai.github.io/langgraph/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LangGraph concepts",
+                  "url": "https://langchain-ai.github.io/langgraph/concepts/low_level/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Failure modes",
+              "description": "Agents can duplicate work, disagree, loop or spend heavily. Set budgets, give clear roles and stop after a fixed number of rounds.",
+              "resources": [
+                {
+                  "label": "Anthropic - Multi-agent research system",
+                  "url": "https://www.anthropic.com/engineering/multi-agent-research-system",
+                  "type": "docs"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Oversight",
+          "children": [
+            {
+              "title": "Human-in-the-loop",
+              "description": "Pause for human approval before costly or irreversible steps, and let the person edit the plan, not just accept it.",
+              "resources": [
+                {
+                  "label": "LangGraph documentation",
+                  "url": "https://langchain-ai.github.io/langgraph/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Cost control",
+              "description": "More agents means more tokens. Measure cost per task and ask whether the quality gain justifies it.",
+              "resources": [
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Claude docs - Pricing",
+                  "url": "https://docs.anthropic.com/en/docs/about-claude/pricing",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-agents-9",
+      "title": "Evaluating and Testing Agents",
+      "order": 9,
+      "techs": [
+        "Evals",
+        "LLM-as-Judge",
+        "Regression Tests"
+      ],
+      "description": "Know whether your agent is any good. You will build datasets, write graders including model-based ones, test tool use and trajectories, and run evaluations in CI so changes cannot silently make things worse.",
+      "topics": [
+        "Why evals are the core of agent development",
+        "Building and growing a test dataset",
+        "Code graders, human review and LLM-as-judge",
+        "Evaluating tool calls and whole trajectories",
+        "Regression testing prompts and models in CI",
+        "Online monitoring and feedback loops"
+      ],
+      "resources": [
+        {
+          "label": "Your AI Product Needs Evals",
+          "platform": "hamel.dev",
+          "type": "article"
+        },
+        {
+          "label": "Demystifying evals for AI agents",
+          "platform": "anthropic.com",
+          "type": "article"
+        },
+        {
+          "label": "Langfuse documentation",
+          "platform": "langfuse.com",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Create a dataset of 40 realistic tasks for your agent with expected outcomes, write a mix of code-based and LLM-judge graders, calibrate the judge against 15 human-labeled cases, and run the suite in CI with a pass-rate threshold that blocks a regression.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Datasets",
+          "children": [
+            {
+              "title": "Building an eval set",
+              "description": "Start with real failures and typical tasks, label the expected outcome, and add every new bug as a test case. The dataset grows with the product.",
+              "resources": [
+                {
+                  "label": "Hamel Husain - Evals",
+                  "url": "https://hamel.dev/blog/posts/evals/",
+                  "type": "article"
+                },
+                {
+                  "label": "Anthropic - Develop tests",
+                  "url": "https://docs.anthropic.com/en/docs/test-and-evaluate/develop-tests",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Realistic distribution",
+              "description": "Evaluate on the kinds of input users really send, including messy and adversarial ones, not only clean examples.",
+              "resources": [
+                {
+                  "label": "Hamel Husain - Evals",
+                  "url": "https://hamel.dev/blog/posts/evals/",
+                  "type": "article"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Graders",
+          "children": [
+            {
+              "title": "Code-based graders",
+              "description": "Where an answer can be checked by code, such as format, exact value or a tool call, use code. It is fast, cheap and exact.",
+              "resources": [
+                {
+                  "label": "Anthropic - Develop tests",
+                  "url": "https://docs.anthropic.com/en/docs/test-and-evaluate/develop-tests",
+                  "type": "docs"
+                },
+                {
+                  "label": "Promptfoo",
+                  "url": "https://www.promptfoo.dev/docs/intro/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "LLM-as-judge",
+              "description": "A model can grade open-ended answers against a rubric. Calibrate it against human labels and watch for bias toward longer answers.",
+              "resources": [
+                {
+                  "label": "Judging LLM-as-a-Judge paper",
+                  "url": "https://arxiv.org/abs/2306.05685",
+                  "type": "article"
+                },
+                {
+                  "label": "Hamel Husain - Evals",
+                  "url": "https://hamel.dev/blog/posts/evals/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Agent-Specific",
+          "children": [
+            {
+              "title": "Evaluating trajectories",
+              "description": "Check not only the final answer but whether the agent chose sensible tools, avoided unnecessary steps and stayed within limits.",
+              "resources": [
+                {
+                  "label": "Anthropic - Demystifying evals for agents",
+                  "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+                  "type": "docs"
+                },
+                {
+                  "label": "LangGraph documentation",
+                  "url": "https://langchain-ai.github.io/langgraph/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Non-determinism",
+              "description": "Run each case several times and report a pass rate, not a single pass or fail.",
+              "resources": [
+                {
+                  "label": "Anthropic - Develop tests",
+                  "url": "https://docs.anthropic.com/en/docs/test-and-evaluate/develop-tests",
+                  "type": "docs"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Operations",
+          "children": [
+            {
+              "title": "Evals in CI",
+              "description": "Run the suite on every prompt, model or tool change and fail the build on a drop beyond a threshold.",
+              "resources": [
+                {
+                  "label": "Promptfoo - CI/CD",
+                  "url": "https://www.promptfoo.dev/docs/integrations/ci-cd/",
+                  "type": "docs"
+                },
+                {
+                  "label": "GitHub Actions documentation",
+                  "url": "https://docs.github.com/en/actions",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Online feedback",
+              "description": "Log real conversations, collect thumbs and corrections, and turn the failures into new eval cases.",
+              "resources": [
+                {
+                  "label": "Langfuse documentation",
+                  "url": "https://langfuse.com/docs",
+                  "type": "docs"
+                },
+                {
+                  "label": "Hamel Husain - Evals",
+                  "url": "https://hamel.dev/blog/posts/evals/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-agents-10",
+      "title": "Safety, Guardrails, and Prompt Injection",
+      "order": 10,
+      "techs": [
+        "Prompt Injection",
+        "Guardrails",
+        "OWASP LLM"
+      ],
+      "description": "Build agents that stay safe when inputs are hostile. You will understand prompt injection and why it is hard, design with least privilege, add layered guardrails, and plan for abuse and misuse.",
+      "topics": [
+        "Direct and indirect prompt injection",
+        "The lethal trifecta: private data, untrusted content, outbound action",
+        "Least privilege and sandboxing tool execution",
+        "Input and output guardrails and moderation",
+        "Data leakage, secrets and PII handling",
+        "Red teaming and abuse monitoring"
+      ],
+      "resources": [
+        {
+          "label": "OWASP Top 10 for LLM Applications",
+          "platform": "genai.owasp.org",
+          "type": "article"
+        },
+        {
+          "label": "Prompt injection series",
+          "platform": "simonwillison.net",
+          "type": "article"
+        },
+        {
+          "label": "Claude safety guidance",
+          "platform": "docs.anthropic.com",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Take the agent from earlier layers and attack it: plant malicious instructions in a web page and an email it reads, try to make it leak data or call a write tool, then fix it with least-privilege tools, confirmation steps and output checks, re-running your attacks to prove each fix.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Threats",
+          "children": [
+            {
+              "title": "Prompt injection",
+              "description": "Text the model reads can contain instructions it may follow. Indirect injection arrives through web pages, documents and tool results, not only from the user.",
+              "resources": [
+                {
+                  "label": "Simon Willison - Prompt injection",
+                  "url": "https://simonwillison.net/series/prompt-injection/",
+                  "type": "article"
+                },
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "The lethal trifecta",
+              "description": "An agent with access to private data, exposure to untrusted content and the ability to send data out can be tricked into leaking. Remove at least one of the three.",
+              "resources": [
+                {
+                  "label": "Simon Willison - The lethal trifecta",
+                  "url": "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/",
+                  "type": "article"
+                },
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Other Risks",
+          "children": [
+            {
+              "title": "Data leakage",
+              "description": "Models may repeat secrets or personal data from context. Keep secrets out of prompts and filter sensitive output.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                },
+                {
+                  "label": "OWASP - Secrets management",
+                  "url": "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Excessive agency",
+              "description": "An agent with broad permissions turns a small mistake into a large one. Give it only the access and autonomy the task needs.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Defenses",
+          "children": [
+            {
+              "title": "Least privilege and sandboxing",
+              "description": "Run code and tools in isolated environments with narrow credentials and no ambient network access, so a compromised step has limited reach.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                },
+                {
+                  "label": "OWASP - Docker security",
+                  "url": "https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Guardrails and confirmation",
+              "description": "Check inputs and outputs with rules and classifiers, and require human approval for sensitive actions. No single filter is enough.",
+              "resources": [
+                {
+                  "label": "Claude docs - Mitigate jailbreaks and prompt injections",
+                  "url": "https://docs.anthropic.com/en/docs/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
+                  "type": "docs"
+                },
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Process",
+          "children": [
+            {
+              "title": "Red teaming",
+              "description": "Attack your own system regularly with known injection patterns and new ones, and keep successful attacks as permanent tests.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                },
+                {
+                  "label": "Promptfoo - Red teaming",
+                  "url": "https://www.promptfoo.dev/docs/red-team/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Abuse monitoring and response",
+              "description": "Log tool calls, watch for unusual patterns and have a way to disable a tool or session quickly.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                },
+                {
+                  "label": "Langfuse documentation",
+                  "url": "https://langfuse.com/docs",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-agents-11",
+      "title": "Observability, Cost, and Latency",
+      "order": 11,
+      "techs": [
+        "Tracing",
+        "OpenTelemetry",
+        "Langfuse"
+      ],
+      "description": "Operate agents like any production service. You will trace every model and tool call, track cost and latency per task, find the slow or expensive step, and optimize without hurting quality.",
+      "topics": [
+        "Tracing agent runs end to end",
+        "Logging prompts, tool calls and outputs safely",
+        "Cost and token accounting per user and task",
+        "Latency: streaming, parallel tools and caching",
+        "Model routing: small models for easy steps",
+        "Dashboards, alerts and debugging a bad run"
+      ],
+      "resources": [
+        {
+          "label": "Langfuse documentation",
+          "platform": "langfuse.com",
+          "type": "docs"
+        },
+        {
+          "label": "OpenTelemetry GenAI semantic conventions",
+          "platform": "opentelemetry.io",
+          "type": "docs"
+        },
+        {
+          "label": "Claude pricing and prompt caching",
+          "platform": "docs.anthropic.com",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Add tracing to your agent so every run shows each model call, tool call, token count and cost. Build a dashboard of cost per task and p95 latency, find the single most expensive step, reduce cost by at least 30 percent using caching and model routing, and confirm eval scores did not drop.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Tracing",
+          "children": [
+            {
+              "title": "Traces for agent runs",
+              "description": "A trace records each model call, tool call and decision in order, so you can replay exactly why an agent did something.",
+              "resources": [
+                {
+                  "label": "Langfuse documentation",
+                  "url": "https://langfuse.com/docs",
+                  "type": "docs"
+                },
+                {
+                  "label": "OpenTelemetry documentation",
+                  "url": "https://opentelemetry.io/docs/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Logging safely",
+              "description": "Prompts and outputs may contain personal data. Redact or restrict access, and set retention limits.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                },
+                {
+                  "label": "Langfuse - Masking",
+                  "url": "https://langfuse.com/docs/observability/features/masking",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Cost",
+          "children": [
+            {
+              "title": "Token and cost accounting",
+              "description": "Track tokens by task, user and step. A single looping run can cost more than a day of normal traffic, so set budgets.",
+              "resources": [
+                {
+                  "label": "Claude docs - Pricing",
+                  "url": "https://docs.anthropic.com/en/docs/about-claude/pricing",
+                  "type": "docs"
+                },
+                {
+                  "label": "Langfuse - Token and cost tracking",
+                  "url": "https://langfuse.com/docs/observability/features/token-and-cost-tracking",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Budgets and limits",
+              "description": "Cap steps, tokens and time per task and per user, and fail clearly when a limit is reached.",
+              "resources": [
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Claude docs - Rate limits",
+                  "url": "https://docs.anthropic.com/en/api/rate-limits",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Latency",
+          "children": [
+            {
+              "title": "Streaming and parallelism",
+              "description": "Stream partial output, run independent tool calls in parallel and avoid sequential waits that add up.",
+              "resources": [
+                {
+                  "label": "Claude docs - Streaming",
+                  "url": "https://docs.anthropic.com/en/api/messages-streaming",
+                  "type": "docs"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Prompt caching",
+              "description": "Caching a long stable prefix reduces both latency and cost on repeated calls.",
+              "resources": [
+                {
+                  "label": "Claude docs - Prompt caching",
+                  "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching",
+                  "type": "docs"
+                },
+                {
+                  "label": "OpenAI - Prompt caching",
+                  "url": "https://platform.openai.com/docs/guides/prompt-caching",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Optimization",
+          "children": [
+            {
+              "title": "Model routing",
+              "description": "Send easy steps such as classification to a small, cheap model and reserve the large one for hard reasoning. Verify with evals.",
+              "resources": [
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Claude docs - Choosing a model",
+                  "url": "https://docs.anthropic.com/en/docs/about-claude/models/overview",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Debugging a bad run",
+              "description": "Open the trace, find the first wrong step, and turn it into a test case. Most agent bugs are bad context or tool results, not model failures.",
+              "resources": [
+                {
+                  "label": "Langfuse documentation",
+                  "url": "https://langfuse.com/docs",
+                  "type": "docs"
+                },
+                {
+                  "label": "Hamel Husain - Evals",
+                  "url": "https://hamel.dev/blog/posts/evals/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-agents-12",
+      "title": "Shipping Agents: Deployment, Reliability, and Human Oversight",
+      "order": 12,
+      "techs": [
+        "Deployment",
+        "Queues",
+        "Durable Execution"
+      ],
+      "description": "Take an agent from a notebook to a service people depend on. You will run long tasks reliably, handle failures and resumption, version and roll out changes safely, and design the human experience around an autonomous system.",
+      "topics": [
+        "Running agents as background jobs",
+        "Durable execution, checkpoints and resuming",
+        "Timeouts, retries and idempotent tool calls",
+        "Versioning prompts, tools and models; staged rollout",
+        "User experience: showing progress and asking for approval",
+        "Incident response and graceful fallback"
+      ],
+      "resources": [
+        {
+          "label": "Building Effective Agents",
+          "platform": "anthropic.com",
+          "type": "article"
+        },
+        {
+          "label": "LangGraph persistence",
+          "platform": "langchain-ai.github.io",
+          "type": "docs"
+        },
+        {
+          "label": "Temporal documentation",
+          "platform": "temporal.io",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Deploy your agent as a service: accept tasks through an API, run them as background jobs with checkpoints so a crash resumes mid-task, stream progress to the user, require approval for risky steps, ship a prompt change to 10 percent of traffic behind a flag with an eval gate, and write the incident runbook.",
+      "estimatedTime": "3 weeks",
+      "sideLeft": [
+        {
+          "title": "Running Long Tasks",
+          "children": [
+            {
+              "title": "Background jobs and queues",
+              "description": "Agent runs can take minutes, so do not hold an HTTP request open. Accept the task, run it from a queue and let clients poll or stream status.",
+              "resources": [
+                {
+                  "label": "BullMQ documentation",
+                  "url": "https://docs.bullmq.io/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Celery documentation",
+                  "url": "https://docs.celeryq.dev/en/stable/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Durable execution and checkpoints",
+              "description": "Saving state after each step lets a run resume after a crash or a deploy instead of starting over.",
+              "resources": [
+                {
+                  "label": "LangGraph - Persistence",
+                  "url": "https://langchain-ai.github.io/langgraph/concepts/persistence/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Temporal documentation",
+                  "url": "https://docs.temporal.io/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Correctness",
+          "children": [
+            {
+              "title": "Idempotent tool calls",
+              "description": "A resumed run may repeat a step. Make side-effecting tools safe to call twice with idempotency keys.",
+              "resources": [
+                {
+                  "label": "Stripe - Idempotent requests",
+                  "url": "https://docs.stripe.com/api/idempotent_requests",
+                  "type": "docs"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Timeouts and fallbacks",
+              "description": "Bound every step, and decide what happens when the model API is down: queue, retry later or degrade to a simpler path.",
+              "resources": [
+                {
+                  "label": "AWS Builders' Library - Timeouts and retries",
+                  "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Change Management",
+          "children": [
+            {
+              "title": "Versioning and rollout",
+              "description": "Prompts, tools and model versions all change behavior. Version them together, run evals before release and roll out gradually behind flags.",
+              "resources": [
+                {
+                  "label": "Hamel Husain - Evals",
+                  "url": "https://hamel.dev/blog/posts/evals/",
+                  "type": "article"
+                },
+                {
+                  "label": "Martin Fowler - Feature toggles",
+                  "url": "https://martinfowler.com/articles/feature-toggles.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Rollback",
+              "description": "Keep the previous prompt and model configuration deployable so a bad release can be reverted in minutes.",
+              "resources": [
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Google SRE Book - Release engineering",
+                  "url": "https://sre.google/sre-book/release-engineering/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Human Experience",
+          "children": [
+            {
+              "title": "Progress and approval design",
+              "description": "Show what the agent is doing and let people approve, edit or stop it. Trust grows when users can see and steer the work.",
+              "resources": [
+                {
+                  "label": "Building Effective Agents - Anthropic",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Anthropic - Building Effective Agents",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Incidents and runbooks",
+              "description": "Decide in advance how to pause an agent, who is paged and how to tell users, then rehearse it.",
+              "resources": [
+                {
+                  "label": "Google SRE Book - Incident response",
+                  "url": "https://sre.google/sre-book/managing-incidents/",
+                  "type": "docs"
+                },
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   ]
 }

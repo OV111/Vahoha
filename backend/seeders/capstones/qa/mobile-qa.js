@@ -23,8 +23,8 @@ export default {
   categoryId: "qa",
   slug: "mobile-qa-appium-test-framework",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Cross-Platform Mobile Automation Framework",
   summary:
     "Build a mobile test automation framework using Appium, Python, and Pytest. " +

@@ -23,8 +23,8 @@ export default {
   categoryId: "database",
   slug: "graph-db-engineer-fraud-analytics",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title:
     "Enterprise Graph Analytics Engine for Financial Fraud Network Detection",
   summary:

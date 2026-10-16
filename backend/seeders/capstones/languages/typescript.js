@@ -23,8 +23,8 @@ export default {
   categoryId: "languages",
   slug: "typescript-type-safe-orm",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Type-Safe In-Memory Query Builder & ORM Core",
   summary:
     "Build a lightweight, strictly typed query builder and in-memory repository layer in TypeScript. " +

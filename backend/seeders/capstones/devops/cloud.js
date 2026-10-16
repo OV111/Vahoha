@@ -23,8 +23,8 @@ export default {
   categoryId: "devops",
   slug: "cloud-multi-tier-iac-observability",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title:
     "Production-grade multi-tier Cloud Infrastructure with Terraform & LocalStack",
   summary:

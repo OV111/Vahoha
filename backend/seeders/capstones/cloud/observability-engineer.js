@@ -23,8 +23,8 @@ export default {
   categoryId: "cloud",
   slug: "observability-engineer-telemetry-platform",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title:
     "Full-Stack Observability Platform with OpenTelemetry, Prometheus, and Grafana",
   summary:

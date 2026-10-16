@@ -22,10 +22,12 @@
 import { ObjectId } from "mongodb";
 
 export const isPathComplete = async (db, userId, trackId) => {
-  // 1. Every layer of the track, in roadmap order (so `missing` reads naturally).
+  // 1. Every REQUIRED layer of the track, in roadmap order (so `missing` reads
+  //    naturally). `$ne: false` keeps layers seeded before the field existed
+  //    required; only an explicit `required: false` makes a layer optional.
   const layers = await db
     .collection("roadmap_layers")
-    .find({ trackId }, { projection: { layerId: 1, _id: 0 } })
+    .find({ trackId, required: { $ne: false } }, { projection: { layerId: 1, _id: 0 } })
     .sort({ order: 1 })
     .toArray();
 

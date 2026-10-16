@@ -23,8 +23,8 @@ export default {
   categoryId: "cloud",
   slug: "edge-engineer-global-routing-platform",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Edge-Native API Gateway & State Management Platform",
   summary:
     "Build a distributed, low-latency edge computing application deployed on Cloudflare Workers. " +

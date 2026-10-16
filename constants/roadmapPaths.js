@@ -1,6 +1,12 @@
 export const TRACKS = {
   fullstack: [
     {
+      id: "frontend-dev",
+      title: "Frontend Developer",
+      available: true,
+      techs: ["HTML", "CSS", "TypeScript", "React", "Accessibility"],
+    },
+    {
       id: "mern",
       title: "MERN Developer",
       available: true,
@@ -85,27 +91,17 @@ export const TRACKS = {
       techs: ["Remix", "React", "TypeScript", "Vite"],
     },
   ],
-  // Coming soon: listed so learners can see what's planned; no content yet.
-  frontend: [
-    {
-      id: "frontend-dev",
-      title: "Frontend Developer",
-      available: false,
-      techs: ["HTML", "CSS", "TypeScript", "React", "Accessibility"],
-    },
-  ],
-  // Coming soon: listed so learners can see what's planned; no content yet.
   cs: [
     {
       id: "dsa",
       title: "Data Structures & Algorithms",
-      available: false,
+      available: true,
       techs: ["Big O", "Arrays & Hashing", "Trees & Graphs", "Dynamic Programming", "Interview Patterns"],
     },
     {
       id: "system-design",
       title: "System Design",
-      available: false,
+      available: true,
       techs: ["Scalability", "Caching", "Queues", "Databases", "Trade-offs"],
     },
   ],
@@ -303,7 +299,7 @@ export const TRACKS = {
     {
       id: "ai-agents",
       title: "AI Agents Engineer",
-      available: false,
+      available: true,
       techs: ["LLM APIs", "Tool Use", "RAG", "Evals", "MCP"],
     },
   ],

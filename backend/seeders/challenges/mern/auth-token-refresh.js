@@ -44,12 +44,12 @@ test('attaches_token', () => {
   const fetchFn = async (url, o) => {
     const auth = o.headers && o.headers.Authorization;
     calls.push(auth);
-    await new Promise((r) => setTimeout(r, 1));
+    await Promise.resolve();
     return { status: isValid(auth) ? 200 : 401, auth, url };
   };
   const refreshToken = async () => {
     refreshes++;
-    await new Promise((r) => setTimeout(r, 5));
+    for (let i = 0; i < 5; i++) await Promise.resolve();
     if (opts.refreshFails) throw new Error('refresh denied');
     token = 't' + (++n);
     return token;
@@ -66,12 +66,12 @@ test('refreshes', () => {
   const fetchFn = async (url, o) => {
     const auth = o.headers && o.headers.Authorization;
     calls.push(auth);
-    await new Promise((r) => setTimeout(r, 1));
+    await Promise.resolve();
     return { status: isValid(auth) ? 200 : 401, auth, url };
   };
   const refreshToken = async () => {
     refreshes++;
-    await new Promise((r) => setTimeout(r, 5));
+    for (let i = 0; i < 5; i++) await Promise.resolve();
     if (opts.refreshFails) throw new Error('refresh denied');
     token = 't' + (++n);
     return token;
@@ -93,12 +93,12 @@ const h = mk((a) => a === 'Bearer t1'); return h.request('/x').then((r) => { exp
   const fetchFn = async (url, o) => {
     const auth = o.headers && o.headers.Authorization;
     calls.push(auth);
-    await new Promise((r) => setTimeout(r, 1));
+    await Promise.resolve();
     return { status: isValid(auth) ? 200 : 401, auth, url };
   };
   const refreshToken = async () => {
     refreshes++;
-    await new Promise((r) => setTimeout(r, 5));
+    for (let i = 0; i < 5; i++) await Promise.resolve();
     if (opts.refreshFails) throw new Error('refresh denied');
     token = 't' + (++n);
     return token;
@@ -116,12 +116,12 @@ assert(seen[0].method === 'POST' && seen[0].body === 'b', 'other options pass th
   const fetchFn = async (url, o) => {
     const auth = o.headers && o.headers.Authorization;
     calls.push(auth);
-    await new Promise((r) => setTimeout(r, 1));
+    await Promise.resolve();
     return { status: isValid(auth) ? 200 : 401, auth, url };
   };
   const refreshToken = async () => {
     refreshes++;
-    await new Promise((r) => setTimeout(r, 5));
+    for (let i = 0; i < 5; i++) await Promise.resolve();
     if (opts.refreshFails) throw new Error('refresh denied');
     token = 't' + (++n);
     return token;
@@ -138,12 +138,12 @@ assert(!('Authorization' in (seen[0] || {})), 'no Authorization header');` },
   const fetchFn = async (url, o) => {
     const auth = o.headers && o.headers.Authorization;
     calls.push(auth);
-    await new Promise((r) => setTimeout(r, 1));
+    await Promise.resolve();
     return { status: isValid(auth) ? 200 : 401, auth, url };
   };
   const refreshToken = async () => {
     refreshes++;
-    await new Promise((r) => setTimeout(r, 5));
+    for (let i = 0; i < 5; i++) await Promise.resolve();
     if (opts.refreshFails) throw new Error('refresh denied');
     token = 't' + (++n);
     return token;
@@ -161,12 +161,12 @@ assert((await request('/x')).status === 500, '500 is returned, not retried');` }
   const fetchFn = async (url, o) => {
     const auth = o.headers && o.headers.Authorization;
     calls.push(auth);
-    await new Promise((r) => setTimeout(r, 1));
+    await Promise.resolve();
     return { status: isValid(auth) ? 200 : 401, auth, url };
   };
   const refreshToken = async () => {
     refreshes++;
-    await new Promise((r) => setTimeout(r, 5));
+    for (let i = 0; i < 5; i++) await Promise.resolve();
     if (opts.refreshFails) throw new Error('refresh denied');
     token = 't' + (++n);
     return token;
@@ -184,12 +184,12 @@ assert(h.stats().refreshes === 1, 'one refresh');` },
   const fetchFn = async (url, o) => {
     const auth = o.headers && o.headers.Authorization;
     calls.push(auth);
-    await new Promise((r) => setTimeout(r, 1));
+    await Promise.resolve();
     return { status: isValid(auth) ? 200 : 401, auth, url };
   };
   const refreshToken = async () => {
     refreshes++;
-    await new Promise((r) => setTimeout(r, 5));
+    for (let i = 0; i < 5; i++) await Promise.resolve();
     if (opts.refreshFails) throw new Error('refresh denied');
     token = 't' + (++n);
     return token;
@@ -207,12 +207,12 @@ assert(h.calls.filter((c) => c === 'Bearer t1').length === 3, 'each retried once
   const fetchFn = async (url, o) => {
     const auth = o.headers && o.headers.Authorization;
     calls.push(auth);
-    await new Promise((r) => setTimeout(r, 1));
+    await Promise.resolve();
     return { status: isValid(auth) ? 200 : 401, auth, url };
   };
   const refreshToken = async () => {
     refreshes++;
-    await new Promise((r) => setTimeout(r, 5));
+    for (let i = 0; i < 5; i++) await Promise.resolve();
     if (opts.refreshFails) throw new Error('refresh denied');
     token = 't' + (++n);
     return token;
@@ -230,12 +230,12 @@ assert(h.stats().logouts === 0, 'not a logout');` },
   const fetchFn = async (url, o) => {
     const auth = o.headers && o.headers.Authorization;
     calls.push(auth);
-    await new Promise((r) => setTimeout(r, 1));
+    await Promise.resolve();
     return { status: isValid(auth) ? 200 : 401, auth, url };
   };
   const refreshToken = async () => {
     refreshes++;
-    await new Promise((r) => setTimeout(r, 5));
+    for (let i = 0; i < 5; i++) await Promise.resolve();
     if (opts.refreshFails) throw new Error('refresh denied');
     token = 't' + (++n);
     return token;
@@ -246,10 +246,10 @@ assert(h.stats().logouts === 0, 'not a logout');` },
 const calls = []; let token = 't0'; let refreshes = 0;
 const fetchFn = async (url, o) => {
   const auth = o.headers.Authorization; calls.push(url + ':' + auth);
-  await new Promise((r) => setTimeout(r, url === '/slow' ? 40 : 1));
+  for (let i = 0; i < (url === '/slow' ? 60 : 1); i++) await Promise.resolve();
   return { status: auth === 'Bearer t1' ? 200 : 401 };
 };
-const refreshToken = async () => { refreshes++; await new Promise((r) => setTimeout(r, 5)); token = 't1'; return 't1'; };
+const refreshToken = async () => { refreshes++; for (let i = 0; i < 5; i++) await Promise.resolve(); token = 't1'; return 't1'; };
 const request = createAuthFetch({ fetchFn, getToken: () => token, refreshToken, onLogout() {} });
 const [fast, slow] = await Promise.all([request('/fast'), request('/slow')]);
 assert(fast.status === 200 && slow.status === 200, 'both end up fine');
@@ -260,12 +260,12 @@ assert(calls.includes('/slow:Bearer t1'), 'and was retried with it: ' + calls);`
   const fetchFn = async (url, o) => {
     const auth = o.headers && o.headers.Authorization;
     calls.push(auth);
-    await new Promise((r) => setTimeout(r, 1));
+    await Promise.resolve();
     return { status: isValid(auth) ? 200 : 401, auth, url };
   };
   const refreshToken = async () => {
     refreshes++;
-    await new Promise((r) => setTimeout(r, 5));
+    for (let i = 0; i < 5; i++) await Promise.resolve();
     if (opts.refreshFails) throw new Error('refresh denied');
     token = 't' + (++n);
     return token;
@@ -284,12 +284,12 @@ assert(h.stats().refreshes === 1, 'still one refresh');` },
   const fetchFn = async (url, o) => {
     const auth = o.headers && o.headers.Authorization;
     calls.push(auth);
-    await new Promise((r) => setTimeout(r, 1));
+    await Promise.resolve();
     return { status: isValid(auth) ? 200 : 401, auth, url };
   };
   const refreshToken = async () => {
     refreshes++;
-    await new Promise((r) => setTimeout(r, 5));
+    for (let i = 0; i < 5; i++) await Promise.resolve();
     if (opts.refreshFails) throw new Error('refresh denied');
     token = 't' + (++n);
     return token;
@@ -309,12 +309,12 @@ assert(h.stats().refreshes === 2 && h.getToken() === 't2', 'refreshing flag was 
   const fetchFn = async (url, o) => {
     const auth = o.headers && o.headers.Authorization;
     calls.push(auth);
-    await new Promise((r) => setTimeout(r, 1));
+    await Promise.resolve();
     return { status: isValid(auth) ? 200 : 401, auth, url };
   };
   const refreshToken = async () => {
     refreshes++;
-    await new Promise((r) => setTimeout(r, 5));
+    for (let i = 0; i < 5; i++) await Promise.resolve();
     if (opts.refreshFails) throw new Error('refresh denied');
     token = 't' + (++n);
     return token;
@@ -332,12 +332,12 @@ assert(h.stats().refreshes === 1 && h.stats().logouts === 1, 'one refresh attemp
   const fetchFn = async (url, o) => {
     const auth = o.headers && o.headers.Authorization;
     calls.push(auth);
-    await new Promise((r) => setTimeout(r, 1));
+    await Promise.resolve();
     return { status: isValid(auth) ? 200 : 401, auth, url };
   };
   const refreshToken = async () => {
     refreshes++;
-    await new Promise((r) => setTimeout(r, 5));
+    for (let i = 0; i < 5; i++) await Promise.resolve();
     if (opts.refreshFails) throw new Error('refresh denied');
     token = 't' + (++n);
     return token;

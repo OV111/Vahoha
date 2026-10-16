@@ -4,9 +4,10 @@ import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Clock, ChevronRight, ChevronLeft, CheckCircle2, XCircle,
-  RotateCcw, ArrowLeft, Loader2, AlertTriangle, Timer,
+  RotateCcw, ArrowLeft, Loader2, AlertTriangle, Timer, ListChecks, Eye,
 } from "lucide-react";
 import { API_BASE_URL, authHeaders } from "../../../constants/api";
+import { EXAM_RULES } from "../../../constants/exam";
 import useRoadmapStore from "../../stores/useRoadmapStore";
 import InlineTeachBack from "./components/InlineTeachBack";
 
@@ -193,7 +194,73 @@ const ResultScreen = ({ result, passThreshold, onRetry, onBack, path, layer }) =
 };
 
 // ── Main exam page ────────────────────────────────────────────
+// ── Intro screen ──────────────────────────────────────────────
+// Shown before anything is generated: generating an exam starts the clock and
+// uses up questions the learner hasn't seen yet, so it only happens on Start.
+const ExamIntro = ({ onStart, onBack }) => {
+  const { questionsPerExam, timeLimitSecs, passThreshold, maxAttemptsPerDay, cooldownAfterFailMins } =
+    EXAM_RULES;
+  const rules = [
+    { Icon: ListChecks, text: `${questionsPerExam} multiple-choice questions on this layer.` },
+    {
+      Icon: Clock,
+      text: `${timeLimitSecs / 60} minutes. The clock starts when you press Start and doesn't pause. If it runs out, the answers you've given so far are submitted.`,
+    },
+    { Icon: CheckCircle2, text: `Score ${passThreshold}% or more to pass and unlock the next layer.` },
+    {
+      Icon: RotateCcw,
+      text: `If you don't pass, you can retry after ${cooldownAfterFailMins} minutes, up to ${maxAttemptsPerDay} attempts a day on this layer. Retries use questions you haven't seen yet where possible.`,
+    },
+    { Icon: Eye, text: "Switching tabs or pasting is noted for review. It never changes your score." },
+    { Icon: AlertTriangle, text: "Leaving the page in the middle loses your progress." },
+  ];
+
+  return (
+    <motion.div
+      className="min-h-dvh flex items-center justify-center px-6 py-10"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
+      <div className="w-full max-w-lg">
+        <p className="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-1">Layer test</p>
+        <h1 className="text-2xl font-semibold text-neutral-100 mb-6">Before you start</h1>
+        <ul className="space-y-4 mb-8">
+          {rules.map(({ Icon, text }) => (
+            <li key={text} className="flex gap-3 text-sm text-neutral-300">
+              <Icon size={16} className="mt-0.5 shrink-0 text-purple-400" aria-hidden="true" />
+              {text}
+            </li>
+          ))}
+        </ul>
+        {/* Stacked on phones (Start on top, the main action), side by side from sm up. */}
+        <div className="flex flex-col-reverse gap-3 sm:flex-row">
+          <button
+            onClick={onBack}
+            className="flex min-h-11 items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-neutral-700 text-neutral-400 hover:text-neutral-200 hover:border-neutral-500 text-sm transition-colors"
+          >
+            <ArrowLeft size={14} /> Back to Roadmap
+          </button>
+          <button
+            onClick={onStart}
+            className="flex min-h-11 items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium transition-colors"
+          >
+            Start test <ChevronRight size={14} />
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// Keyed by path and layer, so moving between two exams starts a fresh intro
+// instead of reusing the previous exam's state.
 export default function ExamPage() {
+  const { layerId } = useParams();
+  const [searchParams] = useSearchParams();
+  return <ExamRunner key={`${searchParams.get("path") ?? ""}:${layerId}`} />;
+}
+
+function ExamRunner() {
   const { layerId } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -202,7 +269,7 @@ export default function ExamPage() {
   // path comes from URL param — safe for direct navigation
   const path = searchParams.get("path") ?? "backend";
 
-  const [loadState, setLoadState] = useState("loading"); // loading | cooldown | error | ready
+  const [loadState, setLoadState] = useState("intro"); // intro | loading | cooldown | error | ready
   const [errorMsg, setErrorMsg] = useState("");
   const [examData, setExamData] = useState(null);
 
@@ -240,7 +307,7 @@ export default function ExamPage() {
         return;
       }
       if (!res.ok) {
-        setErrorMsg(data.message ?? "Failed to load exam.");
+        setErrorMsg(data.message ?? "Failed to load test.");
         setLoadState("error");
         return;
       }
@@ -253,7 +320,8 @@ export default function ExamPage() {
     }
   }, [layerId, path]);
 
-  useEffect(() => { fetchExam(); }, [fetchExam]);
+  // No fetch on mount: the exam is generated when the learner presses Start
+  // on the intro screen (generating it starts the clock).
 
   // React Router keeps the previous page's scroll position on navigation,
   // so jump to the top whenever an exam is entered.
@@ -296,7 +364,7 @@ export default function ExamPage() {
       // Stay on the exam page on failure: the "error" screen's retry would
       // refetch a new exam and throw the learner's answers away.
       if (!res.ok) {
-        setSubmitError(data.message ?? "Failed to submit exam.");
+        setSubmitError(data.message ?? "Failed to submit test.");
         return;
       }
       if (data.passed) setLayerStatus(layerId, "done");
@@ -312,12 +380,16 @@ export default function ExamPage() {
 
   const confirmLeave = () => {
     if (loadState === "ready" && !result) {
-      if (!window.confirm("Leave the exam? Your progress will be lost.")) return;
+      if (!window.confirm("Leave the test? Your progress will be lost.")) return;
     }
     goBack();
   };
 
   // ── Render states ──────────────────────────────────────────
+
+  if (loadState === "intro") {
+    return <ExamIntro onStart={fetchExam} onBack={goBack} />;
+  }
 
   if (loadState === "loading") {
     return (
@@ -426,7 +498,7 @@ export default function ExamPage() {
         </div>
         <div
           role="progressbar"
-          aria-label="Exam progress"
+          aria-label="Test progress"
           aria-valuemin={1}
           aria-valuemax={total}
           aria-valuenow={current + 1}
@@ -507,7 +579,7 @@ export default function ExamPage() {
           className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {submitting && <Loader2 size={14} className="animate-spin" />}
-          {isLast ? "Submit Exam" : "Next"}
+          {isLast ? "Submit Test" : "Next"}
           {!isLast && !submitting && <ChevronRight size={14} />}
         </button>
       </div>

@@ -23,8 +23,8 @@ export default {
   categoryId: "qa",
   slug: "manual-qa-test-suite",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Comprehensive Manual Testing Portfolio & Test Suite",
   summary:
     "Design and execute an end-to-end QA strategy for a web application. You will create structured test plans, " +

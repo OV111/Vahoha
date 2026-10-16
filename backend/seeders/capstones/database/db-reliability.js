@@ -23,8 +23,8 @@ export default {
   categoryId: "database",
   slug: "db-reliability-ops-platform",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title:
     "Database Reliability Platform: Monitoring, Zero-Downtime Migrations & DR Chaos",
   summary:

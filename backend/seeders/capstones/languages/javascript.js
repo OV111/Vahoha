@@ -23,8 +23,8 @@ export default {
   categoryId: "languages",
   slug: "javascript-event-driven-dashboard",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Vanilla JS In-Browser Real-Time Analytics Engine",
   summary:
     "Build a framework-free browser dashboard for real-time data streaming and event analysis. " +

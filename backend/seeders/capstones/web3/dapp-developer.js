@@ -23,8 +23,8 @@ export default {
   categoryId: "web3",
   slug: "dapp-developer-crowdfunding-dapp",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Decentralized Crowdfunding Platform with On-Chain Vaults",
   summary:
     "Build a production-grade decentralized crowdfunding platform consisting of audited smart contracts and a React dApp interface. " +

@@ -23,8 +23,8 @@ export default {
   categoryId: "cybersecurity",
   slug: "grc-analyst-compliance-framework",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Enterprise GRC Compliance & Unified Risk Management Engine",
   summary:
     "Build an automated GRC audit management platform and control mapping engine that ingests evidence, " +

@@ -15,8 +15,8 @@ export default {
   categoryId: "backend",
   slug: "microservices-food-ordering",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Food ordering platform as microservices",
   summary:
     "Split a food-ordering platform into small services — orders, restaurants, payments, notifications " +

@@ -1521,9 +1521,199 @@
       ]
     },
     {
+      "id": "smart-contract-11",
+      "title": "Smart Contract Security and Common Vulnerabilities",
+      "order": 9,
+      "techs": [
+        "Solidity",
+        "EVM",
+        "Foundry"
+      ],
+      "description": "Learn the bugs that have cost real money and how to write contracts that avoid them. You will study reentrancy, access control mistakes, oracle manipulation and front-running, and prove fixes with tests.",
+      "topics": [
+        "Reentrancy and the checks-effects-interactions pattern",
+        "Access control and authorization mistakes",
+        "Integer, rounding and precision pitfalls",
+        "Oracle and price manipulation",
+        "Front-running and MEV",
+        "Writing exploit tests in Foundry"
+      ],
+      "resources": [
+        {
+          "label": "Solidity Docs - Security Considerations",
+          "platform": "docs.soliditylang.org",
+          "type": "docs"
+        },
+        {
+          "label": "Smart Contract Best Practices",
+          "platform": "consensys.github.io",
+          "type": "docs"
+        },
+        {
+          "label": "Ethernaut",
+          "platform": "openzeppelin.com",
+          "type": "article"
+        }
+      ],
+      "challenge": "Take three deliberately vulnerable contracts (reentrancy, broken access control and a manipulable price), write a Foundry test that exploits each one, then fix the contracts and show the exploit tests now fail.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Classic Bugs",
+          "children": [
+            {
+              "title": "Reentrancy",
+              "description": "A contract that sends ETH before updating its state can be called again by the receiver and drained. Update state first and use a reentrancy guard.",
+              "resources": [
+                {
+                  "label": "Security Considerations - Solidity",
+                  "url": "https://docs.soliditylang.org/en/latest/security-considerations.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Smart Contract Best Practices",
+                  "url": "https://consensys.github.io/smart-contract-best-practices/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Access control",
+              "description": "Missing or wrong permission checks on privileged functions are among the most common serious bugs. Use well-tested role-based libraries instead of custom checks.",
+              "resources": [
+                {
+                  "label": "OpenZeppelin Access Control",
+                  "url": "https://docs.openzeppelin.com/contracts/5.x/access-control",
+                  "type": "docs"
+                },
+                {
+                  "label": "SWC Registry",
+                  "url": "https://swcregistry.io/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Numbers and Data",
+          "children": [
+            {
+              "title": "Rounding and precision",
+              "description": "Solidity has no floating point, so division truncates. Rounding in the wrong direction lets users take tiny amounts repeatedly or break share accounting.",
+              "resources": [
+                {
+                  "label": "Security Considerations - Solidity",
+                  "url": "https://docs.soliditylang.org/en/latest/security-considerations.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Not So Smart Contracts",
+                  "url": "https://github.com/crytic/not-so-smart-contracts",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Unchecked external calls",
+              "description": "Low-level calls return a success flag instead of reverting. Ignoring it, or trusting arbitrary token behavior, leaves funds in an unexpected state.",
+              "resources": [
+                {
+                  "label": "Smart Contract Best Practices",
+                  "url": "https://consensys.github.io/smart-contract-best-practices/",
+                  "type": "article"
+                },
+                {
+                  "label": "SWC Registry",
+                  "url": "https://swcregistry.io/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Economic Attacks",
+          "children": [
+            {
+              "title": "Oracle manipulation",
+              "description": "Reading a spot price from a single pool lets an attacker move it within one transaction. Use time-weighted prices or a decentralized oracle network.",
+              "resources": [
+                {
+                  "label": "Chainlink Data Feeds",
+                  "url": "https://docs.chain.link/data-feeds",
+                  "type": "docs"
+                },
+                {
+                  "label": "Rekt News",
+                  "url": "https://rekt.news/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Front-running and MEV",
+              "description": "Pending transactions are public, so others can reorder or copy them. Commit-reveal schemes and slippage limits reduce the damage.",
+              "resources": [
+                {
+                  "label": "Smart Contract Best Practices",
+                  "url": "https://consensys.github.io/smart-contract-best-practices/",
+                  "type": "article"
+                },
+                {
+                  "label": "Rekt News",
+                  "url": "https://rekt.news/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Proving It",
+          "children": [
+            {
+              "title": "Exploit tests in Foundry",
+              "description": "A security fix is only proven when a test that exploits the old code now fails. Write the attack as a Foundry test first, then patch.",
+              "resources": [
+                {
+                  "label": "Foundry Book - Invariant Testing",
+                  "url": "https://book.getfoundry.sh/forge/invariant-testing",
+                  "type": "docs"
+                },
+                {
+                  "label": "Damn Vulnerable DeFi",
+                  "url": "https://www.damnvulnerabledefi.xyz/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Practice with wargames",
+              "description": "Ethernaut and Damn Vulnerable DeFi give you vulnerable contracts to attack, which builds the pattern recognition auditors rely on.",
+              "resources": [
+                {
+                  "label": "Ethernaut",
+                  "url": "https://ethernaut.openzeppelin.com/",
+                  "type": "article"
+                },
+                {
+                  "label": "Damn Vulnerable DeFi",
+                  "url": "https://www.damnvulnerabledefi.xyz/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "smart-contract-9",
       "title": "Building a DeFi Protocol",
-      "order": 9,
+      "order": 10,
       "techs": [
         "Solidity",
         "Foundry",
@@ -1713,7 +1903,7 @@
     {
       "id": "smart-contract-10",
       "title": "Auditing and Mainnet Deployment",
-      "order": 10,
+      "order": 11,
       "techs": [
         "Foundry",
         "Slither",

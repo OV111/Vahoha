@@ -18,7 +18,7 @@ export const generate = async (req, res) => {
     res.json(attempt);
   } catch (err) {
     const status = err.status ?? 500;
-    res.status(status).json({ message: err.message ?? "Failed to generate exam" });
+    res.status(status).json({ message: err.message ?? "Failed to generate test" });
   }
 };
 
@@ -40,7 +40,7 @@ export const submit = async (req, res) => {
     res.json(result);
   } catch (err) {
     const status = err.status ?? 500;
-    res.status(status).json({ message: err.message ?? "Failed to submit exam" });
+    res.status(status).json({ message: err.message ?? "Failed to submit test" });
   }
 };
 

@@ -23,8 +23,8 @@ export default {
   categoryId: "quantum",
   slug: "quantum-hardware-calibration-pipeline",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Superconducting Qubit Pulse Control & Automated Calibration Pipeline",
   summary:
     "Build a quantum hardware calibration and pulse-level control framework using Qiskit Pulse or Qblox/LabOne simulation. " +

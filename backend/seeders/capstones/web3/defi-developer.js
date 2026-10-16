@@ -23,8 +23,8 @@ export default {
   categoryId: "web3",
   slug: "defi-developer-decentralized-amm",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Automated Market Maker (AMM) with Yield Vaults",
   summary:
     "Build a constant-product Automated Market Maker (AMM) token exchange and yield vault system using Solidity and Foundry. " +

@@ -15,8 +15,8 @@ export default {
   categoryId: "backend",
   slug: "db-engineer-multitenant-orders",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Multi-tenant orders database, designed and operated",
   summary:
     "Design, tune and operate the PostgreSQL database for a multi-tenant shop: customers, products, " +

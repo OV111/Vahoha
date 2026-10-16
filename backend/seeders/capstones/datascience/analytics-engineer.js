@@ -23,8 +23,8 @@ export default {
   categoryId: "datascience",
   slug: "analytics-engineer-saas-metrics-platform",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Production Analytics Platform with dbt Core and Semantic Layer",
   summary:
     "Build a production analytics platform for SaaS recurring revenue and product analytics: engineer staged dbt models, " +

@@ -23,8 +23,8 @@ export default {
   categoryId: "cybersecurity",
   slug: "cloud-security-iam-posture-engine",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Cloud Infrastructure Security & Automated Posture Governance Engine",
   summary:
     "Design and deploy hardened AWS/Cloud Infrastructure as Code (IaC) using Terraform, implement an automated IAM " +

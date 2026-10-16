@@ -23,8 +23,8 @@ export default {
   categoryId: "datascience",
   slug: "statistician-clinical-trial-analysis-suite",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title:
     "Clinical Trial Experimental Design and Statistical Consulting Analysis",
   summary:

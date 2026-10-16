@@ -23,8 +23,8 @@ export default {
   categoryId: "web3",
   slug: "web3-indexer-defi-analytics-subgraph",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "DeFi Protocol Analytics Subgraph & Indexer",
   summary:
     "Build a production-grade custom GraphQL indexer using The Graph (AssemblyScript) or Ponder (TypeScript) to index decentralized exchange " +

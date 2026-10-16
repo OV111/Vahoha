@@ -23,8 +23,8 @@ export default {
   categoryId: "languages",
   slug: "cpp-high-performance-event-engine",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "High-Performance In-Memory Event Processing Engine",
   summary:
     "Build a modern C++20/23 multi-threaded in-memory event dispatching engine. " +

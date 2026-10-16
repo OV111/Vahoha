@@ -23,8 +23,8 @@ export default {
   categoryId: "database",
   slug: "cassandra-engineer-iot-telemetry",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Multi-Datacenter Cassandra Cluster for IoT Telemetry Analytics",
   summary:
     "Design and deploy a distributed Apache Cassandra cluster across a multi-datacenter topology. Build high-throughput " +

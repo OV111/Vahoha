@@ -23,8 +23,8 @@ export default {
   categoryId: "database",
   slug: "nosql-engineer-polyglot-platform",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Polyglot Persistence Platform with MongoDB, Redis, and Cassandra",
   summary:
     "Build a high-performance polyglot persistence architecture. Combine MongoDB for flexible document storage, " +

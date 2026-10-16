@@ -25,8 +25,8 @@ export default {
   categoryId: "blockchain",
   slug: "solana-dev-community-treasury",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Build a Solana community treasury program",
   summary:
     "Build an Anchor-based Solana program that manages a small community treasury. " +

@@ -15,8 +15,8 @@ export default {
   categoryId: "backend",
   slug: "grpc-dev-ride-tracking",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Real-time ride tracking with gRPC streaming",
   summary:
     "Build the backend of a ride-hailing app in gRPC: drivers stream their location, riders follow a " +

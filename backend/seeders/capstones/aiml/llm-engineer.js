@@ -23,8 +23,8 @@ export default {
   categoryId: "aiml",
   slug: "llm-engineer-enterprise-rag-assistant",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title:
     "Production LLM Platform with PEFT, Advanced RAG, and Safety Guardrails",
   summary:

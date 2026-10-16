@@ -23,8 +23,8 @@ export default {
   categoryId: "aiml",
   slug: "prompt-engineer-production-workflow-system",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Enterprise Prompt Engine, Guardrail, and Evaluation Platform",
   summary:
     "Design, optimize, and productionize a prompt engineering system for complex enterprise workflows. " +

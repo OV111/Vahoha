@@ -25,8 +25,8 @@ export default {
   categoryId: "blockchain",
   slug: "cosmos-dev-community-grants",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Build a Cosmos community grants chain",
   summary:
     "Build a small Cosmos SDK application chain for community grants. Accounts can submit " +

@@ -23,8 +23,8 @@ export default {
   categoryId: "languages",
   slug: "rust-kv-storage-engine",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Thread-Safe Persistent Key-Value Storage Engine",
   summary:
     "Build a persistent, thread-safe key-value database engine in Rust. You will model storage structures, " +

@@ -23,8 +23,8 @@ export default {
   categoryId: "qa",
   slug: "chaos-engineer-resilience-testing",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Cloud-Native Chaos Engineering & Resilience Suite",
   summary:
     "Design, automate, and execute targeted chaos experiments against a microservices architecture using LitmusChaos and Toxiproxy. " +

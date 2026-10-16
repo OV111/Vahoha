@@ -23,8 +23,8 @@ export default {
   categoryId: "database",
   slug: "mysql-dba-innodb-cluster",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Production MySQL Group Replication Cluster with ProxySQL",
   summary:
     "Deploy a multi-node MySQL InnoDB Cluster utilizing GTID-based Group Replication, ProxySQL read/write splitting, " +

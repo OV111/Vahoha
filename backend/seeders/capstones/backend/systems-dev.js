@@ -15,8 +15,8 @@ export default {
   categoryId: "backend",
   slug: "systems-dev-kv-store",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Networked key-value store from scratch",
   summary:
     "Build a small Redis-like key-value server in C, C++ or Rust: a TCP protocol, many concurrent " +

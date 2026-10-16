@@ -23,8 +23,8 @@ export default {
   categoryId: "cybersecurity",
   slug: "blue-team-defense-hardening-suite",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Enterprise Blue Team Defense & Hardening Orchestration Engine",
   summary:
     "Build an automated defensive security framework featuring infrastructure CIS benchmark hardening scripts, " +

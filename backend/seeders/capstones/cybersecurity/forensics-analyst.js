@@ -23,8 +23,8 @@ export default {
   categoryId: "cybersecurity",
   slug: "forensics-analyst-dfir-triage",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Automated Digital Forensics Triage & Memory Analysis Pipeline",
   summary:
     "Build a Python forensic triage toolkit that parses NTFS $MFT artifacts, extracts Windows Registry activity, " +

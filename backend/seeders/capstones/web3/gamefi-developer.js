@@ -23,8 +23,8 @@ export default {
   categoryId: "web3",
   slug: "gamefi-developer-dungeon-crawler",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "On-Chain Dungeon Crawler Game & NFT Item Economy",
   summary:
     "Build an on-chain action RPG game ecosystem. The system features ERC-1155 gear items, Chainlink VRF verifiable loot drops, " +

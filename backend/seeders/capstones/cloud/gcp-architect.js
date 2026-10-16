@@ -23,8 +23,8 @@ export default {
   categoryId: "cloud",
   slug: "gcp-architect-gke-analytics-platform",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "GKE & Serverless Real-Time Data Processing Platform",
   summary:
     "Provision an enterprise data processing and container execution infrastructure on GCP using Terraform. " +

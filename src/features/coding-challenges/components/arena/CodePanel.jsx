@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { C, FONT_MONO } from "../../lib/arenaTheme";
 import CodeEditor from "./CodeEditor";
+import { CHALLENGE_LANGUAGES } from "../../../../../constants/challengeLanguages";
 
 const FILE_META = {
   js: { dot: C.amber, label: "JavaScript · UTF-8" },
+  ts: { dot: "#5b9dff", label: "TypeScript · types are removed, not checked" },
   test: { dot: C.purple, label: "Jest Test · UTF-8" },
 };
 
-export default function CodePanel({ files, onChangeFile }) {
+export default function CodePanel({ files, onChangeFile, language = "js", onLanguageChange }) {
   const [active, setActive] = useState(0);
   const file = files[active];
 
@@ -41,9 +43,34 @@ export default function CodePanel({ files, onChangeFile }) {
             );
           })}
         </div>
-        <span className="px-4 text-[11px] whitespace-nowrap max-md:hidden" style={{ color: C.faint, fontFamily: FONT_MONO }}>
-          {(FILE_META[file.lang] || FILE_META.js).label}
-        </span>
+        <div className="flex items-center gap-3 pr-3 shrink-0">
+          <span className="text-[11px] whitespace-nowrap max-lg:hidden" style={{ color: C.faint, fontFamily: FONT_MONO }}>
+            {(FILE_META[file.lang] || FILE_META.js).label}
+          </span>
+          {onLanguageChange && (
+            <div role="group" aria-label="Language" className="flex rounded-md overflow-hidden border" style={{ borderColor: C.border }}>
+              {CHALLENGE_LANGUAGES.map((l) => {
+                const on = l.id === language;
+                return (
+                  <button
+                    key={l.id}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => onLanguageChange(l.id)}
+                    className="px-2.5 py-1 text-[11px] font-medium cursor-pointer transition-colors"
+                    style={{
+                      fontFamily: FONT_MONO,
+                      color: on ? C.text : C.muted,
+                      background: on ? "rgba(168, 85, 247, 0.18)" : "transparent",
+                    }}
+                  >
+                    {l.id === "ts" ? "TS" : "JS"}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="flex-1 min-h-0 overflow-hidden">
@@ -51,6 +78,7 @@ export default function CodePanel({ files, onChangeFile }) {
           key={file.name}
           value={file.code}
           readOnly={file.lang === "test"}
+          typescript={file.lang === "ts"}
           onChange={(code) => onChangeFile?.(file.name, code)}
         />
       </div>

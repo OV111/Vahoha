@@ -23,8 +23,8 @@ export default {
   categoryId: "qa",
   slug: "accessibility-qa-audit-automation",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Automated & Manual Accessibility Audit Suite",
   summary:
     "Conduct an end-to-end accessibility audit against WCAG 2.1 AA standards. " +

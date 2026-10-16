@@ -24,8 +24,8 @@ export default {
   categoryId: "mobile",
   slug: "kotlin-dev-reading-list-service",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Concurrent reading-list service",
   summary:
     "Build a Kotlin application that manages a personal reading list and exposes it through a small Ktor service. The project should use idiomatic Kotlin, coroutines, Flow, Gradle and persistence to create a complete piece of software that can be exercised locally without external paid services.",

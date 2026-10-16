@@ -23,8 +23,8 @@ export default {
   categoryId: "devops",
   slug: "aws-dev-serverless-event-driven-api",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Serverless Event-Driven Architecture on AWS (LocalStack)",
   summary:
     "Architect and deploy a fully serverless backend on AWS using CloudFormation/SAM or Terraform with LocalStack. " +

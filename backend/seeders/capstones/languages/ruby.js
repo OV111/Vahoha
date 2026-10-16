@@ -23,8 +23,8 @@ export default {
   categoryId: "languages",
   slug: "ruby-background-job-processor",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Multi-Threaded Background Job Processing Library",
   summary:
     "Build an in-memory multi-threaded background job queue engine in idiomatic Ruby. " +

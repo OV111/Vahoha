@@ -23,8 +23,8 @@ export default {
   categoryId: "languages",
   slug: "csharp-async-event-bus",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "High-Throughput Async In-Memory Messaging Bus",
   summary:
     "Build a production-grade asynchronous in-memory pub/sub message broker in modern C# / .NET 8+. " +

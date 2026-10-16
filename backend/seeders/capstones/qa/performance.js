@@ -23,8 +23,8 @@ export default {
   categoryId: "qa",
   slug: "performance-load-testing-suite",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Distributed Load & Performance Testing Suite",
   summary:
     "Design, script, and execute a comprehensive performance testing suite using k6. " +

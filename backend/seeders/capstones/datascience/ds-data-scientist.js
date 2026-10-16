@@ -23,8 +23,8 @@ export default {
   categoryId: "datascience",
   slug: "ds-data-scientist-demand-forecasting-engine",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Automated Energy Grid Demand Forecasting and Clustering Pipeline",
   summary:
     "Build an end-to-end data science system that ingests hourly energy consumption logs, performs segmentation " +

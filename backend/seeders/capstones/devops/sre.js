@@ -23,8 +23,8 @@ export default {
   categoryId: "devops",
   slug: "sre-resilient-telemetry-service",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Resilient Microservice with Telemetry, SLOs, and Alerting",
   summary:
     "Develop a highly available Go backend service engineered for reliability. You will implement " +

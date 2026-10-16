@@ -2,6 +2,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import useRoadmapStore from "@/stores/useRoadmapStore";
 import { useTrackLayers } from "../hooks/useTrackLayers";
+import { prereqsDone } from "../lib/layerPrereqs";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import LayerDetail from "./LayerDetail";
 import { ConnectorProvider } from "./tree/ConnectorContext";
@@ -168,7 +169,7 @@ const RoadmapTree = () => {
                   index={index}
                   isLast={index === layers.length - 1}
                   isDone={(layerProgress[layer.id] ?? layer.status) === "done"}
-                  isPrevDone={index > 0 && (layerProgress[layers[index - 1].id] ?? layers[index - 1].status) === "done"}
+                  isPrevDone={prereqsDone(layer, index, layers, layerProgress)}
                 />
               ))}
               {/* The track's final step; renders nothing if it has no capstone. */}

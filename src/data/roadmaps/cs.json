@@ -1,0 +1,5133 @@
+{
+  "dsa": [
+    {
+      "id": "dsa-1",
+      "title": "Complexity Analysis and Problem-Solving Method",
+      "order": 1,
+      "techs": [
+        "Big O",
+        "Python",
+        "Complexity"
+      ],
+      "description": "Learn to measure an algorithm before you write it. You will use Big-O notation for time and space, read constraints to choose an approach, and follow a repeatable method for every problem in the rest of this track.",
+      "topics": [
+        "Big-O, Big-Omega and Big-Theta",
+        "Time versus space trade-offs",
+        "Amortized analysis",
+        "Reading constraints to pick an approach",
+        "A method: clarify, examples, brute force, optimize, test",
+        "Testing with edge cases and counter-examples"
+      ],
+      "resources": [
+        {
+          "label": "Big-O Cheat Sheet",
+          "platform": "bigocheatsheet.com",
+          "type": "article"
+        },
+        {
+          "label": "Algorithms, 4th Edition",
+          "platform": "Princeton",
+          "type": "book"
+        },
+        {
+          "label": "Introduction to Algorithms (CLRS)",
+          "platform": "MIT Press",
+          "type": "book"
+        }
+      ],
+      "challenge": "Implement three solutions to the same problem (a quadratic brute force, a sort-based approach and a hash-based approach), measure their runtime for inputs of 10 to 10 million, and plot how each curve matches its predicted complexity.",
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Measuring Cost",
+          "children": [
+            {
+              "title": "Big-O in practice",
+              "description": "Big-O describes how cost grows with input size and ignores constants. It tells you which approach survives large inputs, not which one is faster for ten items.",
+              "resources": [
+                {
+                  "label": "Big-O Cheat Sheet",
+                  "url": "https://www.bigocheatsheet.com/",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Space complexity",
+              "description": "Memory use matters as much as time, especially for recursion depth and auxiliary arrays. Always state both costs.",
+              "resources": [
+                {
+                  "label": "Algorithms 4th Edition - Analysis",
+                  "url": "https://algs4.cs.princeton.edu/14analysis/",
+                  "type": "book"
+                },
+                {
+                  "label": "Big-O Cheat Sheet",
+                  "url": "https://www.bigocheatsheet.com/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Amortized Cost",
+          "children": [
+            {
+              "title": "Dynamic array growth",
+              "description": "Appending to a dynamic array is occasionally expensive but cheap on average. Amortized analysis explains why append is still O(1).",
+              "resources": [
+                {
+                  "label": "Python TimeComplexity wiki",
+                  "url": "https://wiki.python.org/moin/TimeComplexity",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "When worst case misleads",
+              "description": "A hash table can degrade to O(n) in theory yet is O(1) in practice. Know which guarantee a data structure really gives.",
+              "resources": [
+                {
+                  "label": "Big-O Cheat Sheet",
+                  "url": "https://www.bigocheatsheet.com/",
+                  "type": "article"
+                },
+                {
+                  "label": "MDN - JavaScript data structures",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Data_structures",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Method",
+          "children": [
+            {
+              "title": "A repeatable problem-solving process",
+              "description": "Restate the problem, work an example by hand, find a brute force, then improve it. Doing this out loud is what interviewers look for.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "LeetCode Explore",
+                  "url": "https://leetcode.com/explore/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Constraints as hints",
+              "description": "An input limit of 10^5 means O(n log n) is fine and O(n^2) is not. Constraints often point directly to the intended technique.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms",
+                  "url": "https://cp-algorithms.com/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Verification",
+          "children": [
+            {
+              "title": "Edge cases",
+              "description": "Empty input, a single element, duplicates, negatives and maximum sizes break more solutions than the main case. List them before coding.",
+              "resources": [
+                {
+                  "label": "LeetCode Explore",
+                  "url": "https://leetcode.com/explore/",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Writing your own tests",
+              "description": "Compare a fast solution against a slow brute force on random small inputs. A disagreement gives you a minimal failing case for free.",
+              "resources": [
+                {
+                  "label": "Hypothesis - property testing",
+                  "url": "https://hypothesis.readthedocs.io/en/latest/",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa-2",
+      "title": "Arrays, Strings, Two Pointers, and Sliding Window",
+      "order": 2,
+      "techs": [
+        "Arrays",
+        "Strings",
+        "Two Pointers"
+      ],
+      "description": "Master the most common data structure and the patterns that make it fast. Two pointers, sliding windows and prefix sums turn many quadratic problems into linear ones.",
+      "topics": [
+        "Array operations and their costs",
+        "Strings, immutability and building efficiently",
+        "Two pointers on sorted data",
+        "Sliding window: fixed and variable size",
+        "Prefix sums and difference arrays",
+        "In-place algorithms"
+      ],
+      "resources": [
+        {
+          "label": "NeetCode - Arrays and Hashing / Two Pointers",
+          "platform": "neetcode.io",
+          "type": "article"
+        },
+        {
+          "label": "Python data structures",
+          "platform": "docs.python.org",
+          "type": "docs"
+        },
+        {
+          "label": "Cracking the Coding Interview",
+          "platform": "CareerCup",
+          "type": "book"
+        }
+      ],
+      "challenge": "Solve ten problems that need these patterns (for example longest substring without repeats, container with most water, subarray sum equals k) and for each write down the pattern, the invariant and the complexity before coding.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Arrays and Strings",
+          "children": [
+            {
+              "title": "Array costs",
+              "description": "Index access is O(1) but inserting or removing in the middle shifts elements in O(n). Knowing this drives most data structure choices.",
+              "resources": [
+                {
+                  "label": "Python TimeComplexity wiki",
+                  "url": "https://wiki.python.org/moin/TimeComplexity",
+                  "type": "article"
+                },
+                {
+                  "label": "VisuAlgo - Linked list and array",
+                  "url": "https://visualgo.net/en/list",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Strings",
+              "description": "Strings are usually immutable, so repeated concatenation in a loop is quadratic. Collect pieces in a list and join once.",
+              "resources": [
+                {
+                  "label": "Python str methods",
+                  "url": "https://docs.python.org/3/library/stdtypes.html#string-methods",
+                  "type": "docs"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Two Pointers",
+          "children": [
+            {
+              "title": "Opposite-end pointers",
+              "description": "On sorted data, one pointer from each end can find pairs or compare symmetric positions in a single pass.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms",
+                  "url": "https://cp-algorithms.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Fast and slow pointers",
+              "description": "Two pointers moving at different speeds detect cycles and find midpoints without extra memory.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "VisuAlgo - Linked list",
+                  "url": "https://visualgo.net/en/list",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Sliding Window",
+          "children": [
+            {
+              "title": "Fixed-size windows",
+              "description": "Slide a window of size k by adding the new element and removing the old one, so each step costs O(1) instead of O(k).",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms",
+                  "url": "https://cp-algorithms.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Variable-size windows",
+              "description": "Grow the window to satisfy a condition and shrink it while it stays valid. The invariant you maintain is what makes the solution correct.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "LeetCode Explore",
+                  "url": "https://leetcode.com/explore/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Accumulation",
+          "children": [
+            {
+              "title": "Prefix sums",
+              "description": "A prefix sum array answers any range-sum query in O(1) after one O(n) pass. The same idea extends to counts and XOR.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms",
+                  "url": "https://cp-algorithms.com/",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "In-place techniques",
+              "description": "Reuse the input array to avoid extra memory, for example by partitioning or swapping. Be careful not to overwrite values you still need.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa-3",
+      "title": "Hashing: Maps, Sets, and Frequency Patterns",
+      "order": 3,
+      "techs": [
+        "Hash Maps",
+        "Sets",
+        "Python"
+      ],
+      "description": "Learn why hash tables are the most useful structure in practice and how to use them to turn searches into lookups. You will also understand collisions, load factor and what makes a good key.",
+      "topics": [
+        "Hash functions, collisions and load factor",
+        "Hash maps and sets in your language",
+        "Counting and frequency maps",
+        "Grouping with canonical keys (anagrams)",
+        "Two-sum style complement lookups",
+        "Hashing pitfalls: mutable keys and ordering"
+      ],
+      "resources": [
+        {
+          "label": "Python dict and set",
+          "platform": "docs.python.org",
+          "type": "docs"
+        },
+        {
+          "label": "MDN - Map and Set",
+          "platform": "developer.mozilla.org",
+          "type": "docs"
+        },
+        {
+          "label": "NeetCode - Arrays and Hashing",
+          "platform": "neetcode.io",
+          "type": "article"
+        }
+      ],
+      "challenge": "Implement your own hash map with separate chaining and dynamic resizing, test it against the built-in on random operations, then solve five problems using maps and sets and compare their runtimes with brute-force versions.",
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "How Hashing Works",
+          "children": [
+            {
+              "title": "Hash functions and collisions",
+              "description": "A hash function maps a key to a slot. Two keys can share a slot, so tables must handle collisions with chaining or probing.",
+              "resources": [
+                {
+                  "label": "VisuAlgo - Hash table",
+                  "url": "https://visualgo.net/en/hashtable",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Load factor and resizing",
+              "description": "As a table fills, collisions grow. Doubling the table when it passes a load threshold keeps operations O(1) on average.",
+              "resources": [
+                {
+                  "label": "VisuAlgo - Hash table",
+                  "url": "https://visualgo.net/en/hashtable",
+                  "type": "article"
+                },
+                {
+                  "label": "Python TimeComplexity wiki",
+                  "url": "https://wiki.python.org/moin/TimeComplexity",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Built-in Structures",
+          "children": [
+            {
+              "title": "Maps and sets",
+              "description": "Use a set for membership and duplicates, a map for counts and lookups. Both are O(1) on average for insertion and search.",
+              "resources": [
+                {
+                  "label": "Python sets and dicts",
+                  "url": "https://docs.python.org/3/tutorial/datastructures.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "MDN - Map",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Keys must be hashable",
+              "description": "A mutable object used as a key can change its hash after insertion and become unreachable. Use tuples or strings as keys.",
+              "resources": [
+                {
+                  "label": "Python hashable",
+                  "url": "https://docs.python.org/3/glossary.html#term-hashable",
+                  "type": "docs"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Patterns",
+          "children": [
+            {
+              "title": "Frequency counting",
+              "description": "Counting occurrences with a map solves anagram, majority-element and top-k style problems in one pass.",
+              "resources": [
+                {
+                  "label": "Python collections.Counter",
+                  "url": "https://docs.python.org/3/library/collections.html#collections.Counter",
+                  "type": "docs"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Complement lookup",
+              "description": "For each element, check whether the value you need is already stored. This turns the two-sum family from O(n^2) into O(n).",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "LeetCode Explore",
+                  "url": "https://leetcode.com/explore/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Grouping",
+          "children": [
+            {
+              "title": "Canonical keys",
+              "description": "Group items by a normalized form, such as a sorted string for anagrams, so equal groups map to the same key.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Python defaultdict",
+                  "url": "https://docs.python.org/3/library/collections.html#collections.defaultdict",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Ordered versus unordered",
+              "description": "Hash tables do not keep sorted order. When you need range queries or sorted iteration, use a tree-based structure instead.",
+              "resources": [
+                {
+                  "label": "Python dict ordering",
+                  "url": "https://docs.python.org/3/library/stdtypes.html#dict",
+                  "type": "docs"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa-4",
+      "title": "Linked Lists, Stacks, and Queues",
+      "order": 4,
+      "techs": [
+        "Linked Lists",
+        "Stacks",
+        "Queues"
+      ],
+      "description": "Build the linear structures that underlie recursion, parsing and scheduling. You will learn when a list beats an array, how a stack models nesting, and how queues model fair ordering.",
+      "topics": [
+        "Singly and doubly linked lists",
+        "Reversing, merging and cycle detection",
+        "Stacks and the call stack",
+        "Monotonic stacks",
+        "Queues, deques and circular buffers",
+        "Implementing a queue with stacks and vice versa"
+      ],
+      "resources": [
+        {
+          "label": "VisuAlgo - Linked List, Stack, Queue",
+          "platform": "visualgo.net",
+          "type": "article"
+        },
+        {
+          "label": "Python collections.deque",
+          "platform": "docs.python.org",
+          "type": "docs"
+        },
+        {
+          "label": "NeetCode - Linked List and Stack",
+          "platform": "neetcode.io",
+          "type": "article"
+        }
+      ],
+      "challenge": "Implement a doubly linked list, then build an LRU cache from a hash map plus that list so get and put are both O(1), and write tests for eviction order.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Linked Lists",
+          "children": [
+            {
+              "title": "Node-based structures",
+              "description": "A linked list trades random access for O(1) insertion and removal at a known node. Dummy head nodes remove most special cases.",
+              "resources": [
+                {
+                  "label": "VisuAlgo - Linked list",
+                  "url": "https://visualgo.net/en/list",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Reversal and cycle detection",
+              "description": "Reversing in place and Floyd's fast-slow pointer are two techniques that appear again and again.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "VisuAlgo - Linked list",
+                  "url": "https://visualgo.net/en/list",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Stacks",
+          "children": [
+            {
+              "title": "Last in, first out",
+              "description": "A stack models anything nested: function calls, undo, matching brackets. Push and pop are both O(1).",
+              "resources": [
+                {
+                  "label": "VisuAlgo - Stack",
+                  "url": "https://visualgo.net/en/list",
+                  "type": "article"
+                },
+                {
+                  "label": "Python lists as stacks",
+                  "url": "https://docs.python.org/3/tutorial/datastructures.html#using-lists-as-stacks",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Monotonic stack",
+              "description": "Keeping a stack in sorted order finds the next greater element for every item in O(n) total.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms",
+                  "url": "https://cp-algorithms.com/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Queues",
+          "children": [
+            {
+              "title": "First in, first out",
+              "description": "Queues process items in arrival order and are the base of breadth-first search and task scheduling.",
+              "resources": [
+                {
+                  "label": "Python collections.deque",
+                  "url": "https://docs.python.org/3/library/collections.html#collections.deque",
+                  "type": "docs"
+                },
+                {
+                  "label": "VisuAlgo - Queue",
+                  "url": "https://visualgo.net/en/list",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Deques and circular buffers",
+              "description": "A double-ended queue supports both ends in O(1), and a circular buffer gives a fixed-size queue without shifting elements.",
+              "resources": [
+                {
+                  "label": "Python collections.deque",
+                  "url": "https://docs.python.org/3/library/collections.html#collections.deque",
+                  "type": "docs"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Design Problems",
+          "children": [
+            {
+              "title": "LRU cache",
+              "description": "Combine a hash map for lookup with a linked list for recency order. It is the classic proof that you can build one structure from two.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "LeetCode - LRU Cache",
+                  "url": "https://leetcode.com/problems/lru-cache/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Queue from stacks",
+              "description": "Two stacks can simulate a queue with amortized O(1) operations, a good test of understanding amortized cost.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa-5",
+      "title": "Recursion and Backtracking",
+      "order": 5,
+      "techs": [
+        "Recursion",
+        "Backtracking"
+      ],
+      "description": "Think recursively: define a problem in terms of smaller versions of itself. You will use recursion for divide and conquer, then add backtracking to search all possibilities such as permutations and subsets.",
+      "topics": [
+        "Base case, recursive case and the call stack",
+        "Recursion versus iteration and stack depth",
+        "Divide and conquer",
+        "Subsets, permutations and combinations",
+        "Backtracking with pruning",
+        "Constraint problems: N-Queens and Sudoku"
+      ],
+      "resources": [
+        {
+          "label": "NeetCode - Backtracking",
+          "platform": "neetcode.io",
+          "type": "article"
+        },
+        {
+          "label": "Algorithms, 4th Edition - Recursion",
+          "platform": "Princeton",
+          "type": "book"
+        },
+        {
+          "label": "CP-Algorithms",
+          "platform": "cp-algorithms.com",
+          "type": "article"
+        }
+      ],
+      "challenge": "Write a generic backtracking solver with choose, explore and undo steps, use it to generate all subsets, permutations and valid N-Queens boards, and count how much pruning reduces the search.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Recursion",
+          "children": [
+            {
+              "title": "Base case and recursive case",
+              "description": "Every recursive function needs a base case that stops and a step that moves toward it. A missing base case causes a stack overflow.",
+              "resources": [
+                {
+                  "label": "Python recursion",
+                  "url": "https://docs.python.org/3/tutorial/controlflow.html#defining-functions",
+                  "type": "docs"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "The call stack",
+              "description": "Each call uses stack memory, so deep recursion can fail. Convert to iteration with an explicit stack when depth could be large.",
+              "resources": [
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Divide and Conquer",
+          "children": [
+            {
+              "title": "Splitting problems",
+              "description": "Split the input, solve the parts and combine the results. Merge sort and binary search are the standard examples.",
+              "resources": [
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                },
+                {
+                  "label": "CP-Algorithms",
+                  "url": "https://cp-algorithms.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Recurrence relations",
+              "description": "A recurrence like T(n) = 2T(n/2) + n describes the cost. The master theorem gives the answer for most divide-and-conquer algorithms.",
+              "resources": [
+                {
+                  "label": "CLRS overview",
+                  "url": "https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/",
+                  "type": "book"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Backtracking",
+          "children": [
+            {
+              "title": "Choose, explore, undo",
+              "description": "Backtracking builds a solution step by step, and when a choice fails it undoes it and tries the next. The undo step is what people forget.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "LeetCode Explore",
+                  "url": "https://leetcode.com/explore/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Subsets and permutations",
+              "description": "Subsets have 2^n results and permutations n!. Recognizing the size of the output tells you the algorithm cannot be faster.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms",
+                  "url": "https://cp-algorithms.com/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Pruning",
+          "children": [
+            {
+              "title": "Cutting off bad branches",
+              "description": "Check constraints as early as possible. In N-Queens, rejecting a conflicting square immediately removes huge subtrees.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms",
+                  "url": "https://cp-algorithms.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Memoization preview",
+              "description": "When a recursive call repeats the same inputs, caching results avoids the repeated work. This leads directly into dynamic programming.",
+              "resources": [
+                {
+                  "label": "Python functools.cache",
+                  "url": "https://docs.python.org/3/library/functools.html#functools.cache",
+                  "type": "docs"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa-6",
+      "title": "Sorting and Binary Search",
+      "order": 6,
+      "techs": [
+        "Sorting",
+        "Binary Search"
+      ],
+      "description": "Understand how sorting works and use it as a tool. You will implement the main algorithms, learn what stability means, and apply binary search not just to arrays but to any monotonic answer space.",
+      "topics": [
+        "Insertion, merge, quick and heap sort",
+        "Comparison sort lower bound and counting sort",
+        "Stability and in-place sorting",
+        "Binary search and off-by-one care",
+        "Binary search on the answer",
+        "Sorting as a preprocessing step"
+      ],
+      "resources": [
+        {
+          "label": "VisuAlgo - Sorting",
+          "platform": "visualgo.net",
+          "type": "article"
+        },
+        {
+          "label": "Python bisect module",
+          "platform": "docs.python.org",
+          "type": "docs"
+        },
+        {
+          "label": "Algorithms, 4th Edition - Sorting",
+          "platform": "Princeton",
+          "type": "book"
+        }
+      ],
+      "challenge": "Implement merge sort, quicksort with a random pivot and counting sort, benchmark them on random, sorted and many-duplicate inputs, then solve three problems with binary search on the answer such as minimum capacity to ship packages in D days.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Sorting Algorithms",
+          "children": [
+            {
+              "title": "Merge sort and quicksort",
+              "description": "Merge sort guarantees O(n log n) and is stable; quicksort is usually faster in memory but needs a good pivot to avoid O(n^2).",
+              "resources": [
+                {
+                  "label": "VisuAlgo - Sorting",
+                  "url": "https://visualgo.net/en/sorting",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms 4th Edition - Mergesort",
+                  "url": "https://algs4.cs.princeton.edu/22mergesort/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Counting and radix sort",
+              "description": "When keys are small integers, sorting without comparisons reaches O(n). It beats the comparison-sort limit by using the key structure.",
+              "resources": [
+                {
+                  "label": "VisuAlgo - Sorting",
+                  "url": "https://visualgo.net/en/sorting",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Properties",
+          "children": [
+            {
+              "title": "Stability",
+              "description": "A stable sort keeps equal items in their original order, which matters when sorting by several fields in turn.",
+              "resources": [
+                {
+                  "label": "Python sorting HOWTO",
+                  "url": "https://docs.python.org/3/howto/sorting.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Using the built-in sort",
+              "description": "In practice you call the library sort. Knowing its complexity and key function lets you use it correctly and fast.",
+              "resources": [
+                {
+                  "label": "Python sorting HOWTO",
+                  "url": "https://docs.python.org/3/howto/sorting.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "cppreference - std::sort",
+                  "url": "https://en.cppreference.com/w/cpp/algorithm/sort",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Binary Search",
+          "children": [
+            {
+              "title": "The invariant",
+              "description": "Define exactly what the low and high pointers mean and what is guaranteed about the answer. Almost every binary search bug is an invariant bug.",
+              "resources": [
+                {
+                  "label": "Python bisect",
+                  "url": "https://docs.python.org/3/library/bisect.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Lower and upper bound",
+              "description": "Finding the first element greater than or equal to a value solves insertion points, counts and ranges with one routine.",
+              "resources": [
+                {
+                  "label": "Python bisect",
+                  "url": "https://docs.python.org/3/library/bisect.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "cppreference - lower_bound",
+                  "url": "https://en.cppreference.com/w/cpp/algorithm/lower_bound",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Answer Space",
+          "children": [
+            {
+              "title": "Binary search on the answer",
+              "description": "If you can test whether a value works and the result is monotonic, you can binary search the value itself instead of an array.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms",
+                  "url": "https://cp-algorithms.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Sorting as preprocessing",
+              "description": "Many problems become easy after sorting: intervals, closest pairs, duplicates. Check whether the extra O(n log n) is acceptable.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa-7",
+      "title": "Trees and Binary Search Trees",
+      "order": 7,
+      "techs": [
+        "Trees",
+        "BST",
+        "DFS",
+        "BFS"
+      ],
+      "description": "Work with hierarchical data. You will traverse binary trees recursively and level by level, use binary search trees for ordered data, and see why balance matters.",
+      "topics": [
+        "Binary tree terminology and representations",
+        "Depth-first traversals: pre, in and post order",
+        "Breadth-first (level order) traversal",
+        "Binary search trees: search, insert, delete",
+        "Balanced trees: AVL and red-black ideas",
+        "Lowest common ancestor and path problems"
+      ],
+      "resources": [
+        {
+          "label": "VisuAlgo - Binary Search Tree",
+          "platform": "visualgo.net",
+          "type": "article"
+        },
+        {
+          "label": "Algorithms, 4th Edition - Search Trees",
+          "platform": "Princeton",
+          "type": "book"
+        },
+        {
+          "label": "NeetCode - Trees",
+          "platform": "neetcode.io",
+          "type": "article"
+        }
+      ],
+      "challenge": "Implement a binary search tree with insert, search, delete and the three DFS traversals plus level order, then write a function that validates a BST and one that finds the lowest common ancestor, with tests on skewed and balanced trees.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Traversals",
+          "children": [
+            {
+              "title": "Depth-first traversals",
+              "description": "Preorder, inorder and postorder differ only in when you process the node. Inorder on a BST yields sorted values.",
+              "resources": [
+                {
+                  "label": "VisuAlgo - Binary search tree",
+                  "url": "https://visualgo.net/en/bst",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Level order with a queue",
+              "description": "A queue processes a tree level by level. It answers questions about depth, width and shortest paths in unweighted trees.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "VisuAlgo - Binary search tree",
+                  "url": "https://visualgo.net/en/bst",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Recursion on Trees",
+          "children": [
+            {
+              "title": "Returning information upward",
+              "description": "Many tree problems return a value from each subtree, such as height or sum, and combine them at the parent.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Path and ancestor problems",
+              "description": "Lowest common ancestor, diameter and maximum path sum all follow the same recursive pattern with a different combine step.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms",
+                  "url": "https://cp-algorithms.com/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Binary Search Trees",
+          "children": [
+            {
+              "title": "Search, insert and delete",
+              "description": "A BST keeps left smaller and right larger, so search follows one path. Deletion has three cases: leaf, one child, two children.",
+              "resources": [
+                {
+                  "label": "VisuAlgo - Binary search tree",
+                  "url": "https://visualgo.net/en/bst",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms 4th Edition - BSTs",
+                  "url": "https://algs4.cs.princeton.edu/32bst/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Validating a BST",
+              "description": "Checking only parent-child order is not enough; every node must lie within bounds set by all its ancestors.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "LeetCode - Validate BST",
+                  "url": "https://leetcode.com/problems/validate-binary-search-tree/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Balance",
+          "children": [
+            {
+              "title": "Why balance matters",
+              "description": "A BST built from sorted input becomes a linked list with O(n) operations. Self-balancing trees keep height at O(log n).",
+              "resources": [
+                {
+                  "label": "VisuAlgo - AVL tree",
+                  "url": "https://visualgo.net/en/avl",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms 4th Edition - Balanced trees",
+                  "url": "https://algs4.cs.princeton.edu/33balanced/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Where trees appear in practice",
+              "description": "Databases and file systems use B-trees, and language libraries use red-black trees for ordered maps and sets.",
+              "resources": [
+                {
+                  "label": "Wikipedia - B-tree",
+                  "url": "https://en.wikipedia.org/wiki/B-tree",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa-8",
+      "title": "Heaps and Priority Queues",
+      "order": 8,
+      "techs": [
+        "Heaps",
+        "Priority Queue"
+      ],
+      "description": "Use heaps to repeatedly get the smallest or largest item quickly. You will build one from an array, then apply it to top-k, merging and scheduling problems.",
+      "topics": [
+        "The heap property and array representation",
+        "Push, pop and heapify costs",
+        "Top-k elements and k-th largest",
+        "Merging k sorted lists",
+        "Two heaps and the running median",
+        "Scheduling with priority queues"
+      ],
+      "resources": [
+        {
+          "label": "VisuAlgo - Binary Heap",
+          "platform": "visualgo.net",
+          "type": "article"
+        },
+        {
+          "label": "Python heapq",
+          "platform": "docs.python.org",
+          "type": "docs"
+        },
+        {
+          "label": "NeetCode - Heap / Priority Queue",
+          "platform": "neetcode.io",
+          "type": "article"
+        }
+      ],
+      "challenge": "Implement a binary min-heap with push, pop and heapify, then use it for a streaming median tracker with two heaps and a task scheduler that always runs the highest-priority ready job.",
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "The Structure",
+          "children": [
+            {
+              "title": "Heap property",
+              "description": "A heap is a tree stored in an array where each parent is smaller (min-heap) or larger than its children. The root is always the extreme value.",
+              "resources": [
+                {
+                  "label": "VisuAlgo - Binary heap",
+                  "url": "https://visualgo.net/en/heap",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms 4th Edition - Priority queues",
+                  "url": "https://algs4.cs.princeton.edu/24pq/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Sift up and sift down",
+              "description": "Insertion adds at the end and sifts up; removal moves the last item to the root and sifts down. Both take O(log n).",
+              "resources": [
+                {
+                  "label": "VisuAlgo - Binary heap",
+                  "url": "https://visualgo.net/en/heap",
+                  "type": "article"
+                },
+                {
+                  "label": "Python heapq",
+                  "url": "https://docs.python.org/3/library/heapq.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Building",
+          "children": [
+            {
+              "title": "Heapify in linear time",
+              "description": "Building a heap from n items by sifting down from the middle takes O(n), better than inserting one by one.",
+              "resources": [
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                },
+                {
+                  "label": "VisuAlgo - Binary heap",
+                  "url": "https://visualgo.net/en/heap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Heap sort",
+              "description": "Repeatedly removing the maximum sorts in place in O(n log n), though it is usually slower than quicksort in practice.",
+              "resources": [
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                },
+                {
+                  "label": "VisuAlgo - Sorting",
+                  "url": "https://visualgo.net/en/sorting",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Patterns",
+          "children": [
+            {
+              "title": "Top-k problems",
+              "description": "Keep a heap of size k to find the k largest items in O(n log k) without sorting everything.",
+              "resources": [
+                {
+                  "label": "Python heapq.nlargest",
+                  "url": "https://docs.python.org/3/library/heapq.html#heapq.nlargest",
+                  "type": "docs"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Merging sorted streams",
+              "description": "A heap holding the head of each list always yields the next smallest value, merging k lists in O(N log k).",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Python heapq.merge",
+                  "url": "https://docs.python.org/3/library/heapq.html#heapq.merge",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Advanced Use",
+          "children": [
+            {
+              "title": "Two heaps for the median",
+              "description": "A max-heap of the lower half and a min-heap of the upper half give the running median in O(log n) per insert.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "LeetCode - Find Median from Data Stream",
+                  "url": "https://leetcode.com/problems/find-median-from-data-stream/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Scheduling",
+              "description": "Operating systems and job queues use priority queues to pick the next task. Ties and priority changes need extra care.",
+              "resources": [
+                {
+                  "label": "Python queue.PriorityQueue",
+                  "url": "https://docs.python.org/3/library/queue.html#queue.PriorityQueue",
+                  "type": "docs"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa-9",
+      "title": "Graphs: Representation, BFS, and DFS",
+      "order": 9,
+      "techs": [
+        "Graphs",
+        "BFS",
+        "DFS"
+      ],
+      "description": "Model relationships as graphs and traverse them. You will choose between adjacency lists and matrices, run BFS and DFS, and use them for connectivity, grids and cycle detection.",
+      "topics": [
+        "Vertices, edges, directed and weighted graphs",
+        "Adjacency list versus adjacency matrix",
+        "Breadth-first search and shortest unweighted paths",
+        "Depth-first search and connected components",
+        "Grid problems as implicit graphs",
+        "Cycle detection and bipartite checking"
+      ],
+      "resources": [
+        {
+          "label": "VisuAlgo - Graph Traversal",
+          "platform": "visualgo.net",
+          "type": "article"
+        },
+        {
+          "label": "CP-Algorithms - Graph Traversals",
+          "platform": "cp-algorithms.com",
+          "type": "article"
+        },
+        {
+          "label": "NeetCode - Graphs",
+          "platform": "neetcode.io",
+          "type": "article"
+        }
+      ],
+      "challenge": "Build a graph class with adjacency lists, implement BFS and DFS iteratively and recursively, then solve a maze shortest-path problem on a grid and count islands, comparing BFS and DFS where both work.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Representing Graphs",
+          "children": [
+            {
+              "title": "Adjacency lists and matrices",
+              "description": "Lists use O(V + E) memory and suit sparse graphs; a matrix uses O(V^2) but answers edge queries in O(1). Most real graphs are sparse.",
+              "resources": [
+                {
+                  "label": "VisuAlgo - Graph data structures",
+                  "url": "https://visualgo.net/en/graphds",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms - Graphs",
+                  "url": "https://cp-algorithms.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Building from problem input",
+              "description": "Edge lists, grids and word relationships all become graphs. Converting the input to a graph is often the key insight.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms - Graphs",
+                  "url": "https://cp-algorithms.com/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Breadth-First Search",
+          "children": [
+            {
+              "title": "Level-by-level exploration",
+              "description": "BFS visits nodes in order of distance from the start, so it gives shortest paths in unweighted graphs.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - BFS",
+                  "url": "https://cp-algorithms.com/graph/breadth-first-search.html",
+                  "type": "article"
+                },
+                {
+                  "label": "VisuAlgo - DFS and BFS",
+                  "url": "https://visualgo.net/en/dfsbfs",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Multi-source BFS",
+              "description": "Start the queue with several sources at once to compute the nearest source for every node, as in rotting oranges.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms - BFS",
+                  "url": "https://cp-algorithms.com/graph/breadth-first-search.html",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Depth-First Search",
+          "children": [
+            {
+              "title": "Recursive and iterative DFS",
+              "description": "DFS follows one path as deep as possible before backing up. An explicit stack avoids recursion limits on large inputs.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - DFS",
+                  "url": "https://cp-algorithms.com/graph/depth-first-search.html",
+                  "type": "article"
+                },
+                {
+                  "label": "VisuAlgo - DFS and BFS",
+                  "url": "https://visualgo.net/en/dfsbfs",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Connected components",
+              "description": "Run DFS from each unvisited node to count components, such as islands in a grid.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms - Graphs",
+                  "url": "https://cp-algorithms.com/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Structure Detection",
+          "children": [
+            {
+              "title": "Cycle detection",
+              "description": "In undirected graphs a visited non-parent neighbor means a cycle; in directed graphs track the nodes on the current path.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Finding a cycle",
+                  "url": "https://cp-algorithms.com/graph/finding-cycle.html",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Bipartite check",
+              "description": "Two-color the graph during BFS; a conflict means the graph is not bipartite. It models problems about splitting into two groups.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Bipartite check",
+                  "url": "https://cp-algorithms.com/graph/bipartite-check.html",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa-10",
+      "title": "Shortest Paths, Topological Sort, and Union-Find",
+      "order": 10,
+      "techs": [
+        "Dijkstra",
+        "Topological Sort",
+        "Union-Find"
+      ],
+      "description": "Solve the graph problems that appear in routing, dependency resolution and clustering. You will learn Dijkstra, Bellman-Ford, topological ordering, minimum spanning trees and disjoint sets.",
+      "topics": [
+        "Dijkstra's algorithm with a priority queue",
+        "Bellman-Ford and negative weights",
+        "Topological sort for dependencies",
+        "Union-Find (disjoint set union)",
+        "Minimum spanning trees: Kruskal and Prim",
+        "Choosing an algorithm from the graph's properties"
+      ],
+      "resources": [
+        {
+          "label": "CP-Algorithms - Graph section",
+          "platform": "cp-algorithms.com",
+          "type": "article"
+        },
+        {
+          "label": "VisuAlgo - SSSP and MST",
+          "platform": "visualgo.net",
+          "type": "article"
+        },
+        {
+          "label": "Algorithms, 4th Edition - Graphs",
+          "platform": "Princeton",
+          "type": "book"
+        }
+      ],
+      "challenge": "Build a small route planner: load a weighted road graph, find shortest routes with Dijkstra, detect impossible build orders with topological sort, and use union-find with Kruskal to compute a minimum spanning network, testing each against known answers.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Shortest Paths",
+          "children": [
+            {
+              "title": "Dijkstra's algorithm",
+              "description": "Dijkstra repeatedly settles the closest unfinished node using a priority queue. It requires non-negative edge weights.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Dijkstra",
+                  "url": "https://cp-algorithms.com/graph/dijkstra.html",
+                  "type": "article"
+                },
+                {
+                  "label": "VisuAlgo - Shortest paths",
+                  "url": "https://visualgo.net/en/sssp",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Bellman-Ford",
+              "description": "Relaxing every edge V-1 times handles negative weights and detects negative cycles, at higher cost than Dijkstra.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Bellman-Ford",
+                  "url": "https://cp-algorithms.com/graph/bellman_ford.html",
+                  "type": "article"
+                },
+                {
+                  "label": "VisuAlgo - Shortest paths",
+                  "url": "https://visualgo.net/en/sssp",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Ordering",
+          "children": [
+            {
+              "title": "Topological sort",
+              "description": "A directed acyclic graph can be ordered so every edge goes forward. Build systems and course prerequisites use it, and a cycle means no valid order.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Topological sort",
+                  "url": "https://cp-algorithms.com/graph/topological-sort.html",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Kahn's algorithm",
+              "description": "Repeatedly remove nodes with no incoming edges. It produces an order and detects cycles in the same pass.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Topological sort",
+                  "url": "https://cp-algorithms.com/graph/topological-sort.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Wikipedia - Topological sorting",
+                  "url": "https://en.wikipedia.org/wiki/Topological_sorting",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Disjoint Sets",
+          "children": [
+            {
+              "title": "Union-Find",
+              "description": "Union-find tracks which items belong to the same group, with near-constant time per operation using path compression and union by rank.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - DSU",
+                  "url": "https://cp-algorithms.com/data_structures/disjoint_set_union.html",
+                  "type": "article"
+                },
+                {
+                  "label": "VisuAlgo - Union-Find",
+                  "url": "https://visualgo.net/en/ufds",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Connectivity queries",
+              "description": "Use union-find to answer 'are these connected' as edges arrive, which is much cheaper than rerunning a search each time.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms - DSU",
+                  "url": "https://cp-algorithms.com/data_structures/disjoint_set_union.html",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Spanning Trees",
+          "children": [
+            {
+              "title": "Kruskal's algorithm",
+              "description": "Sort edges by weight and add each one that does not create a cycle, using union-find to check.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Kruskal",
+                  "url": "https://cp-algorithms.com/graph/mst_kruskal.html",
+                  "type": "article"
+                },
+                {
+                  "label": "VisuAlgo - Minimum spanning tree",
+                  "url": "https://visualgo.net/en/mst",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Prim's algorithm",
+              "description": "Grow a tree from one node by always adding the cheapest edge leaving it. It suits dense graphs.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Prim",
+                  "url": "https://cp-algorithms.com/graph/mst_prim.html",
+                  "type": "article"
+                },
+                {
+                  "label": "VisuAlgo - Minimum spanning tree",
+                  "url": "https://visualgo.net/en/mst",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa-11",
+      "title": "Dynamic Programming I: Memoization and Tabulation",
+      "order": 11,
+      "techs": [
+        "Dynamic Programming"
+      ],
+      "description": "Learn the technique that turns exponential recursion into polynomial time. You will define states and transitions, then implement them top-down with memoization and bottom-up with tables.",
+      "topics": [
+        "Overlapping subproblems and optimal substructure",
+        "Defining state and transition",
+        "Top-down memoization",
+        "Bottom-up tabulation and space optimization",
+        "1D problems: climbing stairs, house robber, coin change",
+        "Recovering the actual solution, not just the value"
+      ],
+      "resources": [
+        {
+          "label": "CP-Algorithms - Introduction to DP",
+          "platform": "cp-algorithms.com",
+          "type": "article"
+        },
+        {
+          "label": "NeetCode - 1-D Dynamic Programming",
+          "platform": "neetcode.io",
+          "type": "article"
+        },
+        {
+          "label": "Algorithms (Dasgupta et al.) - DP chapter",
+          "platform": "UC Berkeley",
+          "type": "book"
+        }
+      ],
+      "challenge": "Solve coin change, longest increasing subsequence and house robber three ways each (plain recursion, memoization, tabulation), measure the speedup, then reduce the memory of each table and reconstruct the chosen items.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Recognizing DP",
+          "children": [
+            {
+              "title": "Overlapping subproblems",
+              "description": "If a recursive solution recomputes the same inputs many times, caching results can reduce exponential work to polynomial.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Intro to DP",
+                  "url": "https://cp-algorithms.com/dynamic_programming/intro-to-dp.html",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Optimal substructure",
+              "description": "DP works when an optimal answer is built from optimal answers to smaller problems. Verify this before using it.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Intro to DP",
+                  "url": "https://cp-algorithms.com/dynamic_programming/intro-to-dp.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Defining the State",
+          "children": [
+            {
+              "title": "State and transition",
+              "description": "Write down exactly what dp[i] means, then express it in terms of earlier states. Most DP failures come from an unclear definition.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms - Intro to DP",
+                  "url": "https://cp-algorithms.com/dynamic_programming/intro-to-dp.html",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Base cases and order",
+              "description": "Fill the table in an order that guarantees every dependency is ready. The base cases are the smallest states you can answer directly.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms by Dasgupta, Papadimitriou, Vazirani",
+                  "url": "https://people.eecs.berkeley.edu/~vazirani/algorithms.html",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Implementation",
+          "children": [
+            {
+              "title": "Memoization",
+              "description": "Add a cache to the recursive function keyed by its arguments. It is the easiest way to get a correct DP solution.",
+              "resources": [
+                {
+                  "label": "Python functools.cache",
+                  "url": "https://docs.python.org/3/library/functools.html#functools.cache",
+                  "type": "docs"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Tabulation and space reduction",
+              "description": "Fill an array iteratively. If each state needs only the previous few, keep just those and cut memory to O(1).",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms - Intro to DP",
+                  "url": "https://cp-algorithms.com/dynamic_programming/intro-to-dp.html",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Classic 1D Problems",
+          "children": [
+            {
+              "title": "Climbing stairs and house robber",
+              "description": "Each is a choice at every step that depends on the previous one or two. They are the standard first DP exercises.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "LeetCode - House Robber",
+                  "url": "https://leetcode.com/problems/house-robber/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Coin change and LIS",
+              "description": "Coin change counts or minimizes combinations, and longest increasing subsequence builds up from shorter ones, with an O(n log n) improvement.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms - Intro to DP",
+                  "url": "https://cp-algorithms.com/dynamic_programming/intro-to-dp.html",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa-12",
+      "title": "Dynamic Programming II: Grids, Strings, and Knapsack",
+      "order": 12,
+      "techs": [
+        "Dynamic Programming",
+        "2D DP"
+      ],
+      "description": "Extend DP to two dimensions and to the problem families that appear most: grid paths, string alignment, knapsack and interval problems. You will learn to spot which family a new problem belongs to.",
+      "topics": [
+        "Grid path counting and minimum path sum",
+        "0/1 knapsack and unbounded knapsack",
+        "Longest common subsequence and edit distance",
+        "Palindromic substrings and partitions",
+        "Interval DP",
+        "DP with bitmasks (introduction)"
+      ],
+      "resources": [
+        {
+          "label": "CP-Algorithms - DP",
+          "platform": "cp-algorithms.com",
+          "type": "article"
+        },
+        {
+          "label": "NeetCode - 2-D Dynamic Programming",
+          "platform": "neetcode.io",
+          "type": "article"
+        },
+        {
+          "label": "Competitive Programmer's Handbook",
+          "platform": "cses.fi",
+          "type": "book"
+        }
+      ],
+      "challenge": "Implement edit distance and longest common subsequence with traceback to print the actual alignment, solve 0/1 knapsack with items reconstructed, and write a short note describing the state and transition for each of five new problems.",
+      "estimatedTime": "3 weeks",
+      "sideLeft": [
+        {
+          "title": "Grids",
+          "children": [
+            {
+              "title": "Path counting and minimum cost",
+              "description": "In a grid, each cell's value comes from the cell above and to the left. Obstacles and costs change only the transition.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms - Intro to DP",
+                  "url": "https://cp-algorithms.com/dynamic_programming/intro-to-dp.html",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Space optimization on grids",
+              "description": "Row-by-row filling lets you keep one row instead of the whole table.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Strings",
+          "children": [
+            {
+              "title": "Longest common subsequence",
+              "description": "Compare prefixes of two strings: if the last characters match, extend the diagonal; otherwise take the best of dropping one.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Wikipedia - Longest common subsequence",
+                  "url": "https://en.wikipedia.org/wiki/Longest_common_subsequence",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Edit distance",
+              "description": "The minimum insertions, deletions and replacements to turn one string into another. It powers spell checking and diff tools.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Wikipedia - Levenshtein distance",
+                  "url": "https://en.wikipedia.org/wiki/Levenshtein_distance",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Knapsack Family",
+          "children": [
+            {
+              "title": "0/1 knapsack",
+              "description": "For each item, choose take or skip while respecting a capacity. Iterate capacity downward to avoid reusing an item.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Competitive Programmer's Handbook",
+                  "url": "https://cses.fi/book/book.pdf",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Subset sum and partition",
+              "description": "Many problems reduce to knapsack: can some subset reach a target sum? Recognize the disguise.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms - Intro to DP",
+                  "url": "https://cp-algorithms.com/dynamic_programming/intro-to-dp.html",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Advanced Shapes",
+          "children": [
+            {
+              "title": "Interval DP",
+              "description": "State is a range [i, j] and you try every split point. Matrix chain multiplication and burst balloons are the standard examples.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "CP-Algorithms - Intro to DP",
+                  "url": "https://cp-algorithms.com/dynamic_programming/intro-to-dp.html",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Bitmask DP",
+              "description": "When the set of used items is small (up to about 20), a bitmask in the state tracks it. Traveling salesman is the classic case.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Submask enumeration",
+                  "url": "https://cp-algorithms.com/algebra/all-submasks.html",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa-13",
+      "title": "Greedy Algorithms, Intervals, and Bit Manipulation",
+      "order": 13,
+      "techs": [
+        "Greedy",
+        "Intervals",
+        "Bit Manipulation"
+      ],
+      "description": "Learn when a locally best choice is globally best, and how to prove it. You will also handle interval scheduling and use bit tricks that make some problems short and fast.",
+      "topics": [
+        "The greedy-choice property and exchange arguments",
+        "Interval scheduling, merging and meeting rooms",
+        "Jump game and gas station style problems",
+        "Huffman coding",
+        "Bitwise operators and common tricks",
+        "XOR, masks and counting set bits"
+      ],
+      "resources": [
+        {
+          "label": "NeetCode - Greedy and Intervals",
+          "platform": "neetcode.io",
+          "type": "article"
+        },
+        {
+          "label": "CP-Algorithms - Bit manipulation",
+          "platform": "cp-algorithms.com",
+          "type": "article"
+        },
+        {
+          "label": "Algorithm Design (Kleinberg, Tardos)",
+          "platform": "Pearson",
+          "type": "book"
+        }
+      ],
+      "challenge": "Solve interval merging, minimum meeting rooms and activity selection with greedy strategies, prove or disprove greedy for a coin system by counterexample, and implement five bit tricks (single number, power of two, count bits, subsets by mask, swap without temp).",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Greedy",
+          "children": [
+            {
+              "title": "Greedy choice and proof",
+              "description": "A greedy algorithm is correct only if you can argue the local choice never hurts. An exchange argument is the usual proof.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithm Design - Greedy",
+                  "url": "https://www.cs.princeton.edu/~wayne/kleinberg-tardos/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "When greedy fails",
+              "description": "Coin change with arbitrary denominations breaks the greedy choice. Always hunt for a counterexample before trusting a greedy idea.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Intervals",
+          "children": [
+            {
+              "title": "Sort then sweep",
+              "description": "Sorting intervals by start or end makes merging, scheduling and overlap checks a single pass.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "LeetCode - Merge Intervals",
+                  "url": "https://leetcode.com/problems/merge-intervals/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Meeting rooms with a heap",
+              "description": "Track end times of active meetings in a min-heap to find the number of rooms needed.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Python heapq",
+                  "url": "https://docs.python.org/3/library/heapq.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Greedy Applications",
+          "children": [
+            {
+              "title": "Jump game and gas station",
+              "description": "Track the furthest reachable position or the running surplus. One pass replaces a search over all paths.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Huffman coding",
+              "description": "Repeatedly merge the two least frequent symbols with a heap to build an optimal prefix code.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Huffman coding",
+                  "url": "https://en.wikipedia.org/wiki/Huffman_coding",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Bit Manipulation",
+          "children": [
+            {
+              "title": "Bitwise operators",
+              "description": "AND, OR, XOR, shifts and NOT operate on every bit at once. They are the basis of flags, masks and many compact algorithms.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Bit manipulation",
+                  "url": "https://cp-algorithms.com/algebra/bit-manipulation.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Python bitwise operators",
+                  "url": "https://wiki.python.org/moin/BitwiseOperators",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "XOR tricks and masks",
+              "description": "x ^ x is zero, so XOR finds the lone unpaired value. Masks enumerate all subsets of a small set.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Bit manipulation",
+                  "url": "https://cp-algorithms.com/algebra/bit-manipulation.html",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa-14",
+      "title": "Tries, Segment Trees, and Advanced Structures",
+      "order": 14,
+      "techs": [
+        "Trie",
+        "Segment Tree",
+        "Fenwick Tree"
+      ],
+      "description": "Add the specialized structures that solve specific problem classes quickly: prefix search, range queries with updates, and amortized sequences. Knowing they exist is half the skill.",
+      "topics": [
+        "Tries for prefix search and autocomplete",
+        "Segment trees for range queries and updates",
+        "Fenwick (binary indexed) trees",
+        "Sparse tables and range minimum queries",
+        "KMP and string matching",
+        "Choosing a structure from query types"
+      ],
+      "resources": [
+        {
+          "label": "CP-Algorithms - Data Structures",
+          "platform": "cp-algorithms.com",
+          "type": "article"
+        },
+        {
+          "label": "VisuAlgo - Segment Tree",
+          "platform": "visualgo.net",
+          "type": "article"
+        },
+        {
+          "label": "Algorithms, 4th Edition - Tries",
+          "platform": "Princeton",
+          "type": "book"
+        }
+      ],
+      "challenge": "Implement an autocomplete trie, a segment tree supporting range sum with point updates, and a Fenwick tree for the same, then benchmark all three against a naive array on 100,000 queries and note when each wins.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Tries",
+          "children": [
+            {
+              "title": "Prefix trees",
+              "description": "A trie stores strings character by character, so finding all words with a prefix costs time proportional to the prefix, not the dictionary.",
+              "resources": [
+                {
+                  "label": "Algorithms 4th Edition - Tries",
+                  "url": "https://algs4.cs.princeton.edu/52trie/",
+                  "type": "book"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Autocomplete and word search",
+              "description": "Combine a trie with DFS to list completions or prune a board search. It is much faster than testing each word separately.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "LeetCode - Implement Trie",
+                  "url": "https://leetcode.com/problems/implement-trie-prefix-tree/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "String Matching",
+          "children": [
+            {
+              "title": "KMP",
+              "description": "The prefix function lets KMP skip ahead after a mismatch, finding a pattern in O(n + m) instead of O(nm).",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Prefix function",
+                  "url": "https://cp-algorithms.com/string/prefix-function.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Rolling hash",
+              "description": "A rolling hash compares substrings in O(1) after preprocessing, the base of Rabin-Karp and many duplicate-detection tricks.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - String hashing",
+                  "url": "https://cp-algorithms.com/string/string-hashing.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Range Queries",
+          "children": [
+            {
+              "title": "Segment trees",
+              "description": "A segment tree answers range queries and point updates in O(log n) by storing summaries of ranges in a tree.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Segment tree",
+                  "url": "https://cp-algorithms.com/data_structures/segment_tree.html",
+                  "type": "article"
+                },
+                {
+                  "label": "VisuAlgo - Segment tree",
+                  "url": "https://visualgo.net/en/segmenttree",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Fenwick trees",
+              "description": "A Fenwick tree is a compact structure for prefix sums with updates. It is shorter to write than a segment tree when it fits.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Fenwick tree",
+                  "url": "https://cp-algorithms.com/data_structures/fenwick.html",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Static Queries",
+          "children": [
+            {
+              "title": "Sparse tables",
+              "description": "When data never changes, a sparse table answers range minimum queries in O(1) after O(n log n) preprocessing.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms - Sparse table",
+                  "url": "https://cp-algorithms.com/data_structures/sparse-table.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Choosing the structure",
+              "description": "Ask what queries you need and whether data changes. The answer usually picks the structure for you.",
+              "resources": [
+                {
+                  "label": "CP-Algorithms",
+                  "url": "https://cp-algorithms.com/",
+                  "type": "article"
+                },
+                {
+                  "label": "Big-O Cheat Sheet",
+                  "url": "https://www.bigocheatsheet.com/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa-15",
+      "title": "Interview Strategy and Pattern Recognition",
+      "order": 15,
+      "techs": [
+        "Interview Patterns",
+        "Communication"
+      ],
+      "description": "Combine everything into performance. You will map problems to patterns quickly, communicate your reasoning, handle hints and follow-ups, and build a practice routine that keeps skills sharp.",
+      "topics": [
+        "Pattern recognition across the whole track",
+        "Thinking aloud and clarifying questions",
+        "Handling hints and recovering from being stuck",
+        "Follow-ups: scaling, memory limits, concurrency",
+        "Mock interviews and review loops",
+        "Spaced repetition for problem patterns"
+      ],
+      "resources": [
+        {
+          "label": "NeetCode Roadmap",
+          "platform": "neetcode.io",
+          "type": "article"
+        },
+        {
+          "label": "Cracking the Coding Interview",
+          "platform": "CareerCup",
+          "type": "book"
+        },
+        {
+          "label": "LeetCode Explore",
+          "platform": "leetcode.com",
+          "type": "article"
+        }
+      ],
+      "challenge": "Run three timed mock interviews with a peer or recording yourself, each on an unseen medium problem. Review each one: how long to the first working idea, what hint you needed, which edge case you missed, and which pattern it was.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Patterns",
+          "children": [
+            {
+              "title": "Mapping problems to patterns",
+              "description": "Keywords and constraints point to a pattern: sorted input suggests two pointers or binary search, shortest path suggests BFS, optimal substructure suggests DP.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "LeetCode Explore",
+                  "url": "https://leetcode.com/explore/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Building a pattern notebook",
+              "description": "After each problem, record the pattern, the trick and the mistake. Reviewing this beats solving random new problems.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Anki - spaced repetition",
+                  "url": "https://apps.ankiweb.net/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Communication",
+          "children": [
+            {
+              "title": "Clarify and think aloud",
+              "description": "State assumptions, ask about input size and edge cases, and narrate your approach. Interviewers evaluate reasoning, not only the final code.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Using hints well",
+              "description": "A hint is information, not failure. Restate it, test it against your example, and adjust.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Follow-ups",
+          "children": [
+            {
+              "title": "Scaling and memory limits",
+              "description": "Be ready to say what changes if the input does not fit in memory or arrives as a stream.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                },
+                {
+                  "label": "Algorithms, 4th Edition - Princeton",
+                  "url": "https://algs4.cs.princeton.edu/home/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Testing your own solution",
+              "description": "Walk through your code with a small example and an edge case before saying you are done.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "LeetCode Explore",
+                  "url": "https://leetcode.com/explore/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Practice Routine",
+          "children": [
+            {
+              "title": "Mock interviews",
+              "description": "Practicing under time pressure with another person builds the habits that solo practice cannot.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "A sustainable schedule",
+              "description": "A few problems a week, reviewed properly, beats a short burst of grinding. Track patterns, not problem counts.",
+              "resources": [
+                {
+                  "label": "NeetCode Roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook",
+                  "url": "https://www.techinterviewhandbook.org/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "system-design": [
+    {
+      "id": "system-design-1",
+      "title": "System Design Foundations and Estimation",
+      "order": 1,
+      "techs": [
+        "Requirements",
+        "Back-of-envelope",
+        "Trade-offs"
+      ],
+      "description": "Learn how designers think before drawing boxes. You will turn vague requirements into functional and non-functional goals, estimate load and storage with simple math, and use a framework to structure any design discussion.",
+      "topics": [
+        "Functional versus non-functional requirements",
+        "Latency, throughput, availability and consistency targets",
+        "Back-of-envelope estimation",
+        "Read-heavy versus write-heavy systems",
+        "A framework for design discussions",
+        "Stating and defending trade-offs"
+      ],
+      "resources": [
+        {
+          "label": "System Design Primer",
+          "platform": "GitHub",
+          "type": "article"
+        },
+        {
+          "label": "Designing Data-Intensive Applications",
+          "platform": "O'Reilly",
+          "type": "book"
+        },
+        {
+          "label": "System Design Interview (Alex Xu)",
+          "platform": "ByteByteGo",
+          "type": "book"
+        }
+      ],
+      "challenge": "For a photo-sharing app, write requirements, estimate daily active users, requests per second, storage per year and bandwidth, then list the three decisions that most depend on those numbers and what you would change if traffic were ten times higher.",
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Requirements",
+          "children": [
+            {
+              "title": "Functional and non-functional goals",
+              "description": "Functional goals say what the system does; non-functional goals say how well, such as latency, availability and consistency. The second kind drives the architecture.",
+              "resources": [
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Service level objectives",
+              "description": "An SLO turns a vague 'fast and reliable' into a measurable target like 99.9% of requests under 200 ms.",
+              "resources": [
+                {
+                  "label": "Google SRE Book - SLOs",
+                  "url": "https://sre.google/sre-book/service-level-objectives/",
+                  "type": "book"
+                },
+                {
+                  "label": "Google SRE Book",
+                  "url": "https://sre.google/sre-book/table-of-contents/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Estimation",
+          "children": [
+            {
+              "title": "Back-of-envelope math",
+              "description": "Round aggressively and use powers of ten: a day is about 10^5 seconds. Order of magnitude is enough to choose between designs.",
+              "resources": [
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                },
+                {
+                  "label": "Latency numbers every programmer should know",
+                  "url": "https://gist.github.com/jboner/2841832",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Storage and bandwidth",
+              "description": "Multiply users by actions by size, then by retention. The result tells you whether one machine, one database or a distributed system is needed.",
+              "resources": [
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                },
+                {
+                  "label": "ByteByteGo System Design 101",
+                  "url": "https://github.com/ByteByteGoHq/system-design-101",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Approach",
+          "children": [
+            {
+              "title": "A design framework",
+              "description": "Clarify requirements, estimate scale, sketch a high-level design, then dive into the hardest components. Following the same steps each time keeps you from missing parts.",
+              "resources": [
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                },
+                {
+                  "label": "ByteByteGo System Design 101",
+                  "url": "https://github.com/ByteByteGoHq/system-design-101",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Reading versus writing",
+              "description": "A system that is read a thousand times per write is designed differently from one that is write-heavy. Identify which you have first.",
+              "resources": [
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                },
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Trade-offs",
+          "children": [
+            {
+              "title": "There are no perfect designs",
+              "description": "Every choice gains something and loses something. Name both sides and tie your choice to the stated requirements.",
+              "resources": [
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                },
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Start simple, then scale",
+              "description": "Begin with the simplest design that meets today's needs and describe how it evolves. Over-engineering is a failure too.",
+              "resources": [
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                },
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system-design-2",
+      "title": "Networking, APIs, and Load Balancing",
+      "order": 2,
+      "techs": [
+        "HTTP",
+        "REST",
+        "gRPC",
+        "Load Balancers"
+      ],
+      "description": "Understand how clients reach services and how traffic is spread across them. You will compare API styles, understand the transport and DNS layers that affect latency, and place load balancers and gateways.",
+      "topics": [
+        "DNS, TCP, TLS and HTTP versions",
+        "REST, GraphQL and gRPC trade-offs",
+        "API design: pagination, idempotency, versioning",
+        "Layer 4 versus layer 7 load balancing",
+        "Load balancing algorithms and health checks",
+        "API gateways and reverse proxies"
+      ],
+      "resources": [
+        {
+          "label": "HTTP Semantics RFC 9110",
+          "platform": "rfc-editor.org",
+          "type": "docs"
+        },
+        {
+          "label": "gRPC documentation",
+          "platform": "grpc.io",
+          "type": "docs"
+        },
+        {
+          "label": "System Design Primer",
+          "platform": "GitHub",
+          "type": "article"
+        }
+      ],
+      "challenge": "Design the public API for a ride-hailing service: choose REST or gRPC for each interface, define pagination and idempotency for the booking call, and sketch load balancing and health checks for the booking service, explaining how a failing instance is removed.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Network Basics",
+          "children": [
+            {
+              "title": "DNS, TCP and TLS",
+              "description": "Each connection pays for name lookup, a TCP handshake and a TLS handshake. Reusing connections and terminating TLS close to users cuts latency.",
+              "resources": [
+                {
+                  "label": "MDN - HTTP overview",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+                  "type": "docs"
+                },
+                {
+                  "label": "RFC 9110 - HTTP Semantics",
+                  "url": "https://www.rfc-editor.org/rfc/rfc9110",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "HTTP/2 and HTTP/3",
+              "description": "Multiplexing and QUIC reduce head-of-line blocking. Newer protocol versions matter most on unreliable mobile networks.",
+              "resources": [
+                {
+                  "label": "MDN - Evolution of HTTP",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Evolution_of_HTTP",
+                  "type": "docs"
+                },
+                {
+                  "label": "ByteByteGo System Design 101",
+                  "url": "https://github.com/ByteByteGoHq/system-design-101",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "API Styles",
+          "children": [
+            {
+              "title": "REST, GraphQL and gRPC",
+              "description": "REST suits public resource APIs, GraphQL lets clients choose fields, and gRPC gives fast typed calls between services. Pick per boundary.",
+              "resources": [
+                {
+                  "label": "gRPC introduction",
+                  "url": "https://grpc.io/docs/what-is-grpc/introduction/",
+                  "type": "docs"
+                },
+                {
+                  "label": "GraphQL learn",
+                  "url": "https://graphql.org/learn/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Idempotency and retries",
+              "description": "Clients retry on failures, so a repeated request must not charge twice. Idempotency keys make writes safe to repeat.",
+              "resources": [
+                {
+                  "label": "Stripe - Idempotent requests",
+                  "url": "https://docs.stripe.com/api/idempotent_requests",
+                  "type": "docs"
+                },
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "API Design",
+          "children": [
+            {
+              "title": "Pagination and versioning",
+              "description": "Cursor-based pagination stays stable under inserts, and explicit versions let you change an API without breaking clients.",
+              "resources": [
+                {
+                  "label": "OpenAPI specification",
+                  "url": "https://spec.openapis.org/oas/latest.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "ByteByteGo System Design 101",
+                  "url": "https://github.com/ByteByteGoHq/system-design-101",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Rate limits in the API contract",
+              "description": "Tell clients their limits and how to back off, with standard headers and a clear error response.",
+              "resources": [
+                {
+                  "label": "MDN - 429 Too Many Requests",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/429",
+                  "type": "docs"
+                },
+                {
+                  "label": "Stripe - Rate limiters",
+                  "url": "https://stripe.com/blog/rate-limiters",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Load Balancing",
+          "children": [
+            {
+              "title": "Layer 4 versus layer 7",
+              "description": "Layer 4 forwards connections fast; layer 7 understands HTTP and can route by path, header or cookie at higher cost.",
+              "resources": [
+                {
+                  "label": "NGINX - Load balancing",
+                  "url": "https://nginx.org/en/docs/http/load_balancing.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Algorithms and health checks",
+              "description": "Round robin, least connections and consistent hashing suit different workloads. Health checks remove failed servers automatically.",
+              "resources": [
+                {
+                  "label": "NGINX - Load balancing",
+                  "url": "https://nginx.org/en/docs/http/load_balancing.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "ByteByteGo System Design 101",
+                  "url": "https://github.com/ByteByteGoHq/system-design-101",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system-design-3",
+      "title": "Databases: Choosing, Modeling, and Indexing",
+      "order": 3,
+      "techs": [
+        "SQL",
+        "NoSQL",
+        "Indexes",
+        "Transactions"
+      ],
+      "description": "Pick the right store for the data and the queries. You will compare relational and NoSQL models, understand how indexes speed up reads and slow down writes, and use transactions correctly.",
+      "topics": [
+        "Relational model, normalization and joins",
+        "Document, key-value, wide-column and graph stores",
+        "B-tree and LSM-tree indexes",
+        "Query planning and covering indexes",
+        "ACID transactions and isolation levels",
+        "Choosing a database from the access pattern"
+      ],
+      "resources": [
+        {
+          "label": "Designing Data-Intensive Applications",
+          "platform": "O'Reilly",
+          "type": "book"
+        },
+        {
+          "label": "PostgreSQL documentation - Indexes",
+          "platform": "postgresql.org",
+          "type": "docs"
+        },
+        {
+          "label": "Use The Index, Luke",
+          "platform": "use-the-index-luke.com",
+          "type": "article"
+        }
+      ],
+      "challenge": "Model an e-commerce order system in a relational schema, write the five hottest queries, add the minimum set of indexes with EXPLAIN output showing they are used, then decide which part, if any, you would move to a different store and justify it.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Data Models",
+          "children": [
+            {
+              "title": "Relational modeling",
+              "description": "Normalize to avoid duplicated facts, and denormalize deliberately when read speed demands it. Constraints keep data correct.",
+              "resources": [
+                {
+                  "label": "PostgreSQL docs",
+                  "url": "https://www.postgresql.org/docs/current/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "NoSQL families",
+              "description": "Key-value, document, wide-column and graph stores each optimize one access pattern. Choose by the queries you must answer, not by fashion.",
+              "resources": [
+                {
+                  "label": "MongoDB documentation",
+                  "url": "https://www.mongodb.com/docs/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Indexes",
+          "children": [
+            {
+              "title": "How B-tree indexes work",
+              "description": "A B-tree keeps keys sorted so lookups and range scans touch few pages. Each index also slows writes and uses space.",
+              "resources": [
+                {
+                  "label": "PostgreSQL - Indexes",
+                  "url": "https://www.postgresql.org/docs/current/indexes.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Use The Index, Luke",
+                  "url": "https://use-the-index-luke.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "LSM trees",
+              "description": "Log-structured storage turns random writes into sequential ones, which suits write-heavy workloads, at the cost of read amplification.",
+              "resources": [
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                },
+                {
+                  "label": "Cassandra documentation",
+                  "url": "https://cassandra.apache.org/doc/latest/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Queries",
+          "children": [
+            {
+              "title": "Reading query plans",
+              "description": "EXPLAIN shows whether the database uses an index or scans the table. Reading plans is the main performance skill for SQL.",
+              "resources": [
+                {
+                  "label": "PostgreSQL - Using EXPLAIN",
+                  "url": "https://www.postgresql.org/docs/current/using-explain.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Use The Index, Luke",
+                  "url": "https://use-the-index-luke.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Composite and covering indexes",
+              "description": "Column order in a multi-column index matters, and a covering index can answer a query without touching the table.",
+              "resources": [
+                {
+                  "label": "Use The Index, Luke",
+                  "url": "https://use-the-index-luke.com/",
+                  "type": "article"
+                },
+                {
+                  "label": "PostgreSQL - Multicolumn indexes",
+                  "url": "https://www.postgresql.org/docs/current/indexes-multicolumn.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Transactions",
+          "children": [
+            {
+              "title": "ACID",
+              "description": "Atomicity, consistency, isolation and durability describe what a transaction promises. Know which guarantees your database gives by default.",
+              "resources": [
+                {
+                  "label": "PostgreSQL - Transactions",
+                  "url": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Isolation levels and anomalies",
+              "description": "Weaker isolation allows dirty, non-repeatable and phantom reads. Pick the weakest level that keeps your invariants safe.",
+              "resources": [
+                {
+                  "label": "PostgreSQL - Transaction isolation",
+                  "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Jepsen - Consistency models",
+                  "url": "https://jepsen.io/consistency",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system-design-4",
+      "title": "Scaling Data: Replication, Partitioning, and Sharding",
+      "order": 4,
+      "techs": [
+        "Replication",
+        "Sharding",
+        "Consistent Hashing"
+      ],
+      "description": "Learn how a database grows past one machine. You will use replication for availability and read scaling, partition data across nodes, and handle the hard parts: hot keys, rebalancing and cross-shard queries.",
+      "topics": [
+        "Leader-follower and multi-leader replication",
+        "Replication lag and read-your-writes",
+        "Horizontal partitioning strategies",
+        "Consistent hashing",
+        "Hot spots and rebalancing",
+        "Cross-shard queries and transactions"
+      ],
+      "resources": [
+        {
+          "label": "Designing Data-Intensive Applications - Part II",
+          "platform": "O'Reilly",
+          "type": "book"
+        },
+        {
+          "label": "Dynamo paper",
+          "platform": "allthingsdistributed.com",
+          "type": "article"
+        },
+        {
+          "label": "System Design Primer",
+          "platform": "GitHub",
+          "type": "article"
+        }
+      ],
+      "challenge": "Design the storage layer for a messaging app with 500 million users: choose the partition key, explain how you would add shards without downtime using consistent hashing, and describe what a user sees during replication lag.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Replication",
+          "children": [
+            {
+              "title": "Leader-follower replication",
+              "description": "Writes go to one leader and stream to followers, which serve reads and take over if the leader fails.",
+              "resources": [
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                },
+                {
+                  "label": "PostgreSQL - High availability",
+                  "url": "https://www.postgresql.org/docs/current/high-availability.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Replication lag",
+              "description": "Followers can be behind, so a user may not see their own write. Route a user to the leader after writing, or use session guarantees.",
+              "resources": [
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                },
+                {
+                  "label": "ByteByteGo System Design 101",
+                  "url": "https://github.com/ByteByteGoHq/system-design-101",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Failure",
+          "children": [
+            {
+              "title": "Failover",
+              "description": "Promoting a follower is easy to do wrongly: you can lose writes or end up with two leaders. Automate it carefully and test it.",
+              "resources": [
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                },
+                {
+                  "label": "Google SRE Book",
+                  "url": "https://sre.google/sre-book/table-of-contents/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Multi-leader and leaderless",
+              "description": "Several writers improve availability and locality but make conflicts possible. Systems like Dynamo resolve them with versions or quorums.",
+              "resources": [
+                {
+                  "label": "Dynamo paper",
+                  "url": "https://www.allthingsdistributed.com/2007/10/amazons_dynamo.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Partitioning",
+          "children": [
+            {
+              "title": "Range versus hash partitioning",
+              "description": "Range keeps neighbors together and supports scans; hash spreads load evenly. Pick according to your query pattern.",
+              "resources": [
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                },
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Consistent hashing",
+              "description": "Place nodes and keys on a ring so adding a node moves only a small fraction of keys, not all of them.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Consistent hashing",
+                  "url": "https://en.wikipedia.org/wiki/Consistent_hashing",
+                  "type": "article"
+                },
+                {
+                  "label": "Dynamo paper",
+                  "url": "https://www.allthingsdistributed.com/2007/10/amazons_dynamo.html",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Operating Shards",
+          "children": [
+            {
+              "title": "Hot keys and rebalancing",
+              "description": "One celebrity account can overload a shard. Split hot keys, add salt, and move partitions gradually.",
+              "resources": [
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                },
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Cross-shard work",
+              "description": "Queries and transactions across shards are slow and complex. Design the partition key so most operations stay on one shard.",
+              "resources": [
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                },
+                {
+                  "label": "ByteByteGo System Design 101",
+                  "url": "https://github.com/ByteByteGoHq/system-design-101",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system-design-5",
+      "title": "Caching and Content Delivery",
+      "order": 5,
+      "techs": [
+        "Redis",
+        "CDN",
+        "Caching"
+      ],
+      "description": "Make systems fast and cheap by avoiding repeated work. You will place caches at each layer, choose write and invalidation strategies, handle stampedes, and use a CDN for global delivery.",
+      "topics": [
+        "Cache layers: browser, CDN, application, database",
+        "Cache-aside, write-through and write-back",
+        "Eviction policies: LRU, LFU, TTL",
+        "Cache invalidation and consistency",
+        "Cache stampede and hot keys",
+        "CDNs and edge caching"
+      ],
+      "resources": [
+        {
+          "label": "Redis documentation",
+          "platform": "redis.io",
+          "type": "docs"
+        },
+        {
+          "label": "Cloudflare Learning Center - CDN",
+          "platform": "cloudflare.com",
+          "type": "article"
+        },
+        {
+          "label": "Amazon Builders' Library",
+          "platform": "aws.amazon.com",
+          "type": "article"
+        }
+      ],
+      "challenge": "Add caching to a read-heavy product catalog: design cache-aside with Redis, set TTLs and an invalidation path on updates, protect against a stampede when a popular key expires, and put static assets and API responses behind a CDN with explicit cache headers.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Strategies",
+          "children": [
+            {
+              "title": "Cache-aside",
+              "description": "The application checks the cache first, loads from the database on a miss and stores the result. It is the most common and the simplest to reason about.",
+              "resources": [
+                {
+                  "label": "Redis - Caching patterns",
+                  "url": "https://redis.io/docs/latest/develop/use/client-side-caching/",
+                  "type": "docs"
+                },
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Write-through and write-back",
+              "description": "Write-through updates cache and store together for consistency; write-back batches writes for speed but risks losing data on a crash.",
+              "resources": [
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Eviction",
+          "children": [
+            {
+              "title": "LRU, LFU and TTL",
+              "description": "Eviction decides what leaves a full cache. TTLs bound staleness, and the right policy depends on how access repeats.",
+              "resources": [
+                {
+                  "label": "Redis - Key eviction",
+                  "url": "https://redis.io/docs/latest/develop/reference/eviction/",
+                  "type": "docs"
+                },
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Sizing a cache",
+              "description": "Hit rate depends on the working set, not total data. Measure hit ratio before adding memory.",
+              "resources": [
+                {
+                  "label": "Redis documentation",
+                  "url": "https://redis.io/docs/latest/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Hard Problems",
+          "children": [
+            {
+              "title": "Invalidation",
+              "description": "Updating or deleting a cached value at the right time is famously hard. Short TTLs plus explicit invalidation on writes is the practical answer.",
+              "resources": [
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Stampedes and hot keys",
+              "description": "When a hot key expires, thousands of requests hit the database at once. Locking, request coalescing and jittered TTLs prevent it.",
+              "resources": [
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                },
+                {
+                  "label": "Redis documentation",
+                  "url": "https://redis.io/docs/latest/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Edge Caching",
+          "children": [
+            {
+              "title": "CDN basics",
+              "description": "A CDN stores copies of content near users. Static assets are the easy win, and cacheable API responses can follow.",
+              "resources": [
+                {
+                  "label": "Cloudflare - What is a CDN?",
+                  "url": "https://www.cloudflare.com/learning/cdn/what-is-a-cdn/",
+                  "type": "article"
+                },
+                {
+                  "label": "Cloudflare - Cache docs",
+                  "url": "https://developers.cloudflare.com/cache/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Cache-Control headers",
+              "description": "Headers like max-age, s-maxage and stale-while-revalidate tell browsers and CDNs how long to keep a response.",
+              "resources": [
+                {
+                  "label": "MDN - HTTP caching",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching",
+                  "type": "docs"
+                },
+                {
+                  "label": "web.dev - HTTP cache",
+                  "url": "https://web.dev/articles/http-cache",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system-design-6",
+      "title": "Asynchronous Processing: Queues, Streams, and Events",
+      "order": 6,
+      "techs": [
+        "Kafka",
+        "Message Queues",
+        "Event-Driven"
+      ],
+      "description": "Decouple parts of a system with messages. You will use queues for background work, streams for ordered event logs, and patterns that keep processing correct when messages repeat or arrive late.",
+      "topics": [
+        "Queues versus pub/sub versus streams",
+        "At-most-once, at-least-once and exactly-once",
+        "Idempotent consumers and deduplication",
+        "Kafka partitions, offsets and consumer groups",
+        "Dead-letter queues and retries with backoff",
+        "Event sourcing and the outbox pattern"
+      ],
+      "resources": [
+        {
+          "label": "Apache Kafka documentation",
+          "platform": "kafka.apache.org",
+          "type": "docs"
+        },
+        {
+          "label": "Enterprise Integration Patterns",
+          "platform": "enterpriseintegrationpatterns.com",
+          "type": "book"
+        },
+        {
+          "label": "Designing Data-Intensive Applications - Stream Processing",
+          "platform": "O'Reilly",
+          "type": "book"
+        }
+      ],
+      "challenge": "Design an order-processing pipeline with a queue between checkout and fulfillment: make consumers idempotent, add retries with exponential backoff and a dead-letter queue, and describe how the outbox pattern guarantees an order is never saved without its event.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Messaging Models",
+          "children": [
+            {
+              "title": "Queues, pub/sub and logs",
+              "description": "A queue gives each message to one worker; pub/sub gives it to every subscriber; a log keeps ordered history that consumers can replay.",
+              "resources": [
+                {
+                  "label": "Apache Kafka - Introduction",
+                  "url": "https://kafka.apache.org/documentation/#introduction",
+                  "type": "docs"
+                },
+                {
+                  "label": "Enterprise Integration Patterns",
+                  "url": "https://www.enterpriseintegrationpatterns.com/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Delivery guarantees",
+              "description": "Networks fail, so exactly-once is hard. Most systems deliver at least once and make consumers safe to repeat.",
+              "resources": [
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                },
+                {
+                  "label": "Apache Kafka - Delivery semantics",
+                  "url": "https://kafka.apache.org/documentation/#semantics",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Reliability",
+          "children": [
+            {
+              "title": "Idempotent consumers",
+              "description": "Track processed message ids or make operations naturally repeatable so a redelivered message has no extra effect.",
+              "resources": [
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Retries and dead letters",
+              "description": "Retry transient failures with exponential backoff and jitter, and move poison messages to a dead-letter queue for inspection.",
+              "resources": [
+                {
+                  "label": "AWS Builders' Library - Timeouts, retries and backoff",
+                  "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Amazon SQS - Dead-letter queues",
+                  "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Kafka",
+          "children": [
+            {
+              "title": "Topics, partitions and offsets",
+              "description": "A topic is split into partitions; order is guaranteed only within one. Consumers track their position by offset.",
+              "resources": [
+                {
+                  "label": "Apache Kafka documentation",
+                  "url": "https://kafka.apache.org/documentation/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Kafka - Design",
+                  "url": "https://kafka.apache.org/documentation/#design",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Consumer groups",
+              "description": "Consumers in a group share partitions so work scales out. Adding more consumers than partitions gains nothing.",
+              "resources": [
+                {
+                  "label": "Apache Kafka documentation",
+                  "url": "https://kafka.apache.org/documentation/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Patterns",
+          "children": [
+            {
+              "title": "The outbox pattern",
+              "description": "Write the business change and the event in one database transaction, then publish from the outbox. It avoids saving data without its event.",
+              "resources": [
+                {
+                  "label": "microservices.io - Transactional outbox",
+                  "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Event sourcing",
+              "description": "Store the sequence of events as the source of truth and derive current state from it. It gives history and replay at the cost of complexity.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - Event Sourcing",
+                  "url": "https://martinfowler.com/eaaDev/EventSourcing.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "microservices.io - Event sourcing",
+                  "url": "https://microservices.io/patterns/data/event-sourcing.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system-design-7",
+      "title": "Consistency, CAP, and Distributed Coordination",
+      "order": 7,
+      "techs": [
+        "CAP",
+        "Consensus",
+        "Raft"
+      ],
+      "description": "Understand what you can and cannot promise when machines and networks fail. You will use CAP and consistency models to reason about trade-offs, learn how consensus works, and know when to use coordination services.",
+      "topics": [
+        "CAP theorem and what it really says",
+        "Consistency models: strong, eventual, causal",
+        "Quorums and read/write tuning",
+        "Consensus: Raft and Paxos overview",
+        "Leader election, locks and leases",
+        "Clocks, ordering and the problem with time"
+      ],
+      "resources": [
+        {
+          "label": "The Raft Consensus Algorithm",
+          "platform": "raft.github.io",
+          "type": "article"
+        },
+        {
+          "label": "Jepsen consistency models",
+          "platform": "jepsen.io",
+          "type": "article"
+        },
+        {
+          "label": "Designing Data-Intensive Applications - Part II/III",
+          "platform": "O'Reilly",
+          "type": "book"
+        }
+      ],
+      "challenge": "Take three systems you use (a bank transfer, a social feed and a shopping cart) and for each choose a consistency model, justify it against CAP, and describe what a user observes during a network partition.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Trade-offs",
+          "children": [
+            {
+              "title": "CAP theorem",
+              "description": "During a network partition a system must choose between consistency and availability. The theorem is about that moment, not normal operation.",
+              "resources": [
+                {
+                  "label": "CAP twelve years later - InfoQ",
+                  "url": "https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed/",
+                  "type": "article"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Consistency models",
+              "description": "Linearizable, sequential, causal and eventual consistency promise different things. Stronger models are easier to use and more expensive.",
+              "resources": [
+                {
+                  "label": "Jepsen - Consistency models",
+                  "url": "https://jepsen.io/consistency",
+                  "type": "docs"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Quorums",
+          "children": [
+            {
+              "title": "Read and write quorums",
+              "description": "With N replicas, requiring W writes and R reads where W + R > N makes reads see the latest write. Tuning W and R trades latency for safety.",
+              "resources": [
+                {
+                  "label": "Dynamo paper",
+                  "url": "https://www.allthingsdistributed.com/2007/10/amazons_dynamo.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Conflict resolution",
+              "description": "Concurrent writes need a rule: last write wins, version vectors or CRDTs. Each loses or merges data differently.",
+              "resources": [
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                },
+                {
+                  "label": "CRDT.tech",
+                  "url": "https://crdt.tech/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Consensus",
+          "children": [
+            {
+              "title": "Raft",
+              "description": "Raft elects a leader, replicates a log to a majority and applies entries in order. It is designed to be understandable.",
+              "resources": [
+                {
+                  "label": "Raft visualization",
+                  "url": "https://raft.github.io/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Raft paper",
+                  "url": "https://raft.github.io/raft.pdf",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Coordination services",
+              "description": "ZooKeeper, etcd and Consul give you consensus as a service for leader election, configuration and locks, so you do not build it yourself.",
+              "resources": [
+                {
+                  "label": "etcd documentation",
+                  "url": "https://etcd.io/docs/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Apache ZooKeeper",
+                  "url": "https://zookeeper.apache.org/doc/current/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Time and Locks",
+          "children": [
+            {
+              "title": "Clocks cannot be trusted",
+              "description": "Machine clocks drift and differ, so you cannot order events across servers by timestamp alone. Logical clocks and versions are safer.",
+              "resources": [
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                },
+                {
+                  "label": "Jepsen",
+                  "url": "https://jepsen.io/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Distributed locks and leases",
+              "description": "A lock holder can pause and lose the lock without knowing. Fencing tokens make stale holders harmless.",
+              "resources": [
+                {
+                  "label": "Martin Kleppmann - How to do distributed locking",
+                  "url": "https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system-design-8",
+      "title": "Microservices and Service Communication",
+      "order": 8,
+      "techs": [
+        "Microservices",
+        "Service Mesh",
+        "Saga"
+      ],
+      "description": "Decide when to split a system and how services should talk. You will compare monoliths and microservices honestly, manage data across services with sagas, and use gateways, discovery and meshes.",
+      "topics": [
+        "Monolith, modular monolith and microservices",
+        "Service boundaries and domain-driven design",
+        "Synchronous versus asynchronous communication",
+        "Distributed transactions and the saga pattern",
+        "Service discovery, gateways and meshes",
+        "Contracts, versioning and backward compatibility"
+      ],
+      "resources": [
+        {
+          "label": "Microservices - Martin Fowler",
+          "platform": "martinfowler.com",
+          "type": "article"
+        },
+        {
+          "label": "microservices.io patterns",
+          "platform": "microservices.io",
+          "type": "article"
+        },
+        {
+          "label": "Building Microservices (Sam Newman)",
+          "platform": "O'Reilly",
+          "type": "book"
+        }
+      ],
+      "challenge": "Split an e-commerce monolith on paper: draw the service boundaries, decide which calls are synchronous and which events, design the order saga with compensations for payment failure, and list what you would keep in the monolith and why.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Architecture",
+          "children": [
+            {
+              "title": "Monolith versus microservices",
+              "description": "Microservices buy independent deployment at the price of network failures and operational overhead. A modular monolith is often the better start.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - Microservices",
+                  "url": "https://martinfowler.com/articles/microservices.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Martin Fowler - Monolith First",
+                  "url": "https://martinfowler.com/bliki/MonolithFirst.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Finding service boundaries",
+              "description": "Split along business capabilities, where data and change rate differ, not along technical layers.",
+              "resources": [
+                {
+                  "label": "microservices.io - Decompose by subdomain",
+                  "url": "https://microservices.io/patterns/decomposition/decompose-by-subdomain.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Domain-Driven Design reference",
+                  "url": "https://www.domainlanguage.com/ddd/reference/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Data",
+          "children": [
+            {
+              "title": "Database per service",
+              "description": "Each service owns its data and exposes it through an API, which avoids hidden coupling through a shared schema.",
+              "resources": [
+                {
+                  "label": "microservices.io - Database per service",
+                  "url": "https://microservices.io/patterns/data/database-per-service.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Sagas",
+              "description": "A saga replaces a distributed transaction with local steps and compensating actions that undo earlier steps when a later one fails.",
+              "resources": [
+                {
+                  "label": "microservices.io - Saga",
+                  "url": "https://microservices.io/patterns/data/saga.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Communication",
+          "children": [
+            {
+              "title": "Synchronous versus events",
+              "description": "Synchronous calls are simple but chain failures together; events decouple services but make flows harder to follow.",
+              "resources": [
+                {
+                  "label": "microservices.io patterns",
+                  "url": "https://microservices.io/patterns/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Gateways and discovery",
+              "description": "A gateway gives clients one entry point, and discovery lets services find each other as instances come and go.",
+              "resources": [
+                {
+                  "label": "microservices.io - API gateway",
+                  "url": "https://microservices.io/patterns/apigateway.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Evolution",
+          "children": [
+            {
+              "title": "Service meshes",
+              "description": "A mesh moves retries, timeouts, mutual TLS and telemetry into sidecars. It helps at scale and adds complexity before you need it.",
+              "resources": [
+                {
+                  "label": "Istio documentation",
+                  "url": "https://istio.io/latest/docs/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Envoy documentation",
+                  "url": "https://www.envoyproxy.io/docs/envoy/latest/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Contracts and compatibility",
+              "description": "Add fields, do not remove or repurpose them, and test consumers against provider contracts so services can deploy independently.",
+              "resources": [
+                {
+                  "label": "Pact - Consumer-driven contracts",
+                  "url": "https://docs.pact.io/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system-design-9",
+      "title": "Reliability: Rate Limiting, Resilience, and Failure",
+      "order": 9,
+      "techs": [
+        "Rate Limiting",
+        "Circuit Breaker",
+        "Chaos"
+      ],
+      "description": "Design for the failures that will happen. You will limit load, isolate failures with timeouts, retries and circuit breakers, degrade gracefully, and test your assumptions with controlled failure.",
+      "topics": [
+        "Rate limiting algorithms and where to apply them",
+        "Timeouts, retries and exponential backoff with jitter",
+        "Circuit breakers and bulkheads",
+        "Load shedding and graceful degradation",
+        "Redundancy and multi-region design",
+        "Chaos engineering and game days"
+      ],
+      "resources": [
+        {
+          "label": "Amazon Builders' Library",
+          "platform": "aws.amazon.com",
+          "type": "article"
+        },
+        {
+          "label": "Google SRE Book - Handling Overload",
+          "platform": "sre.google",
+          "type": "book"
+        },
+        {
+          "label": "Release It! (Michael Nygard)",
+          "platform": "Pragmatic Bookshelf",
+          "type": "book"
+        }
+      ],
+      "challenge": "Add resilience to a checkout service that depends on payment, inventory and email: set timeouts and a retry budget, put a circuit breaker on the payment call, define a degraded mode when email is down, and write a failure drill that removes each dependency in turn.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Limiting Load",
+          "children": [
+            {
+              "title": "Rate limiting algorithms",
+              "description": "Token bucket and sliding window limit how fast a client can call you. They protect shared resources and enforce fairness.",
+              "resources": [
+                {
+                  "label": "Stripe - Scaling your API with rate limiters",
+                  "url": "https://stripe.com/blog/rate-limiters",
+                  "type": "docs"
+                },
+                {
+                  "label": "ByteByteGo System Design 101",
+                  "url": "https://github.com/ByteByteGoHq/system-design-101",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Load shedding",
+              "description": "When overloaded, reject low-priority work early so important requests still succeed, instead of failing everything slowly.",
+              "resources": [
+                {
+                  "label": "Google SRE Book - Handling overload",
+                  "url": "https://sre.google/sre-book/handling-overload/",
+                  "type": "book"
+                },
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Failure Handling",
+          "children": [
+            {
+              "title": "Timeouts and retries",
+              "description": "Every network call needs a timeout. Retries multiply load during an outage unless they use backoff, jitter and a budget.",
+              "resources": [
+                {
+                  "label": "AWS Builders' Library - Timeouts, retries and backoff",
+                  "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Google SRE Book",
+                  "url": "https://sre.google/sre-book/table-of-contents/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Circuit breakers and bulkheads",
+              "description": "A circuit breaker stops calling a failing dependency, and bulkheads keep one slow dependency from using all your threads.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - Circuit Breaker",
+                  "url": "https://martinfowler.com/bliki/CircuitBreaker.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Resilience4j",
+                  "url": "https://resilience4j.readme.io/docs/getting-started",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Availability",
+          "children": [
+            {
+              "title": "Redundancy and failover",
+              "description": "No single points of failure means duplicating each component and testing the switch. Untested failover usually fails.",
+              "resources": [
+                {
+                  "label": "Google SRE Book",
+                  "url": "https://sre.google/sre-book/table-of-contents/",
+                  "type": "book"
+                },
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Multi-region design",
+              "description": "Multiple regions survive a regional outage but force hard choices about data replication and consistency.",
+              "resources": [
+                {
+                  "label": "AWS Well-Architected - Reliability",
+                  "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Graceful Degradation",
+          "children": [
+            {
+              "title": "Degrading features",
+              "description": "Decide in advance which features can fail without taking the product down, such as recommendations or email, and serve a simpler version.",
+              "resources": [
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                },
+                {
+                  "label": "Google SRE Book",
+                  "url": "https://sre.google/sre-book/table-of-contents/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Chaos engineering",
+              "description": "Deliberately injecting failures in a controlled way finds weaknesses before real incidents do.",
+              "resources": [
+                {
+                  "label": "Principles of Chaos Engineering",
+                  "url": "https://principlesofchaos.org/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Netflix - Chaos Monkey",
+                  "url": "https://netflix.github.io/chaosmonkey/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system-design-10",
+      "title": "Observability, Capacity, and Cost",
+      "order": 10,
+      "techs": [
+        "Prometheus",
+        "OpenTelemetry",
+        "Capacity Planning"
+      ],
+      "description": "Operate what you design. You will instrument systems with metrics, logs and traces, define alerts that matter, plan capacity from data and keep cost in view as a design constraint.",
+      "topics": [
+        "Metrics, logs and traces",
+        "The four golden signals and RED/USE methods",
+        "Distributed tracing with OpenTelemetry",
+        "Alerting on symptoms and SLO burn rate",
+        "Capacity planning and autoscaling",
+        "Cost as a design constraint"
+      ],
+      "resources": [
+        {
+          "label": "Google SRE Book - Monitoring",
+          "platform": "sre.google",
+          "type": "book"
+        },
+        {
+          "label": "OpenTelemetry documentation",
+          "platform": "opentelemetry.io",
+          "type": "docs"
+        },
+        {
+          "label": "Prometheus documentation",
+          "platform": "prometheus.io",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Instrument a small multi-service app with OpenTelemetry, build a dashboard with the four golden signals, define an SLO and a burn-rate alert, run a load test to find the first bottleneck and estimate the monthly cloud cost at 10x traffic.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Signals",
+          "children": [
+            {
+              "title": "Metrics, logs and traces",
+              "description": "Metrics show trends, logs explain single events and traces follow one request across services. You need all three.",
+              "resources": [
+                {
+                  "label": "OpenTelemetry - Observability primer",
+                  "url": "https://opentelemetry.io/docs/concepts/observability-primer/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Prometheus overview",
+                  "url": "https://prometheus.io/docs/introduction/overview/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Golden signals",
+              "description": "Latency, traffic, errors and saturation tell you whether a service is healthy. Start dashboards with these four.",
+              "resources": [
+                {
+                  "label": "Google SRE Book - Monitoring distributed systems",
+                  "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+                  "type": "book"
+                },
+                {
+                  "label": "Google SRE Book",
+                  "url": "https://sre.google/sre-book/table-of-contents/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Tracing",
+          "children": [
+            {
+              "title": "Distributed tracing",
+              "description": "A trace id passed through every call shows where time is spent in a request that touches many services.",
+              "resources": [
+                {
+                  "label": "OpenTelemetry documentation",
+                  "url": "https://opentelemetry.io/docs/",
+                  "type": "docs"
+                },
+                {
+                  "label": "OpenTelemetry - Traces",
+                  "url": "https://opentelemetry.io/docs/concepts/signals/traces/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Structured logging",
+              "description": "Log events as structured fields with request ids, so you can search and correlate them instead of grepping text.",
+              "resources": [
+                {
+                  "label": "OpenTelemetry - Logs",
+                  "url": "https://opentelemetry.io/docs/concepts/signals/logs/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Alerting",
+          "children": [
+            {
+              "title": "Alert on symptoms",
+              "description": "Page people for user-visible problems, not for every internal metric. Too many alerts cause alert fatigue.",
+              "resources": [
+                {
+                  "label": "Google SRE Book - Practical alerting",
+                  "url": "https://sre.google/sre-book/practical-alerting/",
+                  "type": "book"
+                },
+                {
+                  "label": "Prometheus - Alerting practices",
+                  "url": "https://prometheus.io/docs/practices/alerting/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "SLO burn rate",
+              "description": "Alerting on how fast the error budget is being used catches both sudden outages and slow degradation.",
+              "resources": [
+                {
+                  "label": "Google SRE Workbook - Alerting on SLOs",
+                  "url": "https://sre.google/workbook/alerting-on-slos/",
+                  "type": "book"
+                },
+                {
+                  "label": "Google SRE Book",
+                  "url": "https://sre.google/sre-book/table-of-contents/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Capacity and Cost",
+          "children": [
+            {
+              "title": "Capacity planning",
+              "description": "Load test to find limits, measure growth, and add headroom. Autoscaling reacts to load but not instantly.",
+              "resources": [
+                {
+                  "label": "Google SRE Book - Software engineering in SRE",
+                  "url": "https://sre.google/sre-book/software-engineering-in-sre/",
+                  "type": "book"
+                },
+                {
+                  "label": "Kubernetes - Horizontal Pod Autoscaling",
+                  "url": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Designing for cost",
+              "description": "Data transfer, storage tiers and idle capacity dominate cloud bills. Estimate cost during design, not after the invoice.",
+              "resources": [
+                {
+                  "label": "AWS Well-Architected - Cost optimization",
+                  "url": "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "FinOps Foundation",
+                  "url": "https://www.finops.org/introduction/what-is-finops/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system-design-11",
+      "title": "Classic System Designs I: Storage, Feeds, and Identifiers",
+      "order": 11,
+      "techs": [
+        "URL Shortener",
+        "News Feed",
+        "Rate Limiter"
+      ],
+      "description": "Apply everything to well-known problems. You will design a URL shortener, a distributed ID generator, a rate limiter and a news feed, practicing the full cycle of requirements, estimation, design and trade-offs.",
+      "topics": [
+        "URL shortener and ID generation (Snowflake style)",
+        "Pastebin and object storage design",
+        "Distributed rate limiter",
+        "News feed: fan-out on write versus read",
+        "Notification system",
+        "Reviewing a design for bottlenecks"
+      ],
+      "resources": [
+        {
+          "label": "System Design Primer",
+          "platform": "GitHub",
+          "type": "article"
+        },
+        {
+          "label": "System Design Interview (Alex Xu)",
+          "platform": "ByteByteGo",
+          "type": "book"
+        },
+        {
+          "label": "High Scalability",
+          "platform": "highscalability.com",
+          "type": "article"
+        }
+      ],
+      "challenge": "Write complete designs for a URL shortener and a news feed: requirements, capacity estimates, API, data model, high-level diagram, a deep dive on the hardest component, and a bottleneck review. Present one aloud in 35 minutes.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "URL Shortener",
+          "children": [
+            {
+              "title": "Generating short keys",
+              "description": "Base62 of a counter, a hash with collision handling and a pre-generated key service each trade simplicity, predictability and coordination.",
+              "resources": [
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                },
+                {
+                  "label": "ByteByteGo System Design 101",
+                  "url": "https://github.com/ByteByteGoHq/system-design-101",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Read-heavy scaling",
+              "description": "Redirects are read thousands of times per write, so cache aggressively and keep the database off the hot path.",
+              "resources": [
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                },
+                {
+                  "label": "High Scalability",
+                  "url": "https://highscalability.com/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Identifiers",
+          "children": [
+            {
+              "title": "Distributed ID generation",
+              "description": "Snowflake-style ids combine a timestamp, machine id and sequence to give unique, roughly ordered ids without coordination.",
+              "resources": [
+                {
+                  "label": "Twitter Snowflake",
+                  "url": "https://github.com/twitter-archive/snowflake",
+                  "type": "article"
+                },
+                {
+                  "label": "ByteByteGo System Design 101",
+                  "url": "https://github.com/ByteByteGoHq/system-design-101",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Object storage",
+              "description": "Large files go to object storage with metadata in a database; clients upload directly using signed URLs.",
+              "resources": [
+                {
+                  "label": "Amazon S3 documentation",
+                  "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "News Feed",
+          "children": [
+            {
+              "title": "Fan-out on write versus read",
+              "description": "Precomputing feeds at write time makes reads fast but costs a lot for accounts with millions of followers. Many systems mix both.",
+              "resources": [
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                },
+                {
+                  "label": "High Scalability",
+                  "url": "https://highscalability.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Ranking and the celebrity problem",
+              "description": "A hybrid approach handles celebrities differently from normal users so one post does not trigger millions of writes.",
+              "resources": [
+                {
+                  "label": "ByteByteGo System Design 101",
+                  "url": "https://github.com/ByteByteGoHq/system-design-101",
+                  "type": "article"
+                },
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Supporting Systems",
+          "children": [
+            {
+              "title": "Notification system",
+              "description": "Notifications flow through queues to per-channel workers, with templates, preferences, deduplication and retries.",
+              "resources": [
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                },
+                {
+                  "label": "ByteByteGo System Design 101",
+                  "url": "https://github.com/ByteByteGoHq/system-design-101",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Reviewing for bottlenecks",
+              "description": "After the first design, trace a request and ask what breaks at ten times the load. Name the weakest point and fix it.",
+              "resources": [
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                },
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system-design-12",
+      "title": "Classic System Designs II: Chat, Media, Search, and Payments",
+      "order": 12,
+      "techs": [
+        "Chat",
+        "Video Streaming",
+        "Search",
+        "Payments"
+      ],
+      "description": "Tackle the harder classics: real-time messaging, video delivery, search and money movement. These designs combine persistent connections, large objects, indexes and strict correctness.",
+      "topics": [
+        "Chat system: WebSockets, presence, ordering and delivery",
+        "Video streaming: upload, transcoding, adaptive bitrate, CDN",
+        "Search: inverted indexes, ranking and typeahead",
+        "Payments: idempotency, ledger and reconciliation",
+        "Maps and geospatial indexing",
+        "Presenting a design and handling follow-ups"
+      ],
+      "resources": [
+        {
+          "label": "System Design Interview Vol. 2",
+          "platform": "ByteByteGo",
+          "type": "book"
+        },
+        {
+          "label": "System Design Primer",
+          "platform": "GitHub",
+          "type": "article"
+        },
+        {
+          "label": "Stripe engineering blog",
+          "platform": "stripe.com",
+          "type": "article"
+        }
+      ],
+      "challenge": "Design a chat app supporting 1:1 and group messages and a payment flow for a marketplace. For each, specify guarantees (ordering, delivery, exactly-once effects), failure scenarios and recovery, then practice presenting one end to end including follow-up questions.",
+      "estimatedTime": "3 weeks",
+      "sideLeft": [
+        {
+          "title": "Chat",
+          "children": [
+            {
+              "title": "Persistent connections",
+              "description": "WebSockets keep a connection open for pushes. Servers need a way to find which node holds a user's connection to route messages.",
+              "resources": [
+                {
+                  "label": "MDN - WebSockets API",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API",
+                  "type": "docs"
+                },
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Ordering and delivery",
+              "description": "Per-conversation sequence numbers give ordering, acknowledgements give delivery, and offline users get messages from storage on reconnect.",
+              "resources": [
+                {
+                  "label": "ByteByteGo System Design 101",
+                  "url": "https://github.com/ByteByteGoHq/system-design-101",
+                  "type": "article"
+                },
+                {
+                  "label": "Designing Data-Intensive Applications",
+                  "url": "https://dataintensive.net/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Media",
+          "children": [
+            {
+              "title": "Video pipeline",
+              "description": "Uploads are split, transcoded into several resolutions and served in adaptive-bitrate chunks from a CDN.",
+              "resources": [
+                {
+                  "label": "Cloudflare - How video streaming works",
+                  "url": "https://www.cloudflare.com/learning/video/what-is-adaptive-bitrate-streaming/",
+                  "type": "article"
+                },
+                {
+                  "label": "ByteByteGo System Design 101",
+                  "url": "https://github.com/ByteByteGoHq/system-design-101",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Large file handling",
+              "description": "Resumable uploads, chunking and direct-to-storage transfers keep big files off your application servers.",
+              "resources": [
+                {
+                  "label": "Amazon S3 - Multipart upload",
+                  "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Search",
+          "children": [
+            {
+              "title": "Inverted indexes",
+              "description": "A search index maps each term to the documents containing it, which makes lookup fast. Ranking then scores the candidates.",
+              "resources": [
+                {
+                  "label": "Elasticsearch - Inverted index",
+                  "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/documents-indices.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Introduction to Information Retrieval",
+                  "url": "https://nlp.stanford.edu/IR-book/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Typeahead",
+              "description": "Autocomplete uses a trie or prefix index with popularity data, cached close to users because it runs on every keystroke.",
+              "resources": [
+                {
+                  "label": "ByteByteGo System Design 101",
+                  "url": "https://github.com/ByteByteGoHq/system-design-101",
+                  "type": "article"
+                },
+                {
+                  "label": "System Design Primer",
+                  "url": "https://github.com/donnemartin/system-design-primer",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Payments",
+          "children": [
+            {
+              "title": "Idempotent payments and ledgers",
+              "description": "Money systems need idempotent requests and an append-only ledger so every cent is traceable and double charges are impossible.",
+              "resources": [
+                {
+                  "label": "Stripe - Idempotent requests",
+                  "url": "https://docs.stripe.com/api/idempotent_requests",
+                  "type": "docs"
+                },
+                {
+                  "label": "Stripe engineering blog",
+                  "url": "https://stripe.com/blog/engineering",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Reconciliation",
+              "description": "Periodically compare your records with the payment provider's to catch missed or duplicated events. Assume your own system can be wrong.",
+              "resources": [
+                {
+                  "label": "Stripe docs - Payment intents",
+                  "url": "https://docs.stripe.com/payments/payment-intents",
+                  "type": "docs"
+                },
+                {
+                  "label": "Amazon Builders' Library",
+                  "url": "https://aws.amazon.com/builders-library/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

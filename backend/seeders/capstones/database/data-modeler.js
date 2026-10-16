@@ -23,8 +23,8 @@ export default {
   categoryId: "database",
   slug: "data-modeler-enterprise-ecommerce",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Enterprise E-Commerce Data Architecture and Analytics Warehouse",
   summary:
     "Design and implement a complete enterprise data model for an e-commerce platform. Build 3NF transactional schemas, " +

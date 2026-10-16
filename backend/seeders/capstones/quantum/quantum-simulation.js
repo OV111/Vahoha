@@ -23,8 +23,8 @@ export default {
   categoryId: "quantum",
   slug: "quantum-simulation-vqe-hamiltonian",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Molecular Energy and Condensed Matter Quantum Simulator",
   summary:
     "Build a quantum simulation framework using PySCF and Qiskit Nature or OpenFermion that computes electronic ground state energies " +

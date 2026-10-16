@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   sanitizeLayerProgress,
   doneLayerIds,
-} from '../../modules/roadmap/services/layerProgress.js'
+} from '../../services/layerProgress.js'
 
 describe('sanitizeLayerProgress', () => {
   it('downgrades a "done" the server never awarded', () => {

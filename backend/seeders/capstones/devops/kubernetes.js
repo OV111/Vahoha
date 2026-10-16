@@ -23,8 +23,8 @@ export default {
   categoryId: "devops",
   slug: "kubernetes-production-platform-cluster",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Production-Grade Microservice Platform on Kubernetes",
   summary:
     "Design and deploy a resilient microservice application platform on Kubernetes (kind/minikube). " +

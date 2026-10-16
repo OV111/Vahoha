@@ -25,8 +25,8 @@ export default {
   categoryId: "blockchain",
   slug: "chain-architect-local-appchain",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Design and prototype an application-specific chain",
   summary:
     "Build a small application-specific blockchain prototype and document the architecture " +

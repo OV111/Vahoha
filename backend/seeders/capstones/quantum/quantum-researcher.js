@@ -23,8 +23,8 @@ export default {
   categoryId: "quantum",
   slug: "quantum-researcher-error-correction-sim",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Surface Code Error Correction and Decoherence Simulator",
   summary:
     "Develop an open quantum system and surface code simulation toolkit to study density matrix decoherence (Lindblad equation), " +

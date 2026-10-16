@@ -119,7 +119,7 @@ The employer-facing tiers are Phase 13+ and explicitly gated on reaching 500+ ve
 
 TODO: no sized TAM/SAM/SOM exists yet for this document — do you want me to build one from public data (e.g. number of self-taught/bootcamp developers per year, freeCodeCamp/roadmap.sh user counts as reference points), or is there a number you already have in mind?
 
-**First niche to win:** one path, fully proven, before anything else. The plan (see `docs/engineering/ROADMAP_BUILD_PLAN.md`) is to validate the entire loop — roadmap, exam engine, AI mentor — on the **Backend Developer** path only, with real users, before seeding the other authored categories (172 tracks across 15 categories: Full Stack, Backend, AI/ML, DevOps, Mobile, GameDev, QA, Data Science, Database, Cloud, Cybersecurity, Blockchain, Web3, Quantum, Languages). Four paths are listed as coming soon with no content yet: Frontend Developer, AI Agents Engineer, Data Structures & Algorithms, and System Design (the one that best matches the mid-level promise). Narrow first, wide once the mechanism is proven; thin tracks may be hidden rather than widened.
+**First niche to win:** one path, fully proven, before anything else. The plan (see `docs/engineering/ROADMAP_BUILD_PLAN.md`) is to validate the entire loop — roadmap, exam engine, AI mentor — on the **Backend Developer** path only, with real users, before seeding the other authored categories (172 tracks across 15 categories: Full Stack, Backend, AI/ML, DevOps, Mobile, GameDev, QA, Data Science, Database, Cloud, Cybersecurity, Blockchain, Web3, Quantum, Languages). No path is listed as coming soon any more: Frontend Developer, Data Structures & Algorithms, System Design and AI Agents Engineer were all authored on 2026-10-16 (the one that best matches the mid-level promise). Narrow first, wide once the mechanism is proven; thin tracks may be hidden rather than widened.
 
 ---
 
@@ -152,7 +152,7 @@ Note: freeCodeCamp/The Odin Project are lower threat because they are passive co
 - Connected layer: readiness (5 areas) on the progress page, mentor aware of team work, opt-in recruiter scorecard, XP ledger for every source
 - Billing built on Polar and verified in sandbox; **not enforced**, everything is free
 - Pilot analytics: 14 server-side event types and an admin funnel that follows a learner from signup to team defense
-- 172 tracks in 15 categories, 4 more listed as coming soon; exam-bank generator built, but banks still have to be seeded and hand-checked for the first track
+- 176 tracks in 16 categories (Frontend Developer now sits under Full Stack; it, Data Structures & Algorithms, System Design and AI Agents Engineer were authored 2026-10-16; no tracks are coming soon); exam-bank generator built, but banks still have to be seeded and hand-checked for the first track
 - **Zero real users, zero revenue, zero interviews with target users**
 
 **Next 90 days:** no new features. Hand-seed and check Backend Layers 1–3, run 15 interviews with self-taught backend developers, ask each for a $29 early-access payment, run the Wizard-of-Oz oral exam by hand, and read the funnel weekly. Day-60 gate and kill criteria are in `docs/strategy/STARTUP_REVIEW_2026-10.md` §8–9 and `docs/strategy/OUTREACH_KIT.md`.

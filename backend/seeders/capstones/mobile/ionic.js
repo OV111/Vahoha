@@ -24,8 +24,8 @@ export default {
   categoryId: "mobile",
   slug: "ionic-grocery-planner",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Offline-first grocery planner",
   summary:
     "Build an Ionic mobile grocery planner where users organize shopping lists, manage quantities and mark items as purchased. The app must remain useful without connectivity, persist local data, synchronize with a REST API when available and use Capacitor for at least one native device capability. Automated tests must run without a device or emulator.",

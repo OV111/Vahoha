@@ -23,8 +23,8 @@ export default {
   categoryId: "gamedev",
   slug: "shader-dev-custom-render-pipeline",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Custom URP Render Pipeline & GPU Compute Shader Showcase",
   summary:
     "Develop a custom Unity URP rendering suite featuring custom HLSL/Shader Graph shaders, vertex deformation, " +

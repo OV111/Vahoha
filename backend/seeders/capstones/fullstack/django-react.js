@@ -15,8 +15,8 @@ export default {
   categoryId: "fullstack",
   slug: "django-react-recipe-box",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Personal recipe box",
   summary:
     "Build a full-stack recipe box where users manage recipes, ingredients and cooking notes: a Django " +

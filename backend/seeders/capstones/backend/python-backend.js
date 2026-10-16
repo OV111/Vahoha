@@ -14,8 +14,8 @@ export default {
   categoryId: "backend",
   slug: "python-backend-event-booking",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Event booking API with background workers",
   summary:
     "Build the backend for booking seats at events: correct under concurrent bookings, with slow work " +

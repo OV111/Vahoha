@@ -23,8 +23,8 @@ export default {
   categoryId: "cloud",
   slug: "cloud-migration-monolith-modernization",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "On-Premises Monolith Migration and Strangler Fig Modernization",
   summary:
     "Plan and execute an end-to-end cloud migration of a legacy on-premises web application and database. " +

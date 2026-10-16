@@ -23,8 +23,8 @@ export default {
   categoryId: "database",
   slug: "redis-engineer-cluster-platform",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "High-Throughput Redis Cluster Platform with Search and Streams",
   summary:
     "Design and deploy an enterprise Redis Cluster platform. Implement multi-tiered caching strategies, " +

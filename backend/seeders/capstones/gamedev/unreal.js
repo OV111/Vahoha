@@ -23,8 +23,8 @@ export default {
   categoryId: "gamedev",
   slug: "unreal-third-person-combat",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "C++ & Gameplay Ability System Action RPG in Unreal Engine",
   summary:
     "Architect a C++ based third-person action game in Unreal Engine utilizing Enhanced Input, " +

@@ -15,8 +15,8 @@ export default {
   categoryId: "backend",
   slug: "graphql-dev-recipe-community",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "GraphQL API for a recipe community",
   summary:
     "Build the GraphQL API behind a recipe-sharing community: recipes, ingredients, comments and " +

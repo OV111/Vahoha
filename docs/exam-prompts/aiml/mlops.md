@@ -1,0 +1,159 @@
+You are a senior engineer writing an EXAM QUESTION BANK for a developer learning platform. A learner must pass a server-graded exam on each roadmap layer (80% to pass) before the next layer unlocks. Every exam draws 15 random questions from the bank of 60 you write, so a wrong answer key or an ambiguous question directly blocks a real learner. Accuracy matters more than cleverness.
+
+Track: "MLOps Engineer" (mlops, category aiml). It has 10 layers, listed at the bottom.
+
+## HOW TO ANSWER
+Write the bank for ONE layer per reply, in the order listed. Each reply must contain exactly 60 questions for that layer. After each reply, stop and wait; I will type "next".
+
+## OUTPUT FORMAT — follow exactly
+First line: the layer marker, exactly like this, with the layer id from the list:
+LAYER: <layer id>
+Then ONE ```json code block containing a JSON array of exactly 60 objects. No text after the block. Each object has exactly these fields:
+
+```json
+{
+  "stem": "the question text",
+  "topic": "one topic copied word for word from that layer's Topics list",
+  "choices": ["choice A", "choice B", "choice C", "choice D"],
+  "answerIdx": 2
+}
+```
+
+- "choices" has exactly 4 strings; "answerIdx" is the index (0-3) of the one correct choice.
+- Do NOT add "id", "explanation" or any other field.
+
+## QUESTION RULES
+1. Test understanding of a concept a working developer must know, not trivia, version numbers or memorised syntax.
+2. Exactly one choice is correct. Re-read each question and verify the key before you output it. If you are not sure of the answer, replace the question.
+3. Distractors must be plausible mistakes a real learner would make, not jokes and not obviously wrong.
+4. No "all of the above", "none of the above", "both A and B", and no negative stems ("which is NOT...").
+5. LENGTH BIAS IS THE MOST COMMON FAILURE. Models write the correct answer as the longest, most detailed choice, and learners learn to pick it without knowing the material. Write the three wrong choices FIRST, with the same level of detail, specific terms and length as the right one. The correct choice may be the longest in only about 1 of every 4 questions; in about 1 of 4 it should be the shortest. Wrong choices must sound like a real technical claim, never absurd ("compiles HTML into machine code").
+6. Spread "answerIdx" evenly across 0, 1, 2 and 3 (about 15 each). Do not put the answer at index 0 or 1 most of the time.
+7. Difficulty mix per layer: about one third easy, half medium, the rest hard.
+8. Cover every topic of the layer, roughly evenly. Never repeat or rephrase a question within the layer.
+9. Each question must stand alone: no "see the diagram", no references to earlier questions. Short code snippets inside the stem are fine (use plain text, \n for line breaks, no markdown fences inside the JSON strings).
+10. Stay accurate for current stable versions of the technologies. Avoid questions whose answer changed recently or is opinion.
+11. Escape quotes properly so the JSON parses. No trailing commas, no comments.
+
+## LAYERS
+### Layer 1 of 10 — id: mlops-1
+Title: MLOps Foundations
+Technologies: MLOps, Lifecycle, Python
+Description: MLOps brings engineering discipline to machine learning. Understand the lifecycle and why models fail in production.
+Topics:
+- The ML lifecycle
+- Why ML projects fail in production
+- MLOps maturity levels
+- Roles & responsibilities
+- Technical debt in ML systems
+- Tooling landscape
+
+### Layer 2 of 10 — id: mlops-2
+Title: ML Lifecycle & Reproducibility
+Technologies: Git, DVC, Environments
+Description: Reproducibility is the bedrock of MLOps. Version code, data and environments so results can be recreated.
+Topics:
+- Versioning code with Git
+- Data versioning with DVC
+- Reproducible environments
+- Configuration management
+- Seeds & determinism
+- Project structure for ML
+
+### Layer 3 of 10 — id: mlops-3
+Title: Experiment Tracking
+Technologies: MLflow, Weights & Biases, Metrics
+Description: Track every experiment so you can compare and reproduce them. Make MLflow your model's source of truth.
+Topics:
+- Logging params, metrics & artifacts
+- MLflow tracking server
+- Comparing runs
+- The model registry
+- Weights & Biases alternative
+- Organizing experiments
+
+### Layer 4 of 10 — id: mlops-4
+Title: Data & Feature Pipelines
+Technologies: Pipelines, Feature Store, Validation
+Description: Models are only as good as their data pipelines. Build reliable, validated feature pipelines.
+Topics:
+- Building data pipelines
+- Data validation (Great Expectations)
+- Feature stores (Feast)
+- Training/serving skew
+- Pipeline scheduling
+- Handling data drift at the source
+
+### Layer 5 of 10 — id: mlops-5
+Title: Model Packaging & Containers
+Technologies: Docker, BentoML, Artifacts
+Description: Package models so they run anywhere. Containerize models and their dependencies reproducibly.
+Topics:
+- Serializing models
+- Dockerizing model services
+- Packaging with BentoML
+- Dependency & environment pinning
+- Model artifacts & metadata
+- Image size & security
+
+### Layer 6 of 10 — id: mlops-6
+Title: Orchestration
+Technologies: Airflow, Kubeflow, DAGs
+Description: Automate ML workflows end to end. Orchestrate training and data pipelines with Airflow and Kubeflow.
+Topics:
+- Workflow orchestration concepts
+- Airflow DAGs
+- Kubeflow Pipelines
+- Scheduling & retries
+- Parameterized & triggered runs
+- Pipeline observability
+
+### Layer 7 of 10 — id: mlops-7
+Title: CI/CD for ML
+Technologies: CI/CD, GitHub Actions, Testing
+Description: Automate testing and delivery for ML. Build pipelines that validate data, code and models on every change.
+Topics:
+- Testing ML code & data
+- Model validation gates
+- CI/CD with GitHub Actions
+- Continuous training (CT)
+- Automated retraining triggers
+- Promotion across environments
+
+### Layer 8 of 10 — id: mlops-8
+Title: Model Serving & Deployment
+Technologies: Serving, KServe, APIs
+Description: Get models into production. Serve predictions at scale with the right deployment pattern.
+Topics:
+- Online vs batch inference
+- REST & gRPC serving
+- KServe / Seldon on Kubernetes
+- Autoscaling & load balancing
+- Canary & shadow deployments
+- Latency & throughput tuning
+
+### Layer 9 of 10 — id: mlops-9
+Title: Monitoring & Drift Detection
+Technologies: Monitoring, Drift, Observability
+Description: Models degrade silently. Monitor predictions, detect drift, and know when to retrain.
+Topics:
+- Monitoring metrics & predictions
+- Data & concept drift detection
+- Performance monitoring without labels
+- Alerting & dashboards
+- Logging predictions
+- Closing the retraining loop
+
+### Layer 10 of 10 — id: mlops-10
+Title: Scaling & Governance
+Technologies: Scaling, Governance, Cost
+Description: Operate ML responsibly at scale. Manage infrastructure, governance and cost across many models.
+Topics:
+- Scaling training & inference
+- GPU management & cost control
+- Model governance & lineage
+- Reproducibility & audit trails
+- Responsible AI & compliance
+- Platform thinking for ML
+
+Start now with Layer 1.

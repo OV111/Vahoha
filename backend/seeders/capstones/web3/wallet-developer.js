@@ -23,8 +23,8 @@ export default {
   categoryId: "web3",
   slug: "wallet-developer-browser-extension-wallet",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Non-Custodial Web3 Browser Extension Wallet",
   summary:
     "Build a non-custodial EVM browser extension wallet that implements EIP-1193, secure key storage, EIP-712 message signing, " +

@@ -23,8 +23,8 @@ export default {
   categoryId: "datascience",
   slug: "ds-data-engineer-lakehouse-pipeline",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Production ETL Lakehouse and dbt Transformation Engine",
   summary:
     "Design and build an automated batch data pipeline: ingest raw JSON logs via PySpark/Python, land Parquet files, " +

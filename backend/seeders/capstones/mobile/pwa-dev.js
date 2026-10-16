@@ -24,8 +24,8 @@ export default {
   categoryId: "mobile",
   slug: "pwa-dev-travel-journal",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Offline travel journal PWA",
   summary:
     "Build an installable travel journal PWA where users record trips, places and notes while moving between unreliable networks. The app must provide a responsive app-shell experience, persist structured data locally, use a service worker with deliberate caching, expose install metadata and remain functional when the network is unavailable.",

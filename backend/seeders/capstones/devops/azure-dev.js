@@ -23,8 +23,8 @@ export default {
   categoryId: "devops",
   slug: "azure-dev-serverless-bicep-platform",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Serverless Event-Driven Platform on Azure with Bicep",
   summary:
     "Design and deploy an enterprise serverless platform on Azure using Bicep infrastructure declarations. " +

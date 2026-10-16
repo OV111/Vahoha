@@ -15,8 +15,8 @@ export default {
   categoryId: "fullstack",
   slug: "nuxt-dev-trip-planner",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Collaborative trip planner",
   summary:
     "Build a collaborative trip planner where authenticated users organize trips, destinations and itinerary " +

@@ -23,8 +23,8 @@ export default {
   categoryId: "quantum",
   slug: "quantum-crypto-qkd-pqc-suite",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Quantum Key Distribution Simulator and Post-Quantum Security Gateway",
   summary:
     "Build an end-to-end quantum security simulator that implements BB84 key exchange over noisy optical channels with eavesdropper detection, " +

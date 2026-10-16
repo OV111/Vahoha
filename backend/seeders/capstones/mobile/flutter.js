@@ -24,8 +24,8 @@ export default {
   categoryId: "mobile",
   slug: "flutter-study-session-planner",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Offline-first study session planner",
   summary:
     "Build a mobile study planner where users create subjects, schedule study sessions and track completion. The app must remain useful offline, persist its data locally, synchronize with a remote API when available and present clear asynchronous states. The project should demonstrate deliberate Flutter architecture rather than putting all behaviour inside widgets.",

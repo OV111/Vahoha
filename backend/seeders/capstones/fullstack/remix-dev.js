@@ -15,8 +15,8 @@ export default {
   categoryId: "fullstack",
   slug: "remix-dev-booking-desk",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Workshop booking desk",
   summary:
     "Build a workshop booking desk where organizers publish workshops and users reserve available seats: a Remix " +

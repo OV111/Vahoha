@@ -23,8 +23,8 @@ export default {
   categoryId: "datascience",
   slug: "ml-analyst-credit-risk-evaluator",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Explainable Credit Risk Assessment and Machine Learning Pipeline",
   summary:
     "Develop a full machine learning analytics solution for credit default prediction: construct reproducible Pandas preprocessing " +

@@ -17,8 +17,8 @@ export default {
   categoryId: "fullstack",
   slug: "mern-task-board",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Collaborative task board",
   summary:
     "Build a full-stack task board (boards, columns, cards) that a small team could actually use: a " +

@@ -18,6 +18,9 @@ export default defineConfig(({ isSsrBuild }) => ({
   // gsap ships CJS/ESM interop that breaks when Node loads it externally;
   // bundling it keeps the build-time prerender working.
   ssr: { noExternal: ["gsap"] },
+  // The challenge test runner worker loads sucrase on demand (TypeScript mode).
+  // A dynamic import inside a worker needs ES output; the default (iife) cannot split code.
+  worker: { format: "es" },
   build: {
     cssMinify: true,
     rollupOptions: {

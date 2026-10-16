@@ -23,8 +23,8 @@ export default {
   categoryId: "qa",
   slug: "qa-lead-quality-strategy-portfolio",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Enterprise Quality Strategy & QA Governance Portfolio",
   summary:
     "Design and publish an end-to-end quality engineering strategy and governance framework for a multi-team release. " +

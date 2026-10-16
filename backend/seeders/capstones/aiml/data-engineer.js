@@ -23,8 +23,8 @@ export default {
   categoryId: "aiml",
   slug: "data-engineer-streaming-analytics-platform",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Real-Time Streaming and Batch Lakehouse Analytics Platform",
   summary:
     "Design and implement a modern hybrid data platform combining real-time streaming with Kafka, " +

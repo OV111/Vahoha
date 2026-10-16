@@ -23,6 +23,10 @@ The technical prep for the pilot is mostly done. What's left is mostly yours: co
 | Backend modules | 2026-10-11 | Every feature under `backend/modules/<name>/` with one `index.js` entry point; `services/` keeps the shared learning core. All suites pass and a real boot answers all 21 sampled endpoints exactly as before |
 | All XP through one ledger | uncommitted (2026-10-10) | Challenge XP now uses `awardXp` (kind `challenge`, same amounts); fixes double pay when two passing submissions race. New: 300 XP for the first passed defense per team (kind `team_defense`). Test: `challengeXp.integration.test.js` |
 | Capstone → Teams pointer; challenge "readiness" renamed | uncommitted (2026-10-10) | `NextTeamCard` after a passed capstone. `getReadinessService` → `getLayerProgressService` in coding-challenges (URL unchanged) |
+| Optional layer fields: `requires`, `required`, `stage` | uncommitted (2026-10-16) | Wired through seeder, `isPathComplete` (skips `required: false`) and the roadmap tree spine; example on `cpp-10`. Tests: `pathCompletion.unit.test.js`, `layerPrereqs.test.js`. Layer order is now enforced server-side when an exam attempt is generated (`assertLayerUnlocked`, 403; fails open for unseeded layers). See ARCHITECTURE "Roadmap data model" |
+| Frontend exam banks written, not imported | 2026-10-16 (uncommitted) | 15 layers x 60 questions in `docs/exam-prompts/fullstack/frontend-dev-output.md`. `examImport.js --dry-run` passes: 900 valid, 0 duplicates, no length-bias warning. **Every answer key still needs your hand check** (about 900 questions), then `node backend/seeders/examImport.js frontend-dev` writes them to Atlas as `reviewed: false`. Other new tracks have no banks yet |
+| TypeScript mode for coding challenges | 2026-10-16 (uncommitted) | JS/TS switch in the Arena (remembered in localStorage). The TS file is the JS starter plus a type header; types are removed with `sucrase` (browser: loaded on demand in the test worker; server: before grading), not checked. `POST /api/challenges/submissions/:id` takes `{ language }`. Needs `worker.format: es` in `vite.config.js`. All 205 reference solutions pass through the TS path |
+| mern challenges complete, web-game complete | 2026-10-16 (uncommitted) | 50 each (5 per layer). Three old mern challenges that used timers were rewritten. **25 api-dev / node-dev / javascript challenges still use timers or Buffer and would fail in the production sandbox** |
 
 ## Left before the first user
 
@@ -44,6 +48,20 @@ The technical prep for the pilot is mostly done. What's left is mostly yours: co
 - Send 5 DMs a day (`docs/strategy/OUTREACH_KIT.md`). Target: 15 interviews in 3 weeks.
 - **Pass:** at least 3 of 15 pay $29. **Kill/pivot:** zero payers.
 - Read the funnel weekly. The number that matters: share of users who return within 7 days and start a second layer.
+
+## After deploy: backend architecture refactor
+
+Behaviour-preserving cleanups to reach a clean layered design (route, controller, service, repository). Do these **after** deploy, not before: they carry risk and add no features. Do them one module at a time. The user writes the first repository themselves; Claude gives the plan and reviews.
+
+| # | Fix | How |
+| --- | --- | --- |
+| A1 | Repository layer | Add `repositories/<name>.repo.js` per module holding only Mongo queries. Services call repos, never `db.collection()` directly |
+| A2 | Enforce layer rules | Route, controller, service, repository, each layer calls only the one below. Add ESLint `no-restricted-imports` or `eslint-plugin-boundaries`. Check `exam.controller.js` and `examEngine.controller.js` for logic that belongs in a service |
+| A3 | Centralized error handling | Custom errors (`NotFoundError`, `ValidationError`) thrown from services, one global error middleware, no `try/catch` in controllers (Express 5 handles async) |
+| A4 | Module boundaries | Each module gets an `index.js` public API. No imports into another module's `services/`. Write down the `lib/` vs `services/` rule (suggested: services touch `db`, lib is pure functions) |
+| A5 | Reusable validation | A `validate(schema)` middleware in place of Zod calls inside controllers |
+| A6 | Layer-matched tests | Service unit tests with a fake repository, route integration tests, and coverage on services |
+| A7 | Docs | Update `docs/engineering/ARCHITECTURE.md` with the layer diagram and call it a "feature-based modular monolith" in the README |
 
 ## Known limits (fine for the pilot)
 

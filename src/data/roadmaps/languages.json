@@ -9159,9 +9159,198 @@
       ]
     },
     {
+      "id": "rust-11",
+      "title": "Unsafe Rust and FFI",
+      "order": 9,
+      "techs": [
+        "Rust",
+        "Cargo"
+      ],
+      "description": "Learn exactly what the unsafe keyword allows and how to wrap it in a safe API. You will call C libraries from Rust and expose Rust to other languages, which is how Rust fits into existing systems.",
+      "topics": [
+        "What unsafe permits: raw pointers, unsafe fns, unions",
+        "Upholding invariants behind a safe API",
+        "Calling C with extern blocks and bindgen",
+        "Exposing Rust with extern C and cbindgen",
+        "Memory layout, repr(C) and MaybeUninit",
+        "Finding undefined behavior with Miri"
+      ],
+      "resources": [
+        {
+          "label": "The Rustonomicon",
+          "platform": "doc.rust-lang.org",
+          "type": "docs"
+        },
+        {
+          "label": "Rust By Example - Unsafe Operations",
+          "platform": "doc.rust-lang.org",
+          "type": "docs"
+        },
+        {
+          "label": "Programming Rust - Unsafe Code and Foreign Functions",
+          "platform": "O'Reilly",
+          "type": "book"
+        }
+      ],
+      "challenge": "Write a safe Rust wrapper around a small C library (for example a string or compression API) using bindgen, make it free its memory automatically with Drop, and run the test suite under Miri to show there is no undefined behavior.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "What Unsafe Means",
+          "children": [
+            {
+              "title": "The five unsafe superpowers",
+              "description": "Unsafe code can dereference raw pointers, call unsafe functions, access mutable statics, implement unsafe traits and read union fields. Everything else is still checked by the compiler.",
+              "resources": [
+                {
+                  "label": "The Rustonomicon",
+                  "url": "https://doc.rust-lang.org/nomicon/",
+                  "type": "docs"
+                },
+                {
+                  "label": "unsafe keyword - std docs",
+                  "url": "https://doc.rust-lang.org/std/keyword.unsafe.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Safe abstractions over unsafe code",
+              "description": "The goal is a small unsafe block inside a type whose public API cannot be misused. You document the safety invariants and the compiler enforces them for every caller.",
+              "resources": [
+                {
+                  "label": "The Rustonomicon",
+                  "url": "https://doc.rust-lang.org/nomicon/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Rust API Guidelines",
+                  "url": "https://rust-lang.github.io/api-guidelines/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Memory and Layout",
+          "children": [
+            {
+              "title": "repr(C) and MaybeUninit",
+              "description": "repr(C) gives a struct a predictable C layout, and MaybeUninit lets you hold memory that is not yet initialized without causing undefined behavior.",
+              "resources": [
+                {
+                  "label": "MaybeUninit - std docs",
+                  "url": "https://doc.rust-lang.org/std/mem/union.MaybeUninit.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Data layout - Rustonomicon",
+                  "url": "https://doc.rust-lang.org/nomicon/data.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Undefined behavior and Miri",
+              "description": "Miri interprets your program and reports invalid pointer use, uninitialized reads and data races that normal tests miss. Run it on every crate that contains unsafe.",
+              "resources": [
+                {
+                  "label": "Miri - GitHub",
+                  "url": "https://github.com/rust-lang/miri",
+                  "type": "article"
+                },
+                {
+                  "label": "Rustonomicon - What unsafe can do",
+                  "url": "https://doc.rust-lang.org/nomicon/what-unsafe-does.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Calling C from Rust",
+          "children": [
+            {
+              "title": "extern blocks and bindgen",
+              "description": "An extern block declares foreign functions, and bindgen generates those declarations from C headers so you do not write them by hand.",
+              "resources": [
+                {
+                  "label": "FFI - Rustonomicon",
+                  "url": "https://doc.rust-lang.org/nomicon/ffi.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "bindgen user guide",
+                  "url": "https://rust-lang.github.io/rust-bindgen/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "C strings and ownership across the boundary",
+              "description": "CString and CStr convert between Rust and null-terminated C strings. The key rule is that whoever allocated memory must free it, with the matching allocator.",
+              "resources": [
+                {
+                  "label": "std::ffi - std docs",
+                  "url": "https://doc.rust-lang.org/std/ffi/index.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "FFI - Rustonomicon",
+                  "url": "https://doc.rust-lang.org/nomicon/ffi.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Calling Rust from Other Languages",
+          "children": [
+            {
+              "title": "extern C and no_mangle",
+              "description": "Marking a function extern C and no_mangle gives it a stable symbol name and C calling convention, so C, Python or Go can call it.",
+              "resources": [
+                {
+                  "label": "FFI - Rustonomicon",
+                  "url": "https://doc.rust-lang.org/nomicon/ffi.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "The Rust Reference - External blocks",
+                  "url": "https://doc.rust-lang.org/reference/items/external-blocks.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Generating headers with cbindgen",
+              "description": "cbindgen reads your Rust code and writes the matching C header, keeping the two in sync as the API changes.",
+              "resources": [
+                {
+                  "label": "cbindgen - GitHub",
+                  "url": "https://github.com/mozilla/cbindgen",
+                  "type": "article"
+                },
+                {
+                  "label": "FFI - Rustonomicon",
+                  "url": "https://doc.rust-lang.org/nomicon/ffi.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "rust-9",
       "title": "Concurrency and Async Rust",
-      "order": 9,
+      "order": 10,
       "techs": [
         "Rust",
         "Cargo",
@@ -9349,9 +9538,198 @@
       ]
     },
     {
+      "id": "rust-12",
+      "title": "Macros and Metaprogramming",
+      "order": 11,
+      "techs": [
+        "Rust",
+        "Cargo"
+      ],
+      "description": "Write code that writes code. You will build declarative macros with macro_rules and procedural macros such as derives, which power much of the Rust ecosystem, including Serde.",
+      "topics": [
+        "macro_rules! patterns and repetitions",
+        "Macro hygiene and debugging with cargo expand",
+        "Derive macros with syn and quote",
+        "Attribute and function-like procedural macros",
+        "Compile-time errors and spans in macros",
+        "When to use macros versus generics"
+      ],
+      "resources": [
+        {
+          "label": "The Little Book of Rust Macros",
+          "platform": "veykril.github.io",
+          "type": "book"
+        },
+        {
+          "label": "The Rust Reference - Macros",
+          "platform": "doc.rust-lang.org",
+          "type": "docs"
+        },
+        {
+          "label": "proc-macro-workshop",
+          "platform": "GitHub",
+          "type": "article"
+        }
+      ],
+      "challenge": "Write a macro_rules macro that builds a HashMap from key-value pairs, then write a derive macro that generates a Builder struct for any struct with named fields, with a clear compile error when used on an enum.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Declarative Macros",
+          "children": [
+            {
+              "title": "macro_rules patterns",
+              "description": "A macro_rules macro matches the tokens you give it against patterns and expands to code. Repetitions let one macro handle any number of arguments.",
+              "resources": [
+                {
+                  "label": "Macros by Example - Reference",
+                  "url": "https://doc.rust-lang.org/reference/macros-by-example.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "The Little Book of Rust Macros",
+                  "url": "https://veykril.github.io/tlborm/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Hygiene and debugging",
+              "description": "Macro hygiene keeps variables inside a macro from clashing with the caller's. cargo expand shows the generated code so you can see what your macro really produces.",
+              "resources": [
+                {
+                  "label": "cargo-expand - GitHub",
+                  "url": "https://github.com/dtolnay/cargo-expand",
+                  "type": "article"
+                },
+                {
+                  "label": "Macros by Example - Reference",
+                  "url": "https://doc.rust-lang.org/reference/macros-by-example.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "When to Use Macros",
+          "children": [
+            {
+              "title": "Macros versus generics",
+              "description": "Reach for a generic function or trait first. Use a macro when you need variable arguments, new syntax or to generate repeated items that functions cannot express.",
+              "resources": [
+                {
+                  "label": "The Rust Book - Macros",
+                  "url": "https://doc.rust-lang.org/book/",
+                  "type": "article"
+                },
+                {
+                  "label": "The Little Book of Rust Macros",
+                  "url": "https://veykril.github.io/tlborm/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Macro maintainability",
+              "description": "Macros are harder to read and to debug than functions. Keep them small, document the accepted syntax and test the expansion with real compile cases.",
+              "resources": [
+                {
+                  "label": "Rust API Guidelines",
+                  "url": "https://rust-lang.github.io/api-guidelines/",
+                  "type": "article"
+                },
+                {
+                  "label": "The Rust Reference - Macros",
+                  "url": "https://doc.rust-lang.org/reference/macros.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Procedural Macros",
+          "children": [
+            {
+              "title": "Derive macros",
+              "description": "A derive macro receives a struct or enum as a token stream and returns extra code, like an impl block. This is how #[derive(Serialize)] works.",
+              "resources": [
+                {
+                  "label": "Procedural macros - Reference",
+                  "url": "https://doc.rust-lang.org/reference/procedural-macros.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "proc-macro-workshop - GitHub",
+                  "url": "https://github.com/dtolnay/proc-macro-workshop",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Attribute and function-like macros",
+              "description": "Attribute macros transform the item they annotate, and function-like macros look like calls. Both run at compile time as separate crates.",
+              "resources": [
+                {
+                  "label": "Procedural macros - Reference",
+                  "url": "https://doc.rust-lang.org/reference/procedural-macros.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "proc-macro-workshop - GitHub",
+                  "url": "https://github.com/dtolnay/proc-macro-workshop",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Tools",
+          "children": [
+            {
+              "title": "syn and quote",
+              "description": "syn parses Rust tokens into a syntax tree and quote turns tree fragments back into tokens. Together they make procedural macros manageable.",
+              "resources": [
+                {
+                  "label": "syn - docs.rs",
+                  "url": "https://docs.rs/syn",
+                  "type": "docs"
+                },
+                {
+                  "label": "quote - docs.rs",
+                  "url": "https://docs.rs/quote",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Good error messages",
+              "description": "Attaching errors to the right span makes a macro feel like part of the language. Return a compile_error with the offending token instead of panicking.",
+              "resources": [
+                {
+                  "label": "syn::Error - docs.rs",
+                  "url": "https://docs.rs/syn/latest/syn/struct.Error.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "proc-macro-workshop - GitHub",
+                  "url": "https://github.com/dtolnay/proc-macro-workshop",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "rust-10",
       "title": "Production Rust - Testing, Performance, and Ecosystem",
-      "order": 10,
+      "order": 12,
       "techs": [
         "Rust",
         "Cargo",
@@ -11254,9 +11632,198 @@
       ]
     },
     {
+      "id": "java-11",
+      "title": "JVM Internals: Memory Model, Garbage Collection, and JIT",
+      "order": 10,
+      "techs": [
+        "Java",
+        "JVM"
+      ],
+      "description": "Understand what the JVM does with your code. You will learn class loading, the heap and stack, how the garbage collectors differ, how the JIT compiler optimizes hot code, and the Java Memory Model that makes concurrent code correct.",
+      "topics": [
+        "Class loading, linking and initialization",
+        "Heap, stack, metaspace and object layout",
+        "Garbage collectors: G1, ZGC and generational ideas",
+        "JIT compilation, tiers and inlining",
+        "The Java Memory Model and happens-before",
+        "Measuring with JMH and Java Flight Recorder"
+      ],
+      "resources": [
+        {
+          "label": "The Java Virtual Machine Specification",
+          "platform": "docs.oracle.com",
+          "type": "docs"
+        },
+        {
+          "label": "HotSpot Virtual Machine Garbage Collection Tuning Guide",
+          "platform": "docs.oracle.com",
+          "type": "docs"
+        },
+        {
+          "label": "Java Performance: The Definitive Guide",
+          "platform": "O'Reilly",
+          "type": "book"
+        }
+      ],
+      "challenge": "Write a small allocation-heavy program, run it under two different garbage collectors with GC logging enabled, and explain the pause times you see. Then write a JMH benchmark showing the effect of JIT warm-up and one inlining decision.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Memory",
+          "children": [
+            {
+              "title": "Heap, stack and metaspace",
+              "description": "Objects live on the heap, each thread has its own stack, and class metadata lives in metaspace. Knowing which one is full tells you which error you are looking at.",
+              "resources": [
+                {
+                  "label": "JVM Specification - Run-Time Data Areas",
+                  "url": "https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-2.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Anatomy Quarks - Shipilev",
+                  "url": "https://shipilev.net/jvm/anatomy-quarks/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Class loading",
+              "description": "The JVM loads classes lazily through class loaders, then links and initializes them. This explains static initialization order and most ClassNotFound errors.",
+              "resources": [
+                {
+                  "label": "JVM Specification - Loading, Linking, Initializing",
+                  "url": "https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-5.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "OpenJDK HotSpot Wiki",
+                  "url": "https://wiki.openjdk.org/display/HotSpot",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Garbage Collection",
+          "children": [
+            {
+              "title": "How the collectors differ",
+              "description": "G1 balances throughput and pause time in regions, ZGC targets very short pauses on large heaps, and Parallel favors raw throughput. Pick by latency requirement, not habit.",
+              "resources": [
+                {
+                  "label": "GC Tuning Guide",
+                  "url": "https://docs.oracle.com/en/java/javase/21/gctuning/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Anatomy Quarks - Shipilev",
+                  "url": "https://shipilev.net/jvm/anatomy-quarks/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Reading GC logs",
+              "description": "Unified logging with -Xlog:gc shows how often collections run and how long they pause. Learn to tell a memory leak from a simple undersized heap.",
+              "resources": [
+                {
+                  "label": "GC Tuning Guide",
+                  "url": "https://docs.oracle.com/en/java/javase/21/gctuning/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Java Flight Recorder guide",
+                  "url": "https://docs.oracle.com/en/java/javase/21/jfapi/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "JIT Compilation",
+          "children": [
+            {
+              "title": "Tiered compilation",
+              "description": "The JVM starts by interpreting, then compiles hot methods with C1 and finally C2. This is why a benchmark's first runs are slower than later ones.",
+              "resources": [
+                {
+                  "label": "OpenJDK HotSpot Wiki",
+                  "url": "https://wiki.openjdk.org/display/HotSpot",
+                  "type": "article"
+                },
+                {
+                  "label": "Anatomy Quarks - Shipilev",
+                  "url": "https://shipilev.net/jvm/anatomy-quarks/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Inlining and escape analysis",
+              "description": "The JIT inlines small methods and can avoid allocating objects that never escape a method. Both make clean, small methods cheaper than they look.",
+              "resources": [
+                {
+                  "label": "OpenJDK HotSpot Wiki",
+                  "url": "https://wiki.openjdk.org/display/HotSpot",
+                  "type": "article"
+                },
+                {
+                  "label": "JMH - GitHub",
+                  "url": "https://github.com/openjdk/jmh",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Concurrency and Measurement",
+          "children": [
+            {
+              "title": "The Java Memory Model",
+              "description": "The memory model defines when one thread's write is guaranteed to be visible to another. happens-before edges from volatile, synchronized and final fields are what make code correct.",
+              "resources": [
+                {
+                  "label": "JLS Chapter 17 - Threads and Locks",
+                  "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Anatomy Quarks - Shipilev",
+                  "url": "https://shipilev.net/jvm/anatomy-quarks/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "JMH and Flight Recorder",
+              "description": "JMH handles warm-up, forking and dead-code elimination so microbenchmarks are trustworthy, and Flight Recorder profiles a running application with low overhead.",
+              "resources": [
+                {
+                  "label": "JMH - GitHub",
+                  "url": "https://github.com/openjdk/jmh",
+                  "type": "article"
+                },
+                {
+                  "label": "Java Flight Recorder guide",
+                  "url": "https://docs.oracle.com/en/java/javase/21/jfapi/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "java-10",
       "title": "Production Java - Build Tools, Performance, and Ecosystem",
-      "order": 10,
+      "order": 11,
       "techs": [
         "Java",
         "JVM",
@@ -12023,9 +12590,199 @@
       ]
     },
     {
+      "id": "cpp-11",
+      "title": "Move Semantics and Value Categories",
+      "order": 4,
+      "techs": [
+        "C++",
+        "RAII",
+        "STL"
+      ],
+      "description": "Understand lvalues, rvalues and xvalues, and how rvalue references let an object hand over its resources instead of copying them. Move semantics is why modern containers and smart pointers are cheap to pass around, and getting it wrong silently turns moves back into copies.",
+      "topics": [
+        "Value categories: lvalue, prvalue, xvalue",
+        "Rvalue references and std::move",
+        "Move constructor and move assignment",
+        "Copy elision and return value optimization",
+        "Perfect forwarding with std::forward",
+        "The Rule of Zero and the Rule of Five revisited"
+      ],
+      "resources": [
+        {
+          "label": "cppreference - Value categories",
+          "platform": "cppreference.com",
+          "type": "docs"
+        },
+        {
+          "label": "Learn C++ - Move Semantics and Smart Pointers",
+          "platform": "learncpp.com",
+          "type": "article"
+        },
+        {
+          "label": "Effective Modern C++ - Rvalue References, Move Semantics, and Perfect Forwarding",
+          "platform": "O'Reilly",
+          "type": "book"
+        }
+      ],
+      "challenge": "Write a move-only Buffer class that owns a heap array and implement the Rule of Five by hand. Add copy and move counters, then prove that a std::vector<Buffer> reallocation moves its elements, and show what changes when the move constructor is not noexcept.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Value Categories",
+          "children": [
+            {
+              "title": "lvalue, prvalue and xvalue",
+              "description": "Every expression has a value category that decides whether it can be moved from. An lvalue has an identity you can name, a prvalue is a temporary, and an xvalue is an object whose resources may be taken.",
+              "resources": [
+                {
+                  "label": "Value categories - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/value_category",
+                  "type": "docs"
+                },
+                {
+                  "label": "C++ Core Guidelines",
+                  "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Rvalue references",
+              "description": "T&& binds to temporaries and lets a function know the argument will not be used again. A named rvalue reference is itself an lvalue, which is the source of most move bugs.",
+              "resources": [
+                {
+                  "label": "Reference declaration - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/reference",
+                  "type": "docs"
+                },
+                {
+                  "label": "Move Semantics Tutorial",
+                  "url": "https://www.learncpp.com/cpp-tutorial/introduction-to-smart-pointers-move-semantics/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Moving Objects",
+          "children": [
+            {
+              "title": "std::move is a cast",
+              "description": "std::move does not move anything: it casts its argument to an rvalue so a move constructor or assignment can be chosen. After a move the source stays valid but unspecified.",
+              "resources": [
+                {
+                  "label": "std::move - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/utility/move",
+                  "type": "docs"
+                },
+                {
+                  "label": "Moved-from objects",
+                  "url": "https://www.modernescpp.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Move constructor and assignment",
+              "description": "A move constructor steals the resources of the source and leaves it in a safe empty state. Implement move assignment to release the current resources and handle self-assignment.",
+              "resources": [
+                {
+                  "label": "Move constructors - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/move_constructor",
+                  "type": "docs"
+                },
+                {
+                  "label": "Rule of Three/Five/Zero",
+                  "url": "https://en.cppreference.com/w/cpp/language/rule_of_three",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Optimization",
+          "children": [
+            {
+              "title": "Copy elision and RVO",
+              "description": "Returning a local or temporary by value usually constructs it directly in the caller, with no copy and no move. Writing return std::move(local) disables this and is a common mistake.",
+              "resources": [
+                {
+                  "label": "Copy elision - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/copy_elision",
+                  "type": "docs"
+                },
+                {
+                  "label": "Compiler Explorer",
+                  "url": "https://godbolt.org/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "noexcept moves and std::vector",
+              "description": "std::vector only moves its elements on reallocation if the move constructor is noexcept; otherwise it copies to keep its strong exception guarantee. Mark moves noexcept whenever they cannot throw.",
+              "resources": [
+                {
+                  "label": "noexcept specifier - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/noexcept_spec",
+                  "type": "docs"
+                },
+                {
+                  "label": "std::move_if_noexcept - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/utility/move_if_noexcept",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Forwarding",
+          "children": [
+            {
+              "title": "Forwarding references",
+              "description": "In a deduced context, T&& can bind to both lvalues and rvalues. It is a forwarding reference, not an rvalue reference, and it is the basis of generic wrapper functions.",
+              "resources": [
+                {
+                  "label": "Template argument deduction - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/template_argument_deduction",
+                  "type": "docs"
+                },
+                {
+                  "label": "Universal references explained",
+                  "url": "https://www.modernescpp.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "std::forward and perfect forwarding",
+              "description": "std::forward preserves the original value category of an argument when passing it on, so a factory like make_unique can construct objects without extra copies.",
+              "resources": [
+                {
+                  "label": "std::forward - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/utility/forward",
+                  "type": "docs"
+                },
+                {
+                  "label": "Perfect forwarding",
+                  "url": "https://www.modernescpp.com/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "cpp-4",
       "title": "STL Containers and Algorithms",
-      "order": 4,
+      "order": 5,
       "techs": [
         "C++",
         "STL"
@@ -12214,7 +12971,7 @@
     {
       "id": "cpp-5",
       "title": "Templates and Generic Programming",
-      "order": 5,
+      "order": 6,
       "techs": [
         "C++",
         "Templates",
@@ -12402,9 +13159,199 @@
       ]
     },
     {
+      "id": "cpp-12",
+      "title": "Compile-Time C++: constexpr, Concepts, and Metaprogramming",
+      "order": 7,
+      "techs": [
+        "C++",
+        "Templates",
+        "STL"
+      ],
+      "description": "Move work from run time to compile time and constrain templates with readable requirements. constexpr and consteval compute values during compilation, concepts replace SFINAE error walls with clear constraints, and fold expressions simplify variadic code.",
+      "topics": [
+        "constexpr functions and variables",
+        "consteval and constinit",
+        "Concepts and requires clauses",
+        "Writing your own concepts",
+        "Fold expressions and parameter packs",
+        "Type traits and static_assert"
+      ],
+      "resources": [
+        {
+          "label": "cppreference - constexpr specifier",
+          "platform": "cppreference.com",
+          "type": "docs"
+        },
+        {
+          "label": "cppreference - Constraints and concepts",
+          "platform": "cppreference.com",
+          "type": "docs"
+        },
+        {
+          "label": "C++ Core Guidelines - Templates and generic programming",
+          "platform": "isocpp.org",
+          "type": "article"
+        }
+      ],
+      "challenge": "Build a compile-time lookup table and a fixed-size matrix type that are fully usable in constexpr contexts. Then write a constrained generic sum function using concepts, and use static_assert on your concept to check that unsuitable types are rejected.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Compile-Time Evaluation",
+          "children": [
+            {
+              "title": "constexpr functions",
+              "description": "A constexpr function can run at compile time when its arguments are constants, and at run time otherwise. Since C++20 it may use dynamic allocation inside the evaluation, std::vector and std::string included.",
+              "resources": [
+                {
+                  "label": "constexpr specifier - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/constexpr",
+                  "type": "docs"
+                },
+                {
+                  "label": "constexpr tutorial",
+                  "url": "https://www.modernescpp.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "consteval and constinit",
+              "description": "consteval forces a function to be evaluated at compile time, and constinit guarantees a variable is initialized statically, which avoids the static initialization order problem.",
+              "resources": [
+                {
+                  "label": "consteval specifier - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/consteval",
+                  "type": "docs"
+                },
+                {
+                  "label": "constinit specifier - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/constinit",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Concepts",
+          "children": [
+            {
+              "title": "Standard and custom concepts",
+              "description": "A concept names a requirement on template arguments. The standard library provides ready-made ones such as std::integral, std::regular and std::ranges::range.",
+              "resources": [
+                {
+                  "label": "Concepts library - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/concepts",
+                  "type": "docs"
+                },
+                {
+                  "label": "Constraints and concepts - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/constraints",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "requires expressions",
+              "description": "A requires expression checks that a set of expressions and types is valid, and returns a bool at compile time. It is how most custom concepts are written.",
+              "resources": [
+                {
+                  "label": "requires expression - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/requires",
+                  "type": "docs"
+                },
+                {
+                  "label": "Concepts overview",
+                  "url": "https://www.modernescpp.com/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Metaprogramming",
+          "children": [
+            {
+              "title": "Type traits",
+              "description": "The <type_traits> header lets templates ask questions about types, like whether one is trivially copyable, and select behavior at compile time. Prefer concepts over enable_if for new code.",
+              "resources": [
+                {
+                  "label": "Type support - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/header/type_traits",
+                  "type": "docs"
+                },
+                {
+                  "label": "std::enable_if - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/types/enable_if",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Fold expressions and packs",
+              "description": "A fold expression reduces a parameter pack with an operator in one line, replacing recursive variadic templates for sums, logical checks and printing.",
+              "resources": [
+                {
+                  "label": "Fold expressions - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/fold",
+                  "type": "docs"
+                },
+                {
+                  "label": "Parameter packs - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/parameter_pack",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Checking at Compile Time",
+          "children": [
+            {
+              "title": "static_assert and compile-time tests",
+              "description": "static_assert turns a wrong assumption into a compile error with your own message. Combined with constexpr, it lets you test a function's results without running the program.",
+              "resources": [
+                {
+                  "label": "static_assert - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/static_assert",
+                  "type": "docs"
+                },
+                {
+                  "label": "Compiler Explorer",
+                  "url": "https://godbolt.org/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Replacing SFINAE with concepts",
+              "description": "SFINAE hides overloads through substitution failures and produces unreadable errors. A concept constraint states the same rule directly and reports exactly which requirement failed.",
+              "resources": [
+                {
+                  "label": "SFINAE - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/sfinae",
+                  "type": "docs"
+                },
+                {
+                  "label": "Constraints - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/constraints",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "cpp-6",
       "title": "Smart Pointers and Modern Memory Management",
-      "order": 6,
+      "order": 8,
       "techs": [
         "C++",
         "RAII",
@@ -12594,7 +13541,7 @@
     {
       "id": "cpp-7",
       "title": "Lambdas, Ranges, and Modern C++ Idioms",
-      "order": 7,
+      "order": 9,
       "techs": [
         "C++",
         "STL",
@@ -12784,7 +13731,7 @@
     {
       "id": "cpp-8",
       "title": "Concurrency in C++",
-      "order": 8,
+      "order": 10,
       "techs": [
         "C++",
         "STL"
@@ -12971,9 +13918,198 @@
       ]
     },
     {
+      "id": "cpp-13",
+      "title": "Coroutines and Modules (C++20/23)",
+      "order": 11,
+      "techs": [
+        "C++",
+        "STL"
+      ],
+      "description": "Learn the two big C++20 language features that change how programs are structured. Coroutines let a function suspend and resume without blocking a thread, and modules replace textual header inclusion with compiled interfaces that build faster and leak fewer macros.",
+      "topics": [
+        "co_await, co_yield and co_return",
+        "Promise types and coroutine handles",
+        "Generators and lazy sequences",
+        "Coroutine lifetime and dangling references",
+        "Module interface units and import",
+        "Migrating from headers to modules"
+      ],
+      "resources": [
+        {
+          "label": "cppreference - Coroutines",
+          "platform": "cppreference.com",
+          "type": "docs"
+        },
+        {
+          "label": "Lewis Baker - C++ Coroutines: Understanding operator co_await",
+          "platform": "lewissbaker.github.io",
+          "type": "article"
+        },
+        {
+          "label": "Clang - Standard C++ Modules",
+          "platform": "clang.llvm.org",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Implement a lazy generator<T> coroutine type and use it to stream the Fibonacci sequence and the lines of a file. Then convert one library in your project from headers to a module and compare build times before and after.",
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Coroutine Mechanics",
+          "children": [
+            {
+              "title": "Promise type and handle",
+              "description": "The compiler turns a coroutine into a state machine controlled by a promise type. A coroutine_handle lets you resume or destroy the suspended coroutine.",
+              "resources": [
+                {
+                  "label": "Coroutines - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/coroutines",
+                  "type": "docs"
+                },
+                {
+                  "label": "Coroutine support library - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/coroutine",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Suspension points",
+              "description": "co_await decides at each point whether to suspend, through the awaiter's await_ready, await_suspend and await_resume functions.",
+              "resources": [
+                {
+                  "label": "co_await - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/coroutines",
+                  "type": "docs"
+                },
+                {
+                  "label": "Understanding operator co_await",
+                  "url": "https://lewissbaker.github.io/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Using Coroutines",
+          "children": [
+            {
+              "title": "Generators",
+              "description": "A generator uses co_yield to produce values one at a time, so a sequence can be infinite or expensive to compute without storing it. C++23 adds std::generator for this.",
+              "resources": [
+                {
+                  "label": "std::generator - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/coroutine/generator",
+                  "type": "docs"
+                },
+                {
+                  "label": "Coroutine tutorial",
+                  "url": "https://www.modernescpp.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Lifetime pitfalls",
+              "description": "A coroutine's parameters are copied into its frame, but references still point at the caller's objects. If the caller returns first, the coroutine reads dangling memory.",
+              "resources": [
+                {
+                  "label": "C++ Core Guidelines - Coroutines",
+                  "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines",
+                  "type": "article"
+                },
+                {
+                  "label": "Coroutines - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/coroutines",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Modules",
+          "children": [
+            {
+              "title": "Module interface units",
+              "description": "A module interface unit declares what a module exports, and consumers write import instead of #include. Macros and private details no longer leak between files.",
+              "resources": [
+                {
+                  "label": "Modules - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/modules",
+                  "type": "docs"
+                },
+                {
+                  "label": "Standard C++ Modules - Clang",
+                  "url": "https://clang.llvm.org/docs/StandardCPlusPlusModules.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "CMake and compiler support",
+              "description": "Modules need the build system to scan dependencies and compile interfaces in order. CMake supports this from 3.28 with a compatible compiler and generator.",
+              "resources": [
+                {
+                  "label": "CMake - C++ Modules",
+                  "url": "https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Standard C++ Modules - Clang",
+                  "url": "https://clang.llvm.org/docs/StandardCPlusPlusModules.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Adoption",
+          "children": [
+            {
+              "title": "Migrating from headers",
+              "description": "Convert leaf libraries first, keep the old headers during the transition, and measure build time before and after to see whether the change pays off for your project.",
+              "resources": [
+                {
+                  "label": "Modules - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/modules",
+                  "type": "docs"
+                },
+                {
+                  "label": "Modules overview",
+                  "url": "https://www.modernescpp.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Header units and legacy code",
+              "description": "A header unit lets you import an existing header as a module-like unit without rewriting it, as a bridge for code you cannot change yet.",
+              "resources": [
+                {
+                  "label": "Modules - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/modules",
+                  "type": "docs"
+                },
+                {
+                  "label": "Standard C++ Modules - Clang",
+                  "url": "https://clang.llvm.org/docs/StandardCPlusPlusModules.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "cpp-9",
       "title": "Error Handling and Robust C++",
-      "order": 9,
+      "order": 12,
       "techs": [
         "C++",
         "RAII",
@@ -13161,9 +14297,200 @@
       ]
     },
     {
+      "id": "cpp-14",
+      "title": "Performance Engineering: Cache, Memory Layout, and Allocators",
+      "order": 13,
+      "techs": [
+        "C++",
+        "STL"
+      ],
+      "description": "Learn why identical algorithms can differ by 10x in speed: cache behavior, data layout and allocation patterns usually matter more than instruction counts. Measure first with a benchmarking harness, then change layout and allocation strategy and verify the gain.",
+      "topics": [
+        "CPU caches, cache lines and locality",
+        "Data layout: array of structs vs struct of arrays",
+        "Alignment, padding and false sharing",
+        "Allocators and std::pmr",
+        "Microbenchmarking with Google Benchmark",
+        "Reading compiler output in Compiler Explorer"
+      ],
+      "resources": [
+        {
+          "label": "Agner Fog - Software optimization resources",
+          "platform": "agner.org",
+          "type": "docs"
+        },
+        {
+          "label": "Google Benchmark",
+          "platform": "GitHub",
+          "type": "docs"
+        },
+        {
+          "label": "Compiler Explorer",
+          "platform": "godbolt.org",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Take a particle simulation stored as an array of structs and benchmark it. Convert it to a struct of arrays, add a std::pmr monotonic arena for per-frame allocations, and report the measured speedup of each change separately.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Memory Hierarchy",
+          "children": [
+            {
+              "title": "Cache lines and locality",
+              "description": "The CPU loads memory in cache lines, usually 64 bytes. Iterating contiguous data uses every byte loaded, while chasing pointers wastes most of each line.",
+              "resources": [
+                {
+                  "label": "Software optimization resources - Agner Fog",
+                  "url": "https://www.agner.org/optimize/",
+                  "type": "docs"
+                },
+                {
+                  "label": "std::vector - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/container/vector",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "False sharing and alignment",
+              "description": "Two threads writing to different variables on the same cache line slow each other down. Align or pad hot data to separate lines.",
+              "resources": [
+                {
+                  "label": "hardware_destructive_interference_size - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/thread/hardware_destructive_interference_size",
+                  "type": "docs"
+                },
+                {
+                  "label": "alignas - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/alignas",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Data Layout",
+          "children": [
+            {
+              "title": "AoS vs SoA",
+              "description": "An array of structs keeps each object together; a struct of arrays keeps each field together. When a loop reads one field, SoA fits far more useful data per cache line.",
+              "resources": [
+                {
+                  "label": "Software optimization resources - Agner Fog",
+                  "url": "https://www.agner.org/optimize/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Data layout article",
+                  "url": "https://www.modernescpp.com/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Struct padding",
+              "description": "The compiler inserts padding to align members, so reordering fields from largest to smallest can shrink a struct and fit more objects per cache line.",
+              "resources": [
+                {
+                  "label": "alignas - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/alignas",
+                  "type": "docs"
+                },
+                {
+                  "label": "sizeof - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/language/sizeof",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Allocation",
+          "children": [
+            {
+              "title": "std::pmr and arena allocators",
+              "description": "Polymorphic memory resources let containers draw from an arena you control. A monotonic arena makes per-frame or per-request allocation nearly free and frees everything at once.",
+              "resources": [
+                {
+                  "label": "std::pmr::memory_resource - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/memory/memory_resource",
+                  "type": "docs"
+                },
+                {
+                  "label": "std::pmr::polymorphic_allocator - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/memory/polymorphic_allocator",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Avoiding hidden allocations",
+              "description": "Growing a vector, building strings and copying captured lambdas all allocate. Reserve capacity up front and watch for allocations inside hot loops.",
+              "resources": [
+                {
+                  "label": "std::vector::reserve - cppreference",
+                  "url": "https://en.cppreference.com/w/cpp/container/vector/reserve",
+                  "type": "docs"
+                },
+                {
+                  "label": "C++ Core Guidelines - Performance",
+                  "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Measurement",
+          "children": [
+            {
+              "title": "Google Benchmark",
+              "description": "A benchmark library handles warm-up, repetition and statistics so results are not noise. Always benchmark an optimized build and stop the compiler from deleting the work.",
+              "resources": [
+                {
+                  "label": "Google Benchmark - GitHub",
+                  "url": "https://github.com/google/benchmark",
+                  "type": "docs"
+                },
+                {
+                  "label": "Compiler Explorer",
+                  "url": "https://godbolt.org/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Reading compiler output",
+              "description": "Compiler Explorer shows the assembly for your code at each optimization level, so you can check whether a loop was vectorized or a call was inlined.",
+              "resources": [
+                {
+                  "label": "Compiler Explorer",
+                  "url": "https://godbolt.org/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Software optimization resources - Agner Fog",
+                  "url": "https://www.agner.org/optimize/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "cpp-10",
       "title": "Production C++ - Build Systems, Profiling, and Ecosystem",
-      "order": 10,
+      "order": 14,
+      "stage": "Production",
+      "requires": ["cpp-14"],
       "techs": [
         "C++",
         "STL",
@@ -27899,9 +29226,199 @@
       ]
     },
     {
+      "id": "elixir-11",
+      "title": "Web Development with Phoenix, LiveView, and Ecto",
+      "order": 7,
+      "techs": [
+        "Elixir",
+        "Phoenix",
+        "Ecto"
+      ],
+      "description": "Build a real web application with Elixir's main framework. You will use Phoenix for routing and contexts, Ecto for the database, and LiveView for interactive pages without writing JavaScript.",
+      "topics": [
+        "Phoenix request lifecycle: endpoint, router, plugs",
+        "Contexts and organizing a Phoenix app",
+        "Ecto schemas, migrations and queries",
+        "Changesets and validation",
+        "Phoenix LiveView and server-rendered interactivity",
+        "PubSub, channels and real-time updates"
+      ],
+      "resources": [
+        {
+          "label": "Phoenix Framework Guides",
+          "platform": "hexdocs.pm",
+          "type": "docs"
+        },
+        {
+          "label": "Ecto Documentation",
+          "platform": "hexdocs.pm",
+          "type": "docs"
+        },
+        {
+          "label": "Programming Phoenix",
+          "platform": "Pragmatic Bookshelf",
+          "type": "book"
+        }
+      ],
+      "challenge": "Build a small live auction or polling app with Phoenix: an Ecto-backed schema with validated changesets, a LiveView page that updates for every connected user through PubSub, and tests for the context and the LiveView.",
+      "estimatedTime": "2.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Phoenix Basics",
+          "children": [
+            {
+              "title": "Request lifecycle and plugs",
+              "description": "A request flows through the endpoint, then the router's pipelines of plugs, then a controller. Because a plug is just a function, you can compose and test each step.",
+              "resources": [
+                {
+                  "label": "Phoenix Overview",
+                  "url": "https://hexdocs.pm/phoenix/overview.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Plug guide",
+                  "url": "https://hexdocs.pm/phoenix/plug.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Contexts",
+              "description": "Contexts are modules that group related functions and hide the database from the web layer. They keep controllers and LiveViews thin and logic testable.",
+              "resources": [
+                {
+                  "label": "Contexts guide",
+                  "url": "https://hexdocs.pm/phoenix/contexts.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Phoenix Overview",
+                  "url": "https://hexdocs.pm/phoenix/overview.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Data with Ecto",
+          "children": [
+            {
+              "title": "Schemas and migrations",
+              "description": "A schema maps a table to a struct, and migrations describe database changes in versioned files so every environment stays in sync.",
+              "resources": [
+                {
+                  "label": "Ecto documentation",
+                  "url": "https://hexdocs.pm/ecto/Ecto.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Ecto.Migration",
+                  "url": "https://hexdocs.pm/ecto_sql/Ecto.Migration.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Changesets",
+              "description": "A changeset collects changes, casts input and runs validations before anything touches the database. Errors come back as data, so forms can display them.",
+              "resources": [
+                {
+                  "label": "Ecto.Changeset",
+                  "url": "https://hexdocs.pm/ecto/Ecto.Changeset.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Ecto documentation",
+                  "url": "https://hexdocs.pm/ecto/Ecto.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "LiveView",
+          "children": [
+            {
+              "title": "LiveView lifecycle",
+              "description": "A LiveView keeps its state on the server over a WebSocket and sends only the changed parts of the page. You handle events in Elixir instead of writing client-side code.",
+              "resources": [
+                {
+                  "label": "Phoenix LiveView welcome",
+                  "url": "https://hexdocs.pm/phoenix_live_view/welcome.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Phoenix.LiveView",
+                  "url": "https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Testing LiveView",
+              "description": "Phoenix.LiveViewTest lets you mount a LiveView, click and submit forms, and assert on the rendered HTML without a browser.",
+              "resources": [
+                {
+                  "label": "Phoenix.LiveViewTest",
+                  "url": "https://hexdocs.pm/phoenix_live_view/Phoenix.LiveViewTest.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Phoenix LiveView welcome",
+                  "url": "https://hexdocs.pm/phoenix_live_view/welcome.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Real Time",
+          "children": [
+            {
+              "title": "PubSub",
+              "description": "Phoenix.PubSub broadcasts messages to every process subscribed to a topic, which is how one user's action reaches all connected pages.",
+              "resources": [
+                {
+                  "label": "Phoenix.PubSub",
+                  "url": "https://hexdocs.pm/phoenix_pubsub/Phoenix.PubSub.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Phoenix Overview",
+                  "url": "https://hexdocs.pm/phoenix/overview.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Channels",
+              "description": "Channels give you a topic-based WebSocket connection for clients that are not LiveViews, such as mobile apps.",
+              "resources": [
+                {
+                  "label": "Channels guide",
+                  "url": "https://hexdocs.pm/phoenix/channels.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Phoenix Overview",
+                  "url": "https://hexdocs.pm/phoenix/overview.html",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "elixir-7",
       "title": "Metaprogramming and Macros",
-      "order": 7,
+      "order": 8,
       "techs": [
         "Elixir",
         "Macros",
@@ -28092,7 +29609,7 @@
     {
       "id": "elixir-8",
       "title": "Testing with ExUnit and Property Testing",
-      "order": 8,
+      "order": 9,
       "techs": [
         "Elixir",
         "ExUnit",
@@ -28283,7 +29800,7 @@
     {
       "id": "elixir-9",
       "title": "Distributed Elixir and ETS",
-      "order": 9,
+      "order": 10,
       "techs": [
         "Elixir",
         "Distributed",
@@ -28474,7 +29991,7 @@
     {
       "id": "elixir-10",
       "title": "Production Elixir - Phoenix, Releases, and Deployment",
-      "order": 10,
+      "order": 11,
       "techs": [
         "Elixir",
         "Phoenix",

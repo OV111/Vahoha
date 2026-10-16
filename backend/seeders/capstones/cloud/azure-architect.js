@@ -23,8 +23,8 @@ export default {
   categoryId: "cloud",
   slug: "azure-architect-aks-enterprise-platform",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Enterprise Azure Kubernetes Service & Landing Zone Platform",
   summary:
     "Provision a secure, enterprise-grade Azure landing zone and Azure Kubernetes Service (AKS) cluster using Bicep. " +

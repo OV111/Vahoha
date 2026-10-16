@@ -23,8 +23,8 @@ export default {
   categoryId: "cloud",
   slug: "aws-architect-multi-tier-web-platform",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Production Multi-Tier AWS Infrastructure Platform",
   summary:
     "Design and provision a highly available, multi-tier cloud platform on AWS using CloudFormation templates. " +

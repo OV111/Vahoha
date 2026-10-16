@@ -23,8 +23,8 @@ export default {
   categoryId: "web3",
   slug: "zk-developer-private-voting-credential",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Private Voting Credential System with ZK Proofs",
   summary:
     "Build a zero-knowledge private voting application using Circom circuits, snarkjs proof generation, and Solidity verifier contracts. " +

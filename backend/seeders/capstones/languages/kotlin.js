@@ -23,8 +23,8 @@ export default {
   categoryId: "languages",
   slug: "kotlin-ktor-reactive-backend",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Asynchronous Coroutine-Driven Ktor Web API",
   summary:
     "Build a production-ready asynchronous web service in Kotlin using Ktor framework. " +

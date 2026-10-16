@@ -23,8 +23,8 @@ export default {
   categoryId: "cloud",
   slug: "finops-engineer-cost-optimization-platform",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Automated Cloud Cost Allocation and Waste Elimination Platform",
   summary:
     "Build an automated Cloud FinOps engine that ingests cloud billing data, enforces tagging policies, " +

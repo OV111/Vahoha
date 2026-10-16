@@ -23,8 +23,8 @@ export default {
   categoryId: "languages",
   slug: "python-async-task-runner",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Async Task Execution Engine & Dependency Pipeline",
   summary:
     "Build a robust asynchronous task execution engine in pure Python. The engine parses task dependency " +

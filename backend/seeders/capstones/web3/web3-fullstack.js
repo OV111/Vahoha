@@ -23,8 +23,8 @@ export default {
   categoryId: "web3",
   slug: "web3-fullstack-marketplace-subgraph",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Full-Stack NFT Marketplace with Subgraph Indexer",
   summary:
     "Build an end-to-end decentralized application combining Solidity smart contracts, a custom GraphQL Subgraph indexer on The Graph, " +

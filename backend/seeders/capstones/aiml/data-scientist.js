@@ -23,8 +23,8 @@ export default {
   categoryId: "aiml",
   slug: "data-scientist-housing-analytics",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Real Estate Market Analytics and Price Valuation Platform",
   summary:
     "Deliver an end-to-end data science solution analyzing real estate trends and predicting property valuation. " +

@@ -15,8 +15,8 @@ export default {
   categoryId: "fullstack",
   slug: "laravel-vue-maintenance-hub",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Maintenance request hub",
   summary:
     "Build a maintenance request hub where tenants report property issues and staff manage repairs: a Laravel " +

@@ -23,8 +23,8 @@ export default {
   categoryId: "cybersecurity",
   slug: "threat-hunter-log-hunting-engine",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Automated Threat Hunting Engine & Sigma Detection Suite",
   summary:
     "Build a Python threat hunting platform that ingests Windows Sysmon, EVTX, and proxy logs, detects anomalous behaviors " +

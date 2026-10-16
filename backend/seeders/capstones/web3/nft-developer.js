@@ -23,8 +23,8 @@ export default {
   categoryId: "web3",
   slug: "nft-developer-generative-collection",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Generative On-Chain NFT Collection & Minting dApp",
   summary:
     "Build a full-stack NFT minting collection featuring on-chain SVG generation, allowlist Merkle proof verification, " +

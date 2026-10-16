@@ -1,10 +1,13 @@
 import { ObjectId } from "mongodb";
 import { saveExamResult } from "../../../services/examHistoryService.js";
 import { addWeakSpot, resolveWeakSpot } from "../../../services/weakSpotService.js";
-import { updateUserProgress } from "../../../services/userProgressService.js";
+import { getUserProgress, updateUserProgress } from "../../../services/userProgressService.js";
+import { doneLayerIds } from "../../../services/layerProgress.js";
+import { prerequisiteIds, missingPrerequisites } from "../../../services/layerUnlock.js";
 import { getRubric, listRubricsForLayer } from "../../../services/rubricService.js";
 import { evaluateTeachBack, generateFollowUp } from "../../../services/teachBackEvaluatorService.js";
 import { toTopicSlug } from "../../../utils/topicKey.js";
+import { EXAM_RULES } from "../../../../constants/exam.js";
 import { recomputeMastery } from "../../../services/learnerMasteryService.js";
 import { trackEvent } from "../../../services/eventService.js";
 import { awardXp, examXp } from "../../../services/xpService.js";
@@ -26,12 +29,12 @@ const refreshMastery = async (db, userId) => {
   }
 };
 
-const TIME_LIMIT_SECS = 600;
-const QUESTIONS_PER_EXAM = 15; // served per attempt, sampled from a bank of QUESTIONS_PER_LAYER (examSeeder.js)
-const MAX_ATTEMPTS_PER_DAY = 3;
-const COOLDOWN_AFTER_FAIL_MINS = 30;
+const TIME_LIMIT_SECS = EXAM_RULES.timeLimitSecs;
+const QUESTIONS_PER_EXAM = EXAM_RULES.questionsPerExam; // served per attempt, sampled from a bank of QUESTIONS_PER_LAYER (examSeeder.js)
+const MAX_ATTEMPTS_PER_DAY = EXAM_RULES.maxAttemptsPerDay;
+const COOLDOWN_AFTER_FAIL_MINS = EXAM_RULES.cooldownAfterFailMins;
 const COOLDOWN_ENABLED = true;
-const PASS_THRESHOLD = 80;
+const PASS_THRESHOLD = EXAM_RULES.passThreshold;
 
 // ── Question bank ─────────────────────────────────────────────
 
@@ -134,7 +137,40 @@ const getSeenQuestionIds = async (db, userId, path, layer) => {
   return new Set(attempts.flatMap((a) => (a.questions ?? []).map((q) => q.id)));
 };
 
+// The roadmap page greys out locked layers, but the page is only a view: without
+// this check anyone can call the exam API for Layer 5 first. Fails OPEN when the
+// layer is not in roadmap_layers (track not seeded yet), so it can only block a
+// layer the roadmap actually knows about.
+const assertLayerUnlocked = async (db, userId, layer) => {
+  const layers = db.collection("roadmap_layers");
+  const layerDoc = await layers.findOne({ layerId: layer });
+  if (!layerDoc) return;
+
+  const previousLayerDoc =
+    Array.isArray(layerDoc.requires) || !(layerDoc.order > 1)
+      ? null
+      : await layers.findOne({ trackId: layerDoc.trackId, order: layerDoc.order - 1 });
+
+  const requiredIds = prerequisiteIds(layerDoc, previousLayerDoc);
+  if (requiredIds.length === 0) return;
+
+  const progress = await getUserProgress(db, userId);
+  const missing = missingPrerequisites(requiredIds, doneLayerIds(progress));
+  if (missing.length === 0) return;
+
+  const titles = await layers
+    .find({ layerId: { $in: missing } }, { projection: { title: 1, _id: 0 } })
+    .toArray();
+  const err = new Error(
+    `This layer is locked. Pass ${titles.map((t) => `"${t.title}"`).join(", ") || missing.join(", ")} first.`,
+  );
+  err.status = 403;
+  throw err;
+};
+
 export const generateAttempt = async (db, userId, path, layer) => {
+  await assertLayerUnlocked(db, userId, layer);
+
   const limits = await checkAttemptLimits(db, userId, path, layer);
   if (!limits.allowed) {
     const err = new Error(limits.reason);
@@ -309,7 +345,7 @@ export const submitAttempt = async (db, userId, attemptId, clientAnswers, client
           });
       xpEarned = award.amount;
     } catch (err) {
-      console.error("exam XP award failed (result already saved):", err);
+      console.error("test XP award failed (result already saved):", err);
     }
   }
 

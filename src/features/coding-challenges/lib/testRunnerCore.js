@@ -192,7 +192,40 @@ function createMockFn(impl) {
 /** `'./asyncHandler'`, `'./asyncHandler.js'`, `'asyncHandler'` → `asyncHandler`. */
 function basename(request) {
   const last = String(request).split("/").pop();
-  return last.replace(/\.(js|mjs|cjs|jsx)$/, "");
+  return last.replace(/\.(js|mjs|cjs|jsx|ts|tsx)$/, "");
+}
+
+const isTypeScript = (file) => /\.tsx?$/.test(file?.name ?? "") || file?.lang === "ts";
+
+/**
+ * Removes the types from any TypeScript files so everything below only ever
+ * sees JavaScript. sucrase is loaded on demand, so JavaScript-only runs never
+ * download it. Types are removed, not checked: a type error cannot fail a test,
+ * a syntax error can, and is reported as a suite-level failure.
+ */
+async function stripTypeScript(files) {
+  if (!files.some(isTypeScript)) return { files };
+  const { transform } = await import("sucrase");
+  const out = [];
+  for (const file of files) {
+    if (!isTypeScript(file)) {
+      out.push(file);
+      continue;
+    }
+    try {
+      out.push({ ...file, code: transform(file.code, { transforms: ["typescript"] }).code });
+    } catch (err) {
+      return {
+        error: {
+          name: file.name,
+          passed: false,
+          ms: 0,
+          message: `TypeScript syntax error — ${err?.message ?? String(err)}`,
+        },
+      };
+    }
+  }
+  return { files: out };
 }
 
 /**
@@ -259,7 +292,10 @@ function pickTestFile(files) {
  * @returns {Promise<{name:string, passed:boolean, ms:number, message:string}[]>}
  */
 export async function runTests(files) {
-  const list = Array.isArray(files) ? files.filter((f) => f && typeof f.code === "string") : [];
+  const given = Array.isArray(files) ? files.filter((f) => f && typeof f.code === "string") : [];
+  const stripped = await stripTypeScript(given);
+  if (stripped.error) return [stripped.error];
+  const list = stripped.files;
   const testFile = pickTestFile(list);
 
   if (!testFile)

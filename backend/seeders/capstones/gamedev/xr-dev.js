@@ -23,8 +23,8 @@ export default {
   categoryId: "gamedev",
   slug: "xr-dev-spatial-escape-room",
   version: 1,
-  status: "draft",
-  reviewed: false,
+  status: "published",
+  reviewed: true,
   title: "Cross-Platform Spatial VR/AR Escape Room",
   summary:
     "Architect a spatial XR escape room utilizing Unity OpenXR, hand tracking/controller interactions, " +
