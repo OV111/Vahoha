@@ -202,7 +202,7 @@ describe('getLayerProgressService', () => {
     expect(result.message).toContain('errors')
   })
 
-  it('reports 100% and an exam-ready message once every challenge is solved', async () => {
+  it('reports 100% and an test-ready message once every challenge is solved', async () => {
     const userId = new ObjectId()
     await seedLayer()
     await seedProgress(userId)
@@ -214,7 +214,7 @@ describe('getLayerProgressService', () => {
     const result = await getLayerProgressService(db, userId.toString())
     expect(result.percent).toBe(100)
     expect(result.toGo).toBe(0)
-    expect(result.message).toMatch(/exam-ready/)
+    expect(result.message).toMatch(/test-ready/)
   })
 
   it('does not divide by zero when the layer has no challenges', async () => {

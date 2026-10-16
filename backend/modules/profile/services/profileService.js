@@ -37,11 +37,14 @@ export const getProfileService = async (db, userId) => {
   const users = db.collection("users");
   const usersStats = db.collection("usersStats");
 
-  const [user, stats, postsCount] = await Promise.all([
+  const [user, passwordCount, stats, postsCount] = await Promise.all([
     // Projected out in the query, so the hash never leaves the database.
     // (Destructuring it away after the read is easy to get wrong: renaming the
     // variable to `_password` silently removed a field that doesn't exist.)
     users.findOne({ _id: userId }, { projection: { password: 0 } }),
+    // Only a yes/no leaves the database. The settings page needs it to pick
+    // between the password form and the type-DELETE form for OAuth accounts.
+    users.countDocuments({ _id: userId, password: { $type: "string" } }, { limit: 1 }),
     usersStats.findOne({ userId }),
     // Counted from the blogs themselves: the stored usersStats.postsCount was
     // never updated when a blog was published, so it always read 0.
@@ -55,7 +58,10 @@ export const getProfileService = async (db, userId) => {
     { $set: { lastActive: new Date() } },
   );
 
-  return { userWithoutPassword: user, stats: stats && { ...stats, postsCount } };
+  return {
+    userWithoutPassword: { ...user, hasPassword: passwordCount > 0 },
+    stats: stats && { ...stats, postsCount },
+  };
 };
 
 export const updateLastActiveService = async (db, id, lastActive) => {

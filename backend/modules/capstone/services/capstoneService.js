@@ -115,7 +115,7 @@ export const startAttemptService = async (db, userId, trackId) => {
 
   const eligibility = await isPathComplete(db, userId, trackId);
   if (!eligibility.complete) {
-    fail(403, "Pass every layer exam in this track to unlock the capstone", {
+    fail(403, "Pass every layer test in this track to unlock the capstone", {
       missing: eligibility.missing,
     });
   }

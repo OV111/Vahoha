@@ -312,7 +312,7 @@ describe('summarizeLearnerContext', () => {
   it('surfaces the slug, both scores and the misconception the mentor must correct', () => {
     const summary = summarizeLearnerContext(ctx)
     expect(summary).toContain('jwt-signature')
-    expect(summary).toContain('exam 82%')
+    expect(summary).toContain('test 82%')
     expect(summary).toContain('teach-back 48%')
     expect(summary).toContain('signature-encrypts-payload')
   })

@@ -41,4 +41,16 @@ describe('getProfileService', () => {
     expect(result.userWithoutPassword).not.toHaveProperty('password')
     expect(JSON.stringify(result)).not.toContain('$2b$')
   })
+
+  it('says whether a password exists without exposing it', async () => {
+    const withPw = new ObjectId()
+    const oauth = new ObjectId()
+    await db.collection('users').insertMany([
+      { _id: withPw, email: 'pw@test.com', password: '$2b$10$hash' },
+      { _id: oauth, email: 'g@test.com', password: null },
+    ])
+
+    expect((await getProfileService(db, withPw)).userWithoutPassword.hasPassword).toBe(true)
+    expect((await getProfileService(db, oauth)).userWithoutPassword.hasPassword).toBe(false)
+  })
 })

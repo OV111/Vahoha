@@ -1,24 +1,18 @@
-import { ObjectId } from "mongodb";
-import { verifyToken } from "../../../utils/jwtToken.js";
 import { deleteAccountService } from "../services/accountService.js";
 
+// `authenticate` has already verified the token and set req.user, and
+// `validate` has already checked the body, so this only hands over to the
+// service. Controllers stay thin; the rules live in the service.
 export const deleteAccount = async (req, res) => {
   try {
-    const token = req.headers.authorization?.replace("Bearer ", "");
-    const verified = verifyToken(token);
-    if (!verified)
-      return res.status(401).json({ message: "Unauthorized: Invalid Token", status: 401 });
-
-    const email = req.body.email?.trim();
-    const password = req.body.password?.trim();
-    if (!email || !password)
-      return res.status(400).json({ message: "Email and password are required", status: 400 });
+    const { email, password, confirmation } = req.body;
 
     await deleteAccountService(
       req.app.locals.db,
-      new ObjectId(verified.id),
+      req.user._id,
       email,
       password,
+      confirmation,
     );
 
     res.status(200).json({ message: "Account deleted successfully", status: 200 });

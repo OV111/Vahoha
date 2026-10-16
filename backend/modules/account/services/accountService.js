@@ -23,6 +23,13 @@ export async function cancelBillingSubscription(db, userId, getClient = getPolar
     const status = err?.statusCode ?? err?.status;
     // Already gone / already cancelled on Polar's side — nothing left to bill.
     if (status === 404 || /already.*cancel/i.test(err?.message ?? "")) return;
+    // Already set to end at the period boundary ("To be cancelled" in Polar):
+    // it will never renew, so nothing more can be billed. A failed immediate
+    // revoke must not trap the user in an account they cannot delete.
+    if (sub.cancelAtPeriodEnd) {
+      console.warn("Polar revoke failed, but the subscription already ends at period end; continuing:", err?.message ?? err);
+      return;
+    }
     console.error("Polar revoke failed during account deletion:", err);
     throw {
       status: 502,
@@ -32,7 +39,15 @@ export async function cancelBillingSubscription(db, userId, getClient = getPolar
   }
 }
 
-export const deleteAccountService = async (db, userId, email, password) => {
+// Google and GitHub accounts are stored with `password: null`, so there is no
+// password to check. They confirm by typing this word instead (the web form
+// shows it). The caller is already signed in, which is what proves who they are.
+export const DELETE_CONFIRMATION = "DELETE";
+
+export const hasPassword = (user) =>
+  typeof user?.password === "string" && user.password.length > 0;
+
+export const deleteAccountService = async (db, userId, email, password, confirmation) => {
   const users = db.collection("users");
   const userStats = db.collection("usersStats");
   const follows = db.collection("follows");
@@ -43,12 +58,17 @@ export const deleteAccountService = async (db, userId, email, password) => {
   if (currentUser.email?.toLowerCase() !== email.toLowerCase())
     throw { status: 403, message: "Forbidden: Email does not match current user" };
 
-  // An account without a stored password hash would make bcrypt throw (a 500);
-  // treat it as a failed password check instead.
-  const isMatch =
-    typeof currentUser.password === "string" &&
-    (await bcrypt.compare(password, currentUser.password));
-  if (!isMatch) throw { status: 401, message: "Unauthorized: Incorrect password" };
+  if (hasPassword(currentUser)) {
+    if (!password) throw { status: 400, message: "Password is required" };
+    if (!(await bcrypt.compare(password, currentUser.password)))
+      throw { status: 401, message: "Unauthorized: Incorrect password" };
+  } else if (confirmation !== DELETE_CONFIRMATION) {
+    // No password exists, so asking for one could never succeed.
+    throw {
+      status: 400,
+      message: `This account signs in with Google or GitHub. Type ${DELETE_CONFIRMATION} to confirm.`,
+    };
+  }
 
   // Read before anything is deleted: the file URLs live in the stats row.
   const stats = await userStats.findOne({ userId });

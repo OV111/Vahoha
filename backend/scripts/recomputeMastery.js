@@ -70,7 +70,7 @@ const run = async () => {
     console.log(`\nuser ${id} — ${states.length} topic(s)`);
     for (const s of states) {
       console.log(
-        `  ${s.status.padEnd(11)} ${s.slug.padEnd(26)} exam=${s.examScore ?? "-"} teach-back=${s.teachBackScore ?? "-"} fails=${s.failCount}`,
+        `  ${s.status.padEnd(11)} ${s.slug.padEnd(26)} test=${s.examScore ?? "-"} teach-back=${s.teachBackScore ?? "-"} fails=${s.failCount}`,
       );
     }
     console.log(`  -> next: ${next.action}${next.topicSlug ? ` ${next.topicSlug}` : ""} (${next.reason})`);

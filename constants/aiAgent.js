@@ -41,7 +41,7 @@ export const ATTACHMENT_ACCEPTED_EXTENSIONS = [
  * Chips and menu items carry a `prompt` — the text dropped into the composer.
  *
  * They are prompt shortcuts, not data browsers, and that is deliberate: the
- * agent already has tools for progress, weak spots, exam history and post
+ * agent already has tools for progress, weak spots, test history and post
  * search, so building panels would duplicate verified tools. What users
  * actually lack is knowing the agent CAN do this — a shortcut solves that.
  *
@@ -51,7 +51,7 @@ export const ATTACHMENT_ACCEPTED_EXTENSIONS = [
 export const CHIPS = [
   { label: "Challenges", icon: Zap,           prompt: "What coding challenges should I practice next, based on where I am?" },
   { label: "Weak Spots", icon: Crosshair,     prompt: "What are my weak spots, and what should I review first?" },
-  { label: "Exams",      icon: ClipboardList, prompt: "How have my exams gone so far, and what did I get wrong?" },
+  { label: "Tests",      icon: ClipboardList, prompt: "How have my tests gone so far, and what did I get wrong?" },
   { label: "Blogs",      icon: FileText,      prompt: "Find me platform posts about " },
   { label: "Roadmap",    icon: Map,           prompt: "Where am I on my roadmap right now, and what's the next layer?" },
 ];

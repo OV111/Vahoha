@@ -72,10 +72,10 @@ export const getLayerProgressService = async (db, userId) => {
     total === 0
       ? `No challenges in ${layer.title} yet.`
       : toGo === 0
-        ? `Every challenge in ${layer.title} is solved — you're exam-ready.`
+        ? `Every challenge in ${layer.title} is solved — you're test-ready.`
         : weakMatch
-          ? `Solve ${toGo} more on ${weakMatch} and you're exam-ready.`
-          : `Solve ${toGo} more in ${layer.title} and you're exam-ready.`;
+          ? `Solve ${toGo} more on ${weakMatch} and you're test-ready.`
+          : `Solve ${toGo} more in ${layer.title} and you're test-ready.`;
 
   return {
     hasLayer: true,

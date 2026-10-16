@@ -96,11 +96,11 @@ export const toolDefinitions = [
     type: "function",
     function: {
       name: "get_exam_history",
-      description: "Get the current user's recent exam results, scores, and missed topics. Call this when the user asks why they failed or wants to review past exams.",
+      description: "Get the current user's recent test results, scores, and missed topics. Call this when the user asks why they failed or wants to review past tests.",
       parameters: {
         type: "object",
         properties: {
-          limit: { type: "number", description: "Number of recent exams to fetch (default 5)" },
+          limit: { type: "number", description: "Number of recent tests to fetch (default 5)" },
         },
       },
     },

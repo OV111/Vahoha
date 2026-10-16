@@ -74,7 +74,7 @@ if (toSeed.length) {
   await db.collection("exam_attempts").insertMany(
     toSeed.map((l) => ({
       userId: user._id,
-      path: l.categoryId, // exam_attempts.path is the category, as the exam engine writes it
+      path: l.categoryId, // exam_attempts.path is the category, as the test engine writes it
       layer: l.layerId,
       questions: [],
       startedAt: now,

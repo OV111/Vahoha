@@ -138,7 +138,7 @@ ${example}\`\`\`
 7. Requirements must be concrete and testable ("only the owner can withdraw, enforced in the contract"), never vague ("follows best practices", "secure code").
 8. The project must be buildable by one learner in about 2–4 weeks, use THAT track's stack, and be a different idea from every other track. For anything touching real money, the project must run on a local chain or public testnet only.
 9. Keep the header comment, write "DRAFT by ChatGPT" in it, and keep this line in it:
-   " * ⚠ This track has no exam banks yet, so the seeder refuses to publish it until its layer exams are seeded."
+   " * ⚠ This track has no test banks yet, so the seeder refuses to publish it until its layer tests are seeded."
 10. Plain JavaScript only: no TypeScript, no comments inside arrays, no text outside the code blocks except the FILE: lines.${NOTES[category] ? `\n${NOTES[category]}` : ""}
 
 ## TRACKS (id — title, then the track's real layers: layerId | title | topics)

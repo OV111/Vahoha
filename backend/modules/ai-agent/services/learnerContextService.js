@@ -211,10 +211,10 @@ export const summarizeLearnerContext = (ctx, { maxTopics = 5 } = {}) => {
 
   if (exams.lastScore !== null) {
     lines.push(
-      `Exams: last ${exams.lastScore}% (${exams.lastPassed ? "passed" : "failed"}), recent avg ${exams.avgScoreRecent}%, trend ${exams.trend}`,
+      `Tests: last ${exams.lastScore}% (${exams.lastPassed ? "passed" : "failed"}), recent avg ${exams.avgScoreRecent}%, trend ${exams.trend}`,
     );
   } else {
-    lines.push("Exams: none taken yet");
+    lines.push("Tests: none taken yet");
   }
 
   if (challenges.attemptedCount) {
@@ -234,7 +234,7 @@ export const summarizeLearnerContext = (ctx, { maxTopics = 5 } = {}) => {
     lines.push("Topics needing attention:");
     for (const t of needsWork) {
       const bits = [];
-      if (t.examScore !== null) bits.push(`exam ${t.examScore}%`);
+      if (t.examScore !== null) bits.push(`test ${t.examScore}%`);
       if (t.teachBackScore !== null) bits.push(`teach-back ${t.teachBackScore}%`);
       if (t.failCount) bits.push(`${t.failCount} fail(s)`);
       const misc = t.misconceptions?.length

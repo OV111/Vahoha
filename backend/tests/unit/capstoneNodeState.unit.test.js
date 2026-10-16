@@ -25,7 +25,7 @@ describe('roadmap capstone node', () => {
   it('is closed for a member who has not passed every exam, and says how far they are', () => {
     const s = nodeState({ entry, isMember: true, mine: mine('locked', 7) })
     expect(s).toMatchObject({ kind: 'locked', interactive: false })
-    expect(s.hint).toContain('7/10 layer exams passed')
+    expect(s.hint).toContain('7/10 layer tests passed')
   })
 
   it('stays closed while the learner\'s state has not loaded (or failed)', () => {
