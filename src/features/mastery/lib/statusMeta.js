@@ -24,7 +24,7 @@ export const STATUS_META = {
   },
   untested: {
     label: "Not tested yet",
-    hint: "No exam or explanation on record.",
+    hint: "No test or explanation on record.",
     dot: "bg-zinc-500",
     bar: "bg-zinc-600",
     text: "text-zinc-400",

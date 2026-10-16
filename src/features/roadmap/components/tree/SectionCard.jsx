@@ -5,7 +5,7 @@ import { TREE_TOKENS } from "./treeTokens";
 // Mid-level card. Owns a flex-column of its subtopic cards with a fixed gap
 // (treeTokens.cardGap) — replaces the old fixed-height slot + manually
 // computed child centers, so height is whatever the content actually needs.
-const SectionCard = ({ id, title, side, isDone, children = [] }) => {
+const SectionCard = ({ id, title, side, isDone, hrefFor, children = [] }) => {
   const hasChildren = children.length > 0;
   const connectorRef = useConnectorNode(id);
 
@@ -47,6 +47,7 @@ const SectionCard = ({ id, title, side, isDone, children = [] }) => {
                   title={c.title}
                   description={c.description}
                   resources={c.resources ?? []}
+                  href={hrefFor?.(title, c.title)}
                   side={side}
                   isDone={isDone}
                 />

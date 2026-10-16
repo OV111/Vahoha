@@ -14,7 +14,7 @@ const CategoryBar = () => {
         .glow-pulse { animation: glow-pulse 2.5s ease-in-out infinite; }
       `}</style> */}
 
-      <div className="flex flex-wrap gap-2 justify-center items-center mx-auto">
+      <div data-tour="domain" className="flex flex-wrap gap-2 justify-center items-center mx-auto">
         {ROADMAP_DOMAINS.map((category) => {
           const isSelected = selectedCategory?.id === category.id;
           return (

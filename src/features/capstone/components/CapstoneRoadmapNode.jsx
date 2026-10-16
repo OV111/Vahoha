@@ -133,7 +133,7 @@ export default function CapstoneRoadmapNode({ trackId }) {
       />
       {state.interactive ? (
         <Link
-          to={href}
+          to={href} data-tour="capstone"
           className={`${base} transition-colors hover:border-purple-400 ${look.card}`}
         >
           {body}
@@ -142,7 +142,7 @@ export default function CapstoneRoadmapNode({ trackId }) {
         // Inactive: not a link and not focusable, so it cannot be opened by
         // click, tap or keyboard. aria-disabled lets assistive tech announce why.
         <div
-          aria-disabled="true"
+          aria-disabled="true" data-tour="capstone"
           className={`${base} cursor-not-allowed select-none ${look.card}`}
         >
           {body}

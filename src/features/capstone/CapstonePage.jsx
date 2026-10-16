@@ -48,7 +48,7 @@ function Picker({ items }) {
       <h1 className="text-3xl font-bold">Choose your capstone</h1>
       <p className="mt-2 text-sm text-neutral-400">
         One capstone per roadmap track. It unlocks when you pass every layer
-        exam of that track.
+        test of that track.
       </p>
       <ul className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
         {items.map((c) => {
@@ -133,7 +133,7 @@ export default function CapstonePage() {
             <h1 className="text-xl font-bold">No capstones yet</h1>
             <p className="mt-1.5 text-sm leading-relaxed text-neutral-300">
               Capstones are being written for the roadmap tracks. Keep passing
-              layer exams — yours will appear here and at the end of your track.
+              layer tests — yours will appear here and at the end of your track.
             </p>
           </div>
           <Link

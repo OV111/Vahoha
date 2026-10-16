@@ -17,17 +17,17 @@ const PILLARS = [
   {
     icon: Lock,
     title: "Roadmaps you have to earn",
-    body: "Every layer is locked until you pass a server-graded exam on the one before it. No checkbox to tick, no skipping ahead.",
+    body: "Every layer is locked until you pass a server-graded test on the one before it. No checkbox to tick, no skipping ahead.",
   },
   {
     icon: Target,
     title: "Your weak spots, not a score",
-    body: "Fail an exam and you see exactly which topics you missed, so you review those instead of starting over.",
+    body: "Fail a test and you see exactly which topics you missed, so you review those instead of starting over.",
   },
   {
     icon: Bot,
     title: "A mentor that knows your journey",
-    body: "The AI mentor can see your path, exam history and weak spots. It guides you to the answer instead of handing it over.",
+    body: "The AI mentor can see your path, test history and weak spots. It guides you to the answer instead of handing it over.",
   },
 ];
 
@@ -45,13 +45,13 @@ const STATUS = [
   },
   {
     done: true,
-    label: "Exams & weak spots",
-    desc: "Server-graded exams that record what you missed.",
+    label: "Tests & weak spots",
+    desc: "Server-graded tests that record what you missed.",
   },
   {
     done: true,
     label: "AI mentor",
-    desc: "Grounded in your progress, exam history and weak spots.",
+    desc: "Grounded in your progress, test history and weak spots.",
   },
   {
     done: true,
@@ -60,8 +60,8 @@ const STATUS = [
   },
   {
     done: false,
-    label: "More exam-ready paths",
-    desc: "Backend is first; more paths get full exams next.",
+    label: "More test-ready paths",
+    desc: "Backend is first; more paths get full tests next.",
   },
   {
     done: false,

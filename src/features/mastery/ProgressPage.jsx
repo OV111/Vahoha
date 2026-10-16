@@ -25,7 +25,7 @@ const ProgressPage = () => {
         <h1 className="text-3xl font-semibold text-[#F7F7F8]">My progress</h1>
         <p className="mt-1 text-sm text-[#A1A0AB]">
           What you&apos;ve proven, what&apos;s shaky, and the one thing to do next — built from
-          your exams, explanations and mentor sessions.
+          your tests, explanations and mentor sessions.
         </p>
       </header>
 
@@ -56,7 +56,7 @@ const ProgressPage = () => {
             <MapIcon size={20} className="text-purple-400" aria-hidden="true" />
             <h2 className="text-base font-semibold text-[#F7F7F8]">No evidence yet</h2>
             <p className="max-w-md text-[13px] text-[#A1A0AB]">
-              Your map fills in as you take layer exams and explain topics. Start with the
+              Your map fills in as you take layer tests and explain topics. Start with the
               first layer of a roadmap.
             </p>
             <Link to="/roadmaps" className="text-sm text-purple-400 hover:underline">

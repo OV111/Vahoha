@@ -269,6 +269,8 @@ const Chats = () => {
       return () => ws.close();
     };
     return () => ws.close();
+    // Open one socket per mount; token is read once at connect time.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

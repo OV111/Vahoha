@@ -55,6 +55,8 @@ const ConnectedAccounts = () => {
 
   useEffect(() => {
     if (!user && !stats) fetchProfile();
+  // Fetch once on mount; store values are read only as a guard.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

@@ -41,7 +41,7 @@ export const PLANS = [
       { text: "AI mentor — 30 messages / day" },
       { text: "Beginner problems in the Arena" },
       { text: "Dev Library — public entries" },
-      { text: "3 voice teach-back exams / month", soon: true },
+      { text: "3 voice teach-back tests / month", soon: true },
     ],
   },
   {
@@ -53,11 +53,11 @@ export const PLANS = [
     highlighted: true,
     features: [
       { text: "Everything in Free" },
-      { text: "Every roadmap layer, unlocked by passing its exam" },
+      { text: "Every roadmap layer, unlocked by passing its test" },
       { text: "Higher daily AI mentor limit" },
-      { text: "More exam attempts" },
+      { text: "More test attempts" },
       { text: "Full Dev Library" },
-      { text: "Voice teach-back exam on every layer", soon: true },
+      { text: "Voice teach-back test on every layer", soon: true },
       { text: "Verified public progress profile", soon: true },
       { text: "Certificates on path completion", soon: true },
     ],

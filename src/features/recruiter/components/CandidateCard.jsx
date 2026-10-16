@@ -26,7 +26,7 @@ const Stat = ({ value, label }) =>
 export default function CandidateCard({ c, trackTitle }) {
   const { score, parts } = c.evidence;
   const ago = activeAgo(c.lastActiveAt);
-  const breakdown = `Layers ${parts.layers} · Exam quality ${parts.quality} · Capstone ${parts.capstone} · Team projects ${parts.teams}`;
+  const breakdown = `Layers ${parts.layers} · Test quality ${parts.quality} · Capstone ${parts.capstone} · Team projects ${parts.teams}`;
 
   return (
     <li>
@@ -60,7 +60,7 @@ export default function CandidateCard({ c, trackTitle }) {
 
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
             <Stat value={c.layersPassed} label="layers passed" />
-            <Stat value={c.avgExamScore == null ? null : `${c.avgExamScore}%`} label="avg exam" />
+            <Stat value={c.avgExamScore == null ? null : `${c.avgExamScore}%`} label="avg test" />
             <Stat value={c.capstones} label={c.capstones === 1 ? "capstone" : "capstones"} />
             <Stat value={c.teamProjects} label={c.teamProjects === 1 ? "team project" : "team projects"} />
           </div>

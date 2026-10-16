@@ -26,7 +26,7 @@ function CopyLink({ path }) {
 }
 
 const SECTIONS = [
-  { key: "exams", label: "Passed layers and exam scores" },
+  { key: "exams", label: "Passed layers and test scores" },
   { key: "capstone", label: "Capstone certificates and scores" },
   { key: "teams", label: "Team projects (merged PRs, defense, peer rating)" },
   { key: "strengths", label: "Strong topics (only topics you know well)" },

@@ -47,6 +47,7 @@ export default function ActionBar({ testResults, onRun, running, onSubmit, submi
           </button>
         )}
         <button
+          data-tour="arena-mentor"
           onClick={onAskMentor}
           className="flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded transition-colors cursor-pointer"
           style={{ border: `1px solid ${C.faint}`, color: C.purple }}
@@ -57,6 +58,7 @@ export default function ActionBar({ testResults, onRun, running, onSubmit, submi
           Ask mentor
         </button>
         <button
+          data-tour="arena-run"
           onClick={onRun}
           disabled={running}
           className="flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded transition-colors cursor-pointer"
@@ -71,6 +73,7 @@ export default function ActionBar({ testResults, onRun, running, onSubmit, submi
           Run tests
         </button>
         <button
+          data-tour="arena-submit"
           onClick={onSubmit}
           disabled={submitting}
           className="flex items-center gap-1.5 text-[12px] px-4 py-1.5 rounded font-semibold transition-colors cursor-pointer"

@@ -40,7 +40,7 @@ export const nodeState = ({ entry, isMember, mine }) => {
       kind: "locked",
       interactive: false,
       title: entry.briefTitle,
-      hint: "Log in and pass every layer exam of this track to unlock it.",
+      hint: "Log in and pass every layer test of this track to unlock it.",
     };
   }
 
@@ -53,14 +53,14 @@ export const nodeState = ({ entry, isMember, mine }) => {
       interactive: false,
       title: entry.briefTitle,
       hint: e
-        ? `${e.passed}/${e.total} layer exams passed — pass them all to unlock.`
-        : "Pass every layer exam of this track to unlock it.",
+        ? `${e.passed}/${e.total} layer tests passed — pass them all to unlock.`
+        : "Pass every layer test of this track to unlock it.",
     };
   }
 
   const HINTS = {
     ready:
-      "All exams passed. Start your capstone: build it, ship it, defend it.",
+      "All tests passed. Start your capstone: build it, ship it, defend it.",
     in_progress: "Your capstone is in progress. Pick up where you left off.",
     passed: "Approved. Open your capstone and certificate.",
     failed:

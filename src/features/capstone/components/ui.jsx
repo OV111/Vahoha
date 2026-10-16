@@ -70,7 +70,7 @@ export function ErrorBanner({ error, onDismiss }) {
         )}
         {Array.isArray(error.missing) && error.missing.length > 0 && (
           <p className="mt-1 text-amber-200/70">
-            Still to pass: {error.missing.join(", ")}
+            {error.missing.length} layer {error.missing.length === 1 ? "test" : "tests"} still to pass.
           </p>
         )}
       </div>

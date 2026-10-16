@@ -17,13 +17,14 @@ const status = (over = {}) => ({
 });
 
 describe("heroCopy", () => {
-  it("locked: points to the roadmap and names what is still missing", () => {
+  it("locked: points to the roadmap and shows progress, not internal layer ids", () => {
     const copy = heroCopy(
       status({ eligibility: { complete: false, passed: 3, total: 10, missing: ["L4", "L5"] } }),
     );
     expect(copy.cta).toEqual({ kind: "link", label: "Go to the roadmap", to: "/roadmaps" });
     expect(copy.body).toContain("3 of 10");
-    expect(copy.body).toContain("L4, L5");
+    expect(copy.body).not.toContain("L4");
+    expect(copy.body).not.toContain("L5");
   });
 
   it("ready, first attempt: the one action is to start", () => {

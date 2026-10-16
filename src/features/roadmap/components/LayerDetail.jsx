@@ -33,6 +33,7 @@ const LayerDetail = () => {
     closePanel,
     layerProgress,
     selectedCategory,
+    selectedTrack,
   } = useRoadmapStore();
   const { auth } = useAuthStore();
 
@@ -151,6 +152,17 @@ const LayerDetail = () => {
             </ul>
           </div>
 
+          {selectedTrack && (
+            <Link
+              to={`/learn/${selectedTrack.id}/${activeLayer.id}`}
+              onClick={closePanel}
+              className="flex min-h-11 items-center justify-between gap-3 rounded-xl border border-purple-600/50 px-4 text-sm font-medium text-purple-300 transition-colors hover:bg-purple-600/20"
+            >
+              Start learning this layer
+              <ChevronRight size={14} aria-hidden="true" />
+            </Link>
+          )}
+
           <LayerPosts layerId={activeLayer.id} onNavigate={closePanel} />
 
           {/* Challenge */}
@@ -172,7 +184,7 @@ const LayerDetail = () => {
             {/* min-w-0 lets the hint wrap instead of squeezing the button. */}
             <span className="flex min-w-0 items-start gap-2 text-[13px] leading-snug text-neutral-400">
               <Lock size={13} className="mt-0.5 shrink-0" aria-hidden="true" />
-              Pass the exam to unlock the next layer
+              Pass the test to unlock the next layer
             </span>
             {/* shrink-0 + nowrap: the call to action never breaks onto two lines;
                 min-h-11 is the 44px touch target. */}
@@ -199,7 +211,7 @@ const LayerDetail = () => {
               ) : (
                 <Lock size={14} className="text-neutral-600" aria-hidden="true" />
               )}
-              {isDone ? "Completed" : "Pass the exam to complete"}
+              {isDone ? "Completed" : "Pass the test to complete"}
             </span>
 
             <div className="flex items-center gap-2">
@@ -214,7 +226,7 @@ const LayerDetail = () => {
                   className="flex min-h-11 items-center gap-2 text-sm font-medium px-4 py-2 rounded-xl border border-purple-600/50 text-purple-300 hover:bg-purple-600/20 transition-colors duration-200"
                 >
                   <Mic size={14} aria-hidden="true" />
-                  Voice exam
+                  Voice test
                 </button>
               )}
               <button
@@ -226,7 +238,7 @@ const LayerDetail = () => {
                 }}
                 className="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white transition-colors duration-200"
               >
-                Take Exam
+                Take Test
                 <ChevronRight size={14} />
               </button>
             </div>

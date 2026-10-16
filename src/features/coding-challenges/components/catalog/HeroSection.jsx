@@ -85,7 +85,7 @@ export default function HeroSection({ daily, stats, loading, challengeCount, her
 
           <Motion.p {...fadeUp(0.16)} className="text-[14px] max-w-lg mb-8 text-[#666]">
             Not random DSA grinding. Every challenge is tied to your current
-            roadmap layer. Solve them to raise your exam readiness, and the AI
+            roadmap layer. Solve them to raise your test readiness, and the AI
             agent steps in with progressive hints — never the answer.
           </Motion.p>
 

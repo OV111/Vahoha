@@ -85,7 +85,9 @@ const GetStarted = () => {
         toast.success(`${result.message}`, { duration: 900 });
         login(result.accessToken);
         reset();
-        navigate("/");
+        // A new account starts at the roadmap, where the first tour is. Someone
+        // logging in again goes home as before.
+        navigate(isSignedUp ? "/roadmaps" : "/");
       } else if (response.status === 409) {
         setAuthUiMessage(result.message);
         toast.error(result.message);

@@ -4,7 +4,7 @@ const TOOL_LABELS = {
   get_user_progress: "Fetching your progress",
   get_layer_content: "Loading layer content",
   search_platform_posts: "Searching posts",
-  get_exam_history: "Reading exam history",
+  get_exam_history: "Reading test history",
   log_weak_spot: "Logging weak spot",
 };
 

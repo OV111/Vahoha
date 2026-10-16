@@ -152,7 +152,7 @@ const RoadmapTree = () => {
 
           {isDesktop && (
             <p className="mt-3 text-[10px] text-neutral-600 text-center">
-              Hover subtopic cards to see descriptions · resource type badges show what&rsquo;s available
+              Click any subtopic to start learning it · hover to preview what it covers
             </p>
           )}
         </div>

@@ -120,7 +120,7 @@ export function AsyncSection({
 /* ── rows / cards ───────────────────────────────────────── */
 
 const TRACK_STATE = {
-  locked: { label: "Working through layer exams", tone: "neutral" },
+  locked: { label: "Working through layer tests", tone: "neutral" },
   ready: { label: "Capstone ready", tone: "purple" },
   in_progress: { label: "Capstone in progress", tone: "purple" },
   passed: { label: "Capstone approved", tone: "green" },
@@ -149,7 +149,7 @@ export function TrackRow({ track, linkTo }) {
       <div
         className="mt-3 h-1.5 overflow-hidden rounded-full bg-neutral-800"
         role="progressbar"
-        aria-label={`${track.trackTitle} layer exams`}
+        aria-label={`${track.trackTitle} layer tests`}
         aria-valuemin={0}
         aria-valuemax={total}
         aria-valuenow={passed}

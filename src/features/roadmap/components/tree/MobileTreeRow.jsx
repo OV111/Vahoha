@@ -1,8 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ChevronDown, ArrowRight } from "lucide-react";
 import LayerNode from "../LayerNode";
 import { RESOURCE_BADGE_COLORS } from "./treeTokens";
+import useRoadmapStore from "@/stores/useRoadmapStore";
+import { lessonHrefs } from "@/features/learn/lib/curriculum";
 
 // Below ~1280px there's no room for a three-column spine, so this collapses
 // to a single vertical flow: layer -> its sections -> their subtopics,
@@ -14,8 +17,8 @@ import { RESOURCE_BADGE_COLORS } from "./treeTokens";
 // Touch screens have no hover, so the desktop "hover to reveal description"
 // becomes tap-to-expand (accordion). Only one subtopic per layer is open at a
 // time, which keeps the layer short enough to scroll through quickly.
-const MobileSubtopic = ({ title, description, resources = [], open, onToggle }) => {
-  const expandable = Boolean(description) || resources.length > 0;
+const MobileSubtopic = ({ title, description, resources = [], href, open, onToggle }) => {
+  const expandable = Boolean(description) || resources.length > 0 || Boolean(href);
 
   return (
     <div className="pl-4 border-l border-neutral-800">
@@ -50,6 +53,14 @@ const MobileSubtopic = ({ title, description, resources = [], open, onToggle }) 
             {description && (
               <p className="text-[11px] text-neutral-400 leading-relaxed">{description}</p>
             )}
+            {href && (
+              <Link
+                to={href}
+                className="mt-2 inline-flex min-h-11 items-center gap-1.5 text-[12px] font-medium text-purple-400 hover:text-purple-300"
+              >
+                Open lesson <ArrowRight size={12} aria-hidden="true" />
+              </Link>
+            )}
             {resources.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-1.5 pb-2">
                 {resources.slice(0, 3).map((r, i) => (
@@ -71,7 +82,7 @@ const MobileSubtopic = ({ title, description, resources = [], open, onToggle }) 
   );
 };
 
-const MobileSection = ({ section, isDone, openKey, onToggle }) => (
+const MobileSection = ({ section, isDone, hrefFor, openKey, onToggle }) => (
   <div className="pl-4 border-l border-neutral-700/60 py-2">
     <p className={`text-[13px] font-semibold ${isDone ? "text-purple-200" : "text-neutral-200"}`}>
       {section.title}
@@ -86,6 +97,7 @@ const MobileSection = ({ section, isDone, openKey, onToggle }) => (
               title={c.title}
               description={c.description}
               resources={c.resources ?? []}
+              href={hrefFor?.(section.title, c.title)}
               open={openKey === key}
               onToggle={() => onToggle(key)}
             />
@@ -99,6 +111,8 @@ const MobileSection = ({ section, isDone, openKey, onToggle }) => (
 const MobileTreeRow = ({ layer, index, isDone }) => {
   const sections = [...(layer.sideLeft ?? []), ...(layer.sideRight ?? [])];
   const [openKey, setOpenKey] = useState(null);
+  const selectedTrack = useRoadmapStore((s) => s.selectedTrack);
+  const hrefFor = selectedTrack ? lessonHrefs(selectedTrack.id, layer) : null;
   const toggle = (key) => setOpenKey((current) => (current === key ? null : key));
 
   return (
@@ -117,6 +131,7 @@ const MobileTreeRow = ({ layer, index, isDone }) => {
               key={section.title}
               section={section}
               isDone={isDone}
+              hrefFor={hrefFor}
               openKey={openKey}
               onToggle={toggle}
             />

@@ -14,10 +14,10 @@
 export const ACHIEVEMENTS = [
   {
     id: "first-exam",
-    label: "First exam",
+    label: "First test",
     char: "1",
     tone: "teal",
-    hint: "Take any layer exam",
+    hint: "Take any layer test",
     test: ({ exams }) => exams.length > 0,
   },
   {
@@ -25,15 +25,15 @@ export const ACHIEVEMENTS = [
     label: "Layer cleared",
     char: "✓",
     tone: "purple",
-    hint: "Pass a layer exam",
+    hint: "Pass a layer test",
     test: ({ exams }) => exams.some((e) => e.passed),
   },
   {
     id: "exam-90",
-    label: "90%+ exam",
+    label: "90%+ test",
     char: "90",
     tone: "amber",
-    hint: "Score 90% or more on an exam",
+    hint: "Score 90% or more on a test",
     test: ({ exams }) =>
       exams.some(
         (e) =>
@@ -61,7 +61,7 @@ export const ACHIEVEMENTS = [
     label: "Track complete",
     char: "▶",
     tone: "teal",
-    hint: "Pass every layer exam of a track",
+    hint: "Pass every layer test of a track",
     test: ({ tracks }) =>
       tracks.some(
         (t) =>

@@ -123,7 +123,7 @@ const RecordingPanel = ({ attempt, isBusy, onSubmitAudio, onSubmitText, onAbando
           onClick={onAbandon}
           className="min-h-[44px] text-[12.5px] text-neutral-400 underline"
         >
-          Abandon exam
+          Abandon test
         </button>
       </div>
     </div>

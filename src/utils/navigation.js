@@ -11,8 +11,8 @@ export const navItemPath = ({ to, match }) => match ?? to;
 
 /**
  * The single active path across a whole menu: the longest one the current URL
- * sits under. Two items can link to the same page (Exams links to /roadmaps
- * because exams are taken from there), and without one winner both, and both
+ * sits under. Two items can link to the same page (Tests links to /roadmaps
+ * because tests are taken from there), and without one winner both, and both
  * their groups, would light up at once. Locked items never win.
  */
 export const findActiveNavPath = (pathname, items) =>

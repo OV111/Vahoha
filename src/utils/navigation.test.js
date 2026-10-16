@@ -10,7 +10,7 @@ const groupOf = (groups, path) =>
 describe("findActiveNavPath", () => {
   const items = itemsOf(NAV_GROUPS_AUTH);
 
-  it("lights up only Learn on the roadmaps page, not Practice (Exams shares the link)", () => {
+  it("lights up only Learn on the roadmaps page, not Practice (Tests shares the link)", () => {
     const path = findActiveNavPath("/roadmaps", items);
     expect(path).toBe("/roadmaps");
     expect(groupOf(NAV_GROUPS_AUTH, path)).toEqual(["Learn"]);

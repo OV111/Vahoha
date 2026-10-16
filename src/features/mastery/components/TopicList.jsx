@@ -30,7 +30,7 @@ const TopicRow = ({ topic }) => {
         <div className="flex flex-wrap items-center gap-1.5">
           {/* The engine attaches the whole layer-exam score to each topic missed
               in that exam — it is not a per-topic score, so it is labelled as such. */}
-          <Score label="Layer exam" value={topic.examScore} />
+          <Score label="Layer test" value={topic.examScore} />
           <Score label="Explained" value={topic.teachBackScore} />
           {topic.failCount > 0 && (
             <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[11px] text-[#D4D4DC]">

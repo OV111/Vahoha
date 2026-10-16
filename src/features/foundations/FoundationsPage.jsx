@@ -230,7 +230,7 @@ export default function FoundationsPage() {
           <Reveal className="f-cta">
             <h2 className="f-section-title">Ready to go deeper?</h2>
             <p className="f-section-sub">
-              Pick a roadmap and earn each layer with a graded exam.
+              Pick a roadmap and earn each layer with a graded test.
             </p>
             <Link to="/roadmaps" className="f-btn f-btn-primary">
               Pick a roadmap

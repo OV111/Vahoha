@@ -77,7 +77,7 @@ const PreExam = ({ eligibility, isBusy, onBegin }) => {
           onChange={(e) => setConsented(e.target.checked)}
           className="mt-1"
         />
-        I agree to my voice being recorded and transcribed for this exam.
+        I agree to my voice being recorded and transcribed for this test.
       </label>
 
       <button
@@ -86,7 +86,7 @@ const PreExam = ({ eligibility, isBusy, onBegin }) => {
         disabled={!consented || blocked || isBusy}
         className="min-h-[44px] rounded-full bg-[#1a1f36] dark:bg-white text-white dark:text-[#1a1f36] px-6 text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        {isBusy ? "Starting…" : "Begin exam"}
+        {isBusy ? "Starting…" : "Begin test"}
       </button>
     </div>
   );

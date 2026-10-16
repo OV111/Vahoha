@@ -38,7 +38,7 @@ export default function AssignmentCard({ status }) {
         <SectionLabel>The brief</SectionLabel>
         <p className="mt-3 text-sm text-neutral-300">
           There is no capstone brief for {track.title} yet. Keep passing layer
-          exams — it will appear here.
+          tests — it will appear here.
         </p>
       </Motion.section>
     );

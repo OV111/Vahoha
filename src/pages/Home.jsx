@@ -8,7 +8,9 @@ import vahohaMark from "@/assets/vahoha_mark_circle_96.webp";
 
 const Home = () => {
   const { auth } = useAuthStore();
-  const { hash } = useLocation();
+  // `key` changes on every navigation, even to the same URL, so clicking
+  // "See how it works" a second time (hash already set) still scrolls.
+  const { hash, key } = useLocation();
 
   // Scroll-to-top is handled app-wide by <ScrollRestoration /> in MainLayout.
   // This only adds a smooth glide for "/#how-it-works" links, instead of the
@@ -16,7 +18,7 @@ const Home = () => {
   useEffect(() => {
     if (!hash) return;
     document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "smooth" });
-  }, [hash]);
+  }, [hash, key]);
 
   return (
     <>
@@ -54,20 +56,24 @@ const Home = () => {
         </p>
 
         <div
-          className="rt-fade mt-6 mx-auto flex w-full max-w-[11rem] flex-col gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:justify-center md:mt-8"
+          className="rt-fade mt-6 mx-auto flex w-full max-w-[13rem] flex-col gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:justify-center md:mt-8"
           style={{ "--delay": "800ms" }}
         >
           <Link
-            to={auth ? "/my-profile" : "/get-started"}
+            to={auth ? "/roadmaps" : "/get-started"}
             className="flex min-h-9 items-center justify-center rounded-full sm:min-h-11 bg-white px-4 py-1.5 text-[13px] sm:px-5 sm:py-2.5 sm:text-[14px] leading-[20px] font-medium text-black transition hover:bg-neutral-200"
           >
-            Start your path →
+            {/* The label fits who is looking: a signed-in user is already on a path. */}
+            {auth ? "Continue learning →" : "Start your path →"}
           </Link>
           <Link
-            to="/roadmaps"
+            // Guests ask "what is this?", so they get the explainer on this same
+            // page (smooth-scrolled by the hash effect above). Signed-in users get
+            // a different feature, not a second link to the roadmap.
+            to={auth ? "/progress" : "/#how-it-works"}
             className="flex min-h-9 items-center justify-center rounded-full sm:min-h-11 border border-white/15 bg-neutral-800 px-4 py-1.5 text-[13px] sm:px-5 sm:py-2.5 sm:text-[14px] leading-[20px] font-medium text-white hover:border-white/25 transition hover:bg-neutral-700"
           >
-            Explore content
+            {auth ? "View your progress" : "See how it works"}
           </Link>
         </div>
       </section>

@@ -3,6 +3,8 @@ import LayerNode from "../LayerNode";
 import SectionCard from "./SectionCard";
 import { useConnection, useConnectorNode } from "./connectorHooks";
 import { TREE_TOKENS } from "./treeTokens";
+import useRoadmapStore from "@/stores/useRoadmapStore";
+import { lessonHrefs } from "@/features/learn/lib/curriculum";
 
 // Section and subtopic cards are fixed-width and stack vertically, so every
 // row's side panel is naturally this width UNLESS a layer has zero sections
@@ -34,6 +36,8 @@ const DesktopTreeRow = ({ layer, index, isLast, isDone, isPrevDone }) => {
   const rightSections = layer.sideRight ?? [];
   const layerId = `layer-${layer.id}`;
   const layerConnectorRef = useConnectorNode(layerId);
+  const selectedTrack = useRoadmapStore((s) => s.selectedTrack);
+  const hrefFor = selectedTrack ? lessonHrefs(selectedTrack.id, layer) : null;
 
   return (
     <motion.div
@@ -49,7 +53,7 @@ const DesktopTreeRow = ({ layer, index, isLast, isDone, isPrevDone }) => {
           return (
             <div key={section.title}>
               <LayerToSectionLink layerId={layerId} sectionId={sectionId} isDone={isDone} />
-              <SectionCard id={sectionId} title={section.title} side="left" isDone={isDone} children={section.children ?? []} />
+              <SectionCard id={sectionId} title={section.title} side="left" isDone={isDone} hrefFor={hrefFor} children={section.children ?? []} />
             </div>
           );
         })}
@@ -97,7 +101,7 @@ const DesktopTreeRow = ({ layer, index, isLast, isDone, isPrevDone }) => {
           return (
             <div key={section.title}>
               <LayerToSectionLink layerId={layerId} sectionId={sectionId} isDone={isDone} />
-              <SectionCard id={sectionId} title={section.title} side="right" isDone={isDone} children={section.children ?? []} />
+              <SectionCard id={sectionId} title={section.title} side="right" isDone={isDone} hrefFor={hrefFor} children={section.children ?? []} />
             </div>
           );
         })}

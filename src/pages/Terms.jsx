@@ -10,7 +10,7 @@ const SECTIONS = [
     id: "using",
     title: "Using Vahoha",
     items: [
-      "Vahoha is a learning platform for developers: roadmaps, exams, an AI mentor, capstone projects and team projects.",
+      "Vahoha is a learning platform for developers: roadmaps, tests, an AI mentor, capstone projects and team projects.",
       "By creating an account or using the site, you agree to these terms. If you don't agree, don't use the service.",
       "You must provide accurate account details and keep your password secure. You are responsible for activity under your account.",
     ],
@@ -20,7 +20,7 @@ const SECTIONS = [
     title: "Acceptable use",
     items: [
       "Don't attack, probe or overload the service, or try to access other users' accounts or data.",
-      "Don't cheat the exam or challenge systems, for example by automating submissions or sharing answers to bypass grading.",
+      "Don't cheat the test or challenge systems, for example by automating submissions or sharing answers to bypass grading.",
       "Don't post unlawful, harassing, hateful or spammy content, or content you don't have the right to share.",
       "We may remove content or suspend accounts that break these rules.",
     ],

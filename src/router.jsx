@@ -79,6 +79,8 @@ const FoundationsPage = lazy(
 const FoundationTopicPage = lazy(
   () => import("./features/foundations/TopicPage"),
 );
+const LayerLearnPage = lazy(() => import("./features/learn/LayerLearnPage"));
+const LearnTopicPage = lazy(() => import("./features/learn/TopicPage"));
 const FullStack = lazy(() => import("./pages/CategoryPages/FullStack"));
 const Backend = lazy(() => import("./pages/CategoryPages/Backend"));
 const Mobile = lazy(() => import("./pages/CategoryPages/Mobile"));
@@ -125,6 +127,8 @@ export const routes = [
       // Public on purpose, but only for developers who opted in (the API answers 404 otherwise).
       { path: "candidate/:username", element: <CandidatePage /> },
       { path: "foundations", element: <FoundationsPage /> },
+      { path: "learn/:trackId/:layerId", element: <LayerLearnPage /> },
+      { path: "learn/:trackId/:layerId/:topicSlug", element: <LearnTopicPage /> },
       { path: "foundations/:slug", element: <FoundationTopicPage /> },
       {
         path: "categories",

@@ -39,7 +39,7 @@ export default function ProgressCard({ readiness, loading }) {
     return (
       <div className={CARD}>
         <p className="text-[12px] text-center text-[#8a8a8a]">
-          Pick a roadmap path to track exam readiness against your current
+          Pick a roadmap path to track test readiness against your current
           layer.
         </p>
         <button
@@ -110,7 +110,7 @@ export default function ProgressCard({ readiness, loading }) {
           {empty ? "No challenges yet" : ready ? "All solved" : `${solved} of ${total} solved`}
         </p>
         <p className="text-center text-[12px] leading-relaxed text-[#8a8a8a]">
-          {empty ? "You can still take the exam for this layer." : message}
+          {empty ? "You can still take the test for this layer." : message}
         </p>
       </div>
 

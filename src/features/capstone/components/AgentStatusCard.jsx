@@ -27,8 +27,8 @@ const describe = (status, busy) => {
   if (!status.eligibility?.complete) {
     return {
       label: "Locked",
-      title: `${status.eligibility.passed} / ${status.eligibility.total} layer exams passed`,
-      line: "pass every layer exam to unlock your capstone",
+      title: `${status.eligibility.passed} / ${status.eligibility.total} layer tests passed`,
+      line: "pass every layer test to unlock your capstone",
     };
   }
   if (!s)

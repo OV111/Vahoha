@@ -32,7 +32,7 @@ export default function RoadmapHero() {
         </h1>
 
         <p className="mx-auto mt-4 max-w-[480px] text-base leading-relaxed text-neutral-600 dark:text-neutral-400">
-          Choose a domain, follow a track, and unlock each layer by passing its exam.
+          Choose a domain, follow a track, and unlock each layer by passing its test.
         </p>
 
         <p className="rm-mono mt-6 text-xs text-neutral-500">

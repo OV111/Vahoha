@@ -12,6 +12,7 @@ import AgentReviewFullCard from "./AgentReviewFullCard";
 import { ErrorBanner, PrimaryButton, SURFACE } from "./ui";
 import { TrackSkeleton } from "./CapstoneSkeleton";
 import { markIntroPlayed } from "../lib/motion";
+import CapstoneTour from "./CapstoneTour";
 
 const PAGE = "mx-auto max-w-7xl px-4 sm:px-6 lg:px-12";
 
@@ -93,11 +94,14 @@ export default function CapstoneTrack({ trackId }) {
 
   return (
     <div className="min-h-screen pb-24 text-white">
+      {/* First-visit tour; renders nothing once dismissed. */}
+      <CapstoneTour />
+
       {/* ── Hero + agent ── */}
       <div className={`${PAGE} pt-12 sm:pt-14`}>
         <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[1fr_400px] lg:gap-12">
           <CapstoneHero status={status} busy={busy} actions={actions} />
-          <div className="lg:mt-10">
+          <div data-tour="capstone-agent" className="lg:mt-10">
             <AgentStatusCard status={status} busy={busy} />
           </div>
         </div>

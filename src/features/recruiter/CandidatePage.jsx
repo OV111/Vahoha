@@ -73,7 +73,7 @@ export default function CandidatePage() {
           · last active {formatDate(card.activity.lastActiveAt)}
         </p>
         <p className="text-xs text-neutral-500">
-          Every result below comes from graded exams, AI-reviewed capstones or
+          Every result below comes from graded tests, AI-reviewed capstones or
           merged pull requests.
         </p>
       </header>
@@ -119,7 +119,7 @@ export default function CandidatePage() {
       {card.exams && (
         <Section title="Layers passed">
           {card.exams.length === 0 ? (
-            <Empty>No layer exams passed yet.</Empty>
+            <Empty>No layer tests passed yet.</Empty>
           ) : (
             <ul className="flex flex-col gap-1.5">
               {card.exams.map((e) => (

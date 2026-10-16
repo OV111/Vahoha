@@ -21,14 +21,14 @@ export const heroCopy = (status, busy) => {
   const attemptsLeft = status.maxAttempts - (status.attemptsUsed ?? 0);
 
   if (!eligibility?.complete) {
-    const missing = eligibility.missing?.length
-      ? ` Still to pass: ${eligibility.missing.join(", ")}.`
-      : "";
+    // Not the list of missing layers: the server sends internal ids
+    // ("api-dev-3"), which mean nothing to a learner. The roadmap shows which
+    // layers are left, and the CTA below goes there.
     return {
       tone: "default",
       lead: "Finish the path to unlock",
       highlight: "your capstone.",
-      body: `Pass every ${track.title} layer exam — ${eligibility.passed} of ${eligibility.total} done.${missing}`,
+      body: `Pass every ${track.title} layer test to unlock it. ${eligibility.passed} of ${eligibility.total} done so far.`,
       cta: { kind: "link", label: "Go to the roadmap", to: "/roadmaps" },
     };
   }

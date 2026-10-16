@@ -9,6 +9,7 @@ import useAuthStore from "../../stores/useAuthStore";
 import RoadmapHero from "./components/RoadmapHero";
 import FloatingLoad from "./components/FloatingLoad";
 import TrackOnboardingPanel from "./components/TrackOnboardingPanel";
+import WelcomeTour from "./components/WelcomeTour";
 import "./roadmap.css";
 import posthog, { isPostHogConfigured } from "@/lib/posthog";
 
@@ -105,6 +106,8 @@ export default function RoadmapPage() {
         )}
       </AnimatePresence>
 
+      {/* First-visit tour for signed-in users; renders nothing once dismissed. */}
+      <WelcomeTour />
     </div>
   );
 }

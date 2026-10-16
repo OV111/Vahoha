@@ -15,11 +15,11 @@ export const updateLastActive = async (userId) => {
   }
 };
 
-export const deleteAccount = async (email, password) => {
+export const deleteAccount = async (email, { password, confirmation } = {}) => {
   const res = await fetch(`${API_BASE_URL}/deleteAccount`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json", ...authHeaders() },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, confirmation }),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || "Failed to delete account");
@@ -64,7 +64,7 @@ export const fetchExamHistory = async (limit = 10) => {
     credentials: "include",
   });
   const data = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(data?.message || "Couldn't load your exam history.");
+  if (!res.ok) throw new Error(data?.message || "Couldn't load your test history.");
   return data.history ?? [];
 };
 

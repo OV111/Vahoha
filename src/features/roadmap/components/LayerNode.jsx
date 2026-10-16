@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { motion } from "framer-motion"; // eslint-disable-line no-unused-vars
+import { Link } from "react-router-dom";
 import { Clock, Lock, Check, Play } from "lucide-react";
 import useRoadmapStore from "@/stores/useRoadmapStore";
 
@@ -46,25 +47,30 @@ const STATUS_CONFIG = {
 };
 
 const LayerNode = memo(({ layer, index, resolvedStatus, connectorId, connectorRef }) => {
-  const { activeLayer, setActiveLayer } = useRoadmapStore();
+  const { activeLayer, setActiveLayer, selectedTrack } = useRoadmapStore();
   const isActive = activeLayer?.id === layer.id;
   const cfg = STATUS_CONFIG[resolvedStatus] ?? STATUS_CONFIG.locked;
 
   return (
-    <motion.button
+    <motion.div
       ref={connectorRef}
-      id={connectorId}
-      onClick={() => setActiveLayer(layer)}
+      id={connectorId} data-tour={index === 0 ? "first-layer" : undefined}
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, delay: index * 0.06 }}
       className={`
-        relative w-full text-left px-4 pt-3 pb-3 rounded-2xl border
-        transition-colors duration-200 cursor-pointer
+        relative w-full text-left rounded-2xl border
+        transition-colors duration-200
         ${cfg.bg} ${cfg.border} ${cfg.extraClass}
         ${isActive ? "ring-2 ring-violet-500/60" : ""}
       `}
     >
+      {/* The details button and the learn link are siblings: a link can't live inside a button. */}
+      <button
+        type="button"
+        onClick={() => setActiveLayer(layer)}
+        className="block w-full cursor-pointer px-4 pt-3 pb-3 text-left"
+      >
       {/* Eyebrow + badge row */}
       <div className="flex items-center justify-between mb-2">
         <span className={`text-[10px] font-mono tracking-wider ${cfg.metaClass}`}>
@@ -103,7 +109,18 @@ const LayerNode = memo(({ layer, index, resolvedStatus, connectorId, connectorRe
           )}
         </div>
       </div>
-    </motion.button>
+      </button>
+
+      {selectedTrack && (
+        <Link
+          to={`/learn/${selectedTrack.id}/${layer.id}`}
+          className="mx-4 mb-4 flex min-h-11 items-center justify-center gap-2 rounded-xl bg-purple-600 text-[13px] font-semibold text-white transition-colors hover:bg-purple-500"
+        >
+          <Play size={12} fill="currentColor" aria-hidden="true" />
+          Start learning
+        </Link>
+      )}
+    </motion.div>
   );
 });
 

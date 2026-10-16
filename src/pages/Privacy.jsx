@@ -21,11 +21,11 @@ const SECTIONS = [
     items: [
       ["Account", "Name, username, email and a hashed password. If you sign in with Google or GitHub, the ID, name and email they share with us."],
       ["Profile", "Anything you add: bio, location, profile and banner images, and social links."],
-      ["Learning", "Your roadmap path and progress, exam attempts and scores, the topics you missed (weak spots), mastery levels, coding challenge attempts and the code you submit, and teach-back answers."],
+      ["Learning", "Your roadmap path and progress, test attempts and scores, the topics you missed (weak spots), mastery levels, coding challenge attempts and the code you submit, and teach-back answers."],
       ["AI mentor", "Your conversations with the mentor and how many messages you send per day (used for usage limits)."],
       ["Community", "Posts, comments, likes, saved items, follows, notifications and chat messages."],
       ["Billing", "Your plan and subscription status. Card details are handled entirely by our payment provider and never reach our servers."],
-      ["Usage", "Product events such as signing up, starting a path or submitting an exam, used to understand which features help people learn."],
+      ["Usage", "Product events such as signing up, starting a path or submitting a test, used to understand which features help people learn."],
       ["Contact", "The name, email and message you send through the contact form."],
     ],
   },
@@ -34,8 +34,8 @@ const SECTIONS = [
     title: "How we use it",
     items: [
       [null, "To run your account, sign you in and keep it secure, including rate limits on sign-in and AI features."],
-      [null, "To track your progress, grade exams and show you which topics to revisit."],
-      [null, "To give the AI mentor context about your path, exam history and weak spots, so its guidance fits you."],
+      [null, "To track your progress, grade tests and show you which topics to revisit."],
+      [null, "To give the AI mentor context about your path, test history and weak spots, so its guidance fits you."],
       [null, "To show your profile and posts to other users, as you choose."],
       [null, "To reply when you contact us, and to fix bugs and improve the product."],
     ],
@@ -66,7 +66,7 @@ const SECTIONS = [
     title: "Your choices",
     items: [
       [null, "Edit your profile at any time in settings."],
-      [null, "Delete your account in settings. This permanently removes your account, profile, posts, comments, learning progress, exam history, weak spots, AI mentor conversations, challenge submissions, chat messages you sent, and usage events."],
+      [null, "Delete your account in settings. This permanently removes your account, profile, posts, comments, learning progress, test history, weak spots, AI mentor conversations, challenge submissions, chat messages you sent, and usage events."],
       [null, "Ask for a copy of your data, or ask what we hold, by emailing us."],
     ],
   },

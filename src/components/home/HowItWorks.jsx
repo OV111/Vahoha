@@ -6,6 +6,7 @@ import {
   BookOpen,
   Bot,
   Briefcase,
+  ClipboardCheck,
   Code2,
   Lock,
   LockOpen,
@@ -51,6 +52,7 @@ const N = {
   practice: { x: 460, y: MAIN },
   voice: { x: 460, y: UP },
   exam: { x: 650, y: MAIN },
+  examTop: { x: 650, y: UP }, // new "Exam" node between "Explain it back" and "Join a Build Team"
   mentor: { x: 650, y: 380 },
   teams: { x: 880, y: UP },
   capstone: { x: 880, y: DOWN },
@@ -81,7 +83,8 @@ const MOBILE_STEPS = [
   { to: TO.study, title: "Study the layer", body: "10 layers in a track.", icon: BookOpen },
   { to: TO.practice, title: "Practice it", body: "Solve real coding challenges.", icon: Code2 },
   { to: TO.voice, title: "Explain it back", body: "Say it out loud. Your mentor checks you get it.", icon: Mic, soon: true },
-  { to: TO.exam, title: "Pass the exam", body: "Score 80% to unlock the next layer.", icon: Lock },
+  { to: TO.exam, title: "Exam", body: "Test what you learned.", icon: ClipboardCheck },
+  { to: TO.exam, title: "Pass the test", body: "Score 80% to unlock the next layer.", icon: Lock },
   { to: TO.mentor, title: "AI mentor", body: "Finds your weak spots and helps you retry.", icon: Bot },
   { to: TO.teams, title: "Join a Build Team", body: "Ship real PRs with other learners.", icon: Users },
   { to: TO.capstone, title: "Capstone", body: "Build and defend a real project.", icon: Trophy },
@@ -132,12 +135,6 @@ const branchOut = (a, b) => {
 // both branches meet before the last node (as in the sketch).
 const mergeIn = (a, m) =>
   `M ${a.x + R} ${a.y} C ${m.x - 50} ${a.y}, ${m.x - 50} ${m.y}, ${m.x} ${m.y}`;
-
-// Leave a branch node level, and drop into a main-row node's diagonal edge.
-const branchIn = (a, b) => {
-  const ey = a.y < b.y ? b.y - D : b.y + D;
-  return `M ${a.x + R} ${a.y} C ${b.x - 70} ${a.y}, ${b.x - D - 10} ${a.y}, ${b.x - D} ${ey}`;
-};
 
 // The purple "progress" line drawn on top of an edge. pathLength 0 -> 1 draws it from
 // the edge's start to its end, which is why every path above is written in the
@@ -437,7 +434,25 @@ const HowItWorks = () => {
             <Edge d={curve(N.practice, N.exam)} lit={practiced} inView={appeared} delay={0.6} />
             {/* The second route to the exam: explain it back out loud. */}
             <Edge d={branchOut(N.study, N.voice)} dashed lit={studied} inView={appeared} delay={0.5} />
-            <Edge d={branchIn(N.voice, N.exam)} dashed lit={practiced} inView={appeared} delay={0.7} />
+            {/* Same shape as the Practice -> AI mentor line: leave the diagonal edge, curve into the target. */}
+            <Edge
+              d={`M ${N.voice.x + D} ${N.voice.y + D} C ${N.voice.x + 75} ${N.voice.y + 30}, ${N.exam.x - 75} ${N.exam.y - 30}, ${N.exam.x - D} ${N.exam.y - D}`}
+              dashed
+              lit={practiced}
+              inView={appeared}
+              delay={0.7}
+            />
+            {/* The new "Exam" node sits between "Explain it back" and "Join a Build Team". */}
+            <Edge d={curve(N.voice, N.examTop)} dashed lit={practiced} inView={appeared} delay={0.7} />
+            <Edge d={curve(N.examTop, N.teams)} dashed lit={unlocked} inView={appeared} delay={0.9} />
+            {/* "Pass the test" connects straight up to the new "Exam" node. */}
+            <Edge
+              d={`M ${N.exam.x} ${N.exam.y - R} L ${N.examTop.x} ${N.examTop.y + R}`}
+              dashed
+              lit={practiced}
+              inView={appeared}
+              delay={0.8}
+            />
             {/* Stuck while practicing? The mentor is one step away. */}
             <Edge
               d={`M ${N.practice.x + D} ${N.practice.y + D} C ${N.practice.x + 75} ${N.practice.y + 30}, ${N.mentor.x - 110} ${N.mentor.y}, ${N.mentor.x - R} ${N.mentor.y}`}
@@ -460,7 +475,6 @@ const HowItWorks = () => {
               delay={1.2}
             />
             {/* Passing opens both kinds of proof, and both lead to recruiters. */}
-            <Edge d={branchOut(N.exam, N.teams)} lit={unlocked} inView={appeared} delay={0.9} />
             <Edge d={branchOut(N.exam, N.capstone)} lit={unlocked} inView={appeared} delay={0.9} />
             <Edge d={mergeIn(N.teams, N.merge)} dashed lit={proven} inView={appeared} delay={1.3} />
             <Edge d={mergeIn(N.capstone, N.merge)} dashed lit={proven} inView={appeared} delay={1.3} />
@@ -499,7 +513,7 @@ const HowItWorks = () => {
           <Circle
             at={N.exam}
             to={TO.exam}
-            label="Pass the exam"
+            label="Pass the test"
             sub="Score 80% to unlock the next layer."
             side="right"
             active={unlocked}
@@ -507,6 +521,18 @@ const HowItWorks = () => {
             delay={0.7}
           >
             {unlocked ? <LockOpen size={22} aria-hidden="true" /> : <Lock size={22} aria-hidden="true" />}
+          </Circle>
+          <Circle
+            at={N.examTop}
+            to={TO.exam}
+            label="Exam"
+            sub="Test what you learned."
+            side="top"
+            active={unlocked}
+            inView={appeared}
+            delay={0.8}
+          >
+            <ClipboardCheck size={22} aria-hidden="true" />
           </Circle>
           <Circle at={N.mentor} to={TO.mentor} label="AI mentor" sub="Finds your weak spots and helps you retry." active={retried} inView={appeared} delay={1.0}>
             <Bot size={22} aria-hidden="true" />

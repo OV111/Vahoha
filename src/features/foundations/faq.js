@@ -9,6 +9,6 @@ export const FOUNDATIONS_FAQ = [
   },
   {
     q: "Is this a replacement for a roadmap?",
-    a: "No. Foundations is the shared base. When you are ready, pick a roadmap and the gated exams take over.",
+    a: "No. Foundations is the shared base. When you are ready, pick a roadmap and the gated tests take over.",
   },
 ];

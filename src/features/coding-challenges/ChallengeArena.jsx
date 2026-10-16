@@ -16,6 +16,7 @@ import CodePanel from "./components/arena/CodePanel";
 import RightPanel from "./components/arena/RightPanel";
 import ActionBar from "./components/arena/ActionBar";
 import SolvedPanel from "./components/arena/SolvedPanel";
+import ArenaTour from "./components/ArenaTour";
 
 const MOBILE_TABS = [
   { key: "problem", label: "Problem" },
@@ -212,12 +213,12 @@ export default function ChallengeArena() {
         className={`arena-workspace thin-scrollbar flex-1 min-h-0 overflow-hidden ${dragging ? "is-dragging" : ""}`}
         style={{ display: "grid", gridTemplateColumns: `${problemPane.width}px 1fr ${hintsCollapsed ? RAIL_WIDTH : hintsPane.width}px` }}
       >
-        <div data-pane="problem" className="relative h-full overflow-hidden flex flex-col" style={{ borderRight: `1px solid ${C.border}` }}>
+        <div data-pane="problem" data-tour="arena-problem" className="relative h-full overflow-hidden flex flex-col" style={{ borderRight: `1px solid ${C.border}` }}>
           <div {...problemPane.handleProps} className="arena-resize-handle edge-right" />
           <ProblemPanel challenge={challenge} />
         </div>
 
-        <div data-pane="code" className="h-full overflow-hidden flex flex-col" style={{ borderRight: `1px solid ${C.border}` }}>
+        <div data-pane="code" data-tour="arena-code" className="h-full overflow-hidden flex flex-col" style={{ borderRight: `1px solid ${C.border}` }}>
           <CodePanel key={challenge.slug} files={files} onChangeFile={handleChangeFile} />
         </div>
 
@@ -253,6 +254,9 @@ export default function ChallengeArena() {
         onViewSolution={verdict?.passed ? () => setShowSolved(true) : null}
         onAskMentor={askMentor}
       />
+
+      {/* First-visit tour; renders nothing once dismissed. */}
+      <ArenaTour setMobileTab={setMobileTab} />
 
       {/* Responsive: below 1100px the columns become tabs */}
       <style>{`

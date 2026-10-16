@@ -356,7 +356,7 @@ const MyProfile = () => {
                 empty={
                   <EmptyState
                     title="No tracks yet"
-                    body="Capstones are being written for the roadmap tracks. Keep passing layer exams."
+                    body="Capstones are being written for the roadmap tracks. Keep passing layer tests."
                     to="/roadmaps"
                     cta="Go to the roadmap"
                   />
@@ -381,7 +381,7 @@ const MyProfile = () => {
                 empty={
                   <EmptyState
                     title="No challenges attempted yet"
-                    body="Solve coding challenges to build your streak and get ready for layer exams."
+                    body="Solve coding challenges to build your streak and get ready for layer tests."
                     to="/coding-challenges"
                     cta="Browse challenges"
                   />
@@ -393,15 +393,15 @@ const MyProfile = () => {
 
             {/* EXAM HISTORY */}
             <section>
-              <SectionHeader title="Exam history" />
+              <SectionHeader title="Test history" />
               <AsyncSection
                 {...exams}
                 onRetry={() => reload("exams")}
                 isEmpty={!exams.data?.length}
                 empty={
                   <EmptyState
-                    title="No exams taken yet"
-                    body="Pass the exam at the end of each roadmap layer to unlock the next one."
+                    title="No tests taken yet"
+                    body="Pass the test at the end of each roadmap layer to unlock the next one."
                     to="/roadmaps"
                     cta="Go to the roadmap"
                   />

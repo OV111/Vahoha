@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { useConnectorNode } from "./connectorHooks";
 import { TREE_TOKENS, RESOURCE_BADGE_COLORS } from "./treeTokens";
@@ -7,23 +8,29 @@ import { TREE_TOKENS, RESOURCE_BADGE_COLORS } from "./treeTokens";
 // its neighbors regardless of title length. Title clamps to 2 lines with an
 // ellipsis; the native `title` attribute gives the full text on hover
 // without extra JS/UI.
-const SubtopicCard = ({ id, title, description, resources = [], side, isDone }) => {
+const SubtopicCard = ({ id, title, description, resources = [], side, isDone, href }) => {
   const [hovered, setHovered] = useState(false);
   const connectorRef = useConnectorNode(id);
+  // A card with a lesson is a real link (keyboard + middle-click work);
+  // one without stays a plain card.
+  const Root = href ? Link : "div";
 
   return (
-    <div
+    <Root
+      {...(href ? { to: href } : {})}
       ref={connectorRef}
-      title={title}
+      title={href ? `${title} — open lesson` : title}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{ width: TREE_TOKENS.subtopicWidth, minHeight: TREE_TOKENS.subtopicMinHeight }}
       className={`
-        flex flex-col gap-1.5 px-3 py-2.5 ${TREE_TOKENS.cardRadius} cursor-default border
+        flex flex-col gap-1.5 px-3 py-2.5 ${TREE_TOKENS.cardRadius} ${href ? "cursor-pointer" : "cursor-default"} border
         transition-all duration-200 shrink-0
         ${isDone
           ? "bg-neutral-900/80 border-purple-700/30 hover:border-purple-500/50 hover:bg-neutral-800/60"
-          : "bg-neutral-900/80 border-neutral-700/40 hover:border-neutral-600/60 hover:bg-neutral-800/60"
+          : href
+            ? "bg-neutral-900/80 border-neutral-700/40 hover:border-purple-500/60 hover:bg-neutral-800/60"
+            : "bg-neutral-900/80 border-neutral-700/40 hover:border-neutral-600/60 hover:bg-neutral-800/60"
         }
         ${side === "left" ? "text-right items-end" : "text-left items-start"}
       `}
@@ -62,7 +69,7 @@ const SubtopicCard = ({ id, title, description, resources = [], side, isDone }) 
           ))}
         </div>
       )}
-    </div>
+    </Root>
   );
 };
 

@@ -96,7 +96,7 @@ export default function CapstoneHero({ status, busy, actions }) {
         </Motion.div>
       )}
 
-      <Motion.div {...fadeUp(0.22)} className="pt-4">
+      <Motion.div {...fadeUp(0.22)} data-tour="capstone-progress" className="pt-4">
         <CapstoneStepper active={active} failed={failed} />
       </Motion.div>
     </div>

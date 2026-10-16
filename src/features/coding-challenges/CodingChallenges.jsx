@@ -52,7 +52,6 @@ export default function CodingChallenges() {
     <div className="min-h-screen text-[#e5e5e5] relative mt-8">
       <Seo noindex path="/coding-challenges" title="Coding Challenges | Vahoha" />
       <BackgroundGrid />
-
       <HeroSection
         daily={daily}
         stats={stats}

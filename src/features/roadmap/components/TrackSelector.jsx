@@ -28,7 +28,7 @@ const TrackSelector = () => {
           Choose a specialization
         </p>
 
-        <div className="flex flex-wrap gap-2 justify-center">
+        <div data-tour="track" className="flex flex-wrap gap-2 justify-center">
           {tracks.map((track) => {
             const isSelected = selectedTrack?.id === track.id;
             const isLocked = !track.available;

@@ -92,7 +92,7 @@ export default function CandidatesPage() {
       <header className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold text-white">Candidates</h1>
         <p className="text-[14px] text-neutral-400">
-          Developers who chose to be found. Every number comes from a verified exam, capstone or team project.
+          Developers who chose to be found. Every number comes from a verified test, capstone or team project.
         </p>
       </header>
 

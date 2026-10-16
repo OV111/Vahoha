@@ -400,7 +400,7 @@ export default function UserProfile() {
 
             <section>
               <SectionHeader
-                title="Exam history"
+                title="Test history"
                 right={examHistory.length > 0 ? `${examHistory.length} attempts` : undefined}
               />
               {examHistory.length > 0 ? (
@@ -410,7 +410,7 @@ export default function UserProfile() {
                   ))}
                 </ul>
               ) : (
-                <EmptyState title="No exams taken yet" />
+                <EmptyState title="No tests taken yet" />
               )}
             </section>
 

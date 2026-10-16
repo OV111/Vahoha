@@ -56,7 +56,7 @@ export default function ContextCard({ data, error }) {
           </div>
 
           <p className="text-[11px] text-white/25 mt-3">
-            Ask the agent about your roadmap, weak spots or exam history — it reads those live.
+            Ask the agent about your roadmap, weak spots or test history — it reads those live.
           </p>
         </>
       )}

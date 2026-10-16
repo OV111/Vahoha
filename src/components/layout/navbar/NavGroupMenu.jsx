@@ -8,7 +8,7 @@ import { focusRing } from "./styles";
 // Which motion each dropdown icon plays on hover (defined in index.css).
 const ICON_MOTION = {
   Roadmaps: "sway", "Code Library": "wiggle", Blog: "wiggle", Challenges: "code",
-  Exams: "hop", Mentor: "wiggle", Capstone: "launch", Team: "pulse",
+  Tests: "hop", Mentor: "wiggle", Capstone: "launch", Team: "pulse",
   Progress: "rise", Candidates: "sway",
 };
 
