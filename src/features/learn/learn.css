@@ -1,0 +1,18 @@
+/* Console lines arrive one after another, so the order async code printed in
+   is something you watch happen, not just read. */
+@keyframes learn-line-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+}
+
+.learn-console-line {
+  animation: learn-line-in 180ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .learn-console-line {
+    animation: none;
+  }
+}

@@ -138,11 +138,11 @@ const components = {
     ) : null,
 };
 
-function MarkdownMessage({ content }) {
+function MarkdownMessage({ content, className = "text-[14px] text-white" }) {
   return (
     /* Width is capped by the transcript column in MessageList, not here — a
        second cap would make agent text narrower than the user's bubbles. */
-    <div className="text-[14px] w-full text-white">
+    <div className={`w-full ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}

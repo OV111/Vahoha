@@ -24,5 +24,5 @@ export default function useLearnLayer(trackId, layerId) {
   else if (error) status = "error";
   else if (!layer) status = "missing";
 
-  return { status, track, layer, lessons };
+  return { status, track, layer, lessons, layerCount: layers?.length ?? 0 };
 }
