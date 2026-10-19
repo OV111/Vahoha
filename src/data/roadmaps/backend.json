@@ -2148,30 +2148,39 @@
         "Joins",
         "Aggregations"
       ],
-      "description": "Become fluent in SQL — the language you'll use every day. Move from basic selects to complex analytical queries.",
+      "description": "Become fluent in SQL — the language you'll use every day. Move from basic selects to complex analytical queries: every join shape, every kind of subquery, ranking and offset window functions, NULL-safe expressions, and the built-in string and date functions that keep data work inside the database.",
       "topics": [
         "SELECT, WHERE, ORDER BY, LIMIT",
-        "All JOIN types",
+        "All JOIN types, including self and cross joins",
         "GROUP BY & aggregate functions",
-        "Subqueries & CTEs",
-        "Window functions",
-        "Set operations & CASE"
+        "Scalar, row, table & correlated subqueries; CTEs",
+        "Window functions: ROW_NUMBER, RANK, LEAD, LAG",
+        "Set operations, CASE, COALESCE & NULLIF"
       ],
       "resources": [
         {
           "label": "SQLBolt",
           "platform": "sqlbolt.com",
+          "url": "https://sqlbolt.com/",
           "type": "course"
         },
         {
           "label": "Mode SQL Tutorial",
           "platform": "mode.com",
+          "url": "https://mode.com/sql-tutorial/",
           "type": "docs"
         },
         {
           "label": "PostgreSQL Exercises",
           "platform": "pgexercises.com",
+          "url": "https://pgexercises.com/",
           "type": "course"
+        },
+        {
+          "label": "PostgreSQL Docs — Queries",
+          "platform": "postgresql.org",
+          "url": "https://www.postgresql.org/docs/current/queries.html",
+          "type": "docs"
         }
       ],
       "challenge": "Answer 10 analytical business questions about your store using window functions and CTEs.",
@@ -2211,6 +2220,48 @@
                   "type": "article"
                 }
               ]
+            },
+            {
+              "title": "Self Joins & Cross Joins",
+              "description": "A self join joins a table to itself under two aliases, which is how you walk employee-manager links or compare rows in the same table. A CROSS JOIN returns every pairing of two inputs on purpose, useful for generating calendars or size-by-color grids. Knowing both by name helps you spot the accidental Cartesian product a missing ON clause creates.",
+              "resources": [
+                {
+                  "label": "PostgreSQL Docs — Joined Tables",
+                  "url": "https://www.postgresql.org/docs/current/queries-table-expressions.html#QUERIES-JOIN",
+                  "type": "docs"
+                },
+                {
+                  "label": "PostgreSQL Exercises — Joins",
+                  "url": "https://pgexercises.com/questions/joins/",
+                  "type": "article"
+                },
+                {
+                  "label": "Mode SQL Tutorial — Self Joins",
+                  "url": "https://www.thoughtspot.com/sql-tutorial/sql-self-joins",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "String & Date/Time Functions",
+              "description": "Trimming, case-folding, concatenating and splitting text, and truncating, extracting and adding intervals to timestamps are the daily work of reporting queries. Doing it in SQL keeps the filtering and grouping in the database instead of pulling raw rows into application code. Watch time zones: timestamp and timestamptz behave differently when you group by day.",
+              "resources": [
+                {
+                  "label": "PostgreSQL Docs — String Functions",
+                  "url": "https://www.postgresql.org/docs/current/functions-string.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "PostgreSQL Docs — Date/Time Functions",
+                  "url": "https://www.postgresql.org/docs/current/functions-datetime.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "PostgreSQL Docs — Formatting Functions",
+                  "url": "https://www.postgresql.org/docs/current/functions-formatting.html",
+                  "type": "docs"
+                }
+              ]
             }
           ]
         },
@@ -2245,6 +2296,48 @@
                 {
                   "label": "Mode SQL Tutorial — Window Functions",
                   "url": "https://mode.com/sql-tutorial/sql-window-functions/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Subquery Types — Scalar, Row, Table, Correlated",
+              "description": "A scalar subquery returns one value, a row subquery returns one row to compare against a row constructor, and a table subquery in FROM acts like a temporary table. A correlated subquery references the outer query and runs once per outer row, so it is easy to write and easy to make slow. Knowing the type tells you where it is allowed and when to rewrite it as a join, EXISTS, or LATERAL.",
+              "resources": [
+                {
+                  "label": "PostgreSQL Docs — Scalar Subqueries",
+                  "url": "https://www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-SCALAR-SUBQUERIES",
+                  "type": "docs"
+                },
+                {
+                  "label": "PostgreSQL Docs — Subquery Expressions (EXISTS, IN, ANY)",
+                  "url": "https://www.postgresql.org/docs/current/functions-subquery.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "PostgreSQL Docs — Subqueries in FROM and LATERAL",
+                  "url": "https://www.postgresql.org/docs/current/queries-table-expressions.html#QUERIES-SUBQUERIES",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Ranking & Offset Window Functions",
+              "description": "ROW_NUMBER, RANK and DENSE_RANK differ only in how they treat ties, and picking the wrong one breaks top-N-per-group queries. LAG and LEAD read the previous or next row in the window, which is how you compute day-over-day change or gaps between events without a self join. Both families depend on the ORDER BY inside OVER().",
+              "resources": [
+                {
+                  "label": "PostgreSQL Docs — Window Functions",
+                  "url": "https://www.postgresql.org/docs/current/functions-window.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "PostgreSQL Docs — Window Functions Tutorial",
+                  "url": "https://www.postgresql.org/docs/current/tutorial-window.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "PostgreSQL Exercises — Aggregates and Windows",
+                  "url": "https://pgexercises.com/questions/aggregates/",
                   "type": "article"
                 }
               ]
@@ -2285,6 +2378,22 @@
                   "label": "SQLBolt — Set Operations",
                   "url": "https://sqlbolt.com/lesson/filtering_sorting_query_results",
                   "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "COALESCE & NULLIF",
+              "description": "COALESCE returns the first non-NULL argument, so it supplies defaults for missing values in reports and joins. NULLIF returns NULL when two values are equal, and its classic use is avoiding division by zero with x / NULLIF(y, 0). Together they let you handle NULLs on purpose instead of letting them spread through calculations.",
+              "resources": [
+                {
+                  "label": "PostgreSQL Docs — COALESCE",
+                  "url": "https://www.postgresql.org/docs/current/functions-conditional.html#FUNCTIONS-COALESCE-NVL-IFNULL",
+                  "type": "docs"
+                },
+                {
+                  "label": "PostgreSQL Docs — NULLIF",
+                  "url": "https://www.postgresql.org/docs/current/functions-conditional.html#FUNCTIONS-NULLIF",
+                  "type": "docs"
                 }
               ]
             }

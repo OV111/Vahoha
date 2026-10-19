@@ -206,38 +206,42 @@
         "psql",
         "pgAdmin"
       ],
-      "description": "Master advanced SQL queries including joins, subqueries, aggregations, and window functions. Practice writing efficient queries against multi-table schemas.",
+      "description": "Master advanced SQL queries including joins, subqueries, aggregations, and window functions. Go further with recursive CTEs for hierarchies, pivots with FILTER and crosstab, and safe dynamic SQL in PL/pgSQL. Practice writing efficient queries against multi-table schemas.",
       "topics": [
         "INNER, LEFT, RIGHT, FULL joins",
-        "Subqueries and CTEs",
-        "GROUP BY and HAVING",
+        "Subqueries, CTEs, and WITH RECURSIVE",
+        "GROUP BY, HAVING, and FILTER pivots",
         "Window functions",
         "EXPLAIN and query plans",
-        "Indexes basics"
+        "Dynamic SQL with EXECUTE and format()"
       ],
       "resources": [
         {
-          "label": "PostgreSQL SQL Syntax Docs",
+          "label": "PostgreSQL SQL Language Docs",
           "platform": "postgresql.org",
+          "url": "https://www.postgresql.org/docs/current/sql.html",
           "type": "docs"
         },
         {
           "label": "SQL for Data Analysis",
           "platform": "Udacity",
+          "url": "https://www.udacity.com/course/sql-for-data-analysis--ud198",
           "type": "course"
         },
         {
-          "label": "Advanced SQL Queries",
-          "platform": "YouTube",
-          "type": "video"
+          "label": "Modern SQL",
+          "platform": "modern-sql.com",
+          "url": "https://modern-sql.com/",
+          "type": "article"
         },
         {
-          "label": "Learning SQL",
-          "platform": "O'Reilly",
+          "label": "Use The Index, Luke!",
+          "platform": "use-the-index-luke.com",
+          "url": "https://use-the-index-luke.com/",
           "type": "book"
         }
       ],
-      "challenge": "Write 10 progressively complex queries against a sample e-commerce schema including at least one CTE and one window function.",
+      "challenge": "Write 10 progressively complex queries against a sample e-commerce schema, including one recursive CTE over a category tree, one window function, and one FILTER-based pivot report.",
       "estimatedTime": "2 weeks",
       "sideLeft": [
         {
@@ -271,6 +275,22 @@
                 {
                   "label": "Advanced SQL - CTEs and Window Functions",
                   "url": "https://mode.com/sql-tutorial/sql-window-functions/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Recursive CTEs with WITH RECURSIVE",
+              "description": "A recursive CTE has a base query plus a recursive part that joins back to the CTE itself, repeating until no new rows appear. It is the standard way to walk trees and graphs stored as parent_id columns, such as org charts, category trees, and bills of materials. Use UNION instead of UNION ALL, or the CYCLE clause, so a cycle in the data does not loop forever.",
+              "resources": [
+                {
+                  "label": "PostgreSQL Docs — Recursive Queries",
+                  "url": "https://www.postgresql.org/docs/current/queries-with.html#QUERIES-WITH-RECURSIVE",
+                  "type": "docs"
+                },
+                {
+                  "label": "PostgreSQL Exercises — Recursive",
+                  "url": "https://pgexercises.com/questions/recursive/",
                   "type": "article"
                 }
               ]
@@ -311,6 +331,27 @@
                   "type": "article"
                 }
               ]
+            },
+            {
+              "title": "Pivoting with FILTER and crosstab",
+              "description": "Pivoting turns row values into columns, for example one column per month in a sales report. The aggregate FILTER clause, as in count(*) FILTER (WHERE status = 'paid'), is the portable and readable way when the columns are known in advance. The tablefunc extension's crosstab() handles the classic pivot shape but needs the output columns declared up front.",
+              "resources": [
+                {
+                  "label": "PostgreSQL Docs — Aggregate Expressions (FILTER)",
+                  "url": "https://www.postgresql.org/docs/current/sql-expressions.html#SYNTAX-AGGREGATES",
+                  "type": "docs"
+                },
+                {
+                  "label": "PostgreSQL Docs — tablefunc (crosstab)",
+                  "url": "https://www.postgresql.org/docs/current/tablefunc.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Modern SQL — The FILTER Clause",
+                  "url": "https://modern-sql.com/feature/filter",
+                  "type": "article"
+                }
+              ]
             }
           ]
         }
@@ -348,6 +389,22 @@
                   "label": "Analyzing PostgreSQL Logs with pgBadger",
                   "url": "https://www.youtube.com/watch?v=V41gQGPsNpg",
                   "type": "video"
+                }
+              ]
+            },
+            {
+              "title": "Dynamic SQL with EXECUTE and format()",
+              "description": "In PL/pgSQL, EXECUTE runs a query built as a string, which you need when table or column names are only known at run time, such as maintenance across partitions. Build the string with format() using %I for identifiers and %L for literals, or pass values with USING, so input can never inject SQL. EXECUTE plans the query on every call, so its plan is not cached like static SQL.",
+              "resources": [
+                {
+                  "label": "PostgreSQL Docs — Executing Dynamic Commands",
+                  "url": "https://www.postgresql.org/docs/current/plpgsql-statements.html#PLPGSQL-STATEMENTS-EXECUTING-DYN",
+                  "type": "docs"
+                },
+                {
+                  "label": "PostgreSQL Docs — format()",
+                  "url": "https://www.postgresql.org/docs/current/functions-string.html#FUNCTIONS-STRING-FORMAT",
+                  "type": "docs"
                 }
               ]
             }
