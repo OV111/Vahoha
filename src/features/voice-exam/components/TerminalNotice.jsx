@@ -3,11 +3,11 @@ import { EXAM_STATES } from "../lib/examStates";
 const COPY = {
   [EXAM_STATES.EXPIRED]: {
     title: "Time ran out",
-    body: "The test deadline passed. This counts as an attempt.",
+    body: "The exam deadline passed. This counts as an attempt.",
   },
   [EXAM_STATES.ABANDONED]: {
-    title: "Test abandoned",
-    body: "You left the test. This counts as an attempt.",
+    title: "Exam abandoned",
+    body: "You left the exam. This counts as an attempt.",
   },
   [EXAM_STATES.FAILED_TECHNICAL]: {
     title: "Something went wrong on our side",

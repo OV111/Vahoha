@@ -37,7 +37,7 @@ const STEPS = [
     // would come back at this same step after the learner returns.
     endOnClick: "a[href^='/learn/']",
     title: "Start with Layer 1",
-    body: "A track is a stack of layers, and each ends with an exam. Press “Start learning” on a layer to begin it.",
+    body: "A track is a stack of layers, and each ends with a test. Press “Start learning” on a layer to begin it.",
   },
   {
     id: "capstone",
@@ -48,7 +48,7 @@ const STEPS = [
     // Opening the capstone leaves the page, same reasoning as the layer step.
     endOnClick: "[data-tour='capstone']",
     title: "The Capstone",
-    body: "Pass every layer exam to unlock a real project to build and defend. It is the last step of every track.",
+    body: "Pass every layer test to unlock a real project to build and defend. It is the last step of every track.",
   },
 ];
 

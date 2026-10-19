@@ -68,7 +68,7 @@ function ScoreRules({ rules }) {
       <summary className="cursor-pointer font-medium text-neutral-200">How the evidence score works</summary>
       <ul className="mt-2 list-disc space-y-1 pl-5 leading-relaxed">
         <li>Passed layers: {layers.perLayer} points each, up to {layers.maxLayers * layers.perLayer}.</li>
-        <li>Exam quality: the average best score on those layers, up to {rules.quality.max}.</li>
+        <li>Test quality: the average best score on those layers, up to {rules.quality.max}.</li>
         <li>Capstone: {capstone.first} points for one issued capstone, {capstone.second} for two or more.</li>
         <li>Team projects: {teams.perTeam} points each, up to {teams.maxTeams * teams.perTeam}.</li>
         <li>

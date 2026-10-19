@@ -124,7 +124,7 @@ export default function ProgressCard({ readiness, loading }) {
             : "border border-purple-600/50 text-purple-300 hover:bg-purple-600/10"
         }`}
       >
-        <DollarSign size={12} aria-hidden="true" /> Take exam <ArrowRight size={13} aria-hidden="true" />
+        <DollarSign size={12} aria-hidden="true" /> Take test <ArrowRight size={13} aria-hidden="true" />
       </button>
     </div>
   );

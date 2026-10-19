@@ -30,7 +30,7 @@ const VoiceExamPage = () => {
     // A request is in flight (transcribing / grading) or the server says it is working.
     if (isBusy || WORKING_STATES.includes(attempt.state)) {
       const grading = attempt.state === EXAM_STATES.GRADING;
-      return <TranscribingState label={grading ? "Grading your test…" : undefined} />;
+      return <TranscribingState label={grading ? "Grading your exam…" : undefined} />;
     }
     if (INPUT_STATES.includes(attempt.state)) {
       return (
@@ -56,7 +56,7 @@ const VoiceExamPage = () => {
   return (
     <div className="max-w-2xl mx-auto px-6 py-12">
       <h1 className="text-[22px] sm:text-[24px] font-semibold text-[#1a1f36] dark:text-white mb-1">
-        Voice test
+        Voice exam
       </h1>
       <p className="text-[13.5px] text-[#697386] dark:text-zinc-400 mb-7">
         Explain the layer out loud, then answer follow-up questions.

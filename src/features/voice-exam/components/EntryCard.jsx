@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Mic, Lock } from "lucide-react";
 
 /**
- * Card shown on a layer's detail view, beside "Take exam".
+ * Card shown on a layer's detail view, beside the layer test.
  * Presentational: it gets eligibility as props and links to the exam page.
  *
  * @param {{ layerId: string, pathId?: string, eligibility: import("../lib/examStates").Eligibility|null }} props
@@ -43,7 +43,7 @@ const EntryCard = ({ layerId, pathId = "backend", eligibility }) => {
           to={`/voice-exam/${layerId}?path=${pathId}`}
           className="inline-block rounded-full bg-[#1a1f36] dark:bg-white text-white dark:text-[#1a1f36] px-5 py-2 text-sm font-medium"
         >
-          Start voice test
+          Start voice exam
         </Link>
       )}
     </div>

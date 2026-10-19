@@ -184,7 +184,7 @@ const ResultScreen = ({ result, passThreshold, onRetry, onBack, path, layer }) =
               onClick={onRetry}
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium transition-colors"
             >
-              <RotateCcw size={14} /> Retry Exam
+              <RotateCcw size={14} /> Retry test
             </button>
           )}
         </div>

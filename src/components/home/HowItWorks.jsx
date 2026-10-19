@@ -63,14 +63,15 @@ const N = {
 const R = 28; // node circle radius in grid units, so lines stop at the edge
 const D = R * 0.7; // offset to the circle's diagonal edge (45 degrees)
 
-// Where each step leads. Exams live inside a layer, so "Pass the exam" opens the
-// roadmaps, where the layer (and its exam) is picked. "Get seen" goes to the
+// Where each step leads. The layer test and the voice exam both live inside a
+// layer, so they open the roadmaps, where the layer is picked. "Get seen" goes to the
 // candidates list when that feature is on, otherwise to the user's own profile.
 const TO = {
   root: "/roadmaps",
   study: "/roadmaps",
   practice: "/coding-challenges",
   voice: "/voice-review",
+  test: "/roadmaps",
   exam: "/roadmaps",
   mentor: "/ai-agent",
   teams: "/team",
@@ -83,8 +84,8 @@ const MOBILE_STEPS = [
   { to: TO.study, title: "Study the layer", body: "One layer at a time, in order.", icon: BookOpen },
   { to: TO.practice, title: "Practice it", body: "Solve real coding challenges.", icon: Code2 },
   { to: TO.voice, title: "Explain it back", body: "Say it out loud. Your mentor checks you get it.", icon: Mic, soon: true },
-  { to: TO.exam, title: "Exam", body: "Test what you learned.", icon: ClipboardCheck },
-  { to: TO.exam, title: "Pass the test", body: "Score 80% to unlock the next layer.", icon: Lock },
+  { to: TO.exam, title: "Voice exam", body: "Explain a layer out loud and get a verified result.", icon: ClipboardCheck },
+  { to: TO.test, title: "Pass the test", body: "Score 80% to unlock the next layer.", icon: Lock },
   { to: TO.mentor, title: "AI mentor", body: "Finds your weak spots and helps you retry.", icon: Bot },
   { to: TO.teams, title: "Join a Build Team", body: "Ship real PRs with other learners.", icon: Users },
   { to: TO.capstone, title: "Capstone", body: "Build and defend a real project.", icon: Trophy },
@@ -512,7 +513,7 @@ const HowItWorks = () => {
           </Circle>
           <Circle
             at={N.exam}
-            to={TO.exam}
+            to={TO.test}
             label="Pass the test"
             sub="Score 80% to unlock the next layer."
             side="right"
@@ -525,8 +526,8 @@ const HowItWorks = () => {
           <Circle
             at={N.examTop}
             to={TO.exam}
-            label="Exam"
-            sub="Test what you learned."
+            label="Voice exam"
+            sub="Explain a layer out loud and get a verified result."
             side="top"
             active={unlocked}
             inView={appeared}
