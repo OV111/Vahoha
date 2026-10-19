@@ -1,9 +1,8 @@
 /**
  * Capstone brief — API Developer track (api-dev), v1.
  *
- * DRAFT by Claude, 2026-10-03 — status stays "draft" until a human has read
- * every requirement, rubric line and twist. The seeder refuses to publish a
- * brief whose `reviewed` flag is false.
+ * Drafted by Claude, 2026-10-03; reviewed by a human before publishing.
+ * The seeder refuses to publish a brief whose `reviewed` flag is false.
  *
  * Shape notes:
  * - requirements[].check is for the stage-2 automated checks. `file` is a glob

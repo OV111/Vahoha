@@ -1,9 +1,8 @@
 /**
  * Capstone brief — Python Backend track (python-backend), v1.
  *
- * DRAFT by Claude, 2026-10-03 — stays "draft" until a human has read every
- * requirement, rubric line and twist. Shape notes: see api-dev.js.
- * Note: this track's first layers have short ids (py-1 … py-8).
+ * Drafted by Claude, 2026-10-03; reviewed by a human before publishing.
+ * The seeder refuses to publish a brief whose `reviewed` flag is false.
  */
 
 import { DEFAULT_PASS_THRESHOLDS } from "../../../modules/capstone/lib/constants.js";

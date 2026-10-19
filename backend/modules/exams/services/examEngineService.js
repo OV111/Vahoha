@@ -1,3 +1,4 @@
+import process from "process";
 import { ObjectId } from "mongodb";
 import { saveExamResult } from "../../../services/examHistoryService.js";
 import { addWeakSpot, resolveWeakSpot } from "../../../services/weakSpotService.js";
@@ -38,12 +39,46 @@ const PASS_THRESHOLD = EXAM_RULES.passThreshold;
 
 // ── Question bank ─────────────────────────────────────────────
 
+// A bank only changes when someone imports or edits it, yet every exam start
+// reads it, so keep recently used banks in memory. Callers never mutate a bank
+// (pickQuestions filters it, shuffleChoices copies each question), so the same
+// object can be shared. Other processes, such as the importer, are covered by
+// the TTL. Disabled under test so tests that write banks directly see them.
+const BANK_CACHE_TTL_MS = process.env.NODE_ENV === "test" ? 0 : 10 * 60 * 1000;
+const bankCache = new Map();
+const bankKey = (path, layer) => `${path}|${layer}`;
+export const clearQuestionBankCache = () => bankCache.clear();
+
+// Banks are looked up by { path, layer } on every exam start; without an index
+// that is a collection scan. Created once per db handle; a failure (for example
+// duplicate documents) must not stop exams from being served.
+const bankIndexReady = new WeakMap();
+const ensureBankIndex = (db) => {
+  if (!bankIndexReady.has(db)) {
+    bankIndexReady.set(
+      db,
+      db
+        .collection("exam_question_banks")
+        .createIndex({ path: 1, layer: 1 }, { unique: true })
+        .catch((err) => console.error("exam_question_banks index not created:", err.message)),
+    );
+  }
+  return bankIndexReady.get(db);
+};
+
 export const getQuestionBank = async (db, path, layer) => {
-  const collection = db.collection("exam_question_banks");
-  return collection.findOne({ path, layer });
+  const key = bankKey(path, layer);
+  const hit = bankCache.get(key);
+  if (hit && hit.expires > Date.now()) return hit.bank;
+
+  await ensureBankIndex(db);
+  const bank = await db.collection("exam_question_banks").findOne({ path, layer });
+  if (bank && BANK_CACHE_TTL_MS > 0) bankCache.set(key, { bank, expires: Date.now() + BANK_CACHE_TTL_MS });
+  return bank;
 };
 
 export const upsertQuestionBank = async (db, path, layer, questions) => {
+  bankCache.delete(bankKey(path, layer));
   const collection = db.collection("exam_question_banks");
   return collection.findOneAndUpdate(
     { path, layer },

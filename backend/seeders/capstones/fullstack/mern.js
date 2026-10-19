@@ -1,12 +1,8 @@
 /**
  * Capstone brief — MERN Developer track (mern), v1.
  *
- * DRAFT by Claude, 2026-10-03 — stays "draft" until a human has read every
- * requirement, rubric line and twist. Shape notes: see api-dev.js.
- *
- * ⚠ Do not publish until the MERN layer exams exist: a capstone unlocks only
- * after every layer exam of the track is passed, and as of 2026-10-03 the
- * mern track has no exam banks (examSeeder.js SEED_CONFIG has it commented out).
+ * Drafted by Claude, 2026-10-03; reviewed by a human before publishing.
+ * The seeder refuses to publish a brief whose `reviewed` flag is false.
  */
 
 import { DEFAULT_PASS_THRESHOLDS } from "../../../modules/capstone/lib/constants.js";

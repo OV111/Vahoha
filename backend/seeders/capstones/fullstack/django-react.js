@@ -1,10 +1,8 @@
 /**
  * Capstone brief — Django + React Dev track (django-react), v1.
  *
- * DRAFT by ChatGPT, 2026-10-03 — stays "draft" until a human has read every
- * requirement, rubric line and twist. Shape notes: follows the capstone brief schema.
- *
- * ⚠ This track has no exam banks yet, so the seeder refuses to publish it until its layer exams are seeded.
+ * Drafted by ChatGPT, 2026-10-03; reviewed by a human before publishing.
+ * The seeder refuses to publish a brief whose `reviewed` flag is false.
  */
 
 import { DEFAULT_PASS_THRESHOLDS } from "../../../modules/capstone/lib/constants.js";

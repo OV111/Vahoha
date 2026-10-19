@@ -1,5 +1,21 @@
 import { describe, it, expect } from "vitest";
-import { formatLastActive, summarizeProfile } from "./profileSummary";
+import { formatLastActive, startedTracks, summarizeProfile } from "./profileSummary";
+
+describe("startedTracks", () => {
+  it("drops untouched tracks and sorts by latest activity, undated last", () => {
+    const out = startedTracks([
+      { trackId: "untouched", eligibility: { passed: 0 }, attemptStatus: null },
+      { trackId: "old", eligibility: { passed: 2 }, lastActivityAt: "2026-09-01T00:00:00Z" },
+      { trackId: "undated", eligibility: { passed: 0 }, attemptStatus: "defense", lastActivityAt: null },
+      { trackId: "new", eligibility: { passed: 1 }, lastActivityAt: "2026-10-01T00:00:00Z" },
+    ]);
+    expect(out.map((t) => t.trackId)).toEqual(["new", "old", "undated"]);
+  });
+
+  it("handles missing data", () => {
+    expect(startedTracks()).toEqual([]);
+  });
+});
 
 describe("summarizeProfile", () => {
   it("adds layer exams across tracks and counts only non-revoked certificates", () => {

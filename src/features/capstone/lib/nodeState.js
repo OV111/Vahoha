@@ -2,10 +2,10 @@
  * What the capstone node at the end of a roadmap track shows, and whether it
  * may be opened. Pure, so the rule is unit-tested rather than eyeballed.
  *
- * The rule: the node is visible on EVERY track, but only openable once the
- * learner has passed every layer exam of that track AND a capstone has been
- * published for it. (The server enforces the same rule; this only decides
- * what to show.)
+ * The rule: the node is visible on EVERY track and opens the capstone page once
+ * a capstone is published (the page shows the locked state until every layer
+ * exam is passed). The server enforces the exam gate; this only decides
+ * what to show.
  *
  * @param {object} p
  * @param {{trackId:string, briefTitle:string, summary?:string, published:boolean}|undefined} p.entry
@@ -46,11 +46,13 @@ export const nodeState = ({ entry, isMember, mine }) => {
 
   // Members: the server's overview row is the truth. Until it arrives (or if
   // it failed) the node stays closed rather than guessing.
+  // Still openable: the capstone page itself shows the locked state and the
+  // learner's progress, so the node leads there instead of being a dead end.
   if (!mine || mine.state === "locked") {
     const e = mine?.eligibility;
     return {
       kind: "locked",
-      interactive: false,
+      interactive: true,
       title: entry.briefTitle,
       hint: e
         ? `${e.passed}/${e.total} layer tests passed — pass them all to unlock.`

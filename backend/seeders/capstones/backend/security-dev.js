@@ -1,14 +1,8 @@
 /**
  * Capstone brief — Security Dev track (security-dev), v1.
  *
- * DRAFT by Claude, 2026-10-03 — stays "draft" until a human has read every
- * requirement, rubric line and twist. Shape notes: see api-dev.js.
- * ⚠ This track has no exam banks yet, so the seeder refuses to publish it
- * until its layer exams are seeded (a capstone unlocks after all of them).
- *
- * Shape of this one: the learner hardens a deliberately small app they build
- * themselves and documents it like a security engineer — threat model,
- * findings, fixes and the tests that prove each fix.
+ * Drafted by Claude, 2026-10-03; reviewed by a human before publishing.
+ * The seeder refuses to publish a brief whose `reviewed` flag is false.
  */
 
 import { DEFAULT_PASS_THRESHOLDS } from "../../../modules/capstone/lib/constants.js";

@@ -1,9 +1,8 @@
 /**
  * Capstone brief — Node.js Developer track (node-dev), v1.
  *
- * DRAFT by Claude, 2026-10-03 — stays "draft" until a human has read every
- * requirement, rubric line and twist (the seeder refuses to publish an
- * unreviewed brief). Shape notes: see api-dev.js.
+ * Drafted by Claude, 2026-10-03; reviewed by a human before publishing.
+ * The seeder refuses to publish a brief whose `reviewed` flag is false.
  */
 
 import { DEFAULT_PASS_THRESHOLDS } from "../../../modules/capstone/lib/constants.js";

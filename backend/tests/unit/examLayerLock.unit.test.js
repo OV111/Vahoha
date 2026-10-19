@@ -19,7 +19,7 @@ const fakeDb = ({ layers, progress }) => ({
       }
     }
     if (name === 'userProgress') return { findOne: async () => progress }
-    return { countDocuments: async () => 0, findOne: async () => null, find: () => ({ toArray: async () => [] }) }
+    return { countDocuments: async () => 0, findOne: async () => null, createIndex: async () => 'ok', find: () => ({ toArray: async () => [] }) }
   },
 })
 

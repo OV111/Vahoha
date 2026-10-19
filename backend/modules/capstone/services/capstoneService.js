@@ -222,26 +222,56 @@ export const getCatalogService = async (db, { includeDrafts = false } = {}) => {
 export const getOverviewService = async (db, userId) => {
   await ensureIndexes(db);
   const catalog = await getCatalogService(db);
-  return Promise.all(
-    catalog.map(async (entry) => {
-      const [eligibility, attempts] = await Promise.all([
-        isPathComplete(db, userId, entry.trackId),
-        getAttempts(db, userId, entry.trackId),
-      ]);
-      const latest = attempts[0];
-      const state = !eligibility.complete
+  const trackIds = catalog.map((c) => c.trackId);
+  const uid = new ObjectId(userId);
+
+  // Three queries for the whole catalog instead of two per capstone: with
+  // every track published that is the difference between 3 and ~300 round trips.
+  // Same rule as isPathComplete: required layers only, passed exam attempts only.
+  const [layers, attempts] = await Promise.all([
+    db
+      .collection("roadmap_layers")
+      .find({ trackId: { $in: trackIds }, required: { $ne: false } }, { projection: { layerId: 1, trackId: 1, _id: 0 } })
+      .toArray(),
+    db.collection(ATTEMPTS).find({ userId: uid, trackId: { $in: trackIds } }).sort({ attemptNumber: -1 }).toArray(),
+  ]);
+  // One row per passed layer with its latest pass date, so the profile can
+  // order tracks by recent activity without another round trip.
+  const passedRows = await db
+    .collection("exam_attempts")
+    .aggregate([
+      { $match: { userId: uid, passed: true, layer: { $in: layers.map((l) => l.layerId) } } },
+      { $group: { _id: "$layer", lastPassedAt: { $max: "$submittedAt" } } },
+    ])
+    .toArray();
+  const lastPassedOf = new Map(passedRows.map((r) => [r._id, r.lastPassedAt ?? null]));
+
+  const layersOf = new Map();
+  for (const l of layers) (layersOf.get(l.trackId) ?? layersOf.set(l.trackId, []).get(l.trackId)).push(l.layerId);
+  const latestOf = new Map();
+  for (const a of attempts) if (!latestOf.has(a.trackId)) latestOf.set(a.trackId, a); // sorted newest first
+
+  return catalog.map((entry) => {
+    const ids = layersOf.get(entry.trackId) ?? [];
+    const passedIds = ids.filter((id) => lastPassedOf.has(id));
+    const passed = passedIds.length;
+    const lastActivityAt =
+      passedIds.map((id) => lastPassedOf.get(id)).filter(Boolean).sort((a, b) => b - a)[0] ?? null;
+    const latest = latestOf.get(entry.trackId);
+    const state =
+      passed < ids.length || ids.length === 0
         ? "locked"
         : !latest
           ? "ready"
           : OPEN_STATUSES.includes(latest.status)
             ? "in_progress"
             : latest.status; // "passed" | "failed"
-      return {
-        ...entry,
-        state,
-        attemptStatus: latest?.status ?? null,
-        eligibility: { passed: eligibility.passed, total: eligibility.total },
-      };
-    }),
-  );
+    return {
+      ...entry,
+      state,
+      attemptStatus: latest?.status ?? null,
+      eligibility: { passed, total: ids.length },
+      lastActivityAt,
+    };
+  });
 };

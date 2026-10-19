@@ -26,6 +26,16 @@ export const summarizeProfile = ({ tracks, certificates } = {}) => {
   return { layersPassed, capstones, headline: parts.length ? parts.join(" · ") : null };
 };
 
+/**
+ * Tracks the learner has actually started (a layer passed or a capstone
+ * attempt), most recent activity first. The overview lists the whole capstone
+ * catalog, so untouched tracks are dropped here.
+ */
+export const startedTracks = (tracks) =>
+  (tracks ?? [])
+    .filter((t) => (t.eligibility?.passed ?? 0) > 0 || t.attemptStatus)
+    .sort((a, b) => (Date.parse(b.lastActivityAt) || 0) - (Date.parse(a.lastActivityAt) || 0));
+
 const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;

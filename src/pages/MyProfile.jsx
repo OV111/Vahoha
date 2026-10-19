@@ -14,7 +14,7 @@ import useProfileProgress from "@/features/profile/hooks/useProfileProgress";
 import AchievementsPanel from "@/features/profile/components/AchievementsPanel";
 import RecruiterSettings from "@/features/recruiter/components/RecruiterSettings";
 import ResultsStrip from "@/features/profile/components/ResultsStrip";
-import { formatLastActive, summarizeProfile } from "@/features/profile/lib/profileSummary";
+import { formatLastActive, startedTracks, summarizeProfile } from "@/features/profile/lib/profileSummary";
 import { deriveAchievements } from "@/features/profile/lib/achievements";
 import {
   AsyncSection,
@@ -27,6 +27,8 @@ import {
 } from "@/features/profile/components/ProfileProgress";
 import { BlogCardSkeletonGrid } from "@/components/blog/BlogCardSkeleton";
 import ProfileBanner from "@/features/profile/components/ProfileBanner";
+
+const TRACKS_PREVIEW = 3;
 
 const MyProfile = () => {
   const navigate = useNavigate();
@@ -50,6 +52,11 @@ const MyProfile = () => {
     () => summarizeProfile({ tracks: tracks.data, certificates: certificates.data }),
     [tracks.data, certificates.data],
   );
+
+  // Only tracks the user started, newest first; the rest sit behind "Show all".
+  const [showAllTracks, setShowAllTracks] = useState(false);
+  const recentTracks = useMemo(() => startedTracks(tracks.data), [tracks.data]);
+  const visibleTracks = showAllTracks ? recentTracks : recentTracks.slice(0, TRACKS_PREVIEW);
 
   // Badges are derived from the same data the sections show.
   const achievementsLoading = [tracks, challenges, certificates, exams].some(
@@ -348,25 +355,35 @@ const MyProfile = () => {
 
             {/* TRACKS */}
             <section>
-              <SectionHeader title="Tracks" />
+              <SectionHeader title="Tracks" right={recentTracks.length || null} />
               <AsyncSection
                 {...tracks}
                 onRetry={() => reload("tracks")}
-                isEmpty={!tracks.data?.length}
+                isEmpty={!recentTracks.length}
                 empty={
                   <EmptyState
                     title="No tracks yet"
-                    body="Capstones are being written for the roadmap tracks. Keep passing layer tests."
+                    body="Pass a layer test on the roadmap and its track shows up here."
                     to="/roadmaps"
                     cta="Go to the roadmap"
                   />
                 }
               >
                 <div className="space-y-3">
-                  {(tracks.data ?? []).map((t) => (
+                  {visibleTracks.map((t) => (
                     <TrackRow key={t.trackId} track={t} linkTo={`/capstone/${t.trackId}`} />
                   ))}
                 </div>
+                {recentTracks.length > TRACKS_PREVIEW && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAllTracks((v) => !v)}
+                    aria-expanded={showAllTracks}
+                    className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-purple-400 hover:text-purple-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 rounded"
+                  >
+                    {showAllTracks ? "Show less" : `Show all (${recentTracks.length})`}
+                  </button>
+                )}
               </AsyncSection>
             </section>
 

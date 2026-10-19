@@ -1,11 +1,8 @@
 /**
  * Capstone brief — Blockchain Security track (blockchain-security), v1.
  *
- * DRAFT by ChatGPT, 2026-10-03 — status stays "draft" until a human has read
- * every requirement, rubric line and twist. The seeder refuses to publish a
- * brief whose `reviewed` flag is false.
- *
- * ⚠ This track has no exam banks yet, so the seeder refuses to publish it until its layer exams are seeded.
+ * Drafted by ChatGPT, 2026-10-03; reviewed by a human before publishing.
+ * The seeder refuses to publish a brief whose `reviewed` flag is false.
  *
  * Shape notes:
  * - requirements[].check is for the stage-2 automated checks. `file` is a glob

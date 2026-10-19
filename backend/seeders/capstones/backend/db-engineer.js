@@ -1,10 +1,8 @@
 /**
  * Capstone brief — DB Engineer track (db-engineer), v1.
  *
- * DRAFT by Claude, 2026-10-03 — stays "draft" until a human has read every
- * requirement, rubric line and twist. Shape notes: see api-dev.js.
- * Unlike the API capstones, the deliverable here is the database itself:
- * schema, queries, evidence of performance work, and operations scripts.
+ * Drafted by Claude, 2026-10-03; reviewed by a human before publishing.
+ * The seeder refuses to publish a brief whose `reviewed` flag is false.
  */
 
 import { DEFAULT_PASS_THRESHOLDS } from "../../../modules/capstone/lib/constants.js";

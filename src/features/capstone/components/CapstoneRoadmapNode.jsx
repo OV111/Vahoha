@@ -48,9 +48,10 @@ const LOOK = {
 
 /**
  * The capstone as the final node of EVERY roadmap track. It is always shown,
- * but only opens once the learner has passed every layer exam of the track
- * and a capstone is published for it; until then it is an inactive card that
- * says why (see lib/nodeState.js). The server enforces the same rule.
+ * and links to the capstone page once a capstone is published for the track.
+ * A learner who has not passed every layer exam lands on that page's locked
+ * state (with their progress); only "coming soon" and logged-out cards are
+ * inactive (see lib/nodeState.js). The server enforces the exam gate.
  */
 export default function CapstoneRoadmapNode({ trackId }) {
   const catalog = useCapstoneCatalog();
@@ -80,11 +81,8 @@ export default function CapstoneRoadmapNode({ trackId }) {
 
   const state = nodeState({ entry, isMember, mine });
   const look = LOOK[state.kind];
-  // With a single PUBLISHED capstone the page lives at /capstone itself.
-  const href =
-    catalog.filter((c) => c.published).length === 1
-      ? "/capstone"
-      : `/capstone/${trackId}`;
+  const href = `/capstone/${trackId}`;
+  const unlocked = state.interactive && state.kind !== "locked";
 
   const body = (
     <>
@@ -101,12 +99,12 @@ export default function CapstoneRoadmapNode({ trackId }) {
       <span className="flex items-start gap-3">
         <Award
           size={18}
-          className={`mt-0.5 shrink-0 ${state.interactive ? "text-purple-300" : "text-neutral-600"}`}
+          className={`mt-0.5 shrink-0 ${unlocked ? "text-purple-300" : "text-neutral-600"}`}
           aria-hidden="true"
         />
         <span className="flex flex-col gap-1">
           <span
-            className={`text-sm font-semibold leading-snug ${state.interactive ? "text-neutral-100" : "text-neutral-400"}`}
+            className={`text-sm font-semibold leading-snug ${unlocked ? "text-neutral-100" : "text-neutral-400"}`}
           >
             {state.title}
           </span>
@@ -128,13 +126,13 @@ export default function CapstoneRoadmapNode({ trackId }) {
       className="flex w-full flex-col items-center"
     >
       <div
-        className={`h-10 w-px bg-linear-to-b from-neutral-700 ${state.interactive ? "to-purple-600/60" : "to-neutral-800"}`}
+        className={`h-10 w-px bg-linear-to-b from-neutral-700 ${unlocked ? "to-purple-600/60" : "to-neutral-800"}`}
         aria-hidden="true"
       />
       {state.interactive ? (
         <Link
           to={href} data-tour="capstone"
-          className={`${base} transition-colors hover:border-purple-400 ${look.card}`}
+          className={`${base} transition-colors ${unlocked ? "hover:border-purple-400" : "hover:border-neutral-600"} ${look.card}`}
         >
           {body}
         </Link>

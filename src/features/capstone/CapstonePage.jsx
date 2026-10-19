@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   AlertTriangle,
-  Award,
   CheckCircle2,
-  Lock,
   Rocket,
   TimerReset,
 } from "lucide-react";
@@ -13,12 +11,13 @@ import CapstoneTrack from "./components/CapstoneTrack";
 import { SURFACE } from "./components/ui";
 import { TrackSkeleton } from "./components/CapstoneSkeleton";
 
+// Shown when the learner has nothing open yet: the locked page with their progress.
+const DEFAULT_TRACK_ID = "api-dev";
+
+// Capstones a learner can act on. "locked" is deliberately absent: those are
+// reached from the roadmap node, and listing 150 of them would bury the ones
+// that matter.
 const STATE = {
-  locked: {
-    Icon: Lock,
-    label: "locked",
-    tone: "text-neutral-400 border-neutral-700",
-  },
   ready: {
     Icon: Rocket,
     label: "ready to start",
@@ -41,18 +40,17 @@ const STATE = {
   },
 };
 
-/** Several capstones: one card per track, with where the learner stands. */
+/** The learner has several capstones to act on: one card per track. */
 function Picker({ items }) {
   return (
     <div className="max-w-5xl mx-auto px-6 lg:px-12 pt-14 pb-24 text-white">
-      <h1 className="text-3xl font-bold">Choose your capstone</h1>
+      <h1 className="text-3xl font-bold">Your capstones</h1>
       <p className="mt-2 text-sm text-neutral-400">
-        One capstone per roadmap track. It unlocks when you pass every layer
-        test of that track.
+        You have more than one capstone available. Pick one to continue.
       </p>
       <ul className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
         {items.map((c) => {
-          const s = STATE[c.state] ?? STATE.locked;
+          const s = STATE[c.state];
           return (
             <li key={c.trackId}>
               <Link
@@ -72,10 +70,6 @@ function Picker({ items }) {
                 <span className="text-base font-semibold leading-snug">
                   {c.briefTitle}
                 </span>
-                <span className="font-mono text-xs text-neutral-500">
-                  {c.eligibility.passed}/{c.eligibility.total} layer exams
-                  passed
-                </span>
               </Link>
             </li>
           );
@@ -87,64 +81,32 @@ function Picker({ items }) {
 
 /**
  * /capstone and /capstone/:trackId.
- *  - with a track id → that track's capstone;
- *  - without: one capstone available → shown right here (no redirect);
- *    several → a picker; none → an honest empty state.
+ *  - with a track id: that track's capstone;
+ *  - without one, by how many capstones the learner can act on:
+ *      none (or logged out) -> the default capstone, locked state;
+ *      one                  -> that capstone, right here (no redirect);
+ *      several              -> a picker of just those.
  */
 export default function CapstonePage() {
   const { trackId } = useParams();
-  const [overview, setOverview] = useState(null);
-  const [error, setError] = useState(null);
+  const [actionable, setActionable] = useState(null);
 
   useEffect(() => {
-    if (trackId) return;
-    capstoneApi.overview().then(setOverview).catch(setError);
+    if (trackId) return undefined;
+    let alive = true;
+    capstoneApi
+      .overview()
+      .then((items) => alive && setActionable(items.filter((i) => STATE[i.state])))
+      .catch(() => alive && setActionable([])); // logged out or failed: default page
+    return () => {
+      alive = false;
+    };
   }, [trackId]);
 
   if (trackId) return <CapstoneTrack key={trackId} trackId={trackId} />;
+  if (!actionable) return <TrackSkeleton />;
+  if (actionable.length > 1) return <Picker items={actionable} />;
 
-  if (error) {
-    return (
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-12 pt-14 pb-24">
-        <div role="alert" className={`${SURFACE} mx-auto max-w-lg p-7`}>
-          <h1 className="text-lg font-semibold text-white">
-            Couldn't load capstones
-          </h1>
-          <p className="mt-1.5 text-sm text-neutral-300">{error.message}</p>
-        </div>
-      </div>
-    );
-  }
-  // Same skeleton as CapstoneTrack: with one track (today) the page goes
-  // straight into it, so the two loading phases read as one.
-  if (!overview) return <TrackSkeleton />;
-  if (overview.length === 1)
-    return <CapstoneTrack trackId={overview[0].trackId} />;
-  if (overview.length === 0) {
-    return (
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-12 pt-14 pb-24 text-white">
-        <div
-          className={`${SURFACE} mx-auto flex max-w-lg flex-col items-start gap-4 p-7`}
-        >
-          <span className="grid size-10 place-items-center rounded-full bg-purple-500/10 text-purple-300">
-            <Award size={20} aria-hidden="true" />
-          </span>
-          <div>
-            <h1 className="text-xl font-bold">No capstones yet</h1>
-            <p className="mt-1.5 text-sm leading-relaxed text-neutral-300">
-              Capstones are being written for the roadmap tracks. Keep passing
-              layer tests — yours will appear here and at the end of your track.
-            </p>
-          </div>
-          <Link
-            to="/roadmaps"
-            className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-purple-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
-          >
-            Go to the roadmap →
-          </Link>
-        </div>
-      </div>
-    );
-  }
-  return <Picker items={overview} />;
+  const only = actionable[0]?.trackId ?? DEFAULT_TRACK_ID;
+  return <CapstoneTrack key={only} trackId={only} />;
 }

@@ -141,7 +141,7 @@ export function TrackRow({ track, linkTo }) {
             {track.trackTitle}
           </p>
           <p className="mt-0.5 text-[13px] text-neutral-400">
-            {passed} of {total} layer exams passed
+            {passed} of {total} layer tests passed
           </p>
         </div>
         <Chip tone={state.tone}>{state.label}</Chip>

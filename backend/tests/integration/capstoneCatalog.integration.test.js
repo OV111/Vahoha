@@ -109,6 +109,17 @@ describe('overview', () => {
     expect((await getOverviewService(db, userId.toString()))[0].state).toBe('passed')
   })
 
+  it('reports the latest passed layer date as lastActivityAt, ignoring failed attempts', async () => {
+    expect((await getOverviewService(db, userId.toString()))[0].lastActivityAt).toBeNull()
+
+    await db.collection('exam_attempts').insertMany([
+      { userId, layer: 'api-dev-1', passed: true, submittedAt: new Date('2026-09-01') },
+      { userId, layer: 'api-dev-2', passed: true, submittedAt: new Date('2026-10-01') },
+      { userId, layer: 'api-dev-2', passed: false, submittedAt: new Date('2026-10-05') },
+    ])
+    expect((await getOverviewService(db, userId.toString()))[0].lastActivityAt).toEqual(new Date('2026-10-01'))
+  })
+
   it('requires login over HTTP', async () => {
     expect((await fetch(`${base}`)).status).toBe(401)
     const res = await fetch(`${base}`, { headers: { Authorization: `Bearer ${createAccessToken({ id: userId })}` } })

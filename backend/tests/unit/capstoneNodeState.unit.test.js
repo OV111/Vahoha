@@ -22,14 +22,14 @@ describe('roadmap capstone node', () => {
     expect(nodeState({ entry, isMember: false, mine: null })).toMatchObject({ kind: 'locked', interactive: false })
   })
 
-  it('is closed for a member who has not passed every exam, and says how far they are', () => {
+  it('leads a member who has not passed every exam to the locked page, and says how far they are', () => {
     const s = nodeState({ entry, isMember: true, mine: mine('locked', 7) })
-    expect(s).toMatchObject({ kind: 'locked', interactive: false })
+    expect(s).toMatchObject({ kind: 'locked', interactive: true })
     expect(s.hint).toContain('7/10 layer tests passed')
   })
 
   it('stays closed while the learner\'s state has not loaded (or failed)', () => {
-    expect(nodeState({ entry, isMember: true, mine: null })).toMatchObject({ kind: 'locked', interactive: false })
+    expect(nodeState({ entry, isMember: true, mine: null })).toMatchObject({ kind: 'locked', interactive: true })
   })
 
   it.each(['ready', 'in_progress', 'passed', 'failed'])('opens once exams are passed: %s', (state) => {
