@@ -5,7 +5,13 @@
 // attempt is user-written, and the export name is spliced into the harness as an
 // identifier.
 
-import { exportNameOf, isChallengeLanguage, mainFileName, DEFAULT_LANGUAGE } from "../../../../constants/challengeLanguages.js";
+import {
+  exportNameOf,
+  isChallengeLanguage,
+  isStdioLanguage,
+  mainFileName,
+  DEFAULT_LANGUAGE,
+} from "../../../../constants/challengeLanguages.js";
 import { stripTypes } from "./typescript.js";
 
 const fail = (status, message) => {
@@ -35,4 +41,23 @@ export const pickSubmissionSource = (challenge, attemptCode, language = DEFAULT_
     code = stripped.code;
   }
   return { code, exportName: exportNameOf(jsName), fileName, language };
+};
+
+/**
+ * Whole-program (stdio) challenges: the graded file is the challenge's own
+ * starter file for the chosen language, looked up by `lang`, never by a name the
+ * attempt supplies.
+ *
+ * @returns {{ code: string, fileName: string, language: string }}
+ */
+export const pickStdioSource = (challenge, attemptCode, language) => {
+  if (!isStdioLanguage(language) || !(challenge.languages ?? []).includes(language)) {
+    fail(400, "This challenge cannot be solved in that language.");
+  }
+  const starter = (challenge.starterFiles ?? []).find((f) => f.lang === language);
+  if (!starter) fail(400, "This challenge has no starter file for that language.");
+
+  const source = (attemptCode ?? []).find((f) => f.name === starter.name);
+  if (!source?.code?.trim()) fail(400, "There is no code to submit yet.");
+  return { code: source.code, fileName: starter.name, language };
 };

@@ -36,3 +36,28 @@ export const TS_STARTER_HEADER = "declare const module: { exports: unknown };\n\
 // starter is the JavaScript one with the header on top.
 export const toTypeScriptStarter = (jsCode) =>
   String(jsCode).startsWith(TS_STARTER_HEADER) ? String(jsCode) : TS_STARTER_HEADER + jsCode;
+
+// ---------------------------------------------------------------------------
+// Whole-program languages ("stdio" runtime).
+//
+// Everything above is the function-harness path: the learner exports a function
+// and JS hidden tests call it. These languages are different: the learner writes
+// a complete program, each hidden test is { stdin, expectedStdout }, and the run
+// happens on Judge0. They are kept apart from CHALLENGE_LANGUAGES so the JS/TS
+// picker and `isChallengeLanguage` are unchanged for every existing challenge.
+//
+// `judge0Id` is Judge0's language_id. Confirm against the live
+// `GET <JUDGE0_URL>/languages`: ids differ between Judge0 releases.
+// Adding a language = one row here + starter files on the challenges.
+// ---------------------------------------------------------------------------
+
+export const STDIO_LANGUAGES = [
+  { id: "python", label: "Python 3", ext: "py", judge0Id: 71 },
+];
+
+export const isStdioLanguage = (value) => STDIO_LANGUAGES.some((l) => l.id === value);
+
+export const stdioLanguage = (id) => STDIO_LANGUAGES.find((l) => l.id === id) ?? null;
+
+// Legacy challenges have no `runtime` field and are graded by the harness.
+export const runtimeOf = (challenge) => challenge?.runtime ?? "harness";

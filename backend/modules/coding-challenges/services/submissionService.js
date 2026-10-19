@@ -5,7 +5,9 @@ import { getUserPlan } from "../../billing/index.js";
 import { saveChallengeResult } from "../../../services/challengeResultService.js";
 import { trackEvent } from "../../../services/eventService.js";
 import { awardXp } from "../../../services/xpService.js";
-import { pickSubmissionSource } from "../lib/submissionSource.js";
+import { pickSubmissionSource, pickStdioSource } from "../lib/submissionSource.js";
+import { runStdioTests, describeJudge0 } from "./judge0Runner.js";
+import { runtimeOf } from "../../../../constants/challengeLanguages.js";
 
 /**
  * Submission grading.
@@ -71,12 +73,15 @@ export const submitAttemptService = async (db, userId, attemptId, language) => {
   // file graded is the one for the chosen language, and TypeScript has its types
   // removed here, before any quota is spent, so a syntax error costs nothing.
   // Export name is derived from the file name: asyncHandler.js -> asyncHandler.
-  const picked = pickSubmissionSource(challenge, attempt.code, language);
-  const exportName = picked.exportName;
+  const stdio = runtimeOf(challenge) === "stdio";
+  const picked = stdio
+    ? pickStdioSource(challenge, attempt.code, language)
+    : pickSubmissionSource(challenge, attempt.code, language);
 
   // Check the runner BEFORE spending quota: if submissions are disabled (no
   // sandbox in production) the learner must not lose one of today's tries.
-  if (!describeRunner().available) {
+  const runnerReady = stdio ? describeJudge0().configured : describeRunner().available;
+  if (!runnerReady) {
     const err = new Error(
       "Code submissions are temporarily unavailable. You can still run the tests in your browser.",
     );
@@ -92,11 +97,9 @@ export const submitAttemptService = async (db, userId, attemptId, language) => {
     throw err;
   }
 
-  const run = await runHiddenTests(
-    picked.code,
-    exportName,
-    challenge.hiddenTests,
-  );
+  const run = stdio
+    ? await runStdioTests(picked.code, picked.language, challenge.hiddenTests)
+    : await runHiddenTests(picked.code, picked.exportName, challenge.hiddenTests);
 
   const total = challenge.hiddenTests?.length ?? 0;
   if (!Array.isArray(run.results)) run.results = [];
