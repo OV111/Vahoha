@@ -93,6 +93,21 @@ export const markLessonOpened = (trackId, layerId, slug) => {
   setLessonStatus(trackId, layerId, slug, "in_progress");
 };
 
+/** True once any lesson of the track was opened, finished or skipped. */
+export const trackHasProgress = (trackId) =>
+  Object.entries(read()).some(([key, entry]) => key.startsWith(`${trackId}/`) && entry?.s && entry.s !== "not_started");
+
+/** Live version of trackHasProgress. */
+export const useTrackHasProgress = (trackId) => {
+  const current = useSyncExternalStore(subscribe, () => version, () => 0);
+  return useMemo(
+    () => Boolean(trackId) && trackHasProgress(trackId),
+    // `current` is the change signal, as in useLayerStatuses.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [trackId, current],
+  );
+};
+
 /**
  * Live statuses for one layer; re-renders when any status changes (this tab or another).
  * @returns {Record<string, LessonStatus>}

@@ -10,12 +10,20 @@ import RoadmapHero from "./components/RoadmapHero";
 import FloatingLoad from "./components/FloatingLoad";
 import TrackOnboardingPanel from "./components/TrackOnboardingPanel";
 import WelcomeTour from "./components/WelcomeTour";
+import { trackHasDoneLayer } from "./lib/trackStarted";
+import { useTrackHasProgress } from "../learn/lib/lessonStatus";
 import "./roadmap.css";
 import posthog, { isPostHogConfigured } from "@/lib/posthog";
 
 export default function RoadmapPage() {
-  const { selectedCategory, selectedTrack, submitOnboarding, closePanel } = useRoadmapStore();
+  const { selectedCategory, selectedTrack, layerProgress, progressLoaded, submitOnboarding, closePanel } = useRoadmapStore();
   const { auth } = useAuthStore();
+  const hasOpenedLessons = useTrackHasProgress(selectedTrack?.id);
+  // "Start Path" begins a path, so it goes away once the learner has begun this one.
+  // While progress is still loading it stays hidden rather than flashing and vanishing.
+  const trackStarted =
+    Boolean(selectedTrack) &&
+    (!progressLoaded || hasOpenedLessons || trackHasDoneLayer(layerProgress, selectedTrack.id));
   const [panelOpen, setPanelOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -65,7 +73,7 @@ export default function RoadmapPage() {
       {/* Onboarding saves to the account, so guests don't get it. */}
       {/* Appears once a domain is picked, but a path can only start from a
           track, so it stays disabled until one is chosen. */}
-      {auth && selectedCategory && !panelOpen && (
+      {auth && selectedCategory && !panelOpen && !trackStarted && (
         <button
           disabled={!selectedTrack}
           title={selectedTrack ? undefined : "Choose a track first"}
