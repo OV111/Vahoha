@@ -17,6 +17,24 @@ import { MAX_REPO_FILES, MAX_REPO_SIZE_KB, MIN_COMMITS_BEFORE_FLAG } from "./con
 
 const check = (id, label, passed, detail = null) => ({ id, label, passed, detail });
 
+// Proof of skill needs proof of authorship: the repository must belong to the
+// GitHub account the learner connected. Compared case-insensitively against
+// the owner GitHub reports (not the URL the learner typed). Org-owned repos
+// don't match a personal login and are not accepted here.
+const ownershipCheck = ({ repo, learnerGithubLogin }) => {
+  const label = "Repository belongs to your GitHub account";
+  if (!learnerGithubLogin) {
+    return check("owner-matches", label, false, "Connect your GitHub account in Settings › Connected accounts, then submit again.");
+  }
+  const owns = Boolean(repo.ownerLogin) && repo.ownerLogin.toLowerCase() === learnerGithubLogin.toLowerCase();
+  return check(
+    "owner-matches",
+    label,
+    owns,
+    owns ? null : `This repository belongs to "${repo.ownerLogin ?? "unknown"}", not to your GitHub account "${learnerGithubLogin}". Use a repository you own.`,
+  );
+};
+
 /**
  * @param {object} facts
  * @param {object|null} facts.repo          githubClient.getRepo result (null = missing/private)
@@ -26,6 +44,7 @@ const check = (id, label, passed, detail = null) => ({ id, label, passed, detail
  * @param {Date}        facts.firstStartedAt  when the learner FIRST started this capstone
  * @param {boolean}     facts.repoUsedByOtherUser
  * @param {boolean}     facts.treeSeenFromOtherUser
+ * @param {string|null}  facts.learnerGithubLogin  the GitHub login connected to the learner's account (null = none)
  * @param {Array}       facts.requirements  brief.requirements (only those with `check` are evaluated)
  * @returns {{ passed: boolean, checks: object[], flags: object[] }}
  */
@@ -56,6 +75,7 @@ export const evaluateSubmission = (facts) => {
     check("repo-public", "Repository is public", true),
     check("not-empty", "Repository has commits", true),
     check("not-fork", "Repository is not a fork", !repo.fork, repo.fork ? "Forks are not accepted — create your own repository." : null),
+    ownershipCheck(facts),
     check(
       "created-after-start",
       "Repository was created after you started the capstone",

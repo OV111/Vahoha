@@ -69,6 +69,7 @@ export const getRepo = async (owner, repo) => {
   return {
     id: r.id, // stable across renames and transfers — used for uniqueness
     fullName: r.full_name,
+    ownerLogin: r.owner?.login ?? null, // GitHub's own value, not the URL the learner typed
     htmlUrl: r.html_url,
     private: r.private,
     fork: r.fork,

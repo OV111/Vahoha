@@ -1354,6 +1354,7 @@ describe.each(briefs.map((b) => [b.trackId, b]))(
         const result = evaluateSubmission({
           repo: {
             id: 1,
+            ownerLogin: "learner",
             private: false,
             fork: false,
             sizeKb: 100,
@@ -1368,6 +1369,7 @@ describe.each(briefs.map((b) => [b.trackId, b]))(
           firstStartedAt: new Date("2026-10-04T00:00:00Z"),
           repoUsedByOtherUser: false,
           treeSeenFromOtherUser: false,
+          learnerGithubLogin: "learner",
           requirements: brief.requirements,
         });
         expect(result.checks.filter((c) => !c.passed)).toEqual([]);

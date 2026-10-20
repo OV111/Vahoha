@@ -61,13 +61,14 @@ describe('evaluateSubmission', () => {
     { id: 'auth', text: 'Auth works' }, // no check → AI review only
   ]
   const goodFacts = () => ({
-    repo: { id: 1, private: false, fork: false, sizeKb: 300, createdAt: new Date('2026-10-04T09:00:00Z') },
+    repo: { id: 1, ownerLogin: "learner", private: false, fork: false, sizeKb: 300, createdAt: new Date('2026-10-04T09:00:00Z') },
     head: { sha: 'abc', treeSha: 'def' },
     stats: { count: 12, rootCommittedAt: new Date('2026-10-04T09:05:00Z') },
     tree: { truncated: false, paths: ['readme.md', '.github/workflows/ci.yaml', 'src/app.js'] },
     firstStartedAt: START,
     repoUsedByOtherUser: false,
     treeSeenFromOtherUser: false,
+    learnerGithubLogin: "learner",
     requirements,
   })
   const failedIds = (r) => r.checks.filter((c) => !c.passed).map((c) => c.id)
@@ -93,6 +94,31 @@ describe('evaluateSubmission', () => {
   it('stops early on an empty repository', () => {
     const r = evaluateSubmission({ ...goodFacts(), head: null })
     expect(failedIds(r)).toEqual(['not-empty'])
+  })
+
+  it('fails a repository that belongs to someone else (case-insensitive owner match)', () => {
+    const f = goodFacts()
+    f.repo.ownerLogin = 'someone-else'
+    const r = evaluateSubmission(f)
+    expect(failedIds(r)).toEqual(['owner-matches'])
+    expect(r.checks.find((c) => c.id === 'owner-matches').detail).toMatch(/belongs to "someone-else"/)
+
+    f.repo.ownerLogin = 'LEARNER' // GitHub logins are case-insensitive
+    expect(evaluateSubmission(f).passed).toBe(true)
+  })
+
+  it('fails with a how-to when the learner has not connected GitHub', () => {
+    const f = goodFacts()
+    f.learnerGithubLogin = null
+    const r = evaluateSubmission(f)
+    expect(failedIds(r)).toEqual(['owner-matches'])
+    expect(r.checks.find((c) => c.id === 'owner-matches').detail).toMatch(/Connect your GitHub account/)
+  })
+
+  it('fails an organisation-owned repository (it does not match a personal login)', () => {
+    const f = goodFacts()
+    f.repo.ownerLogin = 'some-org'
+    expect(failedIds(evaluateSubmission(f))).toEqual(['owner-matches'])
   })
 
   it('fails forks, reused repos, oversize and truncated trees', () => {
@@ -159,13 +185,14 @@ describe('api-dev brief globs', () => {
   ]
   it('a well-formed project passes every file requirement', () => {
     const r = evaluateSubmission({
-      repo: { id: 1, private: false, fork: false, sizeKb: 100, createdAt: new Date('2026-10-05T00:00:00Z') },
+      repo: { id: 1, ownerLogin: "learner", private: false, fork: false, sizeKb: 100, createdAt: new Date('2026-10-05T00:00:00Z') },
       head: { sha: 'a', treeSha: 'b' },
       stats: { count: 20, rootCommittedAt: new Date('2026-10-05T00:01:00Z') },
       tree: { truncated: false, paths },
       firstStartedAt: new Date('2026-10-04T00:00:00Z'),
       repoUsedByOtherUser: false,
       treeSeenFromOtherUser: false,
+      learnerGithubLogin: "learner",
       requirements: apiDevBrief.requirements,
     })
     expect(r.checks.filter((c) => !c.passed)).toEqual([])

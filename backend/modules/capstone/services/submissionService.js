@@ -32,11 +32,12 @@ const gatherFacts = async (db, ownerId, { owner, repo: repoName }) => {
   if (!head) return { repo, head };
 
   const otherUser = { userId: { $ne: ownerId } };
-  const [stats, tree, repoUsedByOtherUser, treeSeenFromOtherUser] = await Promise.all([
+  const [stats, tree, repoUsedByOtherUser, treeSeenFromOtherUser, learner] = await Promise.all([
     getCommitStats(owner, repoName, head.sha),
     getTree(owner, repoName, head.treeSha),
     db.collection(SUBMISSIONS).findOne({ "repo.id": repo.id, ...otherUser }, { projection: { _id: 1 } }),
     db.collection(SUBMISSIONS).findOne({ treeSha: head.treeSha, ...otherUser }, { projection: { _id: 1 } }),
+    db.collection("users").findOne({ _id: ownerId }, { projection: { githubLogin: 1 } }),
   ]);
 
   return {
@@ -46,6 +47,7 @@ const gatherFacts = async (db, ownerId, { owner, repo: repoName }) => {
     tree,
     repoUsedByOtherUser: Boolean(repoUsedByOtherUser),
     treeSeenFromOtherUser: Boolean(treeSeenFromOtherUser),
+    learnerGithubLogin: learner?.githubLogin ?? null,
   };
 };
 
