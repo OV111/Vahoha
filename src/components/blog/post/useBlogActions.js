@@ -2,7 +2,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import useAuthStore from "../../../stores/useAuthStore";
 import useBlogInteractionsStore from "../../../stores/useBlogInteractionsStore";
-import { API_BASE_URL, authHeaders } from "../../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
 import posthog, { isPostHogConfigured } from "@/lib/posthog";
 
 /**
@@ -23,7 +23,7 @@ export default function useBlogActions({ rawId, isDefault, initialLikes }) {
   const saved = savedIds.has(rawId);
 
   const post = async (path) => {
-    const res = await fetch(`${API_BASE_URL}/blogs/${rawId}/${path}`, {
+    const res = await apiFetch(`${API_BASE_URL}/blogs/${rawId}/${path}`, {
       method: "POST",
       headers: authHeaders(),
     });

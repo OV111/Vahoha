@@ -1,10 +1,10 @@
-import { API_BASE_URL, authHeaders } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
 
 export const updateLastActive = async (userId) => {
   if (!userId) return;
   const now = new Date().toISOString();
   try {
-    const res = await fetch(`${API_BASE_URL}/my-profile`, {
+    const res = await apiFetch(`${API_BASE_URL}/my-profile`, {
       method: "PUT",
       headers: { "content-type": "application/json", ...authHeaders() },
       body: JSON.stringify({ id: userId, lastActive: now }),
@@ -16,7 +16,7 @@ export const updateLastActive = async (userId) => {
 };
 
 export const deleteAccount = async (email, { password, confirmation } = {}) => {
-  const res = await fetch(`${API_BASE_URL}/deleteAccount`, {
+  const res = await apiFetch(`${API_BASE_URL}/deleteAccount`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json", ...authHeaders() },
     body: JSON.stringify({ email, password, confirmation }),
@@ -27,7 +27,7 @@ export const deleteAccount = async (email, { password, confirmation } = {}) => {
 };
 
 export const checkUsernameAvailable = async (username) => {
-  const res = await fetch(
+  const res = await apiFetch(
     `${API_BASE_URL}/my-profile/username-available?username=${encodeURIComponent(username)}`,
     { headers: authHeaders() },
   );
@@ -37,7 +37,7 @@ export const checkUsernameAvailable = async (username) => {
 };
 
 export const saveSettings = async (formData) => {
-  const res = await fetch(`${API_BASE_URL}/my-profile/settings`, {
+  const res = await apiFetch(`${API_BASE_URL}/my-profile/settings`, {
     method: "PUT",
     headers: authHeaders(),
     body: formData,
@@ -48,7 +48,7 @@ export const saveSettings = async (formData) => {
 };
 
 export const removeCv = async () => {
-  const res = await fetch(`${API_BASE_URL}/my-profile/cv`, {
+  const res = await apiFetch(`${API_BASE_URL}/my-profile/cv`, {
     method: "DELETE",
     headers: authHeaders(),
   });
@@ -59,7 +59,7 @@ export const removeCv = async () => {
 
 /** The learner's own recent exam attempts (newest first), with `layerTitle` joined in. */
 export const fetchExamHistory = async (limit = 10) => {
-  const res = await fetch(`${API_BASE_URL}/api/exams/history?limit=${limit}`, {
+  const res = await apiFetch(`${API_BASE_URL}/api/exams/history?limit=${limit}`, {
     headers: authHeaders(),
     credentials: "include",
   });
@@ -70,7 +70,7 @@ export const fetchExamHistory = async (limit = 10) => {
 
 /** The learner's coding-challenge stats + their most recent solves. */
 export const fetchChallengeStats = async () => {
-  const res = await fetch(`${API_BASE_URL}/api/challenges/stats/me`, {
+  const res = await apiFetch(`${API_BASE_URL}/api/challenges/stats/me`, {
     headers: authHeaders(),
     credentials: "include",
   });

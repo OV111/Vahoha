@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { GraduationCap, Mic, MicOff, Sparkles } from "lucide-react";
-import { API_BASE_URL, authHeaders } from "../../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
 import { useSpeechDictation } from "../../ai-agent/lib/useSpeechDictation";
 import TeachBackCard from "../../ai-agent/components/TeachBackCard";
 
@@ -96,7 +96,7 @@ const InlineTeachBack = ({ path, layer, topic }) => {
       : { path, layer, topic, answerText: draft };
 
     try {
-      const res = await fetch(url, {
+      const res = await apiFetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify(body),

@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
 
 export const fetchLibraryResources = async (params = {}, signal) => {
   const url = new URL(`${API_BASE_URL}/library`);
@@ -18,7 +18,7 @@ export const fetchLibraryResources = async (params = {}, signal) => {
   if (page) url.searchParams.set("page", String(page));
   if (limit) url.searchParams.set("limit", String(limit));
 
-  const res = await fetch(url.toString(), { signal });
+  const res = await apiFetch(url.toString(), { signal });
   if (!res.ok) throw new Error("Failed to fetch library resources");
   const data = await res.json();
   if (!data.success) throw new Error("Failed to fetch library resources");
@@ -26,7 +26,7 @@ export const fetchLibraryResources = async (params = {}, signal) => {
 };
 
 export const fetchLibraryResourceById = async (id) => {
-  const res = await fetch(`${API_BASE_URL}/library/${id}`);
+  const res = await apiFetch(`${API_BASE_URL}/library/${id}`);
   if (!res.ok) throw new Error("Failed to fetch resource");
   const data = await res.json();
   if (!data.success) throw new Error("Failed to fetch resource");
@@ -34,7 +34,7 @@ export const fetchLibraryResourceById = async (id) => {
 };
 
 export const fetchLibraryResourcesByLayer = async (layerId) => {
-  const res = await fetch(`${API_BASE_URL}/library/layer/${layerId}`);
+  const res = await apiFetch(`${API_BASE_URL}/library/layer/${layerId}`);
   if (!res.ok) throw new Error("Failed to fetch layer resources");
   const data = await res.json();
   if (!data.success) throw new Error("Failed to fetch layer resources");
@@ -42,7 +42,7 @@ export const fetchLibraryResourcesByLayer = async (layerId) => {
 };
 
 export const fetchLibraryResourceCounts = async () => {
-  const res = await fetch(`${API_BASE_URL}/library/counts`);
+  const res = await apiFetch(`${API_BASE_URL}/library/counts`);
   if (!res.ok) throw new Error("Failed to fetch resource counts");
   const data = await res.json();
   if (!data.success) throw new Error("Failed to fetch resource counts");
@@ -51,7 +51,7 @@ export const fetchLibraryResourceCounts = async () => {
 
 export const fetchSavedResourceIds = async () => {
   try {
-    const res = await fetch(`${API_BASE_URL}/library/saved-ids`, {
+    const res = await apiFetch(`${API_BASE_URL}/library/saved-ids`, {
       headers: authHeaders(),
     });
     const data = await res.json();
@@ -62,7 +62,7 @@ export const fetchSavedResourceIds = async () => {
 };
 
 export const toggleSaveResource = async (id) => {
-  const res = await fetch(`${API_BASE_URL}/library/${id}/save`, {
+  const res = await apiFetch(`${API_BASE_URL}/library/${id}/save`, {
     method: "POST",
     headers: authHeaders(),
   });

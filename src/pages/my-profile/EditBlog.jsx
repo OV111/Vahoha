@@ -11,7 +11,7 @@ import {
   DIFFICULTIES,
   RECOMMENDED_TAGS,
 } from "../../../constants/addBlog.js";
-import { authHeaders } from "../../../constants/api.js";
+import { authHeaders, apiFetch } from "../../../constants/api.js";
 import { updateBlog } from "../../services/blogsApi.js";
 import LayerPicker from "../../components/blog/LayerPicker";
 
@@ -56,7 +56,7 @@ export default function EditBlog() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/blogs/id/${id}`, {
+        const res = await apiFetch(`${API_BASE_URL}/blogs/id/${id}`, {
           headers: authHeaders(),
         });
         const data = await res.json();

@@ -52,10 +52,10 @@ export function createApp(db) {
   // ── GET /my-profile ─────────────────────────────────────────────────────────
   app.get('/my-profile', async (req, res) => {
     const token = req.headers.authorization?.replace('Bearer ', '')
-    if (!token) return res.status(403).json({ message: 'Forbidden: Invalid Token' })
+    if (!token) return res.status(401).json({ message: 'Unauthorized: Invalid Token' })
 
     const verified = verifyToken(token)
-    if (!verified) return res.status(403).json({ message: 'Forbidden: Invalid Token' })
+    if (!verified) return res.status(401).json({ message: 'Unauthorized: Invalid Token' })
 
     const userId = new ObjectId(verified.id)
     const [user, stats] = await Promise.all([

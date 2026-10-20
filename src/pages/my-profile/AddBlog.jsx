@@ -10,7 +10,7 @@ import {
   DIFFICULTIES,
   RECOMMENDED_TAGS,
 } from "../../../constants/addBlog.js";
-import { authHeaders } from "../../../constants/api.js";
+import { authHeaders, apiFetch } from "../../../constants/api.js";
 import LayerPicker from "../../components/blog/LayerPicker";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -202,7 +202,7 @@ export default function AddBlog() {
       formData.append("status", status);
       if (fields.cover) formData.append("cover", fields.cover);
 
-      const res = await fetch(`${API_BASE_URL}/blogs`, {
+      const res = await apiFetch(`${API_BASE_URL}/blogs`, {
         method: "POST",
         headers: authHeaders(),
         body: formData,

@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders } from "../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../../constants/api";
 
 /**
  * Thin client for /api/recruiter. Resolves to the response's `data` or throws
@@ -8,7 +8,7 @@ import { API_BASE_URL, authHeaders } from "../../../constants/api";
 const request = async (path, { method = "GET", body, auth = true } = {}) => {
   let res;
   try {
-    res = await fetch(`${API_BASE_URL}/api/recruiter${path}`, {
+    res = await apiFetch(`${API_BASE_URL}/api/recruiter${path}`, {
       method,
       headers: {
         ...(auth ? authHeaders() : {}),

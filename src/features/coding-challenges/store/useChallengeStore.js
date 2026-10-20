@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { API_BASE_URL, authHeaders } from "../../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
 
 /**
  * Challenge data layer.
@@ -14,7 +14,7 @@ import { API_BASE_URL, authHeaders } from "../../../../constants/api";
  */
 
 const request = async (path, options = {}) => {
-  const res = await fetch(`${API_BASE_URL}/api/challenges${path}`, {
+  const res = await apiFetch(`${API_BASE_URL}/api/challenges${path}`, {
     ...options,
     headers: {
       ...(options.body ? { "Content-Type": "application/json" } : {}),

@@ -1,8 +1,8 @@
-import { API_BASE_URL, authHeaders } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
 
 export const getNotifications = async () => {
   try {
-    const request = await fetch(`${API_BASE_URL}/my-profile/notifications`, {
+    const request = await apiFetch(`${API_BASE_URL}/my-profile/notifications`, {
       method: "GET",
       headers: authHeaders(),
     });
@@ -16,7 +16,7 @@ export const getNotifications = async () => {
 
 // Writes throw on failure so the page can roll back its optimistic update.
 const write = async (path, method) => {
-  const res = await fetch(`${API_BASE_URL}/my-profile/notifications${path}`, {
+  const res = await apiFetch(`${API_BASE_URL}/my-profile/notifications${path}`, {
     method,
     headers: authHeaders(),
   });

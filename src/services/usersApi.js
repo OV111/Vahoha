@@ -1,7 +1,7 @@
-import { API_BASE_URL, authHeaders } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
 
 export const fetchUserProfile = async (username) => {
-  const res = await fetch(`${API_BASE_URL}/users/${username}`, {
+  const res = await apiFetch(`${API_BASE_URL}/users/${username}`, {
     headers: authHeaders(),
   });
   if (!res.ok) {
@@ -17,7 +17,7 @@ export const fetchUserProfile = async (username) => {
 };
 
 export const toggleFollow = async (username, isFollowing) => {
-  const res = await fetch(`${API_BASE_URL}/users/${username}/follow`, {
+  const res = await apiFetch(`${API_BASE_URL}/users/${username}/follow`, {
     method: isFollowing ? "DELETE" : "POST",
     headers: authHeaders(),
   });

@@ -1,9 +1,9 @@
-import { API_BASE_URL, authHeaders } from "../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../../constants/api";
 
 export const fetchMastery = async () => {
   let res;
   try {
-    res = await fetch(`${API_BASE_URL}/api/mastery`, {
+    res = await apiFetch(`${API_BASE_URL}/api/mastery`, {
       headers: authHeaders(),
       credentials: "include",
     });
@@ -21,7 +21,7 @@ export const fetchMastery = async () => {
 export const fetchReadiness = async () => {
   let res;
   try {
-    res = await fetch(`${API_BASE_URL}/api/readiness/me`, {
+    res = await apiFetch(`${API_BASE_URL}/api/readiness/me`, {
       headers: authHeaders(),
       credentials: "include",
     });

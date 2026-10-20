@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_BASE_URL, authHeaders } from "../../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
 import posthog, { isPostHogConfigured } from "@/lib/posthog";
 
 /**
@@ -267,7 +267,7 @@ export default function ProposeChallenge() {
     };
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/challenges/proposals`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/challenges/proposals`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

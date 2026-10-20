@@ -9,7 +9,7 @@ import MessageList from "./components/MessageList";
 import ChatInput from "./components/ChatInput";
 import AgentHero from "./components/AgentHero";
 import PromptChips from "./components/PromptChips";
-import { getAccessToken, API_BASE_URL, authHeaders } from "../../../constants/api";
+import { getAccessToken, API_BASE_URL, authHeaders, apiFetch } from "../../../constants/api";
 
 /**
  * Placeholder title shown for the second or so before the generated one arrives.
@@ -126,7 +126,7 @@ export default function AiAgent({ embedded = false, challengeContext = null }) {
     if (embedded) return;
     const loadSessions = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/ai-agent/sessions`, { headers: authHeaders() });
+        const res = await apiFetch(`${API_BASE_URL}/api/ai-agent/sessions`, { headers: authHeaders() });
         if (!res.ok) return;
         const data = await res.json();
         setSessions(data.sessions ?? []);
@@ -150,7 +150,7 @@ export default function AiAgent({ embedded = false, challengeContext = null }) {
     setOriginContext({ surface: "chat" });
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/ai-agent/sessions/${sessionId}`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/ai-agent/sessions/${sessionId}`, {
         headers: authHeaders(),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -171,7 +171,7 @@ export default function AiAgent({ embedded = false, challengeContext = null }) {
 
   const handleNewSession = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/ai-agent/sessions`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/ai-agent/sessions`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ title: "New conversation" }),
@@ -215,7 +215,7 @@ export default function AiAgent({ embedded = false, challengeContext = null }) {
         : { path: ctx.path, layer: ctx.layer, topic: ctx.topic, answerText: text };
 
       try {
-        const res = await fetch(url, {
+        const res = await apiFetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json", ...authHeaders() },
           body: JSON.stringify(body),
@@ -234,7 +234,7 @@ export default function AiAgent({ embedded = false, challengeContext = null }) {
     if (text.trim() === "/context") {
       appendMessage({ role: "context", loading: true });
       try {
-        const res = await fetch(`${API_BASE_URL}/api/ai-agent/context`, {
+        const res = await apiFetch(`${API_BASE_URL}/api/ai-agent/context`, {
           headers: authHeaders(),
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -250,7 +250,7 @@ export default function AiAgent({ embedded = false, challengeContext = null }) {
 
     if (!sessionId) {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/ai-agent/sessions`, {
+        const res = await apiFetch(`${API_BASE_URL}/api/ai-agent/sessions`, {
           method: "POST",
           headers: { "Content-Type": "application/json", ...authHeaders() },
           body: JSON.stringify({ title: placeholderTitle(text) }),
@@ -277,7 +277,7 @@ export default function AiAgent({ embedded = false, challengeContext = null }) {
     setSessions(previous.map((s) => (s._id === sessionId ? { ...s, title } : s)));
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/ai-agent/sessions/${sessionId}`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/ai-agent/sessions/${sessionId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ title }),
@@ -304,7 +304,7 @@ export default function AiAgent({ embedded = false, challengeContext = null }) {
     setSessions(next);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/ai-agent/sessions/${sessionId}`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/ai-agent/sessions/${sessionId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ pinned }),
@@ -328,7 +328,7 @@ export default function AiAgent({ embedded = false, challengeContext = null }) {
     }
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/ai-agent/sessions/${sessionId}`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/ai-agent/sessions/${sessionId}`, {
         method: "DELETE",
         headers: authHeaders(),
       });

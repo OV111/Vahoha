@@ -1,7 +1,7 @@
-import { API_BASE_URL, authHeaders } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
 
 export const fetchDefaultPostsByCategory = async (categoryName) => {
-  const res = await fetch(`${API_BASE_URL}/categories/${categoryName}/default`);
+  const res = await apiFetch(`${API_BASE_URL}/categories/${categoryName}/default`);
   if (!res.ok) throw new Error("Failed to fetch posts");
   const data = await res.json();
   return Array.isArray(data) ? data : [];
@@ -21,7 +21,7 @@ export const fetchBlogs = async (page = 1, limit = 10, params = {}, { signal } =
   if (readTime) url.searchParams.set("readTime", readTime);
   if (category) url.searchParams.set("category", category);
   if (q) url.searchParams.set("q", q);
-  const res = await fetch(url.toString(), { signal });
+  const res = await apiFetch(url.toString(), { signal });
   if (!res.ok) throw new Error("Failed to fetch blogs");
   const data = await res.json();
   if (!data.success) throw new Error("Failed to fetch blogs");
@@ -30,7 +30,7 @@ export const fetchBlogs = async (page = 1, limit = 10, params = {}, { signal } =
 
 export const fetchSavedIds = async () => {
   try {
-    const res = await fetch(`${API_BASE_URL}/blogs/saved-ids`, {
+    const res = await apiFetch(`${API_BASE_URL}/blogs/saved-ids`, {
       headers: authHeaders(),
     });
     const data = await res.json();
@@ -42,7 +42,7 @@ export const fetchSavedIds = async () => {
 
 export const fetchLikedIds = async () => {
   try {
-    const res = await fetch(`${API_BASE_URL}/blogs/liked-ids`, {
+    const res = await apiFetch(`${API_BASE_URL}/blogs/liked-ids`, {
       headers: authHeaders(),
     });
     const data = await res.json();
@@ -56,14 +56,14 @@ export const fetchUserBlogs = async (userId, limit) => {
   const url = limit
     ? `${API_BASE_URL}/blogs/user/${userId}?limit=${limit}`
     : `${API_BASE_URL}/blogs/user/${userId}`;
-  const res = await fetch(url);
+  const res = await apiFetch(url);
   if (!res.ok) throw new Error("Failed to fetch user blogs");
   const data = await res.json();
   return data.data ?? [];
 };
 
 export const fetchFavourites = async () => {
-  const res = await fetch(`${API_BASE_URL}/blogs/favourites`, {
+  const res = await apiFetch(`${API_BASE_URL}/blogs/favourites`, {
     headers: authHeaders(),
   });
   const data = await res.json();
@@ -72,7 +72,7 @@ export const fetchFavourites = async () => {
 };
 
 export const updateBlog = async (id, formData) => {
-  const res = await fetch(`${API_BASE_URL}/blogs/${id}`, {
+  const res = await apiFetch(`${API_BASE_URL}/blogs/${id}`, {
     method: "PUT",
     headers: authHeaders(),
     body: formData,
@@ -83,7 +83,7 @@ export const updateBlog = async (id, formData) => {
 };
 
 export const deleteBlog = async (id) => {
-  const res = await fetch(`${API_BASE_URL}/blogs/${id}`, {
+  const res = await apiFetch(`${API_BASE_URL}/blogs/${id}`, {
     method: "DELETE",
     headers: authHeaders(),
   });

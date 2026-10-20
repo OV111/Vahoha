@@ -26,8 +26,9 @@ export const getProfile = async (req, res) => {
   try {
     const token = req.headers.authorization?.replace("Bearer ", "");
     const verified = verifyToken(token);
+    // 401, not 403: the client answers a 401 by refreshing the session.
     if (!token || !verified)
-      return res.status(403).json({ message: "Forbidden: Invalid Token" });
+      return res.status(401).json({ message: "Unauthorized: Invalid Token" });
 
     const userId = new ObjectId(verified.id);
     const result = await getProfileService(req.app.locals.db, userId);

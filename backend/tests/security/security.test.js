@@ -257,7 +257,7 @@ describe('Security — JWT tampering', () => {
       .get('/my-profile')
       .set('Authorization', bearer(noneToken))
 
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
     expect(res.body.token).toBeUndefined()
   })
 
@@ -272,7 +272,7 @@ describe('Security — JWT tampering', () => {
       .get('/my-profile')
       .set('Authorization', bearer(forgeryToken))
 
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
   })
 
   it('token with tampered payload (modified userId) is rejected', async () => {
@@ -289,7 +289,7 @@ describe('Security — JWT tampering', () => {
       .get('/my-profile')
       .set('Authorization', bearer(tamperedToken))
 
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
   })
 
   it('expired token is rejected', async () => {
@@ -302,7 +302,7 @@ describe('Security — JWT tampering', () => {
       .get('/my-profile')
       .set('Authorization', bearer(expiredToken))
 
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
   })
 
   it('token with future iat (not-yet-valid) is handled gracefully', async () => {
@@ -338,31 +338,31 @@ describe('Security — JWT tampering', () => {
 // 5. Auth Bypass Attempts
 // ─────────────────────────────────────────────────────────────────────────────
 describe('Security — auth bypass attempts', () => {
-  it('GET /my-profile with no Authorization header returns 403', async () => {
+  it('GET /my-profile with no Authorization header returns 401', async () => {
     const res = await request.get('/my-profile')
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
     expect(res.body.token).toBeUndefined()
   })
 
-  it('GET /my-profile with empty Bearer token returns 403', async () => {
+  it('GET /my-profile with empty Bearer token returns 401', async () => {
     const res = await request
       .get('/my-profile')
       .set('Authorization', 'Bearer ')
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
   })
 
-  it('GET /my-profile with "null" string token returns 403', async () => {
+  it('GET /my-profile with "null" string token returns 401', async () => {
     const res = await request
       .get('/my-profile')
       .set('Authorization', 'Bearer null')
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
   })
 
-  it('GET /my-profile with "undefined" string token returns 403', async () => {
+  it('GET /my-profile with "undefined" string token returns 401', async () => {
     const res = await request
       .get('/my-profile')
       .set('Authorization', 'Bearer undefined')
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
   })
 
   it('GET /my-profile/notifications with no token returns 401', async () => {
@@ -384,14 +384,14 @@ describe('Security — auth bypass attempts', () => {
     const res = await request
       .get('/my-profile')
       .set('Authorization', 'Basic dXNlcjpwYXNz')
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
   })
 
   it('Authorization header with multiple spaces is not confused for a valid token', async () => {
     const res = await request
       .get('/my-profile')
       .set('Authorization', 'Bearer   token   ')
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
   })
 })
 

@@ -243,17 +243,17 @@ describe('DELETE /log-out', () => {
 // GET /my-profile
 // ─────────────────────────────────────────────────────────────────────────────
 describe('GET /my-profile', () => {
-  it('returns 403 when no Authorization header is provided', async () => {
+  it('returns 401 when no Authorization header is provided', async () => {
     const res = await request.get('/my-profile')
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
     expect(res.headers['content-type']).toMatch(/application\/json/)
   })
 
-  it('returns 403 for an invalid token', async () => {
+  it('returns 401 for an invalid token', async () => {
     const res = await request
       .get('/my-profile')
       .set('Authorization', 'Bearer not.a.valid.token')
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
   })
 
   it('returns 200 with userWithoutPassword and stats for a valid token', async () => {

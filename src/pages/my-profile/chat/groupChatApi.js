@@ -1,9 +1,9 @@
-import { API_BASE_URL, authHeaders } from "../../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
 
 const jsonHeaders = { "Content-Type": "application/json" };
 
 const request = async (path, options = {}) => {
-  const res = await fetch(`${API_BASE_URL}/my-profile/chats/groups${path}`, {
+  const res = await apiFetch(`${API_BASE_URL}/my-profile/chats/groups${path}`, {
     ...options,
     headers: { ...jsonHeaders, ...authHeaders(), ...options.headers },
   });

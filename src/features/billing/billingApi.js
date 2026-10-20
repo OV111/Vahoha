@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders } from "../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../../constants/api";
 
 /**
  * Thin client for /api/billing. Kept separate from the hook so the network
@@ -21,7 +21,7 @@ export class BillingApiError extends Error {
 const request = async (path, { method = "GET", body } = {}) => {
   let res;
   try {
-    res = await fetch(`${API_BASE_URL}/api/billing${path}`, {
+    res = await apiFetch(`${API_BASE_URL}/api/billing${path}`, {
       method,
       headers: { "Content-Type": "application/json", ...authHeaders() },
       credentials: "include",

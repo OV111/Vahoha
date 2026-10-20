@@ -25,7 +25,7 @@ import { formatTimeAgo } from "./ChatInterface";
 import NewGroupModal from "./NewGroupModal";
 import Skeleton from "react-loading-skeleton";
 import useThemeStore from "../../../stores/useThemeStore";
-import { getAccessToken } from "../../../../constants/api";
+import { getAccessToken, apiFetch } from "../../../../constants/api";
 
 // import VoiceChatSvg from "../../../assets/Voice chat-amico.svg";
 const getUserIdFromJWT = (token) => {
@@ -453,7 +453,7 @@ const Chats = () => {
   const fetchUsers = useCallback(async () => {
     setIsLoadingChats(true);
     try {
-      const request = await fetch(
+      const request = await apiFetch(
         `${API_BASE_URL}/my-profile/chats/mutual-followers`,
         {
           method: "GET",
@@ -485,7 +485,7 @@ const Chats = () => {
       setIsLoadingUserStats(true);
       setUserStats(null);
       try {
-        const request = await fetch(
+        const request = await apiFetch(
           `${API_BASE_URL}/my-profile/chats/${receiverId}/stats`,
           {
             method: "GET",

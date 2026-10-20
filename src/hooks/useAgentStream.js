@@ -1,5 +1,6 @@
 import { useRef, useCallback } from "react";
 import useAiAgentStore from "@/stores/useAiAgentStore";
+import { apiFetch } from "@/lib/session";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
@@ -34,7 +35,7 @@ export default function useAgentStream() {
     setError(null);
 
     try {
-      const res = await fetch(`${BASE_URL}/api/ai-agent/stream`, {
+      const res = await apiFetch(`${BASE_URL}/api/ai-agent/stream`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

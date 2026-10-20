@@ -6,7 +6,7 @@ import CommentPopover from "./CommentPopover";
 import { toast } from "sonner";
 import useAuthStore from "../../stores/useAuthStore";
 import useBlogInteractionsStore from "../../stores/useBlogInteractionsStore";
-import { API_BASE_URL, authHeaders } from "../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../../constants/api";
 
 import fs1React    from "../../assets/blog-pics/fs1React.jpg";
 import buildingApi from "../../assets/blog-pics/BuildingRestApi.png";
@@ -122,7 +122,7 @@ const BlogCard = ({ card }) => {
     setLikesCount((prev) => (wasLiked ? prev - 1 : prev + 1));
     setLikeLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/blogs/${post.rawId}/like`, {
+      const res = await apiFetch(`${API_BASE_URL}/blogs/${post.rawId}/like`, {
         method: "POST",
         headers: authHeaders(),
       });
@@ -143,7 +143,7 @@ const BlogCard = ({ card }) => {
     toggleSaved(post.rawId);
     setSaveLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/blogs/${post.rawId}/favourite`, {
+      const res = await apiFetch(`${API_BASE_URL}/blogs/${post.rawId}/favourite`, {
         method: "POST",
         headers: authHeaders(),
       });

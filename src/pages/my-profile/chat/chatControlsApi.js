@@ -1,7 +1,7 @@
-import { API_BASE_URL, authHeaders } from "../../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
 
 const request = async (path, options = {}) => {
-  const res = await fetch(`${API_BASE_URL}/my-profile/chats${path}`, {
+  const res = await apiFetch(`${API_BASE_URL}/my-profile/chats${path}`, {
     ...options,
     headers: { "Content-Type": "application/json", ...authHeaders() },
   });
@@ -29,7 +29,7 @@ export const unblockUser = (userId) =>
 
 // Blocked people with name / username / avatar, for the Blocked users page.
 export const getBlockedUserList = async () => {
-  const res = await fetch(`${API_BASE_URL}/my-profile/blocked-users`, {
+  const res = await apiFetch(`${API_BASE_URL}/my-profile/blocked-users`, {
     headers: authHeaders(),
   });
   const data = await res.json().catch(() => ({}));
@@ -42,7 +42,7 @@ export const getBlockedUserList = async () => {
 export const sendAttachment = async (roomId, file) => {
   const form = new FormData();
   form.append("file", file, file.name);
-  const res = await fetch(`${API_BASE_URL}/my-profile/chats/rooms/${roomId}/attachment`, {
+  const res = await apiFetch(`${API_BASE_URL}/my-profile/chats/rooms/${roomId}/attachment`, {
     method: "POST",
     headers: authHeaders(),
     body: form,
@@ -58,7 +58,7 @@ export const sendVoiceMessage = async (roomId, blob, durationMs) => {
   const form = new FormData();
   form.append("durationMs", String(durationMs));
   form.append("audio", blob, "voice");
-  const res = await fetch(`${API_BASE_URL}/my-profile/chats/rooms/${roomId}/voice`, {
+  const res = await apiFetch(`${API_BASE_URL}/my-profile/chats/rooms/${roomId}/voice`, {
     method: "POST",
     headers: authHeaders(),
     body: form,

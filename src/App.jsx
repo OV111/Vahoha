@@ -1,5 +1,6 @@
 import React, { useEffect, Suspense } from "react";
 import { RouterProvider } from "react-router-dom";
+import { toast } from "sonner";
 import "./index.css";
 
 import router from "./router";
@@ -12,7 +13,7 @@ import useProfileStore from "./stores/useProfileStore";
 
 
 const App = () => {
-  const { init, auth, session } = useAuthStore();
+  const { init, auth, session, expiredAt } = useAuthStore();
   const { connectWs, disconnectWs, clearNotifications, loadNotifications } = useNotificationStore();
   const { fetchInteractions, reset } = useBlogInteractionsStore();
   const { fetchProfile, clearProfile } = useProfileStore();
@@ -20,6 +21,14 @@ const App = () => {
   useEffect(() => {
     init();
   }, [init]);
+
+  // The session ended on its own (refresh cookie expired or revoked), so say
+  // why the user is suddenly logged out and send them to log in again.
+  useEffect(() => {
+    if (!expiredAt) return;
+    toast.error("Your session expired. Please log in again.");
+    router.navigate("/get-started");
+  }, [expiredAt]);
 
   useEffect(() => {
     if (auth) {

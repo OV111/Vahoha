@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders } from "../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../../constants/api";
 
 /**
  * Thin client for /api/capstone. Every call resolves to the response's `data`
@@ -9,7 +9,7 @@ import { API_BASE_URL, authHeaders } from "../../../constants/api";
 const request = async (path, { method = "GET", body } = {}) => {
   let res;
   try {
-    res = await fetch(`${API_BASE_URL}/api/capstone${path}`, {
+    res = await apiFetch(`${API_BASE_URL}/api/capstone${path}`, {
       method,
       headers: {
         ...authHeaders(),

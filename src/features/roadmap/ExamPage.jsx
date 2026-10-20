@@ -6,7 +6,7 @@ import {
   Clock, ChevronRight, ChevronLeft, CheckCircle2, XCircle,
   RotateCcw, ArrowLeft, Loader2, AlertTriangle, Timer, ListChecks, Eye,
 } from "lucide-react";
-import { API_BASE_URL, authHeaders } from "../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../../constants/api";
 import { EXAM_RULES } from "../../../constants/exam";
 import useRoadmapStore from "../../stores/useRoadmapStore";
 import InlineTeachBack from "./components/InlineTeachBack";
@@ -294,7 +294,7 @@ function ExamRunner() {
     setExamData(null);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/exams/generate`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/exams/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ path, layer: layerId }),
@@ -355,7 +355,7 @@ function ExamRunner() {
     setSubmitting(true);
     setSubmitError("");
     try {
-      const res = await fetch(`${API_BASE_URL}/api/exams/submit`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/exams/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ attemptId: examData.attemptId, answers: finalAnswers, integrity: integrityRef.current }),

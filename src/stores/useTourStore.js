@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { API_BASE_URL, authHeaders } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
 import useAuthStore from "./useAuthStore";
 
 /**
@@ -19,7 +19,7 @@ const useTourStore = create((set, get) => ({
     if (get().status === "loading" || get().status === "loaded") return;
     set({ status: "loading" });
     try {
-      const res = await fetch(`${API_BASE_URL}/api/onboarding`, { headers: authHeaders() });
+      const res = await apiFetch(`${API_BASE_URL}/api/onboarding`, { headers: authHeaders() });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const { seen } = await res.json();
       set({ seen, status: "loaded" });
@@ -35,7 +35,7 @@ const useTourStore = create((set, get) => ({
   markSeen: async (tourId) => {
     set((s) => ({ seen: [...new Set([...(s.seen ?? []), tourId])] }));
     try {
-      await fetch(`${API_BASE_URL}/api/onboarding/${tourId}/seen`, {
+      await apiFetch(`${API_BASE_URL}/api/onboarding/${tourId}/seen`, {
         method: "PUT",
         headers: authHeaders(),
       });

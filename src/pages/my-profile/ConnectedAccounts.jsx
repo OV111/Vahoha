@@ -7,7 +7,7 @@ import XLogo from "@/components/ui/XLogo";
 import { toast } from "sonner";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { getAccessToken } from "../../../constants/api";
+import { getAccessToken, apiFetch } from "../../../constants/api";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -75,7 +75,7 @@ const ConnectedAccounts = () => {
       const token = getAccessToken();
       const formData = new FormData();
       Object.entries(links).forEach(([k, v]) => formData.append(k, v));
-      const res = await fetch(`${API_BASE_URL}/my-profile/settings`, {
+      const res = await apiFetch(`${API_BASE_URL}/my-profile/settings`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -105,7 +105,7 @@ const ConnectedAccounts = () => {
     setDisconnecting(true);
     try {
       const token = getAccessToken();
-      const res = await fetch(`${API_BASE_URL}/auth/github/disconnect`, {
+      const res = await apiFetch(`${API_BASE_URL}/auth/github/disconnect`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

@@ -1,14 +1,14 @@
-import { API_BASE_URL, authHeaders } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
 
 export const fetchComments = async (blogId) => {
-  const res = await fetch(`${API_BASE_URL}/blogs/${blogId}/comments`);
+  const res = await apiFetch(`${API_BASE_URL}/blogs/${blogId}/comments`);
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || "Failed to fetch comments");
   return data.comments ?? [];
 };
 
 export const postComment = async (blogId, text) => {
-  const res = await fetch(`${API_BASE_URL}/blogs/${blogId}/comments`, {
+  const res = await apiFetch(`${API_BASE_URL}/blogs/${blogId}/comments`, {
     method: "POST",
     headers: { "Content-Type": "application/json", ...authHeaders() },
     body: JSON.stringify({ text }),
@@ -19,7 +19,7 @@ export const postComment = async (blogId, text) => {
 };
 
 export const deleteComment = async (blogId, commentId) => {
-  const res = await fetch(`${API_BASE_URL}/blogs/${blogId}/comments/${commentId}`, {
+  const res = await apiFetch(`${API_BASE_URL}/blogs/${blogId}/comments/${commentId}`, {
     method: "DELETE",
     headers: authHeaders(),
   });

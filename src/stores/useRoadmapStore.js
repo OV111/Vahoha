@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { API_BASE_URL, authHeaders } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
 import useAuthStore from "./useAuthStore";
 
 // /roadmaps is public, so every server call below is guarded here — the one
@@ -9,7 +9,7 @@ const isGuest = () => !useAuthStore.getState().auth;
 
 const fetchProgress = async () => {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/roadmaps/progress`, {
+    const res = await apiFetch(`${API_BASE_URL}/api/roadmaps/progress`, {
       headers: authHeaders(),
     });
     if (!res.ok) return null;
@@ -22,7 +22,7 @@ const fetchProgress = async () => {
 
 const persistProgress = async (layerProgress, activePath) => {
   try {
-    await fetch(`${API_BASE_URL}/api/roadmaps/progress`, {
+    await apiFetch(`${API_BASE_URL}/api/roadmaps/progress`, {
       method: "POST",
       headers: { "Content-Type": "application/json", ...authHeaders() },
       body: JSON.stringify({ layerProgress, activePath }),
@@ -41,7 +41,7 @@ const startPath = async (pathId, skillLevel) => {
   try {
     const body = { activePath: pathId };
     if (skillLevel) body.skillLevel = skillLevel;
-    const res = await fetch(`${API_BASE_URL}/api/roadmaps/start`, {
+    const res = await apiFetch(`${API_BASE_URL}/api/roadmaps/start`, {
       method: "POST",
       headers: { "Content-Type": "application/json", ...authHeaders() },
       body: JSON.stringify(body),

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { API_BASE_URL, authHeaders } from "../../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
 import Badge from "../components/Badge";
 import { DIFFICULTY, TYPE_TONE } from "../lib/challengeTones";
 
@@ -44,7 +44,7 @@ function CodeBlock({ code }) {
 }
 
 const request = async (path, options = {}) => {
-  const res = await fetch(`${API_BASE_URL}/api/challenges${path}`, {
+  const res = await apiFetch(`${API_BASE_URL}/api/challenges${path}`, {
     ...options,
     headers: {
       ...(options.body ? { "Content-Type": "application/json" } : {}),

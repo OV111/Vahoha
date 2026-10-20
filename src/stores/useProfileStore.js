@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { API_BASE_URL, getAccessToken, authHeaders } from "../../constants/api";
+import { API_BASE_URL, getAccessToken, authHeaders, apiFetch } from "../../constants/api";
 import posthog, { isPostHogConfigured } from "../lib/posthog";
 
 const useProfileStore = create((set, get) => ({
@@ -13,13 +13,13 @@ const useProfileStore = create((set, get) => ({
     if (!token) return "unauthorized";
     set({ isLoading: true });
     try {
-      const response = await fetch(`${API_BASE_URL}/my-profile`, {
+      const response = await apiFetch(`${API_BASE_URL}/my-profile`, {
         headers: {
           "Content-Type": "application/json",
           ...authHeaders(),
         },
       });
-      if (response.status === 403) return "unauthorized";
+      if (response.status === 401) return "unauthorized";
       if (!response.ok) return;
       const data = await response.json();
       const user = data.userWithoutPassword;
@@ -45,7 +45,7 @@ const useProfileStore = create((set, get) => ({
     if (!userId) return;
     set({ isBlogsLoading: true });
     try {
-      const response = await fetch(`${API_BASE_URL}/blogs/user/${userId}`);
+      const response = await apiFetch(`${API_BASE_URL}/blogs/user/${userId}`);
       if (!response.ok) {
         set({ isBlogsLoading: false });
         return;
