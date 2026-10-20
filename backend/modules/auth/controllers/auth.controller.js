@@ -11,6 +11,7 @@ import {
   revokeRefreshToken,
   revokeAllRefreshTokens,
 } from "../services/refreshTokenService.js";
+import { claimVerifiedEmail } from "../services/accountClaimService.js";
 import { OAuth2Client } from "google-auth-library";
 import { sanitizeUsername } from "../../../utils/username.js";
 import { trackEvent, trackActiveDay } from "../../../services/eventService.js";
@@ -251,6 +252,8 @@ const googleAuth = async (data) => {
     }
 
     let user = await users.findOne({ email });
+    // Google verified this email: an older unverified password on the account is not trusted.
+    if (user) await claimVerifiedEmail(db, user);
     if (!user) {
       const baseUsername =
         sanitizeUsername(given_name) ||
@@ -258,7 +261,7 @@ const googleAuth = async (data) => {
         "dev";
       const result = await insertUser(
         users,
-        { firstName: given_name, lastName: family_name, email, password: null, googleId, provider: "google" },
+        { firstName: given_name, lastName: family_name, email, password: null, googleId, provider: "google", emailVerified: true },
         baseUsername,
       );
       await usersStats.insertOne(buildDefaultUserStats(result.insertedId));
@@ -397,6 +400,8 @@ const githubCallback = async (req, res) => {
     const matchers = [{ githubId }];
     if (primaryEmail) matchers.push({ email: primaryEmail.toLowerCase() });
     let user = await users.findOne({ $or: matchers });
+    // Matched by a verified GitHub email only: claim the account (see accountClaimService).
+    if (user && primaryEmail && user.githubId !== githubId) await claimVerifiedEmail(db, user);
     if (!user) {
       const baseUsername = sanitizeUsername(githubLogin) || "dev";
       const result = await insertUser(
@@ -407,6 +412,7 @@ const githubCallback = async (req, res) => {
           githubLogin,
           provider: "github",
           password: null,
+          ...(primaryEmail ? { emailVerified: true } : {}),
         },
         baseUsername,
       );
