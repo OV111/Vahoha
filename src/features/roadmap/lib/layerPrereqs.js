@@ -16,3 +16,13 @@ export const prereqsDone = (layer, index, layers, progress) => {
 
   return index > 0 && statusOf(layers[index - 1]) === "done";
 };
+
+// What the tree shows for a layer. "up-next" is the layer the learner should
+// start now: not done, and either a root (the first layer, or `requires: []`)
+// or one whose prerequisites are all done. Everything else is "locked".
+export const layerStatus = (layer, index, layers, progress) => {
+  const own = progress[layer.id] ?? layer.status;
+  if (own === "done" || own === "in-progress") return own;
+  const isRoot = Array.isArray(layer.requires) ? layer.requires.length === 0 : index === 0;
+  return isRoot || prereqsDone(layer, index, layers, progress) ? "up-next" : "locked";
+};

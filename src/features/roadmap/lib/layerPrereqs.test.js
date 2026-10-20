@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { prereqsDone } from "./layerPrereqs";
+import { prereqsDone, layerStatus } from "./layerPrereqs";
 
 const layers = [{ id: "a-1" }, { id: "a-2" }, { id: "a-3", requires: ["a-1", "a-2"] }];
 
@@ -21,5 +21,30 @@ describe("prereqsDone", () => {
   it("treats an unknown required id as not done", () => {
     const l = { id: "x", requires: ["ghost"] };
     expect(prereqsDone(l, 0, [l], { ghost: "done" })).toBe(false);
+  });
+});
+
+describe("layerStatus", () => {
+  it("marks the first layer as up-next when nothing is done", () => {
+    expect(layerStatus(layers[0], 0, layers, {})).toBe("up-next");
+  });
+
+  it("locks later layers until their prerequisites are done", () => {
+    expect(layerStatus(layers[1], 1, layers, {})).toBe("locked");
+    expect(layerStatus(layers[1], 1, layers, { "a-1": "done" })).toBe("up-next");
+  });
+
+  it("keeps done and in-progress as they are", () => {
+    expect(layerStatus(layers[0], 0, layers, { "a-1": "done" })).toBe("done");
+    expect(layerStatus(layers[1], 1, layers, { "a-2": "in-progress" })).toBe("in-progress");
+  });
+
+  it("treats `requires: []` as a root", () => {
+    const root = { id: "r", requires: [] };
+    expect(layerStatus(root, 3, [root], {})).toBe("up-next");
+  });
+
+  it("ignores a stale locked status when the layer is startable", () => {
+    expect(layerStatus({ id: "a-1", status: "locked" }, 0, layers, {})).toBe("up-next");
   });
 });

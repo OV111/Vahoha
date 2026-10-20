@@ -58,6 +58,15 @@ export const buildLessons = (layer) => {
  * roadmap tree can link each subtopic card to its lesson without knowing how
  * slugs are made. If a section repeats a title, the first one wins.
  */
+export const lessonSlugs = (layer) => {
+  const slugs = new Map();
+  for (const l of buildLessons(layer)) {
+    const key = `${l.section}::${l.title}`;
+    if (!slugs.has(key)) slugs.set(key, l.slug);
+  }
+  return (section, title) => slugs.get(`${section}::${title}`) ?? null;
+};
+
 export const lessonHrefs = (trackId, layer) => {
   const hrefs = new Map();
   for (const l of buildLessons(layer)) {

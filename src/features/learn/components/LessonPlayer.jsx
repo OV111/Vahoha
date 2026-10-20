@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
+import { FlaskConical, ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
 import MarkdownMessage from "@/features/ai-agent/components/MarkdownMessage";
 import CheckQuestion from "./CheckQuestion";
 import ExplainBack from "./ExplainBack";
@@ -88,17 +88,28 @@ function scoreLine({ right, answered, total }) {
     .join(" ");
 }
 
-function Finished({ lesson, content, score, next, testHref, layerTitle }) {
+function Finished({ lesson, content, score, next, testHref, layerTitle, labHref }) {
   return (
     <div className="mx-auto max-w-2xl">
       <h2 className="text-[28px] font-semibold leading-tight text-neutral-50">You finished this lesson</h2>
       <p className="mt-3 text-[17px] leading-relaxed text-neutral-300">{scoreLine(score)}</p>
 
       <div className="mt-8 flex flex-wrap gap-3">
+        {/* A lesson with a lab: practice first (LAB_SYSTEM.md flow), the next lesson stays one click away. */}
+        {labHref && (
+          <Link
+            to={labHref}
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-purple-600 px-6 text-[15px] font-medium text-white hover:bg-purple-500"
+          >
+            <FlaskConical size={15} aria-hidden="true" /> Practice it in the lab
+          </Link>
+        )}
         {next ? (
           <Link
             to={next.href}
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-purple-600 px-6 text-[15px] font-medium text-white hover:bg-purple-500"
+            className={labHref
+              ? "inline-flex min-h-11 items-center gap-2 rounded-xl border border-neutral-700 px-5 text-[15px] text-neutral-200 hover:border-purple-500"
+              : "inline-flex min-h-11 items-center gap-2 rounded-xl bg-purple-600 px-6 text-[15px] font-medium text-white hover:bg-purple-500"}
           >
             Next lesson: {next.title} <ArrowRight size={15} aria-hidden="true" />
           </Link>
@@ -136,7 +147,7 @@ function Finished({ lesson, content, score, next, testHref, layerTitle }) {
  * The current step lives in the URL (?step=4), so Back, refresh and shared
  * links all land on the same screen.
  */
-export default function LessonPlayer({ track, layer, lesson, content, next, testHref }) {
+export default function LessonPlayer({ track, layer, lesson, content, next, testHref, labHref }) {
   const { steps } = content;
   const [params, setParams] = useSearchParams();
   const [answers, setAnswers] = useState({}); // step index -> picked option
@@ -218,6 +229,7 @@ export default function LessonPlayer({ track, layer, lesson, content, next, test
             score={score}
             next={next}
             testHref={testHref}
+            labHref={labHref}
             layerTitle={layer.title}
           />
         </div>

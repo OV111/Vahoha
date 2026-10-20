@@ -9,6 +9,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 export default defineConfig({
   root,
   resolve: { alias: { '@': path.resolve(root, 'src') } },
+  // Components use the automatic JSX runtime (no `import React`), same as Vite.
+  esbuild: { jsx: 'automatic' },
   test: {
     include: ['src/**/*.test.{js,jsx}'],
     environment: 'jsdom',

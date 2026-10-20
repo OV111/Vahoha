@@ -13,6 +13,7 @@ import {
   Users,
   TrendingUp,
   UserSearch,
+  FlaskConical,
 } from "lucide-react";
 import { CATEGORY_OPTIONS, categoryHref } from "./categories";
 import { FEATURES } from "./features";
@@ -41,6 +42,7 @@ export const NAV_GROUPS_AUTH = [
     showTracks: true,
     items: [
       { label: "Roadmaps", to: "/roadmaps", icon: Map, description: "Step-by-step paths to job-ready", public: true },
+      { label: "Labs", to: "/labs", icon: FlaskConical, description: "Hands-on practice for every lesson", public: true },
       { label: "Code Library", to: "/libs", icon: Library, description: "Books, docs, guides and sheets" },
       { label: "Blog", to: "/blogs", icon: Newspaper, description: "Posts from the community" },
     ],

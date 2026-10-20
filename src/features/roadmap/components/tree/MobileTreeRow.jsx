@@ -1,139 +1,115 @@
-import { motion, AnimatePresence } from "framer-motion"; // eslint-disable-line no-unused-vars
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion"; // eslint-disable-line no-unused-vars
+import { ChevronDown } from "lucide-react";
 import LayerNode from "../LayerNode";
-import { RESOURCE_BADGE_COLORS } from "./treeTokens";
-import useRoadmapStore from "@/stores/useRoadmapStore";
-import { lessonHrefs } from "@/features/learn/lib/curriculum";
+import StatusIcon from "./StatusIcon";
+import { STATUS_META } from "./statusMeta";
+import { useLayerTree } from "../../hooks/useLayerTree";
 
-// Below ~1280px there's no room for a three-column spine, so this collapses
-// to a single vertical flow: layer -> its sections -> their subtopics,
-// each level indented under the previous with a simple border-left spine
-// instead of computed SVG paths. Nothing here needs DOM measurement, which
-// is also what guarantees it can never clip — every card is full-width
-// within its own indentation level, never absolutely positioned.
-//
-// Touch screens have no hover, so the desktop "hover to reveal description"
-// becomes tap-to-expand (accordion). Only one subtopic per layer is open at a
-// time, which keeps the layer short enough to scroll through quickly.
-const MobileSubtopic = ({ title, description, resources = [], href, open, onToggle }) => {
-  const expandable = Boolean(description) || resources.length > 0 || Boolean(href);
+// Narrow screens: no mind-map. The layer card on top, then each topic as a
+// collapsible section with its lessons listed underneath. Everything is
+// full-width in normal flow, so nothing can scroll sideways, and every
+// control has at least a 44px touch target.
 
+const MobileLesson = ({ lesson }) => {
+  const meta = STATUS_META[lesson.status] ?? STATUS_META.not_started;
   return (
-    <div className="pl-4 border-l border-neutral-800">
-      <button
-        type="button"
-        onClick={expandable ? onToggle : undefined}
-        aria-expanded={expandable ? open : undefined}
-        disabled={!expandable}
-        // Visible row stays compact; the invisible ::after pads the tap area to ~44px.
-        className="relative w-full flex items-center justify-between gap-2 py-2 text-left cursor-pointer disabled:cursor-default after:absolute after:-inset-y-1 after:inset-x-0"
+    <li
+      style={{ borderLeftColor: meta.edge }}
+      className={`flex items-start gap-3 rounded-xl border border-l-[3px] px-3 transition-colors duration-150 ${
+        lesson.status === "done" ? "border-emerald-900/70 bg-emerald-950/25" : "border-neutral-800 bg-neutral-900/70"
+      } ${lesson.status === "skipped" ? "opacity-60" : ""}`}
+    >
+      <Link
+        to={lesson.href ?? "#"}
+        data-tree-node
+        aria-label={`${lesson.title}. ${meta.label}. Open lesson`}
+        className="flex min-h-11 min-w-0 flex-1 flex-col justify-center gap-0.5 rounded-lg py-2.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
       >
-        <span className="text-[12px] font-medium leading-snug text-purple-600">
-          {title}
-        </span>
-        {expandable && (
-          <ChevronDown
-            size={14}
-            className={`shrink-0 text-neutral-500 transition-transform duration-200 ${open ? "rotate-180 text-purple-600" : ""}`}
-          />
+        <span className="text-sm font-medium leading-snug text-neutral-100">{lesson.title}</span>
+        {lesson.description && (
+          <span className="text-xs leading-relaxed text-neutral-400 line-clamp-2">{lesson.description}</span>
         )}
-      </button>
-
-      <AnimatePresence initial={false}>
-        {open && expandable && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.18 }}
-            className="overflow-hidden"
-          >
-            {description && (
-              <p className="text-[11px] text-neutral-400 leading-relaxed">{description}</p>
-            )}
-            {href && (
-              <Link
-                to={href}
-                className="mt-2 inline-flex min-h-11 items-center gap-1.5 text-[12px] font-medium text-purple-400 hover:text-purple-300"
-              >
-                Open lesson <ArrowRight size={12} aria-hidden="true" />
-              </Link>
-            )}
-            {resources.length > 0 && (
-              <div className="flex flex-wrap gap-1 mt-1.5 pb-2">
-                {resources.slice(0, 3).map((r, i) => (
-                  <span
-                    key={i}
-                    className={`text-[9px] px-1.5 py-0.5 rounded-md border font-medium ${
-                      RESOURCE_BADGE_COLORS[r.type] ?? "bg-neutral-700/40 text-neutral-400 border-neutral-600/30"
-                    }`}
-                  >
-                    {r.type}
-                  </span>
-                ))}
-              </div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+        {lesson.minutes ? <span className="text-[11px] text-neutral-400">~{lesson.minutes} min</span> : null}
+      </Link>
+      <div className="pt-2.5">
+        <StatusIcon status={lesson.status} />
+      </div>
+    </li>
   );
 };
 
-const MobileSection = ({ section, isDone, hrefFor, openKey, onToggle }) => (
-  <div className="pl-4 border-l border-neutral-700/60 py-2">
-    <p className={`text-[13px] font-semibold ${isDone ? "text-purple-200" : "text-neutral-200"}`}>
-      {section.title}
-    </p>
-    {(section.children ?? []).length > 0 && (
-      <div className="mt-1 flex flex-col">
-        {section.children.map((c) => {
-          const key = `${section.title}::${c.title}`;
-          return (
-            <MobileSubtopic
-              key={c.title}
-              title={c.title}
-              description={c.description}
-              resources={c.resources ?? []}
-              href={hrefFor?.(section.title, c.title)}
-              open={openKey === key}
-              onToggle={() => onToggle(key)}
-            />
-          );
-        })}
-      </div>
-    )}
-  </div>
-);
+const MobileSection = ({ section, defaultOpen }) => {
+  const [open, setOpen] = useState(defaultOpen);
+  const listId = useId();
+  const meta = STATUS_META[section.status] ?? STATUS_META.not_started;
+  const { completed, total } = section.summary;
 
-const MobileTreeRow = ({ layer, index, isDone }) => {
-  const sections = [...(layer.sideLeft ?? []), ...(layer.sideRight ?? [])];
-  const [openKey, setOpenKey] = useState(null);
-  const selectedTrack = useRoadmapStore((s) => s.selectedTrack);
-  const hrefFor = selectedTrack ? lessonHrefs(selectedTrack.id, layer) : null;
-  const toggle = (key) => setOpenKey((current) => (current === key ? null : key));
+  return (
+    <section
+      className={`rounded-2xl border bg-black transition-colors duration-150 ${
+        section.status === "done" ? "border-emerald-800/70" : "border-neutral-700"
+      }`}
+    >
+      <div className="flex items-center gap-3 px-3">
+        <button
+          type="button"
+          data-tree-node
+          aria-expanded={open}
+          aria-controls={listId}
+          aria-label={`${section.title}. ${completed} of ${total} lessons finished. ${meta.label}. ${open ? "Collapse" : "Expand"}`}
+          onClick={() => setOpen((o) => !o)}
+          className="flex min-h-12 min-w-0 flex-1 items-center gap-2 rounded-lg py-2 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+        >
+          <span className="flex min-w-0 flex-1 flex-col">
+            <span className="text-sm font-semibold leading-snug text-neutral-50">{section.title}</span>
+            <span className="text-xs tabular-nums text-neutral-400">
+              {completed}/{total}
+            </span>
+          </span>
+          <StatusIcon status={section.status} />
+          <ChevronDown
+            size={18}
+            aria-hidden="true"
+            className={`shrink-0 text-neutral-400 transition-transform duration-200 ${open ? "" : "-rotate-90"}`}
+          />
+        </button>
+      </div>
+
+      {open && (
+        <ul id={listId} className="flex flex-col gap-2 px-3 pb-3">
+          {section.lessons.map((lesson) => (
+            <MobileLesson key={lesson.slug ?? lesson.title} lesson={lesson} />
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+};
+
+const MobileTreeRow = ({ layer, index, status }) => {
+  const { left, right, summary, view, ctaHref } = useLayerTree(layer, status);
+  const sections = [...left, ...right];
+  // Open the topics of the layer the learner is working on; keep the rest short.
+  const defaultOpen = view.tone === "up-next" || view.tone === "in-progress" || view.tone === "ready";
 
   return (
     <motion.div
-      className="w-full max-w-xl mx-auto"
-      initial={{ opacity: 0, y: 16 }}
+      className="mx-auto w-full max-w-xl"
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: Math.min(index * 0.05, 0.3) }}
+      transition={{ duration: 0.2, delay: Math.min(index * 0.05, 0.3) }}
     >
-      <LayerNode layer={layer} index={index} resolvedStatus={isDone ? "done" : (layer.status ?? "locked")} />
+      <LayerNode layer={layer} index={index} view={view} summary={summary} ctaHref={ctaHref} />
 
       {sections.length > 0 && (
-        <div className="mt-3 pl-5 flex flex-col">
-          {sections.map((section) => (
+        <div className="mt-3 flex flex-col gap-2 border-l border-neutral-700 pl-3">
+          {sections.map((section, i) => (
             <MobileSection
-              key={section.title}
+              key={`${section.title}-${i}`}
               section={section}
-              isDone={isDone}
-              hrefFor={hrefFor}
-              openKey={openKey}
-              onToggle={toggle}
+              defaultOpen={defaultOpen}
             />
           ))}
         </div>

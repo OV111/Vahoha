@@ -1,9 +1,11 @@
 // eslint-disable-next-line no-unused-vars
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, MotionConfig } from "framer-motion";
+import { TreeSkeleton, TreeEmpty, TreeError } from "./tree/TreeStates";
+import { handleTreeArrowKeys } from "../lib/treeKeyboard";
 import useRoadmapStore from "@/stores/useRoadmapStore";
 import { useTrackLayers } from "../hooks/useTrackLayers";
-import { prereqsDone } from "../lib/layerPrereqs";
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { prereqsDone, layerStatus } from "../lib/layerPrereqs";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 import LayerDetail from "./LayerDetail";
 import { ConnectorProvider } from "./tree/ConnectorContext";
 import DesktopTreeRow from "./tree/DesktopTreeRow";
@@ -26,51 +28,10 @@ const RoadmapTree = () => {
   // Fetches only the selected track (~50 KB), not its whole category file.
   const { layers, loading, error } = useTrackLayers(selectedCategory?.id, selectedTrack?.id);
 
-  if (loading) {
-    return (
-      <motion.div
-        className="mt-20 flex flex-col items-center gap-3"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.1 }}
-      >
-        <div className="w-5 h-5 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" />
-        <p className="text-xs text-neutral-600">Loading roadmap...</p>
-      </motion.div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="mt-20 flex flex-col items-center gap-3" role="alert">
-        <p className="text-sm text-neutral-400">Couldn&rsquo;t load this roadmap.</p>
-        <button
-          type="button"
-          onClick={() => window.location.reload()}
-          className="text-xs text-purple-400 underline underline-offset-4 hover:text-purple-300"
-        >
-          Try again
-        </button>
-      </div>
-    );
-  }
-
-  if (!layers) {
-    return (
-      <motion.div
-        className="mt-20 flex flex-col items-center gap-3"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-      >
-        <div className="text-4xl opacity-30">🚧</div>
-        <p className="text-sm tracking-widest uppercase text-neutral-600">Roadmap being authored</p>
-        <p className="text-xs text-neutral-700 max-w-xs text-center">
-          This track is being carefully crafted. Check back soon.
-        </p>
-      </motion.div>
-    );
-  }
+  if (loading) return <TreeSkeleton desktop={isDesktop} />;
+  // useTrackLayers has no refetch; a reload re-requests the track file.
+  if (error) return <TreeError onRetry={() => window.location.reload()} />;
+  if (!layers || layers.length === 0) return <TreeEmpty />;
 
   const totalLayers = layers.length;
   const doneCount = layers.filter(
@@ -79,13 +40,16 @@ const RoadmapTree = () => {
   const eta = ETA_MAP[selectedTrack?.id] ?? `~${totalLayers * 2} weeks`;
 
   return (
-    <>
+    // reducedMotion="user": every framer animation below goes instant when the OS asks for less motion.
+    <MotionConfig reducedMotion="user">
       <style>{`
         @keyframes in-progress-pulse {
           0%, 100% { box-shadow: 0 0 0 0 rgba(147,51,234,0.0), 0 0 12px rgba(147,51,234,0.3); }
           50%       { box-shadow: 0 0 0 4px rgba(147,51,234,0.12), 0 0 22px rgba(147,51,234,0.5); }
         }
-        .layer-in-progress { animation: in-progress-pulse 2.5s ease-in-out infinite; }
+        @media (prefers-reduced-motion: no-preference) {
+          .layer-in-progress { animation: in-progress-pulse 2.5s ease-in-out infinite; }
+        }
       `}</style>
 
       <motion.div
@@ -120,22 +84,8 @@ const RoadmapTree = () => {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div className="flex items-center gap-5 text-[12px] text-neutral-400">
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-purple-500 inline-block" />
-                done
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-violet-400 inline-block ring-2 ring-violet-500/40" />
-                in progress
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-neutral-600 inline-block" />
-                locked
-              </span>
-            </div>
-
+          {/* No status legend: the map's only mark is the ✓, explained in the hint below. */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3">
             <div className="flex items-center gap-3">
               <span className="text-[12px] text-neutral-400 font-mono whitespace-nowrap">
                 {doneCount} / {totalLayers} layers
@@ -152,8 +102,8 @@ const RoadmapTree = () => {
           <div className="mt-4 border-t border-neutral-800" />
 
           {isDesktop && (
-            <p className="mt-3 text-[10px] text-neutral-600 text-center">
-              Click any subtopic to start learning it · hover to preview what it covers
+            <p className="mt-3 text-xs text-neutral-400 text-center">
+              Click a lesson to open it · hover to preview · ✓ marks finished lessons, tracked as you learn
             </p>
           )}
         </div>
@@ -161,14 +111,14 @@ const RoadmapTree = () => {
         {isDesktop ? (
           // Tree fills the page width naturally (no max-content / scroll box).
           <ConnectorProvider className="w-full pb-10">
-            <div className="flex w-full flex-col items-center gap-0 px-10">
+            <div className="flex w-full flex-col items-center gap-0 px-10" onKeyDown={handleTreeArrowKeys}>
               {layers.map((layer, index) => (
                 <DesktopTreeRow
                   key={layer.id}
                   layer={layer}
                   index={index}
-                  isLast={index === layers.length - 1}
                   isDone={(layerProgress[layer.id] ?? layer.status) === "done"}
+                  status={layerStatus(layer, index, layers, layerProgress)}
                   isPrevDone={prereqsDone(layer, index, layers, layerProgress)}
                 />
               ))}
@@ -177,13 +127,14 @@ const RoadmapTree = () => {
             </div>
           </ConnectorProvider>
         ) : (
-          <div className="flex flex-col gap-5 px-4 pb-10">
+          <div className="flex flex-col gap-5 px-4 pb-10" onKeyDown={handleTreeArrowKeys}>
             {layers.map((layer, index) => (
               <MobileTreeRow
                 key={layer.id}
                 layer={layer}
                 index={index}
                 isDone={(layerProgress[layer.id] ?? layer.status) === "done"}
+                status={layerStatus(layer, index, layers, layerProgress)}
               />
             ))}
             <CapstoneRoadmapNode trackId={selectedTrack.id} />
@@ -192,7 +143,7 @@ const RoadmapTree = () => {
       </motion.div>
 
       <AnimatePresence>{isPanelOpen && <LayerDetail />}</AnimatePresence>
-    </>
+    </MotionConfig>
   );
 };
 

@@ -1,5 +1,8 @@
+import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, ExternalLink, Sparkles } from "lucide-react";
+import { markLessonOpened } from "./lib/lessonStatus";
+import { hasLab } from "@/features/labs/content";
+import { ArrowLeft, ArrowRight, ExternalLink, FlaskConical, Sparkles } from "lucide-react";
 import useLearnLayer from "./hooks/useLearnLayer";
 import useLessonContent from "./hooks/useLessonContent";
 import LearnState from "./components/LearnState";
@@ -16,6 +19,12 @@ export default function TopicPage() {
   // Known before anything loads, so the placeholder already has the right shape.
   const variant = content.status === "none" ? "article" : "lesson";
 
+  // Opening a real lesson marks it "in progress" on the roadmap; no manual ticking.
+  const exists = status === "ready" && lessons.some((l) => l.slug === topicSlug);
+  useEffect(() => {
+    if (exists) markLessonOpened(trackId, layerId, topicSlug);
+  }, [exists, trackId, layerId, topicSlug]);
+
   if (status !== "ready") return <LearnState status={status} variant={variant} />;
   if (content.status === "loading") return <LearnState status="loading" variant="lesson" />;
   const found = findLesson(lessons, topicSlug);
@@ -23,6 +32,7 @@ export default function TopicPage() {
 
   const { lesson, prev, next, total } = found;
   const base = `/learn/${track.id}/${layer.id}`;
+  const labHref = hasLab(track.id, layer.id, lesson.slug) ? `${base}/${lesson.slug}/lab` : null;
 
   // A written lesson gets the step-by-step player; the rest keep the summary page.
   if (content.status === "ready") {
@@ -36,6 +46,7 @@ export default function TopicPage() {
         content={content.lesson}
         next={next ? { href: `${base}/${next.slug}`, title: next.title } : null}
         testHref={`/roadmaps/exam/${layer.id}?path=${track.domain.id}`}
+        labHref={labHref}
       />
     );
   }
@@ -86,7 +97,15 @@ export default function TopicPage() {
         </>
       )}
 
-      <section className="mt-8">
+      <section className="mt-8 flex flex-wrap gap-3">
+        {labHref && (
+          <Link
+            to={labHref}
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-purple-600 px-4 text-sm font-medium text-white transition-colors hover:bg-purple-500"
+          >
+            <FlaskConical size={14} aria-hidden="true" /> Practice it in the lab
+          </Link>
+        )}
         <Link
           to="/ai-agent"
           className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-purple-600/50 px-4 text-sm font-medium text-purple-300 transition-colors hover:bg-purple-600/20"

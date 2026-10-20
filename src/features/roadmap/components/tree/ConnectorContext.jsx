@@ -12,6 +12,8 @@ export const ConnectorProvider = ({ children, className }) => {
   const nodesRef = useRef(new Map()); // id -> HTMLElement
   const connectionsRef = useRef(new Map()); // id -> { fromId, toId, dashed, color, strokeWidth }
   const [paths, setPaths] = useState({});
+  // Connection ids on the hovered/focused path, drawn last and in the highlight color.
+  const [highlight, setHighlight] = useState(null);
   const [svgSize, setSvgSize] = useState({ width: 0, height: 0 });
   const rafRef = useRef(null);
 
@@ -110,10 +112,15 @@ export const ConnectorProvider = ({ children, className }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // setHighlight is a state setter (stable), so the context value never changes
+  // on hover and the cards don't re-render; only this provider's SVG does.
   const value = useMemo(
-    () => ({ containerRef, registerNode, registerConnection }),
+    () => ({ containerRef, registerNode, registerConnection, setHighlight }),
     [registerNode, registerConnection],
   );
+
+  const lit = new Set(highlight ?? []);
+  const ordered = Object.entries(paths).sort(([a], [b]) => Number(lit.has(a)) - Number(lit.has(b)));
 
   return (
     <ConnectorContext.Provider value={value}>
@@ -125,17 +132,21 @@ export const ConnectorProvider = ({ children, className }) => {
           className="pointer-events-none absolute top-0 left-0"
           style={{ overflow: "visible" }}
         >
-          {Object.entries(paths).map(([id, p]) => (
-            <path
-              key={id}
-              d={p.d}
-              fill="none"
-              stroke={p.color ?? "#404040"}
-              strokeWidth={p.strokeWidth ?? 1.5}
-              strokeDasharray={p.dashed ? "5 4" : "none"}
-              opacity={p.opacity ?? 0.6}
-            />
-          ))}
+          {ordered.map(([id, p]) => {
+            const on = lit.has(id);
+            return (
+              <path
+                key={id}
+                d={p.d}
+                fill="none"
+                stroke={on ? "#c084fc" : (p.color ?? "#71717a")}
+                strokeWidth={on ? (p.strokeWidth ?? 1.5) + 1 : (p.strokeWidth ?? 1.5)}
+                strokeDasharray={p.dashed && !on ? "5 4" : "none"}
+                opacity={on ? 1 : (p.opacity ?? 0.8)}
+                style={{ transition: "stroke 150ms, stroke-width 150ms, opacity 150ms" }}
+              />
+            );
+          })}
         </svg>
       </div>
     </ConnectorContext.Provider>

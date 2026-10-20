@@ -3,8 +3,8 @@ import LayerNode from "../LayerNode";
 import SectionCard from "./SectionCard";
 import { useConnection, useConnectorNode } from "./connectorHooks";
 import { TREE_TOKENS } from "./treeTokens";
-import useRoadmapStore from "@/stores/useRoadmapStore";
-import { lessonHrefs } from "@/features/learn/lib/curriculum";
+import { PATH_COLORS } from "./statusMeta";
+import { useLayerTree } from "../../hooks/useLayerTree";
 
 // Section and subtopic cards are fixed-width and stack vertically, so every
 // row's side panel is naturally this width UNLESS a layer has zero sections
@@ -14,60 +14,69 @@ import { lessonHrefs } from "@/features/learn/lib/curriculum";
 // row's panel reserves the same footprint even when empty.
 const SIDE_PANEL_MIN_WIDTH = TREE_TOKENS.sectionWidth + 24 /* gap-6 */ + TREE_TOKENS.subtopicWidth;
 
-// One layer's full row: left sections | layer node | right sections. All
-// three columns sit in normal flex flow now (no SIDE_W-guessed widths) so
-// nothing needs a fixed width beyond the subtopic/section cards themselves —
-// the row is only as wide as its content, which is what lets the container
-// decide whether to scroll instead of silently clipping the right column.
-const LayerToSectionLink = ({ layerId, sectionId, isDone }) => {
+// Layer -> topic connector. A finished topic gets the accent color.
+const LayerToSectionLink = ({ layerId, sectionId, done }) => {
   useConnection(`${layerId}->${sectionId}`, {
     fromId: layerId,
     toId: sectionId,
-    dashed: !isDone,
-    color: isDone ? TREE_TOKENS.doneColor : "#333333",
-    strokeWidth: 1.5,
-    opacity: isDone ? 0.8 : 0.5,
+    dashed: !done,
+    color: done ? PATH_COLORS.done : PATH_COLORS.idle,
+    strokeWidth: done ? 2 : 1.5,
+    opacity: done ? 1 : 0.8,
   });
   return null;
 };
 
-const DesktopTreeRow = ({ layer, index, isLast, isDone, isPrevDone }) => {
-  const leftSections = layer.sideLeft ?? [];
-  const rightSections = layer.sideRight ?? [];
+// One side of the row: its topics, each with its lessons.
+const SidePanel = ({ side, sections, layerId }) => (
+  <div
+    className={`flex shrink-0 flex-col justify-center py-8 ${side === "left" ? "items-end" : "items-start"}`}
+    style={{ gap: 24, minWidth: SIDE_PANEL_MIN_WIDTH }}
+  >
+    {sections.map((section, i) => {
+      const sectionId = `${layerId}-${side}-${i}`;
+      return (
+        <div key={`${section.title}-${i}`}>
+          <LayerToSectionLink layerId={layerId} sectionId={sectionId} done={section.status === "done"} />
+          <SectionCard
+            id={sectionId}
+            layerConnectorId={layerId}
+            title={section.title}
+            side={side}
+            status={section.status}
+            summary={section.summary}
+            lessons={section.lessons}
+          />
+        </div>
+      );
+    })}
+  </div>
+);
+
+// One layer's full row: left topics | layer card | right topics.
+const DesktopTreeRow = ({ layer, index, isDone, isPrevDone, status }) => {
   const layerId = `layer-${layer.id}`;
   const layerConnectorRef = useConnectorNode(layerId);
-  const selectedTrack = useRoadmapStore((s) => s.selectedTrack);
-  const hrefFor = selectedTrack ? lessonHrefs(selectedTrack.id, layer) : null;
+  const { left, right, summary, view, ctaHref } = useLayerTree(layer, status);
 
   return (
     <motion.div
       className="flex items-stretch justify-center gap-10 xl:gap-14"
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: Math.min(index * 0.06, 0.35), ease: "easeOut" }}
+      transition={{ duration: 0.2, delay: Math.min(index * 0.05, 0.3), ease: "easeOut" }}
     >
-      {/* Left panel */}
-      <div className="shrink-0 flex flex-col justify-center items-end" style={{ gap: 16, minWidth: SIDE_PANEL_MIN_WIDTH }}>
-        {leftSections.map((section, i) => {
-          const sectionId = `${layerId}-left-${i}`;
-          return (
-            <div key={section.title}>
-              <LayerToSectionLink layerId={layerId} sectionId={sectionId} isDone={isDone} />
-              <SectionCard id={sectionId} title={section.title} side="left" isDone={isDone} hrefFor={hrefFor} children={section.children ?? []} />
-            </div>
-          );
-        })}
-      </div>
+      <SidePanel side="left" sections={left} layerId={layerId} />
 
       {/* Center */}
-      <div style={{ width: 300 }} className="shrink-0 flex flex-col items-center">
-        <div className="flex-1 flex justify-center" style={{ minHeight: 18 }}>
+      <div style={{ width: 300 }} className="flex shrink-0 flex-col items-center">
+        <div className="flex flex-1 justify-center" style={{ minHeight: 18 }}>
           {index > 0 && (
             <div
-              className="w-px h-full"
+              className="h-full w-px"
               style={{
                 background: isPrevDone ? TREE_TOKENS.doneSpine : undefined,
-                borderLeft: !isPrevDone ? "1px dashed #333333" : undefined,
+                borderLeft: !isPrevDone ? `1px dashed ${PATH_COLORS.idle}` : undefined,
               }}
             />
           )}
@@ -76,36 +85,26 @@ const DesktopTreeRow = ({ layer, index, isLast, isDone, isPrevDone }) => {
         <LayerNode
           layer={layer}
           index={index}
-          resolvedStatus={isDone ? "done" : (layer.status ?? "locked")}
+          view={view}
+          summary={summary}
+          ctaHref={ctaHref}
           connectorId={layerId}
           connectorRef={layerConnectorRef}
         />
 
-        <div className="flex-1 flex justify-center" style={{ minHeight: 18 }}>
-          {!isLast && (
-            <div
-              className="w-px h-full"
-              style={{
-                background: isDone ? TREE_TOKENS.doneSpine : undefined,
-                borderLeft: !isDone ? "1px dashed #333333" : undefined,
-              }}
-            />
-          )}
+        {/* Always drawn, the last layer too: the spine continues into the capstone node below the tree. */}
+        <div className="flex flex-1 justify-center" style={{ minHeight: 18 }}>
+          <div
+            className="h-full w-px"
+            style={{
+              background: isDone ? TREE_TOKENS.doneSpine : undefined,
+              borderLeft: !isDone ? `1px dashed ${PATH_COLORS.idle}` : undefined,
+            }}
+          />
         </div>
       </div>
 
-      {/* Right panel */}
-      <div className="shrink-0 flex flex-col justify-center items-start" style={{ gap: 16, minWidth: SIDE_PANEL_MIN_WIDTH }}>
-        {rightSections.map((section, i) => {
-          const sectionId = `${layerId}-right-${i}`;
-          return (
-            <div key={section.title}>
-              <LayerToSectionLink layerId={layerId} sectionId={sectionId} isDone={isDone} />
-              <SectionCard id={sectionId} title={section.title} side="right" isDone={isDone} hrefFor={hrefFor} children={section.children ?? []} />
-            </div>
-          );
-        })}
-      </div>
+      <SidePanel side="right" sections={right} layerId={layerId} />
     </motion.div>
   );
 };

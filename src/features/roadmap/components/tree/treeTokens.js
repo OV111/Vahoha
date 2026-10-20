@@ -3,7 +3,7 @@
 // SubtopicCard the way they had (bug: "card widths/heights inconsistent").
 export const TREE_TOKENS = {
   subtopicWidth: 260,
-  subtopicMinHeight: 76,
+  subtopicMinHeight: 52, // title-only at rest; the description and badges reveal on hover
   cardGap: 12, // flow-layout gap between stacked cards — replaces the fixed CHILD_H slot
   cardRadius: "rounded-xl",
   cardPadding: "px-3.5 py-3",
@@ -12,6 +12,14 @@ export const TREE_TOKENS = {
   // neutral card background as every other state — no purple background fill.
   doneColor: "#7c3aed", // violet-600
   doneSpine: "linear-gradient(to bottom, #7c3aed, #5b21b6)", // violet-600 -> 800
+};
+
+// One badge per resource type, with a count when it repeats. Two "docs"
+// badges side by side said nothing the first one didn't.
+export const summarizeResourceTypes = (resources = []) => {
+  const counts = new Map();
+  for (const r of resources) counts.set(r.type, (counts.get(r.type) ?? 0) + 1);
+  return [...counts].map(([type, count]) => ({ type, count }));
 };
 
 export const RESOURCE_BADGE_COLORS = {

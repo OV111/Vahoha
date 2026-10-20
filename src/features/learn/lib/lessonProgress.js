@@ -4,7 +4,8 @@
 //
 // Storage can be missing or throw (private mode, blocked site data), so every
 // access is guarded and the page works without it.
-const KEY = "vahoha.learn.finished";
+export const FINISHED_KEY = "vahoha.learn.finished";
+const KEY = FINISHED_KEY;
 
 const read = () => {
   try {
@@ -24,6 +25,17 @@ export const finishedLessons = (trackId, layerId) => {
     Object.keys(all)
       .filter((k) => k.startsWith(prefix))
       .map((k) => k.slice(prefix.length)),
+  );
+};
+
+/** slug -> when it was finished (ms), for one layer. Lets a later status change win over an older finish. */
+export const finishedAt = (trackId, layerId) => {
+  const all = read();
+  const prefix = `${trackId}/${layerId}/`;
+  return Object.fromEntries(
+    Object.entries(all)
+      .filter(([k]) => k.startsWith(prefix))
+      .map(([k, at]) => [k.slice(prefix.length), Number(at) || 0]),
   );
 };
 

@@ -14,6 +14,11 @@ export const useConnectorNode = (id) => {
   return useCallback((el) => registerNode(id, el), [registerNode, id]);
 };
 
+// Setter for the hover path: pass the connection ids from the layer to a node
+// (they render in the highlight color, on top), or null to clear. Stable, so
+// calling it never re-renders the cards.
+export const useConnectorHighlight = () => useConnectorContext().setHighlight;
+
 // Declares one edge between two registered node ids. Re-registers whenever
 // the connection's shape changes (e.g. isDone flips its color/dash style).
 export const useConnection = (id, conn) => {
