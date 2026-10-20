@@ -50,13 +50,13 @@ Ask about **what they did in the past, not what they'd do in the future**. "Woul
 1. Have them sign up and take the Layer 1 exam while you watch. **Don't help.** Note where they hesitate.
 2. Ask: *"How would you feel if you couldn't use this anymore?"* (very disappointed / somewhat / not). 40%+ "very disappointed" is the usual product-market-fit bar.
 3. The ask:
-> I'm opening 20 early-access spots: $29 for 3 months of everything, full refund anytime if it's not useful. Want one?
+> I'm opening 20 early-access spots: $15 for 3 months of everything, full refund anytime if it's not useful. Want one?
 
-Use a **Polar checkout link** (billing runs on Polar; see `docs/engineering/BILLING.md`). Make a one-off $29 product in Polar and share its checkout link. No new code needed. "Maybe later" counts as a no.
+Use a **Polar checkout link** (billing runs on Polar; see `docs/engineering/BILLING.md`). Make a one-off $15 product in Polar and share its checkout link. No new code needed. "Maybe later" counts as a no.
 
 ## Tracker
 
-| # | Date | Source | Pain (their words) | Pays for today | Main pain (#6) | Disappointed? | Paid $29? |
+| # | Date | Source | Pain (their words) | Pays for today | Main pain (#6) | Disappointed? | Paid $15? |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | | | | | | | |
 

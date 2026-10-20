@@ -1,4 +1,4 @@
-<!-- /founder:competitor-matrix · 2026-10-11 · input: Vahoha: earned (not self-reported) developer learning: exam-gated roadmaps, teach-back, mastery, AI mentor with learner context, graded challenges, AI-reviewed capstone + timed defense + public certificate, Build Teams (merged PRs to public evidence), opt-in recruiter scorecard; free beta, Pro via Polar, $29 one-off test; compare roadmap.sh, Codecademy, Exercism, Frontend Mentor, Boot.dev and others -->
+<!-- /founder:competitor-matrix · 2026-10-11 · input: Vahoha: earned (not self-reported) developer learning: exam-gated roadmaps, teach-back, mastery, AI mentor with learner context, graded challenges, AI-reviewed capstone + timed defense + public certificate, Build Teams (merged PRs to public evidence), opt-in recruiter scorecard; free beta, Pro via Polar, $15 one-off test; compare roadmap.sh, Codecademy, Exercism, Frontend Mentor, Boot.dev and others -->
 
 # Competitor matrix: Vahoha
 
@@ -35,7 +35,7 @@ Prices checked 2026-10-11 unless noted. Boot.dev's own page showed regional pric
 | Team project with merged PRs and peer review | No | No | No | No | No | No | No | Building (Build Teams) |
 | Public, verifiable certificate or evidence | Unknown | Unknown | Yes (certificates) | No | No | Yes (certification) | Partial (shared with employers only) | Building |
 | Employer-facing profile of verified results | No | No | Partial (job-readiness checker is learner-facing) | No | No | No | Yes (employer-run) | Building (opt-in scorecard) |
-| Lowest paid price | Not found | $33/mo | $14.99/mo | Donation | Not found | €49.90/mo | Sales | Free beta, $29 one-off test |
+| Lowest paid price | Not found | $33/mo | $14.99/mo | Donation | Not found | €49.90/mo | Sales | Free beta, $15 one-off test |
 
 ## 3. Positioning gaps
 

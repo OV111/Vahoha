@@ -106,10 +106,10 @@ Freemium SaaS, expanding later into a two-sided marketplace (developers prove sk
 | Free | $0 | Anyone starting out | Community, first roadmap layers, basic progress |
 | Pro | $15/month | Developers actively learning | AI mentor, full roadmap, certificates |
 | Teams | $60/seat/month (3-seat minimum) | Companies onboarding developers | Progress tracking, reports, bulk certs |
-| Employer Access *(future)* | $299/month | Hiring managers/recruiters | Search verified profiles + progression data |
+| Employer Access *(future)* | $159/month | Hiring managers/recruiters | Search verified profiles + progression data |
 | Featured Company *(future)* | $599/month | Actively hiring companies | Above + visibility to developers on-platform |
 
-Pricing logic: the original reasoning ("below Cursor and Copilot, covers Claude API cost") no longer holds. The mentor runs on Groq `gpt-oss-120b`, a heavy user costs roughly $1–2/month, so price is a **willingness-to-pay question, not a cost question**, and the anchors are Codecademy Plus $14.99 / Pro $19.99 a month, Boot.dev about $33 a month, and roadmap.sh's Team plan $10 per seat (checked 2026-10-11, sources in `docs/founder/competitor-matrix.md`). $15 is a hypothesis to test with a $29 early-access payment (`docs/strategy/OUTREACH_KIT.md`). Billing exists (Polar, sandbox-verified) but is switched off: everything is free during the pilot. Unit economics live in `docs/strategy/BUSINESS_MODEL.md`.
+Pricing logic: the original reasoning ("below Cursor and Copilot, covers Claude API cost") no longer holds. The mentor runs on Groq `gpt-oss-120b`, a heavy user costs roughly $1–2/month, so price is a **willingness-to-pay question, not a cost question**, and the anchors are Codecademy Plus $14.99 / Pro $19.99 a month, Boot.dev about $33 a month, and roadmap.sh's Team plan $10 per seat (checked 2026-10-11, sources in `docs/founder/competitor-matrix.md`). $15 is a hypothesis to test with a $15 early-access payment (`docs/strategy/OUTREACH_KIT.md`). Billing exists (Polar, sandbox-verified) but is switched off: everything is free during the pilot. Unit economics live in `docs/strategy/BUSINESS_MODEL.md`.
 
 The employer-facing tiers are Phase 13+ and explicitly gated on reaching 500+ verified developer profiles first — there's no employer product worth selling without a real pool of verified supply.
 
@@ -155,7 +155,7 @@ Note: freeCodeCamp/The Odin Project are lower threat because they are passive co
 - 176 tracks in 16 categories (Frontend Developer now sits under Full Stack; it, Data Structures & Algorithms, System Design and AI Agents Engineer were authored 2026-10-16; no tracks are coming soon); exam-bank generator built, but banks still have to be seeded and hand-checked for the first track
 - **Zero real users, zero revenue, zero interviews with target users**
 
-**Next 90 days:** no new features. Hand-seed and check Backend Layers 1–3, run 15 interviews with self-taught backend developers, ask each for a $29 early-access payment, run the Wizard-of-Oz oral exam by hand, and read the funnel weekly. Day-60 gate and kill criteria are in `docs/strategy/STARTUP_REVIEW_2026-10.md` §8–9 and `docs/strategy/OUTREACH_KIT.md`.
+**Next 90 days:** no new features. Hand-seed and check Backend Layers 1–3, run 15 interviews with self-taught backend developers, ask each for a $15 early-access payment, run the Wizard-of-Oz oral exam by hand, and read the funnel weekly. Day-60 gate and kill criteria are in `docs/strategy/STARTUP_REVIEW_2026-10.md` §8–9 and `docs/strategy/OUTREACH_KIT.md`.
 
 **If the tests pass:** widen to 50 users on one path, then decide between B2C and instructor-led cohorts (bootcamps and universities) from the data. **If they fail:** treat the project as a portfolio piece; that outcome should be agreed before the experiment starts.
 

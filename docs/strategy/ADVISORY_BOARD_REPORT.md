@@ -224,7 +224,7 @@ The June "8-day MVP loop" is done. The remaining path is short:
 [x] Record 7 core events (userEvents) + admin funnel (GET /api/admin/funnel)
 [x] Rate-limit the LLM routes (mentor stream, teach-back)
 [ ] Make yourself admin (npm run admin:grant) and run the full loop on production as a fresh account
-[ ] Recruit users: 15 interviews + $29 payment test (docs/strategy/OUTREACH_KIT.md)
+[ ] Recruit users: 15 interviews + $15 payment test (docs/strategy/OUTREACH_KIT.md)
 ```
 
 ---

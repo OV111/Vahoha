@@ -10,7 +10,7 @@
 > - **Exam integrity is stronger but still not proof.** Unseen-first sampling from a larger bank, cooldown back on, integrity flags. A multiple-choice exam still cannot stop a second-screen LLM, so any "verified credential" revenue line (certificates, Employer Access, Teams reports) is **not supported by what is built**. See `docs/product/EXAM_INTEGRITY.md`.
 > - **Revenue numbers below are ambitions, not forecasts.** The $15,000–75,000/month range in the opportunity-cost table needs 1,000–5,000 paying users from a base of zero. Free-to-Pro conversion of 8–12% is optimistic (consumer freemium usually converts 2–5%). Users who get hired will cancel, so the 5% monthly churn target is also unproven. `docs/strategy/STARTUP_CRITIQUE_2026-10.md` goes through each.
 > - **Product name:** Vahoha (formerly DevsWebs).
-> - **First payment test:** before relying on any price here, ask 15 interviewed target users to pay $29 for 3 months through a Polar checkout link (`docs/strategy/OUTREACH_KIT.md`).
+> - **First payment test:** before relying on any price here, ask 15 interviewed target users to pay $15 for 3 months through a Polar checkout link (`docs/strategy/OUTREACH_KIT.md`).
 >
 > ### What changed in the 2026-10-01 update
 >
@@ -91,7 +91,7 @@ A company that hires 5 junior developers and puts them all on the Backend path h
 
 ---
 
-### Employer Access — $299/month (future phase, Phase 13)
+### Employer Access — $159/month (future phase, Phase 13)
 
 A company-facing portal with separate login. Companies get their own accounts, their own dashboard, and access to a searchable pool of verified developers. This is not a job board — it is a talent intelligence layer built on top of real, system-verified progression data.
 
@@ -103,13 +103,13 @@ A company-facing portal with separate login. Companies get their own accounts, t
 - Location, availability, tech focus
 
 **Why this is the revenue ceiling:**
-A single engineering hire costs a company $15,000–$30,000 in recruiting fees. Charging $299/month for verified access to a pool of developers who have provably earned their skills is an easy sale. The profile is not a claim — it is a record. Every layer passed, every exam score, every capstone reviewed by an AI agent and approved. That is a different product from LinkedIn or a job board.
+A single engineering hire costs a company $15,000–$30,000 in recruiting fees. Charging $159/month for verified access to a pool of developers who have provably earned their skills is an easy sale. The profile is not a claim — it is a record. Every layer passed, every exam score, every capstone reviewed by an AI agent and approved. That is a different product from LinkedIn or a job board.
 
 **Company portal tiers:**
 
 | Tier | Price | What It Includes |
 |---|---|---|
-| Employer Access | $299/month | Search verified profiles, view full progression + exam data, contact opted-in developers |
+| Employer Access | $159/month | Search verified profiles, view full progression + exam data, contact opted-in developers |
 | Featured Company | $599/month | All above + company profile visible to developers, "We're hiring" badge on relevant path pages |
 | Placement Partner | Custom | Dedicated sourcing, bulk access, ATS integration (Greenhouse, Lever) |
 
@@ -131,7 +131,7 @@ Not at launch. Not until 500+ developers have completed at least one full path a
 | Free | $0 | Students, curious developers | Community, first 2 roadmap layers, basic awards |
 | Pro | $15/month | Developers actively learning | AI agent, full roadmap, certificates, all awards |
 | Teams | $60/seat/month | Companies onboarding devs | Progress tracking, reports, bulk certs, awards dashboard |
-| Employer Access | $299/month | Hiring managers, recruiters | Search verified developer profiles + awards history |
+| Employer Access | $159/month | Hiring managers, recruiters | Search verified developer profiles + awards history |
 | Featured Company | $599/month | Active hiring companies | All above + visibility to developers on platform |
 
 ---
@@ -260,7 +260,7 @@ The risk is time-to-revenue. The mitigation is launching with Free + Pro as earl
 | 2. AI mentor | ✅ Done (`/api/ai-agent`, Groq, tool-use loop) |
 | 3. Exam engine (not in the June list, but required for the gate) | ✅ Done (`/api/exams`) |
 | 4. **Event tracking** | ✅ Done (`eventService.js`, admin funnel) |
-| 4b. **Pilot: 15 interviews + a $29 early-access payment test** | ❌ **Next.** See `docs/strategy/OUTREACH_KIT.md` |
+| 4b. **Pilot: 15 interviews + a $15 early-access payment test** | ❌ **Next.** See `docs/strategy/OUTREACH_KIT.md` |
 | 5. Billing (Polar) | ✅ Built and sandbox-verified, inert (`docs/engineering/BILLING.md`) |
 | 5b. Feature gating on routes | ❌ Not wired. `canAccess()` exists but no route calls it; enable only after the pilot supports a paid tier |
 | 6. Launch with Free + Pro only | ❌ Not started (flip `BILLING_ENFORCED` and add gates) |

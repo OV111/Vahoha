@@ -171,7 +171,7 @@ See §6 (the three riskiest) and the problems above.
 *(A fourth, optional test for the "flight simulator" concept is in §12 as A4. It is not one of the three because it is an alternative wedge, not a risk to the current plan.)*
 
 ### A1 — "A self-taught backend developer will pay for gated progression + a mentor when roadmap.sh and freeCodeCamp are free or $10"
-- **Cheapest test (≈ 1–2 weeks, near-zero code):** interview 15 people who match the ICP (Q-list §10). Then offer each a **paid early-access slot** through a Stripe Payment Link (no billing code needed): e.g. $29 for 3 months, refundable. Count actual payments, not "sounds great".
+- **Cheapest test (≈ 1–2 weeks, near-zero code):** interview 15 people who match the ICP (Q-list §10). Then offer each a **paid early-access slot** through a Stripe Payment Link (no billing code needed): e.g. $15 for 3 months, refundable. Count actual payments, not "sounds great".
 - **Pass (my judgment):** ≥ 3 of 15 interviewees pay, **or** ≥ 40% answer "very disappointed" to "how would you feel if you couldn't use this anymore" after a real session (the standard Sean Ellis threshold; I recall it as a commonly used PMF heuristic, not a law).
 - **Kill/pivot signal:** zero payments from 15 qualified people, or the pain described is "I can't get interviews", not "I don't know what I don't know".
 

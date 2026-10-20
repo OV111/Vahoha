@@ -30,7 +30,7 @@ Status of the checklist from `docs/strategy/ADVISORY_BOARD_REPORT.md` §9 (full 
 - ❌ Seed exam banks for one track's Layers 1–3 and **hand-check every question** (new questions are flagged `reviewed: false`)
 - ❌ Make yourself admin (`npm run admin:grant -- you@example.com`) so you can read the funnel
 - ❌ Confirm Redis is on in production, and check Groq's limits for about 10 concurrent users
-- ❌ Create the $29 one-off product in Polar for the payment test
+- ❌ Create the $15 one-off product in Polar for the payment test
 - ❌ Run the loop yourself on production with a brand-new account and confirm the events show up
 
 Do **not** extend the Arena, group chat, voice review, XP, or anything from the deferred backlog. They are built; leave them alone.
@@ -45,7 +45,7 @@ Not friends who will be nice. Developers who match the persona: self-taught, aim
 
 - **Interview first (15 minutes).** Ask about what they did, not what they would do. The kit has 10 questions.
 - **Then watch them take the Layer 1 exam.** Don't help. Write down every hesitation.
-- **Then ask:** "How would you feel if you couldn't use this anymore?" and offer a $29 early-access slot (3 months, refundable) through a Polar checkout link. No new code needed.
+- **Then ask:** "How would you feel if you couldn't use this anymore?" and offer a $15 early-access slot (3 months, refundable) through a Polar checkout link. No new code needed.
 
 **The questions this stage answers:** is the pain "I don't know what I don't know" (the product's problem) or "I can't get interviews" (not its problem), and will anyone pay? Target: 15 interviews, at least 3 payments in 3 weeks. Zero payers means pivot or stop. Return for Layer 2 is a secondary signal, read from the funnel.
 
@@ -79,7 +79,7 @@ This builds an audience before you need one. When you launch on Reddit or Produc
 | Week | Goal |
 |---|---|
 | 0 | Pre-pilot hardening: mostly done; seed and check Backend Layers 1–3 (the remaining work) |
-| 1–3 | 15 interviews, observe exams, ask for the $29 payment; fix the top 3 issues |
+| 1–3 | 15 interviews, observe exams, ask for the $15 payment; fix the top 3 issues |
 | Day 21 | Decision: 3+ of 15 paid = widen; 1–2 = fix and repeat; 0 = pivot or stop (`docs/strategy/OUTREACH_KIT.md`) |
 | 4–6 | Fix what breaks, get to the first paying users |
 | Month 2–3 | Widen to 50 users, decide on a second path from data |
