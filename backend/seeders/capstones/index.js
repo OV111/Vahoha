@@ -192,6 +192,26 @@ import web3DefiDeveloper from "./web3/defi-developer.js";
 import web3Web3Frontend from "./web3/web3-frontend.js";
 import web3DappDeveloper from "./web3/dapp-developer.js";
 
+// added 2026-10-21 (drafts, reviewed: false until a human approves)
+import languagesElixir from "./languages/elixir.js";
+import languagesScala from "./languages/scala.js";
+import languagesHaskell from "./languages/haskell.js";
+import languagesLua from "./languages/lua.js";
+import languagesR from "./languages/r.js";
+import languagesJulia from "./languages/julia.js";
+import languagesZig from "./languages/zig.js";
+import languagesBash from "./languages/bash.js";
+import languagesPerl from "./languages/perl.js";
+import languagesClojure from "./languages/clojure.js";
+import languagesFsharp from "./languages/fsharp.js";
+import languagesGroovy from "./languages/groovy.js";
+import languagesOcaml from "./languages/ocaml.js";
+import languagesAssembly from "./languages/assembly.js";
+import fullstackFrontendDev from "./fullstack/frontend-dev.js";
+import csDsa from "./cs/dsa.js";
+import csSystemDesign from "./cs/system-design.js";
+import aimlAiAgents from "./aiml/ai-agents.js";
+
 export const briefs = [
   apiDev,
   nodeDev,
@@ -351,4 +371,23 @@ export const briefs = [
   web3DefiDeveloper,
   web3Web3Frontend,
   web3DappDeveloper,
+  // drafts: unreviewed, the seeder will not publish them
+  languagesElixir,
+  languagesScala,
+  languagesHaskell,
+  languagesLua,
+  languagesR,
+  languagesJulia,
+  languagesZig,
+  languagesBash,
+  languagesPerl,
+  languagesClojure,
+  languagesFsharp,
+  languagesGroovy,
+  languagesOcaml,
+  languagesAssembly,
+  fullstackFrontendDev,
+  csDsa,
+  csSystemDesign,
+  aimlAiAgents,
 ];

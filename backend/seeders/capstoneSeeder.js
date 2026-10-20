@@ -2,7 +2,9 @@
  * Capstone Seeder — seeds capstone_briefs.
  *
  * Usage:
- *   npm run seed:capstones
+ *   npm run seed:capstones                       # strict: stops if any brief cannot be published
+ *   npm run seed:capstones -- --only-banked      # skips published briefs whose track has no exam bank yet,
+ *                                                # seeds the rest; every other error still stops the run
  *
  * Content lives one file per brief under backend/seeders/capstones/. This file
  * is only the write path: validation, indexes and the upsert.
@@ -31,6 +33,10 @@ import { briefs } from "./capstones/index.js";
 // the capstone but cannot unlock it until every layer exam is passable.
 const ALLOW_UNBANKED = process.env.ALLOW_UNBANKED_PUBLISH === "1";
 
+// Publish what can be unlocked today and leave the rest for later, instead of
+// aborting the whole run over briefs whose tracks have no exam bank yet.
+const ONLY_BANKED = process.argv.includes("--only-banked");
+
 const validateBrief = (brief, layers) => {
   const errors = [];
   const trackLayerIds = new Set(layers.map((l) => l.layerId));
@@ -56,6 +62,7 @@ async function seed() {
   const col = db.collection("capstone_briefs");
 
   let failed = false;
+  const skipped = new Set();
   for (const brief of briefs) {
     const layers = await db
       .collection("roadmap_layers")
@@ -78,6 +85,9 @@ async function seed() {
       const missingBanks = layers.map((l) => l.layerId).filter((id) => !banked.includes(id));
       if (missingBanks.length && ALLOW_UNBANKED) {
         console.warn(`! ${brief.slug}: publishing WITHOUT exam banks for ${missingBanks.length} layer(s) (ALLOW_UNBANKED_PUBLISH=1)`);
+      } else if (missingBanks.length && ONLY_BANKED) {
+        skipped.add(brief.slug);
+        continue;
       } else if (missingBanks.length) {
         errors.push(`cannot publish: no exam bank for ${missingBanks.join(", ")} — run the exam seeder for this track first`);
       }
@@ -94,8 +104,11 @@ async function seed() {
     col.createIndex({ trackId: 1, status: 1, version: -1 }),
   ]);
 
+  const toWrite = briefs.filter((b) => !skipped.has(b.slug));
+  if (skipped.size) console.warn(`! skipped ${skipped.size} brief(s): their track has no exam bank yet (--only-banked)`);
+
   const result = await col.bulkWrite(
-    briefs.map((b) => ({
+    toWrite.map((b) => ({
       updateOne: {
         filter: { slug: b.slug, version: b.version },
         update: { $set: { ...b, updatedAt: new Date() }, $setOnInsert: { createdAt: new Date() } },
@@ -107,7 +120,7 @@ async function seed() {
 
   console.log(
     `✓ capstone briefs: ${result.upsertedCount} inserted, ${result.modifiedCount} updated ` +
-      `(${briefs.filter((b) => b.status === "published").length} published)`,
+      `(${toWrite.filter((b) => b.status === "published").length} published, ${skipped.size} skipped)`,
   );
   process.exit(0);
 }
