@@ -62,6 +62,7 @@ const healthyGithub = ({ repoId = 111, paths = ['README.md', 'src/app.js'], tree
     id: repoId,
     fullName: 'alice/notes-api',
     htmlUrl: 'https://github.com/alice/notes-api',
+    ownerLogin: 'alice',
     private: false,
     fork: false,
     sizeKb: 200,
@@ -93,6 +94,8 @@ beforeEach(async () => {
     await db.collection(c).deleteMany({})
   }
   await db.collection('capstone_briefs').insertOne({ ...brief })
+  await db.collection('users').deleteMany({})
+  await db.collection('users').insertOne({ _id: new ObjectId(ALICE), githubLogin: 'alice' })
   vi.clearAllMocks()
   isPathComplete.mockResolvedValue({ complete: true, passed: 10, total: 10, missing: [] })
   healthyGithub()

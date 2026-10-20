@@ -97,12 +97,14 @@ beforeEach(async () => {
     await db.collection(c).deleteMany({})
   }
   await db.collection('capstone_briefs').insertOne({ ...brief })
+  await db.collection('users').deleteMany({})
+  await db.collection('users').insertOne({ _id: new ObjectId(ALICE), githubLogin: 'alice' })
   vi.clearAllMocks()
 
   const inAnHour = new Date(Date.now() + 60 * 60 * 1000)
   github.getRepo.mockResolvedValue({
     id: 7, fullName: 'alice/notes-api', htmlUrl: 'https://github.com/alice/notes-api',
-    private: false, fork: false, sizeKb: 10, createdAt: inAnHour, defaultBranch: 'main',
+    ownerLogin: 'alice', private: false, fork: false, sizeKb: 10, createdAt: inAnHour, defaultBranch: 'main',
   })
   github.getHeadCommit.mockResolvedValue({ sha: 'sha-1', treeSha: 'tree-1', committedAt: inAnHour })
   github.getCommitStats.mockResolvedValue({ count: 8, rootCommittedAt: inAnHour })
