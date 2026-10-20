@@ -46,12 +46,12 @@ describe('createRefreshToken', () => {
     expect(payload.jti).toBe(jti)
   })
 
-  it('produces tokens that expire in ~7 days', () => {
+  it('produces tokens that expire in 30 days', () => {
     const { token } = createRefreshToken({ id: VALID_ID })
     const payload = jwt.decode(token)
-    const sevenDaysInSeconds = 7 * 24 * 60 * 60
+    const thirtyDaysInSeconds = 30 * 24 * 60 * 60
     const diff = payload.exp - payload.iat
-    expect(diff).toBe(sevenDaysInSeconds)
+    expect(diff).toBe(thirtyDaysInSeconds)
   })
 
   it('produces a different jti for each call, even for the same user', () => {

@@ -6,7 +6,9 @@ import process from "process";
 // Refresh tokens are long-lived, httpOnly-cookie only, and revocable via the
 // refreshTokens collection (see modules/auth/services/refreshTokenService.js).
 export const ACCESS_TOKEN_TTL = "15m";
-export const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+// Sliding: every refresh rotates the token and restarts this clock, so a user
+// is only logged out after this long without opening the app.
+export const REFRESH_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 const getAccessSecret = () => {
   const secret = process.env.JWT_Secret;

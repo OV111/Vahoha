@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import { ObjectId } from "mongodb";
 import { sendPasswordResetEmail, sendLoginLinkEmail } from "../../../utils/emailService.js";
 import connectDB from "../../../config/db.js";
-import { verifyToken, verifyRefreshToken } from "../../../utils/jwtToken.js";
+import { verifyToken, verifyRefreshToken, REFRESH_TOKEN_TTL_MS } from "../../../utils/jwtToken.js";
 import {
   issueTokenPair,
   rotateRefreshToken,
@@ -16,8 +16,6 @@ import { sanitizeUsername } from "../../../utils/username.js";
 import { trackEvent, trackActiveDay } from "../../../services/eventService.js";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
-const REFRESH_COOKIE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days — matches REFRESH_TOKEN_TTL_MS
 
 // Single source of truth for refresh-cookie options — auth.routes.js reuses
 // this for the initial login/signup cookie and for clearing it on logout,
@@ -38,7 +36,8 @@ export const REFRESH_COOKIE_OPTIONS = {
 const setRefreshCookie = (res, refreshToken) => {
   res.cookie(REFRESH_COOKIE_NAME, refreshToken, {
     ...REFRESH_COOKIE_OPTIONS,
-    maxAge: REFRESH_COOKIE_MAX_AGE_MS,
+    // Same lifetime as the token inside it, from the one constant.
+    maxAge: REFRESH_TOKEN_TTL_MS,
   });
 };
 
