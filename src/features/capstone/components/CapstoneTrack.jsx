@@ -113,8 +113,24 @@ export default function CapstoneTrack({ trackId }) {
         )}
       </div>
 
+      {/* ── Full agent review: the next thing to read once submitted, so it sits above the brief ── */}
+      {showReview && (
+        <div
+          id="review"
+          className={`${PAGE} mt-14 flex scroll-mt-24 flex-col gap-6 sm:mt-16`}
+        >
+          <AgentReviewFullCard
+            review={review}
+            attemptStatus={attemptStatus}
+            defense={review?.passed ? defense : null}
+            busy={busy}
+            actions={actions}
+          />
+        </div>
+      )}
+
       {/* ── The work (left) + context (right) ── */}
-      <div className={`${PAGE} mt-14 sm:mt-16`}>
+      <div className={`${PAGE} ${showReview ? "mt-6" : "mt-14 sm:mt-16"}`}>
         <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_360px]">
           <div className="flex min-w-0 flex-col gap-6">
             {building ? (
@@ -139,22 +155,6 @@ export default function CapstoneTrack({ trackId }) {
           </div>
         </div>
       </div>
-
-      {/* ── Full agent review ── */}
-      {showReview && (
-        <div
-          id="review"
-          className={`${PAGE} mt-6 flex scroll-mt-24 flex-col gap-6`}
-        >
-          <AgentReviewFullCard
-            review={review}
-            attemptStatus={attemptStatus}
-            defense={review?.passed ? defense : null}
-            busy={busy}
-            actions={actions}
-          />
-        </div>
-      )}
     </div>
   );
 }

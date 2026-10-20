@@ -94,7 +94,7 @@ export default function QuestionCard({ question, total, onAnswer, busy }) {
           maxLength={3000}
           autoFocus
           placeholder="Type your answer… specific to your code"
-          className="bg-neutral-800/60 border border-neutral-700 rounded-lg px-3 py-2.5 text-sm text-neutral-200 outline-none resize-y placeholder:text-neutral-500 focus:border-purple-500/50 transition-colors w-full max-w-2xl"
+          className="thin-scrollbar bg-neutral-800/60 border border-neutral-700 rounded-lg px-3 py-2.5 text-sm text-neutral-200 outline-none resize-y placeholder:text-neutral-500 focus:border-purple-500/50 transition-colors w-full max-w-2xl"
         />
         <div className="flex items-center gap-6 flex-wrap">
           <button

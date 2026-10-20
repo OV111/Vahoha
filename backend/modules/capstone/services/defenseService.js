@@ -51,6 +51,7 @@ import {
 import { scanForInjection } from "../lib/reviewPrompt.js";
 import { callWithOneRetry } from "../lib/retry.js";
 import { toPublicAttempt, toPublicDefense } from "../lib/publicView.js";
+import { estimateRequestTokens } from "../lib/tokenBudget.js";
 import { loadSubmissionFiles } from "./repoFiles.js";
 import { runStructured } from "./reviewModel.js";
 import { ensureCertificate } from "./certificateService.js";
@@ -278,19 +279,22 @@ export const startDefenseService = async (db, userId, trackId) => {
     if (!review || !submission) fail(500, "The review or submission for this attempt is missing");
     const twist = brief.twistPool.find((t) => t.id === attempt.twistId);
 
-    const { files } = await loadSubmissionFiles(submission);
-    if (files.length === 0) fail(422, "None of the files in your repository could be read.");
-    const fileTexts = new Map(files.map((f) => [f.path, f.text]));
-
-    const messages = buildQuestionMessages({
+    const schema = questionJsonSchema(brief.rubric.map((c) => c.id));
+    const promptParts = {
       brief,
       twist,
       review,
-      files,
       previousQuestions: sessions.flatMap((s) => s.questions?.map((q) => q.text) ?? []),
       nonce: randomBytes(12).toString("hex"),
-    });
-    const schema = questionJsonSchema(brief.rubric.map((c) => c.id));
+    };
+    // What everything except the code costs (the review text included), so the code budget fits a small TPM limit exactly.
+    const overheadTokens = estimateRequestTokens(buildQuestionMessages({ ...promptParts, files: [] }), schema);
+
+    const { files } = await loadSubmissionFiles(submission, overheadTokens);
+    if (files.length === 0) fail(422, "None of the files in your repository could be read.");
+    const fileTexts = new Map(files.map((f) => [f.path, f.text]));
+
+    const messages = buildQuestionMessages({ ...promptParts, files });
     const { questions, usage } = await callWithOneRetry(
       () => runStructured(messages, schema, "capstone_defense_questions"),
       (content) => parseQuestions(content, brief.rubric, fileTexts),

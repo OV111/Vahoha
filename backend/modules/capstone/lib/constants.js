@@ -47,12 +47,12 @@ export const GITHUB_TIMEOUT_MS = 10_000;
 // ── AI rubric review (stage 3) ────────────────────────────────
 
 export const REVIEW_MODEL = "openai/gpt-oss-120b"; // same family as teach-back grading
-export const REVIEW_PROMPT_VERSION = "capstone-review-v2"; // bump on any prompt change
+export const REVIEW_PROMPT_VERSION = "capstone-review-v3"; // bump on any prompt change
 
 // How much repository text one review may send. ~3.5 chars per token, so the
 // default (~23k tokens) needs a PAID Groq tier: the free tier allows 8k tokens
-// per minute for gpt-oss-120b. For local dev on a free key set
-// CAPSTONE_REVIEW_MAX_CHARS=16000.
+// per minute for gpt-oss-120b. On a free key set GROQ_TPM_LIMIT=8000: the code
+// budget and max_tokens then shrink to fit (lib/tokenBudget.js).
 export const DEFAULT_REVIEW_MAX_CHARS = 80_000;
 export const REVIEW_MAX_FILE_CHARS = 12_000; // longer files are truncated
 export const REVIEW_SKIP_FILE_BYTES = 200_000; // larger files are never downloaded

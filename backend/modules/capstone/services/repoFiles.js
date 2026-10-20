@@ -9,11 +9,14 @@ import { numberedCode } from "../lib/codeView.js";
 import { DEFAULT_REVIEW_MAX_CHARS, REVIEW_FETCH_CONCURRENCY, REVIEW_MIN_PARTIAL_CHARS } from "../lib/constants.js";
 import { selectReviewFiles, topUpReviewFiles } from "../lib/reviewFiles.js";
 import { clipFile } from "../lib/reviewPrompt.js";
+import { codeCharsForLimit, parseTpmLimit } from "../lib/tokenBudget.js";
 import { getFileText, getTree } from "./githubClient.js";
 
-const reviewBudget = () => {
+const reviewBudget = (overheadTokens) => {
   const fromEnv = Number(process.env.CAPSTONE_REVIEW_MAX_CHARS);
-  return Number.isFinite(fromEnv) && fromEnv > 0 ? fromEnv : DEFAULT_REVIEW_MAX_CHARS;
+  const chars = Number.isFinite(fromEnv) && fromEnv > 0 ? fromEnv : DEFAULT_REVIEW_MAX_CHARS;
+  const tpmLimit = parseTpmLimit(process.env.GROQ_TPM_LIMIT);
+  return tpmLimit === null ? chars : Math.min(chars, codeCharsForLimit(tpmLimit, overheadTokens));
 };
 
 /** Run `fn` over `items` with at most `limit` in flight; preserves order. */
@@ -44,10 +47,11 @@ const download = async (submission, selected) => {
 const viewCost = (file) => numberedCode(file.text, file.path).length;
 
 /**
+ * @param {number} [overheadTokens]  what the rest of the prompt costs, so a small TPM limit leaves exactly enough room for code
  * @returns {Promise<{ files: {path, text, truncated, cap}[], omitted: string[] }>}
  */
-export const loadSubmissionFiles = async (submission) => {
-  const budget = reviewBudget();
+export const loadSubmissionFiles = async (submission, overheadTokens) => {
+  const budget = reviewBudget(overheadTokens);
   const [owner, repo] = submission.repo.fullName.split("/");
   const tree = await getTree(owner, repo, submission.treeSha);
 

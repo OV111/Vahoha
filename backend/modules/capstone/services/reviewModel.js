@@ -3,8 +3,16 @@
  * replace it, and so a model switch is a one-file change.
  */
 
+import process from "process";
 import { getGroqClient } from "../../../config/groq.js";
 import { REVIEW_MODEL } from "../lib/constants.js";
+import {
+  FLOOR_OUTPUT_TOKENS,
+  estimateRequestTokens,
+  outputTokenBudget,
+  parseTpmLimit,
+  reasoningEffortFor,
+} from "../lib/tokenBudget.js";
 
 const fail = (status, message) => {
   const err = new Error(message);
@@ -20,6 +28,16 @@ const fail = (status, message) => {
  * @returns {Promise<{ content: string, usage: object|null }>}
  */
 export const runStructured = async (messages, jsonSchema, name) => {
+  // A request over the tier's per-minute budget is refused outright, so size
+  // the output to what is left after the input (see lib/tokenBudget.js).
+  const tpmLimit = parseTpmLimit(process.env.GROQ_TPM_LIMIT);
+  const inputTokens = estimateRequestTokens(messages, jsonSchema);
+  const maxTokens = outputTokenBudget(inputTokens, tpmLimit);
+  if (maxTokens < FLOOR_OUTPUT_TOKENS) {
+    console.error(`capstone model (${name}): ~${inputTokens} input tokens leave ${maxTokens} for output under GROQ_TPM_LIMIT=${tpmLimit}`);
+    fail(503, "The AI reviewer is at capacity. Try again in a minute.");
+  }
+
   let completion;
   try {
     completion = await getGroqClient().chat.completions.create({
@@ -28,9 +46,9 @@ export const runStructured = async (messages, jsonSchema, name) => {
       // Strict structured output: the API itself rejects malformed JSON.
       response_format: { type: "json_schema", json_schema: { name, strict: true, schema: jsonSchema } },
       // gpt-oss is a reasoning model: max_tokens must cover its thinking AND
-      // the JSON. "medium" effort is the quality/cost middle ground for grading.
-      reasoning_effort: "medium",
-      max_tokens: 8000,
+      // the JSON. "medium" is the quality/cost middle ground; "low" under a small TPM limit.
+      reasoning_effort: reasoningEffortFor(tpmLimit),
+      max_tokens: maxTokens,
       temperature: 0,
     });
   } catch (err) {

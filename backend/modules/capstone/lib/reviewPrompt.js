@@ -17,6 +17,9 @@ import { z } from "zod";
 import { numberedCode } from "./codeView.js";
 import { REVIEW_MAX_FILE_CHARS, RUBRIC_MAX_SCORE } from "./constants.js";
 
+// Paths listed under "not shown": enough to say what exists, cheap enough for a small token budget.
+const MAX_LISTED_OMITTED = 40;
+
 const SCALE = `0 = missing or broken
 1 = attempted but mostly wrong or unsafe
 2 = partly done, with significant gaps
@@ -57,7 +60,7 @@ export const buildReviewMessages = ({ brief, twist, files, omitted, nonce }) => 
     .join("\n\n");
 
   const notShown = omitted.length
-    ? `\nFiles that exist but are not shown (size limits): ${omitted.slice(0, 200).join(", ")}${omitted.length > 200 ? ", …" : ""}`
+    ? `\nFiles that exist but are not shown (size limits): ${omitted.slice(0, MAX_LISTED_OMITTED).join(", ")}${omitted.length > MAX_LISTED_OMITTED ? ", …" : ""}`
     : "";
 
   const user = `PROJECT BRIEF: ${brief.title}

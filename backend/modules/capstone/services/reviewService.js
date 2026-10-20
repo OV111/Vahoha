@@ -35,6 +35,7 @@ import {
 } from "../lib/reviewPrompt.js";
 import { callWithOneRetry } from "../lib/retry.js";
 import { toPublicAttempt, toPublicReview } from "../lib/publicView.js";
+import { estimateRequestTokens } from "../lib/tokenBudget.js";
 import { loadSubmissionFiles } from "./repoFiles.js";
 import { runReviewModel } from "./reviewModel.js";
 import { ATTEMPTS, BRIEFS, REVIEWS, SUBMISSIONS, ensureIndexes, fail, getAttempts } from "./capstoneData.js";
@@ -84,15 +85,18 @@ export const reviewService = async (db, userId, trackId) => {
     if (!brief || !submission) fail(500, "The brief or submission for this attempt is missing");
     const twist = brief.twistPool.find((t) => t.id === claimed.twistId);
 
-    const { files, omitted } = await loadSubmissionFiles(submission);
+    const nonce = randomBytes(12).toString("hex");
+    const schema = reviewJsonSchema(brief.rubric.map((c) => c.id));
+    // What everything except the code costs, so the code budget fits a small TPM limit exactly.
+    const overheadTokens = estimateRequestTokens(buildReviewMessages({ brief, twist, files: [], omitted: [], nonce }), schema);
+
+    const { files, omitted } = await loadSubmissionFiles(submission, overheadTokens);
     if (files.length === 0) fail(422, "None of the files in your repository could be reviewed.");
 
-    const nonce = randomBytes(12).toString("hex");
     const messages = buildReviewMessages({ brief, twist, files, omitted, nonce });
     const lineCounts = new Map(files.map((f) => [f.path, f.text.split("\n").length]));
 
     const startedAt = Date.now();
-    const schema = reviewJsonSchema(brief.rubric.map((c) => c.id));
     const { criteria, summary, usage } = await callWithOneRetry(
       () => runReviewModel(messages, schema),
       (content) => parseReviewOutput(content, brief.rubric, lineCounts),

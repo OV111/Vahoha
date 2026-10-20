@@ -58,6 +58,16 @@ Repeat steps 1–5 in the **production** Polar dashboard (new token, new product
 - **API version:** pinned to `@polar-sh/sdk/2026-10`. Polar's API is date-versioned; changing it is a deliberate edit in `polarClient.js`, `webhookService.js` and `billing.controller.js`.
 - **Enforcement later:** to gate a feature, call `canAccess(db, userId, "pro")` from the route/service (exported from `backend/modules/billing`). Gates can be added one at a time; they are all inert until `BILLING_ENFORCED=true`.
 
+## AI review cost and the Groq tier
+
+The capstone review, the defense questions, the mentor and teach-back all call Groq, so Pro revenue has to cover the Groq bill. Billing and the model tier are one decision.
+
+- **Free tier is for testing only.** `gpt-oss-120b` allows about 8k tokens per minute. A request is refused outright (HTTP 413) when its input plus the requested `max_tokens` is over that, and waiting does not help.
+- **What a review needs.** The default budget is 80,000 characters of code (about 23k tokens) plus roughly 1.4k to 2.3k tokens of prompt (measured over all seeded briefs) and up to 8k tokens of output. A small, tidy project such as a notes API is already about 31k characters (9k tokens), so real capstones do not fit the free tier.
+- **Local setting.** `GROQ_TPM_LIMIT=8000` in `backend/.env` sizes every request to fit: the code budget shrinks to what the limit leaves, `max_tokens` becomes whatever is left after the input, and reasoning drops to `low`. On the free tier a review sees roughly 10k characters of code, so scores are noisier. Remove the variable on a paid tier and nothing is clamped.
+- **Code:** `backend/modules/capstone/lib/tokenBudget.js` (pure, unit-tested), applied in `reviewModel.js` and `repoFiles.js`. The SDK already retries 429s itself.
+- **Before real users:** move the Groq key to a paid tier and set the real limit (or leave it unset). Price one review from the `usage` stored on each review document, then check that the $15 Pro price covers a learner's reviews and defense attempts. Pricing is still the open decision in `docs/strategy/BUSINESS_MODEL.md`.
+
 ## What is NOT built
 
 - Teams plan checkout (Teams is "Contact sales"). Seat-based pricing needs its own product and flow.
