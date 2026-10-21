@@ -58,7 +58,8 @@ export const FOLLOWUP_LIMIT_SEC = 90;
  * @property {string} layerId
  * @property {"graded"|"practice"} mode
  * @property {keyof typeof EXAM_STATES} state
- * @property {string} deadlineAt        ISO date, absolute, server-computed
+ * @property {number} secondsLeft       exam time left when the server answered;
+ *                                     the deadline itself never leaves the server
  * @property {number} segmentLimitSec
  * @property {Prompt|null} currentPrompt
  * @property {ExamResult|null} result

@@ -12,9 +12,12 @@ import "./lib/posthog";
 
 import { Analytics } from "@vercel/analytics/react";
 
+// /_vercel/insights only exists on Vercel; locally it is a 404 in the console.
+const onVercel = !["localhost", "127.0.0.1"].includes(window.location.hostname);
+
 createRoot(document.getElementById("root")).render(
   <>
     <App />
-    <Analytics />
+    {onVercel && <Analytics />}
   </>,
 );

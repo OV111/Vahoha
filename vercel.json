@@ -1,9 +1,6 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "redirects": [
-    { "source": "/categories/fundamentals", "destination": "/foundations", "permanent": true }
-  ],
   "rewrites": [
     {
       "source": "/:section(posts|verify|evidence|candidate|users|my-profile|get-started|forgot-password|reset-password|oauth-success|ai-agent|billing|progress|team|capstone|blogs|libs|coding-challenges|voice-review|roadmaps/exam)/:path*",
@@ -12,6 +9,22 @@
     {
       "source": "/:section(get-started|forgot-password|reset-password|oauth-success|ai-agent|billing|progress|team|capstone|blogs|libs|coding-challenges|voice-review|my-profile|users)",
       "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin-allow-popups" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
     }
   ]
 }

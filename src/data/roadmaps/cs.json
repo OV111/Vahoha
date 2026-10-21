@@ -5129,5 +5129,1035 @@
         }
       ]
     }
+  ],
+  "software-design": [
+    {
+      "id": "software-design-1",
+      "title": "Clean Code and Code Smells",
+      "order": 1,
+      "techs": [
+        "Naming",
+        "Functions",
+        "Code Smells"
+      ],
+      "description": "Learn to write code that the next person can read. You will name things well, keep functions small and single-purpose, and spot the smells that signal a design problem.",
+      "topics": [
+        "Meaningful names and intent-revealing code",
+        "Small functions and a single level of abstraction",
+        "Comments: when they help and when they hide a smell",
+        "Common smells: long method, large class, duplication",
+        "Error handling without noise",
+        "Formatting, linters and team conventions"
+      ],
+      "resources": [
+        {
+          "label": "Clean Code (Robert C. Martin)",
+          "platform": "Prentice Hall",
+          "type": "book"
+        },
+        {
+          "label": "Refactoring Guru: Code Smells",
+          "platform": "refactoring.guru",
+          "type": "article"
+        },
+        {
+          "label": "A Philosophy of Software Design (Ousterhout)",
+          "platform": "Yaknyam Press",
+          "type": "book"
+        }
+      ],
+      "challenge": "Take a 150-line function from your own code and rewrite it for readability. List each smell you removed and why.",
+      "estimatedTime": "1 week"
+    },
+    {
+      "id": "software-design-2",
+      "title": "Object-Oriented Design Done Right",
+      "order": 2,
+      "techs": [
+        "Encapsulation",
+        "Composition",
+        "Polymorphism"
+      ],
+      "description": "Use objects to model behavior, not just to hold data. You will practice encapsulation, favor composition over inheritance, and decide when polymorphism earns its keep.",
+      "topics": [
+        "Encapsulation and hiding internal state",
+        "Inheritance and its fragility",
+        "Composition over inheritance",
+        "Polymorphism and interfaces",
+        "Cohesion and coupling",
+        "Tell, do not ask; the Law of Demeter"
+      ],
+      "resources": [
+        {
+          "label": "Refactoring Guru: OOP basics",
+          "platform": "refactoring.guru",
+          "type": "article"
+        },
+        {
+          "label": "Head First Object-Oriented Analysis and Design",
+          "platform": "O'Reilly",
+          "type": "book"
+        },
+        {
+          "label": "A Philosophy of Software Design (Ousterhout)",
+          "platform": "Yaknyam Press",
+          "type": "book"
+        }
+      ],
+      "challenge": "Model a library system with inheritance, then redo it with composition. Write down which version is easier to change.",
+      "estimatedTime": "1.5 weeks"
+    },
+    {
+      "id": "software-design-3",
+      "title": "SOLID Principles",
+      "order": 3,
+      "techs": [
+        "SRP",
+        "OCP",
+        "Dependency Inversion"
+      ],
+      "description": "Apply the five SOLID principles through before-and-after refactors. For each one you will see the problem it solves and the cost of overdoing it.",
+      "topics": [
+        "Single responsibility principle",
+        "Open/closed principle",
+        "Liskov substitution principle",
+        "Interface segregation principle",
+        "Dependency inversion and dependency injection",
+        "When SOLID is over-engineering"
+      ],
+      "resources": [
+        {
+          "label": "Agile Software Development, Principles, Patterns, and Practices",
+          "platform": "Prentice Hall",
+          "type": "book"
+        },
+        {
+          "label": "Refactoring Guru: SOLID",
+          "platform": "refactoring.guru",
+          "type": "article"
+        },
+        {
+          "label": "Clean Architecture (Robert C. Martin)",
+          "platform": "Prentice Hall",
+          "type": "book"
+        }
+      ],
+      "challenge": "Find one class in a real project that breaks two SOLID principles. Refactor it and explain each change in a short write-up.",
+      "estimatedTime": "1.5 weeks"
+    },
+    {
+      "id": "software-design-4",
+      "title": "Creational Patterns",
+      "order": 4,
+      "techs": [
+        "Factory",
+        "Builder",
+        "Singleton"
+      ],
+      "description": "Control how objects get created. You will use factories, builders and dependency injection, and learn why the singleton is usually a trap.",
+      "topics": [
+        "Factory method and abstract factory",
+        "Builder for complex construction",
+        "Singleton and why it hurts testing",
+        "Prototype and object pools",
+        "Dependency injection as a modern replacement",
+        "Choosing a pattern versus a plain function"
+      ],
+      "resources": [
+        {
+          "label": "Design Patterns (Gang of Four)",
+          "platform": "Addison-Wesley",
+          "type": "book"
+        },
+        {
+          "label": "Refactoring Guru: Creational Patterns",
+          "platform": "refactoring.guru",
+          "type": "article"
+        },
+        {
+          "label": "Head First Design Patterns",
+          "platform": "O'Reilly",
+          "type": "book"
+        }
+      ],
+      "challenge": "Build a notification sender that creates email, SMS and push senders through a factory. Add a new channel without editing existing code.",
+      "estimatedTime": "1 week"
+    },
+    {
+      "id": "software-design-5",
+      "title": "Structural Patterns",
+      "order": 5,
+      "techs": [
+        "Adapter",
+        "Decorator",
+        "Facade"
+      ],
+      "description": "Combine objects into larger structures without tangling them. You will wrap third-party code with adapters, add behavior with decorators and hide complexity behind facades.",
+      "topics": [
+        "Adapter for third-party APIs",
+        "Decorator for stacking behavior",
+        "Facade for a simple entry point",
+        "Proxy for access control and lazy loading",
+        "Composite for tree structures",
+        "Patterns in everyday middleware"
+      ],
+      "resources": [
+        {
+          "label": "Refactoring Guru: Structural Patterns",
+          "platform": "refactoring.guru",
+          "type": "article"
+        },
+        {
+          "label": "Design Patterns (Gang of Four)",
+          "platform": "Addison-Wesley",
+          "type": "book"
+        },
+        {
+          "label": "Head First Design Patterns",
+          "platform": "O'Reilly",
+          "type": "book"
+        }
+      ],
+      "challenge": "Wrap two different payment providers behind one interface with adapters, then add logging with a decorator.",
+      "estimatedTime": "1 week"
+    },
+    {
+      "id": "software-design-6",
+      "title": "Behavioral Patterns",
+      "order": 6,
+      "techs": [
+        "Strategy",
+        "Observer",
+        "State"
+      ],
+      "description": "Organize how objects talk and make decisions. You will replace long conditionals with strategies and states, and decouple components with observers and commands.",
+      "topics": [
+        "Strategy to swap algorithms",
+        "Observer and event-driven design",
+        "Command, undo and queues of actions",
+        "State machines for changing behavior",
+        "Template method and chain of responsibility",
+        "Spotting patterns in frameworks you already use"
+      ],
+      "resources": [
+        {
+          "label": "Refactoring Guru: Behavioral Patterns",
+          "platform": "refactoring.guru",
+          "type": "article"
+        },
+        {
+          "label": "Design Patterns (Gang of Four)",
+          "platform": "Addison-Wesley",
+          "type": "book"
+        },
+        {
+          "label": "Game Programming Patterns (Nystrom)",
+          "platform": "gameprogrammingpatterns.com",
+          "type": "book"
+        }
+      ],
+      "challenge": "Implement a vending machine as a state machine, then a pricing engine with swappable discount strategies.",
+      "estimatedTime": "1.5 weeks"
+    },
+    {
+      "id": "software-design-7",
+      "title": "Refactoring Safely",
+      "order": 7,
+      "techs": [
+        "Refactoring",
+        "Tests",
+        "Legacy Code"
+      ],
+      "description": "Change structure without changing behavior. You will write tests around code you do not trust, then improve it in small, reversible steps.",
+      "topics": [
+        "Characterization tests for legacy code",
+        "Small steps and the refactoring catalog",
+        "Extract function, move method, rename",
+        "Replacing conditionals with polymorphism",
+        "Strangler pattern for large rewrites",
+        "Measuring whether a refactor helped"
+      ],
+      "resources": [
+        {
+          "label": "Refactoring (Martin Fowler)",
+          "platform": "Addison-Wesley",
+          "type": "book"
+        },
+        {
+          "label": "Working Effectively with Legacy Code (Feathers)",
+          "platform": "Prentice Hall",
+          "type": "book"
+        },
+        {
+          "label": "Refactoring Guru: Refactoring",
+          "platform": "refactoring.guru",
+          "type": "article"
+        }
+      ],
+      "challenge": "Pick an untested module, add characterization tests, then refactor it in at least five small commits with passing tests each time.",
+      "estimatedTime": "2 weeks"
+    },
+    {
+      "id": "software-design-8",
+      "title": "Layered, Hexagonal, and Clean Architecture",
+      "order": 8,
+      "techs": [
+        "Layers",
+        "Ports and Adapters",
+        "Dependency Rule"
+      ],
+      "description": "Structure a whole application so business rules do not depend on frameworks or databases. You will compare layered, hexagonal and clean architecture and apply the dependency rule.",
+      "topics": [
+        "Layered architecture and its leaks",
+        "Ports and adapters (hexagonal)",
+        "The dependency rule",
+        "Controllers, services and repositories",
+        "Keeping the domain free of framework code",
+        "Testing each layer in isolation"
+      ],
+      "resources": [
+        {
+          "label": "Clean Architecture (Robert C. Martin)",
+          "platform": "Prentice Hall",
+          "type": "book"
+        },
+        {
+          "label": "Hexagonal Architecture (Alistair Cockburn)",
+          "platform": "alistair.cockburn.us",
+          "type": "article"
+        },
+        {
+          "label": "Get Your Hands Dirty on Clean Architecture",
+          "platform": "Packt",
+          "type": "book"
+        }
+      ],
+      "challenge": "Restructure a small Express app into controller, service and repository layers, with the database swappable behind an interface.",
+      "estimatedTime": "2 weeks"
+    },
+    {
+      "id": "software-design-9",
+      "title": "Domain-Driven Design Essentials",
+      "order": 9,
+      "techs": [
+        "Entities",
+        "Aggregates",
+        "Bounded Contexts"
+      ],
+      "description": "Model the business first. You will separate entities from value objects, draw aggregate boundaries and split a system into bounded contexts with a shared language.",
+      "topics": [
+        "Ubiquitous language",
+        "Entities and value objects",
+        "Aggregates and consistency boundaries",
+        "Domain events",
+        "Bounded contexts and context maps",
+        "When DDD is too heavy"
+      ],
+      "resources": [
+        {
+          "label": "Domain-Driven Design (Eric Evans)",
+          "platform": "Addison-Wesley",
+          "type": "book"
+        },
+        {
+          "label": "Domain-Driven Design Distilled (Vernon)",
+          "platform": "Addison-Wesley",
+          "type": "book"
+        },
+        {
+          "label": "Martin Fowler: Bounded Context",
+          "platform": "martinfowler.com",
+          "type": "article"
+        }
+      ],
+      "challenge": "Model an online store with aggregates and bounded contexts for orders, catalog and billing. Draw the context map and justify each boundary.",
+      "estimatedTime": "2 weeks"
+    },
+    {
+      "id": "software-design-10",
+      "title": "Modules, Monoliths, and Service Boundaries",
+      "order": 10,
+      "techs": [
+        "Modular Monolith",
+        "Coupling",
+        "Boundaries"
+      ],
+      "description": "Decide where code boundaries belong. You will build a modular monolith, enforce module boundaries and learn when splitting into services is worth the cost.",
+      "topics": [
+        "Modular monolith structure",
+        "Public interfaces and dependency direction",
+        "Detecting hidden coupling",
+        "Shared libraries versus duplication",
+        "Migrating from monolith to services",
+        "Conway's law and team boundaries"
+      ],
+      "resources": [
+        {
+          "label": "Monolith First (Martin Fowler)",
+          "platform": "martinfowler.com",
+          "type": "article"
+        },
+        {
+          "label": "Building Microservices (Sam Newman)",
+          "platform": "O'Reilly",
+          "type": "book"
+        },
+        {
+          "label": "A Philosophy of Software Design (Ousterhout)",
+          "platform": "Yaknyam Press",
+          "type": "book"
+        }
+      ],
+      "challenge": "Map the modules in a project you know, draw the dependency graph, and fix one boundary violation.",
+      "estimatedTime": "1.5 weeks"
+    },
+    {
+      "id": "software-design-11",
+      "title": "API and Interface Design",
+      "order": 11,
+      "techs": [
+        "Contracts",
+        "Errors",
+        "Versioning"
+      ],
+      "description": "Design the seams other code depends on. You will define clear contracts, handle errors consistently and change an interface without breaking its users.",
+      "topics": [
+        "Designing small, deep interfaces",
+        "Error handling strategy across a codebase",
+        "Backward-compatible changes and versioning",
+        "Validation at the boundary",
+        "Idempotency and predictable behavior",
+        "Documenting a contract"
+      ],
+      "resources": [
+        {
+          "label": "A Philosophy of Software Design (Ousterhout)",
+          "platform": "Yaknyam Press",
+          "type": "book"
+        },
+        {
+          "label": "API Design Patterns (JJ Geewax)",
+          "platform": "Manning",
+          "type": "book"
+        },
+        {
+          "label": "Google API Design Guide",
+          "platform": "cloud.google.com",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Design the public interface of a small library, write usage examples first, then evolve it with one breaking and one non-breaking change.",
+      "estimatedTime": "1.5 weeks"
+    },
+    {
+      "id": "software-design-12",
+      "title": "Low-Level Design Interview Problems",
+      "order": 12,
+      "techs": [
+        "Parking Lot",
+        "LRU Cache",
+        "Rate Limiter"
+      ],
+      "description": "Turn everything into interview practice. You will clarify requirements, pick classes and relationships, apply patterns where they fit and code a clean solution under time pressure.",
+      "topics": [
+        "A framework for low-level design rounds",
+        "Parking lot and elevator systems",
+        "LRU cache and rate limiter classes",
+        "Chess, tic-tac-toe and state-heavy games",
+        "Booking and inventory systems",
+        "Presenting trade-offs and extending the design"
+      ],
+      "resources": [
+        {
+          "label": "Grokking the Low Level Design Interview",
+          "platform": "Educative",
+          "type": "course"
+        },
+        {
+          "label": "Head First Design Patterns",
+          "platform": "O'Reilly",
+          "type": "book"
+        },
+        {
+          "label": "Refactoring Guru: Design Patterns",
+          "platform": "refactoring.guru",
+          "type": "article"
+        }
+      ],
+      "challenge": "Solve three problems (parking lot, LRU cache, elevator) in 45 minutes each: class diagram, core code and one extension per problem.",
+      "estimatedTime": "2 weeks"
+    }
+  ],
+  "leetcode-patterns": [
+    {
+      "id": "leetcode-patterns-1",
+      "title": "How to Practice: Method, Tracking, and Review",
+      "order": 1,
+      "techs": [
+        "Practice Plan",
+        "Spaced Repetition",
+        "Pattern Notes"
+      ],
+      "description": "Build a practice system before you grind. You will set a weekly plan, log every attempt, and review failures so each problem teaches a pattern instead of a one-off answer.",
+      "topics": [
+        "Easy, medium and hard: how to sequence them",
+        "The 20-minute rule before looking at a hint",
+        "Logging attempts and mistakes",
+        "Spaced repetition for solved problems",
+        "Writing your own pattern notes",
+        "Avoiding the memorize-solutions trap"
+      ],
+      "resources": [
+        {
+          "label": "LeetCode problem set",
+          "platform": "leetcode.com",
+          "type": "course"
+        },
+        {
+          "label": "NeetCode roadmap",
+          "platform": "neetcode.io",
+          "type": "course"
+        },
+        {
+          "label": "Grind 75",
+          "platform": "techinterviewhandbook.org",
+          "type": "article"
+        }
+      ],
+      "challenge": "Set up your tracker and plan a 4-week schedule. Solve 5 easy problems and log the pattern, time and mistakes for each.",
+      "estimatedTime": "1 week"
+    },
+    {
+      "id": "leetcode-patterns-2",
+      "title": "Arrays and Hashing Patterns",
+      "order": 2,
+      "techs": [
+        "Frequency Map",
+        "Prefix Sum",
+        "Hash Set"
+      ],
+      "description": "Drill the highest-frequency interview patterns. You will solve duplicate, anagram, grouping and prefix-sum problems until the hash map reflex is automatic.",
+      "topics": [
+        "Contains Duplicate and Two Sum",
+        "Group Anagrams and Top K Frequent",
+        "Product of Array Except Self",
+        "Subarray Sum Equals K",
+        "Longest Consecutive Sequence",
+        "Valid Sudoku and encoding problems"
+      ],
+      "resources": [
+        {
+          "label": "LeetCode problem set",
+          "platform": "leetcode.com",
+          "type": "course"
+        },
+        {
+          "label": "NeetCode roadmap",
+          "platform": "neetcode.io",
+          "type": "course"
+        },
+        {
+          "label": "Blind 75 list",
+          "platform": "teamblind.com",
+          "type": "article"
+        }
+      ],
+      "challenge": "Solve 10 array and hashing problems. Explain the shared pattern across any three of them in your own words.",
+      "estimatedTime": "1 week"
+    },
+    {
+      "id": "leetcode-patterns-3",
+      "title": "Two Pointers and Sliding Window Patterns",
+      "order": 3,
+      "techs": [
+        "Two Pointers",
+        "Sliding Window",
+        "Fast and Slow"
+      ],
+      "description": "Drill linear-time techniques for sorted data and substrings. You will recognize when a window or a pair of pointers replaces a nested loop.",
+      "topics": [
+        "Valid Palindrome and Two Sum II",
+        "3Sum and Container With Most Water",
+        "Best Time to Buy and Sell Stock",
+        "Longest Substring Without Repeating Characters",
+        "Minimum Window Substring",
+        "Sliding Window Maximum"
+      ],
+      "resources": [
+        {
+          "label": "LeetCode problem set",
+          "platform": "leetcode.com",
+          "type": "course"
+        },
+        {
+          "label": "NeetCode roadmap",
+          "platform": "neetcode.io",
+          "type": "course"
+        },
+        {
+          "label": "Grind 75",
+          "platform": "techinterviewhandbook.org",
+          "type": "article"
+        }
+      ],
+      "challenge": "Solve 10 problems. For each, write down the signal in the statement that told you to use a window or two pointers.",
+      "estimatedTime": "1 week"
+    },
+    {
+      "id": "leetcode-patterns-4",
+      "title": "Stack, Queue, and Monotonic Patterns",
+      "order": 4,
+      "techs": [
+        "Stack",
+        "Monotonic Stack",
+        "Queue"
+      ],
+      "description": "Drill problems where order of arrival matters. You will use stacks for matching and nearest-greater problems, and queues for level-by-level work.",
+      "topics": [
+        "Valid Parentheses and Min Stack",
+        "Daily Temperatures",
+        "Next Greater Element",
+        "Largest Rectangle in Histogram",
+        "Evaluate Reverse Polish Notation",
+        "Car Fleet and Generate Parentheses"
+      ],
+      "resources": [
+        {
+          "label": "LeetCode problem set",
+          "platform": "leetcode.com",
+          "type": "course"
+        },
+        {
+          "label": "NeetCode roadmap",
+          "platform": "neetcode.io",
+          "type": "course"
+        },
+        {
+          "label": "Grind 75",
+          "platform": "techinterviewhandbook.org",
+          "type": "article"
+        }
+      ],
+      "challenge": "Solve 8 problems, including 2 monotonic stack problems. Draw the stack state step by step for one of them.",
+      "estimatedTime": "1 week"
+    },
+    {
+      "id": "leetcode-patterns-5",
+      "title": "Binary Search Patterns",
+      "order": 5,
+      "techs": [
+        "Binary Search",
+        "Search on Answer",
+        "Rotated Arrays"
+      ],
+      "description": "Drill binary search beyond sorted arrays. You will search rotated arrays and search on the answer space, with careful boundary handling.",
+      "topics": [
+        "Binary Search and Search Insert Position",
+        "Search in Rotated Sorted Array",
+        "Find Minimum in Rotated Sorted Array",
+        "Koko Eating Bananas",
+        "Time Based Key-Value Store",
+        "Median of Two Sorted Arrays"
+      ],
+      "resources": [
+        {
+          "label": "LeetCode problem set",
+          "platform": "leetcode.com",
+          "type": "course"
+        },
+        {
+          "label": "NeetCode roadmap",
+          "platform": "neetcode.io",
+          "type": "course"
+        },
+        {
+          "label": "Grind 75",
+          "platform": "techinterviewhandbook.org",
+          "type": "article"
+        }
+      ],
+      "challenge": "Solve 8 problems. Write one reusable binary search template and note exactly where off-by-one errors appear.",
+      "estimatedTime": "1 week"
+    },
+    {
+      "id": "leetcode-patterns-6",
+      "title": "Linked List Patterns",
+      "order": 6,
+      "techs": [
+        "Dummy Node",
+        "Reversal",
+        "Cycle Detection"
+      ],
+      "description": "Drill pointer manipulation. You will reverse, merge and reorder lists, and detect cycles with fast and slow pointers.",
+      "topics": [
+        "Reverse Linked List",
+        "Merge Two Sorted Lists",
+        "Linked List Cycle and Cycle II",
+        "Reorder List and Remove Nth Node From End",
+        "Add Two Numbers",
+        "LRU Cache and Copy List With Random Pointer"
+      ],
+      "resources": [
+        {
+          "label": "LeetCode problem set",
+          "platform": "leetcode.com",
+          "type": "course"
+        },
+        {
+          "label": "NeetCode roadmap",
+          "platform": "neetcode.io",
+          "type": "course"
+        },
+        {
+          "label": "Grind 75",
+          "platform": "techinterviewhandbook.org",
+          "type": "article"
+        }
+      ],
+      "challenge": "Solve 8 problems. Implement LRU Cache with a hash map and a doubly linked list, and explain why both are needed.",
+      "estimatedTime": "1 week"
+    },
+    {
+      "id": "leetcode-patterns-7",
+      "title": "Tree Patterns: DFS and BFS",
+      "order": 7,
+      "techs": [
+        "DFS",
+        "BFS",
+        "Recursion"
+      ],
+      "description": "Drill tree problems. You will choose between depth-first and breadth-first traversals and pass information up or down the recursion.",
+      "topics": [
+        "Invert Binary Tree and Maximum Depth",
+        "Same Tree, Subtree and Balanced Tree",
+        "Level Order Traversal and Right Side View",
+        "Lowest Common Ancestor",
+        "Validate BST and Kth Smallest in BST",
+        "Binary Tree Maximum Path Sum and Serialize/Deserialize"
+      ],
+      "resources": [
+        {
+          "label": "LeetCode problem set",
+          "platform": "leetcode.com",
+          "type": "course"
+        },
+        {
+          "label": "NeetCode roadmap",
+          "platform": "neetcode.io",
+          "type": "course"
+        },
+        {
+          "label": "Grind 75",
+          "platform": "techinterviewhandbook.org",
+          "type": "article"
+        }
+      ],
+      "challenge": "Solve 12 tree problems. Group them into 'return a value up' versus 'carry state down' and note the template for each.",
+      "estimatedTime": "1.5 weeks"
+    },
+    {
+      "id": "leetcode-patterns-8",
+      "title": "Heap and Priority Queue Patterns",
+      "order": 8,
+      "techs": [
+        "Top K",
+        "Two Heaps",
+        "Scheduling"
+      ],
+      "description": "Drill problems that ask for the best k items or a running middle. You will pick min-heaps or max-heaps and keep heap sizes bounded.",
+      "topics": [
+        "Kth Largest Element in a Stream",
+        "Last Stone Weight and K Closest Points",
+        "Top K Frequent Elements",
+        "Task Scheduler",
+        "Merge K Sorted Lists",
+        "Find Median from Data Stream"
+      ],
+      "resources": [
+        {
+          "label": "LeetCode problem set",
+          "platform": "leetcode.com",
+          "type": "course"
+        },
+        {
+          "label": "NeetCode roadmap",
+          "platform": "neetcode.io",
+          "type": "course"
+        },
+        {
+          "label": "Grind 75",
+          "platform": "techinterviewhandbook.org",
+          "type": "article"
+        }
+      ],
+      "challenge": "Solve 8 problems. Explain why a size-k min-heap beats sorting for top-k, with the Big-O for both.",
+      "estimatedTime": "1 week"
+    },
+    {
+      "id": "leetcode-patterns-9",
+      "title": "Backtracking Patterns",
+      "order": 9,
+      "techs": [
+        "Backtracking",
+        "Pruning",
+        "Choose-Explore-Undo"
+      ],
+      "description": "Drill search over choices. You will generate subsets, permutations and combinations, and prune branches early to stay inside the time limit.",
+      "topics": [
+        "Subsets and Subsets II",
+        "Permutations and Combination Sum",
+        "Word Search",
+        "Palindrome Partitioning",
+        "Letter Combinations of a Phone Number",
+        "N-Queens"
+      ],
+      "resources": [
+        {
+          "label": "LeetCode problem set",
+          "platform": "leetcode.com",
+          "type": "course"
+        },
+        {
+          "label": "NeetCode roadmap",
+          "platform": "neetcode.io",
+          "type": "course"
+        },
+        {
+          "label": "Grind 75",
+          "platform": "techinterviewhandbook.org",
+          "type": "article"
+        }
+      ],
+      "challenge": "Solve 8 problems with one shared backtracking template. Mark where each one prunes and how much that saves.",
+      "estimatedTime": "1.5 weeks"
+    },
+    {
+      "id": "leetcode-patterns-10",
+      "title": "Graph Patterns: BFS, DFS, and Union-Find",
+      "order": 10,
+      "techs": [
+        "Grid Search",
+        "Topological Sort",
+        "Union-Find"
+      ],
+      "description": "Drill graph problems, including grids. You will count islands, order dependencies and group connected components.",
+      "topics": [
+        "Number of Islands and Max Area of Island",
+        "Clone Graph and Rotting Oranges",
+        "Pacific Atlantic Water Flow",
+        "Course Schedule I and II",
+        "Number of Connected Components and Graph Valid Tree",
+        "Word Ladder"
+      ],
+      "resources": [
+        {
+          "label": "LeetCode problem set",
+          "platform": "leetcode.com",
+          "type": "course"
+        },
+        {
+          "label": "NeetCode roadmap",
+          "platform": "neetcode.io",
+          "type": "course"
+        },
+        {
+          "label": "Grind 75",
+          "platform": "techinterviewhandbook.org",
+          "type": "article"
+        }
+      ],
+      "challenge": "Solve 10 graph problems. For each, write what the nodes and edges are, because that is the hardest step.",
+      "estimatedTime": "2 weeks"
+    },
+    {
+      "id": "leetcode-patterns-11",
+      "title": "Shortest Path and Advanced Graph Patterns",
+      "order": 11,
+      "techs": [
+        "Dijkstra",
+        "Bellman-Ford",
+        "MST"
+      ],
+      "description": "Drill weighted graph problems. You will choose Dijkstra, Bellman-Ford or a minimum spanning tree based on the constraints.",
+      "topics": [
+        "Network Delay Time",
+        "Cheapest Flights Within K Stops",
+        "Path With Minimum Effort",
+        "Min Cost to Connect All Points",
+        "Swim in Rising Water",
+        "Reconstruct Itinerary"
+      ],
+      "resources": [
+        {
+          "label": "LeetCode problem set",
+          "platform": "leetcode.com",
+          "type": "course"
+        },
+        {
+          "label": "NeetCode roadmap",
+          "platform": "neetcode.io",
+          "type": "course"
+        },
+        {
+          "label": "Grind 75",
+          "platform": "techinterviewhandbook.org",
+          "type": "article"
+        }
+      ],
+      "challenge": "Solve 6 problems. Write a decision table: which algorithm for which graph property, with an example for each.",
+      "estimatedTime": "1.5 weeks"
+    },
+    {
+      "id": "leetcode-patterns-12",
+      "title": "Dynamic Programming Patterns I: 1D and Knapsack",
+      "order": 12,
+      "techs": [
+        "1D DP",
+        "Knapsack",
+        "Memoization"
+      ],
+      "description": "Drill the first DP families. You will define state and transition, then convert a recursive solution to memoized and tabulated forms.",
+      "topics": [
+        "Climbing Stairs and House Robber I and II",
+        "Coin Change and Coin Change II",
+        "Longest Increasing Subsequence",
+        "Word Break and Decode Ways",
+        "Partition Equal Subset Sum",
+        "Maximum Product Subarray"
+      ],
+      "resources": [
+        {
+          "label": "LeetCode problem set",
+          "platform": "leetcode.com",
+          "type": "course"
+        },
+        {
+          "label": "NeetCode roadmap",
+          "platform": "neetcode.io",
+          "type": "course"
+        },
+        {
+          "label": "Grind 75",
+          "platform": "techinterviewhandbook.org",
+          "type": "article"
+        }
+      ],
+      "challenge": "Solve 10 problems. For each, write the state, the transition and the base case before you code.",
+      "estimatedTime": "2 weeks"
+    },
+    {
+      "id": "leetcode-patterns-13",
+      "title": "Dynamic Programming Patterns II: 2D and Strings",
+      "order": 13,
+      "techs": [
+        "2D DP",
+        "LCS",
+        "Edit Distance"
+      ],
+      "description": "Drill grid and string DP. You will build tables for paths, subsequences and edit costs, and reduce space where possible.",
+      "topics": [
+        "Unique Paths and Minimum Path Sum",
+        "Longest Common Subsequence",
+        "Edit Distance",
+        "Longest Palindromic Substring",
+        "Interleaving String and Distinct Subsequences",
+        "Regular Expression Matching"
+      ],
+      "resources": [
+        {
+          "label": "LeetCode problem set",
+          "platform": "leetcode.com",
+          "type": "course"
+        },
+        {
+          "label": "NeetCode roadmap",
+          "platform": "neetcode.io",
+          "type": "course"
+        },
+        {
+          "label": "Grind 75",
+          "platform": "techinterviewhandbook.org",
+          "type": "article"
+        }
+      ],
+      "challenge": "Solve 8 problems. Redo two of them with O(n) space and explain what you dropped.",
+      "estimatedTime": "2 weeks"
+    },
+    {
+      "id": "leetcode-patterns-14",
+      "title": "Greedy, Intervals, Bits, and Math Patterns",
+      "order": 14,
+      "techs": [
+        "Greedy",
+        "Intervals",
+        "Bit Manipulation"
+      ],
+      "description": "Drill the remaining common categories. You will merge intervals, justify greedy choices and use bit tricks.",
+      "topics": [
+        "Merge Intervals and Insert Interval",
+        "Non-overlapping Intervals and Meeting Rooms II",
+        "Jump Game I and II",
+        "Gas Station and Partition Labels",
+        "Single Number and Number of 1 Bits",
+        "Reverse Integer and Pow(x, n)"
+      ],
+      "resources": [
+        {
+          "label": "LeetCode problem set",
+          "platform": "leetcode.com",
+          "type": "course"
+        },
+        {
+          "label": "NeetCode roadmap",
+          "platform": "neetcode.io",
+          "type": "course"
+        },
+        {
+          "label": "Grind 75",
+          "platform": "techinterviewhandbook.org",
+          "type": "article"
+        }
+      ],
+      "challenge": "Solve 10 problems. For each greedy one, state in a sentence why the greedy choice is safe.",
+      "estimatedTime": "1.5 weeks"
+    },
+    {
+      "id": "leetcode-patterns-15",
+      "title": "Timed Mock Rounds and Review",
+      "order": 15,
+      "techs": [
+        "Mock Interview",
+        "Timing",
+        "Communication"
+      ],
+      "description": "Practice the real conditions. You will solve unseen problems in 35-45 minutes, talk through your approach, and review each round for pattern misses and communication gaps.",
+      "topics": [
+        "Setting up a timed round",
+        "Clarifying questions and examples first",
+        "Thinking aloud while coding",
+        "Testing your own solution",
+        "Handling follow-ups and complexity questions",
+        "Weekly review of weak patterns"
+      ],
+      "resources": [
+        {
+          "label": "LeetCode problem set",
+          "platform": "leetcode.com",
+          "type": "course"
+        },
+        {
+          "label": "NeetCode roadmap",
+          "platform": "neetcode.io",
+          "type": "course"
+        },
+        {
+          "label": "Tech Interview Handbook",
+          "platform": "techinterviewhandbook.org",
+          "type": "article"
+        }
+      ],
+      "challenge": "Complete 6 timed rounds of one medium problem each. Score yourself on approach, code, testing and communication.",
+      "estimatedTime": "2 weeks"
+    }
   ]
 }

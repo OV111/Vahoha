@@ -99,6 +99,18 @@ export const TRACKS = {
       techs: ["Big O", "Arrays & Hashing", "Trees & Graphs", "Dynamic Programming", "Interview Patterns"],
     },
     {
+      id: "software-design",
+      title: "Software Design & Architecture",
+      available: false,
+      techs: ["Clean Code", "SOLID", "Design Patterns", "Clean Architecture", "Low-Level Design"],
+    },
+    {
+      id: "leetcode-patterns",
+      title: "LeetCode Patterns",
+      available: false,
+      techs: ["Sliding Window", "Two Pointers", "Backtracking", "Graphs", "Dynamic Programming"],
+    },
+    {
       id: "system-design",
       title: "System Design",
       available: true,

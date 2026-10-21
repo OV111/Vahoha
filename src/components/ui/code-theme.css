@@ -1,0 +1,13 @@
+/* VS Code Dark+ colors (what Cursor uses) for highlight.js classes. */
+.hljs { color: #d4d4d4; background: transparent; }
+.hljs-keyword, .hljs-literal, .hljs-variable.language_, .hljs-tag, .hljs-name, .hljs-selector-tag, .hljs-meta { color: #569cd6; }
+.hljs-keyword.hljs-control { color: #c586c0; }
+.hljs-title.function_, .hljs-title, .hljs-section { color: #dcdcaa; }
+.hljs-built_in, .hljs-type, .hljs-title.class_, .hljs-title.class_.inherited__ { color: #4ec9b0; }
+.hljs-string, .hljs-meta .hljs-string, .hljs-addition { color: #ce9178; }
+.hljs-regexp, .hljs-deletion { color: #d16969; }
+.hljs-number, .hljs-symbol, .hljs-bullet { color: #b5cea8; }
+.hljs-variable, .hljs-params, .hljs-property, .hljs-attr, .hljs-attribute, .hljs-selector-class, .hljs-selector-attr, .hljs-template-variable { color: #9cdcfe; }
+.hljs-comment, .hljs-quote, .hljs-doctag { color: #6a9955; }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: 700; }

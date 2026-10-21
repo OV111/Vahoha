@@ -49,6 +49,7 @@ const SECTIONS = [
       ["Polar", "Handles payments as merchant of record, including tax. It processes your payment details, not us."],
       ["Cloudinary", "Stores and serves images you upload."],
       ["Resend", "Sends emails such as password resets and contact-form notifications."],
+      ["PostHog", "Product analytics: which pages and features are used, and unhandled errors in the app. It receives an anonymous identifier and your usage events, not your passwords or the content you write."],
       ["Google and GitHub", "Optional sign-in."],
     ],
   },
@@ -58,7 +59,7 @@ const SECTIONS = [
     items: [
       [null, "One secure, httpOnly cookie keeps you signed in. Your session token is kept in memory, not in browser storage."],
       [null, "Your theme preference is saved in your browser's local storage."],
-      [null, "We use no advertising or third-party tracking cookies."],
+      [null, "Our analytics provider (PostHog) stores an anonymous identifier in your browser, in a cookie or local storage, to count visits. We use no advertising cookies."],
     ],
   },
   {

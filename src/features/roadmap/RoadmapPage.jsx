@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import CategoryBar from "./components/CategoryBar";
@@ -13,10 +14,11 @@ import WelcomeTour from "./components/WelcomeTour";
 import { trackHasDoneLayer } from "./lib/trackStarted";
 import { useTrackHasProgress } from "../learn/lib/lessonStatus";
 import "./roadmap.css";
+import { ROADMAP_DOMAINS } from "../../../constants/categories";
 import posthog, { isPostHogConfigured } from "@/lib/posthog";
 
 export default function RoadmapPage() {
-  const { selectedCategory, selectedTrack, layerProgress, progressLoaded, submitOnboarding, closePanel } = useRoadmapStore();
+  const { selectedCategory, selectedTrack, layerProgress, progressLoaded, submitOnboarding, closePanel, setCategory } = useRoadmapStore();
   const { auth } = useAuthStore();
   const hasOpenedLessons = useTrackHasProgress(selectedTrack?.id);
   // "Start Path" begins a path, so it goes away once the learner has begun this one.
@@ -26,6 +28,24 @@ export default function RoadmapPage() {
     (!progressLoaded || hasOpenedLessons || trackHasDoneLayer(layerProgress, selectedTrack.id));
   const [panelOpen, setPanelOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  // Navbar, footer and search link here as /roadmaps?domain=<id>. Opens that
+  // domain once, then drops the param so a later pick in the bar isn't
+  // contradicted by a stale URL.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const domainParam = searchParams.get("domain");
+  useEffect(() => {
+    if (!domainParam) return;
+    const domain = ROADMAP_DOMAINS.find((d) => d.id === domainParam);
+    if (domain) setCategory(domain);
+    setSearchParams(
+      (params) => {
+        params.delete("domain");
+        return params;
+      },
+      { replace: true },
+    );
+  }, [domainParam, setCategory, setSearchParams]);
 
   // Only `skillLevel` is actually persisted right now — see submitOnboarding
   // in useRoadmapStore.js for why the other 4 answers aren't sent yet. The

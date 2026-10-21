@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { recruiterApi } from "../recruiterApi";
-import Checkbox from "@/components/ui/FormCheckbox";
+import Checkbox from "./FormCheckbox";
 
 function CopyLink({ path }) {
   const [copied, setCopied] = useState(false);

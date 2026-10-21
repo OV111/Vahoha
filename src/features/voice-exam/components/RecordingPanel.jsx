@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Mic, Square, AlertTriangle } from "lucide-react";
 import { useRecorder } from "../hooks/useRecorder";
-import { useCountdown, formatClock } from "../hooks/useCountdown";
+import useCountdown from "@/hooks/useCountdown";
+import { formatClock } from "../lib/formatClock";
 
 /**
  * The core screen: one question, one big record button, countdowns.
@@ -17,12 +18,14 @@ import { useCountdown, formatClock } from "../hooks/useCountdown";
  * }} props
  */
 const RecordingPanel = ({ attempt, isBusy, onSubmitAudio, onSubmitText, onAbandon }) => {
-  const { currentPrompt, segmentLimitSec, deadlineAt } = attempt;
+  const { currentPrompt, segmentLimitSec, secondsLeft } = attempt;
   const [typing, setTyping] = useState(false);
   const [text, setText] = useState("");
 
   const recorder = useRecorder({ maxSec: segmentLimitSec, onStop: onSubmitAudio });
-  const overallLeft = useCountdown(deadlineAt);
+  // Keyed on the prompt: every server answer restarts the clock from its fresh
+  // secondsLeft, even if two answers happen to carry the same number.
+  const overallLeft = useCountdown(secondsLeft, currentPrompt.n);
   const segmentLeft = Math.max(0, segmentLimitSec - recorder.elapsedSec);
 
   const submitTyped = () => {

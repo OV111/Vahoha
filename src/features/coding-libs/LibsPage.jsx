@@ -16,19 +16,16 @@ import ResourceSkeleton from "./ResourceSkeleton";
 import SectionHeader from "./SectionHeader";
 import { CARD_GRID, SECTION_ORDER } from "./grids";
 import { useLibraryResources } from "./useLibraryResources";
+import useLibraryFilters, { NO_FILTERS } from "./useLibraryFilters";
 
 // LibsPage tab key → API `type` value (null = every type)
 const TAB_TO_TYPE = { all: null, books: "book", docs: "documentation", guides: "guide", sheets: "cheatsheet" };
 const TAB_TO_COUNT_KEY = { all: "total", books: "book", docs: "documentation", guides: "guide", sheets: "cheatsheet" };
-const NO_FILTERS = { path: null, difficulty: null, is_free: null };
 
 export default function LibsPage() {
-  const [activeTab, setActiveTab] = useState("all");
+  const { activeTab, setActiveTab, filters, setFilters, query, search, setSearch, clearAll } = useLibraryFilters();
   const [activeCategory, setActiveCategory] = useState("all");
   const [filtersOpen, setFiltersOpen] = useState(false); // mobile drawer only
-  const [filters, setFilters] = useState(NO_FILTERS);
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [counts, setCounts] = useState(null);
   const [savedIds, setSavedIds] = useState(() => new Set());
   const searchInputRef = useRef(null);
@@ -40,15 +37,11 @@ export default function LibsPage() {
     type: TAB_TO_TYPE[activeTab],
     path: filters.path,
     difficulty: filters.difficulty,
+    layer: filters.layer,
     isFree: filters.is_free,
-    q: debouncedSearch,
+    q: query,
     enabled: !isLibrariesTab,
   });
-
-  useEffect(() => {
-    const t = setTimeout(() => setDebouncedSearch(search.trim()), 300);
-    return () => clearTimeout(t);
-  }, [search]);
 
   useEffect(() => {
     fetchLibraryResourceCounts().then(setCounts).catch(() => {});
@@ -84,7 +77,7 @@ export default function LibsPage() {
   }, []);
 
   const visibleLibs = useMemo(() => {
-    const q = debouncedSearch.toLowerCase();
+    const q = query.toLowerCase();
     return LIBS_DATA.filter((l) => activeCategory === "all" || l.category === activeCategory).filter(
       (l) =>
         !q ||
@@ -92,19 +85,15 @@ export default function LibsPage() {
         l.description.toLowerCase().includes(q) ||
         l.tags.some((t) => t.toLowerCase().includes(q)),
     );
-  }, [activeCategory, debouncedSearch]);
+  }, [activeCategory, query]);
 
   const grouped = useMemo(
     () => Object.fromEntries(SECTION_ORDER.map((type) => [type, resources.filter((r) => r.type === type)])),
     [resources],
   );
 
-  const activeFiltersCount = [filters.path, filters.difficulty, filters.is_free].filter((v) => v !== null).length;
+  const activeFiltersCount = [filters.path, filters.difficulty, filters.is_free, filters.layer].filter((v) => v !== null).length;
   const clearFilters = () => setFilters(NO_FILTERS);
-  const clearAll = () => {
-    clearFilters();
-    setSearch("");
-  };
 
   const countFor = (tab) => {
     if (tab.key === "libraries") return LIBS_DATA.length;
@@ -121,7 +110,7 @@ export default function LibsPage() {
   };
 
   const resultCount = isLibrariesTab ? visibleLibs.length : resources.length;
-  const hasQuery = Boolean(debouncedSearch) || activeFiltersCount > 0;
+  const hasQuery = Boolean(query) || activeFiltersCount > 0;
   const sidebarProps = { activeTab, activeCategory, setActiveCategory, filters, setFilters };
 
   return (
@@ -269,9 +258,9 @@ export default function LibsPage() {
               </section>
             ) : (
               <EmptyState
-                message={debouncedSearch ? `No packages match "${debouncedSearch}".` : "No packages in this category."}
-                onClear={debouncedSearch ? () => setSearch("") : () => setActiveCategory("all")}
-                clearLabel={debouncedSearch ? "Clear search" : "Show all categories"}
+                message={query ? `No packages match "${query}".` : "No packages in this category."}
+                onClear={query ? () => setSearch("") : () => setActiveCategory("all")}
+                clearLabel={query ? "Clear search" : "Show all categories"}
               />
             ))}
 

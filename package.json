@@ -49,7 +49,8 @@
     "test:queue": "vitest run --config config/vitest.queue.config.js",
     "test:performance": "vitest run --config config/vitest.performance.config.js",
     "test:security": "vitest run --config config/vitest.security.config.js",
-    "prepare": "husky || true"
+    "prepare": "husky || true",
+    "roadmap:titles": "node scripts/checkRoadmapTitles.js"
   },
   "dependencies": {
     "@codemirror/commands": "^6.11.1",
@@ -84,7 +85,6 @@
     "framer-motion": "^12.27.1",
     "google-auth-library": "^10.6.2",
     "groq-sdk": "^1.2.1",
-    "gsap": "^3.13.0",
     "helmet": "^8.3.0",
     "highlight.js": "^11.12.0",
     "ioredis": "^5.10.1",

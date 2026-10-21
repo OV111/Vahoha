@@ -1,4 +1,5 @@
 import React from "react";
+import { checkOptionState } from "./digestData";
 
 // Small buttons with an invisible 44px-ish hit area: the visible control stays
 // compact, the ::before extends the tap target.
@@ -49,7 +50,78 @@ function KnownRow({ concept, onUndo }) {
   );
 }
 
-export function LearnCard({ concept, accent, isKnown, expanded, onToggleExpand, onKnow, onUndo }) {
+const OPTION_BORDER = { idle: "#2a2a2a", right: "#4ade80", wrong: "#f87171" };
+
+// "Check yourself": the read-then-prove step. Graded on the server; a right
+// answer is self-study evidence only and never counts as a layer pass.
+function CheckBlock({ concept, accent, result, isChecked, onAnswer, onRetry }) {
+  const { check } = concept;
+  const answered = result && !result.pending;
+  return (
+    <div className="mt-4 p-3" style={{ border: "1px dotted #2a2a2a", borderRadius: 2 }}>
+      <p className="font-mono text-xs uppercase tracking-wider" style={{ color: accent }}>
+        Check yourself
+        {isChecked && <span style={{ color: "#555" }}> · ✓ checked</span>}
+      </p>
+      <p className="mt-2 text-sm" style={{ color: "#d4d4d4" }}>
+        {check.question}
+      </p>
+      <ul className="mt-3 space-y-2">
+        {check.options.map((option, i) => (
+          <li key={option}>
+            <button
+              type="button"
+              disabled={Boolean(result)}
+              aria-pressed={result?.picked === i}
+              onClick={() => onAnswer(concept.id, i)}
+              className="min-h-11 w-full px-3 py-2 text-left text-sm transition-colors focus-visible:outline-2 enabled:hover:bg-[#141418]"
+              style={{
+                border: `1px solid ${OPTION_BORDER[checkOptionState(i, result)]}`,
+                borderRadius: 2,
+                color: "#d4d4d4",
+                outlineColor: accent,
+              }}
+            >
+              {option}
+            </button>
+          </li>
+        ))}
+      </ul>
+      {answered && (
+        <div className="mt-3 text-sm" style={{ color: "#a5a5a5" }} aria-live="polite">
+          <span
+            className="font-mono text-xs uppercase tracking-wider"
+            style={{ color: result.correct ? "#4ade80" : "#f87171" }}
+          >
+            {result.correct ? "Right " : "Not quite "}
+          </span>
+          {result.explanation}
+          {!result.correct && (
+            <div className="mt-3">
+              <ActionButton onClick={() => onRetry(concept.id)} accent={accent}>
+                Try again
+              </ActionButton>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function LearnCard({
+  concept,
+  accent,
+  isKnown,
+  expanded,
+  onToggleExpand,
+  onKnow,
+  onUndo,
+  checkResult,
+  isChecked,
+  onAnswer,
+  onRetry,
+}) {
   if (isKnown) return <KnownRow concept={concept} onUndo={onUndo} />;
   const panelId = `detail-${concept.id}`;
   return (
@@ -90,7 +162,25 @@ export function LearnCard({ concept, accent, isKnown, expanded, onToggleExpand, 
             // from the book{" "}
           </span>
           {concept.detail}
+          {concept.beyondBook && (
+            <p className="mt-2">
+              <span className="font-mono text-xs uppercase tracking-wider" style={{ color: "#555" }}>
+                // beyond the book{" "}
+              </span>
+              {concept.beyondBook}
+            </p>
+          )}
         </div>
+      )}
+      {concept.check && onAnswer && (
+        <CheckBlock
+          concept={concept}
+          accent={accent}
+          result={checkResult}
+          isChecked={isChecked}
+          onAnswer={onAnswer}
+          onRetry={onRetry}
+        />
       )}
     </li>
   );

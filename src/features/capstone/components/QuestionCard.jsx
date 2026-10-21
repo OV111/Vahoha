@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Clock, FileCode2 } from "lucide-react";
-import useCountdown from "../hooks/useCountdown";
+import useCountdown from "@/hooks/useCountdown";
 
 /**
  * The open defense question, in the original "? question / your answer" style.

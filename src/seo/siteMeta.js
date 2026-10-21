@@ -18,13 +18,6 @@ export const DEFAULT_META = {
     "Pass a graded test to unlock each step of your developer roadmap, with an AI mentor that knows your weak spots.",
 };
 
-const category = (label, slug) => ({
-  [`/categories/${slug}`]: {
-    title: `${label} Developer Roadmap | ${SITE_NAME}`,
-    description: `Follow the ${label} roadmap on ${SITE_NAME}: pass graded tests to unlock each layer, with an AI mentor.`,
-  },
-});
-
 // One public page per Foundations topic that has a written lesson. Topics
 // without one 404, so they must stay out of the sitemap.
 const foundationLessons = () =>
@@ -68,15 +61,6 @@ export const PUBLIC_PAGES = {
     description: `The terms that apply when you use ${SITE_NAME}.`,
   },
   ...foundationLessons(),
-  ...category("Full Stack", "fullstack"),
-  ...category("Backend", "backend"),
-  ...category("Mobile", "mobile"),
-  ...category("AI & ML", "ai&ml"),
-  ...category("DevOps", "devops"),
-  ...category("Data Science", "datascience"),
-  ...category("Game Development", "gamedev"),
-  ...category("QA", "qa"),
-  ...category("Programming Languages", "languages"),
 };
 
 // Pages that must never be indexed (account, auth, per-user, admin).
@@ -115,16 +99,6 @@ export const jsonLdFor = ({ title, description, path }) => {
       description,
       url: `${SITE_URL}${path}`,
       isAccessibleForFree: true,
-      provider: { "@id": `${SITE_URL}/#organization` },
-    };
-  }
-  if (path.startsWith("/categories/")) {
-    return {
-      "@context": "https://schema.org",
-      "@type": "Course",
-      name: title.replace(` | ${SITE_NAME}`, ""),
-      description,
-      url: `${SITE_URL}${path}`,
       provider: { "@id": `${SITE_URL}/#organization` },
     };
   }

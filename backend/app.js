@@ -12,7 +12,7 @@ import profileRoutes from "./modules/profile/index.js";
 import userRoutes from "./modules/users/index.js";
 import searchRoutes from "./modules/search/index.js";
 import accountRoutes from "./modules/account/index.js";
-import libraryRoutes from "./modules/library/index.js";
+import libraryRoutes, { adminLibraryRoutes, digestRoutes } from "./modules/library/index.js";
 import aiAgentRoutes from "./modules/ai-agent/index.js";
 import roadmapRoutes from "./modules/roadmap/index.js";
 import examRoutes from "./modules/exams/index.js";
@@ -87,6 +87,8 @@ export function createApp(db) {
 
   app.use("/blogs", blogRoutes);
   app.use("/library", libraryRoutes);
+  app.use("/api/library/admin", adminLibraryRoutes);
+  app.use("/api/library", digestRoutes);
 
   app.use(authRoutes);
   app.use(postRoutes);

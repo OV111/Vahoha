@@ -17,11 +17,12 @@ function Chip({ label, onRemove }) {
 
 export default function ActiveFilters({ filters, setFilters, onClearAll }) {
   const remove = (key) => setFilters((f) => ({ ...f, [key]: null }));
-  const hasAny = filters.path || filters.difficulty || filters.is_free !== null;
+  const hasAny = filters.path || filters.difficulty || filters.layer || filters.is_free !== null;
   if (!hasAny) return null;
 
   return (
     <div className="mb-4 flex flex-wrap items-center gap-2">
+      {filters.layer && <Chip label={`Layer: ${filters.layer}`} onRemove={() => remove("layer")} />}
       {filters.path && <Chip label={filters.path} onRemove={() => remove("path")} />}
       {filters.difficulty && <Chip label={filters.difficulty} onRemove={() => remove("difficulty")} />}
       {filters.is_free !== null && (

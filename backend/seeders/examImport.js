@@ -8,6 +8,7 @@
  * Usage:
  *   node backend/seeders/examImport.js --dry-run          # validate only, no DB writes
  *   node backend/seeders/examImport.js                    # import every *-output.md
+ *   node backend/seeders/examImport.js --reviewed mern    # import already-checked questions as reviewed: true
  *   node backend/seeders/examImport.js mern api-dev       # only these tracks
  *
  * Safe to re-run: questions already in a bank (same normalized stem) are
@@ -109,6 +110,7 @@ const lengthBiasWarning = (questions) => {
 const run = async () => {
   const args = process.argv.slice(2);
   const dryRun = args.includes("--dry-run");
+  const markReviewed = args.includes("--reviewed");
   const onlyTracks = new Set(args.filter((a) => !a.startsWith("--")));
 
   const tracks = (await loadTracks()).filter((t) => !onlyTracks.size || onlyTracks.has(t.trackId));
@@ -187,7 +189,7 @@ const run = async () => {
           topic: typeof q.topic === "string" ? q.topic : undefined,
           choices: q.choices.map((c) => c.trim()),
           answerIdx: q.answerIdx,
-          reviewed: false,
+          reviewed: markReviewed,
         }));
         if (existing) {
           await col.updateOne(
@@ -231,7 +233,7 @@ const run = async () => {
     for (const p of problems) console.log(`  - ${p}`);
   }
   if (!totals.files) console.log("No *-output.md files found under docs/exam-prompts/.");
-  if (!dryRun && totals.added) console.log("\nREVIEW the new questions (reviewed: false) before opening exams to users.");
+  if (!dryRun && totals.added && !markReviewed) console.log("\nREVIEW the new questions (reviewed: false) before opening exams to users.");
 };
 
 run().catch((err) => {

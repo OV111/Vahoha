@@ -19,7 +19,7 @@
 //   3. Each action wraps its api call: dispatch REQUEST_STARTED, await, dispatch
 //      ATTEMPT_UPDATED with the returned AttemptView, catch to FAILED.
 //   4. Guard against double submit: ignore submit calls while isBusy.
-//   5. When attempt.deadlineAt passes while the learner is still in an input state, the
+//   5. When attempt.secondsLeft runs out while the learner is still in an input state, the
 //      server will answer with EXPIRED on the next call. The UI does not decide that.
 //
 // Import from ../api/voiceExamApi: getEligibility, startAttempt, submitTurn, abandonAttempt.

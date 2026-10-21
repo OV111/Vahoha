@@ -15,22 +15,22 @@ const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
-const MyProfile = lazy(() => import("./pages/MyProfile"));
+const MyProfile = lazy(() => import("./features/profile/pages/MyProfile"));
 const GetStarted = lazy(() => import("./pages/GetStarted"));
-const ReadMore = lazy(() => import("./components/blog/ReadMore"));
+const ReadMore = lazy(() => import("./features/blogs/ReadMore"));
 const NotFound = lazy(() => import("./components/feedback/NotFound"));
 
-const UserProfile = lazy(() => import("./pages/Users/UserProfile"));
-const Followers = lazy(() => import("./pages/my-profile/Followers"));
-const Favorites = lazy(() => import("./pages/my-profile/Favorites"));
-const AddBlog = lazy(() => import("./pages/my-profile/AddBlog"));
-const EditBlog = lazy(() => import("./pages/my-profile/EditBlog"));
-const Chats = lazy(() => import("./pages/my-profile/chat/Chats"));
-const Notifications = lazy(() => import("./pages/my-profile/Notifications"));
-const Settings = lazy(() => import("./pages/my-profile/Settings"));
-const BlockedUsers = lazy(() => import("./pages/my-profile/BlockedUsers"));
+const UserProfile = lazy(() => import("./features/profile/pages/UserProfile"));
+const Followers = lazy(() => import("./features/connections/pages/Followers"));
+const Favorites = lazy(() => import("./features/profile/pages/Favorites"));
+const AddBlog = lazy(() => import("./features/profile/pages/AddBlog"));
+const EditBlog = lazy(() => import("./features/profile/pages/EditBlog"));
+const Chats = lazy(() => import("./features/chat/pages/Chats"));
+const Notifications = lazy(() => import("./features/profile/pages/Notifications"));
+const Settings = lazy(() => import("./features/profile/pages/Settings"));
+const BlockedUsers = lazy(() => import("./features/profile/pages/BlockedUsers"));
 const ConnectedAccounts = lazy(
-  () => import("./pages/my-profile/ConnectedAccounts"),
+  () => import("./features/profile/pages/ConnectedAccounts"),
 );
 
 const Blogs = lazy(() => import("./features/blogs/Blogs"));
@@ -59,6 +59,7 @@ const CertificatePage = lazy(
 );
 const TeamPage = lazy(() => import("./features/teams/TeamPage"));
 const TeamAdminPage = lazy(() => import("./features/teams/TeamAdminPage"));
+const AdminLibraryPage = lazy(() => import("./features/coding-libs/admin/AdminLibraryPage"));
 const EvidencePage = lazy(() => import("./features/teams/EvidencePage"));
 const CandidatePage = lazy(() => import("./features/recruiter/CandidatePage"));
 const CandidatesPage = lazy(() => import("./features/recruiter/CandidatesPage"));
@@ -81,15 +82,9 @@ const FoundationTopicPage = lazy(
 );
 const LayerLearnPage = lazy(() => import("./features/learn/LayerLearnPage"));
 const LearnTopicPage = lazy(() => import("./features/learn/TopicPage"));
-const FullStack = lazy(() => import("./pages/CategoryPages/FullStack"));
-const Backend = lazy(() => import("./pages/CategoryPages/Backend"));
-const Mobile = lazy(() => import("./pages/CategoryPages/Mobile"));
-const Languages = lazy(() => import("./pages/CategoryPages/Languages"));
-const AIandML = lazy(() => import("./pages/CategoryPages/AI&ML"));
-const QA = lazy(() => import("./pages/CategoryPages/QA"));
-const DataScience = lazy(() => import("./pages/CategoryPages/DataScience"));
-const DevOps = lazy(() => import("./pages/CategoryPages/DevOps"));
-const GameDev = lazy(() => import("./pages/CategoryPages/GameDev"));
+const LabsPage = lazy(() => import("./features/labs/LabsPage"));
+const LabPage = lazy(() => import("./features/labs/LabPage"));
+const LabRoomPage = lazy(() => import("./features/labs/RoomPage"));
 
 // Exported on its own so the build-time prerender (src/entry-prerender.jsx)
 // can render the same routes on the server with a static router.
@@ -129,32 +124,11 @@ export const routes = [
       { path: "foundations", element: <FoundationsPage /> },
       { path: "learn/:trackId/:layerId", element: <LayerLearnPage /> },
       { path: "learn/:trackId/:layerId/:topicSlug", element: <LearnTopicPage /> },
+      // Labs: placeholders until lab stage L1 (docs/product/LAB_SYSTEM.md).
+      { path: "labs", element: <LabsPage /> },
+      { path: "labs/:roomId", element: <LabRoomPage /> },
+      { path: "learn/:trackId/:layerId/:topicSlug/lab", element: <LabPage /> },
       { path: "foundations/:slug", element: <FoundationTopicPage /> },
-      {
-        path: "categories",
-        children: [
-          // No category index page: bare /categories is a 404, not a blank page.
-          { index: true, element: <NotFound /> },
-          // Old URL kept as a redirect so existing links and the navbar don't 404.
-          {
-            path: "fundamentals",
-            element: <Navigate to="/foundations" replace />,
-          },
-          {
-            path: "foundations",
-            element: <Navigate to="/foundations" replace />,
-          },
-          { path: "fullstack", element: <FullStack /> },
-          { path: "backend", element: <Backend /> },
-          { path: "mobile", element: <Mobile /> },
-          { path: "ai&ml", element: <AIandML /> },
-          { path: "devops", element: <DevOps /> },
-          { path: "datascience", element: <DataScience /> },
-          { path: "gamedev", element: <GameDev /> },
-          { path: "qa", element: <QA /> },
-          { path: "languages", element: <Languages /> },
-        ],
-      },
       // ✅ All protected routes grouped here — one wrapper for all
       {
         element: <ProtectedLayout />,
@@ -183,6 +157,7 @@ export const routes = [
           { path: "capstone/:trackId", element: <CapstonePage /> },
           { path: "team", element: <TeamPage /> },
           { path: "team/admin", element: <TeamAdminPage /> },
+          { path: "admin/library", element: <AdminLibraryPage /> },
           { path: "billing", element: <BillingPage /> },
           { path: "progress", element: <ProgressPage /> },
           // Signed in only. The list holds only developers who opted in to recruiters.

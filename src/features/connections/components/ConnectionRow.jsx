@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import defaultAvatar from "@/assets/user_profile/User_Profile.jpg";
+import UserAvatar from "@/components/ui/UserAvatar";
 import { displayName, isMutual, timeAgo } from "../lib/connections";
 
 const CHIP = "rounded-full border px-2 py-0.5 text-xs font-medium";
@@ -50,12 +50,7 @@ export default function ConnectionRow({ user, kind, pending, onToggle }) {
     <li className="flex items-center gap-4 px-4 py-4 sm:px-5">
       {/* The name link below is the accessible one; this just widens the click target. */}
       <Link to={profile} className="shrink-0 rounded-full" tabIndex={-1} aria-hidden="true">
-        <img
-          src={user.stats?.profileImage || defaultAvatar}
-          alt=""
-          className="size-12 rounded-full bg-neutral-800 object-cover"
-          loading="lazy"
-        />
+        <UserAvatar src={user.stats?.profileImage} name={name} size="size-12" className="text-lg" />
       </Link>
 
       <div className="min-w-0 flex-1">

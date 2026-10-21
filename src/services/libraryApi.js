@@ -3,7 +3,7 @@ import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
 export const fetchLibraryResources = async (params = {}, signal) => {
   const url = new URL(`${API_BASE_URL}/library`);
 
-  const { type, path, difficulty, topic, is_free, layer_id, q, page, limit } = params;
+  const { type, path, difficulty, topic, is_free, layer, q, page, limit } = params;
 
   if (type) {
     const types = Array.isArray(type) ? type : [type];
@@ -13,7 +13,7 @@ export const fetchLibraryResources = async (params = {}, signal) => {
   if (difficulty) url.searchParams.set("difficulty", difficulty);
   if (topic) url.searchParams.set("topic", topic);
   if (is_free !== undefined && is_free !== null) url.searchParams.set("is_free", String(is_free));
-  if (layer_id) url.searchParams.set("layer_id", layer_id);
+  if (layer) url.searchParams.set("layer", layer);
   if (q) url.searchParams.set("q", q);
   if (page) url.searchParams.set("page", String(page));
   if (limit) url.searchParams.set("limit", String(limit));
@@ -70,4 +70,34 @@ export const toggleSaveResource = async (id) => {
   const data = await res.json();
   if (!data.success) throw new Error("Failed to toggle save");
   return data.saved;
+};
+
+// A book's digest, or null when it has none or this user may not see it yet.
+export const fetchDigest = async (id, signal) => {
+  const res = await apiFetch(`${API_BASE_URL}/api/library/${id}/digest`, { headers: authHeaders(), signal });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error("Failed to fetch digest");
+  const data = await res.json();
+  return data.success ? data.data : null;
+};
+
+export const setConceptKnown = async (id, conceptKey, known) => {
+  const res = await apiFetch(`${API_BASE_URL}/api/library/${id}/digest/known/${conceptKey}`, {
+    method: "PUT",
+    headers: { ...authHeaders(), "Content-Type": "application/json" },
+    body: JSON.stringify({ known }),
+  });
+  if (!res.ok) throw new Error("Failed to save");
+};
+
+// Answers a concept's "check yourself" question; the server grades it.
+export const submitConceptCheck = async (id, conceptKey, answerIndex) => {
+  const res = await apiFetch(`${API_BASE_URL}/api/library/${id}/digest/check/${conceptKey}`, {
+    method: "POST",
+    headers: { ...authHeaders(), "Content-Type": "application/json" },
+    body: JSON.stringify({ answerIndex }),
+  });
+  if (!res.ok) throw new Error("Failed to check answer");
+  const data = await res.json();
+  return { correct: data.correct, answerIndex: data.answerIndex, explanation: data.explanation };
 };

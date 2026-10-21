@@ -1,9 +1,8 @@
-import { memo, useState } from "react";
+import { memo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import rehypeHighlight from "rehype-highlight";
-import { Check, Copy } from "lucide-react";
-import "highlight.js/styles/github-dark.css";
+import CodeBlock from "@/components/ui/CodeBlock";
+import { codeRehypePlugins } from "@/components/ui/codeHighlight";
 
 /**
  * Renders an agent message as markdown.
@@ -13,40 +12,6 @@ import "highlight.js/styles/github-dark.css";
  * files and other untrusted input) can never inject HTML or scripts. Don't add
  * rehype-raw here without adding rehype-sanitize alongside it.
  */
-
-function CodeBlock({ language, code, children }) {
-  const [copied, setCopied] = useState(false);
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      /* clipboard unavailable (insecure context) — fail silently */
-    }
-  };
-
-  return (
-    <div className="my-3 rounded-lg overflow-hidden border border-white/10 bg-[#0d1117]">
-      <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/10 bg-white/3">
-        <span className="text-[11px] uppercase tracking-wider text-white/35">
-          {language || "code"}
-        </span>
-        <button
-          onClick={copy}
-          className="flex items-center gap-1 text-[11px] text-white/40 hover:text-white transition-colors cursor-pointer"
-          title="Copy code"
-        >
-          {copied ? <Check size={12} /> : <Copy size={12} />}
-          {copied ? "Copied" : "Copy"}
-        </button>
-      </div>
-      {/* overflow-x-auto so long lines scroll inside the block, never the page */}
-      <pre className="overflow-x-auto p-3 text-[13px] leading-relaxed">{children}</pre>
-    </div>
-  );
-}
 
 const components = {
   // `pre` is handled by the `code` renderer below, so unwrap it to avoid
@@ -145,7 +110,7 @@ function MarkdownMessage({ content, className = "text-[14px] text-white" }) {
     <div className={`w-full ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight]}
+        rehypePlugins={codeRehypePlugins}
         components={components}
       >
         {content}

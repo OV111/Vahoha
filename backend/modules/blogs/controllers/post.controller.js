@@ -1,33 +1,5 @@
 import { verifyToken } from "../../../utils/jwtToken.js";
-import {
-  getDefaultPostsByCategoryService,
-  getPostsByCategoryService,
-  createPostService,
-} from "../services/postService.js";
-
-export const getDefaultPostsByCategory = async (req, res) => {
-  try {
-    const posts = await getDefaultPostsByCategoryService(
-      req.app.locals.db,
-      req.params.categoryName,
-    );
-    res.status(200).json(posts);
-  } catch {
-    res.status(500).json({ message: "Server Error!", code: 500 });
-  }
-};
-
-export const getPostsByCategory = async (req, res) => {
-  try {
-    const posts = await getPostsByCategoryService(
-      req.app.locals.db,
-      req.params.categoryName,
-    );
-    res.status(200).json(posts);
-  } catch {
-    res.status(500).json({ message: "Server Error!", code: 500 });
-  }
-};
+import { createPostService } from "../services/postService.js";
 
 export const createPost = async (req, res) => {
   try {

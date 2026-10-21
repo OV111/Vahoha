@@ -11,6 +11,7 @@ import { getConcept, getConcepts } from "../../../services/conceptService.js";
 import { logTeachingAttempt } from "./teachingLogService.js";
 import { toTopicSlug } from "../../../utils/topicKey.js";
 import { escapeRegex } from "../../../utils/regex.js";
+import { isLayerId } from "../../../utils/layerIds.js";
 import { getCapstoneMentorView } from "../../capstone/index.js";
 import { getChallengeMentorView } from "../../coding-challenges/index.js";
 
@@ -59,14 +60,15 @@ export const toolDefinitions = [
     type: "function",
     function: {
       name: "search_library",
-      description: "Search the Vahoha learning library for books, docs, and guides. Use when the user needs resources to study a topic.",
+      description:
+        "Search the Vahoha learning library for books, docs, and guides. Use when the user needs resources to study a topic, or to ground an explanation in a source. Pass `layer` to get what is curated for one roadmap layer. Some books include reviewed key ideas (`concepts`); explain in your own words and cite the book as \"Source: <title>\". Never cite a book you did not get from this tool.",
       parameters: {
         type: "object",
         properties: {
-          keyword: { type: "string", description: "Keyword to search" },
-          limit: { type: "number", description: "Max results (default 5)" },
+          keyword: { type: "string", description: "Keyword to search (title, description, topics)" },
+          layer: { type: "string", description: "Roadmap layer id to filter by, e.g. mern-2" },
+          limit: { type: "number", description: "Max results (default 5, max 10)" },
         },
-        required: ["keyword"],
       },
     },
   },
@@ -224,19 +226,46 @@ export async function executeTool(name, args, ctx = {}) {
   }
 
   if (name === "search_library") {
-    const { keyword, limit = 5 } = args;
-    const library = db.collection("libraryResources");
-    return library
-      .find({
-        $or: [
-          { title: { $regex: escapeRegex(keyword), $options: "i" } },
-          { description: { $regex: escapeRegex(keyword), $options: "i" } },
-          { topics: { $regex: escapeRegex(keyword), $options: "i" } },
-        ],
-      })
-      .project({ title: 1, description: 1, type: 1, difficulty: 1 })
-      .limit(limit)
+    const { keyword, layer, limit = 5 } = args;
+    const filter = {};
+    if (typeof keyword === "string" && keyword.trim()) {
+      const match = { $regex: escapeRegex(keyword.trim()), $options: "i" };
+      filter.$or = [{ title: match }, { description: match }, { topics: match }];
+    }
+    if (isLayerId(layer)) filter.layerIds = layer;
+    if (!filter.$or && !filter.layerIds) return { error: "keyword or layer is required" };
+
+    const resources = await db
+      .collection("libraryResources")
+      .find(filter)
+      .project({ title: 1, description: 1, type: 1, difficulty: 1, layerIds: 1, digestVisibility: 1 })
+      .limit(Math.min(Math.max(Number(limit) || 5, 1), 10))
       .toArray();
+
+    // Only reviewed, kept ideas from public digests: an admin-only or
+    // unreviewed digest must never reach a learner through the mentor.
+    const publicIds = resources.filter((r) => r.digestVisibility === "public").map((r) => r._id);
+    const concepts = publicIds.length
+      ? await db
+          .collection("libraryConcepts")
+          .find({ sourceId: { $in: publicIds }, reviewed: true, keep: true })
+          .project({ sourceId: 1, key: 1, title: 1, summary: 1 })
+          .sort({ order: 1 })
+          .toArray()
+      : [];
+
+    return resources.map((r) => ({
+      _id: r._id,
+      title: r.title,
+      description: r.description,
+      type: r.type,
+      difficulty: r.difficulty,
+      layerIds: r.layerIds ?? [],
+      concepts: concepts
+        .filter((c) => String(c.sourceId) === String(r._id))
+        .slice(0, 3)
+        .map(({ key, title, summary }) => ({ key, title, summary })),
+    }));
   }
 
   if (name === "get_user_profile") {

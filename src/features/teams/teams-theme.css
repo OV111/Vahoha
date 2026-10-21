@@ -31,8 +31,8 @@
   --t-green: #27a644;
   --t-red: #eb5757;
 
-  /* Geist and Geist Mono are already loaded in index.html */
-  --t-font: "Geist Variable", "Inter", ui-sans-serif, system-ui, -apple-system,
+  /* Geist and Geist Mono are self-hosted via @fontsource-variable (main.jsx). */
+  --t-font: "Geist Variable", ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, sans-serif;
   --t-mono: "Geist Mono Variable", "JetBrains Mono", ui-monospace,
     SFMono-Regular, Menlo, Consolas, monospace;

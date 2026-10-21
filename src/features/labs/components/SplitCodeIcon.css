@@ -1,0 +1,18 @@
+/* Timing matches the home page diagram: 1.1s, keyframes at 0 / 35% / 60% / 100%. */
+.group:hover .split-code-left { animation: split-left 1.1s ease-in-out; }
+.group:hover .split-code-right { animation: split-right 1.1s ease-in-out; }
+.group:hover .split-code-slash { stroke-dasharray: 1; animation: split-slash 1.1s ease-in-out; }
+
+@keyframes split-left { 0%, 100% { transform: translateX(0); } 35%, 60% { transform: translateX(-3px); } }
+@keyframes split-right { 0%, 100% { transform: translateX(0); } 35%, 60% { transform: translateX(3px); } }
+/* opacity rides along so the round line cap leaves no dot at length 0 */
+@keyframes split-slash {
+  0%, 100% { stroke-dashoffset: 0; opacity: 1; }
+  35%, 60% { stroke-dashoffset: 1; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .group:hover .split-code-left,
+  .group:hover .split-code-right,
+  .group:hover .split-code-slash { animation: none; }
+}

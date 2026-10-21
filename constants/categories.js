@@ -1,22 +1,22 @@
-/** Public href for a category landing page. Foundations is not under /categories. */
-export const categoryHref = ({ slug, path }) => path ?? `/categories/${slug}`;
+/**
+ * Where a category link goes: its roadmap domain (/roadmaps?domain=<id>), or its
+ * own page when it has one (Foundations). The /categories/* pages were removed.
+ */
+export const categoryHref = ({ id, path }) => path ?? `/roadmaps?domain=${id}`;
 
 /**
- * Career-track landing pages that exist in the router (and sitemap).
- * Navbar Learn tracks, footer Topics, and category search all read from here.
+ * Featured domains for the navbar Learn tracks, footer Topics and category search.
+ * Each `id` must match one in ROADMAP_DOMAINS (except Foundations, which has `path`).
  * Domains that only live on /roadmaps belong in ROADMAP_DOMAINS, not here.
  */
 export const CATEGORY_OPTIONS = [
   { id: "foundations", title: "Foundations", slug: "foundations", path: "/foundations" },
   { id: "languages", title: "Languages", slug: "languages" },
   { id: "fullstack", title: "Full Stack", slug: "fullstack" },
-  { id: "backend", title: "Backend", slug: "backend" },
-  { id: "mobile", title: "Mobile", slug: "mobile" },
   { id: "aiml", title: "AI & ML", slug: "ai&ml" },
   { id: "devops", title: "DevOps", slug: "devops" },
   { id: "datascience", title: "Data Science", slug: "datascience" },
-  { id: "gamedev", title: "Game Dev", slug: "gamedev" },
-  { id: "qa", title: "QA", slug: "qa" },
+  { id: "cybersecurity", title: "Cybersecurity", slug: "cybersecurity" },
 ];
 
 /**

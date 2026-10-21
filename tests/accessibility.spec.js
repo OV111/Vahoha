@@ -111,21 +111,6 @@ test.describe('Accessibility — auth page', () => {
 })
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Category pages
-// ─────────────────────────────────────────────────────────────────────────────
-test.describe('Accessibility — category pages', () => {
-  const categories = ['fullstack', 'backend', 'mobile', 'devops', 'qa']
-
-  for (const slug of categories) {
-    test(`/categories/${slug} has no critical/serious violations`, async ({ page }) => {
-      await page.goto(`/categories/${slug}`)
-      await page.waitForLoadState('networkidle')
-      await auditPage(page, `/categories/${slug}`)
-    })
-  }
-})
-
-// ─────────────────────────────────────────────────────────────────────────────
 // Keyboard navigation — interactive elements must be reachable
 // ─────────────────────────────────────────────────────────────────────────────
 test.describe('Accessibility — keyboard navigation', () => {

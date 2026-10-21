@@ -24,7 +24,7 @@ export const ARENA_COLORS = {
   comment: "#525252",
 };
 
-const FONT_MONO = "'Geist Mono', 'Fira Code', 'JetBrains Mono', monospace";
+const FONT_MONO = "'Geist Mono Variable', 'Fira Code', 'JetBrains Mono', monospace";
 
 export const arenaTheme = EditorView.theme(
   {

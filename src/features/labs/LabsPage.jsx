@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, FlaskConical, DoorOpen } from "lucide-react";
 import { ROOMS, roomOfTrack, tracksInRoom } from "./rooms";
-import { TASK_TYPES } from "./taskTypes";
+import { FONT_MONO } from "@/features/coding-challenges/lib/arenaTheme";
 import { LAB_MANIFEST } from "./content/manifest";
 import LabCard from "./components/LabCard";
 import useNextLab from "./hooks/useNextLab";
@@ -18,7 +18,7 @@ const RoomDoor = ({ room, index }) => {
   const onLeft = index % 2 === 0;
 
   return (
-    <li className="group relative py-5 pl-16 md:-mt-24 md:grid md:grid-cols-2 md:gap-16 md:pl-0 md:first:mt-0">
+    <li className="relative py-5 pl-16 md:-mt-24 md:grid md:grid-cols-2 md:gap-28 md:pl-0 md:first:mt-6">
       {/* Door marker on the corridor */}
       <span
         aria-hidden="true"
@@ -29,12 +29,12 @@ const RoomDoor = ({ room, index }) => {
       {/* Connector from the corridor to the room */}
       <span
         aria-hidden="true"
-        className={`absolute top-1/2 left-6 h-px w-10 ${room.accent.line} md:w-8 ${onLeft ? "md:left-[calc(50%-2rem)]" : "md:left-1/2"}`}
+        className={`absolute top-1/2 left-6 h-px w-10 ${room.accent.line} md:w-14 ${onLeft ? "md:left-[calc(50%-3.5rem)]" : "md:left-1/2"}`}
       />
 
       <Link
         to={`/labs/${room.id}`}
-        className={`relative flex flex-col overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 p-5 transition-colors duration-150 ${room.accent.ring} focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400 ${
+        className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-neutral-950 p-5 transition-colors duration-150 border-neutral-800 ${room.accent.ring} focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400 ${
           onLeft ? "md:col-start-1" : "md:col-start-2"
         }`}
       >
@@ -42,10 +42,11 @@ const RoomDoor = ({ room, index }) => {
         <div className="relative flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <span className={`flex size-11 shrink-0 items-center justify-center rounded-xl border ${room.accent.border} ${room.accent.bg} ${room.accent.text}`}>
-              <room.Icon size={20} aria-hidden="true" />
+              <room.Icon size={20} className={room.Icon.selfAnimated ? undefined : "transition-transform duration-300 ease-out group-hover:-rotate-12 group-hover:scale-125 motion-reduce:transition-none motion-reduce:group-hover:transform-none"} aria-hidden="true" />
             </span>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">Room {index + 1}</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+                Room {index + 1}</p>
               <h3 className="text-lg font-semibold leading-tight text-white">{room.title}</h3>
             </div>
           </div>
@@ -76,10 +77,15 @@ export default function LabsPage() {
   const next = useNextLab();
 
   return (
-    <section className="mx-auto max-w-5xl px-6 pt-16 pb-24">
+    <section className="mx-auto max-w-6xl px-6 pt-16 pb-24">
       <div className="text-center">
-        <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-purple-400">
-          <FlaskConical size={13} aria-hidden="true" /> Labs
+        {/* Not `rm-mono`: that class lives in the roadmap stylesheet, which this page never loads. */}
+        <p
+          style={{ fontFamily: FONT_MONO }}
+          className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.8px] text-neutral-400"
+        >
+          <FlaskConical size={13} aria-hidden="true" />
+          Labs
         </p>
         <h1 className="mx-auto mt-3 max-w-3xl text-3xl font-bold leading-tight text-white sm:text-4xl">
           Nine rooms. Walk into any of them.
@@ -91,15 +97,15 @@ export default function LabsPage() {
       </div>
 
       {/* The corridor */}
-      <div className="relative mt-14">
+      <div className="relative mt-12">
+        <span
+          aria-hidden="true"
+          className="absolute top-4 bottom-0 left-6 w-0.5 rounded-full bg-linear-to-b from-purple-500/80 via-purple-500/40 to-purple-500/10 md:left-1/2 md:-translate-x-1/2"
+        />
         <p className="relative z-10 mx-auto w-fit rounded-full border border-purple-500/40 bg-black px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-purple-300 max-md:ml-0">
           Entrance
         </p>
         <ol className="relative mt-6" aria-label="Lab rooms">
-          <span
-            aria-hidden="true"
-            className="absolute top-0 bottom-0 left-6 w-0.5 rounded-full bg-linear-to-b from-purple-500/80 via-purple-500/40 to-purple-500/10 md:left-1/2 md:-translate-x-1/2"
-          />
           {ROOMS.map((room, i) => (
             <RoomDoor key={room.id} room={room} index={i} />
           ))}
@@ -113,24 +119,6 @@ export default function LabsPage() {
           <LabCard lab={next.lab} highlight={next.reason} />
         </div>
       )}
-
-      {/* How every lab works */}
-      <h2 className="mt-14 text-sm font-semibold uppercase tracking-wider text-neutral-400">How a lab works</h2>
-      <ol className="mt-4 grid gap-3 md:grid-cols-3">
-        {Object.entries(TASK_TYPES).map(([key, t], i) => (
-          <li key={key} className="flex items-start gap-3 rounded-xl border border-neutral-800 bg-neutral-950 p-4">
-            <span className={`flex size-8 shrink-0 items-center justify-center rounded-lg border ${t.chip}`}>
-              <t.Icon size={15} aria-hidden="true" />
-            </span>
-            <div>
-              <p className="text-sm font-semibold text-white">
-                {i + 1}. {t.label}
-              </p>
-              <p className="mt-0.5 text-sm text-neutral-400">{t.verb}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
     </section>
   );
 }

@@ -25,6 +25,8 @@ async function load() {
   ph.init(projectToken, {
     api_host: apiHost,
     defaults: "2026-05-30",
+    // No surveys are used; this skips downloading the ~30 KB surveys bundle.
+    disable_surveys: true,
     capture_exceptions: {
       capture_unhandled_errors: true,
       capture_unhandled_rejections: true,
@@ -43,9 +45,19 @@ if (missingConfig) {
   }
 } else if (typeof window !== "undefined") {
   // Browser only: the build-time prerender imports this module in Node.
-  const start = () => load().catch(() => {});
-  if ("requestIdleCallback" in window) requestIdleCallback(start, { timeout: 4000 });
-  else setTimeout(start, 2000);
+  // Starts on the first interaction, or after a few seconds for a visitor who
+  // only reads, whichever comes first. Either way it stays off the load path.
+  let started = false;
+  const start = () => {
+    if (started) return;
+    started = true;
+    for (const evt of INTERACTION_EVENTS) window.removeEventListener(evt, start);
+    clearTimeout(fallback);
+    load().catch(() => {});
+  };
+  const INTERACTION_EVENTS = ["pointerdown", "keydown", "scroll", "touchstart"];
+  for (const evt of INTERACTION_EVENTS) window.addEventListener(evt, start, { once: true, passive: true });
+  const fallback = setTimeout(start, 5000);
 }
 
 const posthog = {

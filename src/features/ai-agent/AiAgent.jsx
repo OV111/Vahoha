@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AlertTriangle, RefreshCw, X, GraduationCap, PanelLeft } from "lucide-react";
 import useAiAgentStore from "@/stores/useAiAgentStore";
-import useAgentStream from "@/hooks/useAgentStream";
+import useAgentStream from "./hooks/useAgentStream";
 import SessionsSidebar from "./components/SessionsSidebar";
 import ChatTopBar from "./components/ChatTopBar";
 import MessageList from "./components/MessageList";

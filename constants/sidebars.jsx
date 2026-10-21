@@ -24,15 +24,15 @@ export const sidebarArr = [
         end: true,
       },
       {
-        to: "/progress",
-        icon: icon(TrendingUp),
-        label: "Progress",
-      },
-      {
         to: "/my-profile/followers",
         activePaths: ["/my-profile/following"],
         icon: icon(Users),
         label: "Followers",
+      },
+      {
+        to: "/progress",
+        icon: icon(TrendingUp),
+        label: "Progress",
       },
       {
         to: "/my-profile/notifications",

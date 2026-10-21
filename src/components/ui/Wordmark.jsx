@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import vahohaMark from "@/assets/vahoha_mark_circle_96.webp";
+import vahohaMark from "@/assets/brand/vahoha-mark-96.webp";
 
 // The brand name is a logo, so it must render identically everywhere: same
 // typeface as the hero headline (Geist), same weight, same tracking. Only the

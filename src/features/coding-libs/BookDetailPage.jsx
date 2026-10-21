@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   fetchLibraryResourceById,
   fetchLibraryResources,
 } from "../../services/libraryApi";
 import BookCard from "./BookCard";
 import DigestSection from "./digest/DigestSection";
+import { useDigestData } from "./digest/useDigestData";
 
 // ── palette helpers (mirrored from BookCard) ────────────────────────────────
 const COVER_PALETTES = [
@@ -88,9 +89,7 @@ function ErrorState({ message, onBack }) {
 export default function BookDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  // Prototype switch: the digest UI (mock data) only shows with ?digest=demo.
-  const [searchParams] = useSearchParams();
-  const showDigestDemo = searchParams.get("digest") === "demo";
+  const digest = useDigestData(id);
 
   const [resource, setResource] = useState(null);
   const [moreBooks, setMoreBooks] = useState([]);
@@ -604,8 +603,8 @@ export default function BookDetailPage() {
 
       {/* content area — pt-24 to clear the overlapping book card */}
       <div className="max-w-6xl mx-auto px-4 pt-16 pb-20 sm:px-8 sm:pt-24">
-        {showDigestDemo ? (
-          <DigestSection bookId={id} accent={accentColor} />
+        {digest ? (
+          <DigestSection bookId={id} digest={digest} accent={accentColor} />
         ) : (
           ReadingPreview
         )}

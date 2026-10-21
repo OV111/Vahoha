@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Eye, Lock } from "lucide-react";
 import { C, FONT_MONO } from "../../lib/arenaTheme";
-import { renderInlineCode } from "../../lib/richText";
+import ChallengeText from "./ChallengeText";
 
 export default function HintsPanel({ hints, onReveal }) {
   // Reveal state lives in the parent now — a hint is only "revealed" once the
@@ -43,11 +43,7 @@ export default function HintsPanel({ hints, onReveal }) {
             </div>
 
             {hint.revealed ? (
-              <p
-                className="text-[13px] leading-relaxed"
-                style={{ color: "#b4b4b4" }}
-                dangerouslySetInnerHTML={{ __html: renderInlineCode(hint.text) }}
-              />
+              <ChallengeText text={hint.text} className="text-[13px] leading-relaxed text-[#b4b4b4]" />
             ) : (
               <div className="flex flex-col gap-2">
                 <div className="h-2 rounded-sm w-full" style={{ background: C.faint }} />

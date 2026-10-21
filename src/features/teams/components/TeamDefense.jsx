@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Clock, FileCode2 } from "lucide-react";
 import { teamsApi } from "../teamsApi";
-import useCountdown from "../../capstone/hooks/useCountdown";
+import useCountdown from "@/hooks/useCountdown";
 
 /**
  * A member's defense: questions about their OWN merged pull requests, one at a

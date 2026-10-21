@@ -454,6 +454,18 @@ export const getFavouritesService = async (db, userId) => {
           as: "blog.author",
           pipeline: [
             { $project: { _id: 1, firstName: 1, lastName: 1, username: 1 } },
+            // The card shows the author's photo when they have one.
+            {
+              $lookup: {
+                from: "usersStats",
+                localField: "_id",
+                foreignField: "userId",
+                as: "stats",
+                pipeline: [{ $project: { profileImage: 1 } }],
+              },
+            },
+            { $addFields: { pictures: { $arrayElemAt: ["$stats.profileImage", 0] } } },
+            { $project: { stats: 0 } },
           ],
         },
       },

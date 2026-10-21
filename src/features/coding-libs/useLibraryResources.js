@@ -8,7 +8,7 @@ const LIMIT = 50;
  * Each run owns an AbortController: when filters change mid-flight the old
  * request is cancelled, so a slow stale response can never overwrite a newer one.
  */
-export function useLibraryResources({ type, path, difficulty, isFree, q, enabled = true }) {
+export function useLibraryResources({ type, path, difficulty, layer, isFree, q, enabled = true }) {
   const [state, setState] = useState({ resources: [], total: null, loading: enabled, error: false });
   const [attempt, setAttempt] = useState(0);
 
@@ -21,6 +21,7 @@ export function useLibraryResources({ type, path, difficulty, isFree, q, enabled
     if (type) params.type = type;
     if (path) params.path = path;
     if (difficulty) params.difficulty = difficulty;
+    if (layer) params.layer = layer;
     if (isFree !== null) params.is_free = isFree;
     if (q) params.q = q;
 
@@ -34,7 +35,7 @@ export function useLibraryResources({ type, path, difficulty, isFree, q, enabled
       });
 
     return () => controller.abort();
-  }, [type, path, difficulty, isFree, q, enabled, attempt]);
+  }, [type, path, difficulty, layer, isFree, q, enabled, attempt]);
 
   return { ...state, retry: () => setAttempt((a) => a + 1) };
 }

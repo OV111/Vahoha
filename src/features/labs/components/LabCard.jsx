@@ -5,11 +5,12 @@ import { labHref, lessonHref } from "../content/manifest";
 import { trackTitle } from "../rooms";
 
 // One lab in a room or on the building page. Two ways out: into the lab, or
-// back to the roadmap lesson it practices.
+// back to the roadmap lesson it practices. The whole card opens the lab (stretched
+// link: the lab link's ::after covers the card); "Read the lesson" sits above it.
 export default function LabCard({ lab, highlight = null }) {
   return (
     <article
-      className={`flex flex-col gap-4 rounded-2xl border bg-neutral-950 p-5 transition-colors duration-150 sm:flex-row sm:items-center sm:justify-between ${
+      className={`relative flex flex-col gap-4 rounded-2xl border bg-neutral-950 p-5 transition-colors duration-150 sm:flex-row sm:items-center sm:justify-between ${
         highlight ? "border-purple-500/50" : "border-neutral-800 hover:border-neutral-600"
       }`}
     >
@@ -37,13 +38,13 @@ export default function LabCard({ lab, highlight = null }) {
       <div className="flex shrink-0 flex-wrap gap-2">
         <Link
           to={lessonHref(lab)}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-sm text-neutral-300 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+          className="relative z-10 inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-sm text-neutral-300 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
         >
           <BookOpen size={14} aria-hidden="true" /> Read the lesson
         </Link>
         <Link
           to={labHref(lab)}
-          className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-purple-600 px-4 text-sm font-medium text-white transition-colors hover:bg-purple-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-300"
+          className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-purple-600 after:absolute after:inset-0 after:rounded-2xl px-4 text-sm font-medium text-white transition-colors hover:bg-purple-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-300"
         >
           Open the lab <ArrowRight size={14} aria-hidden="true" />
         </Link>

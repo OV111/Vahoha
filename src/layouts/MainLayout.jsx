@@ -1,29 +1,19 @@
 import React, { Suspense } from "react";
 import { Outlet, ScrollRestoration } from "react-router-dom";
-// import {useLocation} from "react-router-dom"
-import Navbar from "../components/layout/Navbar";
-import Footer from "../components/layout/Footer";
+import Navbar from "./navbar/Navbar";
+import Footer from "./Footer";
 import LoadingSuspense from "../components/feedback/LoadingSuspense";
 import RouteSeo from "../seo/RouteSeo";
 import PrerenderHandoff from "../seo/PrerenderHandoff";
 const MainLayout = () => {
-  // const { pathname } = useLocation();
-  // const isAgentChat = pathname === "/ai-agent/chat";
-  // const isMyProfile = pathname.startsWith("/my-profile");
-
   return (
     <div className="relative bg-black min-h-dvh overflow-x-hidden">
-      {/* {!isAgentChat && !isMyProfile && (
-        <>
+      {/*         
           <div className="pointer-events-none fixed top-30 -left-20 h-72 w-72 rounded-full bg-purple-900/20 blur-3xl" />
           <div className="pointer-events-none fixed bottom-10 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-purple-100/60 blur-3xl dark:bg-purple-900/10" />
-          <div className="pointer-events-none fixed top-10 -right-40 h-72 w-72 rounded-full bg-violet-200/40 blur-3xl dark:bg-violet-900/10" />
-        </>
-      )} */}
+          <div className="pointer-events-none fixed top-10 -right-40 h-72 w-72 rounded-full bg-violet-200/40 blur-3xl dark:bg-violet-900/10" /> 
+      */}
 
-      {/* One place for scroll behaviour on every page: new navigations start
-          at the top (or at the #hash target), and Back/Forward restore where
-          you were. Replaces per-page window.scrollTo(0, 0) effects. */}
       <ScrollRestoration />
       <RouteSeo />
       <Navbar />

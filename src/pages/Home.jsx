@@ -1,10 +1,15 @@
-import { useEffect } from "react";
+import { lazy, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import useAuthStore from "../stores/useAuthStore";
-import RiseText from "../components/RiseText";
+import RiseText from "../components/home/RiseText";
 import Divider from "../components/ui/Divider";
-import HowItWorks from "../components/home/HowItWorks";
-import vahohaMark from "@/assets/vahoha_mark_circle_96.webp";
+import vahohaMark from "@/assets/brand/vahoha-mark-96.webp";
+
+// Below the fold and the only homepage piece using motion/react, so it loads
+// in its own chunk. No Suspense here on purpose: the page suspends to the
+// layout's boundary, the prerendered copy stays on screen meanwhile, and the
+// swap happens once this section exists (so /#how-it-works can scroll to it).
+const HowItWorks = lazy(() => import("../components/home/HowItWorks"));
 
 const Home = () => {
   const { auth } = useAuthStore();

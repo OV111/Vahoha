@@ -1,5 +1,5 @@
 import { motion as Motion } from "framer-motion";
-import EyebrowBadge from "@/components/ui/EyebrowBadge";
+import EyebrowBadge from "./EyebrowBadge";
 import TextType from "@/components/effects/TextType";
 import StatCell from "./StatCell";
 import StatCellSkeleton from "./StatCellSkeleton";

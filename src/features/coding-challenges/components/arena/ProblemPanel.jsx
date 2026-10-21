@@ -1,6 +1,6 @@
 import { Star, CheckCircle2, Zap } from "lucide-react";
 import { C } from "../../lib/arenaTheme";
-import { renderInlineCode } from "../../lib/richText";
+import ChallengeText from "./ChallengeText";
 import Badge from "../Badge";
 import DifficultyBadge from "../DifficultyBadge";
 import SectionHead from "./SectionHead";
@@ -35,23 +35,16 @@ export default function ProblemPanel({ challenge }) {
         ))}
       </div>
 
-      <p
-        className="text-[14px] leading-7"
-        style={{ color: "#b4b4b4" }}
-        dangerouslySetInnerHTML={{ __html: renderInlineCode(challenge.description) }}
-      />
+      <ChallengeText text={challenge.description} className="text-[14px] leading-7 text-[#b4b4b4]" />
 
       <div>
         <SectionHead>The task</SectionHead>
-        <p
-          className="rounded-r-md border-l py-3 pl-4 pr-3 text-[14px] leading-7"
-          style={{
-            color: "#d0d0d0",
-            borderColor: C.purple,
-            background: "rgba(168,85,247,0.06)",
-          }}
-          dangerouslySetInnerHTML={{ __html: renderInlineCode(challenge.task) }}
-        />
+        <div
+          className="rounded-r-md border-l py-3 pl-4 pr-3"
+          style={{ borderColor: C.purple, background: "rgba(168,85,247,0.06)" }}
+        >
+          <ChallengeText text={challenge.task} className="text-[14px] leading-7 text-[#d0d0d0]" />
+        </div>
       </div>
 
       <div>
@@ -60,7 +53,7 @@ export default function ProblemPanel({ challenge }) {
           {challenge.constraints.map((c, i) => (
             <li key={i} className="flex items-start gap-2.5 text-[14px] leading-relaxed" style={{ color: "#b4b4b4" }}>
               <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: C.purple }} />
-              <span dangerouslySetInnerHTML={{ __html: renderInlineCode(c) }} />
+              <ChallengeText text={c} className="min-w-0 text-[14px] leading-relaxed text-[#b4b4b4]" />
             </li>
           ))}
         </ul>

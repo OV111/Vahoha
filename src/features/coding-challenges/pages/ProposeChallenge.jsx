@@ -28,8 +28,8 @@ const C = {
   faint:    "#3a3a4a",
 };
 
-const FONT_SANS = "'Geist', 'Inter', system-ui, sans-serif";
-const FONT_MONO = "'Geist Mono', 'Fira Code', 'JetBrains Mono', monospace";
+const FONT_SANS = "'Geist Variable', system-ui, sans-serif";
+const FONT_MONO = "'Geist Mono Variable', 'Fira Code', 'JetBrains Mono', monospace";
 
 const VALID_TYPES = ["CODE", "DEBUG", "BUILD", "SYSTEM_DESIGN"];
 const VALID_DIFFICULTY = ["easy", "med", "hard"];

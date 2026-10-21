@@ -31,7 +31,7 @@ const MOCK_RESULT = {
 
 let current = null; // the single in-memory attempt
 
-const deadlineIn = (sec) => new Date(Date.now() + sec * 1000).toISOString();
+const deadlineIn = (sec) => Date.now() + sec * 1000;
 
 export async function getEligibility(/* layerId */) {
   await delay(300);
@@ -96,6 +96,8 @@ export async function abandonAttempt(attemptId) {
 }
 
 // Strip mock-only bookkeeping so the UI sees exactly the AttemptView shape.
-function toView({ turnsDone: _turnsDone, ...view }) {
-  return view;
+// The deadline stays server-side; the view carries the seconds left at the
+// moment of the response, so the client never compares it to its own clock.
+function toView({ turnsDone: _turnsDone, deadlineAt, ...view }) {
+  return { ...view, secondsLeft: Math.max(0, Math.round((deadlineAt - Date.now()) / 1000)) };
 }

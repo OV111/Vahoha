@@ -31,7 +31,7 @@
   --f-key: rgba(255, 255, 255, 0.05) 0 1px 0 0 inset,
     rgba(255, 255, 255, 0.22) 0 0 0 1px, rgba(0, 0, 0, 0.2) 0 -1px 0 0 inset;
 
-  --f-sans: "Inter", "Geist Variable", ui-sans-serif, system-ui, -apple-system,
+  --f-sans: "Geist Variable", ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, sans-serif;
   --f-mono: "Geist Mono Variable", "JetBrains Mono", ui-monospace,
     SFMono-Regular, Menlo, Consolas, monospace;

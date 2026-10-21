@@ -1,12 +1,5 @@
 import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
 
-export const fetchDefaultPostsByCategory = async (categoryName) => {
-  const res = await apiFetch(`${API_BASE_URL}/categories/${categoryName}/default`);
-  if (!res.ok) throw new Error("Failed to fetch posts");
-  const data = await res.json();
-  return Array.isArray(data) ? data : [];
-};
-
 // `signal` lets the caller cancel a request that's no longer wanted (the user
 // changed a filter mid-flight), so a slow old response can't overwrite a newer one.
 export const fetchBlogs = async (page = 1, limit = 10, params = {}, { signal } = {}) => {

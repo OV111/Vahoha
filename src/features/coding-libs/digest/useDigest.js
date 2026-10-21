@@ -25,43 +25,45 @@ function writeStorage(key, value) {
 }
 
 const ROLE_KEY = "digest:role";
-const knownKey = (bookId) => `digest:known:${bookId}`;
 
 /**
- * State for one book's digest: the chosen role (remembered across books),
- * the mode tab, "I already know this" ideas (remembered per book), and the
- * session-only interview tally.
- *
- * Prototype storage is localStorage. The planned version stores `known`
- * per user in the database so it follows them across devices.
+ * State for one book's digest: the chosen role (a local preference, remembered
+ * across books), the mode tab, "I already know this" ideas (stored per user on
+ * the server through `saveKnown`, so they follow the learner across devices),
+ * and the session-only interview tally.
  */
-export function useDigest(bookId, concepts) {
+export function useDigest(concepts, { initialKnown = [], saveKnown, initialChecked = [], submitCheck } = {}) {
   const [role, setRoleState] = useState(() => {
     const saved = readStorage(ROLE_KEY, DEFAULT_ROLE);
     return ROLES.some((r) => r.id === saved) ? saved : DEFAULT_ROLE;
   });
   const [mode, setMode] = useState(DEFAULT_MODE);
   const [showAll, setShowAll] = useState(false);
-  const [known, setKnown] = useState(() => new Set(readStorage(knownKey(bookId), [])));
+  const [known, setKnown] = useState(() => new Set(initialKnown));
   const [revealed, setRevealed] = useState(() => new Set());
   const [graded, setGraded] = useState(() => new Map()); // conceptId -> "got" | "missed"
+  const [checked, setChecked] = useState(() => new Set(initialChecked)); // answered right at least once
+  const [checkResults, setCheckResults] = useState(() => new Map()); // conceptId -> { picked, pending | correct, answerIndex, explanation }
 
   const setRole = useCallback((next) => {
     setRoleState(next);
     writeStorage(ROLE_KEY, next);
   }, []);
 
+  // Optimistic: the tick shows at once, and is undone if the save fails.
   const updateKnown = useCallback(
     (conceptId, isKnown) => {
-      setKnown((prev) => {
-        const next = new Set(prev);
-        if (isKnown) next.add(conceptId);
-        else next.delete(conceptId);
-        writeStorage(knownKey(bookId), [...next]);
-        return next;
-      });
+      const apply = (value) =>
+        setKnown((prev) => {
+          const next = new Set(prev);
+          if (value) next.add(conceptId);
+          else next.delete(conceptId);
+          return next;
+        });
+      apply(isKnown);
+      saveKnown?.(conceptId, isKnown).catch(() => apply(!isKnown));
     },
-    [bookId],
+    [saveKnown],
   );
 
   const toggleReveal = useCallback((conceptId) => {
@@ -76,6 +78,32 @@ export function useDigest(bookId, concepts) {
   const grade = useCallback((conceptId, result) => {
     setGraded((prev) => new Map(prev).set(conceptId, result));
   }, []);
+
+  const setCheckResult = (conceptId, value) =>
+    setCheckResults((prev) => {
+      const next = new Map(prev);
+      if (value) next.set(conceptId, value);
+      else next.delete(conceptId);
+      return next;
+    });
+
+  // Graded on the server, so the answer only arrives after the learner picks.
+  const answerCheck = useCallback(
+    async (conceptId, picked) => {
+      if (!submitCheck) return;
+      setCheckResult(conceptId, { picked, pending: true });
+      try {
+        const result = await submitCheck(conceptId, picked);
+        setCheckResult(conceptId, { picked, ...result });
+        if (result.correct) setChecked((prev) => new Set(prev).add(conceptId));
+      } catch {
+        setCheckResult(conceptId, null); // let them try again
+      }
+    },
+    [submitCheck],
+  );
+
+  const retryCheck = useCallback((conceptId) => setCheckResult(conceptId, null), []);
 
   const { shown, cut } = useMemo(
     () => selectConcepts(concepts, { role, mode, showAll }),
@@ -92,6 +120,7 @@ export function useDigest(bookId, concepts) {
     known, markKnown: (id) => updateKnown(id, true), undoKnown: (id) => updateKnown(id, false),
     revealed, toggleReveal,
     graded, grade,
+    checked, checkResults, answerCheck, retryCheck,
     seenCount,
   };
 }

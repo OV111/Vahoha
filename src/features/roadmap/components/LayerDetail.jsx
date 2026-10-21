@@ -15,6 +15,7 @@ import {
 import useRoadmapStore from "@/stores/useRoadmapStore";
 import useAuthStore from "@/stores/useAuthStore";
 import LayerPosts from "./LayerPosts";
+import LayerLibrary from "./LayerLibrary";
 import { hasVoiceExam } from "@/features/voice-exam/lib/pilotLayers";
 
 const resourceTypeColor = {
@@ -163,6 +164,7 @@ const LayerDetail = () => {
             </Link>
           )}
 
+          <LayerLibrary layerId={activeLayer.id} onNavigate={closePanel} />
           <LayerPosts layerId={activeLayer.id} onNavigate={closePanel} />
 
           {/* Challenge */}

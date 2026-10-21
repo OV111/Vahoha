@@ -1,4 +1,5 @@
-import { Code2, Database, BrainCircuit, ServerCog, ShieldCheck, Bug, Blocks, Atom, Gamepad2, Globe, Plug, Smartphone, Brain, Languages } from "lucide-react";
+import SplitCodeIcon from "./components/SplitCodeIcon";
+import { Database, BrainCircuit, ServerCog, ShieldCheck, Bug, Blocks, Atom, Gamepad2, Globe, Plug, Smartphone, Brain, Languages } from "lucide-react";
 import { TRACKS } from "../../../constants/roadmapPaths";
 
 // The 9 lab rooms: labs grouped by HOW people practice, not by topic name
@@ -10,7 +11,7 @@ export const ROOMS = [
   {
     id: "build-software",
     title: "Build Software",
-    Icon: Code2,
+    Icon: SplitCodeIcon,
     tagline: "Write, debug and review real code.",
     categories: ["languages", "fullstack", "backend", "mobile", "cs"],
     // A big room (64 tracks) is split into at most 5 sections, each one roadmap
@@ -26,7 +27,7 @@ export const ROOMS = [
     surface: "Editor and tests, with a live preview for UI",
     proof: "Tests pass, and your own test catches the AI's bug",
     vocabulary: ["bugs", "tests", "pull requests"],
-    accent: { text: "text-indigo-300", border: "border-indigo-500/40", bg: "bg-indigo-500/10", line: "bg-indigo-500/60", glow: "from-indigo-500/15", ring: "hover:border-indigo-400" },
+    accent: { text: "text-blue-300", border: "border-blue-500/40", bg: "bg-blue-500/10", line: "bg-blue-500/60", glow: "from-blue-500/15", ring: "hover:border-blue-400" },
   },
   {
     id: "data-storage",
@@ -37,7 +38,7 @@ export const ROOMS = [
     surface: "Query editor, schema designer, simulated cluster",
     proof: "Right rows, a good query plan, data that survives a failover",
     vocabulary: ["queries", "indexes", "failovers"],
-    accent: { text: "text-teal-300", border: "border-teal-500/40", bg: "bg-teal-500/10", line: "bg-teal-500/60", glow: "from-teal-500/15", ring: "hover:border-teal-400" },
+    accent: { text: "text-green-300", border: "border-green-500/40", bg: "bg-green-500/10", line: "bg-green-500/60", glow: "from-green-500/15", ring: "hover:border-green-400" },
   },
   {
     id: "data-ai",
@@ -48,7 +49,7 @@ export const ROOMS = [
     surface: "A Python notebook in the browser",
     proof: "A metric beats the target, and a wrong conclusion gets caught",
     vocabulary: ["datasets", "metrics", "experiments"],
-    accent: { text: "text-emerald-300", border: "border-emerald-500/40", bg: "bg-emerald-500/10", line: "bg-emerald-500/60", glow: "from-emerald-500/15", ring: "hover:border-emerald-400" },
+    accent: { text: "text-fuchsia-300", border: "border-fuchsia-500/40", bg: "bg-fuchsia-500/10", line: "bg-fuchsia-500/60", glow: "from-fuchsia-500/15", ring: "hover:border-fuchsia-400" },
   },
   {
     id: "infra-cloud",
@@ -59,7 +60,7 @@ export const ROOMS = [
     surface: "Simulated terminal and config files",
     proof: "The system reaches the right state, and the outage is fixed",
     vocabulary: ["incidents", "pipelines", "deploys"],
-    accent: { text: "text-orange-300", border: "border-orange-500/40", bg: "bg-orange-500/10", line: "bg-orange-500/60", glow: "from-orange-500/15", ring: "hover:border-orange-400" },
+    accent: { text: "text-cyan-300", border: "border-cyan-500/40", bg: "bg-cyan-500/10", line: "bg-cyan-500/60", glow: "from-cyan-500/15", ring: "hover:border-cyan-400" },
   },
   {
     id: "security",
@@ -92,7 +93,7 @@ export const ROOMS = [
     surface: "A local chain and a test wallet in the browser",
     proof: "The contract survives the attack test, and balances are right",
     vocabulary: ["contracts", "attacks", "audits"],
-    accent: { text: "text-amber-300", border: "border-amber-500/40", bg: "bg-amber-500/10", line: "bg-amber-500/60", glow: "from-amber-500/15", ring: "hover:border-amber-400" },
+    accent: { text: "text-orange-300", border: "border-orange-500/40", bg: "bg-orange-500/10", line: "bg-orange-500/60", glow: "from-orange-500/15", ring: "hover:border-orange-400" },
   },
   {
     id: "quantum",
@@ -103,7 +104,7 @@ export const ROOMS = [
     surface: "A circuit simulator",
     proof: "The final state matches, and your prediction was right",
     vocabulary: ["circuits", "qubits", "measurements"],
-    accent: { text: "text-fuchsia-300", border: "border-fuchsia-500/40", bg: "bg-fuchsia-500/10", line: "bg-fuchsia-500/60", glow: "from-fuchsia-500/15", ring: "hover:border-fuchsia-400" },
+    accent: { text: "text-teal-300", border: "border-teal-500/40", bg: "bg-teal-500/10", line: "bg-teal-500/60", glow: "from-teal-500/15", ring: "hover:border-teal-400" },
   },
   {
     id: "games-graphics",
@@ -133,6 +134,7 @@ const TRACK_INFO = Object.fromEntries(
 /** Room id for a track id, or null for an unknown track. */
 export const roomOfTrack = (trackId) =>
   TRACK_ROOM_OVERRIDES[trackId] ?? ROOM_BY_CATEGORY[TRACK_INFO[trackId]?.category] ?? null;
+
 
 export const roomById = (id) => ROOMS.find((r) => r.id === id) ?? null;
 

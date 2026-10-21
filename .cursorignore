@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+node_modules
+dist
+backups
+uploads
+backend/evals/results
+public/roadmaps

@@ -36,11 +36,11 @@ test.describe('Mobile - Navbar', () => {
     await expect(page.getByRole('link', { name: 'DevOps' })).toBeVisible();
   });
 
-  test('navigating to a category from mobile menu works', async ({ page }) => {
+  test('a career track in the mobile menu opens its roadmap domain', async ({ page }) => {
     await page.locator('button.md\\:hidden').click();
     await page.getByRole('button', { name: /career tracks/i }).click();
     await page.getByRole('link', { name: 'Full Stack' }).click();
-    await expect(page).toHaveURL('/categories/fullstack');
+    await expect(page).toHaveURL(/\/roadmaps/);
   });
 
   test('Get Started link is visible in mobile nav', async ({ page }) => {
@@ -61,12 +61,6 @@ test.describe('Mobile - Pages', () => {
     await expect(page.getByRole('heading', { name: /sign up/i })).toBeVisible();
     await expect(page.getByPlaceholder('Enter Your First Name')).toBeVisible();
     await expect(page.getByPlaceholder('Enter Your Password')).toBeVisible();
-  });
-
-  test('category page renders on mobile', async ({ page }) => {
-    await page.setViewportSize(mobile);
-    await page.goto('/categories/fullstack');
-    await expect(page.locator('body')).toBeVisible();
   });
 
   test('about page renders on mobile', async ({ page }) => {

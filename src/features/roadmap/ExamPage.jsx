@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -162,6 +162,15 @@ const ResultScreen = ({ result, passThreshold, onRetry, onBack, path, layer }) =
                   </div>
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-[10px] text-neutral-600 uppercase tracking-wider">{r.topic}</span>
+                    {layer && (
+                      // Small link, 44px invisible hit area on touch screens.
+                      <Link
+                        to={`/libs?layer=${encodeURIComponent(layer)}`}
+                        className="relative text-xs font-medium text-purple-400 hover:text-purple-300 after:absolute after:-inset-x-2 after:-inset-y-3 after:content-['']"
+                      >
+                        Review in the library
+                      </Link>
+                    )}
                   </div>
                   {r.hasRubric && (
                     <InlineTeachBack path={path} layer={layer} topic={r.topic} />

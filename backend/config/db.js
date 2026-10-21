@@ -1,5 +1,7 @@
+import dns from "node:dns";
 import { MongoClient } from "mongodb";
 import process from "process";
+
 let db;
 let client;
 
@@ -10,6 +12,12 @@ const connectDB = async () => {
     const mongoUri = process.env.MONGO_URI;
     if (!mongoUri) {
       throw new Error("MONGO_URI is missing");
+    }
+
+    // Local-dev escape hatch: some machines expose a dead resolver (127.0.0.1)
+    // to Node, which breaks mongodb+srv lookups. Example: DNS_SERVERS=1.1.1.1,8.8.8.8
+    if (process.env.DNS_SERVERS) {
+      dns.setServers(process.env.DNS_SERVERS.split(",").map((s) => s.trim()));
     }
 
     client = new MongoClient(mongoUri);
@@ -48,6 +56,10 @@ const connectDB = async () => {
       db.collection("blogs").createIndex({ status: 1, category: 1, createdAt: -1 }),
       // "Posts for this layer" in the roadmap drawer (blogService getBlogsService).
       db.collection("blogs").createIndex({ layerIds: 1, status: 1, createdAt: -1 }),
+      // Digest concepts: one per book + key. Known-state: one row per learner, book and concept.
+      db.collection("libraryConcepts").createIndex({ sourceId: 1, key: 1 }, { unique: true }),
+      db.collection("libraryConceptStates").createIndex({ userId: 1, sourceId: 1, conceptKey: 1 }, { unique: true }),
+      db.collection("libraryConceptChecks").createIndex({ userId: 1, sourceId: 1, conceptKey: 1 }, { unique: true }),
       db.collection("exam_attempts").createIndex({ userId: 1, path: 1, layer: 1, startedAt: -1 }),
       db.collection("teach_back_rubrics").createIndex({ path: 1, layer: 1, topic: 1 }, { unique: true }),
       db.collection("teach_back_sessions").createIndex({ userId: 1, path: 1, layer: 1, startedAt: -1 }),

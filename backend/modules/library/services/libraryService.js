@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { isLayerId } from "../../../utils/layerIds.js";
 
 const COL = "libraryResources";
 
@@ -9,7 +10,7 @@ export const getResourcesService = async (db, query) => {
     difficulty,
     topic,
     is_free,
-    layer_id,
+    layer,
     q,
     page = 1,
     limit = 20,
@@ -25,9 +26,7 @@ export const getResourcesService = async (db, query) => {
   if (difficulty) match.difficulty = difficulty;
   if (topic) match.topics = { $in: Array.isArray(topic) ? topic : [topic] };
   if (is_free !== undefined) match.is_free = is_free === "true" || is_free === true;
-  if (layer_id && ObjectId.isValid(layer_id)) {
-    match.layer_ids = new ObjectId(layer_id);
-  }
+  if (isLayerId(layer)) match.layerIds = layer;
   if (q) {
     match.$text = { $search: q };
   }
@@ -72,10 +71,10 @@ export const getResourceByIdService = async (db, id) => {
 };
 
 export const getResourcesByLayerService = async (db, layerId) => {
-  if (!ObjectId.isValid(layerId)) throw new Error("Invalid layer id");
+  if (!isLayerId(layerId)) throw new Error("Invalid layer id");
   const col = db.collection(COL);
   const resources = await col
-    .find({ layer_ids: new ObjectId(layerId) })
+    .find({ layerIds: layerId })
     .sort({ agent_citation_count: -1 })
     .toArray();
   return resources;

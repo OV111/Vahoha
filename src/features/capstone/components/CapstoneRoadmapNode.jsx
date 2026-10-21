@@ -125,8 +125,11 @@ export default function CapstoneRoadmapNode({ trackId }) {
       transition={{ duration: 0.35 }}
       className="flex w-full flex-col items-center"
     >
+      {/* Continues the roadmap spine from the last layer: solid purple once the
+          capstone is open, otherwise the same dashed grey as the layer spine. */}
       <div
-        className={`h-10 w-px bg-linear-to-b from-neutral-700 ${unlocked ? "to-purple-600/60" : "to-neutral-800"}`}
+        className="h-10 w-px"
+        style={unlocked ? { background: "#7c3aed" } : { borderLeft: "1px dashed #71717a" }}
         aria-hidden="true"
       />
       {state.interactive ? (

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { InterviewCard, LearnCard, QuickRow } from "./ConceptCards";
-import { MOCK_CHAPTER, MOCK_CONCEPTS, MODES, ROLES, estimateMinutes } from "./digestData";
+import { setConceptKnown, submitConceptCheck } from "../../../services/libraryApi";
+import { MODES, ROLES, estimateMinutes } from "./digestData";
 import { useDigest } from "./useDigest";
 
 const mono = { fontFamily: "monospace" };
@@ -10,8 +11,18 @@ const mono = { fontFamily: "monospace" };
  * Two separate controls: Role ("who am I", rarely changes, remembered)
  * and Mode ("what do I want now", changes every visit, so it is a tab bar).
  */
-export default function DigestSection({ bookId, accent = "#a855f7" }) {
-  const d = useDigest(bookId, MOCK_CONCEPTS);
+export default function DigestSection({ bookId, digest, accent = "#a855f7" }) {
+  const saveKnown = useCallback((conceptId, known) => setConceptKnown(bookId, conceptId, known), [bookId]);
+  const submitCheck = useCallback(
+    (conceptId, answerIndex) => submitConceptCheck(bookId, conceptId, answerIndex),
+    [bookId],
+  );
+  const d = useDigest(digest.concepts, {
+    initialKnown: digest.known,
+    saveKnown,
+    initialChecked: digest.checked ?? [],
+    submitCheck,
+  });
   const [expanded, setExpanded] = useState(() => new Set());
 
   const toggleExpand = (id) =>
@@ -39,7 +50,8 @@ export default function DigestSection({ bookId, accent = "#a855f7" }) {
       >
         <div>
           <p className="font-mono text-xs uppercase tracking-widest" style={{ color: accent }}>
-            // digest <span style={{ color: "#555" }}>· preview</span>
+            // digest
+            {digest.visibility === "admin" && <span style={{ color: "#555" }}> · admin preview, not visible to learners</span>}
           </p>
           <h2 id="digest-heading" className="mt-1 text-lg font-bold" style={{ color: "#e5e5e5" }}>
             The parts you actually need
@@ -96,7 +108,7 @@ export default function DigestSection({ bookId, accent = "#a855f7" }) {
       <div className="px-4 pb-1 pt-5 sm:px-6">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <p className="font-mono text-xs uppercase tracking-wider" style={{ color: "#8a8a8a" }}>
-            {MOCK_CHAPTER}
+            {digest.concepts[0]?.chapter}
           </p>
           <p className="font-mono text-xs" style={{ color: "#555" }}>
             {total} {total === 1 ? "idea" : "ideas"} · ~{estimateMinutes(total, d.mode)} min
@@ -162,6 +174,10 @@ export default function DigestSection({ bookId, accent = "#a855f7" }) {
                   onToggleExpand={toggleExpand}
                   onKnow={d.markKnown}
                   onUndo={d.undoKnown}
+                  checkResult={d.checkResults.get(c.id)}
+                  isChecked={d.checked.has(c.id)}
+                  onAnswer={d.answerCheck}
+                  onRetry={d.retryCheck}
                 />
               );
             })}
