@@ -1,5 +1,29 @@
 <!-- /founder:validate-idea · 2026-10-04 · input: Build Teams for Vahoha: capstone passers grouped by shared aim, build a real project, per-member tracked/reviewed/defended tasks, inactive members released, vacancies posted; proof of mid-level skill via teamwork, possible startup outcome -->
 
+# Validate Vahoha core (2026-10-21)
+
+The verdict further down (pivot, 19/35) was for Build Teams. This section covers the whole product. Evidence so far: zero interviews, zero payers (`facts.md`).
+
+## Riskiest assumptions
+
+| # | Assumption | Cheap test | Success criteria |
+|---|---|---|---|
+| 1 | Juniors feel "I don't know what I don't know" strongly enough to pay, not just "I can't get interviews" | 15 interviews (`user-interviews.md`), Q7 | At least 8 of 15 name the first as their main problem |
+| 2 | Someone pays $15 | Polar checkout link after the demo | At least 3 of 15 pay. Zero means pivot or stop |
+| 3 | Learners return and start a second layer | Funnel on the first 20 users | TODO: set a target (`metrics.md`) |
+| 4 | Defended work changes what employers do | Show one evidence page to 5 hiring managers or seniors | 3 of 5 say it would change whether they interview |
+| 5 | Test banks are correct and fair enough to gate progress | Hand-check about 135 questions; watch 5 users take the test | Zero wrong keys; nobody stuck on a bad item |
+| 6 | The lead over Boot.dev, Codecademy and roadmap.sh lasts | Re-run the competitor check monthly | Nobody ships a public defense mode (`competitor-matrix.md`) |
+| 7 | Enough people pass a capstone for Build Teams to exist | Count capstone passes among the first 40 users | At least 4 passers in one track |
+
+Rule: ask about past behavior. A "maybe" on payment is a no.
+
+## Verdict for now
+Run assumptions 1 and 2 together as one 3-week test. It costs nothing. Everything else waits for it.
+
+---
+
+
 # Validate idea: Build Teams
 
 Assumption: zero real users today (stated in VISION.md, 2026-10-02).

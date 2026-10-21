@@ -1,5 +1,35 @@
 <!-- /founder:mvp-scope · 2026-10-04 · input: Build Teams wishlist, solo founder part time, zero users -->
 
+# MVP scope: Vahoha (pilot)
+
+Updated 2026-10-21. Most of this is already built; the MVP is "what a pilot user must be able to do", not new work. The Build Teams scope is kept below.
+
+**MVP sentence:** a self-taught backend developer picks a path, learns a layer, passes its test, asks the mentor about weak spots, and later defends a capstone and gets a public page.
+
+| | Feature | Built per code? | Note |
+|---|---|---|---|
+| **In** | Sign up, pick a path (roadmap) | Built | Email, Google, GitHub. Password reset and magic link blocked until email sending is set up |
+| **In** | Layer lessons and tests (pass mark 80, 30-min cooldown) | Built | Needs one track with hand-checked banks |
+| **In** | AI mentor with learner context (30 msgs/day) | Built | Groq free tier may rate-limit |
+| **In** | Coding challenges (JS/TS) | Built | 25 api-dev/node-dev/javascript challenges still fail in the production sandbox (timers, Buffer) |
+| **In** | Capstone with AI review, timed defense, public certificate | Built | Needs the production GitHub OAuth app. 17 capstones published |
+| **In** | Event funnel and admin view | Built | |
+| **In** | $15 payment test | Built (Polar) | Create the product in Polar |
+| **Out (now)** | Enforcing Free/Pro gates | Built, inert | Turn on only after payers appear |
+| **Out (now)** | Voice exam, Arena extras, new paths, awards, group chat | Built or spec | Frozen (`PILOT_STATUS.md`) |
+| **Out (now)** | Employer tiers, company Teams, sponsored projects | Not built | No demand signal |
+| **Later** | Build Teams with real people | Built, never run | After capstone passers exist |
+| **Later** | Recruiter scorecard open to recruiters | Built, closed | After a hiring manager says it matters |
+| **Later** | Readiness score | Built, private | Shows "none" until data exists |
+| **Later** | Book Digest | Idea only | `docs/ideas/book-digest/README.md`, after the MERN pilot |
+| **Later** | Server-side lesson progress | Not built | Lessons use localStorage today |
+| **Later** | Backend repository layer (A1-A7) | Not started | After deploy |
+
+TODO: confirm the pilot track (backend, MERN or frontend).
+
+---
+
+
 Assumption: zero users and one published capstone today (VISION.md, 2026-10-02).
 Assumption: existing Vahoha code (capstone defense, GitHub client, mastery) is reusable.
 Estimate: build times are my estimates for one developer, not measured.

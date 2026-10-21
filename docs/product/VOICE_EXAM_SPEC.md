@@ -1,6 +1,8 @@
 # Voice Exam — Product & Technical Spec
 
 > **Status: DRAFT for approval. No implementation exists.** Written 2026-10-01.
+> **Code check 2026-10-21:** "No implementation exists" is only half true. A UI prototype exists at `/voice-exam/:layerId` (`src/features/voice-exam`) with a mock API (`voiceExamApi.js`) and one pilot layer (`api-dev-6`); there is no backend, no audio upload, no grading. A text and dictation teach-back slice is live (`submit-teach-back` routes). The `voice-review` route and page are still scaffolds. Voice work is frozen until pilot data (`docs/PILOT_STATUS.md`). Findings F2 (no billing) and F7 (no rate limits, no helmet) below are out of date: Polar billing is built and LLM routes are rate-limited.
+
 > Sources read: `docs/strategy/VISION.md` (repo root, not `docs/`), `docs/engineering/ROADMAP_BUILD_PLAN.md`, `docs/product/FUTURE_IDEAS.md`, `docs/engineering/ARCHITECTURE.md`, `docs/strategy/BUSINESS_MODEL.md`, and the live exam / teach-back / mastery / mentor code.
 > Tooling note: the Product Management `write-spec` skill and the `frontend-design` skill are **not installed** in this environment. The spec follows a write-spec-style structure by hand; §16 describes screens in prose rather than a designed mockup.
 > **Decisions recorded 2026-10-01:** (1) **soft gate** — MCQ still unlocks the next layer, voice exam adds "verified" status; (2) **Free tier gets ≥3 graded voice exams/month** (quota per account across all tracks — to confirm); (3) every core prompt covers all `mustHave` concepts (Q2 = A); (4) examiner TTS **deferred**, and where used it should be a **free option** (browser `speechSynthesis` or self-hosted open-source), not a paid vendor; (5) human senior mentors / exemplar answers are a **future idea** (§20), not V1.
@@ -122,7 +124,8 @@ Invariants, all enforced by `findOneAndUpdate({_id, state: <expected>, openTurnI
 - I1. Exactly one open examiner turn while in an `AWAITING_*` state; none otherwise.
 - I2. A user turn must reference the open examiner turn (`replyTo`).
 - I3. The next examiner turn is created only after the previous user turn is persisted.
-- I4. `deadlineAt` is absolute and server-computed; all transitions re-check it.
+- I4. `deadlineAt` is absolute and server-computed; all transitions re-check it. It never
+  leaves the server: responses carry `secondsLeft`, so a wrong client clock cannot skew the timer.
 - I5. `GRADING` runs at most once per attempt (idempotent by state guard).
 
 ### 4.3 Examiner neutrality (code-enforced)
@@ -241,7 +244,7 @@ Design notes: `turns[]` is embedded (bounded ~8 entries) so state transitions ar
 | Method & path | Purpose |
 |---|---|
 | `GET /eligibility?layerId=` | `{eligible, reasons[], mcq:{passed}, cooldownUntil, gate:{pending[]}, quota:{used,limit,resetAt}}` |
-| `POST /` `{layerId, mode}` | Start; server picks prompt; returns attempt id, prompt, `deadlineAt`, limits |
+| `POST /` `{layerId, mode}` | Start; server picks prompt; returns attempt id, prompt, `secondsLeft`, limits |
 | `POST /:id/turns` multipart(audio) or JSON(text) + `replyTo` | Submit user turn; server transcribes; returns next examiner turn **or** `{state:"grading"}` |
 | `GET /:id` | State, visible turns, result when complete (Pro: full report) |
 | `POST /:id/abandon` | Mark abandoned |

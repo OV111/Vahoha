@@ -1,5 +1,44 @@
 <!-- /founder:user-interviews · 2026-10-04 · input: Build Teams for Vahoha, interview self-taught backend developers 0-3 years who want mid-level -->
 
+# Interview script: Vahoha core (2026-10-21)
+
+Goal: learn how developers decide they are ready, what they pay for, and what happened at their last job step. Ask for stories, not opinions. Reuses `docs/strategy/OUTREACH_KIT.md` (DM scripts, payment ask). The Build Teams plan follows below.
+
+## Questions (about 25 minutes)
+1. What do you do now, and how long have you written code?
+2. Walk me through how you learned over the last three months. What did you use?
+3. What have you paid for to learn or to get a job? Was it worth it?
+4. Tell me about the last time you finished something and later found you hadn't understood it. How did you find out?
+5. How do you decide you are ready to move to the next topic?
+6. Where are you in the job search or promotion? What happened in your last interview or review?
+7. What was the hardest part of that: knowing what to learn, being good enough, or getting interviews?
+8. When did you last get feedback on your code from another person? What did they say?
+9. What have you tried to fix this that didn't work? Why did you stop?
+10. If you could change one thing about how you learn, what would it be?
+11. Who else do you know in the same spot?
+12. Is there anything you expected me to ask that I didn't?
+
+Keep it neutral: no "would you use...", no feature names before question 12. The pitch and the payment ask come only after the questions (see the kit).
+
+## Log template (one per interview)
+```
+# | date | source | role / years
+Their words on the pain:
+Paid for before (what, how much):
+Last interview/review outcome:
+Hardest part (Q7):
+Tried and dropped (Q9):
+Feedback on code (Q8):
+Referral offered (Y/N):
+Watched Layer 1 test, hesitations:
+"Very disappointed" if gone? (very / somewhat / not):
+Paid $15? (Y/N):
+```
+Roll the rows up in the tracker in `OUTREACH_KIT.md`. Red flags: "sounds cool", feature ideas, no story.
+
+---
+
+
 Assumption: none of these answers are known yet. Personas in `persona-gen.md` are hypotheses.
 
 # Interview plan: Build Teams

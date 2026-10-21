@@ -7,14 +7,16 @@
 
 No unproctored online exam is cheat-proof; HackerRank and CodeSignal accept the same limit. The goal is to **raise the cost of cheating** and to **stop claiming more than the exam proves**. Multiple-choice questions (MCQ) can never be made ChatGPT-proof, because LLMs are very good at them.
 
-## Current state (verified in code)
+## Current state (verified in code 2026-10-21)
 
-- `examEngineService.js` already samples and shuffles: `shuffle(bank.questions).slice(0, QUESTIONS_PER_EXAM).map(shuffleChoices)`.
-- But `examSeeder.js` makes banks of exactly 15 questions (`QUESTIONS_PER_LAYER = 15`), and the exam serves 15. So **every attempt shows the whole bank**, and after 3 attempts a learner has seen every question.
-- `COOLDOWN_ENABLED = false` (temporary flag, never switched back on).
-- `TIME_LIMIT_SECS = 600` for the whole exam (about 40s per question).
-- No tab-switch or paste logging. No proctoring.
-- `docs/strategy/VISION.md` §5 claims "AI-proctored exam record." **False today; remove it.**
+Rules live in one place, `constants/exam.js`, and the server and the intro screen both read it.
+
+- 15 questions per attempt, sampled from a bank of up to 60 per layer; unseen questions are served first. The seeder tops banks up to 60, but the **banks are not re-seeded yet**, so live layers may still serve their old 15.
+- Pass mark 80%. Time limit 600 s for the whole exam. 3 submitted attempts per layer per day. 30-minute cooldown after a fail.
+- Tab-switch and paste counts are stored on the attempt (`integrity`). They are review-only and never change the grade.
+- Layer order is enforced when an attempt is generated (`assertLayerUnlocked`, 403).
+- No per-question timer, no proctoring. The oral exam is not built (see `VOICE_EXAM_SPEC.md`).
+- `docs/strategy/VISION.md` now says "defended", not "verified".
 
 ## Existing ideas in the repo
 

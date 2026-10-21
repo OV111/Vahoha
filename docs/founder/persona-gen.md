@@ -1,5 +1,15 @@
 <!-- /founder:persona-gen · 2026-10-04 · input: Build Teams, developers who passed a backend capstone and would join a 3-4 person 6-week team -->
 
+# Vahoha-wide note (2026-10-21)
+
+These personas were written for Build Teams but fit the whole product. Core need per persona: Daniel wants to know what mid-level means and prove it; Mariam wants a signal that her code is good; Tomás wants something real to show interviewers. None is validated. TODO: confirm with `user-interviews.md`.
+
+Tools they use today (from the personas and strategy docs): roadmap.sh, freeCodeCamp, YouTube, LeetCode, Boot.dev, bootcamp alumni chats. Competitor detail in `competitor-matrix.md`.
+
+Fit with the current offer (a $15 Pro test): Daniel has a job and some budget, so he is the likeliest first payer. Mariam and Tomás are easier to reach but would pay only after a first win. Don't recruit employers yet.
+
+---
+
 These personas are hypotheses until interviews confirm them. Incomes and details are my estimates.
 
 ## 1. Daniel Okafor, the stuck junior

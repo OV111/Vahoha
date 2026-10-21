@@ -24,7 +24,7 @@
 | The mentor can see it | `modules/ai-agent/services/learnerContextService.js` |
 | `incrementXP()` exists but is never called, and it has no guard against going negative | `userProgressService.js` |
 
-So the roadmap, the exams and teach-back, which make up the core loop, give **no XP**. Today XP only means something to Arena users.
+That table is the 2026-10-01 state. Exams, challenges, capstones and team defenses now pay XP through the ledger (see the update above); teach-back still pays none.
 
 ## The rule every idea is judged against
 

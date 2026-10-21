@@ -1,5 +1,24 @@
 <!-- /founder:competitor-matrix · 2026-10-11 · input: Vahoha: earned (not self-reported) developer learning: exam-gated roadmaps, teach-back, mastery, AI mentor with learner context, graded challenges, AI-reviewed capstone + timed defense + public certificate, Build Teams (merged PRs to public evidence), opt-in recruiter scorecard; free beta, Pro via Polar, $15 one-off test; compare roadmap.sh, Codecademy, Exercism, Frontend Mentor, Boot.dev and others -->
 
+# Target user and weakness (added 2026-10-21)
+
+Built from the sections below. "Unknown" means the pages checked did not say.
+
+| Competitor | Target user | Pricing | Weakness | Source |
+|---|---|---|---|---|
+| roadmap.sh | Self-taught developers, small teams | Free; Team $10/seat/month; Pro price TODO: confirm (strategy docs say about $10) | Progress is self-marked; no defended project | Section 2 |
+| Boot.dev | Self-taught backend learners | $33/month or $399/year | Defended-code evidence Unknown | Sections 1, 2 |
+| Codecademy | Beginners, enterprise via Skillsoft | $14.99-19.99/month | Proof is a completion certificate, not defended work | Section 4 |
+| Exercism | Language learners | Free (donations) | No career path or employer proof; funding strain | Section 1 |
+| Frontend Mentor | Frontend learners | Pro price not found | Frontend only | Section 1 |
+| Hyperskill | JetBrains-IDE learners | €49.90/month | Expensive; certification only | Section 1 |
+| CodeSignal | Employers | Sales only | Learners can't bring their own result | Section 1 |
+| **Vahoha** | Self-taught backend juniors | Free beta; $15/month hypothesis | No users or traction; tests are multiple choice (practice, not proof); never run with real users; question banks unreviewed | `facts.md`, `docs/product/EXAM_INTEGRITY.md` |
+
+TODO: confirm the roadmap.sh Pro price and re-check all prices (last checked 2026-10-11). Not covered: freeCodeCamp, The Odin Project, LeetCode (the personas' actual tools). Add them if interviews mention them.
+
+---
+
 # Competitor matrix: Vahoha
 
 Assumption: target customer is the persona from `persona-gen.md`: a self-taught or junior backend developer, 0 to 3 years in, trying to reach mid-level (Daniel).
