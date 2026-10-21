@@ -1,6 +1,6 @@
 # Pilot Status
 
-> Updated: 2026-10-02 · Tracks the pre-pilot checklist (`docs/strategy/ADVISORY_BOARD_REPORT.md` §9) and the fixes from `docs/strategy/STARTUP_CRITIQUE_2026-10.md`.
+> Updated: 2026-10-21 · Tracks the pre-pilot checklist (`docs/strategy/ADVISORY_BOARD_REPORT.md` §9) and the fixes from `docs/strategy/STARTUP_CRITIQUE_2026-10.md`.
 
 The technical prep for the pilot is mostly done. What's left is mostly yours: content review, setup, and talking to users.
 
@@ -17,16 +17,25 @@ The technical prep for the pilot is mostly done. What's left is mostly yours: co
 | Event tracking (7 events) + admin funnel | `c89aadf` | `GET /api/admin/funnel?days=30` |
 | Blog posts tagged with roadmap layers; "Posts for this layer" in the layer drawer | `39d6023` | `layerIds` on posts, `GET /blogs?layer=<id>`, layer picker in the blog editors. SEO for the blog (pre-rendering) deliberately left until after the pilot |
 | Docs: critique, exam integrity, outreach kit, XP system | `3c4a6f7`, `1a8c5d2` | Also tabs in the online critique doc |
-| Readiness wired to real data; mentor sees team work | uncommitted (2026-10-10) | `GET /api/readiness/me` + "Job readiness" card on `/progress`. Capstone and teams each expose one function (`getCapstoneEvidence`, `getMemberStats`); recruiter no longer reads teams collections directly. Private only, not on the scorecard. Shows "none" until a real team exists |
-| Funnel follows the proof pipeline | uncommitted (2026-10-10) | New events `challenge_solved` (first solve), `team_defense_passed`, `team_evidence_issued` (first issue, one per member). `GET /api/admin/funnel` adds `solvedChallenge`, `passedCapstone`, `passedTeamDefense` |
+| Readiness wired to real data; mentor sees team work | `a508356` | `GET /api/readiness/me` + "Job readiness" card on `/progress`. Capstone and teams each expose one function (`getCapstoneEvidence`, `getMemberStats`); recruiter no longer reads teams collections directly. Private only, not on the scorecard. Shows "none" until a real team exists |
+| Funnel follows the proof pipeline | `a508356` | New events `challenge_solved` (first solve), `team_defense_passed`, `team_evidence_issued` (first issue, one per member). `GET /api/admin/funnel` adds `solvedChallenge`, `passedCapstone`, `passedTeamDefense` |
 | Unique accounts under concurrent signups | 2026-10-11 | Unique indexes on `users.username` and `users.email` (strings only; GitHub users may have none). Signup, Google and GitHub account creation retry with the next free username on a race; a racing duplicate email gets 409. Index creation at startup is non-fatal (logged). Atlas checked read-only first: 13 users, 0 duplicates |
 | Backend modules | 2026-10-11 | Every feature under `backend/modules/<name>/` with one `index.js` entry point; `services/` keeps the shared learning core. All suites pass and a real boot answers all 21 sampled endpoints exactly as before |
-| All XP through one ledger | uncommitted (2026-10-10) | Challenge XP now uses `awardXp` (kind `challenge`, same amounts); fixes double pay when two passing submissions race. New: 300 XP for the first passed defense per team (kind `team_defense`). Test: `challengeXp.integration.test.js` |
-| Capstone → Teams pointer; challenge "readiness" renamed | uncommitted (2026-10-10) | `NextTeamCard` after a passed capstone. `getReadinessService` → `getLayerProgressService` in coding-challenges (URL unchanged) |
-| Optional layer fields: `requires`, `required`, `stage` | uncommitted (2026-10-16) | Wired through seeder, `isPathComplete` (skips `required: false`) and the roadmap tree spine; example on `cpp-10`. Tests: `pathCompletion.unit.test.js`, `layerPrereqs.test.js`. Layer order is now enforced server-side when an exam attempt is generated (`assertLayerUnlocked`, 403; fails open for unseeded layers). See ARCHITECTURE "Roadmap data model" |
-| Frontend exam banks written, not imported | 2026-10-16 (uncommitted) | 15 layers x 60 questions in `docs/exam-prompts/fullstack/frontend-dev-output.md`. `examImport.js --dry-run` passes: 900 valid, 0 duplicates, no length-bias warning. **Every answer key still needs your hand check** (about 900 questions), then `node backend/seeders/examImport.js frontend-dev` writes them to Atlas as `reviewed: false`. Other new tracks have no banks yet |
-| TypeScript mode for coding challenges | 2026-10-16 (uncommitted) | JS/TS switch in the Arena (remembered in localStorage). The TS file is the JS starter plus a type header; types are removed with `sucrase` (browser: loaded on demand in the test worker; server: before grading), not checked. `POST /api/challenges/submissions/:id` takes `{ language }`. Needs `worker.format: es` in `vite.config.js`. All 205 reference solutions pass through the TS path |
-| mern challenges complete, web-game complete | 2026-10-16 (uncommitted) | 50 each (5 per layer). Three old mern challenges that used timers were rewritten. **25 api-dev / node-dev / javascript challenges still use timers or Buffer and would fail in the production sandbox** |
+| All XP through one ledger | `a508356` | Challenge XP now uses `awardXp` (kind `challenge`, same amounts); fixes double pay when two passing submissions race. New: 300 XP for the first passed defense per team (kind `team_defense`). Test: `challengeXp.integration.test.js` |
+| Capstone → Teams pointer; challenge "readiness" renamed | `a508356` | `NextTeamCard` after a passed capstone. `getReadinessService` → `getLayerProgressService` in coding-challenges (URL unchanged) |
+| Optional layer fields: `requires`, `required`, `stage` | `2c584cd` | Wired through seeder, `isPathComplete` (skips `required: false`) and the roadmap tree spine; example on `cpp-10`. Tests: `pathCompletion.unit.test.js`, `layerPrereqs.test.js`. Layer order is now enforced server-side when an exam attempt is generated (`assertLayerUnlocked`, 403; fails open for unseeded layers). See ARCHITECTURE "Roadmap data model" |
+| Frontend exam banks written, not imported | `2c584cd` | 15 layers x 60 questions in `docs/exam-prompts/fullstack/frontend-dev-output.md`. `examImport.js --dry-run` passes: 900 valid, 0 duplicates, no length-bias warning. **Every answer key still needs your hand check** (about 900 questions), then `node backend/seeders/examImport.js frontend-dev` writes them to Atlas as `reviewed: false`. Other new tracks have no banks yet |
+| TypeScript mode for coding challenges | `2c584cd` | JS/TS switch in the Arena (remembered in localStorage). The TS file is the JS starter plus a type header; types are removed with `sucrase` (browser: loaded on demand in the test worker; server: before grading), not checked. `POST /api/challenges/submissions/:id` takes `{ language }`. Needs `worker.format: es` in `vite.config.js`. All 205 reference solutions pass through the TS path |
+| mern challenges complete, web-game complete | `2c584cd` | 50 each (5 per layer). Three old mern challenges that used timers were rewritten. **25 api-dev / node-dev / javascript challenges still use timers or Buffer and would fail in the production sandbox** |
+| Security audit fixes H1-H4, M1, M3, M6 | 2026-10-13, 2026-10-20 | Route that accepted client exam scores deleted; grader harness hardened; chat room squatting closed; upload magic-byte check; password hash no longer sent in the profile response; OAuth sign-in can't take over an unverified account (`claimVerifiedEmail`); capstone repo must belong to the learner's GitHub login. Open: M2 (verify OAuth nonce binding), M4, M5, M7, Lows. See memory `security-audit-2026-10-12` |
+| Sessions last 30 idle days, renewed before expiry | `bb06978`, `9a714b0` | A session that can't renew drops the user instead of failing silently |
+| Auto-tracked roadmap progress, Labs building, step-by-step lessons | `c0d6b09`, `6dac87b` | Progress comes from open / finish / test pass, never manual ticks. Lesson status is in localStorage until the server-side progress stage. Docs: `docs/product/LEARNING_SYSTEM.md`, `docs/product/LAB_SYSTEM.md` |
+| Capstone AI review fits the Groq token limit | `3f9b15c` | `capstone/lib/tokenBudget.js`; `GROQ_TPM_LIMIT` is a local-only workaround for the free tier (see `docs/engineering/BILLING.md`) |
+| Magic-link sign-in API | `a2d1973` | Needs real email sending (item 10 below) |
+| Chat message requests for people who are not mutual followers | `9b36d75` | |
+| Recruiter candidates list with a published evidence score | `8a60ebb` | Closed: recruiters only |
+| Judge0 runner for stdio-language challenges | `6ac55a8`, `6739629` | Reverted: kept out of production for now |
+| Exam bank builder without length bias; `--only-banked` capstone seeding | `2b2c4dd`, `f6d2c0b` | 17 capstones published, 18 drafts, 141 waiting on question banks. Backend banks written by agents showed length bias: do not import them. Next: build banks per category with `scripts/buildExamBank.js`, hand-check keys, import |
 
 ## Left before the first user
 
@@ -36,12 +45,14 @@ The technical prep for the pilot is mostly done. What's left is mostly yours: co
 | 2 | Hand-check every question marked `reviewed: false` | You | About 135 questions. A wrong answer key on a gated exam destroys trust |
 | 3 | Make yourself admin so you can read the funnel | You | `npm run admin:grant -- you@example.com` |
 | 4 | ~~Pick one product name~~ | Done | Vahoha. README, VISION and strategy docs updated 2026-10-02 |
-| 5 | Remove "AI-proctored" and "hard to fake" claims | You or Claude | `docs/strategy/VISION.md` §5; see `docs/product/EXAM_INTEGRITY.md` |
+| 5 | ~~Remove "AI-proctored" and "hard to fake" claims~~ | Done | `docs/strategy/VISION.md` now says "defended", not "verified" (see `docs/product/EXAM_INTEGRITY.md`) |
 | 6 | Confirm Redis is on in production | You | Auth rate-limit counters depend on it |
 | 7 | Check Groq limits for about 10 concurrent users | You | Move to the paid tier if the free tier rate-limits |
 | 8 | Create the $15 one-off product in Polar | You | For the payment test in `docs/strategy/OUTREACH_KIT.md` |
 | 9 | Run the full loop yourself on production with a new account | You | Sign up, pick a path, take an exam, ask the mentor, then check the funnel shows it |
 | 10 | **Set up real email sending** (blocks password reset and magic-link sign-in) | You | In Resend, verify `vahoha.com` (DNS records), then set `EMAIL_FROM="Vahoha <no-reply@vahoha.com>"` and `RESEND_API_KEY` on Render. Until then mail comes from Resend's test sender (`onboarding@resend.dev`), which delivers only to the Resend account owner, so no real user gets a reset or sign-in email. Test locally with your own address |
+| 11 | Production env for capstones | You | Separate production GitHub OAuth app (prod callback URL) with `GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET`, plus `GITHUB_TOKEN` on Render. No `GROQ_TPM_LIMIT` in production; move Groq to a paid tier first. Regenerate the dev client secret (it was pasted in a chat) |
+
 
 ## Then: the pilot
 
@@ -62,6 +73,7 @@ Behaviour-preserving cleanups to reach a clean layered design (route, controller
 | A5 | Reusable validation | A `validate(schema)` middleware in place of Zod calls inside controllers |
 | A6 | Layer-matched tests | Service unit tests with a fake repository, route integration tests, and coverage on services |
 | A7 | Docs | Update `docs/engineering/ARCHITECTURE.md` with the layer diagram and call it a "feature-based modular monolith" in the README |
+| A8 | Frontend profile area into features (DONE 2026-10-20) | `src/pages/MyProfile.jsx`, `pages/my-profile/*` and `pages/Users/UserProfile.jsx` predate the `src/features/<name>/` convention. Move them to `features/profile/` (profile, settings, notifications, blocked users, blog editor), `features/chat/` and the existing `features/connections/` (followers). Rename `Users` to lowercase (Linux builds are case-sensitive). Keep standalone pages (Home, About, Contact, Privacy, Terms, GetStarted, password pages) in `pages/`. Update `router.jsx` lazy imports and run the HEAD import check |
 
 ## Known limits (fine for the pilot)
 
@@ -71,11 +83,11 @@ Behaviour-preserving cleanups to reach a clean layered design (route, controller
 
 ## Decision: Build Teams MVP built ahead of pilot data (2026-10-04)
 
-Against the "no new features until pilot data" rule and the advice in `docs/strategy/STARTUP_CRITIQUE_2026-10.md` / the validate-idea verdict (pivot, 19/35), the founder chose to build Build Teams now. Risk raised once: the pool of capstone passers is empty. Status: all 8 stages written, ESLint and `vite build` pass; never run against GitHub, the database or the model, and not committed.
+Against the "no new features until pilot data" rule and the advice in `docs/strategy/STARTUP_CRITIQUE_2026-10.md` / the validate-idea verdict (pivot, 19/35), the founder chose to build Build Teams now. Risk raised once: the pool of capstone passers is empty. Status: all 8 stages written, ESLint and `vite build` pass; committed (2026-10-05 to 2026-10-12) but never run against GitHub, the database or the model with a real team.
 
 - **Backend:** `backend/modules/teams` at `/api/teams`. Team record (admin-only writes), contribution sync from merged PRs, per-member defense on their own PR diffs, peer ratings, public evidence snapshot.
 - **Frontend:** `src/features/teams`: `/team` (entry: card on the profile page) and public `/evidence/:publicId`.
-- **Manual for team 1:** matching, applications, GitHub login confirmation, capstone-pass check, inactivity messages. No admin UI: create team, set repo, add members, sync and issue evidence are API calls.
+- **Manual for team 1:** matching, applications, GitHub login confirmation, capstone-pass check, inactivity messages. Admin-only API routes plus an admin page (users search, overview) cover team creation, repo, members, sync and evidence.
 - **Before real use:** run it end to end on a test repo, get each member's consent before issuing evidence (it publishes names), add a pointer to teams from the capstone page.
 - **Not built:** AI skill judge, team moves, AI task assignment, demo day, startup support, sponsored projects.
 

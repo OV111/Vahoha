@@ -18,6 +18,10 @@ Start with [`PILOT_STATUS.md`](PILOT_STATUS.md): what is done, what is left befo
 | Doc | What it is |
 |---|---|
 | [`EXAM_INTEGRITY.md`](product/EXAM_INTEGRITY.md) | Anti-cheating plan and its honest limits |
+| [`LEARNING_SYSTEM.md`](product/LEARNING_SYSTEM.md) | Read-then-practice lessons, Go deeper ladder, auto-tracked progress |
+| [`LAB_SYSTEM.md`](product/LAB_SYSTEM.md) | Labs: shared lesson core plus per-track lab kinds |
+| [`FOUNDATIONS_LESSON_GUIDE.md`](product/FOUNDATIONS_LESSON_GUIDE.md) | How to write Foundations lessons |
+| [`ROADMAP_LAYER_AUTHORING.md`](product/ROADMAP_LAYER_AUTHORING.md) | How to author roadmap layers |
 | [`XP_SYSTEM.md`](product/XP_SYSTEM.md) | XP rules, current ledger, ideas with critiques |
 | [`VOICE_EXAM_SPEC.md`](product/VOICE_EXAM_SPEC.md) | Spoken teach-back exam spec (frozen) |
 | [`VERIFICATION_PRACTICE_IDEAS.md`](product/VERIFICATION_PRACTICE_IDEAS.md) | Bug hunt, peer code review, oral defense, explain-back (ideas, parked) |
@@ -27,6 +31,7 @@ Start with [`PILOT_STATUS.md`](PILOT_STATUS.md): what is done, what is left befo
 
 | Doc | What it is |
 |---|---|
+| [`BIG_BETS.md`](strategy/BIG_BETS.md) | Brainstorm of large bets toward a $100M company (ideas, untested) |
 | [`VISION.md`](strategy/VISION.md) | Business and product framing |
 | [`BUSINESS_MODEL.md`](strategy/BUSINESS_MODEL.md) | Pricing and revenue model |
 | [`GROWTH_PLAYBOOK.md`](strategy/GROWTH_PLAYBOOK.md) | Growth channels |
@@ -41,5 +46,8 @@ Start with [`PILOT_STATUS.md`](PILOT_STATUS.md): what is done, what is left befo
 | Folder | What it is |
 |---|---|
 | [`founder/`](founder/) | Outputs of the founder skills (idea validation, personas, interview script, competitor matrix). Skills write here, keep the path |
+| [`ideas/`](ideas/) | Design notes for ideas not yet scheduled (`book-digest/`) |
+| [`challenge-prompts/`](challenge-prompts/) | Prompts and outputs for authoring coding challenges |
+| [`exam-prompts/`](exam-prompts/) | Prompts and outputs for exam question banks, one folder per track group |
 | [`capstone-prompts/`](capstone-prompts/) | Prompts and outputs for generating capstone briefs (`backend/scripts/capstonePrompt.js` writes here) |
 | [`brand/`](brand/) | Brand assets, such as the Google sign-in logo |
