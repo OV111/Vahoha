@@ -1,3 +1,5 @@
+LAYER: jamstack-1
+
 JSON
 [
   {
@@ -5998,4 +6000,669 @@ JSON
   }
 ]
 
+LAYER: jamstack-10
 
+```json
+[
+  {
+    "stem": "What happens when you link a Git repository to a Netlify site?",
+    "topic": "Connecting Git to Netlify",
+    "choices": [
+      "Netlify rewrites the commit history",
+      "Netlify copies the repository once and redeploys only when someone uploads a zip file by hand in the dashboard",
+      "Netlify mirrors the repository into a database and serves files straight from raw Git objects",
+      "Netlify builds the site whenever commits land on a watched branch"
+    ],
+    "answerIdx": 3
+  },
+  {
+    "stem": "Which Git event usually triggers a production deploy on a connected Netlify site?",
+    "topic": "Connecting Git to Netlify",
+    "choices": [
+      "Creating a local tag on one developer's laptop that is never pushed to the remote repository",
+      "A push or merge to the branch configured as production, which starts a fresh build and deploy",
+      "Running git stash on a machine that has the repository cloned and checked out",
+      "Opening the repository's issue tracker for the first time after the site was created"
+    ],
+    "answerIdx": 1
+  },
+  {
+    "stem": "Why does Git-based deployment make releases easier to audit?",
+    "topic": "Connecting Git to Netlify",
+    "choices": [
+      "Each deploy maps to one commit, so you know exactly what code is live",
+      "Each deploy skips the build step",
+      "Each deploy is copied to the author's laptop",
+      "Each deploy is encrypted with the author's personal key, so only that author can ever read the released files"
+    ],
+    "answerIdx": 0
+  },
+  {
+    "stem": "Which setting decides which branch counts as production?",
+    "topic": "Connecting Git to Netlify",
+    "choices": [
+      "The production branch field in the site's build and deploy settings, which Netlify checks on each push",
+      "The license file placed at the top level of the repository",
+      "The default font family chosen in the site's appearance panel of the hosting dashboard",
+      "The package name field inside the package.json file at the root of the project"
+    ],
+    "answerIdx": 0
+  },
+  {
+    "stem": "A teammate pushes to a feature branch that is not the production branch. With branch deploys enabled, what does Netlify do?",
+    "topic": "Connecting Git to Netlify",
+    "choices": [
+      "Overwrites the production site right away with the build from the feature branch, replacing the live files",
+      "Builds that branch separately on its own URL while the live production site stays exactly as it was",
+      "Deletes the production deploy until the feature branch has been merged back into the main branch",
+      "Ignores the push, because only the main branch of a repository can ever be built on the platform"
+    ],
+    "answerIdx": 1
+  },
+  {
+    "stem": "What does Netlify need from your Git provider to build on every push?",
+    "topic": "Connecting Git to Netlify",
+    "choices": [
+      "The provider's billing records for the repository owner, so build minutes can be charged correctly",
+      "Write permission to every other repository that belongs to the same organization or user account",
+      "Authorized access to clone the repository and to receive push notifications whenever commits arrive",
+      "A full copy of your local node_modules folder uploaded to the provider's servers before each build"
+    ],
+    "answerIdx": 2
+  },
+  {
+    "stem": "What does continuous deployment from Git fix compared with uploading built files by hand?",
+    "topic": "Connecting Git to Netlify",
+    "choices": [
+      "It guarantees the site has no bugs",
+      "It removes manual steps, so merged changes ship consistently",
+      "It prevents anyone else from ever viewing the repository's history, which keeps unreleased work private",
+      "It lets the site run with no build step and no hosting provider, since Git itself serves the pages"
+    ],
+    "answerIdx": 1
+  },
+  {
+    "stem": "Where should a netlify.toml file live so Netlify reads it?",
+    "topic": "Connecting Git to Netlify",
+    "choices": [
+      "In the repository root or the configured base directory",
+      "Inside the node_modules folder",
+      "In the browser's local storage for the deployed site, where the platform reads it at request time",
+      "Inside the published output folder, after the build command has finished writing its files"
+    ],
+    "answerIdx": 0
+  },
+  {
+    "stem": "The site lives in a subfolder of a monorepo. Which setting makes Netlify build from there?",
+    "topic": "Connecting Git to Netlify",
+    "choices": [
+      "The base directory, so Netlify runs the install and build commands from that subfolder",
+      "The user agent string, so the subfolder is detected as a mobile site by the build runner",
+      "The cache TTL, so the subfolder is rebuilt from scratch every single minute of the day",
+      "The theme color, so the subfolder is highlighted differently on the dashboard's overview page"
+    ],
+    "answerIdx": 0
+  },
+  {
+    "stem": "Why is building from Git usually better than committing the generated output folder?",
+    "topic": "Connecting Git to Netlify",
+    "choices": [
+      "Git refuses to store HTML files that were produced by a build tool, so the commit would be rejected",
+      "Netlify cannot serve any folder that is already committed to the repository it is connected to",
+      "Generated files are always larger than one megabyte, which makes every single push fail on the platform",
+      "Output can be regenerated, so committing it adds noise and merge conflicts"
+    ],
+    "answerIdx": 3
+  },
+  {
+    "stem": "What does the build command in a Netlify site configuration do?",
+    "topic": "Build commands and environments",
+    "choices": [
+      "Lists the pages that visitors are allowed to open in a browser when they reach the production domain",
+      "Chooses which Git provider the repository is hosted on",
+      "Sets the domain name that points at the deployed site",
+      "Runs the command that generates the static site, such as npm run build"
+    ],
+    "answerIdx": 3
+  },
+  {
+    "stem": "What does the publish directory tell Netlify?",
+    "topic": "Build commands and environments",
+    "choices": [
+      "Which folder holds the source Markdown files that editors should open first when they use the CMS",
+      "Which folder holds the finished files that the host should serve to visitors once the build ends",
+      "Which folder gets deleted entirely before the next build begins so stale files do not remain",
+      "Which folder contains the saved cookies and sessions of visitors who were logged in"
+    ],
+    "answerIdx": 1
+  },
+  {
+    "stem": "For a typical Gatsby site, which output folder is usually the publish directory?",
+    "topic": "Build commands and environments",
+    "choices": [
+      "node_modules, because the build installs every generated page there",
+      "src, because pages are compiled in place inside the source folder",
+      "coverage, because Gatsby writes its finished HTML next to the test reports",
+      "public"
+    ],
+    "answerIdx": 3
+  },
+  {
+    "stem": "Where should a secret API key needed by the build be stored?",
+    "topic": "Build commands and environments",
+    "choices": [
+      "In the HTML of the home page, inside a script tag so the build can read it later",
+      "In the site's environment variables, set in the Netlify settings and injected only while the build runs",
+      "In a plain text file called keys.txt that is committed to the main branch for the whole team to find",
+      "In the README, so teammates can find the value easily when they set up the project locally"
+    ],
+    "answerIdx": 1
+  },
+  {
+    "stem": "Why is a secret key in client-side JavaScript risky on a JAMstack site?",
+    "topic": "Build commands and environments",
+    "choices": [
+      "Browsers refuse to run any JavaScript that contains the word key, so the app stops working at once",
+      "Anyone can open the browser, read the shipped bundle and extract the key from the code",
+      "The key is automatically rotated each time a visitor loads the page, which breaks other sessions",
+      "Bundlers always strip strings that look like keys, so the application ends up broken in production"
+    ],
+    "answerIdx": 1
+  },
+  {
+    "stem": "Different API URLs for staging and production are best handled by:",
+    "topic": "Build commands and environments",
+    "choices": [
+      "Environment variables scoped to deploy contexts, so each environment receives its own value at build time",
+      "Hard-coding both URLs in one file and commenting out the one that should not be used",
+      "Creating a separate Git repository for each value and keeping the repositories in sync manually",
+      "Editing the source code by hand before every single deploy and reverting the change afterwards"
+    ],
+    "answerIdx": 0
+  },
+  {
+    "stem": "Which setting keeps builds stable when the platform's default Node version changes?",
+    "topic": "Build commands and environments",
+    "choices": [
+      "Limiting the number of images that appear on the home page of the deployed site",
+      "Setting the screen resolution that the build server uses",
+      "Choosing the browser that the output bundle is optimized for during the minification step",
+      "Pinning the Node version in an environment variable or version file"
+    ],
+    "answerIdx": 3
+  },
+  {
+    "stem": "A build works on your laptop but fails on Netlify with a missing package. What is the likeliest cause?",
+    "topic": "Build commands and environments",
+    "choices": [
+      "Netlify blocks every package that was previously installed on a developer's own laptop and cache",
+      "Netlify only installs packages whose names begin with a letter, so some names are skipped",
+      "The laptop's operating system encrypts packages before the build, so the server cannot read them",
+      "A dependency the build needs is missing from package.json, so a clean install does not fetch it"
+    ],
+    "answerIdx": 3
+  },
+  {
+    "stem": "What is the benefit of a lockfile such as package-lock.json for builds?",
+    "topic": "Build commands and environments",
+    "choices": [
+      "It merges all of the site's pages into a single file",
+      "It stores the site's environment variables in plain text so every teammate can read them",
+      "It encrypts the site's HTML output",
+      "Installs are reproducible with the same dependency versions"
+    ],
+    "answerIdx": 3
+  },
+  {
+    "stem": "In netlify.toml, which section controls the build command and publish directory?",
+    "topic": "Build commands and environments",
+    "choices": [
+      "The fonts section, which lists every typeface that the finished site loads",
+      "The comments section, which stores notes that teammates leave for each other",
+      "The visitors section, which lists the people allowed to open the deployed site",
+      "The build section"
+    ],
+    "answerIdx": 3
+  },
+  {
+    "stem": "What is a deploy preview?",
+    "topic": "Deploy previews",
+    "choices": [
+      "A backup of the database that stores the CMS content, created automatically every night",
+      "A temporary, shareable build of a pull request that reviewers can open before anything is merged",
+      "A permanent copy of the production site that is stored on the developer's laptop for offline work",
+      "A report listing how many visitors the site had last month, broken down by country and by page"
+    ],
+    "answerIdx": 1
+  },
+  {
+    "stem": "Why do deploy previews help when reviewing a pull request?",
+    "topic": "Deploy previews",
+    "choices": [
+      "They remove the need to write code before opening a pull request, since the platform generates it",
+      "They merge the pull request into production without any human decision once the checks have finished",
+      "Reviewers can click through the real built site on its own URL instead of reading only the diff",
+      "They automatically approve every pull request whose build succeeds, so no human review is needed afterwards"
+    ],
+    "answerIdx": 2
+  },
+  {
+    "stem": "Where do you typically find a deploy preview link for a pull request?",
+    "topic": "Deploy previews",
+    "choices": [
+      "In the footer of the production site's home page, below the copyright text and the social links",
+      "In the browser's cookie storage",
+      "In a status check or bot comment on the pull request",
+      "In the scripts section of package.json"
+    ],
+    "answerIdx": 2
+  },
+  {
+    "stem": "A preview does not match your local build. Which cause is most plausible?",
+    "topic": "Deploy previews",
+    "choices": [
+      "Different environment variables or branch state than locally",
+      "The preview ignores all of your CSS and shows unstyled plain text to everyone who opens the link",
+      "The preview automatically translates every page into another language based on the reviewer's location",
+      "The preview always shows the first commit ever made to the repository instead of the latest one"
+    ],
+    "answerIdx": 0
+  },
+  {
+    "stem": "What happens to production when a deploy preview is created?",
+    "topic": "Deploy previews",
+    "choices": [
+      "Production is untouched until the change is merged",
+      "Production is paused until every reviewer clicks approve in the hosting dashboard for that pull request",
+      "Production is replaced instantly",
+      "Production is switched over to the preview's own domain name for as long as the review lasts"
+    ],
+    "answerIdx": 0
+  },
+  {
+    "stem": "Which workflow best uses previews for design review with non-developers?",
+    "topic": "Deploy previews",
+    "choices": [
+      "Ask them to wait until the change reaches production before they look at anything at all",
+      "Ask them to clone the repository, install dependencies and run the build on their own computers",
+      "Share the preview URL so they can review the real result in a browser without installing anything",
+      "Email them the compiled JavaScript bundle and ask them to open it in a text editor to check it"
+    ],
+    "answerIdx": 2
+  },
+  {
+    "stem": "How do branch deploys differ from deploy previews?",
+    "topic": "Deploy previews",
+    "choices": [
+      "Branch deploys run without any build command",
+      "Branch deploys exist only for the production branch, while previews exist only for forks of the repository",
+      "Branch deploys are free of hosting costs",
+      "Branch deploys build a chosen branch; previews are tied to pull requests"
+    ],
+    "answerIdx": 3
+  },
+  {
+    "stem": "Why should preview deployments avoid production secrets or write access?",
+    "topic": "Deploy previews",
+    "choices": [
+      "Anyone with the URL may use the site, so it must not change real data",
+      "Production secrets only work on domains that end in .com, so previews cannot use them",
+      "Secrets are always rendered in the Netlify logo on the page, so reviewers could read them there",
+      "Preview sites are deleted every hour"
+    ],
+    "answerIdx": 0
+  },
+  {
+    "stem": "A preview shows a 404 for a client-side route that works locally. What is a likely fix?",
+    "topic": "Deploy previews",
+    "choices": [
+      "Rename the repository",
+      "Delete the pull request and open it again on a different day so the preview is regenerated",
+      "Add a redirect rule that serves the app's index file",
+      "Disable HTTPS for the preview domain"
+    ],
+    "answerIdx": 2
+  },
+  {
+    "stem": "What is the main trade-off of building a preview for every pull request?",
+    "topic": "Deploy previews",
+    "choices": [
+      "Previews permanently change the production domain's DNS records each time that a new one is created",
+      "More build minutes and more URLs to manage, in exchange for feedback before the change is merged",
+      "Previews block anyone from merging until the branch has been deleted and recreated from the main branch",
+      "Previews make the code in the repository unreadable to teammates until every review has been completed"
+    ],
+    "answerIdx": 1
+  },
+  {
+    "stem": "What is a build hook?",
+    "topic": "Build hooks and CMS triggers",
+    "choices": [
+      "A Git feature that blocks any push containing files larger than the limit set by the repository owner",
+      "A unique URL that triggers a new build of the site whenever it receives a POST request",
+      "A CSS rule that rebuilds the styles when a user hovers over a link on a deployed page",
+      "A line of JavaScript that hides the build log from teammates until the deploy has completed successfully"
+    ],
+    "answerIdx": 1
+  },
+  {
+    "stem": "Why do JAMstack sites pair build hooks with a headless CMS?",
+    "topic": "Build hooks and CMS triggers",
+    "choices": [
+      "Build hooks let editors change the site's DNS records directly from inside the content editor",
+      "Build hooks convert CMS content into a queryable database that visitors then use through their browsers",
+      "Edits happen outside Git, so the CMS has to ask the host to rebuild whenever content is published",
+      "A headless CMS cannot store content unless the site is rebuilt every second, so hooks keep both in step"
+    ],
+    "answerIdx": 2
+  },
+  {
+    "stem": "An editor publishes in the CMS, but the live site does not show it. What is most likely missing?",
+    "topic": "Build hooks and CMS triggers",
+    "choices": [
+      "A longer title for the article inside the CMS, since short titles are filtered out by static generators",
+      "A webhook that triggers a rebuild on publish",
+      "A bigger monitor on the editor's computer",
+      "A different font for the site's headings"
+    ],
+    "answerIdx": 1
+  },
+  {
+    "stem": "Which HTTP method normally calls a Netlify build hook?",
+    "topic": "Build hooks and CMS triggers",
+    "choices": [
+      "CONNECT, because it opens a tunnel between the CMS and the build server",
+      "OPTIONS, because it asks the build server which methods it supports first",
+      "POST",
+      "TRACE, because it returns the request so the service can verify it"
+    ],
+    "answerIdx": 2
+  },
+  {
+    "stem": "Why treat a build hook URL like a secret?",
+    "topic": "Build hooks and CMS triggers",
+    "choices": [
+      "It contains the site's whole source code",
+      "It lets visitors read the site's environment variables by adding a query string to the address",
+      "Anyone holding it can trigger builds and waste minutes",
+      "It doubles as the password for the Git provider account that owns the repository"
+    ],
+    "answerIdx": 2
+  },
+  {
+    "stem": "A site rebuilds on every CMS save, including drafts. How can you cut wasted builds?",
+    "topic": "Build hooks and CMS triggers",
+    "choices": [
+      "Switch to a longer domain name",
+      "Remove the publish directory from the settings so that drafts are never copied into the output",
+      "Trigger the hook only on publish events",
+      "Disable the build command in the site's configuration so that nothing runs when the hook is called"
+    ],
+    "answerIdx": 2
+  },
+  {
+    "stem": "Which tool can rebuild a JAMstack site on a fixed schedule, such as every morning?",
+    "topic": "Build hooks and CMS triggers",
+    "choices": [
+      "A Git alias that renames the main branch each day",
+      "A CSS animation that runs whenever a visitor loads the page and then restarts the build server",
+      "A scheduler that calls the build hook on a cron timer",
+      "A browser extension that refreshes the editor's open tab so the site content updates every hour"
+    ],
+    "answerIdx": 2
+  },
+  {
+    "stem": "What happens to the live deploy while a hook-triggered build is running?",
+    "topic": "Build hooks and CMS triggers",
+    "choices": [
+      "The previous deploy keeps serving traffic until the new build has finished and succeeded",
+      "The previous deploy is deleted immediately to save storage space while the new build is in progress",
+      "The previous deploy is moved to a different domain name until the new build has finished",
+      "The previous deploy is replaced with a blank page that tells visitors that maintenance is happening"
+    ],
+    "answerIdx": 0
+  },
+  {
+    "stem": "Why can a webhook-driven static site show stale content briefly after an edit?",
+    "topic": "Build hooks and CMS triggers",
+    "choices": [
+      "Browsers refuse to display any page that was edited in a CMS until the visitor has cleared their cookies",
+      "The new build has to finish and the result has to be deployed before visitors can see the edit",
+      "The CMS stores edits only after midnight each day, so the content is not available to the build earlier",
+      "Static sites cannot ever display content that was edited after the first deployment was published"
+    ],
+    "answerIdx": 1
+  },
+  {
+    "stem": "Which approach shows fresh data without waiting for a full rebuild?",
+    "topic": "Build hooks and CMS triggers",
+    "choices": [
+      "Fetching at runtime in the client or a serverless function",
+      "Lowering the file size of the images on the page so the generator finishes sooner and more often",
+      "Renaming the build hook",
+      "Increasing the number of Git branches in the repository until the host starts to build them faster"
+    ],
+    "answerIdx": 0
+  },
+  {
+    "stem": "What does HTTPS provide for visitors?",
+    "topic": "Custom domains and HTTPS",
+    "choices": [
+      "Automatic translation of the site into the language the visitor's browser is configured to prefer",
+      "A guarantee that the site's content is free of spelling errors, since the certificate authority proofreads the text",
+      "A faster build process on the hosting provider's servers",
+      "Encrypted traffic and verification of the site's identity"
+    ],
+    "answerIdx": 3
+  },
+  {
+    "stem": "Which DNS record type usually points a subdomain like www at a host's hostname?",
+    "topic": "Custom domains and HTTPS",
+    "choices": [
+      "MX, which maps the subdomain to the servers that accept incoming email for it",
+      "SRV, which publishes the hosting provider's TLS certificate for the subdomain",
+      "TXT, which stores a pointer to the host's IP address in free-form text fields",
+      "CNAME"
+    ],
+    "answerIdx": 3
+  },
+  {
+    "stem": "Why is the apex domain, such as example.com, trickier to point at a host than a subdomain?",
+    "topic": "Custom domains and HTTPS",
+    "choices": [
+      "Apex domains require a separate Git repository for each page that visitors are able to request",
+      "A CNAME generally cannot coexist with the apex's other records",
+      "The apex domain cannot be reached over HTTPS in any browser",
+      "Apex domains are limited to three visitors per day unless the owner upgrades the registrar's plan"
+    ],
+    "answerIdx": 1
+  },
+  {
+    "stem": "What is the role of a TLS certificate on a custom domain?",
+    "topic": "Custom domains and HTTPS",
+    "choices": [
+      "It stores the site's HTML pages in a compressed archive, which the browser unpacks when a visitor arrives",
+      "It proves control of the domain and enables encryption",
+      "It decides which browser features",
+      "It lists every Git commit that was deployed to the site, so that visitors can check the release history"
+    ],
+    "answerIdx": 1
+  },
+  {
+    "stem": "Why do automatically renewing certificates matter?",
+    "topic": "Custom domains and HTTPS",
+    "choices": [
+      "Expired certificates trigger browser security warnings, which erodes visitors' trust and can block access",
+      "Renewal is required to keep the site's source code under version control in the connected repository",
+      "Renewal increases the number of pages that the site may contain under the hosting provider's plan",
+      "Expired certificates delete the site's DNS records permanently, so the domain cannot be recovered afterwards"
+    ],
+    "answerIdx": 0
+  },
+  {
+    "stem": "After adding a custom domain, the site still shows the old host. What is a likely cause?",
+    "topic": "Custom domains and HTTPS",
+    "choices": [
+      "DNS changes have not propagated, or still point to the old host",
+      "The site's CSS file is larger than the limit that the platform allows for custom domain configurations",
+      "The visitor's browser is older than the hosting provider and cannot read the new certificate chain",
+      "The Git repository was renamed on the same day, which resets the domain mapping for the hosting platform"
+    ],
+    "answerIdx": 0
+  },
+  {
+    "stem": "What is mixed content on an HTTPS page?",
+    "topic": "Custom domains and HTTPS",
+    "choices": [
+      "Markdown and HTML files stored together inside the same source folder of a static site project",
+      "The same page being served from both the www hostname and the apex domain at the same time",
+      "Two different CSS frameworks that are imported on one page and conflict with each other in the cascade",
+      "Insecure HTTP resources, such as scripts or images, loaded on a page that was served over HTTPS"
+    ],
+    "answerIdx": 3
+  },
+  {
+    "stem": "Why redirect HTTP requests to HTTPS?",
+    "topic": "Custom domains and HTTPS",
+    "choices": [
+      "So the build command finishes in less time",
+      "So the site's Git history is automatically compressed whenever a visitor opens a page over a secure link",
+      "Visitors typing plain HTTP still reach the encrypted site",
+      "So search engines can no longer find the old address and stop listing it in their search results"
+    ],
+    "answerIdx": 2
+  },
+  {
+    "stem": "What is a TXT record used for when connecting a domain to a service?",
+    "topic": "Custom domains and HTTPS",
+    "choices": [
+      "Carrying values such as ownership verification tokens",
+      "Increasing the speed of the visitor's internet connection by caching pages at the DNS resolver level",
+      "Forcing every visitor to use the same browser",
+      "Storing the site's JavaScript bundle"
+    ],
+    "answerIdx": 0
+  },
+  {
+    "stem": "Which header tells browsers to use only HTTPS for a site on future visits?",
+    "topic": "Custom domains and HTTPS",
+    "choices": [
+      "Content-Length, which declares how many bytes of the response body the client should expect",
+      "Last-Modified, which records when the encrypted version of the page was last generated",
+      "Accept-Language, which lists the languages the server is allowed to translate the page into",
+      "Strict-Transport-Security"
+    ],
+    "answerIdx": 3
+  },
+  {
+    "stem": "Why does a static JAMstack site still need monitoring?",
+    "topic": "Monitoring and rollbacks",
+    "choices": [
+      "Monitoring is needed only when the site contains no JavaScript, because plain HTML cannot be checked",
+      "Static sites cannot be displayed unless a monitoring agent is installed on the visitor's browser",
+      "Static sites automatically repair their own bugs after the first deploy, so no monitoring is ever required",
+      "Builds can fail, third-party APIs can break and performance can regress even without servers to manage"
+    ],
+    "answerIdx": 3
+  },
+  {
+    "stem": "A deploy breaks the checkout page. What is the fastest safe response on a host that keeps old deploys?",
+    "topic": "Monitoring and rollbacks",
+    "choices": [
+      "Disable HTTPS for the domain until the bug disappears, since the secure connection triggered it",
+      "Wait for visitors to report the issue before doing anything, so the cause can be identified",
+      "Roll back to the previous good deploy and fix the bug",
+      "Delete the repository and recreate it from memory"
+    ],
+    "answerIdx": 2
+  },
+  {
+    "stem": "What does a rollback usually do on an atomic-deploy host?",
+    "topic": "Monitoring and rollbacks",
+    "choices": [
+      "Deletes the CMS content that was published most recently",
+      "Switches traffic to an earlier immutable deploy without rebuilding",
+      "Rebuilds the entire site with a different programming language to avoid the bug that was introduced",
+      "Rewrites the Git history to remove the bad commit and force-pushes the cleaned branch to the remote"
+    ],
+    "answerIdx": 1
+  },
+  {
+    "stem": "Why are atomic deploys valuable for production safety?",
+    "topic": "Monitoring and rollbacks",
+    "choices": [
+      "They let two people edit the same file at once without any merge conflicts reaching the build",
+      "They compress all images into one file, which reduces the size of every page that visitors load",
+      "The site switches to the new version only once every file has been uploaded successfully",
+      "They make builds run without needing a build command, so mistakes in scripts cannot occur"
+    ],
+    "answerIdx": 2
+  },
+  {
+    "stem": "What does Lighthouse CI do in a deployment pipeline?",
+    "topic": "Monitoring and rollbacks",
+    "choices": [
+      "Replaces the Git provider with a hosted code editor that commits changes on behalf of the developers",
+      "Converts the site's pages into native mobile applications that can be distributed through app stores",
+      "Runs automated audits on each build and flags regressions in performance or quality before release",
+      "Raises the hosting provider's bandwidth limit whenever the site's traffic grows past a set threshold"
+    ],
+    "answerIdx": 2
+  },
+  {
+    "stem": "Which is a sensible performance budget check in CI?",
+    "topic": "Monitoring and rollbacks",
+    "choices": [
+      "Failing the build whenever a developer uses a dark theme in their editor while writing the code",
+      "Failing the build when the README contains an emoji next to the project's main heading",
+      "Failing the build when Largest Contentful Paint passes an agreed threshold, so regressions are caught early",
+      "Failing the build when the repository has more than one contributor pushing to the same branch"
+    ],
+    "answerIdx": 2
+  },
+  {
+    "stem": "Where should you look first when a deploy fails during the build step?",
+    "topic": "Monitoring and rollbacks",
+    "choices": [
+      "The build log with the failing command and error",
+      "The CSS of the home page",
+      "The number of stars on the repository",
+      "The bookmarks of the person who started the build, since they may point at the failing page"
+    ],
+    "answerIdx": 0
+  },
+  {
+    "stem": "How do deploy notifications help a team?",
+    "topic": "Monitoring and rollbacks",
+    "choices": [
+      "They hide build errors from the public site by replacing the failed pages with cached copies",
+      "They prevent anyone from pushing new commits until the notification has been acknowledged by the owner",
+      "They fix failing builds automatically without any human involvement, then merge the repaired code",
+      "They surface failed or successful deploys quickly, so the team notices problems without checking manually"
+    ],
+    "answerIdx": 3
+  },
+  {
+    "stem": "An uptime check requests the home page every minute. What does it catch that a successful build does not?",
+    "topic": "Monitoring and rollbacks",
+    "choices": [
+      "Post-deploy failures such as DNS misconfiguration, expired certificates or an outage in a third-party API",
+      "Unused CSS rules in the stylesheet that increase the size of the downloaded files for visitors",
+      "Typos in the commit messages that were written by developers before the build was triggered",
+      "Spelling mistakes in the Markdown source files that were used when the site was generated"
+    ],
+    "answerIdx": 0
+  },
+  {
+    "stem": "Which practice reduces the risk of breaking all visitors at once?",
+    "topic": "Monitoring and rollbacks",
+    "choices": [
+      "Removing the rollback option to avoid confusion about which version of the site is actually live",
+      "Verifying on a preview or staging URL before merging",
+      "Disabling all automated checks to ship faster",
+      "Merging directly to production and testing only after complaints arrive from the people using it"
+    ],
+    "answerIdx": 1
+  }
+]
+```

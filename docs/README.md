@@ -85,6 +85,7 @@ Names, grouped by purpose, are in [`engineering/DEPLOYMENT.md`](engineering/DEPL
 | [`STARTUP_REVIEW_2026-10.md`](strategy/STARTUP_REVIEW_2026-10.md) | Competitive review and 90-day plan |
 | [`ADVISORY_BOARD_REPORT.md`](strategy/ADVISORY_BOARD_REPORT.md) | Advisory review and pre-pilot checklist |
 | [`STARTUP_ADVISOR_ANALYSIS.md`](strategy/STARTUP_ADVISOR_ANALYSIS.md) | Advisor analysis |
+| [`FOUNDER_THINKING.md`](strategy/FOUNDER_THINKING.md) | Learning plan: 7 founder concepts, the problem chain, products to reverse-engineer |
 
 ## Other folders
 
