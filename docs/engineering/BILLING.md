@@ -1,7 +1,45 @@
-# Billing (Polar) — Setup & Operations
+# Billing (Polar): Setup & Operations
 
-> Status: code complete and tested against a **fake** Polar. Nothing has been run against real Polar yet — the first sandbox checkout is the real test.
-> Provider: [Polar](https://polar.sh) as **Merchant of Record** (it is the legal seller and handles VAT/sales tax). Payouts go through Stripe Connect Express to an Armenian bank account in local currency — confirm your account type is accepted during Polar's payout onboarding.
+> **Updated:** 2026-10-21
+> **Provider:** [Polar](https://polar.sh) as **Merchant of Record** (it is the legal seller and handles VAT and sales tax). Payouts go through Stripe Connect Express to an Armenian bank account in local currency. Confirm your account type is accepted during Polar's payout onboarding.
+
+## Where billing stands today
+
+| Question | Answer |
+|---|---|
+| Is anyone charged? | **No.** `BILLING_ENFORCED=false` in `render.yaml`, so every check passes. The pilot runs fully free |
+| What is built? | Polar checkout, signed webhook, subscription state, pricing page, billing page, customer portal link |
+| Tested against real Polar? | The automated tests use a fake Polar. `docs/strategy/BUSINESS_MODEL.md` says a real sandbox checkout was run. **This doc cannot confirm it. Re-run the sandbox test below before relying on it** |
+| What is the price model? | **Flat $15/month per person.** Not metered, not pay-per-token |
+| Is a user ever billed for tokens? | **No.** There is no usage-based billing. The AI cost (Groq tokens) is ours. It is controlled by count caps, not by charging users |
+| Which routes check the plan? | Two so far (see [Who is limited by what](#who-is-limited-by-what)) |
+
+## Who is limited by what
+
+Three different mechanisms exist. Only the first one is about billing.
+
+| Mechanism | What it does | Depends on plan? | Where |
+|---|---|---|---|
+| **Plan gate** (`canAccess`) | Decides Free vs Pro for a feature | Yes, but **inert**: returns `true` for everyone until `BILLING_ENFORCED=true` | Certificates (`capstone/services/certificateService.js`), mastery detail view (`mastery/controllers/mastery.controller.js`) |
+| **Plan-aware quota** | Daily graded Arena submissions: **30 Free, 300 Pro** | Yes, and **active now**: `getUserPlan` returns `free` for everyone without a subscription, so everyone gets 30 today | `coding-challenges/services/submissionQuotaService.js` |
+| **Flat cost caps** | Abuse and cost protection, the same for every plan | No | Mentor: 30 messages a day (`DAILY_MESSAGE_CAP`), 20-turn window. LLM routes: 10 a minute per user. Teach-back: 40 a day. Capstone: 3 attempts (`MAX_ATTEMPTS`). Attachments: 3 files, 16k characters total |
+
+What the pricing page promises but the code does not do yet:
+
+- **"Higher daily AI mentor limit" for Pro:** the mentor cap is 30 for everyone. It is not plan-aware.
+- **"First 2 roadmap layers" for Free and "More test attempts" for Pro:** not enforced anywhere.
+- Features marked "Soon" on the page (voice teach-back, verified profile) are not built, and the page labels them so.
+
+## When would a user be billed for usage? (not built)
+
+Today the answer is never. If the Groq bill grows, the options in order of effort:
+
+1. **Tighten the count caps** (cheapest, already built): lower the mentor or teach-back daily limits.
+2. **Make caps plan-aware:** read `getUserPlan` in `sessionService.checkDailyLimit` and the teach-back limiter, so Pro gets a higher cap. This is the gap in the list above.
+3. **Meter tokens:** Groq returns `usage` on every call and the capstone code already stores it (`generationUsage`, `gradingUsage`, review `usage`). A monthly token allowance per plan would need a per-user usage collection that the mentor and teach-back write to. **None of that exists.**
+4. **Pay-as-you-go top-ups** through Polar's usage-based meters. Only worth it if Pro users hit caps often. Not planned.
+
+Decide with data: price one review and one mentor day from stored `usage`, then compare with $15 (next section).
 
 ## How it works
 
@@ -17,7 +55,7 @@ Browser ──GET /api/billing/subscription──▶ plan, status, renewal date
 - **Source of truth:** the signed webhook. Any `subscription.*` event carries the full subscription, so a single handler stores whatever Polar says is true now. Replays and out-of-order delivery are safe (a stale-event guard on `modified_at`).
 - **Repair path:** `POST /api/billing/sync` pulls the user's subscriptions from Polar. The billing page calls it after returning from checkout, because the redirect can beat the webhook.
 - **Fails closed:** with no `POLAR_WEBHOOK_SECRET` every webhook is rejected (503). Unsigned or tampered requests get 403.
-- **Not enforced yet:** `featureGateService.canAccess()` exists but is wired to no route, and returns `true` for everyone until `BILLING_ENFORCED=true`. Turning payments on does not restrict anyone.
+- **Not enforced yet:** `featureGateService.canAccess()` is used by certificates and the mastery detail view, and returns `true` for everyone until `BILLING_ENFORCED=true`. Turning payments on restricts only those two until more gates are added.
 
 ## Environment variables (`backend/.env`)
 
@@ -58,9 +96,9 @@ Repeat steps 1–5 in the **production** Polar dashboard (new token, new product
 - **API version:** pinned to `@polar-sh/sdk/2026-10`. Polar's API is date-versioned; changing it is a deliberate edit in `polarClient.js`, `webhookService.js` and `billing.controller.js`.
 - **Enforcement later:** to gate a feature, call `canAccess(db, userId, "pro")` from the route/service (exported from `backend/modules/billing`). Gates can be added one at a time; they are all inert until `BILLING_ENFORCED=true`.
 
-## AI review cost and the Groq tier
+## AI cost and the Groq tier
 
-The capstone review, the defense questions, the mentor and teach-back all call Groq, so Pro revenue has to cover the Groq bill. Billing and the model tier are one decision.
+The capstone review, the defense questions, the mentor and teach-back all call Groq, so Pro revenue has to cover the Groq bill. Billing and the model tier are one decision. The cost is ours today: no user is billed per token.
 
 - **Free tier is for testing only.** `gpt-oss-120b` allows about 8k tokens per minute. A request is refused outright (HTTP 413) when its input plus the requested `max_tokens` is over that, and waiting does not help.
 - **What a review needs.** The default budget is 80,000 characters of code (about 23k tokens) plus roughly 1.4k to 2.3k tokens of prompt (measured over all seeded briefs) and up to 8k tokens of output. A small, tidy project such as a notes API is already about 31k characters (9k tokens), so real capstones do not fit the free tier.
@@ -72,5 +110,7 @@ The capstone review, the defense questions, the mentor and teach-back all call G
 
 - Teams plan checkout (Teams is "Contact sales"). Seat-based pricing needs its own product and flow.
 - Regional / discounted pricing.
-- Any route actually gated by plan (the pilot runs everything free by design).
+- Usage-based or per-token billing (see above).
+- Plan-aware mentor and teach-back limits.
+- Most plan gates: only certificates and the mastery detail view check the plan, and both are inert until `BILLING_ENFORCED=true`.
 - Email receipts and invoices — Polar sends and hosts them.
