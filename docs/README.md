@@ -10,7 +10,6 @@ Start with [`PILOT_STATUS.md`](PILOT_STATUS.md): what is done, what is left befo
 | [`SECURITY.md`](engineering/SECURITY.md) | Security findings and their status |
 | [`BILLING.md`](engineering/BILLING.md) | Polar billing setup and operations |
 | [`INTEGRATIONS.md`](engineering/INTEGRATIONS.md) | Third-party integrations backlog |
-| [`ROADMAP_BUILD_PLAN.md`](engineering/ROADMAP_BUILD_PLAN.md) | Build status and phase plan |
 | [`ISSUES.md`](engineering/ISSUES.md) | Known UI issues and fix options |
 
 ## product/ — how features should behave

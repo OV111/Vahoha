@@ -189,7 +189,7 @@ Authoring rules are in `docs/product/ROADMAP_LAYER_AUTHORING.md`.
 1. **Agent tool loop with streaming.** The mentor calls backend tools (progress, exam history, weak spots, posts, library, profile) while it streams. Tool results go into history before the next model call. The frontend SSE hook handles aborts and incremental chunks.
 2. **Exam integrity.** Answer keys never leave the server. Choices are shuffled per attempt, unseen questions are served first, a 30-minute cooldown follows a failed attempt, and tab-switch and paste flags are recorded for review. Honest limit: a multiple-choice exam cannot be made ChatGPT-proof (`docs/product/EXAM_INTEGRITY.md`).
 3. **Server-authoritative progression.** Layer N+1 unlocks only when the exam is passed at the threshold in `constants/exam.js` (`EXAM_RULES`), stored in `userProgress`. Nothing trusts the client.
-4. **One learner model.** `learnerMastery` is the single evidence spine. Exams, teach-back and challenge results feed it, and capstone review and defense are the next sources. New features write evidence through `recomputeMastery`, not into a parallel score. Content completion and demonstrated mastery stay separate signals. See `ROADMAP_BUILD_PLAN.md` for MVP, V2 and future items.
+4. **One learner model.** `learnerMastery` is the single evidence spine. Exams, teach-back and challenge results feed it, and capstone review and defense are the next sources. New features write evidence through `recomputeMastery`, not into a parallel score. Content completion and demonstrated mastery stay separate signals.
 5. **One XP ledger.** All XP goes through `awardXp` (`services/xpService.js`). Never write XP directly.
 
 ---
