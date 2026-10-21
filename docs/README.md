@@ -2,15 +2,61 @@
 
 Start with [`PILOT_STATUS.md`](PILOT_STATUS.md): what is done, what is left before the first user, and what is frozen. Older docs can lag behind the code; when they disagree, the code and `PILOT_STATUS.md` win.
 
+## What Vahoha is
+
+A learning platform for developers. A learner picks a roadmap track and works through ordered layers. Each layer stays locked until a server-graded test is passed. Around that loop: coding challenges, labs, an AI mentor that knows the learner's weak spots, capstone projects (AI repo review plus a timed defense), and Build Teams that turn merged pull requests into public evidence. Pre-pilot: no real users yet.
+
+## Stack
+
+| Part | Tech |
+|---|---|
+| Frontend | React 19, Vite 7, React Router 7, Zustand, Tailwind 4, CodeMirror 6, plain `fetch` hooks. SSR prerender pass for SEO |
+| Backend | Node 22, Express 5 (ESM), MongoDB native driver, Zod, BullMQ + Redis, `ws`, `isolated-vm` code sandbox, JWT |
+| AI | Groq (`openai/gpt-oss-120b`) |
+| Services | Polar (billing), Resend (email), Cloudinary (media), GitHub API and OAuth, Google sign-in, PostHog |
+| Hosting | Vercel (frontend), Render (backend), MongoDB Atlas |
+| Tests | Vitest (unit, frontend, integration, API, security, concurrency, WebSocket, queue, performance), Playwright e2e |
+
+## Folder structure
+
+```
+src/               frontend: features/<name>/, pages/, components/ui, hooks, lib, stores
+backend/modules/   one folder per feature: routes, controllers, services, schemas, index.js
+backend/services/  shared learning core (XP ledger, progress, mastery)
+backend/seeders/   seeders and importers (roadmap, exams, challenges, capstones)
+backend/scripts/   admin and maintenance scripts
+config/            one Vitest config per test kind
+tests/             Playwright specs
+docs/              this folder
+```
+
+## Run locally
+
+```
+npm ci
+cp .env.example backend/.env     # then fill in the values (see below)
+npm run dev:full                 # Redis (Docker) + frontend + backend
+```
+
+Or run `npm run dev` (frontend, port 5173) and `npm run server` (backend, port 5000) separately. Seed the data first: `npm run seed:roadmap`, then see [`engineering/DEPLOYMENT.md`](engineering/DEPLOYMENT.md#seeding-a-new-database). Checks: `npm run lint`, `npm run build`, `npm run test:unit`.
+
+## Environment variables
+
+Names, grouped by purpose, are in [`engineering/DEPLOYMENT.md`](engineering/DEPLOYMENT.md#environment-variables). `.env.example` is the template. Never commit values.
+
 ## engineering/ — how the system is built and run
 
 | Doc | What it is |
 |---|---|
-| [`ARCHITECTURE.md`](engineering/ARCHITECTURE.md) | Stack, module layout, data flow |
-| [`SECURITY.md`](engineering/SECURITY.md) | Security findings and their status |
-| [`BILLING.md`](engineering/BILLING.md) | Polar billing setup and operations |
-| [`INTEGRATIONS.md`](engineering/INTEGRATIONS.md) | Third-party integrations backlog |
-| [`ISSUES.md`](engineering/ISSUES.md) | Known UI issues and fix options |
+| [`ARCHITECTURE.md`](engineering/ARCHITECTURE.md) | Stack, modules, data flow, known limits |
+| [`DATA_MODEL.md`](engineering/DATA_MODEL.md) | Collections, fields, relationships, indexes (with an ER diagram) |
+| [`API.md`](engineering/API.md) | Every endpoint: method, path, auth, notes |
+| [`SECURITY.md`](engineering/SECURITY.md) | How security works, known risks, fix order, the original audit |
+| [`DEPLOYMENT.md`](engineering/DEPLOYMENT.md) | Hosting, env vars, build and deploy, CI, seeding, pre-deploy checklist |
+| [`AI.md`](engineering/AI.md) | Models, prompts, cost controls, guardrails, evals |
+| [`BILLING.md`](engineering/BILLING.md) | Polar billing setup, plan gates and usage limits |
+| [`adr/`](engineering/adr/) | Architecture decision records (template plus four inferred decisions) |
+| [`ISSUES.md`](engineering/ISSUES.md) | Known UI issues (not yet reviewed) |
 
 ## product/ — how features should behave
 

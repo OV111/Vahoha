@@ -1,57 +1,100 @@
-# Security — Vahoha (formerly DevsWebs)
+# Security: Vahoha
 
-> **Status review: 2026-10-02** — every finding from the 2026-06-11 white-box audit was re-checked against the code (grep and reading, no penetration test). The original audit follows the status section unchanged, as the historical record.
-> **Original audit:** 2026-06-11 | Scope: Express/MongoDB backend, JWT auth, WebSocket chat, OAuth flows, React frontend | Method: white-box code review
+> **Updated:** 2026-10-21. Written from the code (reading and grep, no penetration test). The original 2026-06-11 white-box audit is kept unchanged at the bottom as history.
+> See also: [Architecture](ARCHITECTURE.md) · [API](API.md) · [AI](AI.md) · [Deployment](DEPLOYMENT.md) · [Billing](BILLING.md)
+
+**Contents:** [How security works](#how-security-works) · [Known risks](#known-risks) · [Fixed](#fixed-since-the-june-audit) · [Fix order](#fix-order) · [Original audit](#original-audit-2026-06-11)
 
 ---
 
-## Status of the 2026-06-11 findings
+## How security works
 
-| # | Finding | Severity | Status | Evidence / what remains |
+| Area | What the code does | Where |
+|---|---|---|
+| **Passwords** | Hashed (bcrypt). Signup needs 6+ characters. OAuth-only accounts have `password: null` | `modules/auth` |
+| **Access tokens** | JWT, 15 minutes, sent as a Bearer header, kept in memory in the browser. A refresh token presented as an access token is rejected | `middleware/authenticate.js`, `utils/jwtToken.js` |
+| **Sessions** | Refresh token in an httpOnly, `Secure`, `SameSite=None` cookie. 30 idle days. A SHA-256 of the token id is stored server-side, rotated on every use, revocable. Reuse of an old token is refused | `refreshTokenService.js` |
+| **Sign-in methods** | Password, Google ID token, GitHub OAuth, magic link. GitHub state is bound to a nonce. A provider sign-in cannot take over an unverified password account (`claimVerifiedEmail` wipes the password and revokes sessions) | `auth.controller.js` |
+| **Login abuse** | 5 attempts per 15 minutes (per IP and per email), signup 10 per hour, reset and magic-link limiters. Redis counters with an in-memory fallback | `auth.routes.js` |
+| **Authorization** | `authenticate` on most routes. `requireAdmin` re-reads `users.role` from the database on every request (not from the token) and answers **404**, not 403, to non-admins. Older profile, user and post controllers verify the token themselves | `middleware/requireAdmin.js` |
+| **Object access** | Chat rooms check membership. Direct rooms need a mutual follow and no block. Capstone repo must belong to the learner's connected GitHub login. Team writes are admin-only | `chatService.js`, `capstone` |
+| **Input validation** | Zod through the `validate` middleware on newer routes (auth, billing, capstone, teams, challenges, recruiter, contact, onboarding, account, mentor). Older community routes validate in the controller | `middleware/validate.js` |
+| **Headers** | `helmet` (custom CSP for PostHog, blob workers), mounted after `/api-docs`. Vercel adds HSTS, `nosniff`, `X-Frame-Options: DENY`, COOP, Referrer-Policy | `app.js`, `vercel.json` |
+| **CORS** | One origin (`FRONTEND_URL`), credentials on. WebSocket handshakes from other origins are refused | `app.js`, `websocket/origin.js` |
+| **Proxy** | `trust proxy` is 1 (Render adds one hop), so `req.ip` is the client and limiters cannot be walked past with a spoofed header | `app.js` |
+| **Secrets** | Read from environment variables. `.env*` files are gitignored (only `.env.example` is tracked). The server refuses to boot without the JWT secrets or `MONGO_URI`. Billing config fails closed: no webhook secret means every webhook is rejected (503) | `server.js`, `billingConfig.js` |
+| **Webhooks** | Polar webhook signature checked over the raw body. Stale or replayed events are safe | `webhookService.js` |
+| **Uploads** | Magic-byte check on uploads (`utils/fileSignature.js`). Files live on Cloudinary, only URLs in Mongo | `profile`, `chat` |
+| **Code runner** | Submitted challenge code runs in an `isolated-vm` isolate (64 MB, 5 s). In production it fails closed if the addon is missing. The grading harness freezes intrinsics and takes the export name from the challenge, not the client | `runnerService.js` |
+| **Exam integrity** | Answer keys stay server-side. No route accepts a client score (the old one was deleted). Layer order enforced at generate | `examEngineService.js` |
+| **AI** | Untrusted repo text and attachments are fenced; the mentor's code output is capped by `SolutionGuard` | [AI](AI.md#guardrails) |
+| **Data protection** | Account deletion endpoint with password and confirmation (`DELETE /deleteAccount`). Password hash is not returned from the profile route. Refresh tokens and reset tokens are stored hashed | `account`, `profile` |
+| **Privacy** | Public evidence and the recruiter scorecard are opt-in. Team evidence names members, so consent is needed before it is issued | `recruiter`, `teams` |
+
+---
+
+## Known risks
+
+Verified against the code on 2026-10-21. Ordered by severity.
+
+| # | Risk | Severity | Detail | Fix |
 |---|---|---|---|---|
-| 1 | Live secrets in `backend/.env` | Critical | **Unknown: you must confirm** | `.env` is git-ignored and not tracked. Whether the credentials were rotated cannot be checked from code. Sandbox Polar token and webhook secret were also pasted into a chat: rotate before production |
-| 2 | Chat IDOR (any user reads any room) | Critical | **Fixed** | `chatService.js` checks `room.members.includes(...)`; the client-dictated `members` overwrite is gone |
-| 3 | JWT: 7-day tokens, no revocation | High | **Fixed** | 15-minute access tokens plus rotating refresh tokens stored server-side and revocable (`jwtToken.js`, `refreshTokenService.js`). `/verify-token` still only checks the signature |
-| 4 | JWT in the OAuth redirect URL | High | **Fixed** | GitHub callback sets the refresh cookie and redirects to `/oauth-success` with no token in the URL |
-| 5 | OAuth auto-link by email | High | **Open** | GitHub sign-in still matches `{ $or: [{ githubId }, { email }] }` and Google matches by `email`, so someone controlling a matching email on the provider side gets the existing account. The CSRF `state` problem is fixed (single-use nonce), but the nonce store is in memory, so it fails across restarts or multiple instances |
-| 6 | NoSQL operator injection on auth routes | High | **Open** | No type validation on auth bodies and no Zod schema on those routes. Login happens to throw on a non-string `email` before querying (500, not 400); signup and forgot-password were not re-tested |
-| 7 | `PUT /my-profile/` trusts a body `id` | High | **Partly fixed** | `updateLastActive` now derives the id from the verified token. The `/my-profile` router still doesn't mount the `authenticate` middleware; each controller parses the token itself |
-| 8 | Session cookie `secure: false` | Medium | **Fixed** | The plaintext user-id session cookie is gone; the refresh cookie is `httpOnly`, `secure: true` (`modules/auth/controllers/auth.controller.js`) |
-| 9 | Username enumeration on login | Medium | **Open** | Login still returns `404 "User is not Found!"` vs `401 "Password is incorrect"` |
-| 10 | Internal `err.message` leaked | Medium | **Open** | Several handlers still return `error: err.message` (e.g. `signUp`, login route). No global error handler |
-| 11 | No rate limiting outside login/signup; Redis failure → 500 | Medium | **Partly fixed** | Added: login/signup/reset limiters, billing limits (10/min), LLM routes (mentor stream, teach-back: 10/min per user, 40/day teach-back), daily cap on Arena submissions. Redis calls on login are null-guarded. Still unlimited: search, comments, blog creation, WebSocket. Counters are in memory |
-| 12 | Missing security headers | Medium | **Fixed** | `helmet()` mounted in `app.js` (default policy). It is mounted after `/api-docs` on purpose: helmet's default CSP blocks Swagger UI's inline scripts |
-| 13 | Swagger UI public | Low | **Open** | `/api-docs` is mounted unconditionally |
-| 14 | `dangerouslySetInnerHTML` in the Arena | Low → **Medium** | **Open, risk grew** | Now `renderInlineCode()` in `ProblemPanel` and `HintsPanel`, which only restyles `<code>` and does not sanitize. Challenge text now comes from the database and community proposals, so it is a real stored-XSS path. Sanitize with DOMPurify or render Markdown |
+| 1 | **Secrets rotation unconfirmed** | High | The June audit found live secrets in `.env`; whether they were rotated cannot be seen from code. A dev GitHub client secret was pasted into a chat, and a Polar sandbox token and secret were exposed in the past | Rotate all, then record it |
+| 2 | **Code runner not independently reviewed** | High | Largest attack surface. The sandbox is `isolated-vm`; there has been no external review. If the native addon fails to build the runner refuses submissions in production (good), unless `ALLOW_UNSAFE_RUNNER=true` | Confirm the runner reports `isolated-vm` after every deploy; get a review before public traffic |
+| 3 | **Dependency advisories** | High | `npm audit --omit=dev` reports high-severity advisories (for example `lodash`, `ip-address`, `minimatch`, `brace-expansion`, `nanoid`, `postcss`), some in transitive packages. The October audit also named `ws`, `path-to-regexp`, `express-rate-limit`, `qs` | `npm audit fix`, then review what remains. Add `npm audit` to CI |
+| 4 | **WebSocket abuse** | Medium | No `maxPayload` on the `ws` server and no per-message size cap or rate limit. A socket stays open after its access token expires | Set `maxPayload`, cap message length, rate-limit per user, re-check token age |
+| 5 | **Error text leaks** | Medium | About 15 handlers still return `error: err.message` (for example signup and the GitHub callback). There is no global error handler | One error middleware and typed errors; stop returning `err.message` |
+| 6 | **Rate limits are per process** | Medium | Limiter stores for AI, billing and most routes are in memory, so a restart resets them and a second instance doubles them. Auth limits use Redis when available | Redis store before scaling out |
+| 7 | **`/api-docs` is public in production** | Low | Swagger UI is mounted unconditionally and lists every route | Disable or gate it when `NODE_ENV=production` |
+| 8 | **Mixed auth pattern** | Medium | `/my-profile`, `/users` and `POST /blogs` check the token inside each controller instead of with the `authenticate` middleware. One missed call is an open route. Chat controllers use their own local `authenticate` helper | Mount `authenticate` on those routers and remove the copies |
+| 9 | **Two `POST /blogs` handlers** | Low | `blogs.routes.js` (authenticated) and `post.routes.js` (checks inside the controller) both register `POST /blogs`. `TODO: confirm` which one serves requests and delete the other | Delete the duplicate |
+| 10 | **Draft posts and email exposure** | Low | From the October audit: draft blogs readable by id, the mutual-followers response includes email, `getClientIp` trusts the first `X-Forwarded-For` entry, `postsCount` is user-settable, few length limits on profile fields. `TODO: confirm` each is still open | Re-test, then fix |
+| 11 | **Unverified email on password signup** | Low | Email is verified only through OAuth and magic link. `claimVerifiedEmail` handles the takeover case. `TODO: confirm` no password flow treats an unverified email as proof | Add email verification on password signup |
+| 12 | **Sign-in message differences** | Low | Login says "Invalid email or password", but deliberately gives a different hint to a Google-only account, which reveals that an email is registered with Google | Accept, or return the same message |
+| 13 | **Single-instance WebSocket state** | Low | The `rooms` map is in memory, so chat breaks under more than one instance | Redis pub/sub when scaling |
+| 14 | **No monitoring** | Medium | No Sentry or alerting. A security incident would go unnoticed | Add error monitoring and log retention |
+| 15 | **No security tests in CI** | Low | `npm run test:security` exists but CI runs only lint, build and unit tests | Add it to the workflow |
 
-## New surface since June
+---
 
-| Area | Risk | Status |
-|---|---|---|
-| **Arena code runner** (`modules/coding-challenges/services/runnerService.js`) executes submitted code | Still the largest attack surface | **Contained by design, not independently reviewed.** Code runs in an `isolated-vm` V8 isolate (64 MB, 5 s). If that native addon fails to build, production refuses submissions (fails closed) instead of using the weaker child-process fallback, unless `ALLOW_UNSAFE_RUNNER=true` (never set it). Check `GET /api/challenges/submissions/runner` reports `isolated-vm` after each deploy. A second look at the isolate is still worth doing before public traffic |
-| **Billing webhook** (`/api/billing/webhook`) | Forged webhooks could grant Pro | Signature verified over the raw body; fails closed with no secret (503), 403 on bad signature (`docs/engineering/BILLING.md`). Gating is inert until `BILLING_ENFORCED=true` |
-| **LLM endpoints** (mentor, teach-back) | Quota exhaustion, runaway cost | Per-user burst and daily limits added; mentor also has its 30/day cap. Counters are in memory |
-| **Exam integrity** | Credential can be faked | Answer keys server-side, choices shuffled, unseen-first, cooldown on; tab-switch and paste counts recorded as flags only. Multiple-choice cannot be made ChatGPT-proof (`docs/product/EXAM_INTEGRITY.md`) |
-| **Admin endpoints** (`/api/admin/funnel`, challenge review) | Privilege escalation | `requireAdmin` re-reads the role from the database on every request and answers 404 to non-admins. First admin is created with `npm run admin:grant` |
-| **Attachments to the mentor** | Prompt injection | Client extraction, server-enforced size caps, prompt-injection fencing |
+## Fixed since the June audit
 
-## Fix order now
+| Was | Now |
+|---|---|
+| Chat IDOR and room squatting (any user reads any room) | Membership check, mutual-follow and block checks, room id must be the sorted pair |
+| 7-day JWT, no revocation | 15-minute access token, rotating revocable refresh token |
+| JWT in the OAuth redirect URL | Cookie plus redirect with no token |
+| OAuth sign-in could take over an unverified account (M3) | `claimVerifiedEmail` wipes the unverified password and revokes sessions |
+| GitHub login CSRF (M2) | State is a nonce (`createOAuthNonce`). `TODO: confirm` the binding by a test |
+| NoSQL operator injection on auth routes | Zod schemas on auth routes |
+| Route that accepted client exam scores (H1) | Deleted |
+| Challenge grader could be forged (H2) | Harness hardened, export name from the challenge |
+| Upload MIME trust (H4) | Magic-byte check |
+| Password hash returned in the profile response (M1) | Removed |
+| Capstone repo not tied to the learner (M6) | Repo owner must equal the connected GitHub login |
+| Challenge HTML rendered with `dangerouslySetInnerHTML` (M4) | Challenge text goes through markdown (`challengeMarkdown`). Only `ThinkingSpinner.jsx` uses `dangerouslySetInnerHTML` |
+| Plaintext session cookie, no `Secure` | httpOnly `Secure` cookie |
+| No security headers | `helmet` plus Vercel headers |
+| Unbounded LLM cost | Per-user burst and daily limits |
 
-| Priority | Fix | Effort |
-|---|---|---|
-| 1 | Confirm all secrets were rotated; rotate the pasted Polar sandbox credentials | Ops |
-| 2 | Confirm the runner reports `isolated-vm` in production and have the isolate reviewed before public traffic | Medium |
-| 3 | Sanitize challenge HTML (finding 14) | Low |
-| 4 | Stop auto-linking OAuth accounts by email (finding 5) | Medium |
-| 5 | Zod-validate auth bodies (finding 6) | Low |
-| 6 | One generic login error (finding 9) and remove `error: err.message` (finding 10) | Trivial |
-| 7 | Mount `authenticate` on all `/my-profile` routes (finding 7) | Low |
-| 8 | Hide `/api-docs` in production (finding 13) | Trivial |
-| 9 | Move rate-limit counters and the OAuth nonce store to Redis before running more than one instance | Medium |
+---
+
+## Fix order
+
+1. Rotate and record all secrets (risk 1).
+2. Run `npm audit fix` and add `npm audit` and `test:security` to CI (risks 3, 15).
+3. Verify the runner in production and book a review (risk 2).
+4. Mount `authenticate` on `/my-profile`, `/users` and `/blogs`; delete the duplicate `POST /blogs` (risks 8, 9).
+5. One error handler, no `err.message` in responses (risk 5).
+6. WebSocket limits (risk 4).
+7. Hide `/api-docs` in production (risk 7).
+8. Redis-backed limiters and error monitoring before more than one instance or real traffic (risks 6, 13, 14).
 
 ---
 
 # Original audit (2026-06-11)
+
+> History. Everything above this heading is current; everything below is the June 2026 audit as written then, so statuses in it are out of date.
 
 ## Summary
 
