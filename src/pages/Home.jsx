@@ -27,7 +27,7 @@ const Home = () => {
 
   return (
     <>
-      <section className="flex min-h-[85dvh] flex-col items-center justify-center px-6 text-center">
+      <section className="flex min-h-[85dvh] flex-col items-center justify-center px-4 text-center sm:px-6">
         {/* Top badge */}
         <div
           className="rt-fade mb-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1"
@@ -47,7 +47,7 @@ const Home = () => {
         <RiseText
           lines={["The Next Generation of", "Developer Learning."]}
           highlight="Learning"
-          className="max-w-xl text-3xl leading-[1.1] font-[450] tracking-[-0.48px] text-balance [--rt-underline-offset:-0.2em] min-[420px]:text-4xl sm:text-5xl md:text-[50px] md:leading-[0.96] md:[--rt-underline-offset:-0.08em] [&_.rt-line]:inline md:[&_.rt-line]:block text-white"
+          className="max-w-xl text-[clamp(26px,8.5vw,34px)] leading-[1.1] font-[450] tracking-[-0.48px] text-balance [--rt-underline-offset:-0.2em] min-[420px]:text-4xl sm:text-5xl md:text-[50px] md:leading-[0.96] md:[--rt-underline-offset:-0.08em] [&_.rt-line]:inline max-sm:[&_.rt-line]:whitespace-nowrap md:[&_.rt-line]:block text-white"
           style={{ fontFamily: '"Geist Variable", system-ui, sans-serif' }}
         />
 

@@ -135,9 +135,9 @@ export function TrackRow({ track, linkTo }) {
 
   const body = (
     <>
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col items-start gap-2 sm:flex-row sm:justify-between sm:gap-4">
         <div className="min-w-0">
-          <p className="truncate text-[15px] font-semibold text-white">
+          <p className="text-[15px] font-semibold text-white sm:truncate">
             {track.trackTitle}
           </p>
           <p className="mt-0.5 text-[13px] text-neutral-400">
@@ -162,7 +162,7 @@ export function TrackRow({ track, linkTo }) {
     </>
   );
 
-  const classes = `${SURFACE} block p-5`;
+  const classes = `${SURFACE} block p-4 sm:p-5`;
   return linkTo ? (
     <Link
       to={linkTo}
@@ -179,7 +179,7 @@ export function TrackRow({ track, linkTo }) {
 export function CertificateCard({ cert }) {
   const { review, defense } = cert.scores;
   return (
-    <article className={`${SURFACE} flex flex-col gap-4 p-5`}>
+    <article className={`${SURFACE} flex flex-col gap-3 p-4 sm:gap-4 sm:p-5`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-[13px] font-medium dark:text-purple-600">
           {cert.track.title} capstone
@@ -243,7 +243,7 @@ export function TeamCard({ team }) {
   const viewerId = String(team.viewerId);
 
   return (
-    <article className={`${SURFACE} flex flex-col gap-4 p-5`}>
+    <article className={`${SURFACE} flex flex-col gap-3 p-4 sm:gap-4 sm:p-5`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-[13px] font-medium dark:text-purple-600">
           {team.trackId} build team
@@ -301,14 +301,14 @@ export function TeamCard({ team }) {
 export function ExamRow({ exam }) {
   const title = exam.layerTitle ?? exam.layer;
   return (
-    <li className="flex items-center justify-between gap-4 rounded-xl border border-white/[0.08] bg-neutral-950 px-4 py-3">
+    <li className="flex flex-col gap-2 rounded-xl border border-white/[0.08] bg-neutral-950 px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-4 sm:py-3">
       <div className="min-w-0">
-        <p className="truncate text-sm font-medium text-neutral-100">{title}</p>
+        <p className="text-sm font-medium text-neutral-100 sm:truncate">{title}</p>
         <p className="mt-0.5 text-xs text-neutral-500">
           {exam.path} · {shortDate(exam.takenAt)}
         </p>
       </div>
-      <div className="flex shrink-0 items-center gap-3">
+      <div className="flex shrink-0 items-center justify-between gap-3 sm:justify-end">
         <span className="font-mono text-[13px] text-neutral-300">
           {exam.correctAnswers}/{exam.totalQuestions}
         </span>
@@ -331,7 +331,7 @@ const DIFFICULTY = {
 
 function Stat({ label, value, hint }) {
   return (
-    <div className="rounded-xl border border-white/[0.08] bg-neutral-950 px-4 py-3">
+    <div className="rounded-xl border border-white/[0.08] bg-neutral-950 px-3 py-2.5 sm:px-4 sm:py-3">
       <p className="text-xs text-neutral-400">{label}</p>
       <p className="mt-1 font-mono text-2xl font-bold text-white">{value}</p>
       {hint && <p className="mt-0.5 text-xs text-neutral-500">{hint}</p>}
@@ -343,7 +343,7 @@ function Stat({ label, value, hint }) {
 export function ChallengeStats({ stats }) {
   return (
     <div className="space-y-4">
-      <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <dl className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
         <Stat
           label="Solved"
           value={stats.solved}

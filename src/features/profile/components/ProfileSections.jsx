@@ -2,7 +2,7 @@ import CvFileCard from "./CvFileCard";
 
 export function SectionHeader({ title, right }) {
   return (
-    <div className="mt-10 flex items-center gap-4 mb-4">
+    <div className="mt-8 mb-3 flex items-center gap-4 sm:mt-10 sm:mb-4">
       <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wide shrink-0">
         {title}
       </h2>

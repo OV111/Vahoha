@@ -172,11 +172,11 @@ const MyProfile = () => {
             </Link>
           )}
 
-          <div className="absolute -bottom-10 sm:-bottom-13 lg:-bottom-14 left-14 sm:left-16 lg:left-10 -translate-x-1/2 lg:translate-x-0 z-1">
+          <div className="absolute -bottom-8 sm:-bottom-13 lg:-bottom-14 left-12 sm:left-16 lg:left-10 -translate-x-1/2 lg:translate-x-0 z-1">
             <Link
               to="settings"
               aria-label="Edit profile photo"
-              className="group/avatar relative block w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden border-3 border-white dark:border-gray-900 shadow-sm"
+              className="group/avatar relative block w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden border-3 border-white dark:border-gray-900 shadow-sm"
             >
               {stats?.profileImage ? (
                 <img
@@ -201,7 +201,7 @@ const MyProfile = () => {
         </ProfileBanner>
 
         {/* Profile header */}
-        <div className="px-4 pt-16 sm:px-6 lg:px-10 lg:pt-20">
+        <div className="px-4 pt-12 sm:px-6 sm:pt-16 lg:px-10 lg:pt-20">
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5 lg:gap-8">
             <div className="min-w-0 space-y-1 max-w-2xl">
               <div className="flex flex-wrap items-center gap-3">

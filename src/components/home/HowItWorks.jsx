@@ -54,12 +54,12 @@ const HowItWorks = () => {
   return (
     <section
       id="how-it-works"
-      className="mx-auto max-w-6xl scroll-mt-[calc(var(--navbar-h,56px)+24px)] px-6 py-16 md:py-24"
+      className="mx-auto max-w-6xl scroll-mt-[calc(var(--navbar-h,56px)+24px)] px-4 py-12 sm:px-6 md:py-24"
     >
-      <h2 className="text-center text-3xl font-[450] tracking-tight text-white">
+      <h2 className="text-3xl font-[450] tracking-tight text-white max-lg:text-left lg:text-center">
         How it works
       </h2>
-      <p className="mx-auto mt-3 max-w-xl text-center text-base text-neutral-400">
+      <p className="mx-auto mt-2 max-w-xl text-base text-neutral-400 max-lg:text-left lg:mt-3 lg:text-center">
         Every step is earned. Every win becomes proof.
       </p>
 
@@ -72,27 +72,28 @@ const HowItWorks = () => {
         )}
       </div>
 
-      {/* Below lg: the same steps as a vertical list */}
-      <ol className="mx-auto mt-12 max-w-sm space-y-6 lg:hidden">
+      {/* Below lg: the same steps as a compact timeline. The rail runs behind the
+          small icon nodes; each row is a full-width link, so the tap area stays 44px. */}
+      <ol className="mx-auto mt-8 max-w-md lg:hidden">
         {MOBILE_STEPS.map(({ to, title, body, icon: Icon, soon }) => (
-          <li key={title}>
-            <Link to={to} className="group flex items-center gap-4">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-neutral-700 bg-black text-neutral-300 transition-colors group-hover:border-purple-400 group-hover:text-purple-200">
-                <Icon size={20} aria-hidden="true" />
+          <li key={title} className="relative after:absolute after:top-[38px] after:-bottom-2.5 after:left-[13px] after:w-px after:bg-white/10 last:after:hidden">
+            <Link to={to} className="group relative flex min-h-11 items-start gap-3 py-2.5">
+              <span className="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/10 bg-black text-neutral-400 transition-colors group-hover:border-purple-400 group-hover:text-purple-200">
+                <Icon size={14} aria-hidden="true" />
               </span>
-              <div>
-                <h3 className="text-lg font-medium text-neutral-100 md:text-base">
+              <div className="min-w-0">
+                <h3 className="text-base leading-7 font-medium text-neutral-100">
                   {title}
                   {soon && <SoonTag className="ml-2 align-middle" />}
                 </h3>
-                <p className="mt-0.5 text-base text-neutral-400 md:text-sm">{body}</p>
+                <p className="text-sm leading-5 text-neutral-400">{body}</p>
               </div>
             </Link>
           </li>
         ))}
       </ol>
 
-      <div className="mt-14 flex justify-center lg:mt-24">
+      <div className="mt-10 flex justify-center lg:mt-24">
         <Link
           to="/roadmaps"
           className="flex min-h-11 items-center rounded-full bg-white px-6 py-3 text-base leading-[20px] font-medium text-black sm:text-[14px] transition hover:bg-neutral-200"
