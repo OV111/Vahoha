@@ -1,7 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { Github, Instagram, Mail } from "lucide-react";
 import useAuthStore from "../stores/useAuthStore";
-import { isNavLinkActive } from "@/utils/navigation";
 import Wordmark from "@/components/ui/Wordmark";
 import XLogo from "@/components/ui/XLogo";
 import { SITE } from "../../constants/site";
@@ -17,7 +16,10 @@ const PRODUCT_LINKS_SHARED = [
   { title: "Build Team", to: "/team" },
   { title: "Capstone", to: "/capstone" },
 ];
-const PRODUCT_LINKS_GUEST = [...PRODUCT_LINKS_SHARED, { title: "Pricing", to: "/pricing" }];
+const PRODUCT_LINKS_GUEST = [
+  ...PRODUCT_LINKS_SHARED,
+  { title: "Pricing", to: "/pricing" },
+];
 const PRODUCT_LINKS_AUTH = [
   ...PRODUCT_LINKS_SHARED,
   { title: "My Progress", to: "/progress" },
@@ -47,13 +49,40 @@ const headingClass = "mb-2 text-sm font-medium text-[#F7F7F8] sm:mb-3";
 
 const SOCIAL_LINKS = [
   { label: "Vahoha on X", href: SITE.socials.x.href, Icon: XLogo, size: 15 },
-  { label: "Vahoha on Instagram", href: SITE.socials.instagram.href, Icon: Instagram, size: 16 },
-  { label: "Vahoha on GitHub", href: SITE.socials.github.href, Icon: Github, size: 16 },
+  {
+    label: "Vahoha on Instagram",
+    href: SITE.socials.instagram.href,
+    Icon: Instagram,
+    size: 16,
+  },
+  {
+    label: "Vahoha on GitHub",
+    href: SITE.socials.github.href,
+    Icon: Github,
+    size: 16,
+  },
   { label: "Email Vahoha", href: `mailto:${SITE.email}`, Icon: Mail, size: 16 },
 ];
 
 const iconClass =
   "group flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-white/10 transition duration-200 hover:border-white/40 hover:bg-white/20";
+
+// Active check that respects query strings.
+const isLinkActive = (to, location, exact) => {
+  const [path, query] = to.split("?");
+  const pathMatches = exact
+    ? location.pathname === path
+    : location.pathname === path || location.pathname.startsWith(`${path}/`);
+  if (!pathMatches) return false;
+  // Link has a query (e.g. ?category=x): it must match the current URL's query.
+  if (query) {
+    const wanted = new URLSearchParams(query);
+    const current = new URLSearchParams(location.search);
+    return [...wanted].every(([k, v]) => current.get(k) === v);
+  }
+  // Link has no query: when exact, don't light up if the URL has a query.
+  return exact ? !location.search : true;
+};
 
 const LinkColumn = ({
   title,
@@ -61,6 +90,7 @@ const LinkColumn = ({
   className = "",
   twoColumns = false,
   mobileLimit = Infinity,
+  exact = false, // use for Topics
 }) => {
   const location = useLocation();
   return (
@@ -69,7 +99,6 @@ const LinkColumn = ({
       className={`flex flex-col gap-0 sm:gap-1 ${className}`}
     >
       <h2 className={headingClass}>{title}</h2>
-      {/* Topics is long: two columns on phones keeps the footer short. */}
       <div
         className={
           twoColumns
@@ -81,11 +110,11 @@ const LinkColumn = ({
           <NavLink
             key={title}
             to={to}
-            className={({ isActive }) =>
+            className={() =>
               `items-center py-1 text-sm transition hover:text-purple-500 sm:py-0 ${
                 index >= mobileLimit ? "hidden sm:flex" : "flex"
               } ${
-                isNavLinkActive(to, location, isActive)
+                isLinkActive(to, location, exact)
                   ? "text-purple-500"
                   : "text-[#A1A0AB]"
               }`
@@ -99,7 +128,6 @@ const LinkColumn = ({
   );
 };
 
-// Hidden on phones, as before; the wrapper keeps that without restyling LinkColumn.
 const AiColumn = ({ links }) => (
   <div className="hidden sm:block">
     <LinkColumn title="In the AI era" links={links} />
@@ -131,7 +159,10 @@ const Footer = () => {
                   aria-label={label}
                   className={iconClass}
                 >
-                  <Icon size={size} className="text-[#A1A0AB] transition group-hover:text-white" />
+                  <Icon
+                    size={size}
+                    className="text-[#A1A0AB] transition group-hover:text-white"
+                  />
                 </a>
               ))}
             </div>
@@ -141,6 +172,7 @@ const Footer = () => {
             title="Topics"
             links={CATEGORY_LINKS}
             twoColumns
+            exact
             mobileLimit={6}
             className="col-span-2 sm:col-span-1"
           />
