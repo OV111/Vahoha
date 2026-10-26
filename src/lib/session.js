@@ -11,6 +11,9 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const REFRESH_EARLY_MS = 60 * 1000;
 const RETRY_MS = 30 * 1000;
+// A sleeping backend can take a minute to wake. Past this, treat the refresh as
+// a transient failure so the UI never waits on it forever.
+const REFRESH_TIMEOUT_MS = 10 * 1000;
 // Floor for the refresh timer, so a token that is somehow already stale on
 // arrival can never turn the timer into a tight loop.
 const MIN_DELAY_MS = 5 * 1000;
@@ -75,7 +78,11 @@ const isStale = () => Boolean(accessToken && expiresAt) && expiresAt - Date.now(
 const requestRefresh = async () => {
   let res;
   try {
-    res = await fetch(`${API_BASE_URL}/refresh`, { method: "POST", credentials: "include" });
+    res = await fetch(`${API_BASE_URL}/refresh`, {
+      method: "POST",
+      credentials: "include",
+      signal: AbortSignal.timeout(REFRESH_TIMEOUT_MS),
+    });
   } catch {
     return "offline";
   }

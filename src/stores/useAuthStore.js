@@ -48,6 +48,23 @@ const useAuthStore = create((set, get) => {
     };
   };
 
+  let retryTimer = null;
+  const retryInit = () => {
+    retryTimer = setTimeout(async () => {
+      if (get().auth) return;
+      const result = await refreshSession();
+      if (result === "ok") {
+        writeHint(true);
+        set((state) => ({ auth: true, sessionHint: true, session: state.session + 1 }));
+      } else if (result === "offline") {
+        retryInit();
+      } else {
+        writeHint(false);
+        set({ sessionHint: false });
+      }
+    }, 5000);
+  };
+
   return {
     auth: false,
     isLoading: true,
@@ -59,6 +76,7 @@ const useAuthStore = create((set, get) => {
     // Runs on app load. The only proof of a session is the httpOnly refresh
     // cookie, so we exchange it for a fresh access token.
     init: async () => {
+      clearTimeout(retryTimer);
       listen();
       startSessionWatch();
       set({ isLoading: true });
@@ -67,8 +85,11 @@ const useAuthStore = create((set, get) => {
         writeHint(true);
         set((state) => ({ auth: true, sessionHint: true, session: state.session + 1 }));
       } else if (result === "offline") {
-        // Network failure, not a "no session" answer: keep the hint for next load.
+        // Network failure or a slow backend, not a "no session" answer: keep the
+        // hint and keep trying quietly, so a returning user is signed in as soon
+        // as the server answers.
         set({ auth: false });
+        retryInit();
       } else {
         writeHint(false);
         set({ auth: false, sessionHint: false });

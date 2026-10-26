@@ -22,6 +22,8 @@ const Navbar = () => {
   // Wait for the session check only if this browser had a session last time.
   // Everyone else gets the guest layout immediately, matching the prerendered HTML.
   const authPending = isLoading && sessionHint;
+  // While the check runs, a returning user already sees the signed-in layout.
+  const authLayout = auth || authPending;
 
   const navRef = useRef(null);
   useNavbarHeightVar(navRef);
@@ -47,17 +49,15 @@ const Navbar = () => {
         />
       </div>
 
-      {/* Center: nav links (desktop). Hidden only while a returning user's session
-          is being checked, so they never see the guest links flash first. */}
-      {!authPending && (
-        <DesktopNav
-          auth={auth}
-          openDropdown={menus.openDropdown}
-          setOpenDropdown={menus.setOpenDropdown}
-          closeDropdown={menus.closeDropdown}
-          handleTriggerClick={menus.handleTriggerClick}
-        />
-      )}
+      {/* Center: nav links (desktop). A returning user gets the signed-in links
+          straight away instead of a bare bar while the session is checked. */}
+      <DesktopNav
+        auth={authLayout}
+        openDropdown={menus.openDropdown}
+        setOpenDropdown={menus.setOpenDropdown}
+        closeDropdown={menus.closeDropdown}
+        handleTriggerClick={menus.handleTriggerClick}
+      />
 
       {/* Right: search, avatar / guest actions (desktop), hamburger (mobile) */}
       <div className="flex flex-1 items-center justify-end gap-1">
@@ -72,7 +72,12 @@ const Navbar = () => {
           />
         )}
 
-        {authPending ? null : auth ? (
+        {authPending ? (
+          <span
+            aria-hidden="true"
+            className="ml-2 hidden h-8 w-8 animate-pulse rounded-full bg-white/10 md:block"
+          />
+        ) : auth ? (
           <AvatarMenu
             isOpen={menus.openDropdown === "avatar"}
             onOpen={() => menus.setOpenDropdown("avatar")}
@@ -91,16 +96,15 @@ const Navbar = () => {
           aria-controls="mobile-menu"
           className={`-mr-2 flex h-11 w-11 items-center justify-center rounded-full transition hover:bg-white/10 md:hidden ${focusRing}`}
         >
-          {/* Three bars that morph into an X (instead of swapping two icons). */}
-          <span className="relative block h-3 w-4" aria-hidden="true">
+          {/* Two bars that morph into an X (instead of swapping two icons). */}
+          <span className="relative block h-[7px] w-4" aria-hidden="true">
             {[
               menus.isMobileOpen ? "top-1/2 -translate-y-1/2 rotate-45" : "top-0",
-              menus.isMobileOpen ? "top-1/2 -translate-y-1/2 opacity-0" : "top-1/2 -translate-y-1/2",
               menus.isMobileOpen ? "top-1/2 -translate-y-1/2 -rotate-45" : "bottom-0",
             ].map((pos, i) => (
               <span
                 key={i}
-                className={`absolute left-0 block h-[1.5px] w-full rounded-full bg-current transition-all duration-300 ${pos}`}
+                className={`absolute left-0 block h-px w-full rounded-full bg-current transition-all duration-300 ${pos}`}
               />
             ))}
           </span>

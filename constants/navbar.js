@@ -52,7 +52,7 @@ export const NAV_GROUPS_AUTH = [
     to: "/coding-challenges",
     items: [
       { label: "Challenges", to: "/coding-challenges", icon: Code2, description: "Graded problems in the browser" },
-      { label: "Tests", to: "/roadmaps", match: "/roadmaps/exam", icon: GraduationCap, description: "Pass a layer to unlock the next", public: true },
+      { label: "Tests", to: "/roadmaps", match: "/roadmaps/exam", icon: GraduationCap, description: "Pass a layer to unlock the next" },
       { label: "Mentor", to: "/ai-agent", icon: Bot, description: "Get unstuck with a mentor that knows your progress" },
     ],
   },

@@ -73,6 +73,16 @@ describe("refreshSession", () => {
     expect(await session.refreshSession()).toBe("offline");
   });
 
+  it("gives up on a hanging request instead of waiting forever", async () => {
+    const timeout = vi.spyOn(AbortSignal, "timeout").mockReturnValue(AbortSignal.abort());
+    fetchMock.mockImplementation(
+      (_url, { signal }) => (signal.aborted ? Promise.reject(signal.reason) : new Promise(() => {})),
+    );
+    expect(await session.refreshSession()).toBe("offline");
+    expect(timeout).toHaveBeenCalledWith(10 * 1000);
+    timeout.mockRestore();
+  });
+
   it("shares one request between concurrent callers", async () => {
     fetchMock.mockResolvedValue(json(200, { accessToken: makeToken(900) }));
     const results = await Promise.all([
