@@ -6,6 +6,7 @@ import AgentStatusCard from "./AgentStatusCard";
 import AssignmentCard from "./AssignmentCard";
 import OnApprovalCard from "./OnApprovalCard";
 import NextTeamCard from "./NextTeamCard";
+import ProjectMapCard from "./ProjectMapCard";
 import SubmissionPanel from "./SubmissionPanel";
 import RevisionHistory from "./RevisionHistory";
 import AgentReviewFullCard from "./AgentReviewFullCard";
@@ -147,6 +148,7 @@ export default function CapstoneTrack({ trackId }) {
           </div>
           <div className="flex flex-col gap-6 lg:sticky lg:top-24">
             {attemptStatus === "passed" && <NextTeamCard />}
+            {attempt && <ProjectMapCard trackId={trackId} />}
             {attempt ? (
               <RevisionHistory timeline={timeline} />
             ) : (

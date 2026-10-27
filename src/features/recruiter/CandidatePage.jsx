@@ -116,6 +116,32 @@ export default function CandidatePage() {
         </Section>
       )}
 
+      {card.maps?.length > 0 && (
+        <Section title="Project maps">
+          <ul className="flex flex-col gap-3">
+            {card.maps.map((m) => (
+              <li
+                key={m.publicId}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-neutral-800 p-4"
+              >
+                <div>
+                  <p className="font-semibold text-white">{m.title}</p>
+                  <p className="text-[13px] text-neutral-400">
+                    Capstone: {m.trackId} · updated {formatDate(m.updatedAt)}
+                  </p>
+                </div>
+                <Link
+                  to={`/map/${m.publicId}`}
+                  className="inline-flex min-h-11 items-center gap-1 text-sm text-purple-300 hover:text-purple-200"
+                >
+                  Open map <ExternalLink size={11} aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      )}
+
       {card.exams && (
         <Section title="Layers passed">
           {card.exams.length === 0 ? (

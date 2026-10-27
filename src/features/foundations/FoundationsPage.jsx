@@ -48,7 +48,7 @@ function SyllabusRow({ topic }) {
       {/* Only topics with a written lesson link anywhere; the rest are visible
           so learners see the whole path, but not clickable dead ends. */}
       {topic.lesson ? (
-        <Link to={`/foundations/${topic.slug}`} className="f-row">
+        <Link to={`/labs/foundations/${topic.slug}`} className="f-row">
           {body}
         </Link>
       ) : (
@@ -147,10 +147,16 @@ export default function FoundationsPage() {
             </Reveal.Item>
             <Reveal.Item className="f-actions">
               <Link
-                to={`/foundations/${FIRST_LESSON.slug}`}
+                to={`/labs/foundations/${FIRST_LESSON.slug}`}
                 className="f-btn f-btn-primary"
               >
                 Start with {FIRST_LESSON.title}
+              </Link>
+              <Link
+                to="/labs/foundations/lab/url-shortener-1"
+                className="f-btn f-btn-ghost"
+              >
+                Try the system lab
               </Link>
               <a href="#syllabus" className="f-btn f-btn-ghost">
                 See the syllabus

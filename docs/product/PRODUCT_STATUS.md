@@ -12,7 +12,7 @@ Status: **Live** = works end to end in code. **Partial** = works with gaps. **Pr
 | Layer test (MCQ) | `/roadmaps/exam/:layerId` | `exams` | Live | 15 of up to 60 questions, pass 80, 3/day, 30-min cooldown. Banks need re-seeding and a hand check. See `EXAM_INTEGRITY.md` |
 | Lessons (step player) | `/learn/:track/:layer/:topic` | none (localStorage) | Partial | 2 draft lessons, MERN layer 2 only. Progress not saved server-side |
 | Labs | `/labs`, `/labs/:room` | none yet | Partial | 1 lab (closures) with real grading in the worker. `LAB_SYSTEM.md` |
-| Foundations | `/foundations` | none | Live | Free guest lessons, 3 written (command line, how computers work, version control) |
+| Foundations | `/labs/foundations` | none | Live | Free guest lessons, 3 written (command line, how computers work, version control) |
 | Coding challenges | `/coding-challenges` | `coding-challenges` | Partial | 205 challenges, JS/TS. 25 api-dev/node-dev/javascript challenges would fail in the production sandbox. Judge0 runner reverted |
 | AI mentor | `/ai-agent` | `ai-agent` | Live | 30 messages/day for all; Pro is not higher in code. Groq free tier rate-limits |
 | Teach-back (text, dictation) | inside mentor and tests | `exams` | Partial | Few rubrics. Not calibrated against humans |

@@ -1,6 +1,6 @@
 # Foundations lesson guide
 
-How to write a lesson for `/foundations/<slug>`. Lessons are free and need no
+How to write a lesson for `/labs/foundations/<slug>`. Lessons are free and need no
 login, so every lesson must be finishable by a guest: the learner **does**
 something, not only reads.
 

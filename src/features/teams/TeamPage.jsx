@@ -4,6 +4,7 @@ import { ExternalLink, Github } from "lucide-react";
 import { teamsApi } from "./teamsApi";
 import TeamDefense from "./components/TeamDefense";
 import PeerRatings from "./components/PeerRatings";
+import TeamMapCard from "./components/TeamMapCard";
 import Leaderboard from "./components/Leaderboard";
 import "./teams-theme.css";
 
@@ -122,6 +123,8 @@ export default function TeamPage() {
           ))}
         </ul>
       </Section>
+
+      {active.some((m) => m.userId === team.viewerId) && <TeamMapCard teamId={team._id} />}
 
       <Section title="Your defense">
         <p className="t-muted">

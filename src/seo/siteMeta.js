@@ -23,7 +23,7 @@ export const DEFAULT_META = {
 const foundationLessons = () =>
   Object.fromEntries(
     TOPICS.filter((t) => t.lesson).map((t) => [
-      `/foundations/${t.slug}`,
+      `/labs/foundations/${t.slug}`,
       { title: `${t.title} | Foundations | ${SITE_NAME}`, description: t.summary },
     ]),
   );
@@ -36,7 +36,7 @@ export const PUBLIC_PAGES = {
     description:
       "Browse developer roadmaps and unlock each layer by passing a graded test. Guests can explore every path.",
   },
-  "/foundations": {
+  "/labs/foundations": {
     title: `Programming Foundations | ${SITE_NAME}`,
     description: `Start with the fundamentals every developer needs before choosing a specialty on ${SITE_NAME}.`,
   },
@@ -67,6 +67,8 @@ export const PUBLIC_PAGES = {
 // Anything under these prefixes gets <meta name="robots" content="noindex">
 // and a Disallow line in robots.txt.
 export const PRIVATE_PREFIXES = [
+  "/project-map",
+  "/map",
   "/my-profile",
   "/users",
   "/get-started",
@@ -91,7 +93,7 @@ export const isPrivatePath = (pathname) =>
 // JSON-LD per page type. Uses only facts already on the page (name, description).
 // The home page's WebSite + Organization graph lives in index.html.
 export const jsonLdFor = ({ title, description, path }) => {
-  if (path.startsWith("/foundations/")) {
+  if (path.startsWith("/labs/foundations/")) {
     return {
       "@context": "https://schema.org",
       "@type": "LearningResource",

@@ -13,7 +13,8 @@ import useNextLab from "./hooks/useNextLab";
 const labsIn = (roomId) => LAB_MANIFEST.filter((lab) => roomOfTrack(lab.trackId) === roomId);
 
 const RoomDoor = ({ room, index }) => {
-  const count = labsIn(room.id).length;
+  const count = room.openCount ?? labsIn(room.id).length;
+  const noun = room.openNoun ?? "lab";
   const tracks = tracksInRoom(room.id).length;
   const onLeft = index % 2 === 0;
 
@@ -52,7 +53,7 @@ const RoomDoor = ({ room, index }) => {
           </div>
           {count > 0 ? (
             <span className="shrink-0 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold text-emerald-300">
-              {count} lab{count === 1 ? "" : "s"} open
+              {count} {noun}{count === 1 ? "" : "s"} open
             </span>
           ) : (
             <span className="shrink-0 rounded-full bg-neutral-800 px-2.5 py-1 text-[11px] font-medium text-neutral-400">Opening soon</span>
@@ -61,7 +62,7 @@ const RoomDoor = ({ room, index }) => {
         <p className="relative mt-3 text-sm text-neutral-300">{room.tagline}</p>
         <div className="relative mt-4 flex items-center justify-between gap-3">
           <p className="text-xs text-neutral-400">
-            {room.vocabulary.join(" · ")} · {tracks} tracks
+            {room.vocabulary.join(" · ")} · {room.size ?? `${tracks} tracks`}
           </p>
           <span className={`inline-flex shrink-0 items-center gap-1.5 text-sm font-medium ${room.accent.text}`}>
             <DoorOpen size={15} aria-hidden="true" /> Enter
@@ -88,7 +89,7 @@ export default function LabsPage() {
           Labs
         </p>
         <h1 className="mx-auto mt-3 max-w-3xl text-3xl font-bold leading-tight text-white sm:text-4xl">
-          Nine rooms. Walk into any of them.
+          Ten rooms. Walk into any of them.
         </h1>
         <p className="mx-auto mt-4 max-w-2xl leading-relaxed text-neutral-300">
           Every field is practiced differently, so every room has its own workbench. Each lab is a short mission:

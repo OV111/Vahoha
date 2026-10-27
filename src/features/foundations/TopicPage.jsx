@@ -64,7 +64,7 @@ export default function TopicPage() {
   return (
     <div className="foundations-theme">
       <article className="f-wrap f-lesson">
-        <Link to="/foundations" className="f-back">
+        <Link to="/labs/foundations" className="f-back">
           <ArrowLeft size={14} /> Foundations
         </Link>
 
@@ -163,7 +163,7 @@ export default function TopicPage() {
 
         <nav className="f-lesson-nav" aria-label="Next topic">
           {next ? (
-            <Link to={`/foundations/${next.slug}`} className="f-next">
+            <Link to={`/labs/foundations/${next.slug}`} className="f-next">
               <span className="f-section-eyebrow">Next</span>
               <span className="f-next-title">
                 {next.title} <ArrowRight size={18} aria-hidden="true" />

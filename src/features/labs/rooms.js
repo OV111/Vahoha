@@ -1,13 +1,30 @@
 import SplitCodeIcon from "./components/SplitCodeIcon";
-import { Database, BrainCircuit, ServerCog, ShieldCheck, Bug, Blocks, Atom, Gamepad2, Globe, Plug, Smartphone, Brain, Languages } from "lucide-react";
+import { Layers, Database, BrainCircuit, ServerCog, ShieldCheck, Bug, Blocks, Atom, Gamepad2, Globe, Plug, Smartphone, Brain, Languages } from "lucide-react";
 import { TRACKS } from "../../../constants/roadmapPaths";
+import { TOPICS } from "../foundations/topics/topics.js";
 
-// The 9 lab rooms: labs grouped by HOW people practice, not by topic name
+// The 10 lab rooms: labs grouped by HOW people practice, not by topic name
 // (docs/product/LAB_SYSTEM.md, "Lab families"). Each roadmap category maps to
 // one room; a few tracks override their category's room.
 //
 // Accent classes are written out in full so Tailwind can see them.
 export const ROOMS = [
+  {
+    // Not a roadmap category: its topics live in features/foundations and the
+    // room has its own page at /labs/foundations (see router.jsx).
+    id: "foundations",
+    title: "Foundations",
+    Icon: Layers,
+    tagline: "Learn to think in systems, not syntax.",
+    categories: [],
+    size: `${TOPICS.length} topics`,
+    openCount: TOPICS.filter((t) => t.lesson).length,
+    openNoun: "lesson",
+    surface: "A system that grows: build it, break it, diagnose it",
+    proof: "You predicted the failure, fixed it, and can defend the tradeoff",
+    vocabulary: ["systems", "failure cases", "tradeoffs"],
+    accent: { text: "text-amber-300", border: "border-amber-500/40", bg: "bg-amber-500/10", line: "bg-amber-500/60", glow: "from-amber-500/15", ring: "hover:border-amber-400" },
+  },
   {
     id: "build-software",
     title: "Build Software",

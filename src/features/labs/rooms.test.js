@@ -5,9 +5,9 @@ import { ROOMS, roomOfTrack, tracksInRoom, roomById, sectionOfTrack, tracksInSec
 const allTracks = Object.values(TRACKS).flat();
 
 describe("lab rooms", () => {
-  it("has 9 rooms with unique ids", () => {
-    expect(ROOMS).toHaveLength(9);
-    expect(new Set(ROOMS.map((r) => r.id)).size).toBe(9);
+  it("has 10 rooms with unique ids", () => {
+    expect(ROOMS).toHaveLength(10);
+    expect(new Set(ROOMS.map((r) => r.id)).size).toBe(10);
   });
 
   it("puts every roadmap track in exactly one room", () => {

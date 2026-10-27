@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ExternalLink } from "lucide-react";
 import { teamsApi } from "./teamsApi";
+import ReadOnlyMap from "../system-map/components/ReadOnlyMap";
+import { DEFAULT_LENS, lensInfo } from "../system-map/lib/lenses";
 import "./teams-theme.css";
 
 /**
@@ -98,6 +100,19 @@ export default function EvidencePage() {
           <Member key={m.githubLogin} m={m} />
         ))}
       </ul>
+
+      {data.map && (
+        <section className="flex flex-col gap-3">
+          <h2 className="t-h2">Project map</h2>
+          <p className="t-muted">
+            {data.map.title}
+            {data.map.lens !== DEFAULT_LENS && ` · ${lensInfo(data.map.lens).title}`} · as of{" "}
+            {formatDate(data.map.updatedAt)}. Parts with a green check were
+            found in the team repository; the others were drawn by the team.
+          </p>
+          <ReadOnlyMap graph={data.map.graph} className="h-[420px]" />
+        </section>
+      )}
 
       <section className="t-section t-muted">
         <h2 className="t-h2">How this was assessed</h2>

@@ -7,6 +7,7 @@ import ProtectedLayout from "./layouts/ProtectedLayout";
 import Home from "./pages/Home";
 import OAuthSuccess from "./components/feedback/OAuthSuccess";
 import PublicOnlyRoute from "./layouts/PublicOnlyRoute";
+import FoundationRedirect from "./features/foundations/FoundationRedirect";
 
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -77,6 +78,15 @@ const ProgressPage = lazy(() => import("./features/mastery/ProgressPage"));
 const FoundationsPage = lazy(
   () => import("./features/foundations/FoundationsPage"),
 );
+const PublicMapPage = lazy(
+  () => import("./features/system-map/pages/PublicMapPage"),
+);
+const ProjectMapPage = lazy(
+  () => import("./features/system-map/pages/ProjectMapPage"),
+);
+const SystemLabPage = lazy(
+  () => import("./features/foundations/system-lab/SystemLabPage"),
+);
 const FoundationTopicPage = lazy(
   () => import("./features/foundations/TopicPage"),
 );
@@ -121,14 +131,24 @@ export const routes = [
       { path: "evidence/:publicId", element: <EvidencePage /> },
       // Public on purpose, but only for developers who opted in (the API answers 404 otherwise).
       { path: "candidate/:username", element: <CandidatePage /> },
-      { path: "foundations", element: <FoundationsPage /> },
+      // Foundations moved into Labs; the old URLs keep working (vercel.json redirects them for crawlers).
+      { path: "foundations", element: <Navigate to="/labs/foundations" replace /> },
+      { path: "foundations/:slug", element: <FoundationRedirect /> },
       { path: "learn/:trackId/:layerId", element: <LayerLearnPage /> },
       { path: "learn/:trackId/:layerId/:topicSlug", element: <LearnTopicPage /> },
       // Labs: placeholders until lab stage L1 (docs/product/LAB_SYSTEM.md).
       { path: "labs", element: <LabsPage /> },
+      { path: "project-map", element: <ProjectMapPage /> },
+      // A capstone's or team's map; the page itself asks guests to sign in.
+      { path: "project-map/for/:ownerType/:ownerId", element: <ProjectMapPage /> },
+      // Public on purpose: a map its owner chose to share (the API answers 404 otherwise).
+      { path: "map/:publicId", element: <PublicMapPage /> },
+      // Fixed path, so it sits above labs/:roomId.
+      { path: "labs/foundations", element: <FoundationsPage /> },
+      { path: "labs/foundations/lab/:stageId", element: <SystemLabPage /> },
+      { path: "labs/foundations/:slug", element: <FoundationTopicPage /> },
       { path: "labs/:roomId", element: <LabRoomPage /> },
       { path: "learn/:trackId/:layerId/:topicSlug/lab", element: <LabPage /> },
-      { path: "foundations/:slug", element: <FoundationTopicPage /> },
       // ✅ All protected routes grouped here — one wrapper for all
       {
         element: <ProtectedLayout />,

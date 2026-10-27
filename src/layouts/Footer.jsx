@@ -15,6 +15,7 @@ const PRODUCT_LINKS_SHARED = [
   { title: "Labs", to: "/labs" },
   { title: "Build Team", to: "/team" },
   { title: "Capstone", to: "/capstone" },
+  { title: "Project Map", to: "/project-map" },
 ];
 const PRODUCT_LINKS_GUEST = [
   ...PRODUCT_LINKS_SHARED,
@@ -27,7 +28,7 @@ const PRODUCT_LINKS_AUTH = [
   { title: "Billing", to: "/billing" },
 ];
 const AI_LINKS = [
-  { title: "Foundations", to: "/foundations" },
+  { title: "Foundations", to: "/labs/foundations" },
   { title: "AI Mentor", to: "/ai-agent" },
   { title: "Explain it back (soon)", to: "/voice-review" },
 ];
@@ -184,7 +185,7 @@ const Footer = () => {
           <LinkColumn title="Company" links={COMPANY_LINKS} />
         </div>
 
-        <div className="mx-auto mt-8 max-w-7xl pt-5 sm:mt-12 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-center text-sm text-[#A1A0AB]">
+        <div className="mx-auto mt-8 max-w-7xl border-t border-white/10 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-center text-sm text-[#A1A0AB] sm:mt-12">
           © {new Date().getFullYear()} Vahoha. All rights reserved.
         </div>
       </div>

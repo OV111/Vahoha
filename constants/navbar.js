@@ -14,6 +14,7 @@ import {
   TrendingUp,
   UserSearch,
   FlaskConical,
+  Workflow,
 } from "lucide-react";
 import { CATEGORY_OPTIONS, categoryHref } from "./categories";
 import { FEATURES } from "./features";
@@ -62,6 +63,7 @@ export const NAV_GROUPS_AUTH = [
     items: [
       { label: "Capstone", to: "/capstone", icon: Rocket, description: "Ship a real project for your track" },
       { label: "Team", to: "/team", icon: Users, description: "Merge PRs with a team, earn public evidence" },
+      { label: "Project Map", to: "/project-map", icon: Workflow, description: "Draw how your project works, then share it", public: true },
       { label: "Progress", to: "/progress", icon: TrendingUp, description: "Your XP, streaks and mastery" },
       // For recruiters: the rated, filterable list of developers who opted in. Closed until FEATURES.candidates is on.
       ...(FEATURES.candidates
