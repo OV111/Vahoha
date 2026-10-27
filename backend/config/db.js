@@ -57,6 +57,21 @@ const connectDB = async () => {
       // "Posts for this layer" in the roadmap drawer (blogService getBlogsService).
       db.collection("blogs").createIndex({ layerIds: 1, status: 1, createdAt: -1 }),
       // Digest concepts: one per book + key. Known-state: one row per learner, book and concept.
+      db.collection("system_maps").createIndex({ userId: 1, updatedAt: -1 }),
+      db.collection("system_map_checks").createIndex({ userId: 1, mapId: 1, createdAt: -1 }),
+      // One capstone map per learner per track, one map per team (the 409 "exists" in createOwnerMapService).
+      db.collection("system_maps").createIndex(
+        { ownerType: 1, ownerId: 1, userId: 1 },
+        { unique: true, partialFilterExpression: { ownerType: "capstone" } },
+      ),
+      db.collection("system_maps").createIndex(
+        { ownerType: 1, ownerId: 1 },
+        { unique: true, partialFilterExpression: { ownerType: "team" } },
+      ),
+      db.collection("system_maps").createIndex(
+        { publicId: 1 },
+        { unique: true, partialFilterExpression: { publicId: { $type: "string" } } },
+      ),
       db.collection("libraryConcepts").createIndex({ sourceId: 1, key: 1 }, { unique: true }),
       db.collection("libraryConceptStates").createIndex({ userId: 1, sourceId: 1, conceptKey: 1 }, { unique: true }),
       db.collection("libraryConceptChecks").createIndex({ userId: 1, sourceId: 1, conceptKey: 1 }, { unique: true }),

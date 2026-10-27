@@ -135,6 +135,8 @@ const USER_KEYED_COLLECTIONS = [
   "capstone_submissions",
   "submission_usage",
   "subscriptions",
+  "system_maps",
+  "system_map_checks",
   // Public, verifiable credentials that carry the learner's name. The Privacy
   // Policy promises full removal, so they go too (their share links stop working).
   "certificates",
