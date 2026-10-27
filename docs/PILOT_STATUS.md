@@ -36,6 +36,8 @@ The technical prep for the pilot is mostly done. What's left is mostly yours: co
 | Recruiter candidates list with a published evidence score | `8a60ebb` | Closed: recruiters only |
 | Judge0 runner for stdio-language challenges | `6ac55a8`, `6739629` | Reverted: kept out of production for now |
 | Exam bank builder without length bias; `--only-banked` capstone seeding | `2b2c4dd`, `f6d2c0b` | 17 capstones published, 18 drafts, 141 waiting on question banks. Backend banks written by agents showed length bias: do not import them. Next: build banks per category with `scripts/buildExamBank.js`, hand-check keys, import |
+| Foundations is a Labs room; first system lab | `18a5a50` | `/labs/foundations` (old `/foundations` URLs redirect permanently via `vercel.json`, sitemap and footer updated). System lab `/labs/foundations/lab/url-shortener-1`: restart a URL shortener and watch the canvas replay what the code did. Only stage 1 of the 6-stage URL-shortener thread exists |
+| Project Map: draw, save, share, scan, check | `ec1c062`, `a9f4e92`, `07195cf`, `18a5a50` | `/project-map` (free canvas, 5 lenses, guests save in the browser, accounts on the server), public read-only `/map/:publicId` (new link each share, noindex), capstone and team maps (`/project-map/for/<capstone\|team>/<id>`), repo scan with file evidence, three AI questions about your own map, drift banner after a team PR sync, maps on team evidence and candidate scorecards. Team maps are never public on their own: only through the admin-issued evidence snapshot. Backend: `backend/modules/system-map/`, collections `system_maps` and `system_map_checks`. Not done: defense questions from the map, layers link, a "my maps" hub |
 
 ## Left before the first user
 
@@ -52,6 +54,7 @@ The technical prep for the pilot is mostly done. What's left is mostly yours: co
 | 9 | Run the full loop yourself on production with a new account | You | Sign up, pick a path, take an exam, ask the mentor, then check the funnel shows it |
 | 10 | **Set up real email sending** (blocks password reset and magic-link sign-in) | You | In Resend, verify `vahoha.com` (DNS records), then set `EMAIL_FROM="Vahoha <no-reply@vahoha.com>"` and `RESEND_API_KEY` on Render. Until then mail comes from Resend's test sender (`onboarding@resend.dev`), which delivers only to the Resend account owner, so no real user gets a reset or sign-in email. Test locally with your own address |
 | 11 | Production env for capstones | You | Separate production GitHub OAuth app (prod callback URL) with `GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET`, plus `GITHUB_TOKEN` on Render. No `GROQ_TPM_LIMIT` in production; move Groq to a paid tier first. Regenerate the dev client secret (it was pasted in a chat) |
+| 12 | Try Project Map for real on production | You | Needs `GITHUB_TOKEN` (the repo scan uses it; without one GitHub allows 60 requests an hour) and a Groq key. The first start creates 5 indexes on Atlas (`system_maps` x4, `system_map_checks`). Scan a real repo with each lens, run the understanding check, share a map and open the link logged out. Everything AI-related has only been tested with mocks |
 
 
 ## Then: the pilot
