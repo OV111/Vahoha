@@ -16,6 +16,8 @@ import { ObjectId } from "mongodb";
 import { CONTRIBUTIONS, TEAM_EVIDENCE, TEAMS, TEAM_DEFENSES, ensureIndexes, fail } from "./teamsData.js";
 import { summarizeRatings } from "./ratingService.js";
 import { trackEvent } from "../../../services/eventService.js";
+// A read-only, whitelisted view built for this page.
+import { getTeamMapSnapshot } from "../../system-map/index.js";
 
 const newPublicId = () => randomBytes(9).toString("base64url"); // 12 chars, 72 bits
 
@@ -23,7 +25,7 @@ const displayName = (u) => [u?.firstName, u?.lastName].filter(Boolean).join(" ")
 
 const buildSnapshot = async (db, team) => {
   const memberIds = team.members.map((m) => m.userId);
-  const [users, contributions, defenses, ratings] = await Promise.all([
+  const [users, contributions, defenses, ratings, map] = await Promise.all([
     db
       .collection("users")
       .find({ _id: { $in: memberIds } }, { projection: { firstName: 1, lastName: 1, username: 1 } })
@@ -33,6 +35,7 @@ const buildSnapshot = async (db, team) => {
     // reviews it first (flags are stored on the session).
     db.collection(TEAM_DEFENSES).find({ teamId: team._id, status: "graded", "flags.0": { $exists: false } }).toArray(),
     summarizeRatings(db, team._id),
+    getTeamMapSnapshot(db, team._id),
   ]);
   const userById = new Map(users.map((u) => [u._id.toString(), u]));
 
@@ -63,6 +66,8 @@ const buildSnapshot = async (db, team) => {
       mergedPulls: contributions.length,
       defensesPassed: new Set(defenses.filter((d) => d.result.passed).map((d) => d.userId.toString())).size,
     },
+    // The team's Project Map as it is when the evidence is issued; null when the team has none.
+    map,
   };
 };
 

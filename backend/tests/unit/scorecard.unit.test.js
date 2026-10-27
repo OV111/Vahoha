@@ -59,6 +59,14 @@ describe('buildScorecard', () => {
     expect(buildHeadline({ exams: [1, 2], capstones: [], teams: [] })).toBe('2 layers passed')
   })
 
+  it('shows shared capstone maps only with the capstone section', () => {
+    const maps = [{ trackId: 'api-dev', title: 'API map', publicId: 'abcdefghijkl', updatedAt: new Date() }]
+    const card = (show) => buildScorecard({ ...base, maps, settings: { show, openToWork: false } })
+    expect(card(all).maps).toEqual(maps)
+    expect(card({ ...all, capstone: false }).maps).toBeNull()
+    expect(build(all).maps).toEqual([]) // callers that pass no maps get an empty list, not a crash
+  })
+
   it('reports open-to-work only when the developer set it', () => {
     expect(build(all).openToWork).toBe(false)
     expect(build(all, true).openToWork).toBe(true)

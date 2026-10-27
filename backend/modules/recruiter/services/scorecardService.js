@@ -19,6 +19,7 @@ import { withLayerTitles } from "../../../services/examHistoryService.js";
 import { getMastery } from "../../../services/learnerMasteryService.js";
 import { listPublicCertificatesForUser } from "../../capstone/index.js";
 import { listPublicTeamEvidenceForUser } from "../../teams/index.js";
+import { listSharedCapstoneMaps } from "../../system-map/index.js";
 import { DEFAULT_RECRUITER_SETTINGS, RECRUITER_SETTINGS, ensureIndexes, fail } from "./recruiterData.js";
 
 const MAX_STRENGTHS = 8;
@@ -83,9 +84,10 @@ const summarizeStrengths = (mastery) =>
  * @param {object[]} input.exams  examHistory rows (with layerTitle)
  * @param {object[]} input.certificates  public certificate views
  * @param {object[]} input.teams  [{ name, trackId, evidencePath, stats }]
+ * @param {object[]} [input.maps]  shared capstone maps [{ trackId, title, publicId, updatedAt }]
  * @param {object[]} input.mastery
  */
-export const buildScorecard = ({ user, settings, progress, exams, certificates, teams, mastery }) => {
+export const buildScorecard = ({ user, settings, progress, exams, certificates, teams, mastery, maps = [] }) => {
   const show = settings.show;
   // Sections the developer hid are null, not empty: the page must not
   // suggest "nothing here" when the truth is "not shared".
@@ -93,6 +95,8 @@ export const buildScorecard = ({ user, settings, progress, exams, certificates, 
     exams: show.exams ? summarizeExams(exams) : null,
     capstones: show.capstone ? summarizeCapstones(certificates) : null,
     teams: show.teams ? teams : null,
+    // Capstone maps travel with the capstone section: hiding it hides them too.
+    maps: show.capstone ? maps : null,
     strengths: show.strengths ? summarizeStrengths(mastery) : null,
   };
   return {
@@ -114,11 +118,11 @@ export const buildScorecard = ({ user, settings, progress, exams, certificates, 
  * per-section visibility, shared by the scorecard page and the candidates list
  * so the two can never disagree about what a developer chose to show.
  */
-export const loadScorecard = async (db, user, stored) => {
+export const loadScorecard = async (db, user, stored, { maps: withMaps = true } = {}) => {
   const settings = { ...DEFAULT_RECRUITER_SETTINGS, ...stored, show: { ...DEFAULT_RECRUITER_SETTINGS.show, ...stored.show } };
   const { show } = settings;
 
-  const [progress, exams, certificates, teams, mastery] = await Promise.all([
+  const [progress, exams, certificates, teams, mastery, maps] = await Promise.all([
     db.collection("userProgress").findOne({ userId: user._id }),
     show.exams
       ? db
@@ -132,9 +136,10 @@ export const loadScorecard = async (db, user, stored) => {
     show.capstone ? listPublicCertificatesForUser(db, user._id, user.username) : [],
     show.teams ? listPublicTeamEvidenceForUser(db, user._id) : [],
     show.strengths ? getMastery(db, user._id) : [],
+    show.capstone && withMaps ? listSharedCapstoneMaps(db, user._id) : [], // the candidates list shows no maps, so it skips the query
   ]);
 
-  return buildScorecard({ user, settings, progress, exams, certificates, teams, mastery });
+  return buildScorecard({ user, settings, progress, exams, certificates, teams, mastery, maps });
 };
 
 export const getScorecardService = async (db, username) => {

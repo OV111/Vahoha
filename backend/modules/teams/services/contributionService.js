@@ -14,6 +14,7 @@ import {
   getPullReviewers,
   listMergedPulls,
 } from "../../capstone/services/githubClient.js";
+import { flagMapDrift } from "../../system-map/index.js";
 import { CONTRIBUTIONS, TEAMS, ensureIndexes, fail } from "./teamsData.js";
 
 const MAX_NEW_PRS_PER_SYNC = 20;
@@ -44,6 +45,7 @@ export const syncContributionsService = async (db, teamId) => {
   const fresh = ours.filter((pr) => !known.has(pr.number)).slice(0, MAX_NEW_PRS_PER_SYNC);
 
   let added = 0;
+  const newlyStored = [];
   for (const pr of fresh) {
     const [files, reviewers] = await Promise.all([
       getPullFiles(owner, repo, pr.number),
@@ -69,7 +71,20 @@ export const syncContributionsService = async (db, teamId) => {
       },
       { upsert: true },
     );
-    if (res.upsertedCount) added += 1;
+    if (res.upsertedCount) {
+      added += 1;
+      newlyStored.push({ prNumber: pr.number, changedFiles: files });
+    }
+  }
+
+  // Only the PRs stored by THIS sync, so a re-sync never re-flags old history.
+  // The map is advice: a problem there must never fail the sync itself.
+  if (newlyStored.length) {
+    try {
+      await flagMapDrift(db, team._id, newlyStored);
+    } catch (err) {
+      console.error("teams sync: could not flag map drift:", err);
+    }
   }
 
   return {

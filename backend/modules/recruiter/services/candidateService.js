@@ -110,7 +110,7 @@ const loadPool = async (db) => {
     const built = await Promise.all(
       batch.map(async (s) => {
         const user = userById.get(String(s.userId));
-        return user ? toCandidateRow(await loadScorecard(db, user, s)) : null;
+        return user ? toCandidateRow(await loadScorecard(db, user, s, { maps: false })) : null;
       }),
     );
     rows.push(...built.filter(Boolean));
