@@ -3,6 +3,10 @@ import { joinRoom, loadLastMessages, sendMessage, reactToMessage, removeFromRoom
 import { registerUserSocket, unregisterUserSocket } from "./connectionRegistry.js";
 import { verifyToken } from "../utils/jwtToken.js";
 import { isOriginAllowed } from "./origin.js";
+import { createMessageLimiter } from "./messageLimiter.js";
+
+// Chat messages are short. Without this the ws default would accept 100 MiB in one frame.
+export const MAX_MESSAGE_BYTES = 16 * 1024;
 
 let wss;
 export const getWss = () => wss;
@@ -10,13 +14,23 @@ export const getWss = () => wss;
 export default function initWebSocketServer(server) {
   wss = new WebSocketServer({
     server,
+    maxPayload: MAX_MESSAGE_BYTES,
     // Refuse handshakes from foreign websites (see origin.js for why).
     verifyClient: ({ origin }) => isOriginAllowed(origin),
   });
   wss.on("connection", (ws) => {
     console.log("Client Connected!");
+    const checkRate = createMessageLimiter();
+    // ws emits "error" for protocol faults such as a frame over MAX_MESSAGE_BYTES (it
+    // closes the socket itself). With no listener, Node throws it and the process dies.
+    ws.on("error", (err) => console.log("WebSocket error:", err.message));
 
     ws.on("message", async (message) => {
+      const rate = checkRate();
+      if (rate === "close") return ws.close(1008, "Too many messages");
+      if (rate === "limited") {
+        return ws.send(JSON.stringify({ type: "error", code: "rate_limited", message: "You're sending messages too fast." }));
+      }
       try {
         const data = JSON.parse(message.toString());
         if (data.type === "auth") {

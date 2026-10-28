@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { getUserProfile, followUser, unfollowUser } from "../controllers/user.controller.js";
+import { toggleLimiter } from "../../../middleware/rateLimits.js";
 
 const router = Router();
 
@@ -65,7 +66,7 @@ const router = Router();
  */
 
 router.get("/users/:username", getUserProfile);
-router.post("/users/:username/follow", followUser);
-router.delete("/users/:username/follow", unfollowUser);
+router.post("/users/:username/follow", toggleLimiter, followUser);
+router.delete("/users/:username/follow", toggleLimiter, unfollowUser);
 
 export default router;

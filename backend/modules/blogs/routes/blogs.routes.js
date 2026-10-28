@@ -20,6 +20,7 @@ import {
 } from "../controllers/comment.controller.js";
 import { Router } from "express";
 import { authenticate } from "../../../middleware/authenticate.js";
+import { blogCreateLimiter, blogUpdateLimiter, commentLimiter, toggleLimiter } from "../../../middleware/rateLimits.js";
 
 const router = Router();
 
@@ -281,20 +282,20 @@ const router = Router();
  */
 
 router.get("/", getBlogs);
-router.post("/", authenticate, createBlog);
+router.post("/", authenticate, blogCreateLimiter, createBlog);
 router.get("/favourites", authenticate, getFavourites);
 router.get("/saved-ids", authenticate, getSavedIds);
 router.get("/liked-ids", authenticate, getLikedIds);
 router.get("/my-blogs", authenticate, getMyBlogs);
 router.get("/id/:id", getBlogById);
 router.get("/user/:userId", getUserBlogs);
-router.put("/:id", authenticate, updateBlog);
+router.put("/:id", authenticate, blogUpdateLimiter, updateBlog);
 router.delete("/:id", authenticate, deleteBlog);
-router.post("/:id/like", authenticate, toggleLike);
+router.post("/:id/like", authenticate, toggleLimiter, toggleLike);
 router.get("/:id/comments", getComments);
-router.post("/:id/comments", authenticate, postComment);
+router.post("/:id/comments", authenticate, commentLimiter, postComment);
 router.delete("/:id/comments/:commentId", authenticate, deleteComment);
-router.post("/:id/favourite", authenticate, toggleFavourite);
+router.post("/:id/favourite", authenticate, toggleLimiter, toggleFavourite);
 router.get("/:slug", getBlogBySlug);
 
 export default router;

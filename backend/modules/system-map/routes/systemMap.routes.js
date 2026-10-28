@@ -1,6 +1,7 @@
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
 import { aiBurstLimiter } from "../../../middleware/aiRateLimit.js";
+import { publicMapLimiter } from "../../../middleware/rateLimits.js";
 import { authenticate } from "../../../middleware/authenticate.js";
 import { validate } from "../../../middleware/validate.js";
 import {
@@ -43,7 +44,7 @@ const scanDailyLimiter = rateLimit({
 router.get("/mine", authenticate, listMine);
 
 // GET /api/system-maps/public/:publicId: a shared map, no login
-router.get("/public/:publicId", validate({ params: publicParamSchema }), getPublicMap);
+router.get("/public/:publicId", publicMapLimiter, validate({ params: publicParamSchema }), getPublicMap);
 
 // POST /api/system-maps/scan: read a public GitHub repo and propose parts (nothing saved)
 router.post("/scan", authenticate, aiBurstLimiter, scanDailyLimiter, validate({ body: scanBodySchema }), scanRepo);
