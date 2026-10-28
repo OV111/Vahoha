@@ -24,6 +24,9 @@ let expiresAt = null;
 let refreshTimer = null;
 let inFlight = null;
 let onSessionEnd = () => {};
+// Called with the URL after a write (POST, PUT, PATCH, DELETE) succeeds. The app
+// uses it to refresh whatever cached reads that write made out of date.
+let onWrite = () => {};
 let watching = false;
 
 export const getAccessToken = () => accessToken;
@@ -168,13 +171,26 @@ export const startSessionWatch = () => {
   window.addEventListener("online", () => ensureFreshToken());
 };
 
+export const setWriteHandler = (fn) => {
+  onWrite = fn;
+};
+
+const READ_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
+
 /**
  * Drop-in for fetch() on authenticated requests. Requests that carry no
  * Bearer header go straight through. Requests that do always get the current
  * token (callers often build headers from a token read earlier), and a 401 is
- * answered with one refresh and one retry.
+ * answered with one refresh and one retry. A write that succeeds is reported to
+ * the write handler, so cached reads it changed are refreshed.
  */
 export const apiFetch = async (input, init = {}) => {
+  const res = await authedFetch(input, init);
+  if (res.ok && !READ_METHODS.has((init.method ?? "GET").toUpperCase())) onWrite(input?.url ?? input);
+  return res;
+};
+
+const authedFetch = async (input, init) => {
   const headers = new Headers(init.headers);
   if (!headers.get("Authorization")?.startsWith("Bearer")) return fetch(input, init);
 

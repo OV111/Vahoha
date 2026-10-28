@@ -174,9 +174,9 @@ const Notifications = () => {
   const { notifications, unreadCount, setNotifications } =
     useNotificationStore();
 
-  const load = useCallback(async () => {
+  const load = useCallback(async ({ force = false } = {}) => {
     setStatus("loading");
-    const data = await getNotifications();
+    const data = await getNotifications({ force });
     // The api returns null/undefined when the request fails — that is an error,
     // not an empty inbox.
     if (!Array.isArray(data)) return setStatus("error");
@@ -197,7 +197,7 @@ const Notifications = () => {
       await request();
     } catch {
       toast.error(failure);
-      load();
+      load({ force: true });
     }
   };
 
@@ -296,7 +296,7 @@ const Notifications = () => {
               action={
                 <button
                   type="button"
-                  onClick={load}
+                  onClick={() => load({ force: true })}
                   className={`mt-4 rounded-lg bg-purple-600 px-5 py-2 text-sm font-semibold text-white hover:bg-purple-500 ${FOCUS}`}
                 >
                   Try again

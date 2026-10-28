@@ -1,28 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import useCachedResource from "@/hooks/useCachedResource";
 import { fetchReadiness } from "../masteryApi";
 
-/** The learner's mid-level readiness, with loading/error state and a manual reload. */
+/** The learner's mid-level readiness, with loading/error state and a manual reload. Cached like useMastery. */
 const useReadiness = () => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const load = useCallback(async () => {
-    setError(null);
-    try {
-      setData(await fetchReadiness());
-    } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  return { data, loading, error, reload: load };
+  const { data, loading, error, refetch } = useCachedResource("readiness", fetchReadiness, { staleMs: 60_000 });
+  return { data, loading, error, reload: refetch };
 };
 
 export default useReadiness;

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { capstoneApi } from "../capstoneApi";
 import posthog, { isPostHogConfigured } from "@/lib/posthog";
+import { queryCache } from "@/lib/queryCache";
 
 // While the server holds one of these locks (possibly from another tab), poll
 // so the page moves on by itself when it finishes.
@@ -11,15 +12,21 @@ const POLL_MS = 5000;
 // defense, passed, or failed (a failed defense also ends there).
 const HAS_DEFENSE = ["defense", "passed", "failed"];
 
+// Coming back to a track within 30 s shows what was loaded, not a spinner. Anything
+// that must be current (polling, the reload after an action) skips this: see `load`.
+const STALE_MS = 30_000;
+
 /**
  * All capstone state for one track, straight from the server. The page never
  * decides what is allowed — it renders `status` and calls actions; after every
  * action the server's answer replaces local state.
  */
 export default function useCapstone(trackId) {
-  const [status, setStatus] = useState(null);
-  const [defense, setDefense] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const key = `capstone:${trackId}`;
+  const cached = queryCache.get(key).data;
+  const [status, setStatus] = useState(cached?.next ?? null);
+  const [defense, setDefense] = useState(cached?.withDefense ?? null);
+  const [loading, setLoading] = useState(!cached);
   const [loadError, setLoadError] = useState(null);
   const [busy, setBusy] = useState(null); // name of the running action, or null
   const [actionError, setActionError] = useState(null);
@@ -32,30 +39,49 @@ export default function useCapstone(trackId) {
     };
   }, []);
 
-  const load = useCallback(async () => {
-    try {
-      const next = await capstoneApi.status(trackId);
-      const withDefense =
-        next.attempt &&
-        HAS_DEFENSE.includes(next.attempt.status) &&
-        next.review?.passed
-          ? await capstoneApi.defense(trackId).catch(() => null)
-          : null;
-      if (!mounted.current) return;
-      setStatus(next);
-      setDefense(withDefense);
-      setLoadError(null);
-    } catch (err) {
-      if (mounted.current) setLoadError(err);
-    } finally {
-      if (mounted.current) setLoading(false);
-    }
+  const fetchTrack = useCallback(async () => {
+    const next = await capstoneApi.status(trackId);
+    const withDefense =
+      next.attempt &&
+      HAS_DEFENSE.includes(next.attempt.status) &&
+      next.review?.passed
+        ? await capstoneApi.defense(trackId).catch(() => null)
+        : null;
+    return { next, withDefense };
   }, [trackId]);
 
+  // Always asks the server unless told it may reuse a recent answer: the callers
+  // are polling and the reload after an action, which both need the truth.
+  const load = useCallback(
+    async ({ force = true } = {}) => {
+      try {
+        const { next, withDefense } = await queryCache.load(key, fetchTrack, { staleMs: STALE_MS, force });
+        if (!mounted.current) return;
+        setStatus(next);
+        setDefense(withDefense);
+        setLoadError(null);
+      } catch (err) {
+        if (mounted.current) setLoadError(err);
+      } finally {
+        if (mounted.current) setLoading(false);
+      }
+    },
+    [key, fetchTrack],
+  );
+
   useEffect(() => {
-    setLoading(true);
-    load();
-  }, [load]);
+    // Show the last copy straight away (it may be a different track than the last render's), then refresh if it is old.
+    const copy = queryCache.get(key).data;
+    if (copy) {
+      setStatus(copy.next);
+      setDefense(copy.withDefense);
+      setLoadError(null);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+    load({ force: false });
+  }, [key, load]);
 
   // Poll only while the server is mid-way through something we did not start here.
   const attemptStatus = status?.attempt?.status;

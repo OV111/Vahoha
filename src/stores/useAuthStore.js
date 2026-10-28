@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { API_BASE_URL, setAccessToken, clearAccessToken } from "../../constants/api";
-import { refreshSession, setSessionEndHandler, startSessionWatch } from "../lib/session";
+import { refreshSession, setSessionEndHandler, setWriteHandler, startSessionWatch } from "../lib/session";
+import { queryCache } from "../lib/queryCache";
+import { createWriteHandler } from "../lib/queryInvalidation";
 import posthog, { isPostHogConfigured } from "../lib/posthog";
 
 // "This browser had a session last time." Not proof of anything (the refresh
@@ -126,5 +128,15 @@ const useAuthStore = create((set, get) => {
 });
 
 setSessionEndHandler(() => useAuthStore.getState().expire());
+
+// Cached API reads belong to whoever is signed in. Without this, one account's
+// progress and profile would survive a logout (or a different user logging in)
+// in the same tab, and show on the next screen before the server is asked.
+useAuthStore.subscribe((state, prev) => {
+  if (state.auth !== prev.auth || state.session !== prev.session) queryCache.clear();
+});
+
+// A successful write refreshes the cached reads it changed (queryInvalidation.js).
+setWriteHandler(createWriteHandler(queryCache));
 
 export default useAuthStore;

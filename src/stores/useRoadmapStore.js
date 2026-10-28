@@ -1,20 +1,30 @@
 import { create } from "zustand";
 import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
 import useAuthStore from "./useAuthStore";
+import { queryCache } from "../lib/queryCache";
 
 // /roadmaps is public, so every server call below is guarded here — the one
 // place all callers pass through — rather than only hiding buttons in the UI.
 // Guests get a read-only preview: every layer locked, nothing persisted.
 const isGuest = () => !useAuthStore.getState().auth;
 
+const PROGRESS_KEY = "roadmap-progress";
+
+// Throws on a failed request, so a failure is never cached as "no progress".
+const requestProgress = async () => {
+  const res = await apiFetch(`${API_BASE_URL}/api/roadmaps/progress`, {
+    headers: authHeaders(),
+  });
+  if (!res.ok) throw new Error(`Progress request failed (${res.status})`);
+  const { progress } = await res.json();
+  return progress;
+};
+
+// Reused for 30 s, so going back to a roadmap does not ask again. Starting a
+// path or saving progress marks it out of date (lib/queryInvalidation.js).
 const fetchProgress = async () => {
   try {
-    const res = await apiFetch(`${API_BASE_URL}/api/roadmaps/progress`, {
-      headers: authHeaders(),
-    });
-    if (!res.ok) return null;
-    const { progress } = await res.json();
-    return progress;
+    return await queryCache.load(PROGRESS_KEY, requestProgress, { staleMs: 30_000 });
   } catch {
     return null;
   }

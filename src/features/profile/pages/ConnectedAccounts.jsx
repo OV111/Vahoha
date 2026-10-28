@@ -110,7 +110,7 @@ const ConnectedAccounts = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
-        await fetchProfile();
+        await fetchProfile({ force: true });
         toast.success("GitHub disconnected");
       } else {
         toast.error("Failed to disconnect");

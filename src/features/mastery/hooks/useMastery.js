@@ -1,28 +1,14 @@
-import { useCallback, useEffect, useState } from "react";
+import useCachedResource from "@/hooks/useCachedResource";
 import { fetchMastery } from "../masteryApi";
 
-/** The learner's mastery view, with loading/error state and a manual reload. */
+/**
+ * The learner's mastery view, with loading/error state and a manual reload.
+ * Cached for a minute and shared with anything else that reads it; a finished
+ * test or challenge refreshes it (see lib/queryInvalidation.js).
+ */
 const useMastery = () => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const load = useCallback(async () => {
-    setError(null);
-    try {
-      setData(await fetchMastery());
-    } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  return { data, loading, error, reload: load };
+  const { data, loading, error, refetch } = useCachedResource("mastery", fetchMastery, { staleMs: 60_000 });
+  return { data, loading, error, reload: refetch };
 };
 
 export default useMastery;
