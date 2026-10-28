@@ -14,7 +14,7 @@ const options = {
         description: "Development",
       },
       {
-        url: "https://devs-website.onrender.com",
+        url: "https://api.vahoha.com",
         description: "Production",
       },
     ],

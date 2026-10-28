@@ -13,6 +13,10 @@ so the cookie becomes first-party. No code change is needed except the two URLs 
 **Not a proxy through Vercel.** Vercel rewrites cannot carry WebSockets (chat, notifications) and
 can cut long AI streams. A subdomain has neither problem.
 
+**Status 2026-10-28:** steps 1 to 5 are done and verified from outside (DNS, `/healthz`, CORS for
+`https://vahoha.com` with credentials, WebSocket upgrade). Steps 6 and 7 (GitHub callback, Polar
+webhook) and the push are still to do.
+
 ## Order matters
 
 Flipping the URLs before the domain works takes the whole site down. Do the steps in this order.

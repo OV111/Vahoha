@@ -43,7 +43,7 @@ The backend can also run in Docker (`Dockerfile`, Node 22 alpine, runs as the un
 |---|---|---|---|
 | Local | `npm run dev` (Vite, port 5173) | `npm run server` (nodemon, port 5000) | `npm run dev:full` starts a Redis container and both |
 | Staging | `npm run build:staging` (`--mode staging`) | `TODO: confirm` a staging backend exists | a local `.env.staging` exists |
-| Production | Vercel | Render (`https://devs-website.onrender.com` per `render.yaml`) | Frontend values are set in Vercel |
+| Production | Vercel | Render (`https://api.vahoha.com`, a custom domain on the `devs-website` service in `render.yaml`) | Frontend values are set in Vercel |
 
 Backend env files are loaded in this order by `backend/config/bootEnv.js` (the first import of `server.js`): `backend/.env.local`, then `backend/.env`. The paths do not depend on the folder you start the server from.
 

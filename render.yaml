@@ -9,7 +9,7 @@
 
 services:
   - type: web
-    name: devs-website            # -> https://devs-website.onrender.com (matches .env.production)
+    name: devs-website            # -> https://devs-website.onrender.com; production is served at https://api.vahoha.com (custom domain, see docs/engineering/API_DOMAIN_MIGRATION.md)
     runtime: node
     plan: free
     region: frankfurt             # closest Render region to Armenia; put Atlas in eu-central too
