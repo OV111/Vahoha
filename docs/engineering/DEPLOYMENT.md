@@ -45,7 +45,7 @@ The backend can also run in Docker (`Dockerfile`, Node 22 alpine, runs as the un
 | Staging | `npm run build:staging` (`--mode staging`) | `TODO: confirm` a staging backend exists | a local `.env.staging` exists |
 | Production | Vercel | Render (`https://devs-website.onrender.com` per `render.yaml`) | Frontend values are set in Vercel |
 
-Backend env files are loaded in this order by `backend/server.js`: `backend/.env.local`, then `backend/.env`.
+Backend env files are loaded in this order by `backend/config/bootEnv.js` (the first import of `server.js`): `backend/.env.local`, then `backend/.env`. The paths do not depend on the folder you start the server from.
 
 ---
 
@@ -57,15 +57,25 @@ Names only. **Never commit values.** Backend variables are set on Render (`sync:
 
 | Group | Variables |
 |---|---|
-| Core (required) | `MONGO_URI`, `JWT_Secret` (the name has that exact casing), `JWT_REFRESH_SECRET`, `FRONTEND_URL` (the Vercel URL, no trailing slash; also the CORS origin) |
-| Runtime | `NODE_ENV`, `NODE_VERSION`, `PORT`, `HUSKY=0`, `MAINTENANCE_MODE` |
-| AI | `GROQ_API_KEY`, `GROQ_TPM_LIMIT` (local free-tier workaround only), `CAPSTONE_REVIEW_MAX_CHARS`, `EVAL_JUDGE_MODEL` (eval script only), `GEMINI_API_KEY` (listed in `render.yaml`, but `TODO: confirm` anything uses it: `config/gemini.js` is not imported) |
-| Auth providers | `GOOGLE_CLIENT_ID`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `GITHUB_TOKEN` (capstone repo reads, public repos, read-only) |
-| Email | `RESEND_API_KEY`, `EMAIL_FROM`, `CONTACT_INBOX` |
-| Media | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` |
-| Redis | `REDIS_URL`, or `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`; `REDIS_ENABLED=false` runs without the notification queue |
+| Core (required) | `MONGO_URI`, `JWT_Secret` (the name has that exact casing), `JWT_REFRESH_SECRET` (must differ from `JWT_Secret`), `FRONTEND_URL` (required in production: `https`, no trailing slash or path; also the CORS origin) |
+| Runtime | `NODE_ENV`, `NODE_VERSION`, `PORT`, `HUSKY=0`, `NODE_OPTIONS` |
+| AI | `GROQ_API_KEY`, `CAPSTONE_REVIEW_MAX_CHARS`, `GEMINI_API_KEY` (unused today: nothing imports `config/gemini.js`) |
+| Auth providers | `GOOGLE_CLIENT_ID`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` (set both or neither), `GITHUB_TOKEN` (repo reads for capstone checks and the Project Map scan; public repos, read-only) |
+| Email | `RESEND_API_KEY`, `EMAIL_FROM` (set both or neither), `CONTACT_INBOX` |
+| Media | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` (all three or none) |
+| Redis | `REDIS_ENABLED` (`false` runs without the notification queue and Redis login throttling), `REDIS_URL`, or `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD` |
 | Billing | `POLAR_ENVIRONMENT`, `POLAR_ACCESS_TOKEN`, `POLAR_PRO_PRODUCT_ID`, `POLAR_WEBHOOK_SECRET`, `BILLING_ENFORCED` (see [Billing](BILLING.md)) |
-| Feature switches | `CANDIDATES_ENABLED` (recruiter candidates API, closed by default), `ALLOW_UNSAFE_RUNNER` (never in production), `ALLOW_UNBANKED_PUBLISH`, `NODE_OPTIONS` |
+| Switches | `CANDIDATES_ENABLED` (recruiter candidates API, closed by default), `MAINTENANCE_MODE` (every route answers 503), `CACHE_ENABLED` (`false` turns the server cache off), `ALLOW_UNSAFE_RUNNER` (never in production: the server refuses to start), `WS_EXTRA_ORIGINS` |
+| Local and scripts only | `GROQ_TPM_LIMIT` (free-tier workaround, never in production), `EVAL_JUDGE_MODEL` (eval script), `DNS_SERVERS`, `ALLOW_UNBANKED_PUBLISH` (capstone seeder) |
+
+`backend/config/env.js` is the source of truth for this list. `.env.example` is generated from it, and `backend/tests/unit/envFiles.unit.test.js` fails if `.env.example`, `render.yaml` or this table drift away from it.
+
+#### Checked at boot
+
+The server validates every variable once, before it connects to anything, and reports **all** problems together. It never prints a value, only the name and what is wrong.
+
+- **It refuses to start** (exit 1) when: `MONGO_URI` is missing or not `mongodb://` / `mongodb+srv://`; `JWT_Secret` or `JWT_REFRESH_SECRET` is missing or they are the same; in production, `FRONTEND_URL` is missing, not `https`, or has a trailing slash or path; in production, `ALLOW_UNSAFE_RUNNER=true`; `BILLING_ENFORCED=true` without the three Polar secrets.
+- **It starts and logs a warning** for: a missing `GROQ_API_KEY`, `GITHUB_TOKEN` or `GOOGLE_CLIENT_ID`; a half-set pair (email, GitHub sign-in, Cloudinary); no Redis setting in production; `GROQ_TPM_LIMIT` in production; `CACHE_ENABLED=false` in production; a JWT secret under 32 characters; a number or flag with an invalid value. A feature that is off (no email, no uploads, no billing checkout) is listed with the missing variables in the startup report.
 
 ### Frontend (Vercel)
 
@@ -86,7 +96,7 @@ The `.env*` files are gitignored; only `.env.example` is tracked. Production fro
 | Health check | `GET /healthz` |
 | Deploy | `autoDeploy: true`: every push to the connected branch deploys |
 
-On boot the server fails fast if `MONGO_URI` or the JWT secrets are missing, builds indexes (failures are logged, not fatal), then starts HTTP, WebSocket and the notification worker. On `SIGTERM` it closes the worker, queue, Redis and MongoDB in that order.
+On boot the server first checks its configuration (see [Checked at boot](#checked-at-boot)) and exits if a required setting is wrong, then builds indexes (failures are logged, not fatal), then starts HTTP, WebSocket and the notification worker. On `SIGTERM` it closes the worker, queue, Redis and MongoDB in that order.
 
 `isolated-vm` is an optional dependency. If it did not build on the host, the code runner fails closed in production (submissions are refused) unless `ALLOW_UNSAFE_RUNNER=true`. Check the runner after every deploy (`GET /api/challenges/submissions/runner`).
 

@@ -29,6 +29,16 @@ import readinessRoutes from "./modules/readiness/index.js";
 import onboardingRoutes from "./modules/onboarding/index.js";
 import { notFound } from "./middleware/notFound.js";
 
+/**
+ * The one origin allowed to call the API from a browser. In production a missing
+ * FRONTEND_URL must not turn into localhost (another site could then never be
+ * told apart from a developer's machine), so there is no origin at all: false
+ * switches CORS off, which is not the same as undefined (the cors package reads
+ * undefined as "*").
+ */
+export const resolveCorsOrigin = (env = process.env) =>
+  env.FRONTEND_URL || (env.NODE_ENV === "production" ? false : "http://localhost:5173");
+
 export function createApp(db) {
   const app = express();
 
@@ -57,9 +67,12 @@ export function createApp(db) {
     }),
   );
 
+  const corsOrigin = resolveCorsOrigin();
+  if (corsOrigin === false) console.error("FRONTEND_URL is not set: browser requests from other origins are blocked.");
+
   app.use(
     cors({
-      origin: process.env.FRONTEND_URL || "http://localhost:5173",
+      origin: corsOrigin,
       methods: ["GET", "POST", "PUT", "PATCH", "OPTIONS", "DELETE"],
       allowedHeaders: ["Content-Type", "Authorization"],
       credentials: true,

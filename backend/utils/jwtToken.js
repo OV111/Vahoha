@@ -22,15 +22,6 @@ const getRefreshSecret = () => {
   return secret;
 };
 
-/**
- * Fails fast at boot rather than at the first login attempt.
- * Called from server.js.
- */
-export const assertJwtSecrets = () => {
-  getAccessSecret();
-  getRefreshSecret();
-};
-
 export const createAccessToken = (user) =>
   jwt.sign({ id: String(user.id), type: "access" }, getAccessSecret(), {
     expiresIn: ACCESS_TOKEN_TTL,

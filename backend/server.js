@@ -1,6 +1,6 @@
-import dotenv from "dotenv";
-dotenv.config({ path: "./backend/.env.local" });
-dotenv.config({ path: "./backend/.env" });
+// Must stay the first import: it loads the .env files and validates the configuration
+// before any other module runs (see config/bootEnv.js).
+import "./config/bootEnv.js";
 
 import http from "http";
 import process from "process";
@@ -13,12 +13,8 @@ import initWebSocketServer from "./websocket/index.js";
 import { deliverChatMessage } from "./websocket/chatHandler.js";
 import NotificationWorker from "./workers/notificationWorker.js";
 import notificationQueue from "./queues/notificationQueue.js";
-import { assertJwtSecrets } from "./utils/jwtToken.js";
 import { healthHandler } from "./utils/health.js";
 import { createShutdown } from "./utils/shutdown.js";
-
-// Fail fast at boot instead of the first login attempt hitting a missing-secret error.
-assertJwtSecrets();
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

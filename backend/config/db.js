@@ -2,6 +2,18 @@ import dns from "node:dns";
 import { MongoClient } from "mongodb";
 import process from "process";
 
+// Explicit instead of driver defaults (30 s to pick a server, 100 connections).
+// A dead database should fail a boot or a request in 10 s, and one instance has
+// no use for a pool of 100. No socketTimeoutMS on purpose: a long aggregation
+// must not be cut mid-way. Retry behaviour stays at the driver's defaults.
+export const MONGO_OPTIONS = {
+  serverSelectionTimeoutMS: 10_000,
+  connectTimeoutMS: 10_000,
+  maxPoolSize: 20,
+  minPoolSize: 0,
+  appName: "vahoha-api",
+};
+
 let db;
 let client;
 
@@ -20,7 +32,7 @@ const connectDB = async () => {
       dns.setServers(process.env.DNS_SERVERS.split(",").map((s) => s.trim()));
     }
 
-    client = new MongoClient(mongoUri);
+    client = new MongoClient(mongoUri, MONGO_OPTIONS);
     await client.connect();
     console.log("MongoDB connected successfully!");
     db = client.db("DevsBlog"); // store reference to DB
