@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { clearLibraryCache } from "./libraryService.js";
 
 const LIBRARY = "libraryResources";
 const CONCEPTS = "libraryConcepts";
@@ -88,5 +89,6 @@ export const setDigestVisibility = async (db, sourceId, visibility) => {
   }
 
   await db.collection(LIBRARY).updateOne({ _id }, { $set: { digestVisibility: visibility, updatedAt: new Date() } });
+  clearLibraryCache(); // the public list carries this field
   return true;
 };

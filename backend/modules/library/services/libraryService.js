@@ -1,9 +1,45 @@
 import { ObjectId } from "mongodb";
 import { isLayerId } from "../../../utils/layerIds.js";
+import { createTtlCache } from "../../../utils/ttlCache.js";
 
 const COL = "libraryResources";
 
-export const getResourcesService = async (db, query) => {
+// The catalogue is the same for every visitor and only changes when an admin
+// imports a book or flips a digest's visibility (both clear it), so five minutes
+// of staleness is fine. The mentor's citation counts also nudge the order, which
+// the TTL absorbs.
+const libraryCache = createTtlCache({ name: "library", ttlMs: 5 * 60_000, maxEntries: 300 });
+export const clearLibraryCache = () => libraryCache.clear();
+
+// Keys longer than this are a sign of a crafted query: skip the cache for them.
+const MAX_KEY_LENGTH = 300;
+
+// JSON-encoded, so the string "a,b" and the list ["a", "b"] (which query differently) never share a key.
+const asList = (v) => JSON.stringify(v ? [].concat(v).map(String).sort() : []);
+
+// Every input that changes the result, normalised the way the query below reads it.
+const listKey = ({ type, path, difficulty, topic, is_free, layer, page = 1, limit = 20 }) =>
+  [
+    "list",
+    asList(type),
+    asList(path),
+    JSON.stringify(difficulty || ""),
+    asList(topic),
+    is_free === undefined ? "" : String(is_free === "true" || is_free === true),
+    isLayerId(layer) ? layer : "",
+    Math.max(1, +page),
+    Math.min(100, Math.max(1, +limit)),
+  ].join("|");
+
+export const getResourcesService = (db, query) => {
+  // Free-text search is open-ended (every typed word is a new key) and ranks by
+  // relevance: always go to the database for it.
+  const key = query.q ? null : listKey(query);
+  if (!key || key.length > MAX_KEY_LENGTH) return loadResources(db, query);
+  return libraryCache.wrap(key, () => loadResources(db, query));
+};
+
+const loadResources = async (db, query) => {
   const {
     type,
     path,
@@ -102,7 +138,9 @@ export const getSavedResourceIdsService = async (db, userId) => {
   return docs.map((d) => d.resourceId.toString());
 };
 
-export const getResourceCountsByTypeService = async (db) => {
+export const getResourceCountsByTypeService = (db) => libraryCache.wrap("counts", () => loadCountsByType(db));
+
+const loadCountsByType = async (db) => {
   const col = db.collection(COL);
   const counts = await col
     .aggregate([

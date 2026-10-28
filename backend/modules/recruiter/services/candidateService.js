@@ -18,8 +18,19 @@
 
 import { RECRUITER_SETTINGS, ensureIndexes } from "./recruiterData.js";
 import { loadScorecard } from "./scorecardService.js";
+import { getTracks } from "../../../services/roadmapCache.js";
+import { createTtlCache } from "../../../utils/ttlCache.js";
 
 const POOL_LIMIT = 300;
+
+// Building the pool is up to 300 scorecards (about 1,800 queries). It is the same
+// for every recruiter, and filter, sort and page changes only reshape it in memory,
+// so it is built once a minute. 60 s: how old a score or a count may be. A
+// developer's own privacy choices must NOT wait for it, so saving settings clears
+// the cache (clearCandidatePool), and every request re-checks who is still opted
+// in (stillOptedIn), which also drops a deleted account at once.
+const poolCache = createTtlCache({ name: "candidate-pool", ttlMs: 60_000, maxEntries: 2 });
+export const clearCandidatePool = () => poolCache.clear();
 const CHUNK = 15; // scorecards loaded at once, so one request never opens hundreds of queries
 
 /** The published rule. Max total: 40 + 20 + 25 + 15 = 100. */
@@ -89,6 +100,7 @@ export const applyCandidateQuery = (rows, { track, openToWork, minLayers, hasCap
   return { items: filtered.slice((safePage - 1) * limit, safePage * limit), total: filtered.length, page: safePage, pages };
 };
 
+/** The pool as { userId, row } entries: the id stays out of the rows the API returns. */
 const loadPool = async (db) => {
   const stored = await db
     .collection(RECRUITER_SETTINGS)
@@ -110,7 +122,7 @@ const loadPool = async (db) => {
     const built = await Promise.all(
       batch.map(async (s) => {
         const user = userById.get(String(s.userId));
-        return user ? toCandidateRow(await loadScorecard(db, user, s, { maps: false })) : null;
+        return user ? { userId: s.userId, row: toCandidateRow(await loadScorecard(db, user, s, { maps: false })) } : null;
       }),
     );
     rows.push(...built.filter(Boolean));
@@ -123,19 +135,27 @@ const trackFacets = async (db, rows) => {
   const counts = new Map();
   for (const r of rows) for (const t of r.tracks) counts.set(t, (counts.get(t) ?? 0) + 1);
   if (!counts.size) return [];
-  const titles = await db
-    .collection("roadmap_tracks")
-    .find({ trackId: { $in: [...counts.keys()] } }, { projection: { _id: 0, trackId: 1, title: 1 } })
-    .toArray();
-  const titleOf = new Map(titles.map((t) => [t.trackId, t.title]));
+  const tracks = await getTracks(db, [...counts.keys()]);
   return [...counts]
-    .map(([trackId, count]) => ({ trackId, title: titleOf.get(trackId) ?? trackId, count }))
+    .map(([trackId, count]) => ({ trackId, title: tracks.get(trackId)?.title ?? trackId, count }))
     .sort((a, b) => b.count - a.count || a.title.localeCompare(b.title));
+};
+
+/** Drops anyone who has opted out (or been deleted) since the pool was built: one cheap query. */
+const stillOptedIn = async (db, pool) => {
+  if (!pool.length) return pool;
+  const live = await db
+    .collection(RECRUITER_SETTINGS)
+    .find({ enabled: true, userId: { $in: pool.map((e) => e.userId) } }, { projection: { userId: 1 } })
+    .toArray();
+  const ids = new Set(live.map((s) => String(s.userId)));
+  return pool.filter((e) => ids.has(String(e.userId)));
 };
 
 export const listCandidatesService = async (db, query) => {
   await ensureIndexes(db);
-  const rows = await loadPool(db);
+  const pool = await stillOptedIn(db, await poolCache.wrap("pool", () => loadPool(db)));
+  const rows = pool.map((e) => e.row);
   return {
     ...applyCandidateQuery(rows, query),
     rules: SCORE_RULES,

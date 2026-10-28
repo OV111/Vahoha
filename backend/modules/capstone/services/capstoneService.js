@@ -34,6 +34,7 @@ import {
 } from "./capstoneData.js";
 import { ensureCertificate, toPublicCertificate } from "./certificateService.js";
 import { buildTimeline } from "../lib/timeline.js";
+import { getTracks } from "../../../services/roadmapCache.js";
 
 export const getStatusService = async (db, userId, trackId) => {
   await ensureIndexes(db);
@@ -202,11 +203,7 @@ export const getCatalogService = async (db, { includeDrafts = false } = {}) => {
     if (!have || (have.status !== "published" && b.status === "published")) latest.set(b.trackId, b);
   }
 
-  const tracks = await db
-    .collection("roadmap_tracks")
-    .find({ trackId: { $in: [...latest.keys()] } }, { projection: { _id: 0, trackId: 1, title: 1, categoryId: 1 } })
-    .toArray();
-  const trackOf = new Map(tracks.map((t) => [t.trackId, t]));
+  const trackOf = await getTracks(db, [...latest.keys()]);
 
   return [...latest.values()].map((b) => ({
     trackId: b.trackId,

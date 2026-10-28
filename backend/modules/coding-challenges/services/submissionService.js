@@ -6,6 +6,7 @@ import { saveChallengeResult } from "../../../services/challengeResultService.js
 import { trackEvent } from "../../../services/eventService.js";
 import { awardXp } from "../../../services/xpService.js";
 import { pickSubmissionSource } from "../lib/submissionSource.js";
+import { clearLeaderboardCache } from "./progressService.js";
 
 /**
  * Submission grading.
@@ -161,6 +162,8 @@ export const submitAttemptService = async (db, userId, attemptId, language) => {
     ),
     attempts: 1,
   });
+  // A passing run changes the ranking: drop the cached board so this solver sees it at once.
+  if (passed) clearLeaderboardCache();
 
   // Count a solve once per user, so the public solve count means "people who
   // solved this", not "submissions that happened to pass".

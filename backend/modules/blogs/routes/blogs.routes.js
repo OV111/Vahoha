@@ -20,6 +20,7 @@ import {
 } from "../controllers/comment.controller.js";
 import { Router } from "express";
 import { authenticate } from "../../../middleware/authenticate.js";
+import { cacheControl } from "../../../middleware/cacheControl.js";
 import { blogCreateLimiter, blogUpdateLimiter, commentLimiter, toggleLimiter } from "../../../middleware/rateLimits.js";
 
 const router = Router();
@@ -281,7 +282,10 @@ const router = Router();
  *         description: Not found
  */
 
-router.get("/", getBlogs);
+// Public and the same for everyone, so a browser may reuse it for 15 s (and show it while
+// refreshing for 60 s more). A post you just published can take that long to appear in a
+// list the browser already holds; the signed-in routes (my-blogs, one post) carry no header.
+router.get("/", cacheControl({ maxAge: 15, staleWhileRevalidate: 60 }), getBlogs);
 router.post("/", authenticate, blogCreateLimiter, createBlog);
 router.get("/favourites", authenticate, getFavourites);
 router.get("/saved-ids", authenticate, getSavedIds);

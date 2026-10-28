@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { resolveActiveLayer, getWeakTopics } from "../lib/activeLayer.js";
+import { createTtlCache } from "../../../utils/ttlCache.js";
 
 /**
  * Per-user progress reads for the catalog sidebar: exam readiness and the
@@ -15,6 +16,16 @@ const CHALLENGES = "challenges";
 const RESULTS = "challengeResults";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+
+// The ranking is the same for everyone who looks at the same board, and the
+// aggregate behind it scans and joins every ranked user, so it is computed once
+// a minute per (layer or global, window). 60 s: a rank that is a minute behind is
+// invisible, and a solve in THIS process clears it at once (clearLeaderboardCache,
+// called from submissionService), so the person who just solved sees themselves.
+// Only the ranking is cached; who is asking (the "you" flag, their own row, the
+// layer their scope resolves to) is applied per request below.
+const rankingCache = createTtlCache({ name: "leaderboard", ttlMs: 60_000, maxEntries: 200 });
+export const clearLeaderboardCache = () => rankingCache.clear();
 
 /**
  * How much of the current layer's challenge set the user has solved.
@@ -111,53 +122,56 @@ export const getLeaderboardService = async (
   const days = range in RANGE_DAYS ? RANGE_DAYS[range] : 7;
   const layer = scope === "layer" ? await resolveActiveLayer(db, userId) : null;
 
-  const match = { status: "solved" };
-  if (days) match.solvedAt = { $gte: new Date(Date.now() - days * DAY_MS) };
-  if (layer) match.layer = layer.layerId;
+  // Everything that changes the ranking is in the key: the layer (or global) and the window.
+  const ranked = await rankingCache.wrap(`${layer?.layerId ?? "global"}|${days ?? "all"}`, () => {
+    const match = { status: "solved" };
+    if (days) match.solvedAt = { $gte: new Date(Date.now() - days * DAY_MS) };
+    if (layer) match.layer = layer.layerId;
 
-  const ranked = await db
-    .collection(RESULTS)
-    .aggregate([
-      { $match: match },
-      {
-        $group: {
-          _id: "$userId",
-          score: { $sum: "$xpEarned" },
-          solves: { $sum: 1 },
+    return db
+      .collection(RESULTS)
+      .aggregate([
+        { $match: match },
+        {
+          $group: {
+            _id: "$userId",
+            score: { $sum: "$xpEarned" },
+            solves: { $sum: 1 },
+          },
         },
-      },
-      // Ties break on solve count, then on id — without that last key the
-      // order of equal scores can change between two identical requests.
-      { $sort: { score: -1, solves: -1, _id: 1 } },
-      {
-        $lookup: {
-          from: "users",
-          localField: "_id",
-          foreignField: "_id",
-          as: "user",
+        // Ties break on solve count, then on id — without that last key the
+        // order of equal scores can change between two identical requests.
+        { $sort: { score: -1, solves: -1, _id: 1 } },
+        {
+          $lookup: {
+            from: "users",
+            localField: "_id",
+            foreignField: "_id",
+            as: "user",
+          },
         },
-      },
-      { $unwind: "$user" },
-      {
-        $lookup: {
-          from: "usersStats",
-          localField: "_id",
-          foreignField: "userId",
-          as: "stats",
+        { $unwind: "$user" },
+        {
+          $lookup: {
+            from: "usersStats",
+            localField: "_id",
+            foreignField: "userId",
+            as: "stats",
+          },
         },
-      },
-      {
-        $project: {
-          score: 1,
-          solves: 1,
-          username: "$user.username",
-          firstName: "$user.firstName",
-          lastName: "$user.lastName",
-          profileImage: { $arrayElemAt: ["$stats.profileImage", 0] },
+        {
+          $project: {
+            score: 1,
+            solves: 1,
+            username: "$user.username",
+            firstName: "$user.firstName",
+            lastName: "$user.lastName",
+            profileImage: { $arrayElemAt: ["$stats.profileImage", 0] },
+          },
         },
-      },
-    ])
-    .toArray();
+      ])
+      .toArray();
+  });
 
   const me = userId ? String(userId) : null;
 

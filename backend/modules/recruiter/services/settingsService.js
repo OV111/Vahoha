@@ -5,6 +5,7 @@
 
 import { ObjectId } from "mongodb";
 import { DEFAULT_RECRUITER_SETTINGS, RECRUITER_SETTINGS, ensureIndexes } from "./recruiterData.js";
+import { clearCandidatePool } from "./candidateService.js";
 
 const toView = (doc) => ({
   enabled: doc?.enabled ?? DEFAULT_RECRUITER_SETTINGS.enabled,
@@ -25,5 +26,6 @@ export const saveSettingsService = async (db, userId, { enabled, openToWork, sho
     { $set: { enabled, openToWork, show, updatedAt: now }, $setOnInsert: { createdAt: now } },
     { upsert: true, returnDocument: "after" },
   );
+  clearCandidatePool(); // opting out, or hiding a section, must show on the list at once
   return toView(doc);
 };

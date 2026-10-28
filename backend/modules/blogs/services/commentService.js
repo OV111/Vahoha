@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { clearBlogListCache } from "./blogService.js";
 
 const authorLookup = [
   {
@@ -64,6 +65,7 @@ export const postCommentService = async (db, blogId, userId, text) => {
       { returnDocument: "after", projection: { comments: 1 } },
     ),
   ]);
+  clearBlogListCache(); // the list shows the comment count
 
   return {
     ...doc,
@@ -96,5 +98,6 @@ export const deleteCommentService = async (db, blogId, commentId, userId) => {
       { returnDocument: "after", projection: { comments: 1 } },
     ),
   ]);
+  clearBlogListCache();
   return updatedBlog?.comments?.length ?? 0;
 };

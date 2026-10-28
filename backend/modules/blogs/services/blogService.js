@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { createTtlCache } from "../../../utils/ttlCache.js";
 
 const MAX_LAYER_IDS = 10;
 // Roadmap layer ids look like "api-dev-3": lowercase slug, short. Anything
@@ -169,6 +170,7 @@ export const createBlogService = async (db, body, user, file) => {
     author: authorId,
   });
   const result = await blogs.insertOne(doc);
+  clearBlogListCache();
   const [authorData, statsData] = await Promise.all([
     users.findOne(
       { _id: authorId },
@@ -198,7 +200,45 @@ export const createBlogService = async (db, body, user, file) => {
   };
 };
 
-export const getBlogsService = async (db, query) => {
+// The public list is the same for everyone (like and save state come from their
+// own signed-in endpoints). Writes here clear it, so thirty seconds only bounds
+// what this process can't see: view counts (which feed "Most Viewed") and other instances.
+const blogListCache = createTtlCache({ name: "blogList", ttlMs: 30_000, maxEntries: 200 });
+export const clearBlogListCache = () => blogListCache.clear("list:");
+
+// "Most Viewed" and "Trending" sort the same way; anything unknown is the default order.
+const SORT_KEYS = { Popular: "popular", Oldest: "oldest", "Most Viewed": "views", Trending: "views" };
+const READ_TIMES = new Set(["< 5 min", "5–10 min", "10+ min"]);
+const MAX_KEY_LENGTH = 300;
+
+// The list can be cached only when every input has the plain shape the key assumes.
+const isPlain = (v) => v === undefined || typeof v === "string" || (Array.isArray(v) && v.every((x) => typeof x === "string"));
+
+const blogListKey = ({ category, tag, layer, page = 1, limit = 10, difficulty, readTime, sort, filter }) => {
+  const by = sort || filter;
+  return [
+    "list:",
+    JSON.stringify(category || ""),
+    JSON.stringify(tag ? [].concat(tag).sort() : []),
+    JSON.stringify(difficulty || ""),
+    typeof layer === "string" && LAYER_ID_PATTERN.test(layer) ? layer : "",
+    READ_TIMES.has(readTime) ? readTime : "",
+    typeof by === "string" && Object.hasOwn(SORT_KEYS, by) ? SORT_KEYS[by] : "latest",
+    Math.max(1, +page),
+    Math.min(100, Math.max(1, +limit)),
+  ].join("|");
+};
+
+export const getBlogsService = (db, query) => {
+  const { q, category, tag, difficulty } = query;
+  // A title search is open-ended (every typed word is a new key): always ask the database.
+  const searching = typeof q === "string" && q.trim() !== "";
+  if (searching || ![category, tag, difficulty].every(isPlain)) return loadBlogs(db, query);
+  const key = blogListKey(query);
+  return key.length > MAX_KEY_LENGTH ? loadBlogs(db, query) : blogListCache.wrap(key, () => loadBlogs(db, query));
+};
+
+const loadBlogs = async (db, query) => {
   const { category, tag, layer, page = 1, limit = 10, difficulty, readTime, sort, filter, q } = query;
 
   const pageNumber = Math.max(1, +page);
@@ -304,6 +344,7 @@ export const toggleLikeService = async (db, blogId, userId) => {
     { _id: id },
     alreadyLiked ? { $pull: { likes: uid } } : { $addToSet: { likes: uid } },
   );
+  clearBlogListCache(); // the list shows the likes
 
   return {
     liked: !alreadyLiked,
@@ -406,6 +447,7 @@ export const updateBlogService = async (db, blogId, userId, body, file) => {
   if (file?.path) setFields.coverImage = file.path;
 
   await blogs.updateOne({ _id: id }, { $set: setFields });
+  clearBlogListCache();
   return { ...existing, ...setFields, _id: id };
 };
 
@@ -425,6 +467,7 @@ export const deleteBlogService = async (db, blogId, userId) => {
   if (existing.author.toString() !== uid.toString()) throw new Error("Forbidden");
 
   await blogs.deleteOne({ _id: id });
+  clearBlogListCache();
   return { deleted: true };
 };
 

@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { toTopicSlug } from "../utils/topicKey.js";
+import { getLayers } from "./roadmapCache.js";
 
 export const getExamHistory = async (db, userId, limit = 10) => {
   const collection = db.collection("examHistory");
@@ -20,12 +21,8 @@ export const withLayerTitles = async (db, rows) => {
   const ids = [...new Set(rows.map((r) => r.layer).filter(Boolean))];
   if (ids.length === 0) return rows.map((r) => ({ ...r, layerTitle: null }));
 
-  const layers = await db
-    .collection("roadmap_layers")
-    .find({ layerId: { $in: ids } }, { projection: { _id: 0, layerId: 1, title: 1 } })
-    .toArray();
-  const titleOf = new Map(layers.map((l) => [l.layerId, l.title]));
-  return rows.map((r) => ({ ...r, layerTitle: titleOf.get(r.layer) ?? null }));
+  const layers = await getLayers(db, ids);
+  return rows.map((r) => ({ ...r, layerTitle: layers.get(r.layer)?.title ?? null }));
 };
 
 export const getLastExam = async (db, userId) => {

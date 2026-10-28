@@ -8,6 +8,8 @@
  * item is set to digestVisibility: "public"; importing never does that.
  */
 
+import { clearLibraryCache } from "./libraryService.js";
+
 const LIBRARY = "libraryResources";
 const CONCEPTS = "libraryConcepts";
 
@@ -51,6 +53,7 @@ export const applyDigestImport = async (db, data, { reviewed = false } = {}) => 
         updatedAt: now,
       })
     ).insertedId;
+  if (!existingSource) clearLibraryCache(); // a new book belongs on the public list now
 
   const result = await db.collection(CONCEPTS).bulkWrite(
     concepts.map((concept) => ({

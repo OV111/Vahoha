@@ -6,6 +6,7 @@ import {
 } from "../../../services/learnerMasteryService.js";
 import { getUserProgress } from "../../../services/userProgressService.js";
 import { getConcepts } from "../../../services/conceptService.js";
+import { getLayers } from "../../../services/roadmapCache.js";
 import { buildMasteryView } from "../lib/masteryView.js";
 
 /**
@@ -40,16 +41,8 @@ export const getMasteryView = async (db, userId, { detail }) => {
     .filter((t) => t.misconceptions?.length)
     .map((t) => t.slug);
 
-  const [layerDocs, conceptDocs] = await Promise.all([
-    layerIds.length
-      ? db
-          .collection("roadmap_layers")
-          .find(
-            { layerId: { $in: layerIds } },
-            { projection: { _id: 0, layerId: 1, title: 1, trackId: 1, order: 1 } },
-          )
-          .toArray()
-      : [],
+  const [layers, conceptDocs] = await Promise.all([
+    getLayers(db, layerIds),
     getConcepts(db, misconceptionSlugs),
   ]);
 
@@ -57,7 +50,7 @@ export const getMasteryView = async (db, userId, { detail }) => {
     topics,
     nextAction,
     detail: true,
-    layers: new Map(layerDocs.map((l) => [l.layerId, l])),
+    layers,
     concepts: new Map(conceptDocs.map((c) => [c.id, c])),
   });
 };

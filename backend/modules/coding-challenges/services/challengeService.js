@@ -1,6 +1,8 @@
 import { ObjectId } from "mongodb";
 import { resolveActiveLayer, getWeakTopics } from "../lib/activeLayer.js";
 import { escapeRegex } from "../../../utils/regex.js";
+import { createTtlCache } from "../../../utils/ttlCache.js";
+import { getTracks } from "../../../services/roadmapCache.js";
 
 /**
  * Challenge read layer.
@@ -12,6 +14,16 @@ import { escapeRegex } from "../../../utils/regex.js";
  */
 
 const COL = "challenges";
+
+// What is cached here is the catalogue itself: one page of challenges, the track
+// and tag counts, and the daily pick. It is the same for every learner. What
+// depends on the learner (solved, in progress, "recommended", the status filter,
+// their own track first) is never cached: it is read or computed fresh per request.
+// A minute of staleness only delays a new challenge or a solve count.
+const challengeCache = createTtlCache({ name: "challenges", ttlMs: 60_000, maxEntries: 300 });
+
+const MS_PER_DAY = 86_400_000;
+const MAX_KEY_LENGTH = 300;
 
 // Fields the client is allowed to see when browsing a list.
 const LIST_PROJECTION = {
@@ -63,6 +75,21 @@ const TIME_MATCH = {
   "30to60": { $gt: 30, $lte: 60 },
   "60plus": { $gt: 60 },
 };
+
+// The catalogue filters that change which challenges match, normalised the way buildMatch reads them.
+const filtersKey = ({ track, layer, type, difficulty, tags, time }) =>
+  [
+    JSON.stringify(track ?? "all"),
+    JSON.stringify(layer ?? ""),
+    JSON.stringify(type ? String(type).toUpperCase() : ""),
+    JSON.stringify(difficulty ?? ""),
+    JSON.stringify(tags?.length ? [...tags].map(String).sort() : []),
+    TIME_MATCH[time] ? time : "",
+  ].join("|");
+
+// Whether the match is the same for everyone. The status and recommended filters
+// are about one learner, and free-text search is open-ended.
+const isSharedQuery = (query) => !query.status?.length && !query.recommended && !query.q;
 
 /**
  * Every catalog filter as one Mongo query. Built as a list of conditions
@@ -189,27 +216,35 @@ export const listChallengesService = async (db, query = {}, userId) => {
   // none (fullstack-engineer today) would open the page on an empty grid.
   let track = query.track ?? "all";
   if (!query.track && myTrack) {
-    const hasAny = await col.countDocuments({ status: "published", trackId: myTrack }, { limit: 1 });
+    const hasAny = await challengeCache.wrap(`has|${myTrack}`, async () => {
+      return (await col.countDocuments({ status: "published", trackId: myTrack }, { limit: 1 })) > 0;
+    });
     if (hasAny) track = myTrack;
   }
 
   const match = buildMatch({ ...query, track }, me);
 
-  const [items, total] = await Promise.all([
-    col
-      .aggregate([
-        { $match: match },
-        { $addFields: { _rank: DIFFICULTY_RANK } },
-        // slug last: a unique tie-breaker, so skip/limit pages never repeat
-        // or drop an item when two challenges tie on rank and solves.
-        { $sort: { _rank: 1, "stats.solves": -1, slug: 1 } },
-        { $skip: (page - 1) * limit },
-        { $limit: limit },
-        { $project: LIST_PROJECTION },
-      ])
-      .toArray(),
-    col.countDocuments(match),
-  ]);
+  const loadPage = () =>
+    Promise.all([
+      col
+        .aggregate([
+          { $match: match },
+          { $addFields: { _rank: DIFFICULTY_RANK } },
+          // slug last: a unique tie-breaker, so skip/limit pages never repeat
+          // or drop an item when two challenges tie on rank and solves.
+          { $sort: { _rank: 1, "stats.solves": -1, slug: 1 } },
+          { $skip: (page - 1) * limit },
+          { $limit: limit },
+          { $project: LIST_PROJECTION },
+        ])
+        .toArray(),
+      col.countDocuments(match),
+    ]);
+
+  // The page of challenges is shared; the per-learner flags are added below, fresh.
+  const key = `list|${filtersKey({ ...query, track })}|${page}|${limit}`;
+  const [items, total] =
+    isSharedQuery(query) && key.length <= MAX_KEY_LENGTH ? await challengeCache.wrap(key, loadPage) : await loadPage();
 
   const decorated = items.map((item) => {
     const done = me.solved.has(item.slug);
@@ -238,29 +273,29 @@ export const listChallengesService = async (db, query = {}, userId) => {
  * Titles come from roadmap_tracks, so a new path appears with no UI change.
  */
 export const listTracksService = async (db, userId) => {
+  // How many challenges each track has is the same for everyone (titles come from the
+  // roadmap cache); only "which one is mine" is per learner.
   const [counts, activeLayer] = await Promise.all([
-    db
-      .collection(COL)
-      .aggregate([
-        { $match: { status: "published" } },
-        { $group: { _id: "$trackId", count: { $sum: 1 } } },
-      ])
-      .toArray(),
+    challengeCache.wrap("trackCounts", () =>
+      db
+        .collection(COL)
+        .aggregate([
+          { $match: { status: "published" } },
+          { $group: { _id: "$trackId", count: { $sum: 1 } } },
+        ])
+        .toArray(),
+    ),
     resolveActiveLayer(db, userId),
   ]);
 
   const trackIds = counts.map((c) => c._id).filter(Boolean);
-  const titles = await db
-    .collection("roadmap_tracks")
-    .find({ trackId: { $in: trackIds } }, { projection: { _id: 0, trackId: 1, title: 1 } })
-    .toArray();
-  const titleOf = new Map(titles.map((t) => [t.trackId, t.title]));
+  const trackDocs = await getTracks(db, trackIds);
 
   const myTrack = activeLayer?.trackId ?? null;
   const tracks = trackIds
     .map((trackId) => ({
       trackId,
-      title: titleOf.get(trackId) ?? trackId,
+      title: trackDocs.get(trackId)?.title ?? trackId,
       count: counts.find((c) => c._id === trackId).count,
       isMine: trackId === myTrack,
     }))
@@ -288,7 +323,15 @@ export const getChallengeBySlugService = async (db, slug, userId) => {
  * Tag counts for the sidebar filter. Scoped by the same filters as the list so
  * the counts always describe what the user is actually looking at.
  */
-export const getTagCountsService = async (db, query) => {
+export const getTagCountsService = (db, query) => {
+  const key = `tags|${filtersKey(query)}`;
+  // Shared across learners. A status or recommended filter is about one learner (and needs
+  // the per-user sets), so it is never cached.
+  if (!isSharedQuery(query) || key.length > MAX_KEY_LENGTH) return loadTagCounts(db, query);
+  return challengeCache.wrap(key, () => loadTagCounts(db, query));
+};
+
+const loadTagCounts = async (db, query) => {
   const match = buildMatch(query);
 
   const [tags, total] = await Promise.all([
@@ -395,14 +438,24 @@ export const getPersonalStatsService = async (db, userId) => {
  * avoids storing a schedule collection; swap this for a curated schedule later
  * if you want editorial control over which problem lands on which day.
  */
-export const getDailyChallengeService = async (db) => {
+export const getDailyChallengeService = async (db, now = Date.now()) => {
+  const daysSinceEpoch = Math.floor(now / MS_PER_DAY);
+  // Same for everyone all day, so it is kept until the next UTC midnight. The pick
+  // therefore stays put even if a challenge is published or removed mid-day.
+  const key = `daily|${daysSinceEpoch}`;
+  const challenge = await challengeCache.wrap(key, () => loadDailyChallenge(db, daysSinceEpoch), {
+    ttlMs: (daysSinceEpoch + 1) * MS_PER_DAY - now,
+  });
+  if (!challenge) challengeCache.delete(key); // nothing is published yet: ask again next time
+  return challenge;
+};
+
+const loadDailyChallenge = async (db, daysSinceEpoch) => {
   const col = db.collection(COL);
   const match = { status: "published" };
 
   const total = await col.countDocuments(match);
   if (total === 0) return null;
-
-  const daysSinceEpoch = Math.floor(Date.now() / 86_400_000);
 
   const [challenge] = await col
     .find(match)
