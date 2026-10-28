@@ -48,7 +48,9 @@ export const challengeSubmitLimiter = limiter({
 });
 
 export const commentLimiter = limiter({ windowMs: MINUTE, limit: 20, perUser: true, message: "You're commenting too fast. Wait a minute." });
-export const blogCreateLimiter = limiter({ windowMs: HOUR, limit: 10, perUser: true, message: "You've published a lot of posts. Try again later." });
-export const blogUpdateLimiter = limiter({ windowMs: HOUR, limit: 60, perUser: true, message: "Too many edits. Try again later." });
+export const blogCreateLimiter = limiter({ windowMs: HOUR, limit: 30, perUser: true, message: "You've published a lot of posts. Try again later." });
+export const blogUpdateLimiter = limiter({ windowMs: HOUR, limit: 120, perUser: true, message: "Too many edits. Try again later." });
 // Likes, saves and follows are one-tap toggles: a script can flip them endlessly.
-export const toggleLimiter = limiter({ windowMs: MINUTE, limit: 60, perUser: true, message: "Slow down a little. Try again in a minute." });
+// The numbers sit well above what a person does (a post takes minutes to write,
+// the editor autosaves to the browser, not the server), so only scripts hit them.
+export const toggleLimiter = limiter({ windowMs: MINUTE, limit: 120, perUser: true, message: "Slow down a little. Try again in a minute." });

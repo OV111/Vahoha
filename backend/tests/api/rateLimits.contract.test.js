@@ -90,35 +90,35 @@ describe('blog writes', () => {
     expect((await request(app).post(`/blogs/${BLOG_ID}/comments`).set('Authorization', bearer()).send({ text: 'hi' })).status).not.toBe(429)
   })
 
-  it('limits new posts to 10 an hour per user', async () => {
+  it('limits new posts to 30 an hour per user', async () => {
     const token = bearer()
     const send = () => request(app).post('/blogs').set('Authorization', token).send({ title: 't' })
-    expect(tooMany(await fire(10, send))).toBe(0)
+    expect(tooMany(await fire(30, send))).toBe(0)
     expect((await send()).status).toBe(429)
   })
 
-  it('limits edits to 60 an hour per user', async () => {
+  it('limits edits to 120 an hour per user', async () => {
     const token = bearer()
     const send = () => request(app).put(`/blogs/${BLOG_ID}`).set('Authorization', token).send({ title: 't' })
-    expect(tooMany(await fire(60, send))).toBe(0)
+    expect(tooMany(await fire(120, send))).toBe(0)
     expect((await send()).status).toBe(429)
   })
 })
 
-describe('follow, like and save toggles (60 a minute)', () => {
+describe('follow, like and save toggles (120 a minute)', () => {
   it('counts a signed-in user on their own, across likes and follows', async () => {
     const token = bearer()
     const like = () => request(app).post(`/blogs/${BLOG_ID}/like`).set('Authorization', token)
     const follow = () => request(app).post('/users/ada/follow').set('Authorization', token)
 
-    expect(tooMany(await fire(30, like))).toBe(0)
-    expect(tooMany(await fire(30, follow))).toBe(0)
-    expect((await like()).status).toBe(429) // the 61st toggle of any kind
+    expect(tooMany(await fire(60, like))).toBe(0)
+    expect(tooMany(await fire(60, follow))).toBe(0)
+    expect((await like()).status).toBe(429) // the 121st toggle of any kind
   })
 
   it('counts a request with no valid token against its IP, apart from signed-in users', async () => {
     const anonymous = () => request(app).post('/users/ada/follow')
-    expect(tooMany(await fire(60, anonymous))).toBe(0)
+    expect(tooMany(await fire(120, anonymous))).toBe(0)
     expect((await anonymous()).status).toBe(429)
 
     // The same IP, but a real session: its own bucket, still open.
