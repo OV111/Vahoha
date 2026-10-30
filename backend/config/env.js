@@ -165,6 +165,24 @@ export const ENV_SPECS = [
     example: "60000",
     effect: "uses the built-in default",
   },
+  {
+    name: "GROQ_GATE_TPM",
+    group: "ai",
+    requirement: "optional",
+    kind: "int",
+    description: "Tokens per minute your Groq tier allows for the key. All AI calls share it: a call waits for its tokens or fails with a 'busy' message instead of being refused by Groq.",
+    example: "250000",
+    effect: "no token budget is enforced (only the concurrency cap and the pause after a Groq 429 apply)",
+  },
+  {
+    name: "GROQ_GATE_CONCURRENCY",
+    group: "ai",
+    requirement: "optional",
+    kind: "int",
+    description: "Most Groq calls in flight at once, per server instance. A mentor stream counts until its last token.",
+    example: "8",
+    effect: "uses the built-in default (8)",
+  },
 
   // ── email ───────────────────────────────────────────────────────────────
   {

@@ -1,4 +1,4 @@
-import { getGroqClient } from "../../../config/groq.js";
+import { groqChat } from "../../../services/groqChat.js";
 import { toolDefinitions, executeTool } from "./agentTools.js";
 import {
   getLearnerContext,
@@ -173,8 +173,6 @@ export async function streamAgentResponse({
   activity = null,
   sessionId = null,
 }) {
-  const groq = getGroqClient();
-
   // Memoized per turn: the system prompt needs it, and get_learner_context may
   // want it again in the same request. `??=` on the promise (not the resolved
   // value) also collapses concurrent callers onto one set of queries.
@@ -211,13 +209,18 @@ export async function streamAgentResponse({
   let fullAssistantContent = "";
 
   for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
-    const stream = await groq.chat.completions.create({
-      model: MODEL,
-      messages: history,
-      tools: toolDefinitions,
-      tool_choice: "auto",
-      stream: true,
-    });
+    // Rounds after the first continue an answer the learner is already waiting on,
+    // so they go ahead of new questions at the gate.
+    const stream = await groqChat(
+      {
+        model: MODEL,
+        messages: history,
+        tools: toolDefinitions,
+        tool_choice: "auto",
+        stream: true,
+      },
+      { priority: round === 0 ? "interactive" : "continuation" },
+    );
 
     let contentBuffer = "";
     const toolCallsMap = {}; // id → { id, name, arguments }

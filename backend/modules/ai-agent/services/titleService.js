@@ -1,4 +1,4 @@
-import { getGroqClient } from "../../../config/groq.js";
+import { groqChat } from "../../../services/groqChat.js";
 
 /**
  * Conversation titling.
@@ -65,9 +65,8 @@ export const sanitizeTitle = (raw) => {
  */
 export const generateTitle = async (userMessage) => {
   try {
-    const groq = getGroqClient();
-
-    const res = await groq.chat.completions.create({
+    // Background priority: nobody waits on a title, so when Groq is busy it is skipped.
+    const res = await groqChat({
       model: TITLE_MODEL,
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
@@ -81,10 +80,11 @@ export const generateTitle = async (userMessage) => {
       reasoning_effort: "low",
       max_tokens: 80,
       temperature: 0.3,
-    });
+    }, { priority: "background" });
 
     return sanitizeTitle(res.choices?.[0]?.message?.content);
   } catch (err) {
+    if (err.code === "groq_busy") return null;
     console.error("generateTitle error:", err?.message ?? err);
     return null;
   }

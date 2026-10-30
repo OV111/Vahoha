@@ -229,9 +229,15 @@ export const stream = async (req, res) => {
     res.write("data: [DONE]\n\n");
     res.end();
   } catch (err) {
-    console.error("stream error:", err);
+    // Busy is an expected state, not a fault: the turn was not saved or counted against
+    // the daily cap, so the learner can simply send the message again.
+    const busy = err.code === "groq_busy";
+    if (!busy) console.error("stream error:", err);
+    const message = busy
+      ? `The mentor is busy right now. Try again in ${err.retryAfterSec} seconds.`
+      : "Agent error. Please try again.";
     try {
-      res.write(`data: ${JSON.stringify({ type: "error", message: "Agent error. Please try again." })}\n\n`);
+      res.write(`data: ${JSON.stringify({ type: "error", message, ...(busy && { code: err.code }) })}\n\n`);
       res.end();
     } catch { /* already ended */ }
   }

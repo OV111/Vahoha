@@ -59,7 +59,7 @@ Names only. **Never commit values.** Backend variables are set on Render (`sync:
 |---|---|
 | Core (required) | `MONGO_URI`, `JWT_Secret` (the name has that exact casing), `JWT_REFRESH_SECRET` (must differ from `JWT_Secret`), `FRONTEND_URL` (required in production: `https`, no trailing slash or path; also the CORS origin) |
 | Runtime | `NODE_ENV`, `NODE_VERSION`, `PORT`, `HUSKY=0`, `NODE_OPTIONS` |
-| AI | `GROQ_API_KEY`, `CAPSTONE_REVIEW_MAX_CHARS`, `GEMINI_API_KEY` (unused today: nothing imports `config/gemini.js`) |
+| AI | `GROQ_API_KEY`, `GROQ_GATE_TPM` (your Groq tier's tokens per minute, so learners together can't go over it), `GROQ_GATE_CONCURRENCY`, `CAPSTONE_REVIEW_MAX_CHARS`, `GEMINI_API_KEY` (unused today: nothing imports `config/gemini.js`) |
 | Auth providers | `GOOGLE_CLIENT_ID`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` (set both or neither), `GITHUB_TOKEN` (repo reads for capstone checks and the Project Map scan; public repos, read-only) |
 | Email | `RESEND_API_KEY`, `EMAIL_FROM` (set both or neither), `CONTACT_INBOX` |
 | Media | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` (all three or none) |

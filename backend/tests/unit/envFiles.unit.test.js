@@ -82,6 +82,8 @@ describe('render.yaml', () => {
     'CONTACT_INBOX',
     'DNS_SERVERS',
     'EVAL_JUDGE_MODEL',
+    'GROQ_GATE_CONCURRENCY',
+    'GROQ_GATE_TPM',
     'GROQ_TPM_LIMIT',
     'MAINTENANCE_MODE',
     'PORT',
