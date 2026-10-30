@@ -17,9 +17,12 @@ import {
   resetPassword,
   requestLoginLink,
   confirmLoginLink,
+  RESET_SENT,
+  LOGIN_LINK_SENT,
 } from "../controllers/auth.controller.js";
 import { verifyToken } from "../../../utils/jwtToken.js";
-import { redisConnection } from "../../../config/redis.js";
+import { attemptLimiter } from "../../../utils/attemptLimiter.js";
+import { loginRules, signupRule, rejectIfLocked, capEmailsPerAddress } from "../../../middleware/authThrottle.js";
 import { validate } from "../../../middleware/validate.js";
 import {
   signupSchema,
@@ -40,31 +43,6 @@ const respondWithoutRefreshToken = (res, result) => {
 };
 
 const router = Router();
-
-const LOGIN_MAX_ATTEMPTS = 5;
-const LOGIN_WINDOW_SECONDS = 15 * 60; // 15 minutes
-const SIGNUP_MAX_ATTEMPTS = 10;
-const SIGNUP_WINDOW_SECONDS = 60 * 60; // 1 hour
-
-// express-rate-limit acts as a guaranteed fallback when Redis is disabled.
-// When Redis is active the per-IP/per-email Redis counters below take precedence.
-const loginLimiter = rateLimit({
-  windowMs: LOGIN_WINDOW_SECONDS * 1000,
-  max: LOGIN_MAX_ATTEMPTS,
-  skipSuccessfulRequests: true, // only failed logins count toward the lockout
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { message: "Too many login attempts. Try again later.", code: 429 },
-});
-
-const signupLimiter = rateLimit({
-  windowMs: SIGNUP_WINDOW_SECONDS * 1000,
-  max: SIGNUP_MAX_ATTEMPTS,
-  skipSuccessfulRequests: true,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { message: "Too many sign-up attempts. Try again later.", code: 429 },
-});
 
 // Two limiters, not one shared one: a shared counter meant a few "send link"
 // clicks could lock someone out of actually using the link.
@@ -103,31 +81,9 @@ const loginLinkConfirmLimiter = rateLimit({
   message: { message: "Too many attempts. Try again in a few minutes.", code: 429 },
 });
 
-const getClientIp = (req) =>
-  (req.headers["x-forwarded-for"] || req.socket.remoteAddress || "")
-    .toString()
-    .split(",")[0]
-    .trim();
-
-/**
- * Increment a Redis counter and set TTL on first increment.
- * Returns the new count.
- */
-const redisIncr = async (key, windowSeconds) => {
-  if (!redisConnection) return 0;
-  const count = await redisConnection.incr(key);
-  if (count === 1) await redisConnection.expire(key, windowSeconds);
-  return count;
-};
-
-/**
- * Returns seconds remaining until the key expires, or 0.
- */
-const redisTtl = async (key) => {
-  if (!redisConnection) return 0;
-  const ttl = await redisConnection.ttl(key);
-  return ttl > 0 ? ttl : 0;
-};
+// Sending a reset or sign-in email is capped per address too (the limiters above are per IP).
+const forgotPasswordPerEmail = capEmailsPerAddress({ scope: "forgot:email", limit: 3, windowSec: 60 * 60, answer: RESET_SENT });
+const loginLinkPerEmail = capEmailsPerAddress({ scope: "login-link:email", limit: 5, windowSec: 60 * 60, answer: LOGIN_LINK_SENT });
 
 /**
  * @openapi
@@ -202,22 +158,13 @@ router.post("/accept-cookies", (req, res) => {
  *       500:
  *         description: Server error
  */
-router.post("/get-started", signupLimiter, validate({ body: signupSchema }), async (req, res) => {
+router.post("/get-started", validate({ body: signupSchema }), async (req, res) => {
   try {
-    const ip = getClientIp(req);
-    const signupKey = `signup:ip:${ip}`;
-    const count = redisConnection ? await redisConnection.get(signupKey) : null;
-    if (Number(count) >= SIGNUP_MAX_ATTEMPTS) {
-      const ttl = await redisTtl(signupKey);
-      return res.status(429).set("Retry-After", ttl).json({
-        message: "Too many sign-up attempts. Try again later.",
-        retryAfter: ttl,
-        code: 429,
-      });
-    }
+    const rule = signupRule(req);
+    if (await rejectIfLocked(res, [rule], "Too many sign-up attempts.")) return;
     const result = await signUp(req.body);
     if (result.status !== 201) {
-      await redisIncr(signupKey, SIGNUP_WINDOW_SECONDS);
+      await attemptLimiter.recordFailure([rule]);
     } else {
       setRefreshCookie(res, result.refreshToken);
     }
@@ -257,44 +204,20 @@ router.post("/get-started", signupLimiter, validate({ body: signupSchema }), asy
  *       429:
  *         description: Too many failed attempts
  */
-router.post("/login", loginLimiter, validate({ body: loginSchema }), async (req, res) => {
+router.post("/login", validate({ body: loginSchema }), async (req, res) => {
   try {
-    const ip = getClientIp(req);
-    const email = (req.body.email || "").toLowerCase().trim();
-    const ipKey = `login:ip:${ip}`;
-    const emailKey = `login:email:${email}`;
-
-    const [ipCount, emailCount] = redisConnection
-      ? await Promise.all([redisConnection.get(ipKey), redisConnection.get(emailKey)])
-      : [null, null];
-
-    if (
-      Number(ipCount) >= LOGIN_MAX_ATTEMPTS ||
-      Number(emailCount) >= LOGIN_MAX_ATTEMPTS
-    ) {
-      const ttl = await redisTtl(
-        Number(emailCount) >= LOGIN_MAX_ATTEMPTS ? emailKey : ipKey,
-      );
-      return res.status(429).set("Retry-After", ttl).json({
-        message: `Too many login attempts. Try again in ${Math.ceil(ttl / 60)} minute(s).`,
-        retryAfter: ttl,
-        code: 429,
-      });
-    }
+    const { pair, ip, account } = loginRules(req);
+    if (await rejectIfLocked(res, [pair, ip, account], "Too many login attempts.")) return;
 
     const result = await login(req.body);
 
     if (result.status === 200) {
-      if (redisConnection) await Promise.all([
-        redisConnection.del(ipKey),
-        redisConnection.del(emailKey),
-      ]);
+      // Only the account+IP counter: clearing the IP's would let an attacker reset
+      // their own budget by logging in to an account they own.
+      await attemptLimiter.clear([pair]);
       setRefreshCookie(res, result.refreshToken);
     } else if (result.status === 401) {
-      await Promise.all([
-        redisIncr(ipKey, LOGIN_WINDOW_SECONDS),
-        redisIncr(emailKey, LOGIN_WINDOW_SECONDS),
-      ]);
+      await attemptLimiter.recordFailure([pair, ip, account]);
     }
 
     respondWithoutRefreshToken(res, result);
@@ -464,6 +387,7 @@ router.post(
   "/forgot-password",
   forgotPasswordLimiter,
   validate({ body: forgotPasswordSchema }),
+  forgotPasswordPerEmail,
   async (req, res) => {
     const result = await forgotPassword(req.body);
     res.status(result.status).json(result);
@@ -495,6 +419,7 @@ router.post(
   "/login-link",
   loginLinkRequestLimiter,
   validate({ body: loginLinkRequestSchema }),
+  loginLinkPerEmail,
   async (req, res) => {
     const result = await requestLoginLink(req.body);
     res.status(result.status).json(result);

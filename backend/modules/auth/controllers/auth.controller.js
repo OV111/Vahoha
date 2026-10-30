@@ -679,4 +679,6 @@ export {
   resetPassword,
   requestLoginLink,
   confirmLoginLink,
+  RESET_SENT,
+  LOGIN_LINK_SENT,
 };
