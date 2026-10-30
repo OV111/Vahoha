@@ -3,7 +3,7 @@
  * with, the Redis error handling, and the CORS origin. The three clients are
  * mocked, so nothing here connects to anything.
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest'
 import { EventEmitter } from 'node:events'
 import process from 'node:process'
 
@@ -223,6 +223,10 @@ describe('Groq client', () => {
 // ─── CORS origin ────────────────────────────────────────────────────────────
 
 describe('resolveCorsOrigin', () => {
+  // The first import of app.js loads every route module; under a full-suite run that
+  // alone can pass the 5 s default and fail whichever test happens to import first.
+  beforeAll(() => import('../../app.js'), 30_000)
+
   it('uses FRONTEND_URL when it is set, in any environment', async () => {
     const { resolveCorsOrigin } = await import('../../app.js')
     expect(resolveCorsOrigin({ FRONTEND_URL: 'https://vahoha.com', NODE_ENV: 'production' })).toBe('https://vahoha.com')
