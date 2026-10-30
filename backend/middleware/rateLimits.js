@@ -1,3 +1,4 @@
+import process from "node:process";
 import rateLimit, { ipKeyGenerator } from "express-rate-limit";
 import { verifyAccessToken } from "../utils/jwtToken.js";
 
@@ -54,3 +55,24 @@ export const blogUpdateLimiter = limiter({ windowMs: HOUR, limit: 120, perUser: 
 // The numbers sit well above what a person does (a post takes minutes to write,
 // the editor autosaves to the browser, not the server), so only scripts hit them.
 export const toggleLimiter = limiter({ windowMs: MINUTE, limit: 120, perUser: true, message: "Slow down a little. Try again in a minute." });
+
+// Backstop for the whole API: one client IP, every route. The per-route limits above
+// are tighter; this only stops a single address flooding endpoints that have none
+// (public reads, exam bursts, Project Map writes). The ceiling is high because a
+// school or office shares one IP and the SPA fires several requests per page.
+// Skipped: CORS preflights (the browser retries them, and they carry no data) and
+// Polar's webhook (signed, and its sender IPs are shared). /healthz is answered
+// before Express. Off under Vitest, where every request comes from one IP.
+export const GLOBAL_IP_LIMIT = 300;
+
+export const createGlobalIpLimiter = ({ limit = GLOBAL_IP_LIMIT, windowMs = MINUTE } = {}) =>
+  rateLimit({
+    windowMs,
+    limit,
+    standardHeaders: "draft-7",
+    legacyHeaders: false,
+    skip: (req) => req.method === "OPTIONS" || req.path === "/api/billing/webhook",
+    message: { message: "Too many requests from your network. Please wait a minute.", code: 429 },
+  });
+
+export const globalIpLimiter = process.env.VITEST ? (req, res, next) => next() : createGlobalIpLimiter();

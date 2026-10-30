@@ -28,6 +28,7 @@ import recruiterRoutes from "./modules/recruiter/index.js";
 import readinessRoutes from "./modules/readiness/index.js";
 import onboardingRoutes from "./modules/onboarding/index.js";
 import { notFound } from "./middleware/notFound.js";
+import { globalIpLimiter } from "./middleware/rateLimits.js";
 
 /**
  * The one origin allowed to call the API from a browser. In production a missing
@@ -78,6 +79,9 @@ export function createApp(db) {
       credentials: true,
     }),
   );
+
+  // Before body parsing, so a flood is refused before any JSON is read.
+  app.use(globalIpLimiter);
 
   // Polar's webhook signature is computed over the exact request bytes, so this
   // route needs the body UNPARSED. It must be registered before express.json(),
