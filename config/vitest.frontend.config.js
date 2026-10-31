@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
-// Frontend unit tests: pure helpers + hooks, colocated as src/**/*.test.js.
+// Frontend unit tests: pure helpers + hooks, in tests/unit, mirroring the src/ tree.
 // jsdom gives hooks a DOM; the "@" alias matches vite.config.js.
 export default defineConfig({
   root,
@@ -12,7 +12,7 @@ export default defineConfig({
   // Components use the automatic JSX runtime (no `import React`), same as Vite.
   esbuild: { jsx: 'automatic' },
   test: {
-    include: ['src/**/*.test.{js,jsx}'],
+    include: ['tests/unit/**/*.test.{js,jsx}'],
     environment: 'jsdom',
   },
 })
