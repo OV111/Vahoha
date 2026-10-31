@@ -15,7 +15,7 @@ const keep = (source, keys) => Object.fromEntries(keys.filter((k) => source[k] !
 // stays: it is the repo proof a recruiter is meant to see.
 const publicGraph = (graph) => ({
   ...keep(graph, ["v", "lens", "repo"]),
-  nodes: (graph.nodes ?? []).map((n) => keep(n, ["id", "kind", "title", "sub", "x", "y", "evidence"])),
+  nodes: (graph.nodes ?? []).map((n) => keep(n, ["id", "kind", "title", "sub", "x", "y", "evidence", "note"])),
   edges: (graph.edges ?? []).map((e) => keep(e, ["id", "source", "target", "sourceHandle", "targetHandle", "label"])),
 });
 

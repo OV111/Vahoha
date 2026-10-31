@@ -1,9 +1,10 @@
-import { createContext, useContext } from "react";
-import { Background, BackgroundVariant, Controls, Handle, Position, ReactFlow } from "@xyflow/react";
+import { createContext, useContext, useMemo } from "react";
+import { Background, BackgroundVariant, ConnectionMode, Handle, Panel, Position, ReactFlow, useReactFlow } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { BadgeCheck, Box, Trash2 } from "lucide-react";
+import { BadgeCheck, Box, Maximize, MessageSquare, Minus, Plus, Trash2 } from "lucide-react";
 import { KIND_ICONS } from "../lib/nodeKinds";
 import { fitOptions } from "../lib/viewport";
+import { routeEdges } from "../lib/edgeRouting";
 
 const TONE_CLASS = {
   ok: "bg-emerald-500/15 text-emerald-300",
@@ -23,9 +24,12 @@ function borderFor(status, selected) {
 
 // Set by pages that let the learner edit: the selected part then shows a delete button.
 const DeleteNodeContext = createContext(null);
+// Set by the team map editor: part id -> number of comments on it.
+const CommentCountContext = createContext(null);
 
 function SystemNode({ id, data, selected }) {
   const onDelete = useContext(DeleteNodeContext);
+  const comments = useContext(CommentCountContext)?.get(id) ?? 0;
   const Icon = KIND_ICONS[data.kind] ?? Box;
   const status = data.status;
   return (
@@ -47,6 +51,16 @@ function SystemNode({ id, data, selected }) {
           <span className="sr-only">Found in the repo</span>
         </span>
       )}
+      {comments > 0 && (
+        <span
+          title={`${comments} comment${comments === 1 ? "" : "s"}`}
+          className="absolute -right-2 -bottom-2 flex h-5 min-w-5 items-center justify-center gap-0.5 rounded-full bg-purple-500 px-1.5 text-[11px] font-semibold text-white"
+        >
+          <MessageSquare size={10} aria-hidden="true" />
+          {comments}
+          <span className="sr-only"> comments</span>
+        </span>
+      )}
       <div className="flex items-center gap-2.5">
         <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-amber-300">
           <Icon size={16} aria-hidden="true" />
@@ -59,23 +73,50 @@ function SystemNode({ id, data, selected }) {
       {status && (
         <p className={`mt-2 inline-block rounded-full px-2 py-0.5 text-[11px] font-medium ${TONE_CLASS[status.tone]}`}>{status.text}</p>
       )}
-      <Handle id="l" type="target" position={Position.Left} style={handleStyle} className="flex items-center justify-center">
-        <Dot />
-      </Handle>
-      <Handle id="t" type="target" position={Position.Top} style={handleStyle} className="flex items-center justify-center">
-        <Dot />
-      </Handle>
-      <Handle id="r" type="source" position={Position.Right} style={handleStyle} className="flex items-center justify-center">
-        <Dot />
-      </Handle>
-      <Handle id="b" type="source" position={Position.Bottom} style={handleStyle} className="flex items-center justify-center">
-        <Dot />
-      </Handle>
+      {/* Every side can start or end a wire (the canvas runs in loose connection mode); which sides a wire
+          is drawn between is picked from where the parts are, see lib/edgeRouting.js. */}
+      {SIDES.map(([handleId, position]) => (
+        <Handle key={handleId} id={handleId} type="source" position={position} style={handleStyle} className="flex items-center justify-center">
+          <Dot />
+        </Handle>
+      ))}
     </div>
   );
 }
 
 const nodeTypes = { system: SystemNode };
+const SIDES = [
+  ["l", Position.Left],
+  ["t", Position.Top],
+  ["r", Position.Right],
+  ["b", Position.Bottom],
+];
+
+const zoomButton =
+  "flex size-9 cursor-pointer items-center justify-center text-neutral-300 transition-colors hover:bg-neutral-800 hover:text-white focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-purple-400 pointer-coarse:size-11";
+
+// Zoom in, zoom out and "show the whole map", styled like the rest of the
+// editor (React Flow's own Controls are light grey squares). Bigger on touch.
+function ZoomControls() {
+  const { zoomIn, zoomOut, fitView } = useReactFlow();
+  const buttons = [
+    { label: "Zoom in", Icon: Plus, onClick: () => zoomIn({ duration: 200 }) },
+    { label: "Zoom out", Icon: Minus, onClick: () => zoomOut({ duration: 200 }) },
+    { label: "Show the whole map", Icon: Maximize, onClick: () => fitView({ ...fitOptions(), duration: 300 }) },
+  ];
+  return (
+    <Panel
+      position="bottom-left"
+      className="flex flex-col divide-y divide-neutral-800 overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950/90 shadow-lg shadow-black/40 backdrop-blur"
+    >
+      {buttons.map(({ label, Icon, onClick }) => (
+        <button key={label} type="button" onClick={onClick} className={zoomButton} aria-label={label} title={label}>
+          <Icon size={15} aria-hidden="true" />
+        </button>
+      ))}
+    </Panel>
+  );
+}
 const notSelf = (c) => c.source !== c.target;
 const edgeDefaults = {
   labelStyle: { fill: "#d4d4d4", fontSize: 12 },
@@ -90,13 +131,17 @@ const edgeDefaults = {
  * remove it. State lives in the page, so what the learner built is what the
  * page uses. Extra props (onDrop, onInit, ...) pass straight to ReactFlow.
  */
-export default function SystemCanvas({ nodes, edges, onNodesChange, onEdgesChange, onConnect, onDeleteNode, ...flowProps }) {
+export default function SystemCanvas({ nodes, edges, onNodesChange, onEdgesChange, onConnect, onDeleteNode, commentCounts = null, ...flowProps }) {
+  // Drawn between the sides that face each other, so a wire to a part on the left points left.
+  const routed = useMemo(() => routeEdges(nodes, edges), [nodes, edges]);
   return (
+    <CommentCountContext.Provider value={commentCounts}>
     <DeleteNodeContext.Provider value={onDeleteNode ?? null}>
       <ReactFlow
         nodes={nodes}
-        edges={edges}
+        edges={routed}
         nodeTypes={nodeTypes}
+        connectionMode={ConnectionMode.Loose}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
@@ -111,8 +156,9 @@ export default function SystemCanvas({ nodes, edges, onNodesChange, onEdgesChang
         {...flowProps}
       >
         <Background variant={BackgroundVariant.Dots} gap={22} size={1.2} color="#2a2a2a" />
-        <Controls showInteractive={false} className="[&_button]:pointer-coarse:size-11!" />
+        <ZoomControls />
       </ReactFlow>
     </DeleteNodeContext.Provider>
+    </CommentCountContext.Provider>
   );
 }

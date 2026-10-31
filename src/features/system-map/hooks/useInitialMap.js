@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import useAuthStore from "@/stores/useAuthStore";
 import { createMap, createOwnerMap, fetchMap, fetchMyMaps, fetchOwnerMap } from "../systemMapApi";
 import { EXAMPLE_GRAPH, clearSaved, fromGraph, loadSaved, toGraph } from "../lib/mapGraph";
@@ -47,15 +47,15 @@ async function loadPersonalMap() {
 }
 
 /**
- * Where the map comes from.
- *   guest            -> this browser's saved map, or the example
- *   signed in        -> their newest map on the server. With none yet, the
- *                       browser's map (or the example) is uploaded as their
- *                       first one, then the browser copy is removed so the next
- *                       account on a shared computer can't see it.
- *   with an `owner`  -> that capstone's or team's map. These live only on the
- *                       server, so a guest gets status "signin"; a learner who
- *                       isn't eligible gets the server's reason as the error.
+ * Where the map comes from. Guests get status "signin": the editor is for
+ * signed-in learners only (shared maps stay public at /map/:publicId).
+ *   signed in        -> their newest map on the server. With none yet, a map
+ *                       left in this browser from the old guest mode (or the
+ *                       example) is uploaded as their first one, then the
+ *                       browser copy is removed so the next account on a
+ *                       shared computer can't see it.
+ *   with an `owner`  -> that capstone's or team's map; a learner who isn't
+ *                       eligible gets the server's reason as the error.
  *
  * @param {{ ownerType: "capstone" | "team", ownerId: string } | null} [owner]
  * @returns {{ status: "loading" | "ready" | "error" | "signin", graph?: object, remote?: { id: string, title: string, revision: number, shared: boolean, publicId: string | null, ownerType: string, ownerId: string | null, drift: object | null } | null, error?: string }}
@@ -82,14 +82,8 @@ export default function useInitialMap(owner = null) {
     };
   }, [auth, authLoading, session, key, ownerType, ownerId]);
 
-  // A guest's map is read once per visit, not on every render.
-  const guest = useMemo(
-    () => (!authLoading && !auth && !ownerType ? { status: "ready", graph: loadSaved() ?? fromGraph(EXAMPLE_GRAPH), remote: null } : null),
-    [authLoading, auth, ownerType],
-  );
-
   if (authLoading) return { status: "loading" };
-  if (!auth) return ownerType ? { status: "signin" } : guest;
+  if (!auth) return { status: "signin" };
   // A result from an earlier session or another map (sign out, sign in as someone else) is not ours.
   return loaded?.session === session && loaded.key === key ? loaded : { status: "loading" };
 }

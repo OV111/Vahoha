@@ -87,6 +87,7 @@
     "groq-sdk": "^1.2.1",
     "helmet": "^8.3.0",
     "highlight.js": "^11.12.0",
+    "html-to-image": "1.11.11",
     "ioredis": "^5.10.1",
     "jsonwebtoken": "^9.0.2",
     "ldrs": "^1.1.9",

@@ -2,7 +2,10 @@
 // (selection, measured size, replay status). Stage 2 sends this same object to
 // the server, so keep it plain JSON.
 //
-//   { v: 1, nodes: [{ id, kind, title, sub, x, y, evidence? }], edges: [{ id, source, target, sourceHandle, targetHandle, label }], repo?, lens? }
+//   { v: 1, nodes: [{ id, kind, title, sub, x, y, evidence?, note? }], edges: [{ id, source, target, sourceHandle, targetHandle, label }], repo?, lens? }
+//
+// `note` is the learner's explanation of the part (what it is, why it's there),
+// shown only when the part is selected. Left out when blank, like `evidence`.
 //
 // `evidence` (repo file paths that prove a part exists) and `repo` ({ fullName, sha }
 // of the scan they came from) are optional and left out when empty, so maps
@@ -16,6 +19,7 @@ import { isKind, kindInfo } from "./nodeKinds";
 export const GRAPH_VERSION = 1;
 export const MAX_NODES = 80;
 export const MAX_EVIDENCE = 5;
+export const MAX_NOTE = 1000; // mirrors MAX_NOTE in the backend's systemMap.schemas.js
 
 const STORAGE_KEY = "vahoha.projectMap.v1";
 const arrow = { type: MarkerType.ArrowClosed, color: "#6b7280" };
@@ -51,14 +55,17 @@ export function toGraph(nodes, edges, repo = null, lens = DEFAULT_LENS) {
         x: Math.round(n.position.x),
         y: Math.round(n.position.y),
         ...(evidence.length ? { evidence } : {}),
+        ...(n.data.note?.trim() ? { note: n.data.note } : {}),
       };
     }),
     edges: edges.map((e) => ({
       id: e.id,
       source: e.source,
       target: e.target,
-      sourceHandle: e.sourceHandle ?? "r",
-      targetHandle: e.targetHandle ?? "l",
+      // Saved sides stay right/bottom out and left/top in (the server checks this); the canvas
+      // re-picks the sides it draws from where the parts are (lib/edgeRouting.js).
+      sourceHandle: ["r", "b"].includes(e.sourceHandle) ? e.sourceHandle : "r",
+      targetHandle: ["l", "t"].includes(e.targetHandle) ? e.targetHandle : "l",
       label: typeof e.label === "string" ? e.label : "",
     })),
     ...(scanned ? { repo: scanned } : {}),
@@ -85,7 +92,13 @@ export function fromGraph(graph) {
         id: n.id,
         type: "system",
         position: { x: Number(n.x) || 0, y: Number(n.y) || 0 },
-        data: { kind, title: text(n.title, 40) || kindInfo(kind).label, sub: text(n.sub, 60), ...(evidence.length ? { evidence } : {}) },
+        data: {
+          kind,
+          title: text(n.title, 40) || kindInfo(kind).label,
+          sub: text(n.sub, 60),
+          ...(evidence.length ? { evidence } : {}),
+          ...(text(n.note, MAX_NOTE).trim() ? { note: text(n.note, MAX_NOTE) } : {}),
+        },
       },
     ];
   });

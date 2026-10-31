@@ -30,6 +30,7 @@ export const evidencePath = z
   .refine((p) => !p.startsWith("/") && !p.includes("\\") && !p.split("/").includes(".."), "Invalid evidence path");
 
 export const MAX_EVIDENCE = 5;
+export const MAX_NOTE = 1000; // mirrors MAX_NOTE in src/features/system-map/lib/mapGraph.js
 
 const nodeSchema = z.object({
   id: localId,
@@ -39,6 +40,8 @@ const nodeSchema = z.object({
   x: coordinate,
   y: coordinate,
   evidence: z.array(evidencePath).max(MAX_EVIDENCE).optional(),
+  // What the part is and why it's on the map, in the learner's words. Shown when the part is clicked.
+  note: z.string().trim().max(MAX_NOTE).optional(),
 });
 
 const edgeSchema = z.object({
