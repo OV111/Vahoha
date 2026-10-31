@@ -1,4 +1,5 @@
 import UserAvatar from "@/components/ui/UserAvatar";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { useEffect, useMemo, useState } from "react";
 import { X, Shield, ShieldOff, UserMinus, UserPlus, LogOut } from "lucide-react";
 import {
@@ -95,7 +96,7 @@ const GroupMembersModal = ({
         </div>
 
         {isLoading ? (
-          <p className="py-8 text-center text-sm text-gray-400">Loading...</p>
+          <div className="flex min-h-32"><LoadingSuspense fill size={32} /></div>
         ) : (
           <>
             {error && <p className="mt-2 text-xs text-red-500">{error}</p>}

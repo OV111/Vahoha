@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { ExternalLink } from "lucide-react";
 import { teamsApi } from "./teamsApi";
 import ReadOnlyMap from "../system-map/components/ReadOnlyMap";
@@ -71,7 +72,7 @@ export default function EvidencePage() {
     </div>
   );
   if (error) return shell(<p className="text-sm text-[var(--t-red)]">{error}</p>);
-  if (!data) return shell(<p className="t-muted">Loading…</p>);
+  if (!data) return shell(<div className="flex min-h-[40vh]"><LoadingSuspense fill /></div>);
 
   return shell(
     <>

@@ -1,5 +1,6 @@
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { Send, Eye, Pencil } from "lucide-react";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { Save } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
@@ -148,7 +149,7 @@ export default function EditBlog() {
       <div className="flex min-h-dvh">
         <SideBar />
         <div className="flex flex-1 items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-fuchsia-500 border-t-transparent" />
+          <LoadingSuspense fill />
         </div>
       </div>
     );

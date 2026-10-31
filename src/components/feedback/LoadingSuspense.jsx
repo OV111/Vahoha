@@ -5,9 +5,10 @@ import useThemeStore from "@/stores/useThemeStore";
 /**
  * The app's loader. Full-page by default (the route Suspense fallback);
  * `fill` makes it fill its parent instead and leaves the background to the
- * parent, for panels and pages that already own their own surface.
+ * parent, for panels and pages that already own their own surface. `size`
+ * shrinks the circle for small panels and popovers.
  */
-const LoadingSuspense = ({ fill = false }) => {
+const LoadingSuspense = ({ fill = false, size = 44 }) => {
   const { theme } = useThemeStore();
   const isDark = theme !== "light";
 
@@ -19,7 +20,7 @@ const LoadingSuspense = ({ fill = false }) => {
       role="status"
       aria-label="Loading"
     >
-      <TailChase size="44" speed="1.75" color={isDark ? "#a855f7" : "#7c3aed"} />
+      <TailChase size={String(size)}speed="1.75" color={isDark ? "#a855f7" : "#7c3aed"} />
     </div>
   );
 };

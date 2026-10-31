@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Check, FileJson, Globe, Lock } from "lucide-react";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { libraryAdminApi } from "../../../services/libraryAdminApi";
 
 const card = "rounded-md border border-neutral-800 bg-neutral-950 p-5";
@@ -218,7 +219,7 @@ function DigestReview({ sourceId, onChanged }) {
     }
   };
 
-  if (!digest) return error ? <ErrorBox error={error} /> : <p className="text-sm text-neutral-400">Loading…</p>;
+  if (!digest) return error ? <ErrorBox error={error} /> : <div className="flex min-h-[40vh]"><LoadingSuspense fill /></div>;
 
   const isPublic = digest.digestVisibility === "public";
   return (
@@ -335,7 +336,7 @@ export default function AdminLibraryPage() {
         {digests ? (
           <DigestList digests={digests} selectedId={selectedId} onSelect={setSelectedId} />
         ) : (
-          !loadError && <p className="text-sm text-neutral-400">Loading…</p>
+          !loadError && <div className="flex min-h-40"><LoadingSuspense fill size={32} /></div>
         )}
       </section>
 

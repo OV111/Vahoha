@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import {
   fetchLibraryResourceById,
   fetchLibraryResources,
@@ -51,12 +52,7 @@ function LoadingState() {
       className="min-h-dvh flex items-center justify-center"
       style={{ background: "#0a0a0c" }}
     >
-      <div className="text-center">
-        <div
-          className="w-8 h-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"
-        />
-        <MonoLabel style={{ color: "#555", fontSize: 11 }}>// loading resource</MonoLabel>
-      </div>
+      <LoadingSuspense fill />
     </div>
   );
 }

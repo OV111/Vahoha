@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import {
   Check,
   Copy,
@@ -702,7 +703,7 @@ export default function TeamAdminPage() {
       loadError ? (
         <p className="text-sm text-[var(--t-red)]">{loadError.message}</p>
       ) : (
-        <p className="t-muted">Loading teams…</p>
+        <div className="flex min-h-[40vh]"><LoadingSuspense fill /></div>
       ),
     );
   }
@@ -776,7 +777,7 @@ export default function TeamAdminPage() {
               </p>
             </div>
           )}
-          {selectedId && !detail && <p className="t-muted">Loading team…</p>}
+          {selectedId && !detail && <div className="flex min-h-40"><LoadingSuspense fill size={32} /></div>}
           {detail && (
             <>
               <header className="flex flex-col gap-4">

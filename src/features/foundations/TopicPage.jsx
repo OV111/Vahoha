@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import NotFound from "../../components/feedback/NotFound";
 import "./foundations-theme.css";
@@ -82,7 +83,7 @@ export default function TopicPage() {
             This lesson didn't load. Check your connection and refresh the page.
           </p>
         )}
-        {!lesson && !error && <p className="f-empty">Loading lesson…</p>}
+        {!lesson && !error && <div className="flex min-h-[40vh]"><LoadingSuspense fill /></div>}
 
         {lesson && (
           <>

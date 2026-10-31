@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
 import Badge from "../components/Badge";
 import { DIFFICULTY, TYPE_TONE } from "../lib/challengeTones";
@@ -317,9 +318,9 @@ export default function ReviewProposals() {
         </div>
 
         {loading && (
-          <p className="text-[12px]" style={{ color: C.muted, fontFamily: FONT_MONO }}>
-            Loading proposals…
-          </p>
+          <div className="flex min-h-40">
+            <LoadingSuspense fill size={32} />
+          </div>
         )}
 
         {!loading && error && (

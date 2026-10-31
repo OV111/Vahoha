@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { BadgeCheck, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { recruiterApi } from "./recruiterApi";
@@ -52,7 +53,7 @@ export default function CandidatePage() {
   }, [username]);
 
   if (error) return <p className="p-8 text-sm text-red-400">{error}</p>;
-  if (!card) return <p className="p-8 text-sm text-neutral-500">Loading…</p>;
+  if (!card) return <div className="flex min-h-[60vh]"><LoadingSuspense fill /></div>;
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-10">

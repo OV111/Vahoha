@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { DynamicIslandTOC } from "./components/DynamicIslandTOC";
 import { ArrowLeft, Heart, MessageCircle, Share2 } from "lucide-react";
 import useAuthStore from "@/stores/useAuthStore";
@@ -287,7 +288,7 @@ function PostPage({ id }) {
   if (loading) {
     return (
       <div className={centered}>
-        <p className="text-slate-400">Loading post...</p>
+        <LoadingSuspense fill />
       </div>
     );
   }

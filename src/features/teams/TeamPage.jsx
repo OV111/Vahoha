@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { ExternalLink, Github } from "lucide-react";
 import { teamsApi } from "./teamsApi";
 import TeamDefense from "./components/TeamDefense";
@@ -78,7 +79,7 @@ export default function TeamPage() {
   );
 
   if (error) return shell(<p className="text-sm text-[var(--t-red)]">{error}</p>);
-  if (team === undefined) return shell(<p className="t-muted">Loading…</p>);
+  if (team === undefined) return shell(<div className="flex min-h-[40vh]"><LoadingSuspense fill /></div>);
   if (team === null) {
     return shell(
       <>

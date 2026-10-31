@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Send, Trash2, Loader2 } from "lucide-react";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { fetchComments, postComment, deleteComment } from "@/services/commentsApi";
 import useAuthStore from "@/stores/useAuthStore";
 import useProfileStore from "@/stores/useProfileStore";
@@ -81,8 +82,8 @@ const CommentPopover = ({ blogId, onClose, onCountChange }) => {
     <Popover title="Comments" badge={comments.length} onClose={onClose} className="max-md:right-3 max-md:w-[calc(100%-1.5rem)] md:w-80">
       <div ref={listRef} className="flex max-h-60 flex-col gap-3 overflow-y-auto px-4 py-3">
         {loading ? (
-          <div className="flex justify-center py-6">
-            <Loader2 className="h-5 w-5 animate-spin text-neutral-400" />
+          <div className="flex min-h-24">
+            <LoadingSuspense fill size={28} />
           </div>
         ) : error ? (
           <p className="py-4 text-center text-xs text-neutral-500">{error}</p>

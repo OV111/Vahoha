@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { recruiterApi } from "../recruiterApi";
 import Checkbox from "./FormCheckbox";
 
@@ -75,7 +76,7 @@ export default function RecruiterSettings({ username, framed = true }) {
         </button>
       </p>
     ) : (
-      <p className="text-sm text-neutral-500">Loading…</p>
+      <div className="flex min-h-40"><LoadingSuspense fill size={32} /></div>
     );
   }
 

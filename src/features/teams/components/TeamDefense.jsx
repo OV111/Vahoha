@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Clock, FileCode2 } from "lucide-react";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { teamsApi } from "../teamsApi";
 import useCountdown from "@/hooks/useCountdown";
 
@@ -107,7 +108,7 @@ export default function TeamDefense({ teamId }) {
     return error ? (
       <p className="text-sm text-[var(--t-red)]">{error}</p>
     ) : (
-      <p className="t-caption">Loading…</p>
+      <div className="flex min-h-40"><LoadingSuspense fill size={32} /></div>
     );
   }
 

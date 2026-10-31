@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { addEdge, ReactFlowProvider, useEdgesState, useNodesState, useReactFlow } from "@xyflow/react";
 import { Download, RotateCcw, ScanSearch, Upload } from "lucide-react";
 import NotFound from "../../../components/feedback/NotFound";
@@ -356,11 +357,9 @@ function ProjectMapLoader({ owner }) {
     );
   }
   if (initial.status === "loading") {
-    return (
-      <div role="status" className="flex min-h-[60vh] items-center justify-center text-sm text-neutral-400">
-        Opening your map…
-      </div>
-    );
+    // Same element as the route's Suspense fallback, so the lazy-load and the
+    // map fetch read as one loader instead of two circles in different spots.
+    return <LoadingSuspense />;
   }
   if (initial.status === "error") {
     return (

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -402,12 +403,7 @@ function ExamRunner() {
 
   if (loadState === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-neutral-500">
-          <Loader2 size={24} className="animate-spin text-purple-500" />
-          <p className="text-sm">Loading your exam...</p>
-        </div>
-      </div>
+      <LoadingSuspense />
     );
   }
 
