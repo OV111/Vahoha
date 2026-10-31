@@ -27,6 +27,11 @@ export const sessionIdParamSchema = z.object({
   id: objectId,
 });
 
+// DELETE /api/ai-agent/sessions — clear all chats; keepPinned=true spares pinned ones
+export const deleteAllSessionsQuerySchema = z.object({
+  keepPinned: z.enum(["true", "false"]).optional(),
+});
+
 // PATCH /api/ai-agent/sessions/:id — partial update
 export const updateSessionSchema = z
   .object({

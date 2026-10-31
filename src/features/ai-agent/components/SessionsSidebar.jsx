@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from "react";
-import { Search, SquarePen, PanelLeft } from "lucide-react";
+import { Search, SquarePen, PanelLeft, Trash2 } from "lucide-react";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import SessionItem from "./SessionItem";
 
 /** How long the sidebar stays open after the pointer leaves, to avoid flicker. */
@@ -26,10 +27,24 @@ export default function SessionsSidebar({
   onNewSession,
   onRenameSession,
   onDeleteSession,
+  onDeleteAllSessions,
   onTogglePinSession,
   mobileOpen = false,
   onMobileClose = () => {},
 }) {
+  // "Delete all chats" confirm step; keepPinned defaults on so pinned chats are only lost on purpose.
+  const [confirmAll, setConfirmAll] = useState(false);
+  const [keepPinned, setKeepPinned] = useState(true);
+  const pinnedCount = sessions.filter((s) => s.pinned).length;
+  const deleteCount = keepPinned ? sessions.length - pinnedCount : sessions.length;
+  const openConfirmAll = () => {
+    setKeepPinned(true);
+    setConfirmAll(true);
+  };
+  const confirmDeleteAll = () => {
+    setConfirmAll(false);
+    onDeleteAllSessions({ keepPinned: pinnedCount > 0 && keepPinned });
+  };
   // `pinned` is the explicit choice made by clicking a chevron; `peeking` is the
   // temporary hover state. Keeping them separate is what stops a hover-out from
   // closing a sidebar the user deliberately opened.
@@ -195,7 +210,47 @@ export default function SessionsSidebar({
           </>
         )}
       </div>
+
+      {sessions.length > 0 && onDeleteAllSessions && (
+        <div className="border-t border-white/5 px-2 py-2">
+          <button
+            type="button"
+            onClick={openConfirmAll}
+            className="flex min-h-9 w-full cursor-pointer items-center gap-2 rounded-lg px-3 text-[12px] text-white/40 transition-colors hover:bg-red-500/10 hover:text-red-300 focus-visible:outline-2 focus-visible:outline-purple-500 max-md:min-h-11 max-md:text-sm"
+          >
+            <Trash2 size={13} strokeWidth={1.75} aria-hidden="true" />
+            Delete all chats
+          </button>
+        </div>
+      )}
     </>
+  );
+
+  const confirmAllDialog = confirmAll && (
+    <ConfirmDialog
+      title={deleteCount === 1 ? "Delete 1 chat?" : `Delete ${deleteCount} chats?`}
+      body={
+        <>
+          {deleteCount === 0
+            ? "All your chats are pinned, so there's nothing to delete unless you include them."
+            : "They're gone for good. Your daily message count doesn't change."}
+          {pinnedCount > 0 && (
+            <label className="mt-3 flex cursor-pointer items-center gap-2 text-white/80">
+              <input
+                type="checkbox"
+                checked={keepPinned}
+                onChange={(e) => setKeepPinned(e.target.checked)}
+                className="size-4 accent-purple-500"
+              />
+              Keep my {pinnedCount} pinned {pinnedCount === 1 ? "chat" : "chats"}
+            </label>
+          )}
+        </>
+      }
+      confirmLabel="Delete"
+      onConfirm={deleteCount === 0 ? () => setConfirmAll(false) : confirmDeleteAll}
+      onCancel={() => setConfirmAll(false)}
+    />
   );
 
   // Below md the desktop sidebar is hidden, so this slide-over is the only way
@@ -237,6 +292,7 @@ export default function SessionsSidebar({
           <div className="flex-1" />
         </aside>
         {mobileDrawer}
+        {confirmAllDialog}
       </>
     );
   }
@@ -252,6 +308,7 @@ export default function SessionsSidebar({
         {renderPanel({ onSelect: onSelectSession, onNew: onNewSession })}
       </aside>
       {mobileDrawer}
+      {confirmAllDialog}
     </>
   );
 }

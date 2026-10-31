@@ -83,6 +83,19 @@ export const deleteSession = async (db, userId, sessionId) => {
   return deletedCount > 0;
 };
 
+/**
+ * Delete every chat this learner has, or every one they haven't pinned.
+ * Only conversations go: the daily message count (agent_usage) stays, so
+ * clearing chats can't reset the cap, and teaching logs stay as the learner's
+ * progress record, the same as deleting one chat.
+ * @returns {Promise<number>} how many were deleted
+ */
+export const deleteAllSessions = async (db, userId, { keepPinned = false } = {}) => {
+  const filter = { userId: new ObjectId(userId), ...(keepPinned ? { pinned: { $ne: true } } : {}) };
+  const { deletedCount } = await db.collection("agent_sessions").deleteMany(filter);
+  return deletedCount;
+};
+
 // Append user + assistant messages, enforce 20-turn sliding window
 export const appendMessages = async (db, sessionId, userMsg, assistantMsg) => {
   const col = db.collection("agent_sessions");
