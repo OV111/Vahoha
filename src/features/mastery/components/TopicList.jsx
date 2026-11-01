@@ -1,96 +1,139 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { STATUS_META, STATUS_ORDER } from "../lib/statusMeta";
+import { PROGRESS_COPY } from "../../../../constants/progress";
+import { TEXT, MUTED, BORDER, CHIP, FOCUS } from "../lib/tone";
+
+const COPY = PROGRESS_COPY.topics;
 
 const formatDate = (value) =>
-  value
-    ? new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric" })
-    : null;
-
-const Score = ({ label, value }) =>
-  value === null || value === undefined ? null : (
-    <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[11px] text-[#D4D4DC]">
-      {label} {value}%
-    </span>
-  );
+  value ? new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : null;
 
 const TopicRow = ({ topic }) => {
-  const meta = STATUS_META[topic.status] ?? STATUS_META.untested;
-  const layerLine = topic.layer?.title
-    ? `${topic.layer.title}${topic.layer.order ? ` · Layer ${topic.layer.order}` : ""}`
-    : null;
   const misconceptions = topic.misconceptions.filter((m) => m.description);
+  const date = formatDate(topic.lastEvidenceAt);
 
   return (
-    <li className="rounded-lg border border-white/10 bg-zinc-900/40 p-4">
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <div className="min-w-0">
-          <p className="font-medium text-[#F7F7F8]">{topic.title}</p>
-          {layerLine && <p className="text-xs text-[#A1A0AB]">{layerLine}</p>}
-        </div>
+    <li className="py-3">
+      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+        <p className={`min-w-0 text-sm font-medium ${TEXT}`}>{topic.title}</p>
         <div className="flex flex-wrap items-center gap-1.5">
-          {/* The engine attaches the whole layer-exam score to each topic missed
-              in that exam — it is not a per-topic score, so it is labelled as such. */}
-          <Score label="Layer test" value={topic.examScore} />
-          <Score label="Explained" value={topic.teachBackScore} />
-          {topic.failCount > 0 && (
-            <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[11px] text-[#D4D4DC]">
-              {topic.failCount}× missed
-            </span>
-          )}
+          {/* The engine attaches the whole layer-test score to each topic missed
+              in that test: it is not a per-topic score, so it says "Test". */}
+          {topic.examScore != null && <span className={CHIP}>{COPY.test(topic.examScore)}</span>}
+          {topic.teachBackScore != null && <span className={CHIP}>{COPY.explained(topic.teachBackScore)}</span>}
+          {topic.failCount > 0 && <span className={CHIP}>{COPY.missed(topic.failCount)}</span>}
         </div>
       </div>
+      {date && <p className={`mt-1 text-xs ${MUTED}`}>{COPY.lastSeen(date)}</p>}
 
       {misconceptions.length > 0 && (
-        <div className="mt-3 rounded-md border border-amber-500/20 bg-amber-500/5 p-3">
-          <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-amber-300">
-            You may believe
-          </p>
-          <ul className="space-y-1 text-[13px] text-amber-100/90">
+        <div className="mt-3 rounded-md border border-amber-300 bg-amber-50 p-3 dark:border-amber-500/20 dark:bg-amber-500/5">
+          <p className="mb-1 text-xs font-semibold text-amber-800 dark:text-amber-300">{COPY.misconceptions}</p>
+          <ul className="space-y-1 text-[13px] text-amber-900 dark:text-amber-100/90">
             {misconceptions.map((m) => (
               <li key={m.id}>“{m.description}”</li>
             ))}
           </ul>
-          <Link to="/ai-agent" className="mt-2 inline-block text-xs text-amber-300 hover:underline">
-            Work through this with your mentor →
+          <Link
+            to="/ai-agent"
+            className={`mt-2 inline-block rounded text-xs font-medium text-amber-800 hover:underline dark:text-amber-300 ${FOCUS}`}
+          >
+            {COPY.fixWithMentor}
           </Link>
         </div>
-      )}
-
-      {topic.lastEvidenceAt && (
-        <p className={`mt-2 text-[11px] ${meta.text}`}>
-          Last evidence {formatDate(topic.lastEvidenceAt)}
-        </p>
       )}
     </li>
   );
 };
 
-/** Topics grouped by status, attention-first, each group with what it means. */
-const TopicList = ({ topics }) => (
-  <div className="space-y-8">
-    {STATUS_ORDER.map((status) => {
-      const group = topics.filter((t) => t.status === status);
-      if (!group.length) return null;
-      const meta = STATUS_META[status];
+/** Topics of one status, grouped under their layer so the layer is named once. */
+const groupByLayer = (topics) => {
+  const groups = new Map();
+  for (const t of topics) {
+    const key = t.layer?.title ?? "";
+    if (!groups.has(key)) groups.set(key, { layer: t.layer, topics: [] });
+    groups.get(key).topics.push(t);
+  }
+  // Roadmap order; topics with no layer last.
+  return [...groups.values()].sort((a, b) => (a.layer?.order ?? Infinity) - (b.layer?.order ?? Infinity));
+};
 
-      return (
-        <section key={status} aria-labelledby={`group-${status}`}>
-          <div className="mb-3 flex items-baseline gap-2">
-            <span className={`h-2.5 w-2.5 rounded-full ${meta.dot}`} aria-hidden="true" />
-            <h3 id={`group-${status}`} className="text-sm font-semibold text-[#F7F7F8]">
-              {meta.label} <span className="font-normal text-[#A1A0AB]">({group.length})</span>
-            </h3>
-            <p className="hidden text-xs text-[#A1A0AB] sm:block">— {meta.hint}</p>
-          </div>
-          <ul className="space-y-3">
-            {group.map((t) => (
-              <TopicRow key={t.slug} topic={t} />
-            ))}
-          </ul>
-        </section>
-      );
-    })}
-  </div>
-);
+/**
+ * Topics behind tabs, one status at a time, opening on the first status that
+ * has any. Replaces a single long list of every topic: a learner deciding what
+ * to work on needs one group, not all of them at once.
+ */
+const TopicList = ({ topics }) => {
+  const counts = Object.fromEntries(STATUS_ORDER.map((s) => [s, topics.filter((t) => t.status === s).length]));
+  const [tab, setTab] = useState(() => STATUS_ORDER.find((s) => counts[s] > 0) ?? STATUS_ORDER[0]);
+  const shown = topics.filter((t) => t.status === tab);
+
+  const onKeyDown = (event) => {
+    const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+    if (!step) return;
+    const next = STATUS_ORDER[(STATUS_ORDER.indexOf(tab) + step + STATUS_ORDER.length) % STATUS_ORDER.length];
+    setTab(next);
+    document.getElementById(`tab-${next}`)?.focus();
+  };
+
+  return (
+    <section aria-labelledby="topics-heading">
+      <h2 id="topics-heading" className={`text-lg font-semibold ${TEXT}`}>
+        {COPY.heading}
+      </h2>
+      <p className={`mt-1 text-sm ${MUTED}`}>{COPY.intro}</p>
+
+      <div role="tablist" aria-label={COPY.heading} onKeyDown={onKeyDown} className={`mt-4 flex gap-1 overflow-x-auto overflow-y-hidden border-b [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${BORDER}`}>
+        {STATUS_ORDER.map((status) => {
+          const selected = status === tab;
+          return (
+            <button
+              key={status}
+              id={`tab-${status}`}
+              type="button"
+              role="tab"
+              aria-selected={selected}
+              aria-controls="topics-panel"
+              tabIndex={selected ? 0 : -1}
+              onClick={() => setTab(status)}
+              className={`-mb-px flex shrink-0 cursor-pointer items-center gap-2 border-b-2 px-3 py-2 text-sm transition-colors ${FOCUS} ${
+                selected
+                  ? `border-purple-600 font-medium dark:border-purple-400 ${TEXT}`
+                  : `border-transparent hover:text-zinc-900 dark:hover:text-white ${MUTED}`
+              }`}
+            >
+              <span className={`h-2 w-2 rounded-full ${STATUS_META[status].dot}`} aria-hidden="true" />
+              {STATUS_META[status].label}
+              <span className={`tabular-nums ${MUTED}`}>{counts[status]}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div id="topics-panel" role="tabpanel" aria-labelledby={`tab-${tab}`} className="pt-3">
+        <p className={`text-xs ${MUTED}`}>{STATUS_META[tab].hint}</p>
+        {shown.length === 0 ? (
+          <p className={`py-6 text-sm ${MUTED}`}>{COPY.emptyTab}</p>
+        ) : (
+          groupByLayer(shown).map((group) => (
+            <div key={group.layer?.title ?? "other"} className="mt-5">
+              <h3 className={`text-xs font-medium ${MUTED}`}>
+                {group.layer?.title
+                  ? `${group.layer.order ? `Layer ${group.layer.order}: ` : ""}${group.layer.title}`
+                  : COPY.otherGroup}
+              </h3>
+              <ul className={`mt-1 divide-y border-t ${BORDER} divide-zinc-200 dark:divide-white/10`}>
+                {group.topics.map((t) => (
+                  <TopicRow key={t.slug} topic={t} />
+                ))}
+              </ul>
+            </div>
+          ))
+        )}
+      </div>
+    </section>
+  );
+};
 
 export default TopicList;

@@ -8,10 +8,11 @@
 
 import { Router } from "express";
 import { authenticate } from "../../middleware/authenticate.js";
-import { getMyMastery } from "./controllers/mastery.controller.js";
+import { getMyMastery, getMyJourney } from "./controllers/mastery.controller.js";
 
 const router = Router();
 
 router.get("/", authenticate, getMyMastery);
+router.get("/journey", authenticate, getMyJourney);
 
 export default router;

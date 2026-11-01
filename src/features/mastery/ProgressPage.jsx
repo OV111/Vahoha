@@ -1,97 +1,95 @@
 import { Link } from "react-router-dom";
-import { AlertTriangle, Map as MapIcon } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import useMastery from "./hooks/useMastery";
+import useJourney from "./hooks/useJourney";
 import useReadiness from "./hooks/useReadiness";
-import MasterySummary from "./components/MasterySummary";
+import PathCard from "./components/PathCard";
+import ActivityCard from "./components/ActivityCard";
 import NextStepCard from "./components/NextStepCard";
 import TopicList from "./components/TopicList";
 import LockedTopics from "./components/LockedTopics";
 import ReadinessCard from "./components/ReadinessCard";
+import { PROGRESS_COPY as COPY } from "../../../constants/progress";
+import { TEXT, MUTED, BORDER, FOCUS } from "./lib/tone";
+
+const LoadError = ({ error, onRetry }) => (
+  <div
+    role="alert"
+    className="flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-[13px] text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/5 dark:text-amber-200"
+  >
+    <AlertTriangle size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
+    <p className="flex-1">{error.message}</p>
+    <button type="button" onClick={onRetry} className={`cursor-pointer rounded font-medium underline ${FOCUS}`}>
+      {COPY.retry}
+    </button>
+  </div>
+);
+
+const Skeleton = ({ className }) => <div className={`animate-pulse rounded-xl bg-zinc-100 dark:bg-zinc-900 ${className}`} />;
+
+const NoTopics = () => (
+  <section className={`rounded-xl border border-dashed px-6 py-8 ${BORDER}`}>
+    <h2 className={`text-base font-semibold ${TEXT}`}>{COPY.topics.noneTitle}</h2>
+    <p className={`mt-1 max-w-md text-sm ${MUTED}`}>{COPY.topics.noneBody}</p>
+    <Link to="/roadmaps" className={`mt-3 inline-block rounded text-sm text-purple-600 hover:underline dark:text-purple-400 ${FOCUS}`}>
+      {COPY.topics.noneCta}
+    </Link>
+  </section>
+);
 
 /**
- * "What do I actually know?" — the learner-facing side of the adaptive engine.
+ * The learner's progress, in the order they need it: where am I on my path,
+ * what do I do next, which topics need work, how close am I to a job.
  *
- * All the judgement (statuses, the next step, what a free user may see) happens
- * on the server; this page only lays it out.
+ * Three independent requests, so one failing never hides the others. All the
+ * judgement (statuses, the next step, what a free user may see) is the server's;
+ * this page only lays it out.
  */
 const ProgressPage = () => {
-  const { data, loading, error, reload } = useMastery();
-  // Separate request: readiness failing must not hide the mastery view, and vice versa.
+  const mastery = useMastery();
+  const journey = useJourney();
   const readiness = useReadiness();
+  const data = mastery.data;
 
   return (
-    <div className="mx-auto max-w-3xl px-5 py-16 pt-28 sm:px-8">
-      <header className="mb-8">
-        <h1 className="text-3xl font-semibold text-[#F7F7F8]">My progress</h1>
-        <p className="mt-1 text-sm text-[#A1A0AB]">
-          What you&apos;ve proven, what&apos;s shaky, and the one thing to do next — built from
-          your tests, explanations and mentor sessions.
-        </p>
+    // `dark` pins this page to dark styles: MainLayout's background is always
+    // black, so the light variants would put light cards on it for anyone who
+    // chose the light theme elsewhere.
+    <div className="dark mx-auto max-w-6xl px-4 py-16 pt-28 sm:px-8">
+      <header className="mb-10">
+        <h1 className={`text-3xl font-semibold tracking-tight ${TEXT}`}>{COPY.title}</h1>
+        <p className={`mt-2 max-w-xl text-sm ${MUTED}`}>{COPY.intro}</p>
       </header>
 
-      {loading && (
-        <div className="space-y-4" aria-busy="true" aria-label="Loading progress">
-          <div className="h-36 animate-pulse rounded-xl bg-zinc-900" />
-          <div className="h-28 animate-pulse rounded-xl bg-zinc-900" />
-        </div>
-      )}
-
-      {!loading && error && (
-        <div
-          role="alert"
-          className="flex items-start gap-3 rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-[13px] text-amber-200"
-        >
-          <AlertTriangle size={16} className="mt-0.5 shrink-0" />
-          <p className="flex-1">{error.message}</p>
-          <button type="button" onClick={reload} className="font-medium underline">
-            Retry
-          </button>
-        </div>
-      )}
-
-      {data && data.summary.total === 0 && (
-        <div className="space-y-6">
-          <NextStepCard nextAction={data.nextAction} />
-          <section className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-white/15 px-6 py-10 text-center">
-            <MapIcon size={20} className="text-purple-400" aria-hidden="true" />
-            <h2 className="text-base font-semibold text-[#F7F7F8]">No evidence yet</h2>
-            <p className="max-w-md text-[13px] text-[#A1A0AB]">
-              Your map fills in as you take layer tests and explain topics. Start with the
-              first layer of a roadmap.
-            </p>
-            <Link to="/roadmaps" className="text-sm text-purple-400 hover:underline">
-              Browse roadmaps →
-            </Link>
-          </section>
-        </div>
-      )}
-
-      {data && data.summary.total > 0 && (
-        <div className="space-y-6">
-          <NextStepCard nextAction={data.nextAction} />
-          <MasterySummary summary={data.summary} />
-          {data.detail ? (
-            <TopicList topics={data.topics} />
-          ) : (
-            <LockedTopics count={data.lockedTopicCount} />
+      {/* Main (what to work on) left, context (path, activity, readiness) right.
+          On narrow screens the side column comes first: it is short, and it
+          answers "where am I" before the list of topics. */}
+      <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="min-w-0 space-y-12 lg:order-1">
+          {mastery.loading && (
+            <div className="space-y-4" aria-busy="true" aria-label="Loading progress">
+              <Skeleton className="h-36" />
+              <Skeleton className="h-64" />
+            </div>
           )}
-        </div>
-      )}
+          {mastery.error && <LoadError error={mastery.error} onRetry={mastery.reload} />}
 
-      {/* Waits for the mastery view so the page doesn't jump while loading. */}
-      {!loading && readiness.data && (
-        <div className="mt-6">
-          <ReadinessCard readiness={readiness.data} />
+          {data && <NextStepCard nextAction={data.nextAction} />}
+          {data && data.summary.total === 0 && <NoTopics />}
+          {data && data.summary.total > 0 &&
+            (data.detail ? <TopicList topics={data.topics} /> : <LockedTopics count={data.lockedTopicCount} />)}
         </div>
-      )}
-      {!loading && readiness.error && (
-        <p role="alert" className="mt-6 text-[13px] text-amber-200">
-          {readiness.error.message}{" "}
-          <button type="button" onClick={readiness.reload} className="font-medium underline">
-            Retry
-          </button>
-        </p>
-      )}
+
+        <aside className="order-first space-y-6 lg:order-2" aria-label="Your path and activity">
+          {journey.loading && <Skeleton className="h-64" />}
+          {journey.error && <LoadError error={journey.error} onRetry={journey.reload} />}
+          {journey.data && <PathCard journey={journey.data} />}
+          {journey.data && <ActivityCard journey={journey.data} />}
+
+          {readiness.data && <ReadinessCard readiness={readiness.data} />}
+          {readiness.error && <LoadError error={readiness.error} onRetry={readiness.reload} />}
+        </aside>
+      </div>
     </div>
   );
 };

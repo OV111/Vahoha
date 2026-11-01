@@ -7,11 +7,12 @@ const API = "http://api.test";
 
 describe("keysForWrite", () => {
   it.each([
-    ["/api/exams/submit", ["mastery", "readiness", "roadmap-progress", "profile"]],
-    ["/api/exams/submit-teach-back", ["mastery", "readiness", "roadmap-progress", "profile"]],
-    ["/api/challenges/submit/two-sum", ["mastery", "readiness", "profile"]],
+    ["/api/exams/submit", ["mastery", "journey", "readiness", "roadmap-progress", "profile"]],
+    ["/api/exams/submit-teach-back", ["mastery", "journey", "readiness", "roadmap-progress", "profile"]],
+    ["/api/challenges/submit/two-sum", ["mastery", "journey", "readiness", "profile"]],
     ["/api/capstone/api-dev/submit", ["capstone", "readiness", "profile"]],
-    ["/api/roadmaps/progress", ["roadmap-progress", "readiness"]],
+    ["/api/roadmaps/progress", ["roadmap-progress", "journey", "readiness"]],
+    ["/api/ai-agent/stream", ["journey"]],
     ["/my-profile/notifications/abc/read", ["notifications"]],
     ["/my-profile/settings", ["profile"]],
     ["/users/ada/follow", ["profile"]],

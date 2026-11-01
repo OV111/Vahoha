@@ -1,5 +1,16 @@
 import { canAccess } from "../../billing/index.js";
 import { getMasteryView } from "../services/masteryViewService.js";
+import { getJourney } from "../services/journeyService.js";
+
+/** GET /api/mastery/journey: path position, streak, XP, this week. Not gated. */
+export const getMyJourney = async (req, res) => {
+  try {
+    res.json({ success: true, data: await getJourney(req.app.locals.db, req.user._id) });
+  } catch (err) {
+    console.error("mastery: failed to build journey:", err);
+    res.status(500).json({ success: false, message: "Couldn't load your path." });
+  }
+};
 
 /**
  * GET /api/mastery

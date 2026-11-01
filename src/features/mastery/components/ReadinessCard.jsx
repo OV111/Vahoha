@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { TEXT, MUTED, SOFT, BORDER, SURFACE, FOCUS } from "../lib/tone";
 
 const OVERALL_LABEL = {
   entry: "Entry level",
@@ -7,9 +8,9 @@ const OVERALL_LABEL = {
 };
 
 const LEVEL_META = {
-  none: { label: "Not yet", className: "border-white/10 text-[#A1A0AB]" },
-  shown: { label: "Shown", className: "border-purple-500/40 bg-purple-500/10 text-purple-300" },
-  strong: { label: "Strong", className: "border-purple-400 bg-purple-600/30 text-white" },
+  none: { label: "Not yet", className: `${BORDER} ${MUTED}` },
+  shown: { label: "Shown", className: "border-purple-300 bg-purple-50 text-purple-700 dark:border-purple-500/40 dark:bg-purple-500/10 dark:text-purple-300" },
+  strong: { label: "Strong", className: "border-purple-600 bg-purple-600 text-white dark:border-purple-400 dark:bg-purple-600/30" },
 };
 
 /**
@@ -34,13 +35,13 @@ const ReadinessCard = ({ readiness }) => {
   return (
     <section
       aria-labelledby="readiness-heading"
-      className="rounded-xl border border-white/10 bg-zinc-950 p-6"
+      className={`rounded-xl border p-5 ${BORDER} ${SURFACE}`}
     >
       <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
-        <h2 id="readiness-heading" className="text-base font-semibold text-[#F7F7F8]">
+        <h2 id="readiness-heading" className={`text-base font-semibold ${TEXT}`}>
           Job readiness
         </h2>
-        <p className="text-sm font-semibold text-purple-300">{OVERALL_LABEL[overall] ?? overall}</p>
+        <p className="text-sm font-semibold text-purple-700 dark:text-purple-300">{OVERALL_LABEL[overall] ?? overall}</p>
       </div>
 
       <ul className="space-y-2">
@@ -49,8 +50,8 @@ const ReadinessCard = ({ readiness }) => {
           return (
             <li key={sphere.id} className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-sm font-medium text-[#F7F7F8]">{sphere.title}</p>
-                <p className="text-[13px] text-[#A1A0AB]">{sphere.skills.join(" · ")}</p>
+                <p className={`text-sm font-medium ${TEXT}`}>{sphere.title}</p>
+                <p className={`text-[13px] ${MUTED}`}>{sphere.skills.join(", ")}</p>
               </div>
               <span
                 className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[12px] font-medium ${meta.className}`}
@@ -63,14 +64,14 @@ const ReadinessCard = ({ readiness }) => {
       </ul>
 
       {hasProof ? (
-        <p className="mt-4 border-t border-white/10 pt-3 text-[13px] text-[#D4D4DC]">
-          {facts.join(" · ")}
+        <p className={`mt-4 border-t pt-3 text-[13px] ${BORDER} ${SOFT}`}>
+          {facts.join(", ")}
         </p>
       ) : (
-        <p className="mt-4 border-t border-white/10 pt-3 text-[13px] text-[#A1A0AB]">
+        <p className={`mt-4 border-t pt-3 text-[13px] ${BORDER} ${MUTED}`}>
           Readiness comes from real work: pass a capstone, then join a Build Team.{" "}
-          <Link to="/capstone" className="text-purple-400 hover:underline">
-            Start a capstone →
+          <Link to="/capstone" className={`rounded text-purple-600 hover:underline dark:text-purple-400 ${FOCUS}`}>
+            Start a capstone
           </Link>
         </p>
       )}

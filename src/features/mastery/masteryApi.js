@@ -1,9 +1,9 @@
 import { API_BASE_URL, authHeaders, apiFetch } from "../../../constants/api";
 
-export const fetchMastery = async () => {
+const get = async (path, fallbackMessage) => {
   let res;
   try {
-    res = await apiFetch(`${API_BASE_URL}/api/mastery`, {
+    res = await apiFetch(`${API_BASE_URL}${path}`, {
       headers: authHeaders(),
       credentials: "include",
     });
@@ -12,26 +12,12 @@ export const fetchMastery = async () => {
   }
 
   const json = await res.json().catch(() => null);
-  if (!res.ok || !json?.success) {
-    throw new Error(json?.message ?? "Couldn't load your progress.");
-  }
+  if (!res.ok || !json?.success) throw new Error(json?.message ?? fallbackMessage);
   return json.data;
 };
 
-export const fetchReadiness = async () => {
-  let res;
-  try {
-    res = await apiFetch(`${API_BASE_URL}/api/readiness/me`, {
-      headers: authHeaders(),
-      credentials: "include",
-    });
-  } catch {
-    throw new Error("Couldn't reach the server. Check your connection.");
-  }
+export const fetchMastery = () => get("/api/mastery", "Couldn't load your progress.");
 
-  const json = await res.json().catch(() => null);
-  if (!res.ok || !json?.success) {
-    throw new Error(json?.message ?? "Couldn't load your readiness.");
-  }
-  return json.data;
-};
+export const fetchJourney = () => get("/api/mastery/journey", "Couldn't load your path.");
+
+export const fetchReadiness = () => get("/api/readiness/me", "Couldn't load your readiness.");

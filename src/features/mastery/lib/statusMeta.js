@@ -12,29 +12,21 @@ export const STATUS_META = {
     label: "Needs work",
     hint: "Failed more than once, or couldn't explain it yet.",
     dot: "bg-rose-400",
-    bar: "bg-rose-500",
-    text: "text-rose-300",
   },
   developing: {
     label: "Getting there",
     hint: "Partly understood — not reliable yet.",
     dot: "bg-amber-400",
-    bar: "bg-amber-500",
-    text: "text-amber-300",
   },
   untested: {
     label: "Not tested yet",
     hint: "No test or explanation on record.",
     dot: "bg-zinc-500",
-    bar: "bg-zinc-600",
-    text: "text-zinc-400",
   },
   solid: {
     label: "Solid",
     hint: "Strong results and nothing contradicting them.",
     dot: "bg-emerald-400",
-    bar: "bg-emerald-500",
-    text: "text-emerald-300",
   },
 };
 

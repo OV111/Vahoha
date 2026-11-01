@@ -5,17 +5,18 @@
 // after they finished a test.
 //
 // Keys match what the reads register in the cache:
-//   mastery, readiness, profile, roadmap-progress, notifications, capstone:<track>
+//   mastery, journey, readiness, profile, roadmap-progress, notifications, capstone:<track>
 //
 // When in doubt, list the key: invalidating too much costs one extra request,
 // invalidating too little shows someone stale progress.
 
 const RULES = [
-  [/^\/api\/exams\//, ["mastery", "readiness", "roadmap-progress", "profile"]], // a test or a teach-back moves all four
-  [/^\/api\/challenges\//, ["mastery", "readiness", "profile"]],
+  [/^\/api\/exams\//, ["mastery", "journey", "readiness", "roadmap-progress", "profile"]], // a test or a teach-back moves all of them
+  [/^\/api\/challenges\//, ["mastery", "journey", "readiness", "profile"]],
   [/^\/api\/capstone\//, ["capstone", "readiness", "profile"]],
   [/^\/api\/teams\//, ["readiness", "profile"]],
-  [/^\/api\/roadmaps\//, ["roadmap-progress", "readiness"]],
+  [/^\/api\/roadmaps\//, ["roadmap-progress", "journey", "readiness"]],
+  [/^\/api\/ai-agent\/stream/, ["journey"]], // a mentor message counts toward the streak
   [/^\/my-profile\/notifications/, ["notifications"]],
   [/^\/my-profile\/(settings|cv)/, ["profile"]],
   [/^\/users\/[^/]+\/follow/, ["profile"]],
