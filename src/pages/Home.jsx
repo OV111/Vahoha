@@ -5,21 +5,13 @@ import RiseText from "../components/home/RiseText";
 import Divider from "../components/ui/Divider";
 import vahohaMark from "@/assets/brand/vahoha-mark-96.webp";
 
-// Below the fold and the only homepage piece using motion/react, so it loads
-// in its own chunk. No Suspense here on purpose: the page suspends to the
-// layout's boundary, the prerendered copy stays on screen meanwhile, and the
-// swap happens once this section exists (so /#how-it-works can scroll to it).
 const HowItWorks = lazy(() => import("../components/home/HowItWorks"));
 
 const Home = () => {
   const { auth } = useAuthStore();
-  // `key` changes on every navigation, even to the same URL, so clicking
-  // "See how it works" a second time (hash already set) still scrolls.
   const { hash, key } = useLocation();
 
-  // Scroll-to-top is handled app-wide by <ScrollRestoration /> in MainLayout.
-  // This only adds a smooth glide for "/#how-it-works" links, instead of the
-  // instant jump ScrollRestoration does for hash targets.
+
   useEffect(() => {
     if (!hash) return;
     document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "smooth" });
@@ -28,7 +20,6 @@ const Home = () => {
   return (
     <>
       <section className="flex min-h-[85dvh] flex-col items-center justify-center px-4 text-center sm:px-6">
-        {/* Top badge */}
         <div
           className="rt-fade mb-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1"
           style={{ "--delay": "0ms" }}
@@ -43,7 +34,6 @@ const Home = () => {
           </span>
         </div>
 
-        {/* Headline */}
         <RiseText
           lines={["The Next Generation of", "Developer Learning."]}
           highlight="Learning"
@@ -72,9 +62,6 @@ const Home = () => {
             {auth ? "Continue learning →" : "Start your path →"}
           </Link>
           <Link
-            // Guests ask "what is this?", so they get the explainer on this same
-            // page (smooth-scrolled by the hash effect above). Signed-in users get
-            // a different feature, not a second link to the roadmap.
             to={auth ? "/progress" : "/#how-it-works"}
             className="flex min-h-9 items-center justify-center rounded-full sm:min-h-11 border border-white/15 bg-neutral-800 px-4 py-1.5 text-[13px] sm:px-5 sm:py-2.5 sm:text-[14px] leading-[20px] font-medium text-white hover:border-white/25 transition hover:bg-neutral-700"
           >
