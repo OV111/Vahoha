@@ -4,6 +4,7 @@ import { consumeSubmission, limitMessage } from "./submissionQuotaService.js";
 import { getUserPlan } from "../../billing/index.js";
 import { saveChallengeResult } from "../../../services/challengeResultService.js";
 import { trackEvent } from "../../../services/eventService.js";
+import { recordLearningActivity } from "../../../services/learningActivity.js";
 import { awardXp } from "../../../services/xpService.js";
 import { pickSubmissionSource } from "../lib/submissionSource.js";
 import { clearLeaderboardCache } from "./progressService.js";
@@ -123,12 +124,12 @@ export const submitAttemptService = async (db, userId, attemptId, language) => {
   if (xpDue > 0) {
     try {
       // awardXp credits an existing userProgress document and never creates
-      // one, so make sure it exists (and record the activity) first.
+      // one, so make sure it exists first.
       await db
         .collection("userProgress")
         .updateOne(
           { userId: new ObjectId(userId) },
-          { $set: { lastActiveAt: new Date(), updatedAt: new Date() } },
+          { $set: { updatedAt: new Date() }, $setOnInsert: { createdAt: new Date() } },
           { upsert: true },
         );
       const award = await awardXp(db, userId, {
@@ -187,6 +188,10 @@ export const submitAttemptService = async (db, userId, attemptId, language) => {
       $inc: { runs: 1 },
     },
   );
+
+  // Every graded submission keeps the streak, failed ones included: the streak
+  // rewards practice, and a day spent failing a hard challenge is practice.
+  await recordLearningActivity(db, userId);
 
   // First solve only, same rule as the public solve count.
   if (passed && !alreadySolved) {

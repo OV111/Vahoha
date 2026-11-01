@@ -15,6 +15,7 @@
 
 import { ObjectId } from "mongodb";
 import { getUserProgress } from "../../../services/userProgressService.js";
+import { currentStreak } from "../../../services/learningActivity.js";
 import { getChallengeResults } from "../../../services/challengeResultService.js";
 import {
   getMastery,
@@ -122,7 +123,7 @@ export const getLearnerContext = async (db, userId) => {
       completedLayers: progress?.completedLayers ?? [],
       skillLevel: progress?.skillLevel ?? "beginner",
       xpTotal: progress?.xpTotal ?? 0,
-      streak: progress?.streak ?? 0,
+      streak: currentStreak(progress),
       lastActiveAt: progress?.lastActiveAt ?? null,
     },
     exams: summarizeExams(exams),

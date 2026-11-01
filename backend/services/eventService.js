@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { LEARNING_EVENT_TYPES, recordLearningActivity } from "./learningActivity.js";
 
 /**
  * Product events for the pilot (docs/strategy/STARTUP_CRITIQUE_2026-10.md, fix 1).
@@ -47,6 +48,9 @@ export const trackEvent = async (db, userId, type, meta = {}) => {
   } catch (err) {
     console.error("trackEvent failed (event dropped):", type, err.message);
   }
+  // Here rather than at each call site: every learning action already records
+  // its event, so none of them can forget to keep the streak.
+  if (LEARNING_EVENT_TYPES.includes(type)) await recordLearningActivity(db, userId);
 };
 
 /**

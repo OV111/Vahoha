@@ -2,7 +2,7 @@ import process from "process";
 import { ObjectId } from "mongodb";
 import { saveExamResult } from "../../../services/examHistoryService.js";
 import { addWeakSpot, resolveWeakSpot } from "../../../services/weakSpotService.js";
-import { getUserProgress, updateUserProgress } from "../../../services/userProgressService.js";
+import { getUserProgress, markLayerDone } from "../../../services/userProgressService.js";
 import { doneLayerIds } from "../../../services/layerProgress.js";
 import { prerequisiteIds, missingPrerequisites } from "../../../services/layerUnlock.js";
 import { getRubric, listRubricsForLayer } from "../../../services/rubricService.js";
@@ -354,9 +354,7 @@ export const submitAttempt = async (db, userId, attemptId, clientAnswers, client
   // unlock next layer if passed
   let xpEarned = 0;
   if (passed) {
-    await updateUserProgress(db, userId, {
-      [`layerProgress.${attempt.layer}`]: "done",
-    });
+    await markLayerDone(db, userId, attempt.layer);
     // First pass of this layer only (retries award nothing). Derived reward:
     // never fail the learner's result over it.
     try {

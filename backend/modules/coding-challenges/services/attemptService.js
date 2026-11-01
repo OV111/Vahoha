@@ -223,7 +223,7 @@ export const revealHintService = async (db, userId, attemptId, order) => {
     { userId: ownerId, xpTotal: { $gte: cost } },
     {
       $inc: { xpTotal: -cost },
-      $set: { lastActiveAt: new Date(), updatedAt: new Date() },
+      $set: { updatedAt: new Date() },
     },
     { returnDocument: "after" },
   );

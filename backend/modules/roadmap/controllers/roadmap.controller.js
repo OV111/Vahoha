@@ -2,6 +2,7 @@ import {
   getUserProgress,
   createUserProgress,
   updateUserProgress,
+  syncCurrentLayer,
 } from "../../../services/userProgressService.js";
 import { trackEvent } from "../../../services/eventService.js";
 import { sanitizeLayerProgress, doneLayerIds } from "../../../services/layerProgress.js";
@@ -44,17 +45,19 @@ export const startPath = async (req, res) => {
       // one this time) — never reset progress already earned
       const fields = { activePath };
       if (skillLevel) fields.skillLevel = skillLevel;
-      const updated = await updateUserProgress(db, userId, fields);
-      return res.json({ progress: updated });
+      await updateUserProgress(db, userId, fields);
+      // currentLayer was an order in the OLD track; re-derive it for this one.
+      return res.json({ progress: await syncCurrentLayer(db, userId) });
     }
 
-    const created = await createUserProgress(db, userId, {
+    await createUserProgress(db, userId, {
       activePath,
       currentLayer: 1,
       completedLayers: [],
       skillLevel, // createUserProgress defaults this to "beginner" if undefined
     });
-    res.status(201).json({ progress: created });
+    // Layers passed on another track may already cover this one's first layers.
+    res.status(201).json({ progress: await syncCurrentLayer(db, userId) });
   } catch (err) {
     console.error("startPath error:", err);
     res.status(500).json({ message: "Failed to start path" });
@@ -65,7 +68,8 @@ export const saveProgress = async (req, res) => {
   try {
     const db = req.app.locals.db;
     const userId = req.user._id.toString();
-    const { layerProgress, activePath, currentLayer } = req.body;
+    // currentLayer is not read from the body: the server derives it (syncCurrentLayer).
+    const { layerProgress, activePath } = req.body;
 
     if (!layerProgress || typeof layerProgress !== "object") {
       return res.status(400).json({ message: "layerProgress object is required" });
@@ -80,10 +84,10 @@ export const saveProgress = async (req, res) => {
 
     const fields = { layerProgress: safeProgress, completedLayers };
     if (activePath) fields.activePath = activePath;
-    if (currentLayer != null) fields.currentLayer = currentLayer;
 
     const updated = await updateUserProgress(db, userId, fields);
-    res.json({ progress: updated });
+    const pathChanged = activePath && activePath !== existing?.activePath;
+    res.json({ progress: pathChanged ? await syncCurrentLayer(db, userId) : updated });
   } catch (err) {
     console.error("saveProgress error:", err);
     res.status(500).json({ message: "Failed to save progress" });

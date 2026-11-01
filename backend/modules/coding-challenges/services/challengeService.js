@@ -3,6 +3,7 @@ import { resolveActiveLayer, getWeakTopics } from "../lib/activeLayer.js";
 import { escapeRegex } from "../../../utils/regex.js";
 import { createTtlCache } from "../../../utils/ttlCache.js";
 import { getTracks } from "../../../services/roadmapCache.js";
+import { currentStreak } from "../../../services/learningActivity.js";
 
 /**
  * Challenge read layer.
@@ -373,32 +374,12 @@ export const getPersonalStatsService = async (db, userId) => {
     (r) => r.solvedAt && r.solvedAt >= weekAgo,
   ).length;
 
-  // Streak: distinct UTC calendar days with a solve, walked backward from
-  // today. A gap of more than one day (i.e. neither today nor yesterday has a
-  // solve) breaks it — this is a "keep the streak alive" check, not just a
-  // count of solve-days.
-  const solveDays = new Set(
-    solved
-      .filter((r) => r.solvedAt)
-      .map((r) => new Date(r.solvedAt).toISOString().slice(0, 10)),
-  );
-  let streakDays = 0;
-  const cursor = new Date();
-  cursor.setUTCHours(0, 0, 0, 0);
-  // Today not having a solve yet doesn't break a streak earned yesterday —
-  // only start counting from today if it's already been solved, otherwise
-  // start the walk from yesterday.
-  if (!solveDays.has(cursor.toISOString().slice(0, 10))) {
-    cursor.setUTCDate(cursor.getUTCDate() - 1);
-  }
-  while (solveDays.has(cursor.toISOString().slice(0, 10))) {
-    streakDays += 1;
-    cursor.setUTCDate(cursor.getUTCDate() - 1);
-  }
-
   const progress = await db
     .collection("userProgress")
-    .findOne({ userId: new ObjectId(userId) }, { projection: { xpTotal: 1 } });
+    .findOne(
+      { userId: new ObjectId(userId) },
+      { projection: { xpTotal: 1, streak: 1, lastLearningDay: 1, streakTimeZone: 1 } },
+    );
 
   // Last few solves with their titles, for the profile. Titles are joined in
   // one query (not one per row); a solve whose challenge was since removed is
@@ -426,7 +407,9 @@ export const getPersonalStatsService = async (db, userId) => {
     solvedThisWeek,
     attempted,
     accuracy: attempted > 0 ? Math.round((solved.length / attempted) * 100) : 0,
-    streakDays,
+    // The platform-wide learning streak, so the catalog, profile and mentor
+    // all show the same number.
+    streakDays: currentStreak(progress),
     xpTotal: progress?.xpTotal ?? 0,
     recentSolved,
   };
