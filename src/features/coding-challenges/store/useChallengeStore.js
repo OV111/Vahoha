@@ -9,8 +9,7 @@ import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
  * in — one set of field names across the stack.
  *
  * The catalog is filtered and paged on the server: the client holds one
- * growing page set, never the whole bank. (It used to fetch ?limit=100 and
- * filter locally, which silently hid everything past the first 100.)
+ * growing page set, never the whole bank.
  */
 
 const request = async (path, options = {}) => {

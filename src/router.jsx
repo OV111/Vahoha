@@ -16,11 +16,9 @@ const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
-// The page's code and the profile load together, so the route's loader stays
-// up until both are in. Loaded one after the other, the code's loader gave way
-// to a second, restarted one inside the page while the profile came in.
-// fetchProfile joins a request already out (App starts one at login) and
-// never throws; the catch keeps a failure there from breaking the page load.
+// Code and profile load together, so the route's loader is the only one shown.
+// fetchProfile joins a request already in flight; the catch keeps a profile
+// failure from breaking the page load.
 const MyProfile = lazy(() =>
   Promise.all([
     import("./features/profile/pages/MyProfile"),
@@ -115,7 +113,6 @@ export const routes = [
     element: <MainLayout />,
     errorElement: <NotFound />,
     children: [
-      // ✅ Public routes — no wrapper needed
       { path: "/", element: <Home /> },
       { path: "about", element: <About /> },
       { path: "contact", element: <Contact /> },
@@ -161,7 +158,6 @@ export const routes = [
       { path: "labs/foundations/:slug", element: <FoundationTopicPage /> },
       { path: "labs/:roomId", element: <LabRoomPage /> },
       { path: "learn/:trackId/:layerId/:topicSlug/lab", element: <LabPage /> },
-      // ✅ All protected routes grouped here — one wrapper for all
       {
         element: <ProtectedLayout />,
         children: [

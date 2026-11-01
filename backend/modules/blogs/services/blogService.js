@@ -157,7 +157,6 @@ export const createBlogService = async (db, body, user, file) => {
   while (await blogs.findOne({ slug })) {
     slug = `${baseSlug}-${counter++}`;
   }
-  // ✅ Ensure authorId is always a proper ObjectId
   const authorId =
     user._id instanceof ObjectId ? user._id : new ObjectId(String(user._id));
 

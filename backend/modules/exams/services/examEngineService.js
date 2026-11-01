@@ -246,7 +246,6 @@ export const generateAttempt = async (db, userId, path, layer) => {
   const attemptId = result.insertedId.toString();
   await trackEvent(db, userId, "exam_started", { path, layer, attemptId });
 
-  // return questions WITHOUT answerIdx
   const clientQuestions = selected.map(({ answerIdx: _A, reviewed: _R, ...rest }) => rest);
 
   return {

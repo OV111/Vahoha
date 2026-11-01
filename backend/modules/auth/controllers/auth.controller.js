@@ -185,8 +185,6 @@ const login = async (data) => {
   const users = db.collection("users");
   const usersStats = db.collection("usersStats");
   const user = await users.findOne({ email });
-  // const decoded = verifyToken(localStorage.getItem("JWT"))
-  // if !decoded return 403 forbidden
 
   // An account created with Google has no password to check. Telling the
   // person so is what lets them recover: "Invalid email or password" sends them

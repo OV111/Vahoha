@@ -41,10 +41,8 @@ export const addWeakSpot = async (
 
   const doc = {
     userId: new ObjectId(userId),
-    // Stored with the caller's own casing. Uppercasing used to be how two
-    // spellings of one topic were matched, but `slug` is the identity key now, so
-    // the topic field is purely a display string — and SHOUTED titles ended up
-    // being read back to learners verbatim in the mentor's prompt.
+    // Stored with the caller's own casing: `slug` is the identity key, so this
+    // is only a display string, and the mentor reads it back to the learner.
     topic: topic.trim(),
     slug,
     path,

@@ -187,12 +187,8 @@ export default function AiAgent({ embedded = false, challengeContext = null }) {
   };
 
   /**
-   * Send a message, creating a session first if this is a fresh chat.
-   *
-   * This replaces the old landing-page handoff: previously the hero lived on a
-   * separate route and had to navigate here with the message in router state,
-   * where a bootstrap effect re-created it. Now "new chat" is just the state
-   * where activeSessionId is null, and no navigation happens at all.
+   * Send a message, creating a session first if this is a fresh chat
+   * ("new chat" is the state where activeSessionId is null; no navigation).
    */
   const handleSend = async (text, attachments = []) => {
     const token = getAccessToken();

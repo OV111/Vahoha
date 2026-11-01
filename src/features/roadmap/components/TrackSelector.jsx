@@ -10,13 +10,6 @@ const TrackSelector = () => {
 
   return (
     <>
-      {/* <style>{`
-        @keyframes teal-glow-pulse {
-          0%, 100% { box-shadow: 0 0 10px rgba(20,184,166,0.4); }
-          50% { box-shadow: 0 0 22px rgba(20,184,166,0.6); }
-        }
-        .teal-glow-pulse { animation: teal-glow-pulse 2.5s ease-in-out infinite; }
-      `}</style> */}
       <motion.div
         className="mt-16"
         initial={{ opacity: 0, y: 20 }}

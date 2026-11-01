@@ -65,7 +65,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
     plugins: [react(), tailwindcss(), preloadFonts()],
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, "./src"), // or "./" if no src
+        "@": path.resolve(__dirname, "./src"),
       },
     },
     // The challenge test runner worker loads sucrase on demand (TypeScript mode).

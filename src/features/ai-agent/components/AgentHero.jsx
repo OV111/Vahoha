@@ -11,11 +11,8 @@ function getGreeting() {
 
 /**
  * The empty state of the agent shell — greeting, tagline, and prompt chips.
- *
- * This used to be a separate ROUTE (AiAgentLanding). It's now a state of the
- * one chat shell, which is how ChatGPT/Claude/Gemini work: "new chat" is a
- * state, not a page. Making it a component is what let the sidebar stay
- * mounted and removed the navigate-with-router-state handoff entirely.
+ * "New chat" is a state of the one chat shell, not a page, so the sidebar
+ * stays mounted.
  */
 export default function AgentHero({ compact = false }) {
   const { user } = useProfileStore();

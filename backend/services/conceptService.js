@@ -14,9 +14,9 @@
  * learner evidence and domain knowledge join on the same key with no mapping
  * table: mastery row `jwt-signature` ⇄ concept `jwt-signature`.
  *
- * Concepts are the single source of truth for misconceptions. Rubrics used to
- * carry their own copy; `rubricService.getRubric` now hydrates them from here so
- * grading and teaching can never drift apart.
+ * Concepts are the single source of truth for misconceptions:
+ * `rubricService.getRubric` hydrates rubrics from here, so grading and teaching
+ * can never drift apart.
  */
 
 import { toTopicSlug } from "../utils/topicKey.js";

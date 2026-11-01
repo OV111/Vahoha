@@ -17,14 +17,14 @@ export const authenticate = (req, res, next) => {
     return res.status(401).json({ message: "Invalid or expired token" });
   }
 
-  const rawId = decoded.id ?? decoded._id; // ✅ handle both old and new tokens
+  const rawId = decoded.id ?? decoded._id; // tokens issued before the rename carry `_id`
   if (!rawId) {
     return res.status(401).json({ message: "Invalid token payload" });
   }
 
   req.user = {
     ...decoded,
-    _id: new ObjectId(rawId), // ✅ id → _id as ObjectId
+    _id: new ObjectId(rawId),
   };
   next();
 };

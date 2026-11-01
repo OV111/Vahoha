@@ -39,8 +39,6 @@ export const getProfileService = async (db, userId) => {
 
   const [user, passwordCount, stats, postsCount] = await Promise.all([
     // Projected out in the query, so the hash never leaves the database.
-    // (Destructuring it away after the read is easy to get wrong: renaming the
-    // variable to `_password` silently removed a field that doesn't exist.)
     users.findOne({ _id: userId }, { projection: { password: 0 } }),
     // Only a yes/no leaves the database. The settings page needs it to pick
     // between the password form and the type-DELETE form for OAuth accounts.

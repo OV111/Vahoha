@@ -308,6 +308,6 @@ export async function streamAgentResponse({
   // The controller closes the stream only after the turn has been persisted —
   // otherwise the client can fire its next message before this turn is saved,
   // and the follow-up request reads a session that is missing the turn it is
-  // replying to (previously lost attached-file context on rapid follow-ups).
+  // replying to.
   return fullAssistantContent;
 }
