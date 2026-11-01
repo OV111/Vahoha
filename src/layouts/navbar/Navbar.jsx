@@ -45,7 +45,8 @@ const Navbar = () => {
       <div className="flex-1">
         <Wordmark
           markOnMobile
-          className="text-xl leading-6 text-[#E6E6E6] md:text-[21px] transition-transform duration-200 hover:opacity-100 hover:scale-[1.03]"
+          look="text-[#E6E6E6] transition-transform duration-200 hover:scale-[1.03]"
+          className="leading-6 md:text-[21px]"
         />
       </div>
 

@@ -9,10 +9,10 @@ import OAuthSuccess from "./components/feedback/OAuthSuccess";
 import PublicOnlyRoute from "./layouts/PublicOnlyRoute";
 import FoundationRedirect from "./features/foundations/FoundationRedirect";
 
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
 import { FEATURES } from "../constants/features";
 const About = lazy(() => import("./pages/About"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
