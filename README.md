@@ -30,7 +30,7 @@ Vahoha is a learning platform for developers who want proof they actually unders
 | Layer | Technologies |
 |---|---|
 | **Frontend** | React 19, Vite 7, Tailwind v4, Zustand, Framer Motion, GSAP, CodeMirror |
-| **Backend** | Node.js 22 (ESM), Express 5, MongoDB (native driver), WebSockets (`ws`), Zod |
+| **Backend** | Node.js 22–24 (ESM), Express 5, MongoDB (native driver), WebSockets (`ws`), Zod |
 | **AI** | Groq (`openai/gpt-oss-120b`) for the mentor, teach-back grading and exam-bank generation |
 | **Auth** | JWT access tokens (15 min) + rotating httpOnly refresh cookie, bcrypt, Google and GitHub OAuth |
 | **Billing** | Polar (Merchant of Record), signed webhooks. Built, **not enforced** (`BILLING_ENFORCED=false`) |
@@ -52,11 +52,16 @@ Vahoha is a learning platform for developers who want proof they actually unders
 - **Mastery:** per-topic status and a "next step" derived from exams, teach-back and challenge results
 - **Dev library:** curated books, docs and guides mapped to roadmap layers
 - **Blog posts tagged to layers:** a layer shows the posts written for it
+- **Capstones and certificates:** a project brief per track, repo review and a technical defense; passing issues a certificate anyone can verify at `/verify/:id`
+- **Project map:** draw how a system fits together (parts, wires, notes), or scan a repo to start one. Undo/redo, PNG/SVG/Mermaid/JSON export, comments on team maps, public read-only links at `/map`
+- **Labs:** the Foundations room and the first system lab
 
 **Around it**
 
 - **Coding challenges (Arena):** catalog, sandboxed grading, community proposals with admin review, XP-priced hints
-- **Community:** Markdown blog, profiles, follows, DMs and group chat over WebSockets, queue-backed notifications
+- **Build Teams:** teams build together; PR sync, per-member defense, ratings and a public evidence page for recruiters
+- **Community:** Markdown blog, profiles, follows, DMs and group chat over WebSockets (voice notes, attachments, reactions), queue-backed notifications
+- **Recruiter scorecards:** opt-in public candidate page. The candidates list is built but switched off (`constants/features.js`)
 - **Billing:** Polar checkout and subscription state (inert until enabled)
 - **Pilot analytics:** 7 server-side events and an admin-only funnel (`GET /api/admin/funnel`)
 - **Search**, **OAuth**, **dark/light theme**
@@ -67,7 +72,7 @@ Vahoha is a learning platform for developers who want proof they actually unders
 
 ### Prerequisites
 
-- Node.js 22
+- Node.js 22.12 or newer, below 25 (`engines` in `package.json`)
 - MongoDB (local or Atlas)
 - Redis (local or Docker). Optional: set `REDIS_ENABLED=false` to skip it
 
@@ -75,7 +80,7 @@ Vahoha is a learning platform for developers who want proof they actually unders
 
 ```bash
 npm install
-# create backend/.env: see Environment Variables below (there is no .env.example yet)
+# copy .env.example: backend values into backend/.env, VITE_* values into .env.development
 ```
 
 ### Run
@@ -99,6 +104,7 @@ npm run redis
 ```bash
 npm run seed:roadmap                     # tracks and layers
 npm run seed:challenges                  # Arena challenges
+npm run seed:capstones                   # capstone briefs
 npm run seed:concepts                    # concept definitions for the mentor
 npm run seed:rubrics                     # teach-back rubrics
 node backend/seeders/examSeeder.js       # exam banks via Groq; see docs/product/EXAM_INTEGRITY.md
@@ -111,12 +117,16 @@ npm run admin:grant -- you@example.com   # make yourself an admin
 npm run build
 ```
 
+The build checks the `VITE_*` variables first and stops if `VITE_API_BASE_URL` or `VITE_WS_URL` is missing or malformed (see Environment Variables).
+
 ---
 
 ## Testing
 
 ```bash
 npm run test:unit           # Unit tests
+npm run test:frontend       # Frontend tests (tests/unit)
+npx playwright test         # E2E (tests/e2e)
 npm run test:integration    # Integration (real MongoDB via in-memory server)
 npm run test:api            # API contract tests
 npm run test:websocket      # WebSocket tests
@@ -140,7 +150,7 @@ npm run lint
 │   ├── routes/             # Route definitions
 │   ├── controllers/        # Route handlers
 │   ├── services/           # Business logic (exam engine, events, blogs, agent/…)
-│   ├── modules/            # Self-contained features: billing, mastery, coding-challenges, contact
+│   ├── modules/            # Self-contained features: system-map, teams, capstone, billing, mastery, …
 │   ├── middleware/         # authenticate, requireAdmin, validate, aiRateLimit
 │   ├── tools/              # Mentor tool definitions
 │   ├── seeders/ scripts/   # Content seeding and one-off maintenance
@@ -153,6 +163,9 @@ npm run lint
 │   ├── components/         # Shared UI
 │   ├── stores/             # Zustand state
 │   └── data/roadmaps/      # Roadmap content, one JSON file per category
+├── tests/
+│   ├── unit/               # Frontend unit tests
+│   └── e2e/                # Playwright specs
 ├── constants/              # Shared constants (API base URL, categories)
 ├── config/                 # Vitest configs per test suite
 ├── docs/                   # Plans, specs and strategy (index below)
@@ -162,6 +175,8 @@ npm run lint
 ---
 
 ## Environment Variables
+
+The full list, with what each one does, is in [`.env.example`](.env.example). The backend checks its settings once at startup and stops with a list of every problem.
 
 `backend/.env`:
 
@@ -201,7 +216,8 @@ POLAR_WEBHOOK_SECRET=
 BILLING_ENFORCED=false
 ```
 
-Frontend (`.env`): `VITE_API_BASE_URL`, `VITE_WS_URL`, `VITE_GOOGLE_CLIENT_ID`.
+Frontend (`.env.development`, `.env.production`): `VITE_API_BASE_URL`, `VITE_WS_URL`, `VITE_GOOGLE_CLIENT_ID`, `VITE_POSTHOG_KEY`, `VITE_POSTHOG_HOST`.
+The `.env.*` files are not committed, so **Vercel builds only see the variables set in the project settings**. Set each one for Production *and* Preview, or the build stops. Rules: [`docs/engineering/FRONTEND_ENV.md`](docs/engineering/FRONTEND_ENV.md).
 Other switches (`MAINTENANCE_MODE`, `ALLOW_UNSAFE_RUNNER`, `WS_EXTRA_ORIGINS`, `CONTACT_INBOX`) are explained in `docs/DEPLOYMENT.md`.
 
 ---
@@ -224,10 +240,13 @@ Swagger UI is available at `/api-docs` when the backend is running.
 | ✅ | Mastery map and learner context |
 | ✅ | Coding challenges (Arena): sandboxed grading, proposals |
 | ✅ | Billing: Polar, sandbox-verified, not enforced |
+| ✅ | Capstones, certificates and Build Teams |
+| ✅ | Project map: editor, repo scan, sharing, comments |
+| ✅ | Labs: Foundations room, first system lab |
 | ✅ | Pilot analytics: events and funnel |
 | 🟡 | Exam banks: generator built; banks must be seeded and hand-checked per layer |
 | 🔲 | Voice exam (teach-back): specified, not built |
-| 🔲 | Public progress profiles, certificates, admin panel |
+| 🔲 | Public progress profiles, full admin panel |
 | 🔲 | Real users: the pilot has not started |
 
 Day-to-day status and the pre-pilot checklist: `docs/PILOT_STATUS.md`.
@@ -236,7 +255,7 @@ Day-to-day status and the pre-pilot checklist: `docs/PILOT_STATUS.md`.
 
 ## Deployment
 
-Backend on Render (`render.yaml`), frontend on Vercel (`vercel.json`), database on MongoDB Atlas. A `Dockerfile` is included for running the API in a container. Full steps: `docs/DEPLOYMENT.md`.
+Backend on Render (`render.yaml`), frontend on Vercel (`vercel.json`), database on MongoDB Atlas. Pushing to `master` deploys production; other branches get Vercel preview builds only. A `Dockerfile` is included for running the API in a container. Full steps: `docs/DEPLOYMENT.md`.
 
 ---
 
