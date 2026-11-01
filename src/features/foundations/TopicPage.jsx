@@ -6,6 +6,9 @@ import NotFound from "../../components/feedback/NotFound";
 import "./foundations-theme.css";
 import { ExplainBack, TryItList } from "./components/TryIt.jsx";
 import { TOPICS, TOPIC_GROUPS } from "./topics/topics.js";
+import Seo from "../../seo/Seo";
+import { jsonLdFor } from "../../seo/siteMeta";
+import { lessonMeta } from "../../seo/lessonPages";
 
 // Loads the lesson module for a topic. Each lesson is its own chunk, so the
 // syllabus never downloads lesson text and a lesson page only fetches one.
@@ -56,7 +59,16 @@ export default function TopicPage() {
 
   // Unknown slugs and topics without a written lesson are both 404s:
   // the syllabus never links to them.
-  if (!topic?.lesson) return <NotFound />;
+  const path = `/labs/foundations/${slug}`;
+  if (!topic?.lesson) {
+    return (
+      <>
+        <Seo noindex path={path} title="Vahoha" />
+        <NotFound />
+      </>
+    );
+  }
+  const meta = lessonMeta(topic);
 
   const group = TOPIC_GROUPS.find((g) => g.id === topic.group);
   const next = TOPICS.slice(index + 1).find((t) => t.lesson);
@@ -64,6 +76,7 @@ export default function TopicPage() {
 
   return (
     <div className="foundations-theme">
+      <Seo {...meta} path={path} jsonLd={jsonLdFor({ ...meta, path })} />
       <article className="f-wrap f-lesson">
         <Link to="/labs/foundations" className="f-back">
           <ArrowLeft size={14} /> Foundations

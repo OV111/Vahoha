@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Seo from "./Seo";
-import { PUBLIC_PAGES, isPrivatePath, jsonLdFor } from "./siteMeta";
+import { PUBLIC_PAGES, isFoundationLessonPath, isPrivatePath, jsonLdFor } from "./siteMeta";
 
 // Mounted once in MainLayout. Public pages get their entry from PUBLIC_PAGES;
 // private/unknown routes get noindex by default, so a new page is safe
@@ -16,6 +16,8 @@ const RouteSeo = () => {
   useEffect(() => {
     document.querySelectorAll("[data-seo-static]").forEach((el) => el.remove());
   }, []);
+  // TopicPage renders its own tags; two sets would mean two <title>s in <head>.
+  if (isFoundationLessonPath(pathname)) return null;
   const meta = PUBLIC_PAGES[pathname];
   if (isPrivatePath(pathname) || !meta) {
     return <Seo noindex path={pathname} title="Vahoha" />;

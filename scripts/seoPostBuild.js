@@ -13,6 +13,9 @@ import {
   DEFAULT_OG_IMAGE,
   jsonLdFor,
 } from "../src/seo/siteMeta.js";
+import { FOUNDATION_LESSON_PAGES } from "../src/seo/lessonPages.js";
+
+const PAGES = { ...PUBLIC_PAGES, ...FOUNDATION_LESSON_PAGES };
 
 // The app reads localStorage while modules load (e.g. the theme store).
 // Node has none, so give the prerender an empty in-memory one.
@@ -82,7 +85,7 @@ const render = (meta, bodyHtml = "") => {
   return html;
 };
 
-for (const [path, meta] of Object.entries(PUBLIC_PAGES)) {
+for (const [path, meta] of Object.entries(PAGES)) {
   const { html: body } = await renderPage(path);
   const html = render({ ...meta, path }, body);
   if (path === "/") {
@@ -99,7 +102,7 @@ writeFileSync(
   render({ title: "Page not found | Vahoha", description: "This page does not exist.", path: "/404", noindex: true }),
 );
 
-const urls = Object.keys(PUBLIC_PAGES)
+const urls = Object.keys(PAGES)
   .map((p) => `  <url>\n    <loc>${esc(SITE_URL + p)}</loc>\n  </url>`)
   .join("\n");
 writeFileSync(
@@ -117,4 +120,4 @@ writeFileSync(
 
 rmSync("dist-ssr", { recursive: true, force: true });
 
-console.log(`SEO: ${Object.keys(PUBLIC_PAGES).length} pages, sitemap, robots, 404 written to ${DIST}/`);
+console.log(`SEO: ${Object.keys(PAGES).length} pages, sitemap, robots, 404 written to ${DIST}/`);

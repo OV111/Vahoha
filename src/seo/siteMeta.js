@@ -6,8 +6,6 @@
 // and the home-page tagline. Review and rewrite them (title < 60 chars,
 // description < 155 chars) before expecting them to rank.
 
-import { TOPICS } from "../features/foundations/topics/topics.js";
-
 export const SITE_URL = "https://vahoha.com";
 export const SITE_NAME = "Vahoha";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
@@ -17,16 +15,6 @@ export const DEFAULT_META = {
   description:
     "Pass a graded test to unlock each step of your developer roadmap, with an AI mentor that knows your weak spots.",
 };
-
-// One public page per Foundations topic that has a written lesson. Topics
-// without one 404, so they must stay out of the sitemap.
-const foundationLessons = () =>
-  Object.fromEntries(
-    TOPICS.filter((t) => t.lesson).map((t) => [
-      `/labs/foundations/${t.slug}`,
-      { title: `${t.title} | Foundations | ${SITE_NAME}`, description: t.summary },
-    ]),
-  );
 
 // Public, indexable pages. Key = pathname.
 export const PUBLIC_PAGES = {
@@ -60,8 +48,12 @@ export const PUBLIC_PAGES = {
     title: `Terms of Service | ${SITE_NAME}`,
     description: `The terms that apply when you use ${SITE_NAME}.`,
   },
-  ...foundationLessons(),
 };
+
+// Foundations lesson pages are public too, but their entries live in
+// lessonPages.js and TopicPage renders their tags (see RouteSeo).
+// One segment after /labs/foundations/, so the system labs under .../lab/ don't match.
+export const isFoundationLessonPath = (pathname) => /^\/labs\/foundations\/(?!lab\/)[^/]+$/.test(pathname);
 
 // Pages that must never be indexed (account, auth, per-user, admin).
 // Anything under these prefixes gets <meta name="robots" content="noindex">
