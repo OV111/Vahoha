@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
-import { Search } from "lucide-react";
 import Sidebar from "../../profile/components/SideBar";
-import { BellOff, ChevronDown, Send, SquarePen, Users } from "lucide-react";
+import { Send, SquarePen } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation } from "react-router-dom";
 import {
@@ -17,14 +16,12 @@ import {
   sendAttachment,
 } from "../lib/chatControlsApi";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-import { ArrowUpDown } from "lucide-react";
-import "react-loading-skeleton/dist/skeleton.css";
 import LoadingChatSuspense from "@/components/feedback/LoadingChatSuspense";
 import ChatInterface from "../components/ChatInterface";
-import { formatTimeAgo } from "../components/ChatInterface";
 import NewGroupModal from "../components/NewGroupModal";
-import Skeleton from "react-loading-skeleton";
-import useThemeStore from "../../../stores/useThemeStore";
+import ConversationRow from "../components/ConversationRow";
+import ConversationFilters from "../components/ConversationFilters";
+import RequestRow from "../components/RequestRow";
 import { getAccessToken, apiFetch } from "../../../../constants/api";
 
 const getUserIdFromJWT = (token) => {
@@ -47,8 +44,6 @@ const getUserIdFromJWT = (token) => {
 const MIN_USER_STATS_SKELETON_MS = 350;
 
 const Chats = () => {
-  const { theme } = useThemeStore();
-  const isDarkMode = theme === "dark";
   const [rooms, setRooms] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
   const [isLoadingLastMessages, setIsLoadingLastMessages] = useState(true);
@@ -63,7 +58,6 @@ const Chats = () => {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [mutualFollowers, setMutualFollowers] = useState([]);
   const [sortOrder, setSortOrder] = useState("Newest");
-  const [isSortOpen, setIsSortOpen] = useState(false);
   const [isNewGroupOpen, setIsNewGroupOpen] = useState(false);
   // Ids of users I've blocked (string ids). Blocked-by-them is deliberately not
   // exposed — the server just rejects the send, so it can't be probed.
@@ -197,8 +191,6 @@ const Chats = () => {
     );
   }, [conversationItems, sortOrder, filter]);
 
-  const skeletonBaseColor = isDarkMode ? "#1f2937" : "#ebebeb";
-  const skeletonHighlightColor = isDarkMode ? "#374151" : "#f5f5f5";
 
   useEffect(() => {
     const ws = new WebSocket(import.meta.env.VITE_WS_URL);
@@ -574,64 +566,12 @@ const Chats = () => {
             </div>
 
             {tab === "chats" && (
-            <div className="px-3 pt-5">
-              <label
-                htmlFor="chat-search"
-                className="flex items-center gap-2 rounded-2xl border border-gray-200 bg-gray-100 px-3 py-[3px] transition focus-within:border-purple-400 dark:border-white/10 dark:bg-white/5"
-              >
-                <Search size={20} className="text-gray-400" aria-hidden="true" />
-                <input
-                  id="chat-search"
-                  type="text"
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
-                  placeholder="Search conversations"
-                  className="w-full bg-transparent text-base md:text-sm text-gray-700 outline-none placeholder:text-gray-400 dark:text-gray-200"
-                />
-              </label>
-
-              <div className="relative flex justify-end py-2">
-                <button
-                  type="button"
-                  onClick={() => setIsSortOpen((prev) => !prev)}
-                  className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5"
-                >
-                  <ArrowUpDown size={16} />
-                  <div className="flex items-center justify-center gap-1 ">
-                    <span>{sortOrder}</span>
-                    <ChevronDown
-                      size={16}
-                      className={`transition-transform duration-200 ${
-                        isSortOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </div>
-                </button>
-
-                {isSortOpen && (
-                  <div className="absolute top-full mt-0 w-36 overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/10 dark:bg-black">
-                    {["Newest", "Oldest"].map((option) => (
-                      <button
-                        key={option}
-                        type="button"
-                        onClick={() => {
-                          setSortOrder(option);
-                          setIsSortOpen(false);
-                        }}
-                        className={`block w-full px-3 py-2 text-left text-sm transition hover:bg-gray-50 dark:hover:bg-white/5 ${
-                          sortOrder === option
-                            ? "bg-purple-50 text-purple-600 dark:bg-white/5 dark:text-purple-600"
-                            : "text-gray-700 dark:text-gray-200"
-                        }`}
-                      >
-                        {option}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
+              <ConversationFilters
+                filter={filter}
+                onFilterChange={setFilter}
+                sortOrder={sortOrder}
+                onSortChange={setSortOrder}
+              />
             )}
 
             <div className="max-h-[calc(100dvh-180px)] thin-scrollbar overflow-y-auto bg-white dark:bg-black">
@@ -641,147 +581,40 @@ const Chats = () => {
                     No message requests
                   </p>
                 ) : (
-                  requests.incoming.map((request) => {
-                    const name = `${request.user.firstName} ${request.user.lastName}`.trim();
-                    return (
-                      <div key={request.roomId} className="border-b border-white/5 px-3 py-3">
-                        <button
-                          type="button"
-                          onClick={() => setActiveConversation({ kind: "direct", user: request.user })}
-                          className="flex w-full items-center gap-3 text-left focus-visible:outline-2 focus-visible:outline-purple-500"
-                        >
-                          {request.user.stats?.profileImage ? (
-                            <img
-                              src={request.user.stats.profileImage}
-                              alt=""
-                              className="h-8 w-8 shrink-0 rounded-full object-cover"
-                            />
-                          ) : (
-                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fuchsia-950/40 text-fuchsia-300">
-                              {name[0]?.toUpperCase()}
-                            </div>
-                          )}
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium text-gray-100">{name}</p>
-                            <p className="truncate text-xs text-[#8A8A93]">{request.preview}</p>
-                          </div>
-                        </button>
-                        <div className="mt-2 flex gap-2 pl-11">
-                          <button
-                            type="button"
-                            onClick={() => handleAcceptRequest(request)}
-                            className="cursor-pointer rounded-lg bg-purple-600 px-3 py-1 text-sm font-medium text-white transition-colors hover:bg-purple-500"
-                          >
-                            Accept
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDeclineRequest(request)}
-                            className="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-3 py-1 text-sm font-medium text-white transition-colors hover:bg-white/10"
-                          >
-                            Decline
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })
+                  requests.incoming.map((request) => (
+                    <RequestRow
+                      key={request.roomId}
+                      request={request}
+                      onOpen={() => setActiveConversation({ kind: "direct", user: request.user })}
+                      onAccept={() => handleAcceptRequest(request)}
+                      onDecline={() => handleDeclineRequest(request)}
+                    />
+                  ))
                 )
               ) : isLoadingChats ? (
                 <div className="flex justify-center items-center px-3 py-6 text-sm text-gray-500 dark:text-gray-100">
                   <LoadingChatSuspense />
                 </div>
               ) : filteredConversations.length > 0 ? (
-                filteredConversations.map((item) => {
-                  const shouldShowLastMessageSkeleton =
-                    isLoadingLastMessages && !item.preview;
-                  const isActive =
-                    item.kind === "group"
-                      ? isGroupActive && activeRoom?._id === item.room._id
-                      : !isGroupActive && activeUser?._id === item.user._id;
-
-                  return (
-                    <button
-                      key={item.key}
-                      type="button"
-                      onClick={() =>
-                        setActiveConversation(
-                          item.kind === "group"
-                            ? { kind: "group", room: item.room }
-                            : { kind: "direct", user: item.user },
-                        )
-                      }
-                      aria-current={isActive ? "true" : undefined}
-                      className={`flex w-full items-center gap-3 border-b border-white/5 px-3 py-3 text-left transition-colors first:border-t focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-fuchsia-400
-                  ${
-                    isActive
-                      ? "bg-fuchsia-950/30"
-                      : "hover:bg-white/5"
-                  }
-                    `}
-                    >
-                      {item.avatar ? (
-                        <img
-                          src={item.avatar}
-                          alt="Profile"
-                          className="h-8 w-8 shrink-0 rounded-full bg-purple-100 object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-purple-100 text-purple-600 dark:bg-fuchsia-950/40 dark:text-fuchsia-300">
-                          {item.kind === "group" ? (
-                            <Users size={14} />
-                          ) : (
-                            item.title?.[0]?.toUpperCase()
-                          )}
-                        </div>
-                      )}
-                      <div className="min-w-0 flex-1">
-                        <p className="flex items-center gap-1.5 text-sm font-medium text-gray-100">
-                          <span className="truncate">{item.title}</span>
-                          {item.muted && (
-                            <BellOff
-                              size={12}
-                              className="shrink-0 text-[#8A8A93]"
-                              aria-label="Muted"
-                            />
-                          )}
-                        </p>
-                        <div className="flex justify-between items-center">
-                          {shouldShowLastMessageSkeleton ? (
-                            <>
-                              <Skeleton
-                                width={120}
-                                height={12}
-                                borderRadius={6}
-                                baseColor={skeletonBaseColor}
-                                highlightColor={skeletonHighlightColor}
-                                className="opacity-80"
-                              />
-                              <Skeleton
-                                width={44}
-                                height={12}
-                                borderRadius={6}
-                                baseColor={skeletonBaseColor}
-                                highlightColor={skeletonHighlightColor}
-                                className="opacity-80"
-                              />
-                            </>
-                          ) : (
-                            <>
-                              <p className="truncate text-xs text-[#8A8A93]">
-                                {item.preview?.text || "No messages yet"}
-                              </p>
-                              {item.preview && (
-                                <p className="ml-2 shrink-0 text-xs text-[#8A8A93]">
-                                  {formatTimeAgo(item.preview.updatedAt)}
-                                </p>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })
+                filteredConversations.map((item) => (
+                  <ConversationRow
+                    key={item.key}
+                    item={item}
+                    isLoadingPreview={isLoadingLastMessages && !item.preview}
+                    isActive={
+                      item.kind === "group"
+                        ? isGroupActive && activeRoom?._id === item.room._id
+                        : !isGroupActive && activeUser?._id === item.user._id
+                    }
+                    onSelect={() =>
+                      setActiveConversation(
+                        item.kind === "group"
+                          ? { kind: "group", room: item.room }
+                          : { kind: "direct", user: item.user },
+                      )
+                    }
+                  />
+                ))
               ) : mutualFollowers.length > 0 ? (
                 <p className="flex justify-center items-center px-3 py-6 text-sm text-gray-500 dark:text-gray-400">
                   No conversations found
