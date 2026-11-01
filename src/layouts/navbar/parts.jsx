@@ -1,3 +1,4 @@
+import { useState } from "react";
 import useProfileStore from "@/stores/useProfileStore";
 import useNotificationStore from "@/stores/useNotificationStore";
 import { Link } from "react-router-dom";
@@ -51,20 +52,47 @@ const thumbnail = (url) =>
 const initials = (user) =>
   `${user?.firstName?.[0] ?? ""}${user?.lastName?.[0] ?? ""}`.toUpperCase();
 
+// The navbar shows this, same size and spot as the avatar, while the session
+// is checked, so nothing shifts when the real avatar takes its place.
+export const AvatarPlaceholder = ({ className = "" }) => (
+  <span
+    aria-hidden="true"
+    className={`my-1 block h-7 w-7 shrink-0 animate-pulse rounded-full bg-white/10 ${className}`}
+  />
+);
+
 export const AvatarImage = ({ inDropdown = false }) => {
   const { user, stats } = useProfileStore();
+  const src = stats?.profileImage ? thumbnail(stats.profileImage) : null;
+  // A picture that fails to load (an expired Google or GitHub link, say) falls
+  // back to the initials instead of a broken-image icon. Keyed on the URL, so a
+  // new picture gets a fresh try.
+  const [failedSrc, setFailedSrc] = useState(null);
+  const [loadedSrc, setLoadedSrc] = useState(null);
+
+  // Signed in but the profile isn't here yet: keep the placeholder rather
+  // than an empty circle that fills with initials a moment later.
+  if (!user) return <AvatarPlaceholder />;
 
   return (
     <div
-      className={`my-1 flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border ${
+      className={`relative my-1 flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border ${
         inDropdown ? "border-gray-600" : "border-white/50"
       }`}
     >
-      {stats?.profileImage ? (
+      {src && failedSrc !== src ? (
         <img
-          src={thumbnail(stats.profileImage)}
+          src={src}
           alt=""
-          className="h-full w-full rounded-full object-cover"
+          width={28}
+          height={28}
+          decoding="async"
+          onLoad={() => setLoadedSrc(src)}
+          onError={() => setFailedSrc(src)}
+          // Fades in over the placeholder colour instead of popping in.
+          className={`h-full w-full rounded-full bg-white/10 object-cover transition-opacity duration-200 ${
+            loadedSrc === src ? "opacity-100" : "opacity-0"
+          }`}
         />
       ) : (
         <span

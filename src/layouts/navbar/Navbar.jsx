@@ -6,7 +6,7 @@ import DesktopNav from "./DesktopNav";
 import NavSearch from "./NavSearch";
 import AvatarMenu from "./AvatarMenu";
 import MobileMenu from "./MobileMenu";
-import { focusRing, GuestActions } from "./parts";
+import { focusRing, GuestActions, AvatarPlaceholder } from "./parts";
 import { useNavbarMenus, useNavbarHeightVar } from "./hooks";
 
 const HIDE_SEARCH_ROUTES = new Set(["/get-started", "/forgot-password", "/reset-password"]);
@@ -73,10 +73,7 @@ const Navbar = () => {
         )}
 
         {authPending ? (
-          <span
-            aria-hidden="true"
-            className="ml-2 hidden h-8 w-8 animate-pulse rounded-full bg-white/10 md:block"
-          />
+          <AvatarPlaceholder className="ml-1 hidden md:block" />
         ) : auth ? (
           <AvatarMenu
             isOpen={menus.openDropdown === "avatar"}
