@@ -15,6 +15,7 @@ import { INPUT_CLASS } from "@/components/ui/field";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import SearchSelect from "../components/SearchSelect";
 import MessagePolicySetting from "../components/MessagePolicySetting";
+import WeeklySummarySetting from "../components/WeeklySummarySetting";
 
 const LABEL_CLASS = "text-sm font-medium text-gray-700 dark:text-gray-300";
 
@@ -516,6 +517,8 @@ const Settings = () => {
             </div>
 
             <MessagePolicySetting />
+
+            <WeeklySummarySetting />
 
             <DeleteAccount />
           </div>

@@ -1,0 +1,47 @@
+name: Weekly summary
+
+# Calls the API every hour while it is Sunday 18:00-24:00 somewhere in the
+# world (Sunday 04:00 UTC for UTC+14 through Monday 12:00 UTC for UTC-12). The
+# server picks who is due from each learner's own timezone and never sends
+# anyone two in one week, so a delayed or doubled run is harmless.
+#
+# Runs from GitHub rather than inside the server because the Render free plan
+# sleeps when idle: an in-process timer would never fire. The request wakes it.
+#
+# Repository secrets: WEEKLY_SUMMARY_CRON_SECRET (same value as on Render) and
+# API_PUBLIC_URL (e.g. https://api.vahoha.com).
+
+on:
+  schedule:
+    - cron: "10 4-23 * * 0"
+    - cron: "10 0-12 * * 1"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: list who would get which email, send nothing"
+        type: boolean
+        default: true
+
+concurrency:
+  group: weekly-summary
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Trigger the run
+        env:
+          SECRET: ${{ secrets.WEEKLY_SUMMARY_CRON_SECRET }}
+          API: ${{ secrets.API_PUBLIC_URL }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '1' || '0' }}
+        run: |
+          if [ -z "$SECRET" ] || [ -z "$API" ]; then
+            echo "WEEKLY_SUMMARY_CRON_SECRET or API_PUBLIC_URL secret missing"; exit 1
+          fi
+          # A sleeping free instance can take a minute to wake: retry, and allow a long run.
+          curl --fail-with-body --silent --show-error \
+            --retry 4 --retry-delay 30 --retry-all-errors --max-time 900 \
+            -X POST -H "Authorization: Bearer $SECRET" \
+            "$API/api/email/weekly-summary/run?dryRun=$DRY_RUN"

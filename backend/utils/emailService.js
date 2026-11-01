@@ -26,7 +26,7 @@ const getFrom = () => {
 
 // The Resend SDK reports failures as a returned `{ error }` instead of throwing.
 // Turn that into a throw, so callers can't mistake a failed send for a sent one.
-async function sendEmail(payload) {
+export async function sendEmail(payload) {
   const { data, error } = await getResend().emails.send({ from: getFrom(), ...payload });
   if (error) throw new Error(`Resend ${error.name ?? "error"}: ${error.message}`);
   return data;
@@ -34,7 +34,7 @@ async function sendEmail(payload) {
 
 // User input goes into HTML, so escape it: otherwise a name or message containing
 // <a href=...> or <img> would render as real markup in the inbox.
-const escapeHtml = (value) =>
+export const escapeHtml = (value) =>
   String(value)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
@@ -42,7 +42,7 @@ const escapeHtml = (value) =>
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
 
-const BRAND = "#9333ea"; // purple-600, the site accent
+export const BRAND = "#9333ea"; // purple-600, the site accent
 
 /**
  * Password reset email.

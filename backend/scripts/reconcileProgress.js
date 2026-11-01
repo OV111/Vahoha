@@ -33,8 +33,8 @@ const { LEARNING_EVENT_TYPES, dayKey, validTimeZone, streakFromDays } = await im
 );
 
 const APPLY = process.argv.includes("--write");
-// Challenge submissions record activity directly rather than through an event,
-// so the history of them is the challenge_solved event.
+// challenge_submitted is newer than the events log; before it, a solve was the
+// only challenge activity recorded.
 const HISTORY_TYPES = [...LEARNING_EVENT_TYPES, "challenge_solved"];
 
 const sameSet = (a, b) => a.length === b.length && a.every((x) => b.includes(x));

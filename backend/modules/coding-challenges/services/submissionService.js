@@ -4,7 +4,6 @@ import { consumeSubmission, limitMessage } from "./submissionQuotaService.js";
 import { getUserPlan } from "../../billing/index.js";
 import { saveChallengeResult } from "../../../services/challengeResultService.js";
 import { trackEvent } from "../../../services/eventService.js";
-import { recordLearningActivity } from "../../../services/learningActivity.js";
 import { awardXp } from "../../../services/xpService.js";
 import { pickSubmissionSource } from "../lib/submissionSource.js";
 import { clearLeaderboardCache } from "./progressService.js";
@@ -189,9 +188,9 @@ export const submitAttemptService = async (db, userId, attemptId, language) => {
     },
   );
 
-  // Every graded submission keeps the streak, failed ones included: the streak
-  // rewards practice, and a day spent failing a hard challenge is practice.
-  await recordLearningActivity(db, userId);
+  // Every graded submission, failed ones included: the streak and the weekly
+  // summary count practice, and a day spent failing a hard challenge is practice.
+  await trackEvent(db, userId, "challenge_submitted", { challengeId: challenge.slug, passed });
 
   // First solve only, same rule as the public solve count.
   if (passed && !alreadySolved) {

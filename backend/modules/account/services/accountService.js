@@ -147,6 +147,7 @@ const USER_KEYED_COLLECTIONS = [
   "team_defenses",
   "xpAwards",
   "recruiter_settings",
+  "weeklySummaries",
 ];
 
 /**

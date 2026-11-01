@@ -117,6 +117,9 @@ const connectDB = async () => {
         { userId: 1, day: 1 },
         { unique: true, partialFilterExpression: { type: "active_day" } },
       ),
+      // One weekly email per learner per week: the claim in weeklySummaryService
+      // relies on this to stop two runs from both sending.
+      db.collection("weeklySummaries").createIndex({ userId: 1, weekKey: 1 }, { unique: true }),
     ]);
     for (const r of indexResults) {
       if (r.status === "rejected") console.error("MongoDB index creation failed:", r.reason?.message);

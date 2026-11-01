@@ -13,6 +13,7 @@ import { FEATURES } from "../constants/features";
 const About = lazy(() => import("./pages/About"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
@@ -133,6 +134,8 @@ export const routes = [
       },
       { path: "forgot-password", element: <ForgotPassword /> },
       { path: "reset-password", element: <ResetPassword /> },
+      // Public: the email's unsubscribe link must work without signing in.
+      { path: "unsubscribe", element: <Unsubscribe /> },
       { path: "posts/:id", element: <ReadMore /> },
       // Public on purpose: certificates must be verifiable without an account.
       { path: "verify/:publicId", element: <CertificatePage /> },

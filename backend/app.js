@@ -22,6 +22,7 @@ import codingChallengeRoutes from "./modules/coding-challenges/index.js";
 import billingRoutes, { handleBillingWebhook } from "./modules/billing/index.js";
 import masteryRoutes from "./modules/mastery/index.js";
 import contactRoutes from "./modules/contact/index.js";
+import emailRoutes from "./modules/email/index.js";
 import capstoneRoutes from "./modules/capstone/index.js";
 import teamsRoutes from "./modules/teams/index.js";
 import recruiterRoutes from "./modules/recruiter/index.js";
@@ -121,6 +122,7 @@ export function createApp(db) {
   app.use("/api/billing", billingRoutes);
   app.use("/api/mastery", masteryRoutes);
   app.use("/api/contact", contactRoutes);
+  app.use("/api/email", emailRoutes);
   app.use("/api/capstone", capstoneRoutes);
   app.use("/api/teams", teamsRoutes);
   app.use("/api/system-maps", systemMapRoutes);

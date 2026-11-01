@@ -25,9 +25,12 @@ export const EVENT_TYPES = Object.freeze([
   "capstone_submitted",
   "capstone_passed",
   "capstone_failed",
+  "challenge_submitted",
   "challenge_solved",
   "team_defense_passed",
   "team_evidence_issued",
+  "weekly_summary_sent",
+  "email_unsubscribed",
 ]);
 
 const COLLECTION = "userEvents";

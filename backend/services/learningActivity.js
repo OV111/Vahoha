@@ -20,6 +20,7 @@ export const LEARNING_EVENT_TYPES = Object.freeze([
   "exam_submitted",
   "teach_back",
   "mentor_message",
+  "challenge_submitted",
   "capstone_submitted",
   "team_defense_passed",
 ]);

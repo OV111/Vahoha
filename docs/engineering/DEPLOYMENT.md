@@ -61,7 +61,7 @@ Names only. **Never commit values.** Backend variables are set on Render (`sync:
 | Runtime | `NODE_ENV`, `NODE_VERSION`, `PORT`, `HUSKY=0`, `NODE_OPTIONS` |
 | AI | `GROQ_API_KEY`, `GROQ_GATE_TPM` (your Groq tier's tokens per minute, so learners together can't go over it), `GROQ_GATE_CONCURRENCY`, `CAPSTONE_REVIEW_MAX_CHARS`, `GEMINI_API_KEY` (unused today: nothing imports `config/gemini.js`) |
 | Auth providers | `GOOGLE_CLIENT_ID`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` (set both or neither), `GITHUB_TOKEN` (repo reads for capstone checks and the Project Map scan; public repos, read-only) |
-| Email | `RESEND_API_KEY`, `EMAIL_FROM` (set both or neither), `CONTACT_INBOX` |
+| Email | `RESEND_API_KEY`, `EMAIL_FROM` (set both or neither), `CONTACT_INBOX`, `WEEKLY_SUMMARY_CRON_SECRET` (same value as the GitHub repository secret the weekly-summary workflow sends), `API_PUBLIC_URL` (this API's origin, for Gmail's one-click unsubscribe) |
 | Media | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` (all three or none) |
 | Redis | `REDIS_ENABLED` (`false` runs without the notification queue and Redis login throttling), `REDIS_URL`, or `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD` |
 | Billing | `POLAR_ENVIRONMENT`, `POLAR_ACCESS_TOKEN`, `POLAR_PRO_PRODUCT_ID`, `POLAR_WEBHOOK_SECRET`, `BILLING_ENFORCED` (see [Billing](BILLING.md)) |
@@ -153,6 +153,7 @@ Imported exam questions arrive as `reviewed: false`. Hand-check the answer keys 
 - [ ] Production Polar values, not sandbox. `BILLING_ENFORCED` stays `false` for the pilot.
 - [ ] Production GitHub OAuth app with the production callback URL.
 - [ ] `vahoha.com` verified in Resend, `EMAIL_FROM` set, or reset and sign-in emails reach no one.
+- [ ] Weekly summary: `WEEKLY_SUMMARY_CRON_SECRET` set on Render and as GitHub repository secrets `WEEKLY_SUMMARY_CRON_SECRET` and `API_PUBLIC_URL`. Run the workflow by hand with dry run on first and read the preview.
 - [ ] Redis reachable (`REDIS_URL`), or `REDIS_ENABLED=false` on purpose. Auth rate limits and notifications depend on it.
 - [ ] After deploy: `/healthz` returns OK, the runner reports `isolated-vm`, log in with a fresh account, take an exam, check the funnel.
 
