@@ -1,5 +1,6 @@
 import { Buffer } from "node:buffer";
 import { z } from "zod";
+import { PASSWORD_RULES, PASSWORD_MESSAGES } from "../../../../constants/password.js";
 
 /**
  * Schemas for POST /get-started and POST /login.
@@ -26,18 +27,12 @@ const name = (label) =>
     .max(50, "Max 50 characters.")
     .regex(/^[a-zA-Z\s'-]+$/, "Only letters, spaces, hyphens, apostrophes.");
 
-// bcrypt only reads the first 72 BYTES, so an emoji-heavy password that is
-// <= 72 characters can still be silently truncated. Cap bytes, not characters.
-const MAX_PASSWORD_BYTES = 72;
 
 export const signupPasswordSchema = z
   .string({ required_error: "Password is required." })
-  .min(6, "At least 6 characters.")
-  .regex(/[!@#$%^&*()]/, "Must include at least one symbol (!@#$%^&*()).")
-  .refine(
-    (v) => Buffer.byteLength(v, "utf8") <= MAX_PASSWORD_BYTES,
-    "Max 72 bytes (emoji and accented characters take more than one).",
-  );
+  .min(PASSWORD_RULES.minLength, PASSWORD_MESSAGES.minLength)
+  .regex(PASSWORD_RULES.symbol, PASSWORD_MESSAGES.symbol)
+  .refine((v) => Buffer.byteLength(v, "utf8") <= PASSWORD_RULES.maxBytes, PASSWORD_MESSAGES.maxBytes);
 
 export const signupSchema = z.object({
   firstName: name("First name"),

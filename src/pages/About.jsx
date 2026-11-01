@@ -1,10 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion as Motion } from "motion/react";
-import { Lock, Target, Bot, Check, Github } from "lucide-react";
-
-// Copy follows docs/strategy/VISION.md (problem → solution → who it's for). Everything on
-// this page must be true today: no invented user counts, no placeholder
-// socials, and roadmap items only for work that's built or actually planned.
+import { Check, Github } from "lucide-react";
+import { ABOUT_PILLARS, ABOUT_AUDIENCE, ABOUT_STATUS } from "../../constants/about";
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -12,83 +9,6 @@ const fadeUp = (delay = 0) => ({
   viewport: { once: true, amount: 0.2 },
   transition: { duration: 0.5, delay },
 });
-
-const PILLARS = [
-  {
-    icon: Lock,
-    title: "Roadmaps you have to earn",
-    body: "Every layer is locked until you pass a server-graded test on the one before it. No checkbox to tick, no skipping ahead.",
-  },
-  {
-    icon: Target,
-    title: "Your weak spots, not a score",
-    body: "Fail a test and you see exactly which topics you missed, so you review those instead of starting over.",
-  },
-  {
-    icon: Bot,
-    title: "A mentor that knows your journey",
-    body: "The AI mentor can see your path, test history and weak spots. It guides you to the answer instead of handing it over.",
-  },
-];
-
-const AUDIENCE = [
-  "Self-taught developers who want proof they're job-ready",
-  "Career switchers and bootcamp grads filling gaps in what they learned",
-  "Early-career devs who want an honest signal of what they don't know yet",
-];
-
-const STATUS = [
-  {
-    done: true,
-    label: "Gated roadmaps",
-    desc: "Layer-by-layer paths with progress tracking.",
-  },
-  {
-    done: true,
-    label: "Tests & weak spots",
-    desc: "Server-graded tests that record what you missed.",
-  },
-  {
-    done: true,
-    label: "AI mentor",
-    desc: "Grounded in your progress, test history and weak spots.",
-  },
-  {
-    done: true,
-    label: "Coding challenges",
-    desc: "Practice problems you solve in the browser.",
-  },
-  {
-    done: true,
-    label: "Capstones & certificates",
-    desc: "Build a real project, defend it, and earn a certificate anyone can verify.",
-  },
-  {
-    done: true,
-    label: "Build Teams",
-    desc: "Build with others; every member's part is reviewed and rated.",
-  },
-  {
-    done: true,
-    label: "Project maps",
-    desc: "Draw how a system fits together, or scan a repo to start one.",
-  },
-  {
-    done: true,
-    label: "Labs",
-    desc: "The Foundations room and the first hands-on system lab.",
-  },
-  {
-    done: false,
-    label: "More test-ready paths",
-    desc: "Backend is first; more paths get full tests next.",
-  },
-  {
-    done: false,
-    label: "Spoken teach-back",
-    desc: "Explain a topic out loud and get graded on your understanding. The written version is live.",
-  },
-];
 
 const SectionTitle = ({ children }) => (
   <Motion.h2
@@ -129,7 +49,7 @@ const About = () => (
     <section className="flex flex-col gap-10">
       <SectionTitle>How Vahoha is different</SectionTitle>
       <div className="grid gap-4 sm:grid-cols-3">
-        {PILLARS.map(({ icon: Icon, title, body }, i) => (
+        {ABOUT_PILLARS.map(({ icon: Icon, title, body }, i) => (
           <Motion.div
             key={title}
             className="rounded-2xl border border-neutral-800 bg-neutral-950 p-6"
@@ -151,7 +71,7 @@ const About = () => (
     <section className="flex flex-col gap-10">
       <SectionTitle>Who it&apos;s for</SectionTitle>
       <ul className="mx-auto flex max-w-xl flex-col gap-3">
-        {AUDIENCE.map((line, i) => (
+        {ABOUT_AUDIENCE.map((line, i) => (
           <Motion.li
             key={line}
             className="flex items-start gap-3 text-neutral-300"
@@ -168,8 +88,8 @@ const About = () => (
     <section className="flex flex-col gap-10">
       <SectionTitle>Where we are</SectionTitle>
       <ol className="mx-auto flex w-full max-w-xl flex-col">
-        {STATUS.map(({ done, label, desc }, i) => {
-          const next = STATUS[i + 1];
+        {ABOUT_STATUS.map(({ done, label, desc }, i) => {
+          const next = ABOUT_STATUS[i + 1];
           return (
           <Motion.li key={label} className="relative pb-5 pl-7 last:pb-0" {...fadeUp(i * 0.06)}>
             {/* Each item draws the line from its dot to the next one, so the

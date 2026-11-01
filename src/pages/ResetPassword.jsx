@@ -3,6 +3,7 @@ import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import { confirmPasswordReset } from "@/services/authApi";
+import { newPasswordError } from "../../constants/password";
 
 const inputBase =
   "w-full px-3.5 py-2.5 text-base sm:text-sm text-[#30313d] dark:text-white bg-white dark:bg-zinc-800 border rounded-md placeholder:text-[#a3acb9] dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-fuchsia-100 dark:focus:ring-fuchsia-900/30 transition-all duration-150";
@@ -40,11 +41,8 @@ export default function ResetPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Same rules as signup (backend signupPasswordSchema). The server checks them
-    // again; this just saves a round trip and gives the message straight away.
-    if (newPassword.length < 6) return toast.error("At least 6 characters.");
-    if (!/[!@#$%^&*()]/.test(newPassword))
-      return toast.error("Include at least one symbol (!@#$%^&*()).");
+    const ruleError = newPasswordError(newPassword);
+    if (ruleError) return toast.error(ruleError);
     if (newPassword !== confirmPassword) return toast.error("Passwords don't match.");
     setIsLoading(true);
     try {

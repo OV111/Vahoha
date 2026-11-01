@@ -4,11 +4,8 @@ import { Mail, Send, Github, Instagram, CheckCircle2, ChevronDown } from "lucide
 import XLogo from "../components/ui/XLogo";
 import { API_BASE_URL } from "../../constants/api";
 import { SITE } from "../../constants/site";
+import { CONTACT_TOPICS, CONTACT_LIMITS } from "../../constants/contact";
 
-// Must match CONTACT_TOPICS in backend/modules/contact/schemas/contact.schemas.js
-// — the server rejects anything else with a 400.
-const TOPICS = ["General question", "Bug report", "Feature request", "Partnership", "Other"];
-const MAX_MESSAGE = 1000;
 const EMPTY_FORM = { name: "", email: "", topic: "", message: "", website: "" };
 
 const SOCIALS = [
@@ -38,8 +35,7 @@ const Field = ({ label, htmlFor, error, children }) => (
 
 const Contact = () => {
   const [form, setForm] = useState(EMPTY_FORM);
-  // "idle" | "sending" | "sent" | "error" — one status instead of several
-  // booleans that could contradict each other (sending AND sent).
+ 
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState({ field: null, message: "" });
 
@@ -121,7 +117,7 @@ const Contact = () => {
                     value={form.name}
                     onChange={handleChange}
                     required
-                    maxLength={100}
+                    maxLength={CONTACT_LIMITS.nameMax}
                     autoComplete="name"
                     placeholder="Your name"
                     className={inputClass}
@@ -161,7 +157,7 @@ const Contact = () => {
                     <option value="" disabled className="bg-neutral-900 text-neutral-500">
                       Select a topic…
                     </option>
-                    {TOPICS.map((t) => (
+                    {CONTACT_TOPICS.map((t) => (
                       <option key={t} value={t} className="bg-neutral-900 text-white">
                         {t}
                       </option>
@@ -182,14 +178,14 @@ const Contact = () => {
                   value={form.message}
                   onChange={handleChange}
                   required
-                  minLength={10}
-                  maxLength={MAX_MESSAGE}
+                  minLength={CONTACT_LIMITS.messageMin}
+                  maxLength={CONTACT_LIMITS.messageMax}
                   rows={6}
                   placeholder="What's on your mind?"
                   className={`${inputClass} resize-none`}
                 />
                 <p className="text-right text-[11px] text-neutral-600">
-                  {form.message.length} / {MAX_MESSAGE}
+                  {form.message.length} / {CONTACT_LIMITS.messageMax}
                 </p>
               </Field>
 

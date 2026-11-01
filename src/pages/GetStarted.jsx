@@ -8,6 +8,7 @@ import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { sanitizeInput } from "../utils/sanitize";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import { PASSWORD_RULES, PASSWORD_MESSAGES } from "../../constants/password";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -279,19 +280,19 @@ const GetStarted = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     autoComplete={isSignedUp ? "new-password" : "current-password"}
-                    maxLength={72}
+                    maxLength={PASSWORD_RULES.maxBytes}
                     {...register("password", {
                       required: "Password is required.",
                       minLength: isSignedUp
-                        ? { value: 6, message: "At least 6 characters." }
+                        ? { value: PASSWORD_RULES.minLength, message: PASSWORD_MESSAGES.minLength }
                         : undefined,
-                      maxLength: { value: 72, message: "Max 72 characters." },
+                      maxLength: { value: PASSWORD_RULES.maxBytes, message: `Max ${PASSWORD_RULES.maxBytes} characters.` },
                       // Symbol rule is signup-only: on login it would block
                       // existing passwords and leak the password policy.
                       pattern: isSignedUp
                         ? {
-                            value: /[!@#$%^&*()]/,
-                            message: "Must include at least one symbol (!@#$%^&*()).",
+                            value: PASSWORD_RULES.symbol,
+                            message: PASSWORD_MESSAGES.symbol,
                           }
                         : undefined,
                     })}
@@ -323,10 +324,10 @@ const GetStarted = () => {
                       id="confirmPassword"
                       type={showConfirmPassword ? "text" : "password"}
                       autoComplete="new-password"
-                      maxLength={72}
+                      maxLength={PASSWORD_RULES.maxBytes}
                       {...register("confirmPassword", {
                         required: "Please confirm your password.",
-                        maxLength: { value: 72, message: "Max 72 characters." },
+                        maxLength: { value: PASSWORD_RULES.maxBytes, message: `Max ${PASSWORD_RULES.maxBytes} characters.` },
                         validate: (value) =>
                           value === getValues("password") ||
                           "Passwords don't match.",
