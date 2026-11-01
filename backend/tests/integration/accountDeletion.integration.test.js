@@ -15,6 +15,9 @@ const PER_USER = [
   'teach_back_sessions', 'mentor_teaching_log', 'agent_sessions', 'agent_usage',
   'challenge_attempts', 'challengeResults', 'savedLibraryResources',
   'usernameHistory', 'userEvents', 'refreshTokens', 'passwordResets',
+  'capstone_attempts', 'capstone_submissions', 'submission_usage', 'certificates',
+  'system_maps', 'system_map_checks', 'system_map_comments',
+  'team_defenses', 'xpAwards', 'recruiter_settings',
 ]
 
 let mongod

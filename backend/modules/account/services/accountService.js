@@ -137,6 +137,9 @@ const USER_KEYED_COLLECTIONS = [
   "subscriptions",
   "system_maps",
   "system_map_checks",
+  // Comments the user left on team maps. Keyed by the author, so they go even
+  // though the team's map itself stays for the other members.
+  "system_map_comments",
   // Public, verifiable credentials that carry the learner's name. The Privacy
   // Policy promises full removal, so they go too (their share links stop working).
   "certificates",
