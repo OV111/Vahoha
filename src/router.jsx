@@ -16,7 +16,19 @@ const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
-const MyProfile = lazy(() => import("./features/profile/pages/MyProfile"));
+// The page's code and the profile load together, so the route's loader stays
+// up until both are in. Loaded one after the other, the code's loader gave way
+// to a second, restarted one inside the page while the profile came in.
+// fetchProfile joins a request already out (App starts one at login) and
+// never throws; the catch keeps a failure there from breaking the page load.
+const MyProfile = lazy(() =>
+  Promise.all([
+    import("./features/profile/pages/MyProfile"),
+    import("./stores/useProfileStore")
+      .then(({ default: store }) => store.getState().fetchProfile())
+      .catch(() => {}),
+  ]).then(([page]) => page),
+);
 const GetStarted = lazy(() => import("./pages/GetStarted"));
 const ReadMore = lazy(() => import("./features/blogs/ReadMore"));
 const NotFound = lazy(() => import("./components/feedback/NotFound"));
