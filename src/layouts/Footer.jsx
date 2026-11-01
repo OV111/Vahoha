@@ -1,69 +1,18 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { Github, Instagram, Mail } from "lucide-react";
 import useAuthStore from "../stores/useAuthStore";
 import Wordmark from "@/components/ui/Wordmark";
-import XLogo from "@/components/ui/XLogo";
-import { SITE } from "../../constants/site";
-import { CATEGORY_OPTIONS, categoryHref } from "../../constants/categories";
-
-// Guests see the same features as members: a protected page sends them to
-// /get-started, which works as a sign-up funnel. Only account pages (progress,
-// billing) are member-only; guests get Foundations and Pricing in their place.
-const PRODUCT_LINKS_SHARED = [
-  { title: "Roadmaps", to: "/roadmaps" },
-  { title: "Challenges", to: "/coding-challenges" },
-  { title: "Labs", to: "/labs" },
-  { title: "Build Team", to: "/team" },
-  { title: "Capstone", to: "/capstone" },
-  { title: "Project Map", to: "/project-map" },
-];
-const PRODUCT_LINKS_GUEST = [
-  ...PRODUCT_LINKS_SHARED,
-  { title: "Pricing", to: "/pricing" },
-];
-const PRODUCT_LINKS_AUTH = [
-  ...PRODUCT_LINKS_SHARED,
-  { title: "My Progress", to: "/progress" },
-  { title: "Pricing", to: "/pricing" },
-  { title: "Billing", to: "/billing" },
-];
-const AI_LINKS = [
-  { title: "Foundations", to: "/labs/foundations" },
-  { title: "AI Mentor", to: "/ai-agent" },
-  { title: "Explain it back (soon)", to: "/voice-review" },
-];
-const COMPANY_LINKS = [
-  { title: "About", to: "/about" },
-  { title: "Blog", to: "/blogs" },
-  { title: "Contact", to: "/contact" },
-  { title: "Privacy Policy", to: "/privacy" },
-  { title: "Terms of Service", to: "/terms" },
-];
-const CATEGORY_LINKS = CATEGORY_OPTIONS.map((category) => ({
-  title: category.title,
-  to: categoryHref(category),
-}));
+import {
+  AI_LINKS,
+  CATEGORY_LINKS,
+  COMPANY_LINKS,
+  FOOTER_SOCIAL_LINKS,
+  PRODUCT_LINKS_AUTH,
+  PRODUCT_LINKS_GUEST,
+} from "../../constants/footer";
 
 // Small, medium-weight headings (Stripe/Vercel/Linear style): the links are
 // the content, the heading only labels the group.
 const headingClass = "mb-2 text-sm font-medium text-[#F7F7F8] sm:mb-3";
-
-const SOCIAL_LINKS = [
-  { label: "Vahoha on X", href: SITE.socials.x.href, Icon: XLogo, size: 15 },
-  {
-    label: "Vahoha on Instagram",
-    href: SITE.socials.instagram.href,
-    Icon: Instagram,
-    size: 16,
-  },
-  {
-    label: "Vahoha on GitHub",
-    href: SITE.socials.github.href,
-    Icon: Github,
-    size: 16,
-  },
-  { label: "Email Vahoha", href: `mailto:${SITE.email}`, Icon: Mail, size: 16 },
-];
 
 const iconClass =
   "group flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-white/10 transition duration-200 hover:border-white/40 hover:bg-white/20";
@@ -151,7 +100,7 @@ const Footer = () => {
             <h2 className={headingClass}>Follow us</h2>
             <div className="flex items-center gap-3">
               {/* External: plain <a> + new tab. <Link> is for in-app routes. */}
-              {SOCIAL_LINKS.map(({ label, href, Icon, size }) => (
+              {FOOTER_SOCIAL_LINKS.map(({ label, href, Icon, size }) => (
                 <a
                   key={label}
                   href={href}
