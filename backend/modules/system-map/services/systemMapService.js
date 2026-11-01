@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { ObjectId } from "mongodb";
 import { canAccessMap, isEligibleForOwner, ownerTypeOf } from "./ownerAccess.js";
+import { deleteMapComments } from "./commentService.js";
 
 const COLLECTION = "system_maps";
 
@@ -114,6 +115,7 @@ export async function deleteMapService(db, id, userId) {
   const doc = await findAccessible(db, id, userId);
   if (!doc || !doc.userId.equals(userId)) return false;
   const { deletedCount } = await db.collection(COLLECTION).deleteOne({ _id: doc._id });
+  if (deletedCount === 1) await deleteMapComments(db, doc._id);
   return deletedCount === 1;
 }
 

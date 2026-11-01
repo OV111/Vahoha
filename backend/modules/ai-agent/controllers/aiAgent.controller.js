@@ -8,6 +8,7 @@ import {
   getUsageToday,
   updateSession,
   deleteSession,
+  deleteAllSessions,
   MAX_TURNS,
   DAILY_MESSAGE_CAP,
 } from "../services/sessionService.js";
@@ -78,6 +79,17 @@ export const updateSessionById = async (req, res) => {
   } catch (err) {
     console.error("updateSessionById error:", err);
     res.status(500).json({ message: "Failed to update session" });
+  }
+};
+
+export const deleteAllSessionsForUser = async (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const deleted = await deleteAllSessions(db, req.user._id.toString(), { keepPinned: req.query.keepPinned === "true" });
+    res.json({ success: true, deleted });
+  } catch (err) {
+    console.error("deleteAllSessions error:", err);
+    res.status(500).json({ message: "Failed to delete chats" });
   }
 };
 

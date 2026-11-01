@@ -71,6 +71,8 @@ const connectDB = async () => {
       // Digest concepts: one per book + key. Known-state: one row per learner, book and concept.
       db.collection("system_maps").createIndex({ userId: 1, updatedAt: -1 }),
       db.collection("system_map_checks").createIndex({ userId: 1, mapId: 1, createdAt: -1 }),
+      // A team map's comments, oldest first (commentService list, count and delete-with-map).
+      db.collection("system_map_comments").createIndex({ mapId: 1, createdAt: 1 }),
       // One capstone map per learner per track, one map per team (the 409 "exists" in createOwnerMapService).
       db.collection("system_maps").createIndex(
         { ownerType: 1, ownerId: 1, userId: 1 },

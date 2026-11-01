@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { EXAMPLE_GRAPH, MAX_EVIDENCE, MAX_NODES, evidenceUrl, freeSpot, fromGraph, loadSaved, save, toGraph } from "@/features/system-map/lib/mapGraph";
+import { EXAMPLE_GRAPH, MAX_EVIDENCE, MAX_NODES, MAX_NOTE, evidenceUrl, freeSpot, fromGraph, loadSaved, save, toGraph } from "@/features/system-map/lib/mapGraph";
 
 const memoryStorage = () => {
   const data = {};
@@ -45,6 +45,23 @@ describe("mapGraph", () => {
   it("caps the number of nodes", () => {
     const many = Array.from({ length: MAX_NODES + 20 }, (_, i) => ({ id: `n${i}`, kind: "server", title: "n", x: 0, y: 0 }));
     expect(fromGraph({ v: 1, nodes: many, edges: [] }).nodes).toHaveLength(MAX_NODES);
+  });
+
+  it("keeps a part's explanation, leaves out a blank one and caps a long one", () => {
+    const graph = {
+      ...EXAMPLE_GRAPH,
+      nodes: EXAMPLE_GRAPH.nodes.map((n, i) => (i === 1 ? { ...n, note: "Handles every request.\nNo state." } : n)),
+    };
+    const { nodes, edges } = fromGraph(graph);
+    expect(nodes[1].data.note).toBe("Handles every request.\nNo state.");
+    expect(toGraph(nodes, edges)).toEqual(graph);
+
+    const blank = fromGraph({ ...EXAMPLE_GRAPH, nodes: [{ ...EXAMPLE_GRAPH.nodes[0], note: "   " }], edges: [] });
+    expect(blank.nodes[0].data).not.toHaveProperty("note");
+    expect(toGraph([{ ...blank.nodes[0], data: { ...blank.nodes[0].data, note: "  " } }], []).nodes[0]).not.toHaveProperty("note");
+
+    const long = fromGraph({ ...EXAMPLE_GRAPH, nodes: [{ ...EXAMPLE_GRAPH.nodes[0], note: "x".repeat(MAX_NOTE + 50) }], edges: [] });
+    expect(long.nodes[0].data.note).toHaveLength(MAX_NOTE);
   });
 
   it("keeps repo evidence and the scanned repo through a round trip", () => {

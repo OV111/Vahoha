@@ -5,6 +5,7 @@ import { aiBurstLimiter } from "../../../middleware/aiRateLimit.js";
 import {
   createSessionSchema,
   sessionIdParamSchema,
+  deleteAllSessionsQuerySchema,
   updateSessionSchema,
   streamSchema,
 } from "../schemas/aiAgent.schemas.js";
@@ -15,6 +16,7 @@ import {
   getContext,
   updateSessionById,
   deleteSessionById,
+  deleteAllSessionsForUser,
   stream,
 } from "../controllers/aiAgent.controller.js";
 
@@ -39,6 +41,13 @@ router.patch(
   authenticate,
   validate({ params: sessionIdParamSchema, body: updateSessionSchema }),
   updateSessionById,
+);
+// DELETE /api/ai-agent/sessions?keepPinned=true: clear the learner's chats (all, or all unpinned)
+router.delete(
+  "/sessions",
+  authenticate,
+  validate({ query: deleteAllSessionsQuerySchema }),
+  deleteAllSessionsForUser,
 );
 router.delete(
   "/sessions/:id",

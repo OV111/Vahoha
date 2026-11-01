@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
-import { addEdge, ReactFlowProvider, useEdgesState, useNodesState, useReactFlow } from "@xyflow/react";
-import { Download, RotateCcw, ScanSearch, Upload } from "lucide-react";
+import { addEdge, ReactFlowProvider, reconnectEdge, useEdgesState, useNodesState, useReactFlow } from "@xyflow/react";
+import { Redo2, RotateCcw, ScanSearch, Undo2, Upload } from "lucide-react";
 import NotFound from "../../../components/feedback/NotFound";
 import SystemCanvas from "../components/SystemCanvas";
 import NodePalette, { DRAG_TYPE } from "../components/NodePalette";
@@ -12,12 +12,18 @@ import RepoScanPanel from "../components/RepoScanPanel";
 import LensPicker from "../components/LensPicker";
 import UnderstandingCheck from "../components/UnderstandingCheck";
 import DriftBanner from "../components/DriftBanner";
+import ExportMenu from "../components/ExportMenu";
+import PartComments from "../components/PartComments";
+import useMapComments from "../hooks/useMapComments";
 import useInitialMap from "../hooks/useInitialMap";
 import { saveMap } from "../systemMapApi";
-import { EXAMPLE_GRAPH, MAX_NODES, freeSpot, fromGraph, save, toGraph, withArrow } from "../lib/mapGraph";
+import { EXAMPLE_GRAPH, MAX_NODES, freeSpot, fromGraph, toGraph, withArrow } from "../lib/mapGraph";
 import { isKind, kindInfo } from "../lib/nodeKinds";
 import { fitOptions } from "../lib/viewport";
 import { applyScan } from "../lib/applyScan";
+import { canRedo, canUndo, record, redo, startHistory, undo } from "../lib/history";
+import { toMermaid } from "../lib/mermaid";
+import { downloadUrl, renderMapImage } from "../lib/exportImage";
 
 // /project-map — a free editor for the system diagram of your own project.
 // Guests keep their map in this browser (localStorage). Signed-in learners keep
@@ -30,7 +36,15 @@ import { applyScan } from "../lib/applyScan";
 // the public through the team's evidence page) and no understanding check.
 
 const SAVE_DEBOUNCE_MS = 400;
+const HISTORY_PAUSE_MS = 350; // edits closer together than this (typing a name) are one undo step
+const INFO_MS = 4000;
 const NODE_HALF = { x: 88, y: 30 }; // drop point is the node's centre, not its corner
+const DELETE_KEYS = ["Backspace", "Delete"]; // removes the selected part or wire
+
+const graphJson = (nodes, edges, repo, lens) => JSON.stringify(toGraph(nodes, edges, repo, lens));
+
+// Ctrl/Cmd+Z in a text field undoes the typing, not the map.
+const isTextField = (el) => Boolean(el?.closest?.("input, textarea, select, [contenteditable='true']"));
 
 const newId = () => `n-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -43,7 +57,6 @@ const OWNER_COPY = {
 };
 
 const SAVE_STATUS = {
-  browser: "Saved in this browser only.",
   saving: "Saving…",
   saved: "Saved to your account.",
   error: "Couldn't save your last change. It will retry on your next edit.",
@@ -59,12 +72,18 @@ function ProjectMapEditor({ initial }) {
   const ownerType = initial.remote?.ownerType ?? "personal";
   const isTeam = ownerType === "team";
   const copy = OWNER_COPY[ownerType] ?? OWNER_COPY.personal;
-  const [saveState, setSaveState] = useState(initial.remote ? "saved" : "browser");
+  const [saveState, setSaveState] = useState("saved");
   const remoteRef = useRef(initial.remote);
   const lastSavedRef = useRef(JSON.stringify(toGraph(initial.graph.nodes, initial.graph.edges, initial.graph.repo, initial.graph.lens)));
   const queueRef = useRef(Promise.resolve()); // saves run one at a time, so each sees the latest revision
   const stoppedRef = useRef(false); // set after a conflict: saving again would overwrite the other copy
   const [notice, setNotice] = useState(null);
+  const [info, setInfo] = useState(null); // a short success message, e.g. after copying Mermaid
+  const [exporting, setExporting] = useState(false);
+  const historyRef = useRef(startHistory(lastSavedRef.current));
+  const [history, setHistory] = useState({ undo: false, redo: false }); // what the buttons can do
+  // Parts on the server's copy: comments can only go on those.
+  const [savedIds, setSavedIds] = useState(() => new Set(initial.graph.nodes.map((n) => n.id)));
   const [confirmReset, setConfirmReset] = useState(false);
   const { screenToFlowPosition, fitView } = useReactFlow();
   const canvasRef = useRef(null);
@@ -76,12 +95,6 @@ function ProjectMapEditor({ initial }) {
       const json = JSON.stringify(graph);
       // Selecting or measuring a part changes `nodes` but not the map.
       if (stoppedRef.current || json === lastSavedRef.current) return;
-
-      if (!remoteRef.current) {
-        save(nodes, edges, repo, lens);
-        lastSavedRef.current = json;
-        return;
-      }
 
       setSaveState("saving");
       queueRef.current = queueRef.current.then(async () => {
@@ -95,6 +108,7 @@ function ProjectMapEditor({ initial }) {
           }
           remoteRef.current = { ...remoteRef.current, revision: result.map.revision };
           lastSavedRef.current = json;
+          setSavedIds(new Set(graph.nodes.map((n) => n.id)));
           setSaveState("saved");
         } catch {
           setSaveState("error");
@@ -104,9 +118,37 @@ function ProjectMapEditor({ initial }) {
     return () => clearTimeout(id);
   }, [nodes, edges, repo, lens]);
 
+  // One undo step per finished change: never mid-drag, and only once edits
+  // pause, so typing a name or dragging a part is a single step.
+  const dragging = nodes.some((n) => n.dragging);
+  useEffect(() => {
+    if (dragging) return;
+    const id = setTimeout(() => {
+      historyRef.current = record(historyRef.current, graphJson(nodes, edges, repo, lens));
+      setHistory({ undo: canUndo(historyRef.current), redo: canRedo(historyRef.current) });
+    }, HISTORY_PAUSE_MS);
+    return () => clearTimeout(id);
+  }, [nodes, edges, repo, lens, dragging]);
+
+  useEffect(() => {
+    if (!info) return;
+    const id = setTimeout(() => setInfo(null), INFO_MS);
+    return () => clearTimeout(id);
+  }, [info]);
+
   const selectedNode = nodes.find((n) => n.selected) ?? null;
   const selectedEdge = selectedNode ? null : (edges.find((e) => e.selected) ?? null);
   const full = nodes.length >= MAX_NODES;
+
+  // Team maps only. Re-read whenever another part is selected, so teammates' new comments show up.
+  const comments = useMapComments(isTeam ? initial.remote.id : null, selectedNode?.id);
+  const commentCounts = useMemo(
+    () => (comments.enabled ? new Map([...comments.byNode].map(([id, list]) => [id, list.length])) : null),
+    [comments.enabled, comments.byNode],
+  );
+  // Comments whose part was deleted stay on the server; undo brings the part (and them) back.
+  const onIds = new Set(nodes.map((n) => n.id));
+  const orphanComments = [...comments.byNode].filter(([id]) => !onIds.has(id)).reduce((sum, [, list]) => sum + list.length, 0);
 
   const addNode = useCallback(
     (kind, position) => {
@@ -134,6 +176,29 @@ function ProjectMapEditor({ initial }) {
   };
 
   const onConnect = useCallback((c) => setEdges((es) => addEdge(withArrow(c), es)), [setEdges]);
+
+  // Redoing a wire: drag either end onto another part to move it (the label
+  // stays), or drop it on empty canvas to remove it.
+  const reconnectedRef = useRef(true);
+  const onReconnectStart = useCallback(() => {
+    reconnectedRef.current = false;
+  }, []);
+  const onReconnect = useCallback(
+    (oldEdge, connection) => {
+      reconnectedRef.current = true;
+      setEdges((es) => reconnectEdge(oldEdge, connection, es, { shouldReplaceId: false }));
+    },
+    [setEdges],
+  );
+  const onReconnectEnd = useCallback(
+    (event, edge) => {
+      // Dropped on a part but not a valid end (e.g. back onto its own source): keep the wire as it was.
+      const onPart = event.target?.closest?.(".react-flow__node");
+      if (!reconnectedRef.current && !onPart) setEdges((es) => es.filter((e) => e.id !== edge.id));
+      reconnectedRef.current = true;
+    },
+    [setEdges],
+  );
 
   const patchNode = (data) =>
     setNodes((ns) => ns.map((n) => (n.id === selectedNode.id ? { ...n, data: { ...n.data, ...data } } : n)));
@@ -176,17 +241,82 @@ function ProjectMapEditor({ initial }) {
     return result.added;
   };
 
+  // Moves one step through history. The restored map is saved like any other edit.
+  const travel = (step) => {
+    const before = historyRef.current;
+    const next = step === "undo" ? undo(before, graphJson(nodes, edges, repo, lens)) : redo(before);
+    historyRef.current = next;
+    setHistory({ undo: canUndo(next), redo: canRedo(next) });
+    if (next === before) return;
+    const graph = fromGraph(JSON.parse(next.present));
+    setNodes(graph.nodes);
+    setEdges(graph.edges);
+    setRepo(graph.repo ?? null);
+    setLens(graph.lens);
+  };
+
+  // Re-subscribed every render, so the handler always sees the current map.
+  useEffect(() => {
+    const onKey = (e) => {
+      if (isTextField(e.target)) return;
+      if (e.key === "Escape") {
+        clearSelection();
+        return;
+      }
+      if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+      const key = e.key.toLowerCase();
+      if (key === "z" && !e.shiftKey) {
+        e.preventDefault();
+        travel("undo");
+      } else if ((key === "z" && e.shiftKey) || key === "y") {
+        e.preventDefault();
+        travel("redo");
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
   const resetToExample = () => {
     load(fromGraph(EXAMPLE_GRAPH));
     setConfirmReset(false);
     setNotice(null);
   };
 
-  const exportJson = () => {
-    const url = URL.createObjectURL(new Blob([JSON.stringify(toGraph(nodes, edges, repo, lens), null, 2)], { type: "application/json" }));
-    const a = Object.assign(document.createElement("a"), { href: url, download: "project-map.json" });
-    a.click();
+  const downloadText = (text, type, filename) => {
+    const url = URL.createObjectURL(new Blob([text], { type }));
+    downloadUrl(url, filename);
     URL.revokeObjectURL(url);
+  };
+
+  const exportAs = async (format) => {
+    setNotice(null);
+    setInfo(null);
+    const graph = toGraph(nodes, edges, repo, lens);
+    if (format === "json") {
+      downloadText(JSON.stringify(graph, null, 2), "application/json", "project-map.json");
+      return;
+    }
+    if (format === "mermaid") {
+      const text = toMermaid(graph, { fenced: true });
+      try {
+        await navigator.clipboard.writeText(text);
+        setInfo("Copied as Mermaid. Paste it into a README.md and GitHub draws the diagram.");
+      } catch {
+        // No clipboard (blocked, or not a secure page): hand over the same text as a file.
+        downloadText(text, "text/markdown", "project-map.md");
+        setInfo("Saved as project-map.md. Paste its contents into a README and GitHub draws the diagram.");
+      }
+      return;
+    }
+    setExporting(true);
+    try {
+      downloadUrl(await renderMapImage(canvasRef.current, nodes, format), `project-map.${format}`);
+    } catch {
+      setNotice("Couldn't draw the image. Try again, or export the map file instead.");
+    } finally {
+      setExporting(false);
+    }
   };
 
   const importJson = async (e) => {
@@ -217,15 +347,7 @@ function ProjectMapEditor({ initial }) {
           <p className="text-[11px] font-semibold uppercase tracking-widest text-amber-300">{copy.eyebrow}</p>
           <h1 className="mt-1 text-2xl font-bold text-white">{copy.title}</h1>
           <p className="mt-1 text-sm text-neutral-400" role="status">
-            {SAVE_STATUS[saveState]}{" "}
-            {saveState === "browser" && (
-              <>
-                <Link to="/get-started" className="text-purple-300 underline-offset-2 hover:underline">
-                  Sign in
-                </Link>{" "}
-                to keep it in your account.
-              </>
-            )}
+            {SAVE_STATUS[saveState]}
           </p>
           {isTeam && (
             <p className="mt-1 text-sm text-neutral-500">Team maps appear on your team&apos;s public evidence page once an admin publishes it.</p>
@@ -240,9 +362,27 @@ function ProjectMapEditor({ initial }) {
           {initial.remote && !isTeam && (
             <ShareControl mapId={initial.remote.id} initialShared={initial.remote.shared} initialPublicId={initial.remote.publicId} />
           )}
-          <button type="button" className={`${button} ${iconOnPhone}`} onClick={exportJson} aria-label="Export" title="Export">
-            <Download size={14} aria-hidden="true" /> <span className="max-sm:hidden">Export</span>
+          <button
+            type="button"
+            className={`${button} w-11 justify-center px-0 disabled:cursor-default disabled:opacity-40`}
+            onClick={() => travel("undo")}
+            disabled={!history.undo}
+            aria-label="Undo"
+            title="Undo (Ctrl+Z)"
+          >
+            <Undo2 size={14} aria-hidden="true" />
           </button>
+          <button
+            type="button"
+            className={`${button} w-11 justify-center px-0 disabled:cursor-default disabled:opacity-40`}
+            onClick={() => travel("redo")}
+            disabled={!history.redo}
+            aria-label="Redo"
+            title="Redo (Ctrl+Shift+Z)"
+          >
+            <Redo2 size={14} aria-hidden="true" />
+          </button>
+          <ExportMenu onExport={exportAs} disabled={exporting} buttonClass={`${button} ${iconOnPhone} disabled:cursor-wait disabled:opacity-60`} />
           <button type="button" className={`${button} ${iconOnPhone}`} onClick={() => fileRef.current.click()} aria-label="Import" title="Import">
             <Upload size={14} aria-hidden="true" /> <span className="max-sm:hidden">Import</span>
           </button>
@@ -281,6 +421,12 @@ function ProjectMapEditor({ initial }) {
         </p>
       )}
 
+      {info && (
+        <p role="status" className="mt-3 rounded-lg bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
+          {info}
+        </p>
+      )}
+
       {scanOpen && (
         <RepoScanPanel signedIn={Boolean(initial.remote)} lens={lens} repo={repo} nodes={nodes} onApply={applyRepoScan} onClose={() => setScanOpen(false)} />
       )}
@@ -305,14 +451,27 @@ function ProjectMapEditor({ initial }) {
               onDeleteNode={deleteNode}
               onDrop={onDrop}
               onDragOver={onDragOver}
+              deleteKeyCode={DELETE_KEYS}
+              commentCounts={commentCounts}
+              onReconnect={onReconnect}
+              onReconnectStart={onReconnectStart}
+              onReconnectEnd={onReconnectEnd}
+              reconnectRadius={20}
             />
           </div>
+          {comments.error && <p className="mt-2 text-sm text-red-300">{comments.error}</p>}
+          {orphanComments > 0 && (
+            <p className="mt-2 text-sm text-neutral-500">
+              {orphanComments} comment{orphanComments === 1 ? " is" : "s are"} on parts no longer on the map. Undo the delete to see{" "}
+              {orphanComments === 1 ? "it" : "them"} again.
+            </p>
+          )}
 
           {/* Only while something is selected. Below lg it is a sheet pinned to the bottom of the screen (so it is never off-screen under a tall canvas); from lg it floats over the canvas, which keeps its full width. */}
           {(selectedNode || selectedEdge) && (
             <aside
               aria-label="Edit the selected item"
-              className="fixed inset-x-0 bottom-0 z-40 max-h-[50svh] overflow-auto rounded-t-2xl border-t border-neutral-700 bg-neutral-950 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-2xl shadow-black lg:absolute lg:inset-x-auto lg:top-3 lg:right-3 lg:bottom-auto lg:z-10 lg:max-h-[calc(100%-1.5rem)] lg:w-72 lg:rounded-2xl lg:border lg:border-neutral-800 lg:bg-neutral-950/95 lg:pb-4 lg:shadow-xl lg:shadow-black/50"
+              className="thin-scrollbar fixed inset-x-0 bottom-0 z-40 max-h-[50svh] overflow-auto rounded-t-2xl border-t border-neutral-700 bg-neutral-950 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-2xl shadow-black lg:absolute lg:inset-x-auto lg:top-3 lg:right-3 lg:bottom-auto lg:z-10 lg:max-h-[calc(100%-1.5rem)] lg:w-72 lg:rounded-2xl lg:border lg:border-neutral-800 lg:bg-neutral-950/95 lg:pb-4 lg:shadow-xl lg:shadow-black/50"
             >
               <Inspector
                 node={selectedNode}
@@ -324,6 +483,17 @@ function ProjectMapEditor({ initial }) {
                 onDeleteNode={() => deleteNode(selectedNode.id)}
                 onDeleteEdge={deleteEdge}
                 onClose={clearSelection}
+                nodeExtra={
+                  comments.enabled && selectedNode ? (
+                    <PartComments
+                      key={selectedNode.id}
+                      comments={comments.byNode.get(selectedNode.id) ?? []}
+                      saved={savedIds.has(selectedNode.id)}
+                      onAdd={(text) => comments.add(selectedNode.id, text)}
+                      onDelete={comments.remove}
+                    />
+                  ) : null
+                }
               />
             </aside>
           )}
@@ -346,7 +516,8 @@ function ProjectMapLoader({ owner }) {
   if (initial.status === "signin") {
     return (
       <section className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-6 text-center">
-        <p className="text-neutral-200">Sign in to open this map.</p>
+        <p className="text-lg font-semibold text-white">Sign in to use Project Map</p>
+        <p className="mt-2 text-sm text-neutral-400">Draw how your project works, scan your repo for parts, and keep the map in your account.</p>
         <Link
           to="/get-started"
           className="mt-4 inline-flex min-h-11 items-center rounded-lg border border-neutral-700 px-4 text-sm text-neutral-200 hover:border-neutral-500 hover:text-white"

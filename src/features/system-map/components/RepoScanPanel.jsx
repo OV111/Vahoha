@@ -116,8 +116,15 @@ export default function RepoScanPanel({ signedIn, repo, nodes, lens = DEFAULT_LE
             Reads your repo for {lensTitle} parts: your dependencies and config files. Nothing is added until you accept it.
           </p>
         </div>
-        <button type="button" onClick={onClose} className={button} aria-label="Close repo suggestions">
-          <X size={14} aria-hidden="true" />
+        {/* A small icon in the corner; the invisible ::before keeps a 44px tap area around it. */}
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close repo suggestions"
+          title="Close"
+          className="relative -mt-1 -mr-1 flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-neutral-400 transition-colors before:absolute before:-inset-1.5 before:content-[''] hover:bg-neutral-800 hover:text-white focus-visible:outline-2 focus-visible:outline-purple-400"
+        >
+          <X size={15} aria-hidden="true" />
         </button>
       </div>
 

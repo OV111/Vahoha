@@ -17,6 +17,12 @@ function PartDetails({ node, repo }) {
       <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-300">{kindInfo(node.data.kind)?.label}</p>
       <p className="mt-1 text-base font-semibold text-white">{node.data.title}</p>
       {node.data.sub && <p className="mt-1 text-sm text-neutral-300">{node.data.sub}</p>}
+      {node.data.note && (
+        <div className="mt-3">
+          <p className="text-xs font-medium text-neutral-400">What it is and why it&apos;s here</p>
+          <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-relaxed text-neutral-200">{node.data.note}</p>
+        </div>
+      )}
       {node.data.evidence?.length > 0 ? (
         <div className="mt-3">
           <p className="text-xs font-medium text-emerald-300">Found in the repo</p>

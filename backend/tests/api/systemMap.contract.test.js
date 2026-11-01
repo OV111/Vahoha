@@ -114,6 +114,20 @@ describe('saving', () => {
     expect(saved.body.data.graph.nodes).toHaveLength(3)
   })
 
+  it("keeps a part's explanation (trimmed) and refuses one over the limit", async () => {
+    const { id } = (await create(ALICE)).body.data
+    const save = (note, revision) =>
+      request(app)
+        .put(`/api/system-maps/${id}`)
+        .set('Authorization', bearer(ALICE))
+        .send({ graph: graph([node('a', { note }), node('b')], []), revision })
+
+    const saved = await save('  Answers the API calls.\nStateless.  ', 1)
+    expect(saved.status).toBe(200)
+    expect(saved.body.data.graph.nodes[0].note).toBe('Answers the API calls.\nStateless.')
+    expect((await save('x'.repeat(1001), 2)).status).toBe(400)
+  })
+
   it('refuses a stale revision and returns the server copy', async () => {
     const { id } = (await create(ALICE)).body.data
     const save = (revision, nodes) =>

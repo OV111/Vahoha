@@ -339,6 +339,32 @@ export default function AiAgent({ embedded = false, challengeContext = null }) {
     }
   };
 
+  // Clears the sidebar at once and puts it back if the server says no, like single delete.
+  const handleDeleteAllSessions = async ({ keepPinned }) => {
+    const store = useAiAgentStore.getState();
+    const previous = store.sessions;
+    const kept = keepPinned ? previous.filter((s) => s.pinned) : [];
+    setSessions(kept);
+
+    // The open chat goes too unless it's a pinned one being kept.
+    const activeId = store.activeSessionId;
+    if (activeId && !kept.some((s) => s._id === activeId)) {
+      setActiveSession(null);
+      store.setMessages([]);
+    }
+
+    try {
+      const res = await apiFetch(`${API_BASE_URL}/api/ai-agent/sessions${keepPinned ? "?keepPinned=true" : ""}`, {
+        method: "DELETE",
+        headers: authHeaders(),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    } catch {
+      setSessions(previous);
+      setError({ type: "session_load", message: "Couldn't delete your chats." });
+    }
+  };
+
   const appendMessage = (msg) =>
     useAiAgentStore.getState().appendMessage(msg);
 
@@ -395,6 +421,7 @@ export default function AiAgent({ embedded = false, challengeContext = null }) {
           onNewSession={handleNewSession}
           onRenameSession={handleRenameSession}
           onDeleteSession={handleDeleteSession}
+          onDeleteAllSessions={handleDeleteAllSessions}
           onTogglePinSession={handleTogglePinSession}
           mobileOpen={sessionsOpen}
           onMobileClose={() => setSessionsOpen(false)}
