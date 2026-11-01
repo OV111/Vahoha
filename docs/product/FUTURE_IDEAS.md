@@ -167,51 +167,150 @@
 
 ## Voice AI Progress Review / Teach-Back
 
-> **Status 2026-09-27:** A minimal one-topic vertical slice (JWT Signature only) has actually shipped — see `docs/engineering/ROADMAP_BUILD_PLAN.md` / the AI Mentor section for what's real. This entry is the original product reasoning and the parts still not built.
+> **Status 2026-11-01 (checked against code):** frozen until pilot data (`docs/PILOT_STATUS.md`). A text and dictation teach-back is live but covers very few topics. The spoken layer exam is a UI prototype on a mock API. The detailed design is `docs/product/VOICE_EXAM_SPEC.md`. Next step on the roadmap is a hand-run oral exam test before any backend work (`docs/product/PRODUCT_ROADMAP.md`).
 
 ### Reframe: it's a learning mechanic, not a voice feature
 
-Voice is the interface, not the idea. The actual product concept is a fourth evidence source added to the existing roadmap → exam → weak-spot loop:
+Voice is the interface, not the idea. The product concept is a fourth evidence source added to the roadmap → exam → weak-spot loop:
 
 ```
 Learn → Prove (exam) → Identify weaknesses → Review → Teach back → AI follow-up → Update learner profile → Advance
 ```
 
-MCQ tests recognition and is gameable; explaining a concept out loud (or in writing) under adaptive follow-up questioning tests recall and reasoning — closer to what a real technical interview demands. Potential brand angle: "Learn it. Prove it. Explain it. Earn the next level."
+MCQ tests recognition and is gameable. Explaining a concept out loud (or in writing) under follow-up questioning tests recall and reasoning, which is closer to a real technical interview. Brand angle: "Learn it. Prove it. Explain it. Earn the next level."
 
-### What's built (one topic only, JWT Signature)
+### Where each piece stands
 
-- Rubric-based evaluation: the app owns the rubric/scoring math, the LLM only fills in evidence against fixed criteria — never freely judges.
-- Grading via the existing Groq agent client, reusing the same tool-use provider (zero new vendor cost).
-- Server routes for initial teach-back grading and a single scoped follow-up question.
-- UI entry point from a missed exam topic into a teach-back mode inside the AI mentor chat.
-- Voice input/output on the free tier only, via the browser-native Web Speech API — zero marginal cost, zero new vendor.
-- Async only (dictate → transcript → grade → optional one follow-up → re-grade) — no live interruption or real-time turn-taking.
+| Piece | State | Where |
+|---|---|---|
+| Teach-back (per topic, text or dictation) | **Live, thin content** | `POST /api/exams/submit-teach-back` and `-followup`, `services/teachBackEvaluatorService.js` |
+| Voice exam (per layer, spoken) | **UI prototype, mock API** | `/voice-exam/:layerId`, `src/features/voice-exam` |
+| Voice review | **Scaffold, nothing works** | `/voice-review`, `backend/modules/voice-review` |
 
-### Explicitly not built yet
+### Teach-back: what is live
 
-- Rubric content for any topic beyond JWT Signature — the single largest gap; the pipeline works, the curriculum content doesn't exist yet.
-- Calibration — no reference answers have been graded to confirm the LLM scores consistently before trusting it on real users.
-- An on-demand entry point (a persistent "teach back a weak topic anytime" surface) — today it's only reachable right after a fresh exam result.
-- A mentor-initiated hook from general chat (agent offers to hand off into teach-back mid-conversation).
-- Live/sync voice conversation (a metered STT+LLM+TTS platform) — deliberately deferred; real per-minute cost, and it replaces the current text-based turn loop with call-style session architecture rather than extending it.
-- Mastery decay/re-verification over time, a "needs review" state for low-confidence grading, rubric-version-aware historical display, public skill-profile exposure of teach-back mastery.
+- **Grading:** the app owns the rubric and score levels; the LLM fills in evidence against fixed criteria and lists misconceptions. Groq `openai/gpt-oss-120b`, temperature 0.1. One follow-up question (temperature 0.4), then a re-grade.
+- **Entry points:** (1) inline on the exam results screen, only for missed topics that have a rubric (`InlineTeachBack`, `hasRubric` from `submitAttempt`), and (2) a "Teach it back" hand-off into teach-back mode in the mentor chat (`AiAgent.jsx`, `TeachBackCard`).
+- **Voice:** browser dictation in (`useSpeechDictation`, Web Speech API, free). The follow-up question is read aloud with browser `speechSynthesis`. No audio reaches the server.
+- **Feeds mastery:** results count as evidence in `learnerMastery` and outrank MCQ (a teach-back score under 60 marks the topic `shaky`). Shown as "Explained" on the mastery topic list.
+- **Limits:** 10 per minute and 40 per day per user (`middleware/aiRateLimit.js`).
 
-### Why this was risky to build early (reasoning, still relevant to scope decisions)
+### Teach-back: known gaps
 
-- This is scope on top of an MVP loop (roadmap + exam engine) that isn't yet fully validated with real users — the mandate is "build the loop, get real users through it, then decide what's next."
-- Real-time voice adds a new cost axis on top of an AI agent cost model that's already the primary margin risk (see `docs/strategy/BUSINESS_MODEL.md`).
-- It needs real infra — a speech-to-text pipeline, turn-taking/interruption logic, and either a TTS voice or a "listen only" mode.
+- **Content is the bottleneck.** `teach_back_rubrics` holds 4 rubrics. Three are mini-topics of `api-dev-1` (DNS, TCP vs UDP, browsers vs API clients). The JWT Signature rubric is keyed `layer: "layer-6"`, which is not a real layer id (real ids look like `api-dev-6`), so it most likely never matches. Every other topic has no teach-back.
+- **Not calibrated.** No human-graded reference answers. `docs/engineering/AI.md` says not to show numeric skill scores built on these rubrics yet.
+- **Writes into `examHistory`.** Teach-back saves a pseudo exam result. A voice exam must not copy this, because it would double-count evidence (spec finding F4).
+- **Bypasses the Groq gate.** Teach-back still calls Groq directly, outside the shared token budget the mentor uses (`docs/PILOT_STATUS.md`).
+- **No on-demand entry.** Teach-back is only reachable right after an exam or through the chat hand-off. There is no "teach back a weak topic anytime" surface, and the mentor never offers it on its own.
+- Not started: mastery decay and re-verification, a "needs review" state for low-confidence grades, rubric-version-aware history, teach-back mastery on public profiles.
 
-**Where this fits:** a Pro-tier or higher differentiator, built out further only after the core exam-based loop has proven the Layer 1 → Layer 2 return rate is healthy — not a replacement for the MCQ exam.
+### Voice exam: what exists
 
-**Open questions:**
+- **Spec:** `docs/product/VOICE_EXAM_SPEC.md` (2026-10-01). One spoken exam per layer, 2–3 follow-ups one at a time, concept-level 0/1/2 scoring, every credited concept backed by a quote that code checks against the transcript, two independent grader runs, 24h cooldown plus a mentor review of weak concepts before retry. Async V1; live conversation later on the same turn log.
+- **Decisions already made (2026-10-01):** soft gate (MCQ still unlocks the next layer, the voice exam adds "verified"); Free tier gets at least 3 graded voice exams a month per account; every core prompt covers all must-have concepts; examiner TTS deferred and, if used, free (browser or self-hosted); human mentors and exemplar answers are a future idea, not V1.
+- **Frontend prototype:** pre-exam, recording and transcribing screens, a state machine (`lib/examStates.js`) and a mock API (`api/voiceExamApi.js`) with the same signatures as the planned `/api/voice-exams` routes. The "Voice exam" button shows only on layer `api-dev-6` (`lib/pilotLayers.js`).
+- **Backend:** none. No `voice_exam_*` collections, no audio upload (no `multer`), no server STT (`transcriptionService.js` throws), no grading.
 
-- [ ] Sync (live AI follow-up mid-explanation) or async (record then review)? Async is the realistic default.
-- [ ] Which tier does this live behind — Pro, or a separate add-on given the extra AI cost?
-- [ ] Does a passed voice review count the same as a passed MCQ exam for layer unlock, or is it a separate "verified deep understanding" badge on top?
-- [ ] Transcript storage/privacy — users are speaking, not just clicking; needs clear consent and data-handling language.
-- [ ] Accessibility: must remain fully optional — mic access, accents, non-native English speakers, and users who prefer not to be recorded should never be blocked from progressing.
+### Voice review: clean-up candidate
+
+`/voice-review` captures a browser transcript and sends it nowhere. `backend/modules/voice-review` answers 501 and is not mounted in `app.js`. Its code comments point to `docs/strategy/VISION.md`, which no longer exists. The spec recommends deleting the `voiceReview*` names in favour of `voiceExam*` so there is one concept, not two. If the "progress review" idea below goes ahead, that is the name to reuse.
+
+### Enhanced idea: from one exam to a voice layer across the product
+
+The spec covers one moment: a graded oral exam at the end of a layer. The same pipeline (transcript → rubric → verified quotes → weak spots) can serve several moments. Ranked by value for effort, all reusing the spec's turn log and grader.
+
+1. **Weekly voice progress review (the original name).** Once a week, a 2–3 minute spoken check-in: "What did you learn this week? What's still fuzzy?" The mentor asks one follow-up on the weakest topic it already knows about. Output: an updated weak-spot list and a short progress note the learner keeps. Ungraded, so it needs no calibration and can ship before the exam. It could feed the weekly summary email being built (`constants/weeklySummary.js`).
+2. **Defend your own code.** Instead of explaining a textbook concept, the learner explains a choice in their own capstone, challenge or team PR: "Why did you store the refresh token there?" Follow-ups are generated from their diff. This is the hardest thing to fake with a second-screen LLM, and it matches the existing capstone and team defenses, so it strengthens a moat already being built.
+3. **Spaced re-verification.** Mastery decays. Weeks after a topic is marked solid, the mentor asks for a 60-second "explain it again". Pass keeps the topic verified; fail turns it back to `shaky` with no penalty. This gives "verified" a shelf life, which employers trust more than a one-time score.
+4. **Audience switch.** The same concept explained twice: once to a junior developer, once to a non-technical manager. Explaining at two levels shows real understanding better than one long answer, and it practices a skill interviews test directly. Graded on the same rubric plus one "adapted to the audience" criterion.
+5. **Confidence check.** Before the result, the learner rates how well they think they did (1–5). The gap between confidence and score is a strong learning signal: overconfident topics go to the top of the review list. Costs nothing.
+6. **Explain in any language, graded on content.** STT and the grader handle many languages, and the spec already says accent and fluency are never graded. Letting learners explain in their first language removes the biggest fairness worry for non-native speakers and opens non-English markets. The English-only exam stays available for an "interview-ready in English" badge.
+7. **Evidence clips on the profile.** With consent, 10–15 second clips of the learner's best explanations, linked to the verified concept. This fits the planned evidence profile (see "Evidence Profile and Employer Assessments" below): evidence instead of a bare number.
+
+**What stays out:** a live, real-time voice tutor (per-minute cost and a new session architecture), the mentor speaking every reply, and any grading of accent, pace or confidence in the voice.
+
+**Cheapest test of the whole direction:** before code, run the weekly progress review by hand with 5 pilot learners over a call, using a written rubric. If they come back for week two and the follow-ups surface weak spots the MCQ missed, the voice layer has earned a build.
+
+### Decided plan (2026-11-01)
+
+**One engine, three uses, in this order:**
+
+| Order | Use | Why this order |
+|---|---|---|
+| 1 | Weekly voice review (2–3 min, ungraded) | No rubric or calibration needed; works from the weak spots the mentor already tracks; tests whether learners want to talk to it at all. |
+| 2 | Graded voice exam on one layer (`api-dev-6`) | Per `VOICE_EXAM_SPEC.md`. The UI prototype exists; it needs the backend and one rubric. |
+| 3 | Defend your own code (capstone or PR) | Hardest to fake, most valuable to employers; needs the engine working first. |
+
+**What the learner explains: per topic and per layer, never per subtopic.** A layer has about 6 topics, and each topic string lists its subtopics after the dash (`docs/exam-prompts/`).
+
+| Use | Unit | Length |
+|---|---|---|
+| Teach-back (practice, fixing weak spots) | One topic | 1–2 min + 1 follow-up |
+| Voice exam (verified) | The whole layer in one answer | ≤5 min + 2–3 follow-ups |
+| Weekly review | What they studied that week + their weak topics | 2–3 min + 1 follow-up |
+
+Subtopics are never asked about directly. They become the grader's hidden checklist. This keeps learners from being bored, keeps rubric authoring to about 6 topics per layer (the layer exam reuses the topic rubrics), and matches how interviews work.
+
+**How one topic is examined: two steps.**
+
+1. **One open question, written in advance and stored.** The learner answers in their own words. The subtopics are never shown as a list, because that would give away the answer.
+2. **Follow-ups on what they missed.** The grader checks the answer against the hidden checklist. Code picks the weakest must-have point; the LLM only phrases the question, limited to that topic's checklist; an authored fallback question is used if the wording fails the checks.
+
+Example, topic "Password hashing — bcrypt, argon2, why salts matter":
+
+- Opening question: "A user signs up with a password. Explain how your API should store it, and why."
+- Hidden checklist:
+  - hash, never plain text or encryption (solid: explains one-way; shallow: "we hash it")
+  - bcrypt/argon2, and why not MD5/SHA (solid: slow on purpose; shallow: names bcrypt without a reason)
+  - a unique salt per user and why (solid: stops rainbow tables and identical hashes; shallow: mentions salt)
+  - cost factor (tunable slowness)
+  - critical misconception: "encrypt it so we can decrypt it later" (automatic fail)
+- Follow-up if salts were missed: "Two users pick the same password. What does your database look like, and is that a problem?"
+
+**Authoring per topic:** 2–3 opening questions, a checklist of 3–5 points with solid and shallow levels, 1–2 critical misconceptions, and one fallback question per point. The AI drafts all of it from the topic text; a human reviews and publishes it (about 20–30 minutes per topic). Opening questions are never generated live, so every learner gets an equally hard question, cost stays low and the AI can't ask about something outside the rubric. Several versions per topic make sharing "the question" less useful.
+
+**Hints:** practice only. After answering, "What did I miss?" shows the skipped checklist points. Graded exams never show hints.
+
+**Audio: not kept by default.** Transcribe, then delete the audio right away. Keep the transcript (it's the evidence behind the grade and covers regrades). Store audio only for clips the learner opts into for their profile or certificate. The grader only ever sees text. Typing is always allowed. This replaces the spec's 30-day audio retention.
+
+**Implementation shape:**
+
+- Recording with `MediaRecorder`, uploaded to the server. Works in every browser, unlike the Web Speech API.
+- Speech-to-text with Groq `whisper-large-v3-turbo`, with the layer glossary as a prompt (about $0.002 per 3-minute answer, list price from memory, re-verify).
+- One module, `backend/modules/voice`, replacing the `voice-review` scaffold. One collection, `voice_sessions`, with `kind: weekly_review | exam | code_defense` and the spec's turn log (§4, §9).
+- Never writes `examHistory`. Results go to weak spots (`source: "voice"`), `learnerMastery` and the mentor teaching log.
+- All LLM calls go through `groqGate` with their own voice share, so voice can never starve the mentor. Per-user daily caps reuse `aiRateLimit.js`, plus a per-user monthly cost meter (about $1.50).
+
+**Separate Groq key:** `GROQ_VOICE_API_KEY` (Groq console labels `vahoha-voice-prod` and `vahoha-voice-dev`), used only by the voice module. If it isn't set, voice falls back to `GROQ_API_KEY`. It's for cost tracking and a kill switch; it doesn't lower the price per call, and Groq rate limits are probably per organization, not per key. Set a spending limit or alert in the Groq console. Not read by any code yet; it must also be added on Render when voice ships.
+
+**ElevenLabs: considered, deferred.** Our AI replies in text, so a premium voice adds cost (about $0.05–0.15 per exam per the spec) without better grading, and Groq Whisper already covers speech-to-text. Revisit only for a live spoken mock-interview mode for Pro users, where realism is the selling point, or for a one-off marketing demo.
+
+### Why it stays frozen
+
+- The MVP loop (roadmap, exams, mentor) is still being validated with pilot users. Voice is scope on top of an unproven loop.
+- AI cost is the main margin risk (`docs/strategy/BUSINESS_MODEL.md`). The spec estimates about $0.01 per graded exam on an all-Groq stack and $0.08–0.09 on the recommended stack (prices from memory, re-verify), inside a soft sub-budget of about $1.50 per user per month.
+- Grader fairness is the product-defining risk. A hard gate needs human calibration first (Cohen's κ ≥ 0.7 on a golden set).
+- Rubric authoring is the long pole: about 2–3 hours per layer, so pilot one layer, then one track, not all 40 backend layers.
+
+**Where it fits:** a Pro differentiator and the base for verified certificates, added beside the MCQ exam, never replacing it. Build further only once pilot data shows a healthy Layer 1 → Layer 2 return rate.
+
+### Unfreeze checklist (cheapest first)
+
+1. Fix the JWT rubric key (`layer-6` → the real layer id) so the existing slice works where it claims to.
+2. Run the hand-run tests: the weekly progress review above, and an oral exam on one layer (a person plays examiner, using the spec's rubric shape).
+3. Author the `api-dev-6` topic rubrics and opening questions in the two-step format above (spec Phase 0), then a text-only backend slice (Phase 1) behind an allow-list flag.
+4. Route teach-back through the Groq gate.
+
+### Open questions
+
+- [x] ~~Sync or async?~~ Async for V1 (spec §4).
+- [x] ~~Does a voice pass count like an MCQ pass for unlock?~~ Soft gate: MCQ unlocks, voice adds "verified" (spec Q1).
+- [ ] Which paid tier gets full reports and certificates: Pro or a separate add-on? Billing exists (Polar, `featureGateService`) but nothing is gated yet.
+- [x] ~~Audio retention?~~ Not kept by default; transcripts kept; clips opt-in (decided plan above). Still needed: consent screen and privacy-notice wording, including that Chrome's built-in dictation sends audio to Google.
+- [x] ~~Explain per subtopic?~~ No: per topic for teach-back, per layer for the exam; subtopics are the hidden checklist.
+- [ ] Typed fallback open to all, or accessibility-only? Pasting from an LLM is the obvious cheat (spec Q5).
+- [ ] Is the weekly progress review free for everyone (it is cheap and ungraded), or part of Pro?
+- [ ] Accessibility: must stay fully optional. Mic access, accents, non-native English speakers and people who prefer not to be recorded must never be blocked from progressing.
 
 ---
 

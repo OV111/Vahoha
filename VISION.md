@@ -187,13 +187,21 @@ That verified population is what unlocks the second half of the business: an emp
 
 ---
 
-## XP and the voice exam (ideas, not built)
+## XP and voice (ideas, not built)
 
 Short versions of `docs/product/XP_SYSTEM.md` and `docs/product/VOICE_EXAM_SPEC.md`. Both stay frozen until pilot data says otherwise.
 
 **XP.** Since 2026-10-10 every source goes through one ledger (`awardXp`, once per user and source): 50 XP for a first layer-exam pass (+25 at 90%+), each challenge's own XP on its first solve, 300 for a capstone, 300 for the first passed defense on a team. Hints still spend XP. Everything beyond that stays frozen. One rule governs every idea: **XP measures effort, never proof.** It can't unlock layers, skip exams, buy attempts or be bought with money, and mastery and verified results stay a separate number. Levels, XP decay, XP in mentor answers and an XP headline on public profiles are rejected. Streaks are the remaining candidate, and only if the pilot shows people don't return for Layer 2. Boot.dev already sells XP in this niche, so it is not a differentiator.
 
-**Voice exam (UI prototype only: `/voice-exam/:layerId` on a mock API, one layer, no backend).** A spoken "teach-back" exam per layer: the learner explains the layer aloud, the examiner asks 2-3 one-at-a-time follow-ups, and the answer is graded against a hand-written rubric of concepts. Each credited concept must cite a quote that really appears in the learner's transcript, two independent grader runs are compared, and the app, not the model, decides pass/fail. Accent, fluency and pace are never graded. A soft gate in V1: the multiple-choice exam still unlocks the next layer, and the voice exam adds a "verified" status. A failed attempt feeds the mentor's weak spots and needs a 24-hour wait plus a mentor review before the retry. Build order starts text-only, then adds audio. Backend path first, one layer first. The backend is not started; the biggest cost is authoring the rubrics, and no hard gate before human calibration (Cohen's kappa of 0.7 or more).
+**Voice review and voice exam (plan updated 2026-11-01; a UI prototype on a mock API, no backend).** Voice is the interface; the idea is that the learner explains what they learned and an AI asks follow-ups on what they missed. MCQ tests recognition, explaining tests recall and reasoning, which is what interviews ask for.
+
+- **One engine, three uses, in order:** (1) a weekly 2–3 minute voice review, ungraded, built from the weak spots the mentor already tracks, which tests cheaply whether learners want this at all; (2) a graded voice exam per layer, piloted on one layer (Authentication & Security); (3) "defend your own code", explaining choices in their own capstone or PR, the hardest version to fake.
+- **What the learner explains:** one topic when practising, the whole layer in the exam, never single subtopics.
+- **Two steps per topic:** one prepared open question answered in the learner's own words, then follow-up questions on the subtopics they missed. The subtopics are a hidden checklist and are never shown, because showing them gives away the answer. Questions and checklists are drafted by AI and approved by a human, never generated live, so every learner gets an equally hard question.
+- **Fair grading:** each credited point must cite a quote that really appears in the transcript, the app (not the model) decides pass/fail, and accent, fluency and pace are never graded. Typing is always allowed. Soft gate: the MCQ still unlocks the next layer, and the voice exam adds a "verified" status. A failed attempt feeds the mentor and needs a 24-hour wait plus a mentor review before the retry.
+- **Privacy and cost:** audio is deleted right after transcription and only the text is kept. Speech-to-text runs on Groq Whisper under a separate voice API key with its own budget, so voice can never starve the mentor. ElevenLabs is deferred: our AI replies in text, so a premium voice adds cost without better grading.
+
+The text-and-dictation teach-back is live for a few topics. The biggest cost is writing rubrics (about 20–30 minutes per topic), and there is no hard gate before human calibration (Cohen's kappa of 0.7 or more). The first step is a hand-run weekly review with 5 pilot learners. Full plan: `docs/product/FUTURE_IDEAS.md` (Voice AI Progress Review) and `docs/product/VOICE_EXAM_SPEC.md`.
 
 ---
 

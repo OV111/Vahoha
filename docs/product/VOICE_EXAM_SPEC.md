@@ -6,6 +6,7 @@
 > Sources read: `docs/strategy/VISION.md` (repo root, not `docs/`), `docs/engineering/ROADMAP_BUILD_PLAN.md`, `docs/product/FUTURE_IDEAS.md`, `docs/engineering/ARCHITECTURE.md`, `docs/strategy/BUSINESS_MODEL.md`, and the live exam / teach-back / mastery / mentor code.
 > Tooling note: the Product Management `write-spec` skill and the `frontend-design` skill are **not installed** in this environment. The spec follows a write-spec-style structure by hand; §16 describes screens in prose rather than a designed mockup.
 > **Decisions recorded 2026-10-01:** (1) **soft gate** — MCQ still unlocks the next layer, voice exam adds "verified" status; (2) **Free tier gets ≥3 graded voice exams/month** (quota per account across all tracks — to confirm); (3) every core prompt covers all `mustHave` concepts (Q2 = A); (4) examiner TTS **deferred**, and where used it should be a **free option** (browser `speechSynthesis` or self-hosted open-source), not a paid vendor; (5) human senior mentors / exemplar answers are a **future idea** (§20), not V1.
+> **Decisions recorded 2026-11-01** (full reasoning in `docs/product/FUTURE_IDEAS.md` > Voice AI Progress Review > Decided plan): (1) build order is weekly voice review (ungraded) → this layer exam → defend-your-own-code, all on one engine (`backend/modules/voice`, `voice_sessions` with a `kind` field) replacing `voice-review`; (2) the learner explains **per topic** for teach-back and **per layer** for this exam, never per subtopic; subtopics are the hidden rubric checklist; (3) each topic is examined in two steps: one stored open question, then follow-ups on the missed checklist points, with subtopics never shown as a list; (4) **audio is not kept by default** (deleted right after transcription; transcripts kept; clips opt-in), replacing the 30-day retention in §8; (5) voice LLM and STT calls use a separate `GROQ_VOICE_API_KEY` (falls back to `GROQ_API_KEY`) and go through `groqGate`; (6) ElevenLabs deferred (§11).
 > Pricing figures in §11–12 are approximate list prices from memory — **re-verify every number before committing to a provider.**
 
 ---
@@ -198,7 +199,7 @@ Soft signals — **recorded for integrity review only, never graded**: time-to-f
 
 Out of scope: webcam, screen capture, device lockdown. Honest residual risk: a second-screen LLM prompted live can answer; follow-ups and the verified-quote rule raise the cost but do not eliminate it.
 
-**Privacy/consent:** explicit consent screen before first graded exam; raw audio deleted after grading + short retention (default 30 days, then deleted) except clips the learner opts into for a certificate; transcripts retained (needed for regrade/disputes); deletion endpoint; vendor zero-retention / no-training flags required; audio is never sent to the grader.
+**Privacy/consent:** explicit consent screen before first graded exam; raw audio deleted right after transcription (decided 2026-11-01; replaces the earlier 30-day retention) except clips the learner opts into for a certificate; transcripts retained (needed for regrade/disputes); deletion endpoint; vendor zero-retention / no-training flags required; audio is never sent to the grader.
 
 ---
 
@@ -277,7 +278,7 @@ Audio: ≤8 MB, mime allow-list (`audio/webm;codecs=opus`, `audio/mp4` for Safar
 |---|---|---|
 | Browser `speechSynthesis` | $0 | Inconsistent, robotic voices; "calm neutral" not guaranteed. |
 | OpenAI `gpt-4o-mini-tts` / `tts-1` | ~$0.015–0.02 per exam | Steerable tone; **cache core-prompt audio at seed time** so only follow-ups are synthesised. |
-| ElevenLabs | ~$0.05–0.15 per exam | Best quality; likely over budget. |
+| ElevenLabs | ~$0.05–0.15 per exam | Best quality; likely over budget. **Deferred 2026-11-01**: revisit only for a live spoken mock interview (Pro) or a one-off demo. |
 
 ---
 
@@ -370,7 +371,7 @@ Rules: **never charge per retry.** Free users must still see which concepts to f
 | Q8 | What counts as "mentor review complete"? | V1 log + ≥3 learner turns; upgrade to a 2-question mentor check. |
 | Q9 | Abandonment/technical-failure accounting | As §7. |
 | Q10 | Regrade/appeal: free, capped, who reviews? | One free regrade per attempt, handled by a third grader run; human queue only for flagged. |
-| Q11 | Audio retention & clip consent | 30-day audio retention, transcripts kept, clips opt-in per certificate. |
+| Q11 | Audio retention & clip consent | **Decided 2026-11-01:** no audio kept by default (deleted after transcription), transcripts kept, clips opt-in per certificate. |
 | Q12 | Tier detection before billing exists | Env/allow-list flag now; `featureGateService` slot reserved. |
 | Q13 | Rubric authorship/review (the real long pole) | Human-authored; LLM may *draft*, a human publishes (`reviewedBy` required). ~2–3 h/layer ⇒ pilot **one layer, then one track (10)**, not all 40. |
 | Q14 | Pilot layer | Backend "Authentication & Security" (JWT content/concepts partly exist) — confirm real `layerId` first. |

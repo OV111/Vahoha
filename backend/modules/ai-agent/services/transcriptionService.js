@@ -1,18 +1,12 @@
-// Speech-to-text wrapper — scaffold only, not implemented.
-// See docs/strategy/VISION.md > "Voice AI Progress Review" prerequisites: pick an STT vendor and
-// prototype cost-per-session before committing (determines pricing tier feasibility).
+// Speech-to-text wrapper — scaffold only, not implemented. Plan: docs/product/VOICE_EXAM_SPEC.md (§11).
 //
-// Candidate vendors to evaluate: OpenAI Whisper API, Deepgram, AssemblyAI.
-// Planned shape: transcribeAudio(audioBuffer, mimeType) -> { text, durationSeconds }
-//
-// FREE-TIER NOTE: for free-tier / MVP users, don't route through a paid STT API at all —
-// use the browser's built-in Web Speech API (SpeechRecognition) on the frontend to transcribe
-// client-side, for $0 marginal cost. Send the resulting text transcript to the backend, so
-// this service only ever receives text, never raw audio, for free users.
-// Reserve paid server-side STT (Whisper/Deepgram/AssemblyAI) for a Pro-tier "higher accuracy /
-// non-Chrome browser support" fallback, if it's worth the added AI-cost-model risk at all —
-// this keeps the free version viable without adding a new per-user cost the free tier can't absorb.
+// Groq whisper-large-v3-turbo with the layer glossary as the prompt, called with
+// GROQ_VOICE_API_KEY (falls back to GROQ_API_KEY). Every graded answer goes through
+// server STT, never the browser Web Speech API: free users must not get worse
+// transcription than paid ones, and Web Speech only works in Chrome/Edge.
+// The audio buffer is discarded right after transcription; only the text is kept.
+// Planned shape: transcribeAudio(audioBuffer, mimeType, { glossary }) -> { text, durationSec, segments }
 
 export const transcribeAudio = async () => {
-  throw new Error("Not implemented — see docs/strategy/VISION.md > Voice AI Progress Review");
+  throw new Error("Not implemented — see docs/product/VOICE_EXAM_SPEC.md");
 };
