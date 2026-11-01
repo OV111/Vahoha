@@ -167,25 +167,42 @@ const About = () => (
     {/* Honest build status */}
     <section className="flex flex-col gap-10">
       <SectionTitle>Where we are</SectionTitle>
-      <ol className="mx-auto flex w-full max-w-xl flex-col gap-5 border-l border-neutral-800 pl-6">
-        {STATUS.map(({ done, label, desc }, i) => (
-          <Motion.li key={label} className="relative" {...fadeUp(i * 0.06)}>
+      <ol className="mx-auto flex w-full max-w-xl flex-col">
+        {STATUS.map(({ done, label, desc }, i) => {
+          const next = STATUS[i + 1];
+          return (
+          <Motion.li key={label} className="relative pb-5 pl-7 last:pb-0" {...fadeUp(i * 0.06)}>
+            {/* Each item draws the line from its dot to the next one, so the
+                path starts and ends at a dot. Purple while both ends are built. */}
+            {next && (
+              <span
+                aria-hidden="true"
+                className={`absolute top-2.5 -bottom-2.5 left-1 w-px ${
+                  done && next.done ? "bg-purple-400/50" : "bg-neutral-800"
+                }`}
+              />
+            )}
+            {/* 9px dot centred on the 1px line (x = 4.5px) and on the 20px label row (y = 10px). */}
             <span
-              className={`absolute top-1.5 -left-[29px] h-2.5 w-2.5 rounded-full ${
+              aria-hidden="true"
+              className={`absolute top-[5.5px] left-0 size-[9px] rounded-full ${
                 done ? "bg-purple-400" : "border border-neutral-600 bg-black"
               }`}
             />
-            <p className="flex items-center gap-2 text-sm font-medium text-neutral-100">
+            <p className="flex min-h-5 items-center gap-2 text-sm font-medium text-neutral-100">
               {label}
               {!done && (
-                <span className="rounded-full border border-neutral-700 px-2 py-0.5 text-[11px] text-neutral-400">
+                // leading-4 + py-px keeps the badge inside the 20px row, so
+                // "Next" rows line up with their dot like the others.
+                <span className="rounded-full border border-neutral-700 px-2 py-px text-[11px] leading-4 text-neutral-400">
                   Next
                 </span>
               )}
             </p>
             <p className="mt-1 text-sm text-neutral-400">{desc}</p>
           </Motion.li>
-        ))}
+          );
+        })}
       </ol>
     </section>
 
