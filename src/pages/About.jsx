@@ -59,14 +59,34 @@ const STATUS = [
     desc: "Practice problems you solve in the browser.",
   },
   {
+    done: true,
+    label: "Capstones & certificates",
+    desc: "Build a real project, defend it, and earn a certificate anyone can verify.",
+  },
+  {
+    done: true,
+    label: "Build Teams",
+    desc: "Build with others; every member's part is reviewed and rated.",
+  },
+  {
+    done: true,
+    label: "Project maps",
+    desc: "Draw how a system fits together, or scan a repo to start one.",
+  },
+  {
+    done: true,
+    label: "Labs",
+    desc: "The Foundations room and the first hands-on system lab.",
+  },
+  {
     done: false,
     label: "More test-ready paths",
     desc: "Backend is first; more paths get full tests next.",
   },
   {
     done: false,
-    label: "Teach-back",
-    desc: "Explain a topic out loud and get graded on your understanding.",
+    label: "Spoken teach-back",
+    desc: "Explain a topic out loud and get graded on your understanding. The written version is live.",
   },
 ];
 

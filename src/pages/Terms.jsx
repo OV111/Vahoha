@@ -3,14 +3,14 @@ import { SITE } from "../../constants/site";
 
 // Keep in step with Privacy.jsx. If billing, AI features or community rules
 // change, update this page and the effective date.
-const EFFECTIVE_DATE = "October 8, 2026";
+const EFFECTIVE_DATE = "November 1, 2026";
 
 const SECTIONS = [
   {
     id: "using",
     title: "Using Vahoha",
     items: [
-      "Vahoha is a learning platform for developers: roadmaps, tests, an AI mentor, capstone projects and team projects.",
+      "Vahoha is a learning platform for developers: roadmaps, tests, an AI mentor, coding challenges, labs, project maps, capstone projects and team projects.",
       "By creating an account or using the site, you agree to these terms. If you don't agree, don't use the service.",
       "You must provide accurate account details and keep your password secure. You are responsible for activity under your account.",
     ],
@@ -20,7 +20,8 @@ const SECTIONS = [
     title: "Acceptable use",
     items: [
       "Don't attack, probe or overload the service, or try to access other users' accounts or data.",
-      "Don't cheat the test or challenge systems, for example by automating submissions or sharing answers to bypass grading.",
+      "Don't cheat the test, challenge, capstone or team systems, for example by automating submissions, sharing answers to bypass grading, or submitting someone else's work as your own.",
+      "Only submit or scan repositories you have the right to share with us.",
       "Don't post unlawful, harassing, hateful or spammy content, or content you don't have the right to share.",
       "We may remove content or suspend accounts that break these rules.",
     ],
@@ -30,14 +31,14 @@ const SECTIONS = [
     title: "Your content",
     items: [
       "You own what you post and the code you submit. You give us permission to store, display and process it as needed to run the service, including showing your public profile and posts to other users.",
-      "Team projects and capstones you publish may be visible to others as evidence of your work.",
+      "Some pages are public by design once you create or share them: certificate verification pages, team evidence pages, project map links you share, and your candidate page if you turn recruiter visibility on. Anyone with the link can see them.",
     ],
   },
   {
     id: "ai",
-    title: "AI mentor",
+    title: "AI features",
     items: [
-      "The AI mentor and AI-graded features can be wrong. Treat their output as guidance, not as professional advice, and verify anything important.",
+      "The AI mentor and AI-graded features (teach-back, capstone code reviews, project map checks) can be wrong. Treat their output as guidance, not as professional advice, and verify anything important.",
       "Usage limits apply and depend on your plan.",
     ],
   },

@@ -5,7 +5,7 @@ import { SITE } from "../../constants/site";
 // a third-party service or a cookie, update this page — and for new per-user
 // data, USER_KEYED_COLLECTIONS in backend/modules/account/services/accountService.js, which
 // backs the "delete your account" promise below.
-const EFFECTIVE_DATE = "October 2, 2026";
+const EFFECTIVE_DATE = "November 1, 2026";
 
 const SUMMARY = [
   "We collect what's needed to run your account and track your learning.",
@@ -23,7 +23,11 @@ const SECTIONS = [
       ["Profile", "Anything you add: bio, location, profile and banner images, and social links."],
       ["Learning", "Your roadmap path and progress, test attempts and scores, the topics you missed (weak spots), mastery levels, coding challenge attempts and the code you submit, and teach-back answers."],
       ["AI mentor", "Your conversations with the mentor and how many messages you send per day (used for usage limits)."],
-      ["Community", "Posts, comments, likes, saved items, follows, notifications and chat messages."],
+      ["Capstones", "The repository link you submit, the review of your code, your defense answers and, when you pass, a certificate with your name on it."],
+      ["Project maps", "The maps you draw or generate from a repository scan, the notes on their parts, your answers to the understanding check, and comments you leave on team maps."],
+      ["Teams", "The teams you join, your GitHub username, the pull requests you contribute to the team repository, your defense answers and the ratings you give and receive."],
+      ["Recruiter visibility", "Only if you turn it on: the settings for your public candidate page."],
+      ["Community", "Posts, comments, likes, saved items, follows, notifications, and chat messages, including voice notes and files you send."],
       ["Billing", "Your plan and subscription status. Card details are handled entirely by our payment provider and never reach our servers."],
       ["Usage", "Product events such as signing up, starting a path or submitting a test, used to understand which features help people learn."],
       ["Contact", "The name, email and message you send through the contact form."],
@@ -33,10 +37,11 @@ const SECTIONS = [
     id: "use",
     title: "How we use it",
     items: [
-      [null, "To run your account, sign you in and keep it secure, including rate limits on sign-in and AI features."],
+      [null, "To run your account, sign you in and keep it secure, including rate limits and temporary lockouts after repeated failed sign-ins. These use your IP address in short-lived counters that expire on their own."],
       [null, "To track your progress, grade tests and show you which topics to revisit."],
       [null, "To give the AI mentor context about your path, test history and weak spots, so its guidance fits you."],
       [null, "To show your profile and posts to other users, as you choose."],
+      [null, "To publish the pages you choose to share: a project map link, a certificate's verification page, your team's evidence page, and your candidate page if you turn recruiter visibility on."],
       [null, "To reply when you contact us, and to fix bugs and improve the product."],
     ],
   },
@@ -45,12 +50,13 @@ const SECTIONS = [
     title: "Services we rely on",
     items: [
       ["MongoDB Atlas", "Database where your data is stored."],
-      ["Groq", "Runs the AI models. Your mentor messages, the learning context sent with them, and teach-back answers are sent to Groq to generate a response."],
+      ["Groq", "Runs the AI models. Your mentor messages and the learning context sent with them, teach-back answers, capstone code under review, and project map understanding-check answers are sent to Groq to generate a response."],
+      ["GitHub", "Optional sign-in. When you submit a capstone, scan a repository for a project map or sync a team repository, we read that public repository and its pull requests from GitHub."],
       ["Polar", "Handles payments as merchant of record, including tax. It processes your payment details, not us."],
-      ["Cloudinary", "Stores and serves images you upload."],
+      ["Cloudinary", "Stores and serves the images, voice notes and files you upload."],
       ["Resend", "Sends emails such as password resets and contact-form notifications."],
       ["PostHog", "Product analytics: which pages and features are used, and unhandled errors in the app. It receives an anonymous identifier and your usage events, not your passwords or the content you write."],
-      ["Google and GitHub", "Optional sign-in."],
+      ["Google", "Optional sign-in."],
     ],
   },
   {
@@ -67,7 +73,7 @@ const SECTIONS = [
     title: "Your choices",
     items: [
       [null, "Edit your profile at any time in settings."],
-      [null, "Delete your account in settings. This permanently removes your account, profile, posts, comments, learning progress, test history, weak spots, AI mentor conversations, challenge submissions, chat messages you sent, and usage events."],
+      [null, "Delete your account in settings. This permanently removes your account, profile, posts, comments, learning progress, test history, weak spots, AI mentor conversations, challenge submissions, capstones and certificates, project maps and the comments you left on team maps, your team memberships and ratings, chat messages you sent, and usage events. Your certificate links stop working, and your name is removed from team evidence pages."],
       [null, "Ask for a copy of your data, or ask what we hold, by emailing us."],
     ],
   },
