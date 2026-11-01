@@ -7,8 +7,7 @@ import { ObjectId } from "mongodb";
 import { parseRepoUrl } from "../../capstone/lib/githubUrl.js";
 import { getRepo } from "../../capstone/services/githubClient.js";
 import { TEAMS, ensureIndexes, fail } from "./teamsData.js";
-
-const MAX_MEMBERS = 6;
+import { MAX_TEAM_MEMBERS as MAX_MEMBERS } from "../../../../constants/teams.js";
 
 const getTeamOr404 = async (db, teamId) => {
   const team = await db.collection(TEAMS).findOne({ _id: new ObjectId(teamId) });

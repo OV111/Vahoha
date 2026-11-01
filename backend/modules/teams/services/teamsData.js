@@ -18,7 +18,7 @@ export const TEAM_DEFENSES = "team_defenses";
 export const TEAM_EVIDENCE = "team_evidence";
 export const RATINGS = "team_ratings";
 
-export const TEAM_STATUSES = ["forming", "active", "defending", "completed", "disbanded"];
+export { TEAM_STATUSES } from "../../../../constants/teams.js";
 export const MEMBER_STATUSES = ["invited", "active", "left"];
 
 let indexesReady = null;
