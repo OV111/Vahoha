@@ -2,7 +2,7 @@ import { BellOff, Users } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import useThemeStore from "../../../stores/useThemeStore";
-import { formatTimeAgo } from "./ChatInterface";
+import { formatTimeAgo } from "../lib/time";
 
 /** One conversation (direct or group) in the Messages list. */
 const ConversationRow = ({ item, isActive, isLoadingPreview, onSelect }) => {
