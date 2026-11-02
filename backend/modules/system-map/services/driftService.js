@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { findHints } from "../lib/driftRules.js";
-
-const COLLECTION = "system_maps";
+import { canAccessMap } from "./ownerAccess.js";
+import { MAPS as COLLECTION } from "./systemMapData.js";
 
 /** Newest hints win when a map has been ignored for a long time. */
 export const MAX_DRIFT_HINTS = 20;
@@ -39,21 +39,8 @@ export async function flagMapDrift(db, teamId, contributions) {
   return flagged;
 }
 
-// Who may dismiss: the access helper owned by the maps' ownership logic. Loaded
-// lazily so this file has no load-time dependency on it. Until it exists, only
-// the map's own user may dismiss (denying a teammate is the safe failure).
-const defaultCanAccess = async (db, doc, userId) => {
-  try {
-    const { canAccessMap } = await import("./ownerAccess.js");
-    return canAccessMap(db, doc, userId);
-  } catch (err) {
-    if (err?.code !== "ERR_MODULE_NOT_FOUND") throw err;
-    return doc.userId?.equals?.(userId) ?? false;
-  }
-};
-
 /** @returns {Promise<boolean>} false when the map doesn't exist or isn't this user's to touch */
-export async function dismissDrift(db, mapId, userId, canAccess = defaultCanAccess) {
+export async function dismissDrift(db, mapId, userId, canAccess = canAccessMap) {
   const maps = db.collection(COLLECTION);
   const doc = await maps.findOne({ _id: new ObjectId(mapId) });
   if (!doc || !(await canAccess(db, doc, userId))) return false;

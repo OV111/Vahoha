@@ -3,8 +3,8 @@ import { getGroqClient } from "../../../config/groq.js";
 import { GRADE_JSON_SCHEMA, QUESTIONS_JSON_SCHEMA, gradeMessages, questionMessages, resolveLens } from "../lib/understandingPrompt.js";
 import { gradeOutputSchema, questionsOutputSchema } from "../schemas/understanding.schemas.js";
 
-const MAPS = "system_maps";
-const CHECKS = "system_map_checks";
+import { CHECKS, MAPS } from "./systemMapData.js";
+import { fail } from "../../../utils/httpErrors.js";
 
 // Same model family as capstone review and teach-back grading.
 const MODEL = "openai/gpt-oss-120b";
@@ -59,10 +59,10 @@ const publicQuestion = (q) => ({ id: q.id, q: q.q, focus: q.focus });
  * @returns {Promise<null | { error: "too_small" } | { checkId: string, questions: object[] }>}
  *   null = no such map for this user. Throws err.modelFailed when the model can't help.
  */
-export async function createQuestionsService(db, mapId, userId) {
+async function createQuestions(db, mapId, userId) {
   const map = await db.collection(MAPS).findOne({ _id: new ObjectId(mapId), userId }, { projection: { graph: 1 } });
-  if (!map) return null;
-  if (map.graph.nodes.length < 2 || map.graph.edges.length < 1) return { error: "too_small" };
+  if (!map) fail(404, "Map not found");
+  if (map.graph.nodes.length < 2 || map.graph.edges.length < 1) fail(422, "Add at least two parts and a wire first.");
 
   const lens = resolveLens(map.graph.lens); // maps saved before lenses existed have none
   const { questions: raw } = await complete(questionMessages(map.graph, lens), QUESTIONS_JSON_SCHEMA, "map_questions", questionsOutputSchema);
@@ -90,17 +90,17 @@ export async function createQuestionsService(db, mapId, userId) {
  * @returns {Promise<null | { error: "answered" | "grading" | "mismatch" } | { results: object[], passed: boolean }>}
  *   null = no such check for this user. Throws err.modelFailed; the check then stays open.
  */
-export async function submitAnswersService(db, checkId, userId, answers) {
+async function submitAnswers(db, checkId, userId, answers) {
   const checks = db.collection(CHECKS);
   const _id = new ObjectId(checkId);
   const check = await checks.findOne({ _id, userId });
-  if (!check) return null;
-  if (check.answeredAt) return { error: "answered" };
+  if (!check) fail(404, "Check not found");
+  if (check.answeredAt) fail(409, "These questions were already answered.");
 
   const ids = check.questions.map((q) => q.id);
   const given = answers.map((a) => a.id);
   if (given.length !== ids.length || new Set(given).size !== given.length || !given.every((id) => ids.includes(id))) {
-    return { error: "mismatch" };
+    fail(400, "Send exactly one answer for each question.");
   }
 
   // One grading at a time per check, so a double submit never pays the model twice.
@@ -114,7 +114,7 @@ export async function submitAnswersService(db, checkId, userId, answers) {
     },
     { $set: { gradingAt: now } },
   );
-  if (!locked) return { error: "grading" };
+  if (!locked) fail(409, "Your answers are already being graded.");
 
   let graded;
   try {
@@ -141,3 +141,17 @@ export async function submitAnswersService(db, checkId, userId, answers) {
   );
   return { results, passed };
 }
+
+// The model being down is our problem, said plainly: a 503 the learner can retry.
+const whenModelFails = (message) => (err) => {
+  if (err.modelFailed) fail(503, message);
+  throw err;
+};
+
+/** Questions about the learner's own map. 404 no map, 422 too small to ask about, 503 the AI can't help. */
+export const createQuestionsService = (db, mapId, userId) =>
+  createQuestions(db, mapId, userId).catch(whenModelFails("The AI couldn't write questions right now. Try again in a minute."));
+
+/** Grades the answers. 404 no check, 409 already answered or being graded, 400 wrong answers, 503 the AI can't help. */
+export const submitAnswersService = (db, checkId, userId, answers) =>
+  submitAnswers(db, checkId, userId, answers).catch(whenModelFails("The AI couldn't grade your answers right now. Try again in a minute."));

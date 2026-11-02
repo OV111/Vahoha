@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { makeErrorHandler } from "../../../utils/respond.js";
 import rateLimit from "express-rate-limit";
 import { authenticate } from "../../../middleware/authenticate.js";
 import { aiBurstLimiter } from "../../../middleware/aiRateLimit.js";
@@ -36,5 +37,7 @@ router.post(
   validate({ params: questionsParamSchema }),
   createQuestions,
 );
+
+router.use(makeErrorHandler("system-map understanding", "Something went wrong with your check."));
 
 export default router;

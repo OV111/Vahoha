@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { makeErrorHandler } from "../../../utils/respond.js";
 import rateLimit from "express-rate-limit";
 import { authenticate } from "../../../middleware/authenticate.js";
 import { validate } from "../../../middleware/validate.js";
@@ -25,5 +26,7 @@ router.post("/:id/comments", authenticate, commentLimiter, validate({ params: co
 
 // DELETE /api/system-maps/:id/comments/:commentId: the author removes their own comment
 router.delete("/:id/comments/:commentId", authenticate, validate({ params: commentParamSchema }), remove);
+
+router.use(makeErrorHandler("system-map comments", "Something went wrong with the comments."));
 
 export default router;

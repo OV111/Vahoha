@@ -1,6 +1,5 @@
 import { ObjectId } from "mongodb";
-
-const COLLECTION = "system_maps";
+import { MAPS as COLLECTION } from "./systemMapData.js";
 const MAX_SHARED_MAPS = 20;
 
 /*

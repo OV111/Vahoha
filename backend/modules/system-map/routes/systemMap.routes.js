@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { makeErrorHandler } from "../../../utils/respond.js";
 import rateLimit from "express-rate-limit";
 import { aiBurstLimiter } from "../../../middleware/aiRateLimit.js";
 import { publicMapLimiter } from "../../../middleware/rateLimits.js";
@@ -74,5 +75,7 @@ router.put("/:id/sharing", authenticate, validate({ params: mapParamSchema, body
 
 // DELETE /api/system-maps/:id
 router.delete("/:id", authenticate, validate({ params: mapParamSchema }), deleteMap);
+
+router.use(makeErrorHandler("system-map", "Something went wrong with your map."));
 
 export default router;

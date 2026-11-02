@@ -1,8 +1,7 @@
 import { ObjectId } from "mongodb";
 import { canAccessMap, ownerTypeOf } from "./ownerAccess.js";
-
-const MAPS = "system_maps";
-const COMMENTS = "system_map_comments";
+import { COMMENTS, MAPS } from "./systemMapData.js";
+import { fail } from "../../../utils/httpErrors.js";
 
 /** Per map, so one script can't fill the collection. Old comments still show; new ones are refused. */
 export const MAX_COMMENTS_PER_MAP = 500;
@@ -27,6 +26,12 @@ async function findTeamMap(db, mapId, userId) {
   if (ownerTypeOf(doc) !== "team") return { error: "not-team" };
   return doc;
 }
+
+const teamMapOrFail = (map) => {
+  if (!map) fail(404, "Map not found");
+  if (map.error) fail(400, "Comments are only on team maps.");
+  return map;
+};
 
 const authorName = (u) => {
   if (!u) return "Former member";
@@ -54,42 +59,37 @@ async function toClient(db, docs, userId) {
 /**
  * Every comment on the map, oldest first. The page groups them by part, which
  * also gives it the count badge for each part.
- * @returns {Promise<{ comments: object[] } | { error: "not-team" } | null>}
  */
 export async function listCommentsService(db, mapId, userId) {
-  const map = await findTeamMap(db, mapId, userId);
-  if (!map || map.error) return map;
+  const map = teamMapOrFail(await findTeamMap(db, mapId, userId));
   const docs = await db.collection(COMMENTS).find({ mapId: map._id }).sort({ createdAt: 1 }).limit(MAX_COMMENTS_PER_MAP).toArray();
-  return { comments: await toClient(db, docs, userId) };
+  return toClient(db, docs, userId);
 }
 
-/**
- * @returns {Promise<{ comment: object } | { error: "not-team" | "no-part" | "full" } | null>}
- */
 export async function addCommentService(db, mapId, userId, { nodeId, text }) {
-  const map = await findTeamMap(db, mapId, userId);
-  if (!map || map.error) return map;
+  const map = teamMapOrFail(await findTeamMap(db, mapId, userId));
   // Only parts that are on the saved map, so comments can't pile up on made-up ids.
-  if (!(map.graph?.nodes ?? []).some((n) => n.id === nodeId)) return { error: "no-part" };
+  if (!(map.graph?.nodes ?? []).some((n) => n.id === nodeId)) {
+    fail(409, "That part isn't on the saved map any more. Reload the map and try again.");
+  }
 
   const comments = db.collection(COMMENTS);
-  if ((await comments.countDocuments({ mapId: map._id })) >= MAX_COMMENTS_PER_MAP) return { error: "full" };
+  if ((await comments.countDocuments({ mapId: map._id })) >= MAX_COMMENTS_PER_MAP) {
+    fail(409, `This map has reached ${MAX_COMMENTS_PER_MAP} comments.`);
+  }
 
   const doc = { mapId: map._id, nodeId, userId, text, createdAt: new Date() };
   const { insertedId } = await comments.insertOne(doc);
   const [comment] = await toClient(db, [{ ...doc, _id: insertedId }], userId);
-  return { comment };
+  return comment;
 }
 
-/**
- * Authors delete their own comments; nobody else's.
- * @returns {Promise<boolean>} false when the comment doesn't exist or isn't theirs
- */
+/** Authors delete their own comments; nobody else's. 404 when it doesn't exist or isn't theirs. */
 export async function deleteCommentService(db, mapId, commentId, userId) {
   const map = await findTeamMap(db, mapId, userId);
-  if (!map || map.error) return false;
+  if (!map || map.error) fail(404, "Comment not found");
   const { deletedCount } = await db.collection(COMMENTS).deleteOne({ _id: new ObjectId(commentId), mapId: map._id, userId });
-  return deletedCount === 1;
+  if (deletedCount !== 1) fail(404, "Comment not found");
 }
 
 /** Called when a map is deleted, so its comments don't outlive it. */

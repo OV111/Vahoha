@@ -1,13 +1,9 @@
 import { dismissDrift } from "../services/driftService.js";
+import { fail } from "../../../utils/httpErrors.js";
+import { dbOf, respond } from "../../../utils/respond.js";
 
-export const dismiss = async (req, res) => {
-  try {
-    if (!(await dismissDrift(req.app.locals.db, req.params.id, req.user._id))) {
-      return res.status(404).json({ success: false, message: "Map not found" });
-    }
-    res.json({ success: true, data: { drift: null } });
-  } catch (err) {
-    console.error("system-map drift:", err);
-    res.status(500).json({ success: false, message: "Something went wrong with your map." });
-  }
-};
+// dismissDrift answers a plain boolean because the teams module calls it too.
+export const dismiss = respond(async (req) => {
+  if (!(await dismissDrift(dbOf(req), req.params.id, req.user._id))) fail(404, "Map not found");
+  return { drift: null };
+});

@@ -2,7 +2,7 @@ import process from "process";
 import { z } from "zod";
 // Known cross-module deep import (like teams -> capstone): the capstone owns the
 // one structured-output Groq wrapper, so a model switch stays a one-file change.
-import { runStructured } from "../../capstone/services/reviewModel.js";
+import { runStructured } from "../../capstone/index.js";
 
 const LABEL_TIMEOUT_MS = 20_000;
 const MAX_PATHS = 150;
