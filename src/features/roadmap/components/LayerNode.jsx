@@ -1,8 +1,9 @@
 import { memo } from "react";
 import { motion } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { Link } from "react-router-dom";
-import { Clock, Lock, Check, Play, ArrowRight, Flag } from "lucide-react";
+import { Clock, Lock, Check, Play, ArrowRight, Flag, ChevronRight } from "lucide-react";
 import useRoadmapStore from "@/stores/useRoadmapStore";
+import useAuthStore from "@/stores/useAuthStore";
 
 // Central layer card: top of the visual hierarchy. Its badge and button both
 // come from one `view` (nodeProgress.layerView), so they can't contradict.
@@ -54,7 +55,8 @@ const TONES = {
  *           ctaHref?: string, connectorId?: string, connectorRef?: Function }} props
  */
 const LayerNode = memo(({ layer, index, view, summary, ctaHref, connectorId, connectorRef }) => {
-  const { activeLayer, setActiveLayer, selectedTrack } = useRoadmapStore();
+  const { activeLayer, setActiveLayer, selectedTrack, selectedCategory } = useRoadmapStore();
+  const { auth } = useAuthStore();
   const isActive = activeLayer?.id === layer.id;
   const tone = TONES[view.tone] ?? TONES.locked;
   const layerName = `Layer ${layer.order ?? index + 1}`;
@@ -63,6 +65,8 @@ const LayerNode = memo(({ layer, index, view, summary, ctaHref, connectorId, con
     <motion.div
       ref={connectorRef}
       id={connectorId}
+      // ExamPage's Back link scrolls here (RoadmapTree reads ?layer=).
+      data-layer-id={layer.id}
       data-tour={index === 0 ? "first-layer" : undefined}
       initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -111,7 +115,8 @@ const LayerNode = memo(({ layer, index, view, summary, ctaHref, connectorId, con
           <div className="mt-3">
             <div className="mb-1 flex justify-between text-[11px] text-neutral-400">
               <span>
-                {summary.completed} of {summary.total} lessons
+                {summary.completed} of {summary.total} lessons done
+                {summary.inProgress > 0 && ` · ${summary.inProgress} started`}
               </span>
               <span className="tabular-nums">{summary.percent}%</span>
             </div>
@@ -146,6 +151,30 @@ const LayerNode = memo(({ layer, index, view, summary, ctaHref, connectorId, con
           <Play size={11} fill="currentColor" aria-hidden="true" />
           {view.cta}
         </Link>
+      )}
+
+      {/* The test used to live only in the drawer. Guests see nothing here:
+          the exam needs an account, and the drawer already says so. */}
+      {selectedTrack && auth && view.testOpen && (
+        <div className="flex items-center justify-between gap-3 border-t border-neutral-800 px-4 py-2.5">
+          <span className="min-w-0 text-[11px] text-neutral-400">
+            {view.tone === "ready"
+              ? "All lessons done, test ready"
+              : `${summary.completed}/${summary.total} lessons · test open anytime`}
+          </span>
+          <Link
+            to={`/roadmaps/exam/${layer.id}?path=${selectedCategory?.id ?? "backend"}`}
+            data-tree-node
+            className={`relative flex h-8 shrink-0 items-center gap-1 rounded-lg px-3 text-xs font-semibold transition-colors duration-150 before:absolute before:-inset-y-1.5 before:inset-x-0 before:content-[''] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-300 ${
+              view.tone === "ready"
+                ? "bg-purple-600 text-white hover:bg-purple-500"
+                : "text-purple-300 hover:text-purple-200"
+            }`}
+          >
+            Take Test
+            <ChevronRight size={12} aria-hidden="true" />
+          </Link>
+        </div>
       )}
     </motion.div>
   );

@@ -1,49 +1,13 @@
 import { Construction, RefreshCw } from "lucide-react";
 
-// Loading, empty and error states for the roadmap tree. The skeleton has the
-// shape of the real thing (topics | layer card | topics on desktop, a card and
-// a list on mobile) so the page doesn't jump when it loads. Pulsing is skipped
-// when the user prefers reduced motion.
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 
-const Block = ({ className = "" }) => (
-  <div className={`rounded-xl bg-neutral-800/70 motion-safe:animate-pulse ${className}`} />
-);
+// Loading, empty and error states for the roadmap tree. The loader keeps a
+// fixed height so the footer doesn't jump up while the tree loads.
 
-const SkeletonSide = ({ align }) => (
-  <div className={`flex flex-col gap-6 ${align}`}>
-    {[0, 1].map((i) => (
-      <div key={i} className={`flex items-center gap-6 ${align === "items-end" ? "flex-row-reverse" : ""}`}>
-        <Block className="h-16 w-[190px] rounded-2xl" />
-        <div className="flex flex-col gap-3">
-          <Block className="h-[52px] w-[260px]" />
-          <Block className="h-[52px] w-[260px]" />
-        </div>
-      </div>
-    ))}
-  </div>
-);
-
-export const TreeSkeleton = ({ desktop }) => (
-  <div role="status" aria-live="polite" className="w-full px-4 pb-10">
-    <span className="sr-only">Loading roadmap</span>
-    {desktop ? (
-      <div className="flex flex-col items-center gap-16">
-        {[0, 1].map((row) => (
-          <div key={row} className="flex items-center justify-center gap-14">
-            <SkeletonSide align="items-end" />
-            <Block className="h-44 w-[300px] rounded-2xl" />
-            <SkeletonSide align="items-start" />
-          </div>
-        ))}
-      </div>
-    ) : (
-      <div className="mx-auto flex max-w-xl flex-col gap-3">
-        <Block className="h-40 rounded-2xl" />
-        {[0, 1, 2].map((i) => (
-          <Block key={i} className="h-14 rounded-2xl" />
-        ))}
-      </div>
-    )}
+export const TreeLoading = () => (
+  <div className="h-[60vh] w-full" aria-live="polite">
+    <LoadingSuspense fill />
   </div>
 );
 

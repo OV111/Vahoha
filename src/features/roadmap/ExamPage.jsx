@@ -386,7 +386,12 @@ function ExamRunner() {
     }
   }, [submitting, examData, layerId, setLayerStatus]);
 
-  const goBack = useCallback(() => navigate("/roadmaps"), [navigate]);
+  // Back to the layer the learner came from, not the top of the page
+  // (RoadmapTree scrolls to ?layer= once the tree has loaded).
+  const goBack = useCallback(
+    () => navigate(`/roadmaps?layer=${encodeURIComponent(layerId)}`),
+    [navigate, layerId],
+  );
 
   const confirmLeave = () => {
     if (loadState === "ready" && !result) {

@@ -1,7 +1,8 @@
 # Vahoha (formerly DevsWebs) — Vision
 
 > Living document. Business/product framing only — build status, phase plans, and architecture detail live in `docs/product/PRODUCT_STATUS.md`, `docs/product/PRODUCT_ROADMAP.md`, `docs/engineering/ARCHITECTURE.md`, `docs/strategy/BUSINESS_MODEL.md`, and `docs/strategy/STARTUP_ADVISOR_ANALYSIS.md`.
-> Last updated: 2026-10-21. Synced with the code and `docs/PILOT_STATUS.md`: lessons and labs, the pilot-track question, product docs and founder docs added; the deleted build plan is no longer cited. Earlier (2026-10-11): Positioning sharpened by the competitor matrix (`docs/founder/competitor-matrix.md`): the difference is defended, reviewed evidence, not gating or an AI tutor. Traction, XP and Build Teams updated to match the code.
+> Last updated: 2026-11-02. Added the roadmap UX fixes from a side-by-side review against roadmap.sh.
+> Earlier (2026-10-21): Synced with the code and `docs/PILOT_STATUS.md`: lessons and labs, the pilot-track question, product docs and founder docs added; the deleted build plan is no longer cited. Earlier (2026-10-11): Positioning sharpened by the competitor matrix (`docs/founder/competitor-matrix.md`): the difference is defended, reviewed evidence, not gating or an AI tutor. Traction, XP and Build Teams updated to match the code.
 > Earlier (2026-10-02): corrected against the code and `docs/strategy/STARTUP_CRITIQUE_2026-10.md`; exam-integrity and "no competitor" claims were overstated.
 
 ---
@@ -202,6 +203,48 @@ Short versions of `docs/product/XP_SYSTEM.md` and `docs/product/VOICE_EXAM_SPEC.
 - **Privacy and cost:** audio is deleted right after transcription and only the text is kept. Speech-to-text runs on Groq Whisper under a separate voice API key with its own budget, so voice can never starve the mentor. ElevenLabs is deferred: our AI replies in text, so a premium voice adds cost without better grading.
 
 The text-and-dictation teach-back is live for a few topics. The biggest cost is writing rubrics (about 20–30 minutes per topic), and there is no hard gate before human calibration (Cohen's kappa of 0.7 or more). The first step is a hand-run weekly review with 5 pilot learners. Full plan: `docs/product/FUTURE_IDEAS.md` (Voice AI Progress Review) and `docs/product/VOICE_EXAM_SPEC.md`.
+
+---
+
+## Roadmap UX fixes (planned, not built)
+
+From a side-by-side review on 2026-11-02 (TypeScript track, desktop and a forced 390px layout). Score out of 70: roadmap.sh 52, Vahoha 44. roadmap.sh won on first impression (9 vs 6), progress feedback (9 vs 5) and navigation inside the roadmap (7 vs 5). Vahoha won on readability (8 vs 7) and mobile (7 vs 5). The roadmap is the first thing a new learner sees, so these fixes feed the north-star metric (returning and starting a second layer) more directly than any new feature.
+
+Most of the problems are wording and layout. The progress data itself is correct.
+
+**1. Progress states that seem to contradict each other.** A section shows "0/3" next to topics marked "In progress", and a "test locked" layer shows a **Continue** button. The cause is in `src/features/roadmap/lib/nodeProgress.js`: the count only includes lessons that are *done*, while "In progress" means a lesson was *opened*. Locked layers can still be read on purpose, but the label doesn't say so.
+- Show both numbers: "0/3 done · 2 started", or a split bar (solid for done, faded for started).
+- Replace "test locked" with "Test opens after Layer N", and put the lock icon on the test, not the layer.
+- Use the purple primary button only for the layer the learner should act on now. Continue on a locked layer becomes a secondary button.
+
+**2. "Take Test" on the layer card.** Today the button is only in the drawer (`LayerDetail.jsx`). Add a final row under each layer's topics that changes with the layer's state: "8/10 lessons · Test ready → Take Test", "3/10 · Finish 7 more, or take the test now", or "Test opens after Layer 3". The test is the product, so it should never be hidden.
+
+**3. Make finishing a lesson visible, without a "Mark done" button.** A lesson counts as done only when the learner works through every step of the player (`LessonPlayer.jsx`). That is the right rule, since earned progress is the difference from roadmap.sh, where progress is self-marked. The problem is that nothing on screen shows it.
+- Show "Step 3 of 6" on every lesson.
+- End the last step with a clear "Finish lesson ✓" and a toast like "Done · 5/10 in Layer 2 · next: Generics".
+- Add "I know this, skip". The `skipped` status already exists.
+
+**4. Shareable track URLs and returning to your place.** There is one route, `/roadmaps`, and the `?domain=` param is deleted as soon as it's read, so a track can't be bookmarked or shared. Back from the test page always goes to the top of `/roadmaps` (`ExamPage.jsx`), and the learner has to scroll past about 44 chips.
+- Give each track its own URL, like `/roadmaps/<domain>/<track>`, and keep it in the address bar.
+- Make Back go to `/roadmaps/<track>#layer-N` and scroll that layer into view, or go back in the browser history when there is one.
+
+**5. Get to the track faster, especially on mobile.** Picking a domain or language doesn't scroll to it, and on mobile the chips take about two screens before the track appears.
+- After a pick, scroll to the track automatically and collapse the chips into one dropdown ("TypeScript ▾").
+- Make the hero smaller on mobile. For a logged-in learner, skip it and open on "Continue: Layer 2 · Generics".
+- Fix the floating "Start Path" button: it's cut off at the right edge and covers the Kotlin chip. Add safe padding, or pin it as a bar at the bottom on mobile.
+
+**Smaller fixes:** a dark scrollbar in the layer drawer (it's light on the dark theme today), and higher contrast for the gray monospace metadata.
+
+**Worth taking from roadmap.sh:**
+- A sticky progress bar while you scroll ("Layer 2 · 5/10 · test ready").
+- A minimap of all 10 layers at the top, where clicking a layer jumps to it.
+- Topic previews in a side panel so the learner keeps their place on the map. The layer drawer already works this way.
+- Split "Ask the mentor" into Explain, Quiz me and Teach-back (`InlineTeachBack.jsx` already exists).
+- **Avoid their mistake:** marking a topic done there opened a full-screen "Upgrade to Pro" popup. No upsells inside the progress flow. Upgrade prompts belong only on billing and limit screens.
+
+**How to know it worked (PostHog):** time from picking a track to opening the first lesson; how many opened lessons get finished; how many test starts come from the layer card versus the drawer; and how often Back to the roadmap is followed by a long scroll (a sign the learner got lost).
+
+**Order:** first the quick wins (#1 wording and counts, #2 the test button on the card, #4 Back going to the right layer), then #3 lesson steps and the finish screen, #5 mobile and auto-scroll, and per-track URLs. After that: the sticky progress bar, the minimap and splitting the mentor button.
 
 ---
 

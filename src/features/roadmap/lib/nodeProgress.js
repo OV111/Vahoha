@@ -107,6 +107,7 @@ export const layerNodeProgress = (layer, statuses) => {
  * @property {string} badge
  * @property {"Start learning" | "Continue" | "Review" | "Preview"} cta
  * @property {boolean} primaryCta  only the layers a learner should act on get the purple button
+ * @property {boolean} testOpen    the layer test can be taken now (open, not yet passed)
  */
 
 /**
@@ -115,7 +116,9 @@ export const layerNodeProgress = (layer, statuses) => {
  *
  * "done" means the layer test is passed (server). Lesson statuses only say how
  * far the reading has gone. A layer whose test isn't open yet can still be
- * read, so it says "test locked" rather than "locked".
+ * read, so it says "test opens later" rather than "locked". When every lesson
+ * is finished the test is the next step, so it takes the purple button and
+ * Review drops to secondary.
  *
  * @param {LayerState} layerState  layerPrereqs.layerStatus()
  * @param {Summary} summary          layerNodeProgress().summary
@@ -124,22 +127,22 @@ export const layerNodeProgress = (layer, statuses) => {
 export const layerView = (layerState, summary) => {
   const locked = layerState === "locked";
 
-  if (layerState === "done") return { tone: "done", badge: "done", cta: "Review", primaryCta: false };
+  if (layerState === "done") return { tone: "done", badge: "done", cta: "Review", primaryCta: false, testOpen: false };
 
   if (summary.total > 0 && summary.completed === summary.total) {
     return locked
-      ? { tone: "locked", badge: "test locked", cta: "Review", primaryCta: false }
-      : { tone: "ready", badge: "test ready", cta: "Review", primaryCta: true };
+      ? { tone: "locked", badge: "test opens later", cta: "Review", primaryCta: false, testOpen: false }
+      : { tone: "ready", badge: "test ready", cta: "Review", primaryCta: false, testOpen: true };
   }
 
   const started = summary.completed > 0 || summary.inProgress > 0 || layerState === "in-progress";
   if (started) {
     return locked
-      ? { tone: "locked", badge: "test locked", cta: "Continue", primaryCta: false }
-      : { tone: "in-progress", badge: "in progress", cta: "Continue", primaryCta: true };
+      ? { tone: "locked", badge: "test opens later", cta: "Continue", primaryCta: false, testOpen: false }
+      : { tone: "in-progress", badge: "in progress", cta: "Continue", primaryCta: true, testOpen: true };
   }
 
   return locked
-    ? { tone: "locked", badge: "test locked", cta: "Preview", primaryCta: false }
-    : { tone: "up-next", badge: "up next", cta: "Start learning", primaryCta: true };
+    ? { tone: "locked", badge: "test opens later", cta: "Preview", primaryCta: false, testOpen: false }
+    : { tone: "up-next", badge: "up next", cta: "Start learning", primaryCta: true, testOpen: true };
 };

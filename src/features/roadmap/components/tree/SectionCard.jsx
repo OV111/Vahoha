@@ -58,8 +58,12 @@ const SectionCard = ({ id, layerConnectorId, title, side, status, summary, lesso
                 {title}
               </span>
               <span className="flex items-center gap-2 text-xs text-neutral-400">
+                {/* "Started" means opened, not finished. Shown next to the
+                    done count so "0/3" beside "In progress" topics reads as
+                    consistent rather than contradictory. */}
                 <span className="tabular-nums">
-                  {summary.completed}/{summary.total}
+                  {summary.completed}/{summary.total} done
+                  {summary.inProgress > 0 && ` · ${summary.inProgress} started`}
                 </span>
                 <span className="h-1 flex-1 overflow-hidden rounded-full bg-neutral-800" aria-hidden="true">
                   <span

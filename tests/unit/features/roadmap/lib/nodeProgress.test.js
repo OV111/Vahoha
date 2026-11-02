@@ -80,7 +80,7 @@ describe("layerView: badge and button always agree", () => {
   const allDone = summarize(["done", "skipped"]);
 
   it("nothing started on an open layer -> up next / Start learning", () => {
-    expect(layerView("up-next", empty)).toEqual({ tone: "up-next", badge: "up next", cta: "Start learning", primaryCta: true });
+    expect(layerView("up-next", empty)).toEqual({ tone: "up-next", badge: "up next", cta: "Start learning", primaryCta: true, testOpen: true });
   });
 
   it("some lessons started -> in progress / Continue", () => {
@@ -92,7 +92,7 @@ describe("layerView: badge and button always agree", () => {
   });
 
   it("every lesson finished, test not passed -> test ready / Review", () => {
-    expect(layerView("up-next", allDone)).toMatchObject({ tone: "ready", badge: "test ready", cta: "Review" });
+    expect(layerView("up-next", allDone)).toMatchObject({ tone: "ready", badge: "test ready", cta: "Review", primaryCta: false, testOpen: true });
   });
 
   it("test passed -> done / Review, whatever the lessons say", () => {
@@ -100,10 +100,10 @@ describe("layerView: badge and button always agree", () => {
     expect(layerView("done", started)).toMatchObject({ badge: "done", cta: "Review" });
   });
 
-  it("test not open yet -> test locked, never a primary button", () => {
-    expect(layerView("locked", empty)).toMatchObject({ badge: "test locked", cta: "Preview", primaryCta: false });
-    expect(layerView("locked", started)).toMatchObject({ badge: "test locked", cta: "Continue", primaryCta: false });
-    expect(layerView("locked", allDone)).toMatchObject({ badge: "test locked", cta: "Review", primaryCta: false });
+  it("test not open yet -> 'test opens later', never a primary button", () => {
+    expect(layerView("locked", empty)).toMatchObject({ badge: "test opens later", cta: "Preview", primaryCta: false });
+    expect(layerView("locked", started)).toMatchObject({ badge: "test opens later", cta: "Continue", primaryCta: false });
+    expect(layerView("locked", allDone)).toMatchObject({ badge: "test opens later", cta: "Review", primaryCta: false });
   });
 
   it("never pairs 'up next' with Continue/Review or 'done' with Start learning", () => {

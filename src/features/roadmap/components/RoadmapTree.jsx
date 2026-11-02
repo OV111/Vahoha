@@ -1,6 +1,8 @@
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
-import { TreeSkeleton, TreeEmpty, TreeError } from "./tree/TreeStates";
+import { TreeLoading, TreeEmpty, TreeError } from "./tree/TreeStates";
 import { handleTreeArrowKeys } from "../lib/treeKeyboard";
 import useRoadmapStore from "@/stores/useRoadmapStore";
 import { useTrackLayers } from "../hooks/useTrackLayers";
@@ -28,7 +30,25 @@ const RoadmapTree = () => {
   // Fetches only the selected track (~50 KB), not its whole category file.
   const { layers, loading, error } = useTrackLayers(selectedCategory?.id, selectedTrack?.id);
 
-  if (loading) return <TreeSkeleton desktop={isDesktop} />;
+  // ?layer=<id> (set by ExamPage's Back) scrolls that layer into view once the
+  // tree is drawn, then drops the param so a later reload starts normally.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const layerParam = searchParams.get("layer");
+  const ready = !loading && Boolean(layers?.length);
+  useEffect(() => {
+    if (!layerParam || !ready) return;
+    const el = document.querySelector(`[data-layer-id="${CSS.escape(layerParam)}"]`);
+    el?.scrollIntoView({ block: "center" });
+    setSearchParams(
+      (params) => {
+        params.delete("layer");
+        return params;
+      },
+      { replace: true },
+    );
+  }, [layerParam, ready, setSearchParams]);
+
+  if (loading) return <TreeLoading />;
   // useTrackLayers has no refetch; a reload re-requests the track file.
   if (error) return <TreeError onRetry={() => window.location.reload()} />;
   if (!layers || layers.length === 0) return <TreeEmpty />;

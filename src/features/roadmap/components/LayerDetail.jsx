@@ -86,7 +86,7 @@ const LayerDetail = () => {
         </div>
 
         {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto px-6 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] space-y-6">
+        <div className="thin-scrollbar flex-1 overflow-y-auto px-6 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] space-y-6">
           {/* Tech pills */}
           <div className="flex flex-wrap gap-2">
             {activeLayer.techs.map((t) => (
