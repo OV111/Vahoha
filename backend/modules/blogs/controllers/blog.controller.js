@@ -1,6 +1,7 @@
 import Busboy from "busboy";
 import { ObjectId } from "mongodb";
 import { uploadImage } from "../../../utils/uploadImage.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
 
 const ALLOWED_IMAGE_MIME_TYPES = new Set([
   "image/jpeg",
@@ -25,6 +26,10 @@ import {
   getUserAllBlogsService,
   deleteBlogService,
 } from "../services/blogService.js";
+
+// Errors with a status (utils/httpErrors.js) go to the user as-is; anything
+// else is logged and answered with a generic 500.
+const sendError = makeErrorHandler("blogs");
 
 export const createBlog = async (req, res) => {
   const busboy = Busboy({ headers: req.headers, limits: { fileSize: MAX_IMAGE_SIZE } });
@@ -76,13 +81,12 @@ export const createBlog = async (req, res) => {
 
       res.status(201).json({ success: true, data: blog });
     } catch (err) {
-      console.error("createBlog error:", err);
-      res.status(500).json({ success: false, message: err.message });
+      sendError(err, req, res);
     }
   });
 
-  busboy.on("error", (err) => {
-    res.status(400).json({ success: false, message: err.message || "Invalid request body" });
+  busboy.on("error", () => {
+    res.status(400).json({ success: false, message: "Invalid request body" });
   });
 
   req.pipe(busboy);
@@ -94,10 +98,7 @@ export const getBlogs = async (req, res) => {
     const result = await getBlogsService(db, req.query);
     res.json({ success: true, ...result });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message || "Failed to fetch blogs",
-    });
+    sendError(err, req, res);
   }
 };
 
@@ -110,8 +111,7 @@ export const getBlogById = async (req, res) => {
     const blog = await getBlogByIdService(db, req.params.id);
     res.json({ success: true, data: blog });
   } catch (err) {
-    const status = err.message === "Blog not found" ? 404 : 500;
-    res.status(status).json({ success: false, message: err.message || "Blog not found" });
+    sendError(err, req, res);
   }
 };
 
@@ -127,10 +127,7 @@ export const getUserBlogs = async (req, res) => {
     const blogs = await getUserBlogsService(db, req.params.userId);
     res.json({ success: true, data: blogs });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message || "Failed to fetch user's blogs",
-    });
+    sendError(err, req, res);
   }
 };
 
@@ -146,7 +143,7 @@ export const toggleLike = async (req, res) => {
     const result = await toggleLikeService(db, id, req.user._id);
     res.json({ success: true, ...result });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -156,8 +153,7 @@ export const getBlogBySlug = async (req, res) => {
     const blog = await getBlogBySlugService(db, req.params.slug);
     res.json({ success: true, data: blog });
   } catch (err) {
-    const status = err.message === "Blog not found" ? 404 : 500;
-    res.status(status).json({ success: false, message: err.message || "Blog not found" });
+    sendError(err, req, res);
   }
 };
 
@@ -167,7 +163,7 @@ export const getSavedIds = async (req, res) => {
     const ids = await getSavedIdsService(db, req.user._id);
     res.json({ success: true, ids });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -177,7 +173,7 @@ export const getLikedIds = async (req, res) => {
     const ids = await getLikedIdsService(db, req.user._id);
     res.json({ success: true, ids });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -193,7 +189,7 @@ export const toggleFavourite = async (req, res) => {
     const result = await toggleFavouriteService(db, id, req.user._id);
     res.json({ success: true, ...result });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -236,15 +232,12 @@ export const updateBlog = async (req, res) => {
       });
       res.json({ success: true, data: blog });
     } catch (err) {
-      const status =
-        err.message === "Forbidden" ? 403 :
-        err.message === "Blog not found" ? 404 : 500;
-      res.status(status).json({ success: false, message: err.message });
+      sendError(err, req, res);
     }
   });
 
-  busboy.on("error", (err) => {
-    res.status(400).json({ success: false, message: err.message });
+  busboy.on("error", () => {
+    res.status(400).json({ success: false, message: "Invalid request body" });
   });
 
   req.pipe(busboy);
@@ -256,7 +249,7 @@ export const getMyBlogs = async (req, res) => {
     const blogs = await getUserAllBlogsService(db, req.user._id);
     res.json({ success: true, data: blogs });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -269,10 +262,7 @@ export const deleteBlog = async (req, res) => {
     await deleteBlogService(db, id, req.user._id);
     res.json({ success: true });
   } catch (err) {
-    const status =
-      err.message === "Forbidden" ? 403 :
-      err.message === "Blog not found" ? 404 : 500;
-    res.status(status).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -282,6 +272,6 @@ export const getFavourites = async (req, res) => {
     const data = await getFavouritesService(db, req.user._id);
     res.json({ success: true, data });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };

@@ -3,6 +3,9 @@ import {
   postCommentService,
   deleteCommentService,
 } from "../services/commentService.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+
+const sendError = makeErrorHandler("blogs");
 
 export const getComments = async (req, res) => {
   try {
@@ -10,7 +13,7 @@ export const getComments = async (req, res) => {
     const comments = await getCommentsService(db, req.params.id);
     res.json({ success: true, comments });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -24,7 +27,7 @@ export const postComment = async (req, res) => {
     const comment = await postCommentService(db, req.params.id, req.user._id, text);
     res.status(201).json({ success: true, comment });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -34,7 +37,6 @@ export const deleteComment = async (req, res) => {
     const commentsCount = await deleteCommentService(db, req.params.id, req.params.commentId, req.user._id);
     res.json({ success: true, commentsCount });
   } catch (err) {
-    const status = err.message === "Forbidden" ? 403 : err.message === "Comment not found" ? 404 : 500;
-    res.status(status).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };

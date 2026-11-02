@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { createTtlCache } from "../../../utils/ttlCache.js";
+import { ForbiddenError, NotFoundError, ValidationError } from "../../../utils/httpErrors.js";
 
 const MAX_LAYER_IDS = 10;
 // Roadmap layer ids look like "api-dev-3": lowercase slug, short. Anything
@@ -136,7 +137,7 @@ export const createBlogService = async (db, body, user, file) => {
   const statsCollection = db.collection("usersStats");
 
   if (!body.title || !body.content || !body.category) {
-    throw new Error("Title, content and category are required");
+    throw new ValidationError("Title, content and category are required");
   }
   let parsedTags = [];
   try {
@@ -309,7 +310,7 @@ export const getBlogByIdService = async (db, rawId) => {
     .aggregate([{ $match: { _id: new ObjectId(rawId) } }, ...authorLookup])
     .toArray();
 
-  if (!blog) throw new Error("Blog not found");
+  if (!blog) throw new NotFoundError("Blog not found");
   await blogs.updateOne({ _id: blog._id }, { $inc: { views: 1 } });
 
   return blog;
@@ -322,7 +323,7 @@ export const getBlogBySlugService = async (db, slug) => {
     .aggregate([{ $match: { slug, status: "published" } }, ...authorLookup])
     .toArray();
 
-  if (!blog) throw new Error("Blog not found");
+  if (!blog) throw new NotFoundError("Blog not found");
 
   await blogs.updateOne({ _id: blog._id }, { $inc: { views: 1 } });
 
@@ -335,7 +336,7 @@ export const toggleLikeService = async (db, blogId, userId) => {
   const uid = new ObjectId(userId);
 
   const blog = await blogs.findOne({ _id: id }, { projection: { likes: 1 } });
-  if (!blog) throw new Error("Blog not found");
+  if (!blog) throw new NotFoundError("Blog not found");
 
   const alreadyLiked = blog.likes.some((l) => l.toString() === uid.toString());
 
@@ -406,8 +407,8 @@ export const updateBlogService = async (db, blogId, userId, body, file) => {
   const uid = userId instanceof ObjectId ? userId : new ObjectId(String(userId));
 
   const existing = await blogs.findOne({ _id: id });
-  if (!existing) throw new Error("Blog not found");
-  if (existing.author.toString() !== uid.toString()) throw new Error("Forbidden");
+  if (!existing) throw new NotFoundError("Blog not found");
+  if (existing.author.toString() !== uid.toString()) throw new ForbiddenError("You can only change your own posts");
 
   let parsedTags = existing.tags;
   if (body.tags !== undefined) {
@@ -462,8 +463,8 @@ export const deleteBlogService = async (db, blogId, userId) => {
   const uid = userId instanceof ObjectId ? userId : new ObjectId(String(userId));
 
   const existing = await blogs.findOne({ _id: id });
-  if (!existing) throw new Error("Blog not found");
-  if (existing.author.toString() !== uid.toString()) throw new Error("Forbidden");
+  if (!existing) throw new NotFoundError("Blog not found");
+  if (existing.author.toString() !== uid.toString()) throw new ForbiddenError("You can only change your own posts");
 
   await blogs.deleteOne({ _id: id });
   clearBlogListCache();

@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { clearBlogListCache } from "./blogService.js";
+import { ForbiddenError, NotFoundError } from "../../../utils/httpErrors.js";
 
 const authorLookup = [
   {
@@ -86,8 +87,8 @@ export const deleteCommentService = async (db, blogId, commentId, userId) => {
   const uid = new ObjectId(userId);
 
   const comment = await comments.findOne({ _id: id, blogId: new ObjectId(blogId) });
-  if (!comment) throw new Error("Comment not found");
-  if (comment.author.toString() !== uid.toString()) throw new Error("Forbidden");
+  if (!comment) throw new NotFoundError("Comment not found");
+  if (comment.author.toString() !== uid.toString()) throw new ForbiddenError("You can only delete your own comments");
 
   const blogs = db.collection("blogs");
   const [, updatedBlog] = await Promise.all([

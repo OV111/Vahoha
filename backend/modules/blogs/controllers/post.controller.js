@@ -1,5 +1,8 @@
 import { verifyToken } from "../../../utils/jwtToken.js";
 import { createPostService } from "../services/postService.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+
+const sendError = makeErrorHandler("blogs");
 
 export const createPost = async (req, res) => {
   try {
@@ -10,6 +13,6 @@ export const createPost = async (req, res) => {
     await createPostService(req.app.locals.db, req.body, verified.id);
     res.status(201).json({ code: 201, message: "Created Blog" });
   } catch (err) {
-    res.status(500).json({ message: "Server Error.", code: 500, error: err.message });
+    sendError(err, req, res);
   }
 };
