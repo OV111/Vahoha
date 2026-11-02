@@ -12,7 +12,6 @@
 // drawn by hand keep exactly the shape they had before repo scans. The same goes
 // for `lens`: the default ("software") is never written, so older maps are unchanged.
 
-import { MarkerType } from "@xyflow/react";
 import { DEFAULT_LENS, isLens } from "./lenses";
 import { isKind, kindInfo } from "./nodeKinds";
 
@@ -22,7 +21,8 @@ export const MAX_EVIDENCE = 5;
 export const MAX_NOTE = 1000; // mirrors MAX_NOTE in the backend's systemMap.schemas.js
 
 const STORAGE_KEY = "vahoha.projectMap.v1";
-const arrow = { type: MarkerType.ArrowClosed, color: "#6b7280" };
+// "arrowclosed" is xyflow's MarkerType.ArrowClosed; the literal keeps xyflow out of the guest bundle.
+const arrow = { type: "arrowclosed", color: "#6b7280" };
 
 export const withArrow = (edge) => ({ ...edge, markerEnd: arrow });
 
