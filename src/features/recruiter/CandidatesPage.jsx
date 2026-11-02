@@ -2,6 +2,7 @@ import { Search, X } from "lucide-react";
 import Seo from "@/seo/Seo";
 import CandidateCard from "./components/CandidateCard";
 import useCandidates from "./hooks/useCandidates";
+import { PAGE } from "../../../constants/layout";
 
 /**
  * /candidates: developers who opted in via "Show me to recruiters", ranked by
@@ -86,7 +87,7 @@ export default function CandidatesPage() {
   const trackTitle = (ids) => data?.facets.tracks.find((t) => t.trackId === ids[0])?.title ?? null;
 
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-10">
+    <main className={`${PAGE.dashboard} flex flex-col gap-5 py-10`}>
       <Seo noindex path="/candidates" title="Candidates | Vahoha" />
 
       <header className="flex flex-col gap-1">

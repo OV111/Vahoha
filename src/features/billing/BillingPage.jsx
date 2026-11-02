@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { AlertTriangle, Check, CreditCard, Info } from "lucide-react";
 import useBilling from "./hooks/useBilling";
 import { PLANS_BY_ID } from "./plans";
+import { PAGE } from "../../../constants/layout";
 import posthog, { isPostHogConfigured } from "@/lib/posthog";
 
 const SECTION = "rounded-xl border border-white/10 bg-zinc-950 p-5 sm:p-6";
@@ -92,7 +93,7 @@ const BillingPage = () => {
   const renewal = status ? describeRenewal(status) : null;
 
   return (
-    <div className="mx-auto max-w-3xl px-5 py-16 pt-28 sm:px-8">
+    <div className={`${PAGE.narrow} py-16 pt-28`}>
 
       <header className="mb-8">
         <h1 className="text-3xl font-semibold text-[#F7F7F8]">Billing</h1>

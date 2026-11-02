@@ -10,6 +10,7 @@ import TopicList from "./components/TopicList";
 import LockedTopics from "./components/LockedTopics";
 import ReadinessCard from "./components/ReadinessCard";
 import { PROGRESS_COPY as COPY } from "../../../constants/progress";
+import { PAGE } from "../../../constants/layout";
 import { TEXT, MUTED, BORDER, FOCUS } from "./lib/tone";
 
 const LoadError = ({ error, onRetry }) => (
@@ -55,7 +56,7 @@ const ProgressPage = () => {
     // `dark` pins this page to dark styles: MainLayout's background is always
     // black, so the light variants would put light cards on it for anyone who
     // chose the light theme elsewhere.
-    <div className="dark mx-auto max-w-6xl px-4 py-16 pt-28 sm:px-8">
+    <div className={`dark ${PAGE.dashboard} py-16 pt-28`}>
       <header className="mb-10">
         <h1 className={`text-3xl font-semibold tracking-tight ${TEXT}`}>{COPY.title}</h1>
         <p className={`mt-2 max-w-xl text-sm ${MUTED}`}>{COPY.intro}</p>

@@ -8,6 +8,7 @@ import { BlogCardSkeletonGrid } from "@/features/blogs/components/BlogCardSkelet
 import useDebouncedValue from "@/hooks/useDebouncedValue";
 import { fetchBlogs } from "@/services/blogsApi";
 import FilterMenu from "./components/FilterMenu";
+import { PAGE } from "../../../constants/layout";
 import {
   BLOG_TOPICS,
   SORT_OPTIONS,
@@ -117,7 +118,7 @@ const Blogs = () => {
   const totalPages = pagination?.totalPages ?? 1;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 pt-10 pb-24 sm:px-6 sm:pt-14 lg:px-8">
+    <div className={`${PAGE.dashboard} pt-10 pb-24 sm:pt-14`}>
       <header className="mb-8 sm:mb-10">
         <h1
           className="text-3xl font-[450] tracking-tight text-white sm:text-4xl"
