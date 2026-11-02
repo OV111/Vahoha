@@ -9,6 +9,19 @@
 
 @import "tailwindcss";
 
+/* Tailwind auto-scans the whole repo; only src and index.html hold real classes,
+   so class names in docs, tests, backend and vendored skill files must not emit CSS. */
+@source not "../backend";
+@source not "../docs";
+@source not "../tests";
+@source not "../scripts";
+@source not "../ui-ux-pro-max-skill";
+@source not "../playwright-report";
+@source not "../test-results";
+@source not "../backups";
+@source not "../README.md";
+@source not "../VISION.md";
+
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
