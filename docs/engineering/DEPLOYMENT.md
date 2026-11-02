@@ -82,6 +82,8 @@ The server validates every variable once, before it connects to anything, and re
 
 `VITE_API_BASE_URL`, `VITE_WS_URL`, `VITE_GOOGLE_CLIENT_ID`, `VITE_POSTHOG_KEY`, `VITE_POSTHOG_HOST`, `VITE_SENTRY_DSN` (the `vahoha-web` project).
 
+Build-time only, set in Vercel and never in a `.env` file: `SENTRY_AUTH_TOKEN`, a Sentry organization token (Settings → Developer Settings → Organization Tokens, named `vercel-sourcemaps`). With it, `vite.config.js` uploads source maps for the deployed commit and deletes them from `dist/`; without it, the build skips the upload and production stack traces stay minified.
+
 The `.env*` files are gitignored; only `.env.example` is tracked. Production frontend values go in Vercel's project settings (`.env.production` is a local copy). Only public `VITE_*` values belong in the frontend.
 
 ---
