@@ -24,6 +24,10 @@ export const PUBLIC_PAGES = {
     description:
       "Browse developer roadmaps and unlock each layer by passing a graded test. Guests can explore every path.",
   },
+  "/labs": {
+    title: `Labs | ${SITE_NAME}`,
+    description: `Hands-on labs where you build real software step by step, from programming foundations to full projects on ${SITE_NAME}.`,
+  },
   "/labs/foundations": {
     title: `Programming Foundations | ${SITE_NAME}`,
     description: `Start with the fundamentals every developer needs before choosing a specialty on ${SITE_NAME}.`,
