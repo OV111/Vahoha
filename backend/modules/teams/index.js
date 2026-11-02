@@ -5,7 +5,7 @@
  */
 
 import { Router } from "express";
-import teamsRoutes from "./routes/teams.routes.js";
+import teamsRoutes from "./routes/index.js";
 
 const router = Router();
 router.use("/", teamsRoutes);
@@ -13,7 +13,13 @@ router.use("/", teamsRoutes);
 export default router;
 
 // Used by the readiness module and the AI mentor's learner context.
-export { getMemberStats } from "./services/memberStatsService.js";
+export { getMemberStats } from "./services/team/memberStatsService.js";
+
+// Used by the profile module: a removed or replaced CV drops its Teams estimate.
+export { clearCvEstimate } from "./services/membership/cvService.js";
 
 // Used by the recruiter scorecard.
-export { listPublicTeamEvidenceForUser } from "./services/evidenceService.js";
+export { listPublicTeamEvidenceForUser } from "./services/proof/evidenceService.js";
+
+// Used by system-map: a team map is open to the team's active members.
+export { isActiveTeamMember } from "./services/team/teamsService.js";

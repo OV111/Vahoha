@@ -19,7 +19,7 @@ import {
   getPublicEvidenceService,
   issueEvidenceService,
   setEvidenceRevokedService,
-} from '../../modules/teams/services/evidenceService.js'
+} from '../../modules/teams/services/proof/evidenceService.js'
 import { loadScorecard } from '../../modules/recruiter/services/scorecardService.js'
 
 let mongod

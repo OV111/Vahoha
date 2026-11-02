@@ -180,6 +180,35 @@ export const listMergedPulls = async (owner, repo) => {
   return merged;
 };
 
+const BOARD_PULLS_MAX_PAGES = 2;
+
+/**
+ * The most recently updated PRs in any state, for the team task board.
+ * state: "open" | "merged" | "closed" (closed without merging).
+ */
+export const listRecentPulls = async (owner, repo) => {
+  const pulls = [];
+  for (let page = 1; page <= BOARD_PULLS_MAX_PAGES; page++) {
+    const result = await request(
+      `${repoPath(owner, repo)}/pulls?state=all&sort=updated&direction=desc&per_page=${PULLS_PAGE_SIZE}&page=${page}`,
+    );
+    if (!result) return page === 1 ? null : pulls;
+    pulls.push(
+      ...result.body.map((pr) => ({
+        number: pr.number,
+        title: pr.title ?? "",
+        branch: pr.head?.ref ?? "",
+        url: pr.html_url,
+        authorLogin: pr.user?.login ?? null,
+        state: pr.merged_at ? "merged" : pr.state === "open" ? "open" : "closed",
+        mergedAt: pr.merged_at ? new Date(pr.merged_at) : null,
+      })),
+    );
+    if (result.body.length < PULLS_PAGE_SIZE) break;
+  }
+  return pulls;
+};
+
 /** Changed files of one PR (max 100). `patch` is the diff text, absent for binary or huge files. */
 export const getPullFiles = async (owner, repo, number) => {
   const result = await request(`${repoPath(owner, repo)}/pulls/${Number(number)}/files?per_page=100`);

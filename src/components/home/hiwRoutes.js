@@ -12,7 +12,7 @@ export const TO = {
   test: "/roadmaps",
   exam: "/roadmaps",
   mentor: "/ai-agent",
-  teams: "/team",
+  teams: "/teams",
   capstone: "/capstone",
   recruiters: FEATURES.candidates ? "/candidates" : "/my-profile",
 };

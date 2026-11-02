@@ -1,5 +1,12 @@
 import { z } from "zod";
 import { TEAM_STATUSES } from "../services/teamsData.js";
+import {
+  MANUAL_TASK_STATUSES,
+  SPRINT_STATUSES,
+  TASK_AREAS,
+  TASK_LIMITS,
+  TASK_SIZES,
+} from "../../../../constants/teams.js";
 
 const objectId = z.string().regex(/^[a-f0-9]{24}$/, "Invalid id");
 
@@ -65,4 +72,72 @@ export const leaderboardQuerySchema = z.object({
     .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "Invalid track id")
     .max(40)
     .optional(),
+});
+
+// Task board
+export const taskParamSchema = z.object({ teamId: objectId, key: z.coerce.number().int().min(1).max(1_000_000) });
+export const sprintParamSchema = z.object({ teamId: objectId, sprintId: objectId });
+
+const nullableId = objectId.nullable();
+const layerId = z.string().trim().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "Invalid skill id").max(60);
+const taskFields = {
+  title: z.string().trim().min(2).max(TASK_LIMITS.title),
+  description: z.string().trim().max(TASK_LIMITS.description),
+  size: z.enum(TASK_SIZES),
+  area: z.enum(TASK_AREAS).nullable(),
+  skills: z.array(layerId).max(TASK_LIMITS.skills),
+  dueAt: z.coerce.date().nullable(),
+  assigneeId: nullableId,
+  sprintId: nullableId,
+};
+
+// POST /api/teams/:teamId/tasks. A new task starts in backlog or in progress, never further.
+export const createTaskSchema = z.object({
+  ...taskFields,
+  description: taskFields.description.optional(),
+  size: taskFields.size.optional(),
+  area: taskFields.area.optional(),
+  skills: taskFields.skills.optional(),
+  dueAt: taskFields.dueAt.optional(),
+  assigneeId: nullableId.optional(),
+  sprintId: nullableId.optional(),
+  status: z.enum(["backlog", "in_progress"]).optional(),
+});
+
+// PATCH /api/teams/:teamId/tasks/:key. "done" is not accepted: a merged PR sets it.
+export const updateTaskSchema = z
+  .object({ ...taskFields, status: z.enum(MANUAL_TASK_STATUSES) })
+  .partial()
+  .refine((p) => Object.keys(p).length > 0, "Nothing to change");
+
+export const taskQuerySchema = z.object({
+  sprint: z.union([objectId, z.literal("none")]).optional(),
+  assignee: z.union([objectId, z.literal("none")]).optional(),
+});
+
+export const commentSchema = z.object({ body: z.string().trim().min(1).max(TASK_LIMITS.comment) });
+
+const sprintFields = {
+  name: z.string().trim().min(2).max(60),
+  goal: z.string().trim().max(300),
+  startAt: z.coerce.date(),
+  endAt: z.coerce.date(),
+};
+export const createSprintSchema = z.object({ ...sprintFields, goal: sprintFields.goal.optional() });
+export const updateSprintSchema = z
+  .object({ ...sprintFields, status: z.enum(SPRINT_STATUSES) })
+  .partial()
+  .refine((p) => Object.keys(p).length > 0, "Nothing to change");
+
+// AI lead plans
+export const planParamSchema = z.object({ teamId: objectId, planId: objectId });
+export const createPlanSchema = z.object({
+  sprintId: objectId.nullable().optional(),
+  goal: z.string().trim().max(300).optional(),
+  notes: z.string().trim().max(1000).optional(),
+});
+// include: indexes of draft tasks to keep (all when omitted). assignees: index -> userId or null.
+export const acceptPlanSchema = z.object({
+  include: z.array(z.number().int().min(0).max(50)).max(50).optional(),
+  assignees: z.record(z.string().regex(/^\d{1,2}$/), objectId.nullable()).optional(),
 });

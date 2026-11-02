@@ -16,3 +16,7 @@ const router = Router();
 router.get("/me", authenticate, getMyReadiness);
 
 export default router;
+
+// Used by teams: a member's team level builds on the same readiness scoring.
+export { buildEvidence } from "./lib/readinessView.js";
+export { computeReadiness } from "./lib/computeReadiness.js";

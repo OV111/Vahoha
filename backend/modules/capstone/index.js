@@ -28,3 +28,36 @@ export { listPublicCertificatesForUser } from "./services/certificateService.js"
 
 // Used by the readiness module (modules/readiness).
 export { getCapstoneEvidence } from "./services/certificateService.js";
+
+// Used by Build Teams: a learner starts a team on a track they passed.
+export { listPassedTracks } from "./services/certificateService.js";
+
+// Shared building blocks, for teams (defense on a member's own PRs, board sync)
+// and system-map (repo scan, understanding check). Other modules import these
+// from here, never from capstone's own folders.
+export {
+  getFileText,
+  getHeadCommit,
+  getPullFiles,
+  getPullReviewers,
+  getRepo,
+  getTree,
+  listMergedPulls,
+  listRecentPulls,
+} from "./services/githubClient.js";
+export { parseRepoUrl } from "./lib/githubUrl.js";
+export { runStructured } from "./services/reviewModel.js";
+export { callWithOneRetry } from "./lib/retry.js";
+export { scanForInjection } from "./lib/reviewPrompt.js";
+export {
+  DEFAULT_PASS_THRESHOLDS,
+  DEFENSE_LOCK_STALE_MS,
+  DEFENSE_QUESTION_COUNT,
+  DEFENSE_QUESTION_MS,
+  MAX_DEFENSE_SESSIONS,
+  REVIEW_MODEL,
+} from "./lib/constants.js";
+export { GRADING_SYSTEM_PROMPT, gradingJsonSchema, isOnTime, normalizeAnswer, parseGrades, scoreDefense } from "./lib/defense.js";
+
+// Used by system-map: a capstone map is open to a learner who started that capstone.
+export { hasCapstoneAttempt } from "./services/capstoneData.js";

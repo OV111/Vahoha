@@ -14,10 +14,10 @@
  */
 
 import { ObjectId } from "mongodb";
-import { CONTRIBUTIONS, TEAMS, TEAM_DEFENSES } from "./teamsData.js";
-import { averageReceivedRating } from "./ratingService.js";
+import { CONTRIBUTIONS, TEAMS, TEAM_DEFENSES } from "../teamsData.js";
+import { averageReceivedRating } from "../proof/ratingService.js";
 
-const EMPTY = Object.freeze({ teamCount: 0, mergedPrs: 0, reviewsGiven: 0, defensesPassed: 0, peerAverage: null });
+const EMPTY = Object.freeze({ teamCount: 0, finishedTeams: 0, mergedPrs: 0, reviewsGiven: 0, defensesPassed: 0, peerAverage: null });
 
 /** Pure: count one member's PRs and reviews from their teams' contributions. */
 export const countContributions = (contributions, userId, logins) => {
@@ -35,7 +35,7 @@ export const getMemberStats = async (db, userId) => {
   const uid = new ObjectId(userId);
   const teams = await db
     .collection(TEAMS)
-    .find({ "members.userId": uid }, { projection: { members: 1 } })
+    .find({ "members.userId": uid }, { projection: { members: 1, status: 1 } })
     .toArray();
   // Most learners are on no team: one indexed query and done, which matters
   // because the mentor calls this on every message.
@@ -58,8 +58,14 @@ export const getMemberStats = async (db, userId) => {
     averageReceivedRating(db, teamIds, uid),
   ]);
 
+  // Finished means the team completed with this member still on it; leaving early doesn't count.
+  const finishedTeams = teams.filter(
+    (t) => t.status === "completed" && t.members.some((m) => m.userId.equals(uid) && m.status === "active"),
+  ).length;
+
   return {
     teamCount: teams.length,
+    finishedTeams,
     ...countContributions(contributions, uid, logins),
     defensesPassed: passedTeamIds.length,
     peerAverage,

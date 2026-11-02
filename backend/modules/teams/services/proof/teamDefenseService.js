@@ -19,18 +19,18 @@ import {
   DEFENSE_LOCK_STALE_MS,
   MAX_DEFENSE_SESSIONS,
   REVIEW_MODEL,
-} from "../../capstone/lib/constants.js";
+} from "../../../capstone/index.js";
 import {
   gradingJsonSchema,
   isOnTime,
   normalizeAnswer,
   parseGrades,
   scoreDefense,
-} from "../../capstone/lib/defense.js";
-import { scanForInjection } from "../../capstone/lib/reviewPrompt.js";
-import { callWithOneRetry } from "../../capstone/lib/retry.js";
-import { getPullFiles } from "../../capstone/services/githubClient.js";
-import { runStructured } from "../../capstone/services/reviewModel.js";
+} from "../../../capstone/index.js";
+import { scanForInjection } from "../../../capstone/index.js";
+import { callWithOneRetry } from "../../../capstone/index.js";
+import { getPullFiles } from "../../../capstone/index.js";
+import { runStructured } from "../../../capstone/index.js";
 import {
   buildDiffView,
   buildQuestionMessages,
@@ -38,10 +38,11 @@ import {
   parseQuestions,
   questionJsonSchema,
   toPublicTeamDefense,
-} from "../lib/teamDefense.js";
-import { CONTRIBUTIONS, TEAMS, TEAM_DEFENSES, ensureIndexes, fail } from "./teamsData.js";
-import { trackEvent } from "../../../services/eventService.js";
-import { awardXp, XP_AMOUNTS } from "../../../services/xpService.js";
+} from "../../lib/teamDefense.js";
+import { CONTRIBUTIONS, TEAMS, TEAM_DEFENSES, ensureIndexes } from "../teamsData.js";
+import { fail } from "../../../../utils/httpErrors.js";
+import { trackEvent } from "../../../../services/eventService.js";
+import { awardXp, XP_AMOUNTS } from "../../../../services/xpService.js";
 
 const NOT_GRADED = ["generating", "active", "answered", "grading"];
 

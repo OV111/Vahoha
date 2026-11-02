@@ -29,6 +29,7 @@
 
   /* Status only, never decoration */
   --t-green: #27a644;
+  --t-amber: #d99a2b;
   --t-red: #eb5757;
 
   /* Geist and Geist Mono are self-hosted via @fontsource-variable (main.jsx). */
@@ -235,6 +236,7 @@
 .teams-theme .t-dot-defending { background: var(--t-accent-text); }
 .teams-theme .t-dot-completed { background: var(--t-mist); }
 .teams-theme .t-dot-disbanded { background: var(--t-red); }
+.teams-theme .t-dot-warn { background: var(--t-amber); }
 
 /* Segmented control: one row of options, the selected one gets a raised surface */
 .teams-theme .t-seg {
@@ -436,3 +438,49 @@
 /* Whole row is clickable via the name button's stretched hit area */
 .teams-theme .t-table tbody tr { position: relative; }
 .teams-theme .t-row-link::after { content: ""; position: absolute; inset: 0; }
+
+/* Task board: four columns; scrolls sideways inside its own box on narrow screens */
+.teams-theme .t-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.teams-theme .t-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 160px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--t-carbon);
+  box-shadow: inset 0 0 0 1px var(--t-border);
+  transition: box-shadow 120ms;
+}
+.teams-theme .t-col[data-drop="true"] { box-shadow: inset 0 0 0 1px var(--t-mist); }
+.teams-theme .t-col[data-locked="true"] { opacity: 0.85; }
+.teams-theme .t-task {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--t-obsidian);
+  box-shadow: inset 0 0 0 1px var(--t-border);
+  text-align: left;
+  cursor: pointer;
+}
+.teams-theme .t-task:hover { box-shadow: inset 0 0 0 1px var(--t-fog); }
+.teams-theme .t-task:focus-visible { outline: 2px solid var(--t-accent); outline-offset: 2px; }
+.teams-theme .t-task[draggable="true"] { cursor: grab; }
+
+/* Native dropdowns: the open list follows the dark theme instead of the OS default white */
+.teams-theme select.t-input { color-scheme: dark; }
+.teams-theme select.t-input option,
+.teams-theme select.t-input optgroup {
+  background: var(--t-carbon);
+  color: var(--t-mist);
+}
+.teams-theme select.t-input optgroup { color: var(--t-fog); font-weight: 600; }

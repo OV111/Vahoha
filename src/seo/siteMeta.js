@@ -71,6 +71,7 @@ export const PRIVATE_PREFIXES = [
   "/billing",
   "/progress",
   "/team",
+  "/teams",
   "/capstone",
   "/blogs",
   "/libs",

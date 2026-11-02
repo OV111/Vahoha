@@ -16,7 +16,7 @@ const drift = vi.hoisted(() => ({ flagMapDrift: vi.fn() }))
 vi.mock('../../modules/capstone/services/githubClient.js', () => github)
 vi.mock('../../modules/system-map/services/driftService.js', () => drift)
 
-const { syncContributionsService } = await import('../../modules/teams/services/contributionService.js')
+const { syncContributionsService } = await import('../../modules/teams/services/proof/contributionService.js')
 
 let mongod
 let client

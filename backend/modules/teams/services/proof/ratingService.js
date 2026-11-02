@@ -10,7 +10,8 @@
  */
 
 import { ObjectId } from "mongodb";
-import { RATINGS, TEAMS, ensureIndexes, fail } from "./teamsData.js";
+import { RATINGS, TEAMS, ensureIndexes } from "../teamsData.js";
+import { fail } from "../../../../utils/httpErrors.js";
 
 export const MIN_RATERS = 3;
 

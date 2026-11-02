@@ -11,9 +11,19 @@ const FLAGS = {
   "evidence-stale": { label: "Evidence out of date", urgent: false },
 };
 
+// The AI lead's health (backend lib/teamPulse.js computeHealth). null for finished teams.
+const HEALTH = {
+  red: { label: "At risk", dot: "t-dot-disbanded", rank: 2 },
+  yellow: { label: "Needs attention", dot: "t-dot-warn", rank: 1 },
+  green: { label: "On track", dot: "t-dot-active", rank: 0 },
+};
+const healthRank = (r) => HEALTH[r.health]?.rank ?? -1;
+
 // "risk" keeps the server's order (riskiest first); the rest sort client-side.
 const COLUMNS = [
   { key: "name", label: "Team", sort: (a, b) => a.name.localeCompare(b.name) },
+  { key: "health", label: "Health", sort: (a, b) => healthRank(a) - healthRank(b) },
+  { key: "lead", label: "Lead · sprint", sort: null },
   { key: "status", label: "Status", sort: (a, b) => a.status.localeCompare(b.status) },
   { key: "score", label: "Score", sort: (a, b) => a.score - b.score, numeric: true },
   { key: "prsLast7d", label: "PRs, 7d", sort: (a, b) => a.prsLast7d - b.prsLast7d, numeric: true },
@@ -21,10 +31,41 @@ const COLUMNS = [
   { key: "risk", label: "Needs attention", sort: null },
 ];
 
+function HealthCell({ row }) {
+  const h = HEALTH[row.health];
+  if (!h) return <span className="t-caption">Finished</span>;
+  return (
+    <span className="inline-flex items-center gap-2">
+      <span className={`t-dot ${h.dot}`} aria-hidden="true" />
+      {h.label}
+    </span>
+  );
+}
+
+function LeadCell({ row }) {
+  const lead = row.lead.ai ? "AI lead" : row.lead.login ? `@${row.lead.login}` : "No lead yet";
+  return (
+    <span className="flex flex-col">
+      <span className="text-[var(--t-paper)]">
+        {lead}
+        {row.lead.coLeadLogin && <span className="t-caption"> + @{row.lead.coLeadLogin}</span>}
+      </span>
+      <span className="t-caption">
+        {row.sprint ? `${row.sprint.name}: ${row.sprint.done}/${row.sprint.total} done` : "No active sprint"} · {row.openTasks} open
+      </span>
+    </span>
+  );
+}
+
 function Flags({ row }) {
-  if (!row.flags.length) return <span className="t-caption">All good</span>;
+  if (!row.flags.length && !row.warnings.length) return <span className="t-caption">All good</span>;
   return (
     <span className="flex flex-wrap gap-1">
+      {row.warnings.map((w) => (
+        <span key={`${w.type}:${w.message}`} className="t-badge" title={w.message}>
+          {w.message}
+        </span>
+      ))}
       {row.flags.map((f) => (
         <span
           key={f}
@@ -82,7 +123,7 @@ export default function TeamHealth({ version, selectedId, onSelect }) {
 
   const rows = useMemo(() => {
     if (!data) return [];
-    const list = attentionOnly ? data.rows.filter((r) => r.flags.length) : [...data.rows];
+    const list = attentionOnly ? data.rows.filter((r) => r.flags.length || r.warnings.length) : [...data.rows];
     const col = COLUMNS.find((c) => c.key === sort.key);
     if (col?.sort) {
       list.sort(col.sort);
@@ -157,6 +198,12 @@ export default function TeamHealth({ version, selectedId, onSelect }) {
                       </button>
                     </td>
                     <td>
+                      <HealthCell row={r} />
+                    </td>
+                    <td>
+                      <LeadCell row={r} />
+                    </td>
+                    <td>
                       <span className="inline-flex items-center gap-2">
                         <span className={`t-dot t-dot-${r.status}`} aria-hidden="true" />
                         {r.status}
@@ -193,6 +240,8 @@ export default function TeamHealth({ version, selectedId, onSelect }) {
                   <span className="t-caption">
                     {r.status} · {r.prsLast7d} PRs this week · {r.memberCount}/6 members
                   </span>
+                  <HealthCell row={r} />
+                  <LeadCell row={r} />
                   <Flags row={r} />
                 </button>
               </li>

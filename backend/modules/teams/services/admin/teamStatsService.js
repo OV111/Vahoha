@@ -10,9 +10,11 @@
  * count, and peer averages follow MIN_RATERS (ratingService.js).
  */
 
-import { CONTRIBUTIONS, RATINGS, TEAMS, TEAM_DEFENSES, TEAM_EVIDENCE, ensureIndexes } from "./teamsData.js";
-import { MIN_RATERS } from "./ratingService.js";
-import { MIN_PRS_TO_RANK, computeTeamStats, scoreTeam, teamFlags } from "../lib/teamScore.js";
+import { CONTRIBUTIONS, RATINGS, SPRINTS, TASKS, TEAMS, TEAM_DEFENSES, TEAM_EVIDENCE, ensureIndexes } from "../teamsData.js";
+import { getTeamHealthForAdmin } from "../ai-lead/teamPulseService.js";
+import { AI_LEAD } from "../../../../../constants/teams.js";
+import { MIN_RATERS } from "../proof/ratingService.js";
+import { MIN_PRS_TO_RANK, computeTeamStats, scoreTeam, teamFlags } from "../../lib/teamScore.js";
 
 const LEADERBOARD_LIMIT = 50;
 const key = (teamId, userId) => `${teamId}:${userId}`;
@@ -136,11 +138,55 @@ export const getLeaderboardService = async (db, viewerId, { trackId } = {}) => {
 const FLAG_WEIGHT = { "no-repo": 3, stale: 3, "silent-members": 2, "low-peer": 2, "evidence-stale": 1 };
 const risk = (flags) => flags.reduce((n, f) => n + FLAG_WEIGHT[f], 0);
 
-/** Every team with stats, score and flags, riskiest first. Admin only. */
+const HEALTH_RANK = { red: 2, yellow: 1, green: 0 };
+const isOpen = (team) => team.status !== "completed" && team.status !== "disbanded";
+
+// Board figures for every team in two queries: open tasks, and the active sprint's progress.
+const loadBoardFigures = async (db, teams) => {
+  const ids = teams.map((t) => t._id);
+  const [counts, sprints] = await Promise.all([
+    db
+      .collection(TASKS)
+      .aggregate([
+        { $match: { teamId: { $in: ids } } },
+        { $group: { _id: { teamId: "$teamId", sprintId: "$sprintId", done: { $eq: ["$status", "done"] } }, n: { $sum: 1 } } },
+      ])
+      .toArray(),
+    db.collection(SPRINTS).find({ teamId: { $in: ids }, status: "active" }, { projection: { teamId: 1, name: 1 } }).toArray(),
+  ]);
+  const figures = new Map(ids.map((id) => [String(id), { openTasks: 0, sprint: null }]));
+  const activeSprint = new Map(sprints.map((sp) => [String(sp.teamId), sp]));
+  for (const [teamId, sp] of activeSprint) figures.get(teamId).sprint = { name: sp.name, done: 0, total: 0 };
+  for (const { _id, n } of counts) {
+    const f = figures.get(String(_id.teamId));
+    if (!_id.done) f.openTasks += n;
+    const sp = activeSprint.get(String(_id.teamId));
+    if (sp && _id.sprintId && String(_id.sprintId) === String(sp._id)) {
+      f.sprint.total += n;
+      if (_id.done) f.sprint.done += n;
+    }
+  }
+  return figures;
+};
+
+const loginOf = (team, id) => team.members.find((m) => String(m.userId) === String(id))?.githubLogin ?? null;
+const leadOf = (team) => ({
+  ai: team.leadId === AI_LEAD,
+  login: team.leadId && team.leadId !== AI_LEAD ? loginOf(team, team.leadId) : null,
+  coLeadLogin: team.coLeadId ? loginOf(team, team.coLeadId) : null,
+});
+
+/** Every team with stats, score, flags and the AI lead's health, riskiest first. Admin only. */
 export const getAdminOverviewService = async (db) => {
   await ensureIndexes(db);
   const teams = await db.collection(TEAMS).find({}).toArray();
-  const inputs = await loadInputs(db, teams);
+  const [inputs, boards, pulses] = await Promise.all([
+    loadInputs(db, teams),
+    loadBoardFigures(db, teams),
+    // Health only for teams still running; a finished team's board is frozen.
+    Promise.all(teams.map((t) => (isOpen(t) ? getTeamHealthForAdmin(db, t) : null))),
+  ]);
+  const pulseOf = new Map(teams.map((t, i) => [String(t._id), pulses[i]]));
   const now = new Date();
 
   const rows = teams.map((team) => {
@@ -164,17 +210,23 @@ export const getAdminOverviewService = async (db) => {
       breakdown,
       flags,
       evidence: evidence ? { revoked: evidence.revoked, path: `/evidence/${evidence.publicId}` } : null,
+      health: pulseOf.get(String(team._id))?.health ?? null,
+      warnings: pulseOf.get(String(team._id))?.warnings ?? [],
+      lead: leadOf(team),
+      ...boards.get(String(team._id)),
     };
   });
 
-  rows.sort((x, y) => risk(y.flags) - risk(x.flags) || byScore(x, y));
+  rows.sort(
+    (x, y) => (HEALTH_RANK[y.health] ?? -1) - (HEALTH_RANK[x.health] ?? -1) || risk(y.flags) - risk(x.flags) || byScore(x, y),
+  );
 
   const open = rows.filter((r) => r.status !== "completed" && r.status !== "disbanded");
   return {
     summary: {
       activeTeams: open.length,
       prsThisWeek: rows.reduce((n, r) => n + r.prsLast7d, 0),
-      atRisk: open.filter((r) => r.flags.length > 0).length,
+      atRisk: open.filter((r) => r.flags.length > 0 || r.health === "red").length,
       liveEvidence: rows.filter((r) => r.evidence && !r.evidence.revoked).length,
     },
     rows,

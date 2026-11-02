@@ -100,7 +100,8 @@ Against the "no new features until pilot data" rule and the advice in `docs/stra
 - **Frontend:** `src/features/teams`: `/team` (entry: card on the profile page) and public `/evidence/:publicId`.
 - **Manual for team 1:** matching, applications, GitHub login confirmation, capstone-pass check, inactivity messages. Admin-only API routes plus an admin page (users search, overview) cover team creation, repo, members, sync and evidence.
 - **Before real use:** run it end to end on a test repo, get each member's consent before issuing evidence (it publishes names), add a pointer to teams from the capstone page.
-- **Not built:** AI skill judge, team moves, AI task assignment, demo day, startup support, sponsored projects.
+- **Not built:** AI skill judge, team moves, demo day, startup support, sponsored projects.
+- **2026-11-02, Teams v2 built (founder's call, again ahead of pilot data):** team levels and lead/co-lead (the AI leads when nobody is lead-eligible), a task board with sprints that GitHub PRs move, an optional CV starting estimate, AI sprint planning that a person accepts, weekly update and warnings, and health on the admin page. Spec and status per stage: `docs/product/BUILD_TEAMS_SPEC.md`. Unit, contract and integration tests pass (`teamsBoard.integration.test.js` covers keys, sprints, GitHub sync, plan accept and warning audiences); the real model, a real CV and a real repo have not been tried yet.
 
 ## Frozen until pilot data says otherwise
 

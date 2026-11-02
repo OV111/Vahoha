@@ -1,19 +1,24 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
-import { ExternalLink, Github } from "lucide-react";
+import { ArrowLeft, ExternalLink, Github } from "lucide-react";
 import { teamsApi } from "./teamsApi";
 import TeamDefense from "./components/TeamDefense";
 import PeerRatings from "./components/PeerRatings";
 import TeamMapCard from "./components/TeamMapCard";
-import Leaderboard from "./components/Leaderboard";
+import MemberList from "./components/MemberList";
+import TaskBoard from "./components/board/TaskBoard";
+import TeamPulse from "./components/TeamPulse";
+import TeamSetup from "./components/TeamSetup";
+import { PAGE } from "../../../constants/layout";
 import "./teams-theme.css";
 
 /**
- * /team: the signed-in developer's build team.
- * Sections: members, my defense (questions on my own merged PRs), peer ratings,
- * and the merged work. Team 1 is assembled by hand, so a developer without a
- * team sees how it works instead of an empty page.
+ * /team: the signed-in developer's team workspace. Sections: setup while
+ * forming, members (level and role), this week (health, warnings, weekly
+ * update), the task board, my defense (questions on my own merged PRs), peer
+ * ratings and the merged work. One page per team (/team/:teamId); a person can
+ * be on several. /team alone goes to your only team, or to the hub (/teams).
  */
 
 function Section({ title, children }) {
@@ -25,67 +30,49 @@ function Section({ title, children }) {
   );
 }
 
-function NoTeam() {
-  return (
-    <div className="flex flex-col gap-3">
-      <h1 className="t-h1">Build teams</h1>
-      <p className="t-muted max-w-xl">
-        After you pass a capstone, you can join a small team of developers with
-        the same aim and build one real project together. Each member merges
-        pull requests, is questioned on their own changes, and gets a public
-        evidence page. You are not on a team yet.
-      </p>
-      <Link
-        to="/capstone"
-        className="t-btn t-btn-primary w-fit"
-      >
-        Go to your capstone
-      </Link>
-    </div>
-  );
-}
-
 export default function TeamPage() {
-  const [team, setTeam] = useState(undefined); // undefined = loading, null = no team
+  const { teamId } = useParams();
+  const navigate = useNavigate();
+  const [team, setTeam] = useState(undefined); // undefined = loading, null = not found or not yours
   const [contributions, setContributions] = useState([]);
   const [error, setError] = useState(null);
 
+  // Reloaded after starting, joining, leaving or starting the project.
+  const load = useCallback(async () => {
+    try {
+      const found = await teamsApi.get(teamId);
+      setTeam(found);
+      setContributions(await teamsApi.contributions(found._id));
+    } catch (err) {
+      // 404 also means "not your team": the server doesn't reveal teams you aren't on.
+      if (err.status === 404) setTeam(null);
+      else setError(err.message);
+    }
+  }, [teamId]);
+
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const mine = await teamsApi.mine();
-        if (cancelled) return;
-        setTeam(mine);
-        if (mine) {
-          const rows = await teamsApi.contributions(mine._id);
-          if (!cancelled) setContributions(rows);
-        }
-      } catch (err) {
-        if (!cancelled) setError(err.message);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    load();
+  }, [load]);
 
   const shell = (children) => (
     <div className="teams-theme">
-      <main className="mx-auto flex max-w-[1200px] flex-col gap-6 px-4 py-12">
+      <main className={`${PAGE.dashboard} flex flex-col gap-6 py-12`}>
         {children}
       </main>
     </div>
   );
 
   if (error) return shell(<p className="text-sm text-[var(--t-red)]">{error}</p>);
-  if (team === undefined) return shell(<div className="flex min-h-[40vh]"><LoadingSuspense fill /></div>);
+  // The same full-page loader as the route's Suspense fallback, so the switch
+  // from "loading the page" to "loading the team" is one continuous spinner.
+  if (team === undefined) return <LoadingSuspense />;
   if (team === null) {
     return shell(
-      <>
-        <NoTeam />
-        <Leaderboard />
-      </>,
+      <div className="flex flex-col gap-3">
+        <h1 className="t-h1">Team not found</h1>
+        <p className="t-muted">This team doesn&apos;t exist, or you aren&apos;t on it.</p>
+        <Link to="/teams" className="t-btn t-btn-primary w-fit">All teams</Link>
+      </div>,
     );
   }
 
@@ -95,6 +82,10 @@ export default function TeamPage() {
   return shell(
     <>
       <header className="flex flex-col gap-2">
+        <Link to="/teams" className="t-link inline-flex w-fit items-center gap-1 t-caption">
+          <ArrowLeft size={12} aria-hidden="true" />
+          All teams
+        </Link>
         <h1 className="t-h1">{team.name}</h1>
         <p className="flex items-center gap-2">
           <span className="t-badge t-mono">{team.trackId}</span>
@@ -114,15 +105,24 @@ export default function TeamPage() {
         )}
       </header>
 
+      <TeamSetup team={team} members={active} onChanged={load} onLeft={() => navigate("/teams")} />
+
+      {(team.status === "completed" || team.status === "disbanded") && (
+        <Link to="/teams" className="t-btn t-btn-primary w-fit">
+          Start or join your next team
+        </Link>
+      )}
+
       <Section title="Members">
-        <ul className="flex flex-wrap gap-2">
-          {active.map((m) => (
-            <li key={m.userId} className="t-pill t-mono">
-              @{m.githubLogin}
-              {m.userId === team.viewerId ? " (you)" : ""}
-            </li>
-          ))}
-        </ul>
+        <MemberList team={team} members={active} />
+      </Section>
+
+      <Section title="This week">
+        <TeamPulse teamId={team._id} />
+      </Section>
+
+      <Section title="Board">
+        <TaskBoard team={team} members={active} />
       </Section>
 
       {active.some((m) => m.userId === team.viewerId) && <TeamMapCard teamId={team._id} />}
@@ -157,7 +157,6 @@ export default function TeamPage() {
         )}
       </Section>
 
-      <Leaderboard />
     </>,
   );
 }

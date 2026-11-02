@@ -7,6 +7,7 @@ import {
 } from "../../users/index.js";
 import { sanitizeUsername } from "../../../utils/username.js";
 import { sniffFileKind, SNIFF_BYTES } from "../../../utils/fileSignature.js";
+import { clearCvEstimate } from "../../teams/index.js";
 
 export const PROFILE_LINK_FIELDS = [
   "githubLink",
@@ -145,6 +146,8 @@ export const updateSettingsService = async (db, userId, fields, files) => {
     { $set: statsUpdate },
     { returnDocument: "after", upsert: true },
   );
+  // A new CV makes the Teams estimate read from the old one wrong.
+  if (files.cvFile) await clearCvEstimate(db, userId);
 
   return { user: updatedUser, stats: statsResult.value || statsResult };
 };
@@ -165,6 +168,7 @@ export const removeCvService = async (db, userId) => {
   const stats = await db
     .collection("usersStats")
     .findOneAndUpdate({ userId }, { $unset: { cvUrl: "" } }, { projection: { cvUrl: 1 } });
+  await clearCvEstimate(db, userId);
   const id = cloudinaryIdFromUrl((stats?.value ?? stats)?.cvUrl);
   if (!id) return;
   try {

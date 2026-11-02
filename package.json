@@ -21,6 +21,7 @@
     "capstone:reopen": "node backend/scripts/reopenCapstone.js",
     "capstone:testreview": "node backend/scripts/seedTestReview.js",
     "admin:grant": "node backend/scripts/grantAdmin.js",
+    "seed:mock-teams": "node backend/scripts/seedMockTeams.js",
     "migrate:slugs": "node backend/scripts/backfillTopicSlugs.js",
     "migrate:mastery": "node backend/scripts/recomputeMastery.js",
     "migrate:progress": "node backend/scripts/reconcileProgress.js",
@@ -93,6 +94,7 @@
     "jsonwebtoken": "^9.0.2",
     "ldrs": "^1.1.9",
     "lucide-react": "^0.536.0",
+    "mammoth": "1.13.0",
     "mongodb": "^6.19.0",
     "motion": "^12.38.0",
     "picomatch": "^4.0.7",
@@ -113,6 +115,7 @@
     "swagger-ui-express": "^5.0.1",
     "tailwind-merge": "^3.5.0",
     "tailwindcss-animate": "^1.0.7",
+    "unpdf": "1.8.1",
     "ws": "^8.19.0",
     "zod": "^3.25.76",
     "zustand": "^5.0.8"

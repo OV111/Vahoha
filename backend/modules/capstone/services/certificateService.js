@@ -158,6 +158,20 @@ export const getCapstoneEvidence = async (db, userId) => {
   return { capstonePassed: passed > 0, defensesPassed: passed };
 };
 
+/**
+ * Tracks this learner has a live capstone certificate for (same rules as
+ * getCapstoneEvidence: not revoked, not seeded test data). A self-started
+ * team is built on one of these.
+ */
+export const listPassedTracks = async (db, userId) => {
+  const certs = await db
+    .collection(CERTIFICATES)
+    .find({ userId: new ObjectId(userId), revokedAt: null, testData: { $ne: true } }, { projection: { trackId: 1, trackTitle: 1 } })
+    .toArray();
+  const byId = new Map(certs.map((c) => [c.trackId, { trackId: c.trackId, trackTitle: c.trackTitle ?? c.trackId }]));
+  return [...byId.values()];
+};
+
 /** Everything here is safe to show anyone holding the link. No internal ids. */
 export const toPublicCertificate = (cert, username) => ({
   publicId: cert.publicId,

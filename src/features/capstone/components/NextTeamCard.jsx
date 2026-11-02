@@ -24,7 +24,7 @@ export default function NextTeamCard() {
         </p>
       </div>
       <Link
-        to="/team"
+        to="/teams"
         className="w-fit text-sm font-medium text-purple-400 transition hover:text-purple-300 hover:underline focus-visible:rounded focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none"
       >
         See Build Teams →

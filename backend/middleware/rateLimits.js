@@ -54,6 +54,10 @@ export const blogUpdateLimiter = limiter({ windowMs: HOUR, limit: 120, perUser: 
 // Likes, saves and follows are one-tap toggles: a script can flip them endlessly.
 // The numbers sit well above what a person does (a post takes minutes to write,
 // the editor autosaves to the browser, not the server), so only scripts hit them.
+// Team board: dragging cards is quick, so the ceiling is high; it stops scripts, not people.
+export const boardWriteLimiter = limiter({ windowMs: MINUTE, limit: 60, perUser: true, message: "Too many board changes. Wait a minute." });
+// Starting, joining and leaving teams: rare actions, so a low ceiling stops churn scripts.
+export const teamMembershipLimiter = limiter({ windowMs: HOUR, limit: 10, perUser: true, message: "Too many team changes. Try again later." });
 export const toggleLimiter = limiter({ windowMs: MINUTE, limit: 120, perUser: true, message: "Slow down a little. Try again in a minute." });
 
 // Backstop for the whole API: one client IP, every route. The per-route limits above

@@ -13,11 +13,12 @@
 
 import { randomBytes } from "crypto";
 import { ObjectId } from "mongodb";
-import { CONTRIBUTIONS, TEAM_EVIDENCE, TEAMS, TEAM_DEFENSES, ensureIndexes, fail } from "./teamsData.js";
+import { CONTRIBUTIONS, TEAM_EVIDENCE, TEAMS, TEAM_DEFENSES, ensureIndexes } from "../teamsData.js";
+import { fail } from "../../../../utils/httpErrors.js";
 import { summarizeRatings } from "./ratingService.js";
-import { trackEvent } from "../../../services/eventService.js";
+import { trackEvent } from "../../../../services/eventService.js";
 // A read-only, whitelisted view built for this page.
-import { getTeamMapSnapshot } from "../../system-map/index.js";
+import { getTeamMapSnapshot } from "../../../system-map/index.js";
 
 const newPublicId = () => randomBytes(9).toString("base64url"); // 12 chars, 72 bits
 

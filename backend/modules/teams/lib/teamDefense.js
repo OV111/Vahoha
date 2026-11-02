@@ -9,8 +9,8 @@
  */
 
 import { z } from "zod";
-import { DEFENSE_QUESTION_COUNT, DEFENSE_QUESTION_MS } from "../../capstone/lib/constants.js";
-import { GRADING_SYSTEM_PROMPT } from "../../capstone/lib/defense.js";
+import { DEFENSE_QUESTION_COUNT, DEFENSE_QUESTION_MS } from "../../capstone/index.js";
+import { GRADING_SYSTEM_PROMPT } from "../../capstone/index.js";
 
 const MAX_PRS = 5;
 const MAX_PATCH_CHARS = 4000; // per file

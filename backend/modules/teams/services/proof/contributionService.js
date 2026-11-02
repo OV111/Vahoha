@@ -13,9 +13,11 @@ import {
   getPullFiles,
   getPullReviewers,
   listMergedPulls,
-} from "../../capstone/services/githubClient.js";
-import { flagMapDrift } from "../../system-map/index.js";
-import { CONTRIBUTIONS, TEAMS, ensureIndexes, fail } from "./teamsData.js";
+} from "../../../capstone/index.js";
+import { flagMapDrift } from "../../../system-map/index.js";
+import { getTeamService } from "../team/teamsService.js";
+import { CONTRIBUTIONS, TEAMS, ensureIndexes } from "../teamsData.js";
+import { fail } from "../../../../utils/httpErrors.js";
 
 const MAX_NEW_PRS_PER_SYNC = 20;
 
@@ -102,3 +104,9 @@ export const listContributionsService = (db, teamId) =>
     .sort({ mergedAt: -1 })
     .limit(200)
     .toArray();
+
+/** Merged work for the team page: the same member-or-admin check as the page itself. */
+export const listContributionsForViewerService = async (db, teamId, viewer) => {
+  await getTeamService(db, teamId, viewer);
+  return listContributionsService(db, teamId);
+};

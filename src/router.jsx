@@ -70,6 +70,8 @@ const CertificatePage = lazy(
   () => import("./features/capstone/CertificatePage"),
 );
 const TeamPage = lazy(() => import("./features/teams/TeamPage"));
+const TeamsHubPage = lazy(() => import("./features/teams/TeamsHubPage"));
+const TeamRedirect = lazy(() => import("./features/teams/TeamRedirect"));
 const TeamAdminPage = lazy(() => import("./features/teams/TeamAdminPage"));
 const AdminLibraryPage = lazy(() => import("./features/coding-libs/admin/AdminLibraryPage"));
 const EvidencePage = lazy(() => import("./features/teams/EvidencePage"));
@@ -186,8 +188,11 @@ export const routes = [
           // Static segment wins over ":trackId" in React Router's ranking.
           { path: "capstone/admin", element: <CapstoneAdminPage /> },
           { path: "capstone/:trackId", element: <CapstonePage /> },
-          { path: "team", element: <TeamPage /> },
+          { path: "teams", element: <TeamsHubPage /> },
+          { path: "team", element: <TeamRedirect /> },
+          // Static "admin" wins over ":teamId" in React Router's ranking.
           { path: "team/admin", element: <TeamAdminPage /> },
+          { path: "team/:teamId", element: <TeamPage /> },
           { path: "admin/library", element: <AdminLibraryPage /> },
           { path: "billing", element: <BillingPage /> },
           { path: "progress", element: <ProgressPage /> },

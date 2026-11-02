@@ -57,6 +57,10 @@ export const fail = (status, message, details) => {
 export const getLatestBrief = (db, trackId) =>
   db.collection(BRIEFS).find({ trackId, status: "published" }).sort({ version: -1 }).limit(1).next();
 
+/** Whether this learner has ever started the capstone on this track (any attempt, any status). */
+export const hasCapstoneAttempt = async (db, userId, trackId) =>
+  Boolean(await db.collection(ATTEMPTS).findOne({ userId: new ObjectId(userId), trackId }, { projection: { _id: 1 } }));
+
 export const getAttempts = (db, userId, trackId) =>
   db
     .collection(ATTEMPTS)
