@@ -106,6 +106,7 @@ export default function LabsPage() {
         <p className="relative z-10 mx-auto w-fit rounded-full border border-purple-500/40 bg-black px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-purple-300 max-md:ml-0">
           Entrance
         </p>
+        <h2 className="sr-only">Lab rooms</h2>
         <ol className="relative mt-6" aria-label="Lab rooms">
           {ROOMS.map((room, i) => (
             <RoomDoor key={room.id} room={room} index={i} />

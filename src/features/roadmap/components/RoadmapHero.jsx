@@ -23,7 +23,7 @@ export default function RoadmapHero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
       >
-        <p className="rm-mono text-[11px] font-medium uppercase tracking-[0.8px] text-neutral-600 dark:text-neutral-500">
+        <p className="rm-mono text-[11px] font-medium uppercase tracking-[0.8px] text-neutral-600 dark:text-neutral-400">
           Roadmaps
         </p>
 
@@ -35,10 +35,10 @@ export default function RoadmapHero() {
           Choose a domain, follow a track, and unlock each layer by passing its test.
         </p>
 
-        <p className="rm-mono mt-6 text-xs text-neutral-500">
+        <p className="rm-mono mt-6 text-xs text-neutral-500 dark:text-neutral-400">
           {META.map((item, i) => (
             <span key={item}>
-              {i > 0 && <span className="mx-2 text-neutral-700">|</span>}
+              {i > 0 && <span className="mx-2 text-neutral-700 dark:text-neutral-400">|</span>}
               {item}
             </span>
           ))}
