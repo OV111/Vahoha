@@ -5,6 +5,19 @@ import { SIGNALS, pct } from "../lib/score";
 
 const TOP = 10;
 
+const loadMock = (track) => import("../mocks/leaderboard").then((m) => m.mockLeaderboard(track));
+
+// In dev, sample teams fill the list when there is no real data (or with
+// `?mock`). The DEV check drops all of this from production builds.
+const loadLeaderboard = (track) => {
+  if (!import.meta.env.DEV) return teamsApi.leaderboard(track);
+  if (new URLSearchParams(window.location.search).has("mock")) return loadMock(track);
+  return teamsApi
+    .leaderboard(track)
+    .then((d) => (d.rows.length ? d : loadMock(track)))
+    .catch(() => loadMock(track));
+};
+
 function ScoreBar({ value, mine }) {
   return (
     <span className="t-bar" aria-hidden="true">
@@ -115,8 +128,7 @@ export default function Leaderboard() {
   useEffect(() => {
     let stale = false;
     setOpenRank(null);
-    teamsApi
-      .leaderboard(track)
+    loadLeaderboard(track)
       .then((d) => {
         if (stale) return;
         setData(d);
