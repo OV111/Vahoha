@@ -27,11 +27,8 @@ async function load() {
     defaults: "2026-05-30",
     // No surveys are used; this skips downloading the ~30 KB surveys bundle.
     disable_surveys: true,
-    capture_exceptions: {
-      capture_unhandled_errors: true,
-      capture_unhandled_rejections: true,
-      capture_console_errors: false,
-    },
+    // Sentry reports errors (src/instrument.js); PostHog is for analytics only.
+    capture_exceptions: false,
   });
   client = ph;
   for (const [method, args] of queue.splice(0)) client[method](...args);

@@ -65,6 +65,7 @@ Names only. **Never commit values.** Backend variables are set on Render (`sync:
 | Media | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` (all three or none) |
 | Redis | `REDIS_ENABLED` (`false` runs without the notification queue and Redis login throttling), `REDIS_URL`, or `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD` |
 | Billing | `POLAR_ENVIRONMENT`, `POLAR_ACCESS_TOKEN`, `POLAR_PRO_PRODUCT_ID`, `POLAR_WEBHOOK_SECRET`, `BILLING_ENFORCED` (see [Billing](BILLING.md)) |
+| Monitoring | `SENTRY_DSN` (the `vahoha-api` project; unset = nothing is sent to Sentry). The release is the deployed commit, read from Render's `RENDER_GIT_COMMIT` |
 | Switches | `CANDIDATES_ENABLED` (recruiter candidates API, closed by default), `MAINTENANCE_MODE` (every route answers 503), `CACHE_ENABLED` (`false` turns the server cache off), `ALLOW_UNSAFE_RUNNER` (never in production: the server refuses to start), `WS_EXTRA_ORIGINS` |
 | Local and scripts only | `GROQ_TPM_LIMIT` (free-tier workaround, never in production), `EVAL_JUDGE_MODEL` (eval script), `DNS_SERVERS`, `ALLOW_UNBANKED_PUBLISH` (capstone seeder) |
 
@@ -79,7 +80,7 @@ The server validates every variable once, before it connects to anything, and re
 
 ### Frontend (Vercel)
 
-`VITE_API_BASE_URL`, `VITE_WS_URL`, `VITE_GOOGLE_CLIENT_ID`, `VITE_POSTHOG_KEY`, `VITE_POSTHOG_HOST`.
+`VITE_API_BASE_URL`, `VITE_WS_URL`, `VITE_GOOGLE_CLIENT_ID`, `VITE_POSTHOG_KEY`, `VITE_POSTHOG_HOST`, `VITE_SENTRY_DSN` (the `vahoha-web` project).
 
 The `.env*` files are gitignored; only `.env.example` is tracked. Production frontend values go in Vercel's project settings (`.env.production` is a local copy). Only public `VITE_*` values belong in the frontend.
 
@@ -174,7 +175,6 @@ Imported exam questions arrive as `reviewed: false`. Hand-check the answer keys 
 
 ## Not set up yet
 
-- Error monitoring (Sentry): not present.
 - Database backups and restore procedure: `TODO: confirm` Atlas settings.
 - Staging backend: `TODO: confirm`.
 - Automated deploy checks after release (smoke test): none.

@@ -72,6 +72,9 @@ services:
         sync: false
       - key: REDIS_ENABLED
         value: "true"
+      # ── monitoring ────────────────────────────────────────────
+      - key: SENTRY_DSN             # vahoha-api project; unset = nothing sent to Sentry
+        sync: false
       # ── billing (Polar) — PRODUCTION values, never the sandbox ones ──
       - key: POLAR_ENVIRONMENT
         value: production

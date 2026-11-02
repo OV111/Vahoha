@@ -2,6 +2,7 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import tailwindcss from "@tailwindcss/vite";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 import path from "path";
 import process from "node:process";
 
@@ -59,10 +60,36 @@ function guardViteEnv({ command, mode, isSsrBuild }) {
   if (fatal.length) throw new Error(formatEnvErrors(fatal, mode));
 }
 
+// Vercel sets VERCEL_GIT_COMMIT_SHA at build time; the API reports the same SHA
+// from Render, so frontend and backend errors share one release in Sentry.
+const RELEASE = process.env.VERCEL_GIT_COMMIT_SHA || "";
+
+// Source maps are built and uploaded only when SENTRY_AUTH_TOKEN is set (Vercel),
+// then deleted so they are never served. Without the token the build is unchanged.
+const uploadSourceMaps = (isSsrBuild) => Boolean(process.env.SENTRY_AUTH_TOKEN) && !isSsrBuild;
+
 export default defineConfig(({ command, mode, isSsrBuild }) => {
   guardViteEnv({ command, mode, isSsrBuild });
+  const sourcemaps = uploadSourceMaps(isSsrBuild);
   return {
-    plugins: [react(), tailwindcss(), preloadFonts()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      preloadFonts(),
+      sourcemaps &&
+        sentryVitePlugin({
+          org: "vahoha",
+          project: "vahoha-web",
+          url: "https://de.sentry.io",
+          authToken: process.env.SENTRY_AUTH_TOKEN,
+          release: RELEASE ? { name: RELEASE } : undefined,
+          sourcemaps: { filesToDeleteAfterUpload: ["./dist/**/*.map"] },
+          telemetry: false,
+        }),
+    ].filter(Boolean),
+    define: {
+      "import.meta.env.VITE_APP_VERSION": JSON.stringify(RELEASE),
+    },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
@@ -72,6 +99,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
     // A dynamic import inside a worker needs ES output; the default (iife) cannot split code.
     worker: { format: "es" },
     build: {
+      sourcemap: sourcemaps ? "hidden" : false,
       cssMinify: true,
       rollupOptions: {
         // Vendor splitting is client-only; the SSR prerender build keeps deps external.

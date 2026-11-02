@@ -1,4 +1,5 @@
 import express from "express";
+import * as Sentry from "@sentry/node";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import helmet from "helmet";
@@ -76,7 +77,9 @@ export function createApp(db) {
     cors({
       origin: corsOrigin,
       methods: ["GET", "POST", "PUT", "PATCH", "OPTIONS", "DELETE"],
-      allowedHeaders: ["Content-Type", "Authorization"],
+      // sentry-trace and baggage tie a frontend trace to the API request it made;
+      // without them the browser's preflight rejects every traced call.
+      allowedHeaders: ["Content-Type", "Authorization", "sentry-trace", "baggage"],
       credentials: true,
     }),
   );
@@ -133,6 +136,9 @@ export function createApp(db) {
   app.use("/api/readiness", readinessRoutes);
   app.use("/api/onboarding", onboardingRoutes);
   app.use("/api/admin", analyticsRoutes);
+
+  // Catches 5xx errors from routes that have no module error handler of their own.
+  Sentry.setupExpressErrorHandler(app);
 
   app.use(notFound)
   return app;

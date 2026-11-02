@@ -15,6 +15,7 @@ import NotificationWorker from "./workers/notificationWorker.js";
 import notificationQueue from "./queues/notificationQueue.js";
 import { healthHandler } from "./utils/health.js";
 import { createShutdown } from "./utils/shutdown.js";
+import * as Sentry from "@sentry/node";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -60,6 +61,8 @@ const startServer = async () => {
         ["notification queue", async () => notificationQueue.close?.()],
         ["redis", async () => redisConnection?.quit()],
         ["mongodb", closeDB],
+        // Last, so errors raised while closing the others are still sent.
+        ["sentry", async () => Sentry.close(2000)],
       ],
     });
     process.on("SIGTERM", () => shutdown("SIGTERM"));

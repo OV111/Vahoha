@@ -18,7 +18,7 @@ import process from "node:process";
 /**
  * @typedef {object} EnvSpec
  * @property {string} name
- * @property {"core"|"auth"|"ai"|"email"|"uploads"|"billing"|"redis"|"flags"|"local"} group
+ * @property {"core"|"auth"|"ai"|"email"|"uploads"|"billing"|"redis"|"monitoring"|"flags"|"local"} group
  * @property {"required"|"production"|"optional"} requirement  "production" = required only when NODE_ENV=production
  * @property {"string"|"secret"|"url"|"mongo"|"flag"|"flag1"|"int"|"email"|"list"} kind
  * @property {string} description
@@ -356,6 +356,17 @@ export const ENV_SPECS = [
     effect: "no password",
   },
 
+  // ── monitoring ──────────────────────────────────────────────────────────
+  {
+    name: "SENTRY_DSN",
+    group: "monitoring",
+    requirement: "optional",
+    kind: "url",
+    description: "Sentry DSN of the vahoha-api project. Read by backend/instrument.js before the server starts.",
+    example: "https://public-key@o0.ingest.de.sentry.io/0",
+    effect: "errors are only logged to the console, nothing is sent to Sentry",
+  },
+
   // ── flags ───────────────────────────────────────────────────────────────
   {
     name: "CANDIDATES_ENABLED",
@@ -457,6 +468,7 @@ export const FRONTEND_ENV_SPECS = [
   { name: "VITE_GOOGLE_CLIENT_ID", description: "Same Google OAuth client id as GOOGLE_CLIENT_ID. Public by design.", example: "123456789-abc.apps.googleusercontent.com" },
   { name: "VITE_POSTHOG_KEY", description: "PostHog project key. Analytics stay off without it.", example: "phc_your-posthog-key" },
   { name: "VITE_POSTHOG_HOST", description: "PostHog host.", example: "https://eu.i.posthog.com" },
+  { name: "VITE_SENTRY_DSN", description: "Sentry DSN of the vahoha-web project. Public by design. Error reporting stays off without it.", example: "https://public-key@o0.ingest.de.sentry.io/0" },
 ];
 
 // Things a deployment can have switched on or off, and what each one needs.
@@ -666,6 +678,7 @@ const GROUP_TITLES = {
   uploads: "Image uploads",
   billing: "Billing (Polar)",
   redis: "Redis",
+  monitoring: "Monitoring",
   flags: "Switches",
   local: "Local and scripts only",
 };

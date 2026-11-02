@@ -1,5 +1,6 @@
 import React, { lazy } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import * as Sentry from "@sentry/react";
 
 import MainLayout from "./layouts/MainLayout";
 import ProtectedLayout from "./layouts/ProtectedLayout";
@@ -227,6 +228,7 @@ export const routes = [
 ];
 
 // createBrowserRouter touches window, so only create it in the browser.
+// Wrapped so Sentry names page-load and navigation traces after the route pattern.
 const router =
-  typeof window !== "undefined" ? createBrowserRouter(routes) : null;
+  typeof window !== "undefined" ? Sentry.wrapCreateBrowserRouterV7(createBrowserRouter)(routes) : null;
 export default router;
