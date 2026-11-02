@@ -15,6 +15,7 @@ are all readable in the browser.
 | `VITE_WS_URL` | Yes, build fails without it | `wss://api.example.com` | Missing: chat and notifications throw when they connect. `ws://` from an https page: blocked. A trailing slash works but is warned about |
 | `VITE_GOOGLE_CLIENT_ID` | No, warning | `1234-abc.apps.googleusercontent.com` | Missing: the Google sign-in button fails |
 | `VITE_POSTHOG_KEY` and `VITE_POSTHOG_HOST` | No, set both or neither | `phc_...` and `https://eu.i.posthog.com` | One without the other: analytics stay off (warning) |
+| `VITE_SENTRY_DSN` | No | `https://key@o0.ingest.de.sentry.io/0` | Missing: no errors are sent to Sentry. Not checked by the build |
 
 ## What the build check does
 

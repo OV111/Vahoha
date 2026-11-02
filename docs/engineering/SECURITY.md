@@ -52,7 +52,7 @@ Verified against the code on 2026-10-21. Ordered by severity.
 | 11 | **Unverified email on password signup** | Low | Email is verified only through OAuth and magic link. `claimVerifiedEmail` handles the takeover case. `TODO: confirm` no password flow treats an unverified email as proof | Add email verification on password signup |
 | 12 | **Sign-in message differences** | Low | Login says "Invalid email or password", but deliberately gives a different hint to a Google-only account, which reveals that an email is registered with Google | Accept, or return the same message |
 | 13 | **Single-instance WebSocket state** | Low | The `rooms` map is in memory, so chat breaks under more than one instance | Redis pub/sub when scaling |
-| 14 | **No monitoring** | Medium | No Sentry or alerting. A security incident would go unnoticed | Add error monitoring and log retention |
+| 14 | **Partial monitoring** | Low | Sentry reports API and web app errors once `SENTRY_DSN` / `VITE_SENTRY_DSN` are set in production. No alert rules, uptime check or log retention yet | Sentry alert rules, Better Stack uptime check, Atlas alerts |
 | 15 | **No security tests in CI** | Low | `npm run test:security` exists but CI runs only lint, build and unit tests | Add it to the workflow |
 
 ---

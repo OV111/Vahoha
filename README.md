@@ -36,6 +36,7 @@ Vahoha is a learning platform for developers who want proof they actually unders
 | **Billing** | Polar (Merchant of Record), signed webhooks. Built, **not enforced** (`BILLING_ENFORCED=false`) |
 | **Infrastructure** | Redis, BullMQ, Cloudinary, `isolated-vm` (code-runner sandbox), Docker |
 | **Email** | Resend |
+| **Monitoring** | Sentry (errors, traces, error replays) for the API and the web app; PostHog for product analytics |
 | **Testing** | Vitest (unit, integration, API, security, performance, concurrency, WebSocket, queue), Playwright (E2E) |
 | **DX** | Husky, lint-staged, ESLint, Swagger UI, nodemon |
 
@@ -214,9 +215,13 @@ POLAR_ACCESS_TOKEN=
 POLAR_PRO_PRODUCT_ID=
 POLAR_WEBHOOK_SECRET=
 BILLING_ENFORCED=false
+
+# Error monitoring (optional: unset = nothing is sent to Sentry)
+SENTRY_DSN=
 ```
 
-Frontend (`.env.development`, `.env.production`): `VITE_API_BASE_URL`, `VITE_WS_URL`, `VITE_GOOGLE_CLIENT_ID`, `VITE_POSTHOG_KEY`, `VITE_POSTHOG_HOST`.
+Frontend (`.env.development`, `.env.production`): `VITE_API_BASE_URL`, `VITE_WS_URL`, `VITE_GOOGLE_CLIENT_ID`, `VITE_POSTHOG_KEY`, `VITE_POSTHOG_HOST`, `VITE_SENTRY_DSN`.
+Vercel also needs `SENTRY_AUTH_TOKEN` (build-time secret, never in a `.env` file) so production builds upload source maps to Sentry.
 The `.env.*` files are not committed, so **Vercel builds only see the variables set in the project settings**. Set each one for Production *and* Preview, or the build stops. Rules: [`docs/engineering/FRONTEND_ENV.md`](docs/engineering/FRONTEND_ENV.md).
 Other switches (`MAINTENANCE_MODE`, `ALLOW_UNSAFE_RUNNER`, `WS_EXTRA_ORIGINS`, `CONTACT_INBOX`) are explained in `docs/DEPLOYMENT.md`.
 
@@ -244,6 +249,7 @@ Swagger UI is available at `/api-docs` when the backend is running.
 | ✅ | Project map: editor, repo scan, sharing, comments |
 | ✅ | Labs: Foundations room, first system lab |
 | ✅ | Pilot analytics: events and funnel |
+| ✅ | Error monitoring: Sentry on API and web app (production env vars still to set) |
 | 🟡 | Exam banks: generator built; banks must be seeded and hand-checked per layer |
 | 🔲 | Voice exam (teach-back): specified, not built |
 | 🔲 | Public progress profiles, full admin panel |
