@@ -17,7 +17,7 @@ services:
     # --no-node-snapshot is required by isolated-vm (the code-runner sandbox) on Node 20+.
     startCommand: npm start
     healthCheckPath: /healthz
-    autoDeploy: true
+    autoDeployTrigger: checksPass   # deploy only after CI passes on the pushed commit
     envVars:
       # ── runtime ───────────────────────────────────────────────
       - key: NODE_VERSION

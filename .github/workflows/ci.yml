@@ -16,16 +16,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version-file: .node-version
           cache: npm
 
       # Installs exactly what package-lock.json says (reproducible, unlike `npm install`).
       - run: npm ci
 
       - run: npm run lint
+      # vite.config.js refuses a production build without these two. They are the
+      # public API URLs that ship in the bundle anyway, not secrets.
       - run: npm run build
+        env:
+          VITE_API_BASE_URL: https://api.vahoha.com
+          VITE_WS_URL: wss://api.vahoha.com
       - run: npm run test:unit
