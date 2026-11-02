@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { getCategories, getUsers } from "../controllers/search.controller.js";
+import { validate } from "../../../middleware/validate.js";
+import { searchQuerySchema } from "../schemas/search.schemas.js";
 
 const router = Router();
 
@@ -43,7 +45,7 @@ const router = Router();
  *         description: Matching results
  */
 
-router.get("/users", getUsers);
-router.get("/categories", getCategories);
+router.get("/users", validate({ query: searchQuerySchema }), getUsers);
+router.get("/categories", validate({ query: searchQuerySchema }), getCategories);
 
 export default router;

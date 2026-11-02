@@ -1,29 +1,15 @@
 import { searchUsers, searchCategories } from "../services/searchService.js";
 
-export const getUsers = async (req, res) => {
+// req.query.q is trimmed and length-capped by searchQuerySchema.
+const handle = (fn) => async (req, res) => {
   try {
-    const query = req.query.q?.trim() || "";
-    if (!query) return res.status(200).json({ results: [] });
-    const db = req.app.locals.db;
-    const results = await searchUsers(db, query);
-    res.status(200).json({ results });
+    const { q } = req.query;
+    res.status(200).json({ results: q ? await fn(req, q) : [] });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Search failed", code: 500, error: err.message });
+    console.error("search error:", err);
+    res.status(500).json({ message: "Search failed", code: 500 });
   }
 };
 
-export const getCategories = (req, res) => {
-  try {
-    const query = req.query.q?.trim() || "";
-    if (!query) return res.status(200).json({ results: [] });
-    const results = searchCategories(query);
-
-    res.status(200).json({ results });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Search failed", code: 500, error: err.message });
-  }
-};
+export const getUsers = handle((req, q) => searchUsers(req.app.locals.db, q));
+export const getCategories = handle((req, q) => searchCategories(q));

@@ -14,7 +14,7 @@ export const searchUsers = async (db, query) => {
           { lastName: { $regex: regex } },
         ],
       },
-      { projection: { password: 0 } },
+      { projection: { username: 1, firstName: 1, lastName: 1 } },
     )
     .limit(10)
     .toArray();
