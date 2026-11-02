@@ -1,8 +1,7 @@
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import CodeBlock from "@/components/ui/CodeBlock";
-import { codeRehypePlugins } from "@/components/ui/codeHighlight";
 
 /**
  * Renders an agent message as markdown.
@@ -103,14 +102,39 @@ const components = {
     ) : null,
 };
 
+let loadedPlugins = null;
+
+// The highlighter is ~66 KB gzip, so only messages that contain a fenced block
+// pay for it. Plain text renders first; colours arrive once the chunk lands
+// (token colours only, so no layout shift).
+function useCodePlugins(content) {
+  const hasFence = /```|~~~/.test(content);
+  const [plugins, setPlugins] = useState(loadedPlugins);
+
+  useEffect(() => {
+    if (!hasFence || loadedPlugins) return;
+    let cancelled = false;
+    import("@/components/ui/codeHighlight").then((m) => {
+      loadedPlugins = m.codeRehypePlugins;
+      if (!cancelled) setPlugins(loadedPlugins);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [hasFence]);
+
+  return hasFence ? plugins : null;
+}
+
 function MarkdownMessage({ content, className = "text-[14px] text-white" }) {
+  const rehypePlugins = useCodePlugins(content) ?? [];
   return (
     /* Width is capped by the transcript column in MessageList, not here — a
        second cap would make agent text narrower than the user's bubbles. */
     <div className={`w-full ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={codeRehypePlugins}
+        rehypePlugins={rehypePlugins}
         components={components}
       >
         {content}

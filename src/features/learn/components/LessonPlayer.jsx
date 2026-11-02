@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { FlaskConical, ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
 import MarkdownMessage from "@/features/ai-agent/components/MarkdownMessage";
@@ -13,6 +13,32 @@ import "../learn.css";
 // CodeMirror is the heaviest part of the lesson page. Loading it on demand lets
 // the step text paint first; the import starts as soon as the player renders.
 const CodePanel = lazy(() => import("./CodePanel"));
+
+// The editor chunk is ~137 KB gzip; fetching it at load competes with the
+// lesson text for bandwidth, so wait until the panel is near the viewport.
+function useNearViewport(active) {
+  const ref = useRef(null);
+  const [near, setNear] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!active || !el || near) return;
+    if (!("IntersectionObserver" in window)) {
+      setNear(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setNear(true);
+      },
+      { rootMargin: "400px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [active, near]);
+
+  return [ref, near, () => setNear(true)];
+}
 
 const DONE = "done";
 const emptyExplain = { text: "", revealed: false, covered: [] };
@@ -187,6 +213,7 @@ export default function LessonPlayer({ track, layer, lesson, content, next, test
 
   const codeIndex = finished || step.kind === "explain" ? -1 : codeIndexFor(steps, index);
   const hasPanel = codeIndex !== -1;
+  const [panelRef, panelNear, showPanel] = useNearViewport(hasPanel);
   const predictLocked = step?.kind === "check" && step.type === "predict" && answers[index] == null;
 
   const checks = steps.map((s, i) => [s, i]).filter(([s]) => s.kind === "check");
@@ -273,7 +300,14 @@ export default function LessonPlayer({ track, layer, lesson, content, next, test
           </section>
 
           {hasPanel && (
-            <aside aria-label="Code" className="h-[460px] min-w-0 lg:sticky lg:top-24 lg:h-[calc(100dvh-8rem)]">
+            <aside
+              ref={panelRef}
+              onPointerDown={showPanel}
+              onFocus={showPanel}
+              aria-label="Code"
+              className="h-[460px] min-w-0 lg:sticky lg:top-24 lg:h-[calc(100dvh-8rem)]"
+            >
+              {panelNear ? (
               <Suspense
                 fallback={
                   <CodePanelSkeleton>
@@ -287,6 +321,9 @@ export default function LessonPlayer({ track, layer, lesson, content, next, test
                   lockedReason={predictLocked ? "Answer the question first, then run it to check." : null}
                 />
               </Suspense>
+              ) : (
+                <CodePanelSkeleton />
+              )}
             </aside>
           )}
         </div>
