@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
-import { getGroqClient } from "../../../config/groq.js";
+import { groqChat } from "../../../services/groqChat.js";
+import { GroqBusyError } from "../../../services/groqGate.js";
 import { GRADE_JSON_SCHEMA, QUESTIONS_JSON_SCHEMA, gradeMessages, questionMessages, resolveLens } from "../lib/understandingPrompt.js";
 import { gradeOutputSchema, questionsOutputSchema } from "../schemas/understanding.schemas.js";
 
@@ -23,6 +24,8 @@ export const PASS_SCORE = 4; // of 6, and no answer may score 0
  */
 
 const modelFailure = (cause) => Object.assign(new Error("model failed"), { modelFailed: true, cause });
+const busyFailure = (err) =>
+  Object.assign(modelFailure(err), { busyMessage: `The AI is busy right now. Try again in ${err.retryAfterSec} seconds.` });
 
 /**
  * One strict-JSON completion, validated with Zod. Unusable output is retried
@@ -32,15 +35,19 @@ async function complete(messages, jsonSchema, name, zodSchema) {
   for (let attempt = 1; attempt <= 2; attempt++) {
     let completion;
     try {
-      completion = await getGroqClient().chat.completions.create({
-        model: MODEL,
-        messages,
-        response_format: { type: "json_schema", json_schema: { name, strict: true, schema: jsonSchema } },
-        reasoning_effort: "low",
-        max_tokens: MAX_TOKENS,
-        temperature: 0,
-      });
+      completion = await groqChat(
+        {
+          model: MODEL,
+          messages,
+          response_format: { type: "json_schema", json_schema: { name, strict: true, schema: jsonSchema } },
+          reasoning_effort: "low",
+          max_tokens: MAX_TOKENS,
+          temperature: 0,
+        },
+        { priority: "interactive" },
+      );
     } catch (err) {
+      if (err instanceof GroqBusyError) throw busyFailure(err);
       console.error(`system-map ${name}: provider error`, err.status, err.message);
       throw modelFailure(err);
     }
@@ -144,7 +151,7 @@ async function submitAnswers(db, checkId, userId, answers) {
 
 // The model being down is our problem, said plainly: a 503 the learner can retry.
 const whenModelFails = (message) => (err) => {
-  if (err.modelFailed) fail(503, message);
+  if (err.modelFailed) fail(503, err.busyMessage ?? message);
   throw err;
 };
 

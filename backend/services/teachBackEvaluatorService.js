@@ -1,4 +1,5 @@
-import { getGroqClient } from "../config/groq.js";
+import { groqChat } from "./groqChat.js";
+import { GroqBusyError } from "./groqGate.js";
 
 // Same model family as the exam seeder / AI agent. Grading is scoped to the
 // rubric's own criteria/levels so the model is checking against a list, not
@@ -46,6 +47,18 @@ Return JSON in exactly this shape:
 }`;
 };
 
+// Busy is the gate's answer, not a fault: nothing has been saved yet, so the learner just retries.
+const askGroq = async (params, priority) => {
+  try {
+    return await groqChat(params, { priority });
+  } catch (err) {
+    if (err instanceof GroqBusyError) {
+      throw Object.assign(new Error(`The AI is busy right now. Try again in ${err.retryAfterSec} seconds.`), { status: 503 });
+    }
+    throw err;
+  }
+};
+
 const stripFences = (raw) =>
   raw
     .replace(/^```json\s*/i, "")
@@ -54,17 +67,18 @@ const stripFences = (raw) =>
     .trim();
 
 export const evaluateTeachBack = async (rubric, answerText) => {
-  const groq = getGroqClient();
-
-  const completion = await groq.chat.completions.create({
-    model: MODEL,
-    temperature: 0.1,
-    max_tokens: 2048,
-    messages: [
-      { role: "system", content: SYSTEM_PROMPT },
-      { role: "user", content: buildUserPrompt(rubric, answerText) },
-    ],
-  });
+  const completion = await askGroq(
+    {
+      model: MODEL,
+      temperature: 0.1,
+      max_tokens: 2048,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: buildUserPrompt(rubric, answerText) },
+      ],
+    },
+    "interactive",
+  );
 
   const raw = completion.choices[0]?.message?.content?.trim() ?? "";
   const json = stripFences(raw);
@@ -111,8 +125,6 @@ Return ONLY valid JSON — no markdown fences, no explanation outside the JSON.`
  * architecture: Concept + Weak Objective + Misconception + Prior Answer.
  */
 export const generateFollowUp = async (rubric, weakCriterion, misconceptionsDetected, answerText) => {
-  const groq = getGroqClient();
-
   const misconceptionDetail = (rubric.misconceptions || [])
     .filter((m) => misconceptionsDetected.includes(m.id))
     .map((m) => `- ${m.description}`)
@@ -134,15 +146,19 @@ Write ONE short, specific follow-up question that would reveal whether the learn
 Return JSON in exactly this shape:
 { "question": "..." }`;
 
-  const completion = await groq.chat.completions.create({
-    model: MODEL,
-    temperature: 0.4,
-    max_tokens: 300,
-    messages: [
-      { role: "system", content: FOLLOW_UP_SYSTEM_PROMPT },
-      { role: "user", content: prompt },
-    ],
-  });
+  // Second step of a grading already under way, so it goes before new learners' calls.
+  const completion = await askGroq(
+    {
+      model: MODEL,
+      temperature: 0.4,
+      max_tokens: 300,
+      messages: [
+        { role: "system", content: FOLLOW_UP_SYSTEM_PROMPT },
+        { role: "user", content: prompt },
+      ],
+    },
+    "continuation",
+  );
 
   const raw = completion.choices[0]?.message?.content?.trim() ?? "";
   const json = stripFences(raw);

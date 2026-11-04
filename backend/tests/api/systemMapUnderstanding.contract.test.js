@@ -17,7 +17,7 @@ import { createAccessToken } from '../../utils/jwtToken.js'
 import { LENS_GUIDE, LENS_IDS, themesFor } from '../../modules/system-map/lib/understandingPrompt.js'
 
 const create = vi.hoisted(() => vi.fn())
-vi.mock('../../config/groq.js', () => ({ getGroqClient: () => ({ chat: { completions: { create } } }) }))
+vi.mock('../../services/groqChat.js', () => ({ groqChat: create }))
 
 const { default: understandingRoutes } = await import('../../modules/system-map/routes/understanding.routes.js')
 

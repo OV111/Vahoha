@@ -9,6 +9,9 @@ import rateLimit from "express-rate-limit";
 
 const byUser = (req) => String(req.user?._id ?? "anonymous");
 
+// A 503 means the AI was busy and nothing was graded, so it must not eat the daily allowance.
+export const refundWhenBusy = { skipFailedRequests: true, requestWasSuccessful: (_req, res) => res.statusCode !== 503 };
+
 // Burst guard for every LLM route (mentor stream, teach-back).
 export const aiBurstLimiter = rateLimit({
   windowMs: 60_000,
@@ -27,5 +30,6 @@ export const teachBackDailyLimiter = rateLimit({
   standardHeaders: "draft-7",
   legacyHeaders: false,
   keyGenerator: byUser,
+  ...refundWhenBusy,
   message: { message: "Daily teach-back limit reached. Try again tomorrow.", code: 429 },
 });

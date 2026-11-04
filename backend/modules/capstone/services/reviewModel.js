@@ -4,7 +4,8 @@
  */
 
 import process from "process";
-import { getGroqClient } from "../../../config/groq.js";
+import { groqChat } from "../../../services/groqChat.js";
+import { GroqBusyError } from "../../../services/groqGate.js";
 import { REVIEW_MODEL } from "../lib/constants.js";
 import {
   FLOOR_OUTPUT_TOKENS,
@@ -25,9 +26,10 @@ const fail = (status, message) => {
  * @param {object[]} messages
  * @param {object} jsonSchema  JSON Schema the API enforces on the output
  * @param {string} name        schema name (shows up in provider logs)
+ * @param {"interactive"|"background"} [priority]  background (scan labels) is skipped, not queued, when the AI is busy
  * @returns {Promise<{ content: string, usage: object|null }>}
  */
-export const runStructured = async (messages, jsonSchema, name) => {
+export const runStructured = async (messages, jsonSchema, name, priority = "interactive") => {
   // A request over the tier's per-minute budget is refused outright, so size
   // the output to what is left after the input (see lib/tokenBudget.js).
   const tpmLimit = parseTpmLimit(process.env.GROQ_TPM_LIMIT);
@@ -40,18 +42,22 @@ export const runStructured = async (messages, jsonSchema, name) => {
 
   let completion;
   try {
-    completion = await getGroqClient().chat.completions.create({
-      model: REVIEW_MODEL,
-      messages,
-      // Strict structured output: the API itself rejects malformed JSON.
-      response_format: { type: "json_schema", json_schema: { name, strict: true, schema: jsonSchema } },
-      // gpt-oss is a reasoning model: max_tokens must cover its thinking AND
-      // the JSON. "medium" is the quality/cost middle ground; "low" under a small TPM limit.
-      reasoning_effort: reasoningEffortFor(tpmLimit),
-      max_tokens: maxTokens,
-      temperature: 0,
-    });
+    completion = await groqChat(
+      {
+        model: REVIEW_MODEL,
+        messages,
+        // Strict structured output: the API itself rejects malformed JSON.
+        response_format: { type: "json_schema", json_schema: { name, strict: true, schema: jsonSchema } },
+        // gpt-oss is a reasoning model: max_tokens must cover its thinking AND
+        // the JSON. "medium" is the quality/cost middle ground; "low" under a small TPM limit.
+        reasoning_effort: reasoningEffortFor(tpmLimit),
+        max_tokens: maxTokens,
+        temperature: 0,
+      },
+      { priority },
+    );
   } catch (err) {
+    if (err instanceof GroqBusyError) fail(503, `The AI reviewer is busy right now. Try again in ${err.retryAfterSec} seconds.`);
     // 413 = prompt larger than the tier's per-minute token budget; 429 = rate
     // limited. Both are capacity problems on our side, not the learner's.
     if (err.status === 413 || err.status === 429) {

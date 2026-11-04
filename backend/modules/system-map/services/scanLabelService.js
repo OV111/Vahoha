@@ -93,6 +93,8 @@ export async function labelScan({ fullName, parts, wires, paths, lens = "softwar
         ],
         OUTPUT_SCHEMA,
         "system_map_labels",
+        // nobody is waiting on labels: skip them when the AI is busy instead of queueing
+        "background",
       ),
       LABEL_TIMEOUT_MS,
     );
