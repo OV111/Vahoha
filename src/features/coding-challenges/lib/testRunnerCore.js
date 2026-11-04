@@ -139,6 +139,68 @@ function buildMatchers(received, negated) {
         `expected a falsy value, received ${stringify(received)}`,
       );
     },
+    toThrow(expected) {
+      if (typeof received !== "function")
+        throw new AssertionError(
+          "toThrow needs a function, e.g. expect(() => fn()).toThrow(), received " + stringify(received),
+        );
+      let thrown = null;
+      let didThrow = false;
+      try {
+        received();
+      } catch (err) {
+        didThrow = true;
+        thrown = err;
+      }
+      const message = String(thrown?.message ?? thrown);
+      // With no argument any throw passes; otherwise the error must also match.
+      const matches =
+        expected === undefined ||
+        (typeof expected === "string" && message.includes(expected)) ||
+        (expected instanceof RegExp && expected.test(message)) ||
+        (typeof expected === "function" && thrown instanceof expected) ||
+        (expected instanceof Error && message === expected.message);
+      assert(
+        didThrow && matches,
+        didThrow
+          ? `expected the function to throw ${stringify(expected)}, but it threw ${stringify(thrown)}`
+          : "expected the function to throw, but it returned normally",
+        expected === undefined
+          ? `expected the function not to throw, but it threw ${stringify(thrown)}`
+          : `expected the function not to throw ${stringify(expected)}`,
+      );
+    },
+    toContain(item) {
+      const holder =
+        typeof received === "string" || Array.isArray(received) ? received : null;
+      if (holder === null)
+        throw new AssertionError(
+          "toContain needs a string or an array, received " + stringify(received),
+        );
+      assert(
+        holder.includes(item),
+        `expected ${stringify(received)} to contain ${stringify(item)}`,
+        `expected ${stringify(received)} not to contain ${stringify(item)}`,
+      );
+    },
+    // Jest's default of 2 digits means "within 0.005".
+    toBeCloseTo(expected, digits = 2) {
+      const close =
+        typeof received === "number" &&
+        Math.abs(received - expected) < 10 ** -digits / 2;
+      assert(
+        close,
+        `expected ${stringify(received)} to be close to ${stringify(expected)} (${digits} digits)`,
+        `expected ${stringify(received)} not to be close to ${stringify(expected)} (${digits} digits)`,
+      );
+    },
+    toBeLessThan(limit) {
+      assert(
+        typeof received === "number" && received < limit,
+        `expected ${stringify(received)} to be less than ${stringify(limit)}`,
+        `expected ${stringify(received)} not to be less than ${stringify(limit)}`,
+      );
+    },
   };
 }
 
