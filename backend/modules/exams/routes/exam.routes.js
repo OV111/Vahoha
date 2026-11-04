@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authenticate } from "../../../middleware/authenticate.js";
+import { examGenerateLimiter, examSubmitLimiter } from "../../../middleware/rateLimits.js";
 import { aiBurstLimiter, teachBackDailyLimiter } from "../../../middleware/aiRateLimit.js";
 import {
   getHistory,
@@ -13,8 +14,8 @@ import { generate, submit, submitTeachBackAnswer, submitTeachBackFollowUpAnswer 
 const router = Router();
 
 // Exam engine
-router.post("/generate", authenticate, generate);
-router.post("/submit", authenticate, submit);
+router.post("/generate", authenticate, examGenerateLimiter, generate);
+router.post("/submit", authenticate, examSubmitLimiter, submit);
 router.post("/submit-teach-back", authenticate, aiBurstLimiter, teachBackDailyLimiter, submitTeachBackAnswer);
 router.post("/submit-teach-back-followup", authenticate, aiBurstLimiter, teachBackDailyLimiter, submitTeachBackFollowUpAnswer);
 

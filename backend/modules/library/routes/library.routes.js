@@ -8,6 +8,7 @@ import {
   getSavedResourceIds,
 } from "../controllers/library.controller.js";
 import { authenticate } from "../../../middleware/authenticate.js";
+import { publicReadLimiter } from "../../../middleware/rateLimits.js";
 import { cacheControl } from "../../../middleware/cacheControl.js";
 
 const router = Router();
@@ -17,19 +18,19 @@ const router = Router();
 const publicCatalogue = cacheControl({ maxAge: 60, staleWhileRevalidate: 300 });
 
 // GET /library/counts      — type breakdown for hub page cards
-router.get("/counts", publicCatalogue, getResourceCounts);
+router.get("/counts", publicReadLimiter, publicCatalogue, getResourceCounts);
 
 // GET /library/saved-ids   — IDs of resources saved by current user
 router.get("/saved-ids", authenticate, getSavedResourceIds);
 
 // GET /library/layer/:layerId  — resources for a roadmap layer
-router.get("/layer/:layerId", getResourcesByLayer);
+router.get("/layer/:layerId", publicReadLimiter, getResourcesByLayer);
 
 // GET /library             — all resources, filterable
-router.get("/", publicCatalogue, getResources);
+router.get("/", publicReadLimiter, publicCatalogue, getResources);
 
 // GET /library/:id         — single resource
-router.get("/:id", getResourceById);
+router.get("/:id", publicReadLimiter, getResourceById);
 
 // POST /library/:id/save   — toggle save/unsave
 router.post("/:id/save", authenticate, toggleSaveResource);

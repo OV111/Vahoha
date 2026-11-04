@@ -2,6 +2,7 @@ import { Router } from "express";
 import { makeErrorHandler } from "../../../utils/respond.js";
 import rateLimit from "express-rate-limit";
 import { authenticate } from "../../../middleware/authenticate.js";
+import { mapWriteLimiter } from "../../../middleware/rateLimits.js";
 import { validate } from "../../../middleware/validate.js";
 import { commentBodySchema, commentParamSchema, commentsParamSchema } from "../schemas/comments.schemas.js";
 import { add, list, remove } from "../controllers/comments.controller.js";
@@ -25,7 +26,7 @@ router.get("/:id/comments", authenticate, validate({ params: commentsParamSchema
 router.post("/:id/comments", authenticate, commentLimiter, validate({ params: commentsParamSchema, body: commentBodySchema }), add);
 
 // DELETE /api/system-maps/:id/comments/:commentId: the author removes their own comment
-router.delete("/:id/comments/:commentId", authenticate, validate({ params: commentParamSchema }), remove);
+router.delete("/:id/comments/:commentId", authenticate, mapWriteLimiter, validate({ params: commentParamSchema }), remove);
 
 router.use(makeErrorHandler("system-map comments", "Something went wrong with the comments."));
 

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { makeErrorHandler } from "../../../utils/respond.js";
 import rateLimit from "express-rate-limit";
 import { aiBurstLimiter } from "../../../middleware/aiRateLimit.js";
-import { publicMapLimiter } from "../../../middleware/rateLimits.js";
+import { mapWriteLimiter, publicMapLimiter } from "../../../middleware/rateLimits.js";
 import { authenticate } from "../../../middleware/authenticate.js";
 import { validate } from "../../../middleware/validate.js";
 import {
@@ -57,24 +57,25 @@ router.get("/for/:ownerType/:ownerId", authenticate, validate({ params: ownerPar
 router.post(
   "/for/:ownerType/:ownerId",
   authenticate,
+  mapWriteLimiter,
   validate({ params: ownerParamSchema, body: createBodySchema }),
   createOwnerMap,
 );
 
 // POST /api/system-maps: create a map
-router.post("/", authenticate, validate({ body: createBodySchema }), createMap);
+router.post("/", authenticate, mapWriteLimiter, validate({ body: createBodySchema }), createMap);
 
 // GET /api/system-maps/:id: one map, owner only
 router.get("/:id", authenticate, validate({ params: mapParamSchema }), getMap);
 
 // PUT /api/system-maps/:id: save; 409 when `revision` is out of date
-router.put("/:id", authenticate, validate({ params: mapParamSchema, body: updateBodySchema }), updateMap);
+router.put("/:id", authenticate, mapWriteLimiter, validate({ params: mapParamSchema, body: updateBodySchema }), updateMap);
 
 // PUT /api/system-maps/:id/sharing: turn the public link on (new link) or off
-router.put("/:id/sharing", authenticate, validate({ params: mapParamSchema, body: sharingBodySchema }), setSharing);
+router.put("/:id/sharing", authenticate, mapWriteLimiter, validate({ params: mapParamSchema, body: sharingBodySchema }), setSharing);
 
 // DELETE /api/system-maps/:id
-router.delete("/:id", authenticate, validate({ params: mapParamSchema }), deleteMap);
+router.delete("/:id", authenticate, mapWriteLimiter, validate({ params: mapParamSchema }), deleteMap);
 
 router.use(makeErrorHandler("system-map", "Something went wrong with your map."));
 
