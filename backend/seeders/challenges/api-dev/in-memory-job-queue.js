@@ -76,14 +76,16 @@ q.add('a'); q.add('bad'); q.add('c');
 await q.drain();
 assert(done.join('') === 'ac', 'others complete');
 assert(q.stats().failed === 1 && q.stats().completed === 2, 'stats');` },
-    { name: "respects_concurrency", code: `let running = 0; let max = 0;
-const q = createQueue({ concurrency: 2, handler: async () => { running++; max = Math.max(max, running); await new Promise((r) => setTimeout(r, 5)); running--; } });
+    { name: "respects_concurrency", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+let running = 0; let max = 0;
+const q = createQueue({ concurrency: 2, handler: async () => { running++; max = Math.max(max, running); await sleep(5); running--; } });
 for (let i = 0; i < 6; i++) q.add(i);
 await q.drain();
 assert(max === 2, 'max concurrent was ' + max);
 assert(q.stats().completed === 6, 'all done');` },
-    { name: "default_concurrency_is_one", code: `let running = 0; let max = 0;
-const q = createQueue({ handler: async () => { running++; max = Math.max(max, running); await new Promise((r) => setTimeout(r, 2)); running--; } });
+    { name: "default_concurrency_is_one", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+let running = 0; let max = 0;
+const q = createQueue({ handler: async () => { running++; max = Math.max(max, running); await sleep(2); running--; } });
 q.add(1); q.add(2); q.add(3);
 await q.drain();
 assert(max === 1, 'serial by default: ' + max);` },

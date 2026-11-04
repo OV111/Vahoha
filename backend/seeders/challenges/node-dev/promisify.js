@@ -57,7 +57,7 @@ assert(await f(2, 3) === 5, 'value');` },
     { name: "rejects_with_the_same_error", code: `const err = new Error('boom'); let got = null;
 try { await promisify((cb) => cb(err))(); } catch (e) { got = e; }
 assert(got === err, 'exact error object');` },
-    { name: "returns_a_promise_immediately", code: `const p = promisify((cb) => setTimeout(() => cb(null, 1), 5))();
+    { name: "returns_a_promise_immediately", code: `const p = promisify((cb) => { Promise.resolve().then(() => cb(null, 1)); })();
 assert(p instanceof Promise, 'promise');
 assert(await p === 1, 'async callback');` },
     { name: "arguments_in_order_callback_last", code: `let seen;

@@ -60,8 +60,9 @@ assert(JSON.stringify(await collect(batchAsync([1, 2, 3], 10))) === '[[1,2,3]]',
     { name: "empty_and_size_one", code: `const collect = async (it) => { const out = []; for await (const x of it) out.push(x); return out; };
 assert((await collect(batchAsync([], 3))).length === 0, 'empty source yields nothing');
 assert(JSON.stringify(await collect(batchAsync(['a', 'b'], 1))) === '[["a"],["b"]]', 'size 1');` },
-    { name: "works_with_async_sources", code: `const collect = async (it) => { const out = []; for await (const x of it) out.push(x); return out; };
-async function* numbers() { for (let i = 1; i <= 5; i++) { await new Promise((r) => setTimeout(r, 1)); yield i; } }
+    { name: "works_with_async_sources", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const collect = async (it) => { const out = []; for await (const x of it) out.push(x); return out; };
+async function* numbers() { for (let i = 1; i <= 5; i++) { await sleep(1); yield i; } }
 assert(JSON.stringify(await collect(batchAsync(numbers(), 2))) === '[[1,2],[3,4],[5]]', 'async generator source');` },
     { name: "works_with_any_iterable", code: `const collect = async (it) => { const out = []; for await (const x of it) out.push(x); return out; };
 assert(JSON.stringify(await collect(batchAsync(new Set([1, 2, 3]), 2))) === '[[1,2],[3]]', 'Set');

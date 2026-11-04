@@ -60,7 +60,8 @@ assert(!('reason' in r[0]) && !('value' in r[1]), 'no extra keys');` },
     { name: "never_rejects", code: `let rejected = false;
 try { await allSettled([Promise.reject(1), Promise.reject(2)]); } catch (e) { rejected = true; }
 assert(!rejected, 'must not reject');` },
-    { name: "keeps_input_order", code: `const slow = new Promise((res) => setTimeout(() => res('slow'), 20));
+    { name: "keeps_input_order", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const slow = sleep(20).then(() => 'slow');
 const fast = Promise.resolve('fast');
 const r = await allSettled([slow, fast]);
 assert(r[0].value === 'slow' && r[1].value === 'fast', 'order of input, not completion');` },
@@ -68,14 +69,17 @@ assert(r[0].value === 'slow' && r[1].value === 'fast', 'order of input, not comp
 assert(r.map((x) => x.status + ':' + x.value).join(',') === 'fulfilled:1,fulfilled:two,fulfilled:3', 'values: ' + JSON.stringify(r));` },
     { name: "empty_input", code: `const r = await allSettled([]);
 assert(Array.isArray(r) && r.length === 0, 'empty array');` },
-    { name: "waits_for_all_even_after_a_failure", code: `let finished = false;
-const late = new Promise((res) => setTimeout(() => { finished = true; res('late'); }, 20));
+    { name: "waits_for_all_even_after_a_failure", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+let finished = false;
+const late = sleep(20).then(() => { finished = true; return 'late'; });
 const r = await allSettled([Promise.reject(new Error('early')), late]);
 assert(finished === true && r[1].value === 'late', 'must wait for the slow one');` },
-    { name: "runs_concurrently", code: `const t0 = Date.now();
-await allSettled([new Promise((r) => setTimeout(r, 40)), new Promise((r) => setTimeout(r, 40)), new Promise((r) => setTimeout(r, 40))]);
-const took = Date.now() - t0;
-assert(took < 100, 'three 40ms waits in parallel should take about 40ms, took ' + took);` },
+    { name: "runs_concurrently", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+let active = 0; let peak = 0;
+// A thenable starts its work only when allSettled subscribes, so waiting on them one at a time shows a peak of 1.
+const job = () => ({ then(res) { active++; peak = Math.max(peak, active); sleep(40).then(() => { active--; res('done'); }); } });
+await allSettled([job(), job(), job()]);
+assert(peak === 3, 'all three should be in flight together, peak was ' + peak);` },
     { name: "does_not_call_the_builtin", code: `const original = Promise.allSettled;
 Promise.allSettled = () => { throw new Error('used the builtin'); };
 let ok = true;

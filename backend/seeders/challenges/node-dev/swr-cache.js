@@ -68,7 +68,8 @@ t = 1000; assert(c.peek('a').state === 'stale', 'stale from ttl');
 t = 4999; assert(c.peek('a').state === 'stale', 'stale until ttl + staleMs');
 t = 5000; assert(c.peek('a').state === 'expired', 'expired from ttl + staleMs');
 assert(c.peek('a').value === 'v', 'peek still shows the old value');` },
-    { name: "stale_returns_old_value_immediately_and_refreshes_in_background", code: `let t = 0; let n = 0; let release;
+    { name: "stale_returns_old_value_immediately_and_refreshes_in_background", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+let t = 0; let n = 0; let release;
 const c = createSwrCache({ ttlMs: 1000, staleMs: 5000, now: () => t, load: () => { n++; return n === 1 ? Promise.resolve('old') : new Promise((r) => { release = () => r('new'); }); } });
 await c.get('a');
 t = 2000;
@@ -77,10 +78,11 @@ assert(v === 'old', 'the stale value is returned without waiting for the slow re
 assert(n === 2, 'a refresh was started');
 assert(c.peek('a').value === 'old', 'not replaced yet');
 release();
-await new Promise((r) => setTimeout(r, 5));
+await sleep(5);
 assert(c.peek('a').value === 'new' && c.peek('a').state === 'fresh', 'replaced and fresh again: ' + JSON.stringify(c.peek('a')));
 assert(await c.get('a') === 'new' && n === 2, 'later gets serve the new value');` },
-    { name: "only_one_background_refresh_at_a_time", code: `let t = 0; let n = 0; let release;
+    { name: "only_one_background_refresh_at_a_time", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+let t = 0; let n = 0; let release;
 const c = createSwrCache({ ttlMs: 1000, staleMs: 5000, now: () => t, load: () => { n++; return n === 1 ? Promise.resolve('v1') : new Promise((r) => { release = () => r('v2'); }); } });
 await c.get('a');
 t = 2000;
@@ -88,31 +90,34 @@ await Promise.all([c.get('a'), c.get('a'), c.get('a')]);
 await c.get('a');
 assert(n === 2, 'four stale gets, one refresh: ' + n);
 release();
-await new Promise((r) => setTimeout(r, 5));
+await sleep(5);
 t = 4000;
 await c.get('a');
 assert(n === 3, 'a new refresh may start after the previous settled (the entry went stale again)');` },
-    { name: "stale_refresh_failure_keeps_the_entry_and_reports_once", code: `let t = 0; let fail = false; const errors = [];
+    { name: "stale_refresh_failure_keeps_the_entry_and_reports_once", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+let t = 0; let fail = false; const errors = [];
 const c = createSwrCache({ ttlMs: 1000, staleMs: 5000, now: () => t, onError: (e, k) => errors.push(k + ':' + e.message), load: async () => { if (fail) throw new Error('origin down'); return 'good'; } });
 await c.get('a');
 t = 2000; fail = true;
 assert(await c.get('a') === 'good', 'still serves the stale value');
-await new Promise((r) => setTimeout(r, 5));
+await sleep(5);
 assert(errors.join() === 'a:origin down', 'reported once: ' + errors);
 assert(c.peek('a').value === 'good' && c.peek('a').state === 'stale', 'entry untouched, still stale');
 fail = false;
 await c.get('a');
-await new Promise((r) => setTimeout(r, 5));
+await sleep(5);
 assert(c.peek('a').state === 'fresh', 'the next stale get retried and recovered');` },
-    { name: "background_failures_never_reach_the_caller_even_without_onError", code: `let t = 0; let fail = false;
+    { name: "background_failures_never_reach_the_caller_even_without_onError", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+let t = 0; let fail = false;
 const c = createSwrCache({ ttlMs: 10, staleMs: 1000, now: () => t, load: async () => { if (fail) throw new Error('x'); return 1; } });
 await c.get('a'); t = 20; fail = true;
 const v = await c.get('a');
-await new Promise((r) => setTimeout(r, 20));
+await sleep(20);
 assert(v === 1, 'the stale value is returned and nothing throws');
 assert(c.peek('a').value === 1 && c.peek('a').state === 'stale', 'the entry survives the failed refresh');` },
-    { name: "expired_entries_block_on_a_fresh_load", code: `let t = 0; let n = 0;
-const c = createSwrCache({ ttlMs: 1000, staleMs: 1000, now: () => t, load: async () => { await new Promise((r) => setTimeout(r, 5)); return ++n; } });
+    { name: "expired_entries_block_on_a_fresh_load", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+let t = 0; let n = 0;
+const c = createSwrCache({ ttlMs: 1000, staleMs: 1000, now: () => t, load: async () => { await sleep(5); return ++n; } });
 await c.get('a');
 t = 2000;
 const v = await c.get('a');
@@ -123,8 +128,9 @@ const c = createSwrCache({ ttlMs: 1000, now: () => t, load: async () => ++n });
 await c.get('a');
 t = 1000;
 assert(await c.get('a') === 2, 'right after ttl the entry is expired, so we wait for the load');` },
-    { name: "concurrent_cold_gets_share_one_load", code: `let n = 0;
-const c = createSwrCache({ ttlMs: 1000, now: () => 0, load: () => new Promise((r) => setTimeout(() => { n++; r('x'); }, 10)) });
+    { name: "concurrent_cold_gets_share_one_load", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+let n = 0;
+const c = createSwrCache({ ttlMs: 1000, now: () => 0, load: async () => { await sleep(10); n++; return 'x'; } });
 const results = await Promise.all([c.get('a'), c.get('a'), c.get('a')]);
 assert(n === 1 && results.join('') === 'xxx', 'one load for three callers: ' + n);` },
     { name: "foreground_failure_rejects_and_stores_nothing", code: `let fail = true; let n = 0;

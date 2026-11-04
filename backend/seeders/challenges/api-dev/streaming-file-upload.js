@@ -78,8 +78,8 @@ assert(written.join('') === 'abc[END]', 'chunks must be written in order, then e
       },
       {
         name: "respects_backpressure",
-        code: `const EventEmitter = require('events');
-const sink = new EventEmitter();
+        code: `const makeEmitter = () => { const l = {}; return { on(e, f) { (l[e] = l[e] || []).push(f); return this; }, once(e, f) { const w = (...a) => { this.off(e, w); f(...a); }; return this.on(e, w); }, off(e, f) { l[e] = (l[e] || []).filter((x) => x !== f); return this; }, removeListener(e, f) { return this.off(e, f); }, emit(e, ...a) { (l[e] || []).slice().forEach((f) => f(...a)); return true; } }; };
+const sink = makeEmitter();
 const written = [];
 let blocked = false;
 sink.write = (c) => { written.push(c); if (c === 'b') { blocked = true; return false; } return true; };
@@ -87,7 +87,7 @@ sink.end = () => { written.push('[END]'); };
 sink.abort = () => {};
 async function* source() { yield 'a'; yield 'b'; yield 'c'; }
 const p = streamUpload(source(), sink);
-await new Promise((r) => setTimeout(r, 10));
+for (let i = 0; i < 20; i++) await Promise.resolve();
 assert(blocked === true, 'the chunk after a false-returning write must not be written yet');
 assert(written.join('') === 'ab', 'only a and b should have been written before drain');
 sink.emit('drain');
@@ -115,18 +115,18 @@ assert(ended === true, 'an empty source must still call end()');`,
       },
       {
         name: "does_not_busy_wait",
-        code: `const EventEmitter = require('events');
-const sink = new EventEmitter();
+        code: `const makeEmitter = () => { const l = {}; return { on(e, f) { (l[e] = l[e] || []).push(f); return this; }, once(e, f) { const w = (...a) => { this.off(e, w); f(...a); }; return this.on(e, w); }, off(e, f) { l[e] = (l[e] || []).filter((x) => x !== f); return this; }, removeListener(e, f) { return this.off(e, f); }, emit(e, ...a) { (l[e] || []).slice().forEach((f) => f(...a)); return true; } }; };
+const sink = makeEmitter();
 let writeCalls = 0;
 sink.write = () => { writeCalls++; return false; };
 sink.end = () => {};
 sink.abort = () => {};
 async function* source() { yield 'a'; yield 'b'; }
 const p = streamUpload(source(), sink);
-await new Promise((r) => setTimeout(r, 20));
+for (let i = 0; i < 20; i++) await Promise.resolve();
 assert(writeCalls === 1, 'without a drain event, only the first chunk should ever be attempted — got ' + writeCalls + ' write calls');
 sink.emit('drain');
-await new Promise((r) => setTimeout(r, 20));
+for (let i = 0; i < 20; i++) await Promise.resolve();
 sink.emit('drain');
 await p;`,
       },

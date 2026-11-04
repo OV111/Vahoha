@@ -139,7 +139,7 @@ const e = makeEmitter();
 const p = onceEvent(e, 'x');
 let settled = false; p.then(() => { settled = true; });
 e.emit('y', 1); e.emit('z', 2);
-await new Promise((r) => setTimeout(r, 5));
+for (let i = 0; i < 20; i++) await Promise.resolve();
 assert(settled === false, 'still waiting');
 e.emit('x', 3);
 assert((await p)[0] === 3, 'then resolves');` },

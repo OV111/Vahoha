@@ -72,8 +72,9 @@ const loader = async () => { calls++; return 'v'; };
 const a = await c.getOrLoad('k', loader);
 const b = await c.getOrLoad('k', loader);
 assert(a === 'v' && b === 'v' && calls === 1, 'second call served from cache, calls=' + calls);` },
-    { name: "stampede_protection", code: `let calls = 0; const c = createTtlCache({ ttlMs: 1000, now: () => 0 });
-const loader = () => new Promise((r) => setTimeout(() => { calls++; r('x'); }, 10));
+    { name: "stampede_protection", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+let calls = 0; const c = createTtlCache({ ttlMs: 1000, now: () => 0 });
+const loader = async () => { await sleep(10); calls++; return 'x'; };
 const results = await Promise.all([c.getOrLoad('k', loader), c.getOrLoad('k', loader), c.getOrLoad('k', loader)]);
 assert(calls === 1, 'three concurrent misses, one load; calls=' + calls);
 assert(results.join('') === 'xxx', 'everyone gets the value');` },

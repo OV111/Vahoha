@@ -110,7 +110,7 @@ assert(cache.get('/items?page=2') === 'page two', 'different query strings must 
         code: `const cache = lruCache({ capacity: 5, ttlMs: 20 });
 cache.set('a', 1);
 assert(cache.get('a') === 1, 'should be readable immediately after set');
-await new Promise((r) => setTimeout(r, 40));
+const until = Date.now() + 40; while (Date.now() < until) {}
 assert(cache.get('a') === undefined, 'entry should have expired after ttlMs elapsed, even though capacity was never exceeded');`,
       },
     ],

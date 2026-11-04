@@ -59,43 +59,49 @@ assert(w.write('b') === false, 'second reaches the mark');
 assert(w.write('c') === false, 'still over');` },
     { name: "default_high_water_mark_is_3", code: `const w = createWritable({ write: async () => {} });
 assert(w.write(1) === true && w.write(2) === true && w.write(3) === false, 'default mark 3');` },
-    { name: "processes_one_at_a_time_in_order", code: `const log = []; let running = 0; let max = 0;
-const w = createWritable({ highWaterMark: 10, write: async (c) => { running++; max = Math.max(max, running); await new Promise((r) => setTimeout(r, 3)); log.push(c); running--; } });
+    { name: "processes_one_at_a_time_in_order", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const log = []; let running = 0; let max = 0;
+const w = createWritable({ highWaterMark: 10, write: async (c) => { running++; max = Math.max(max, running); await sleep(3); log.push(c); running--; } });
 w.write('a'); w.write('b'); w.write('c');
 await w.end();
 assert(log.join('') === 'abc', 'order: ' + log);
 assert(max === 1, 'never concurrent, saw ' + max);` },
-    { name: "buffered_counts_in_flight_chunks", code: `const w = createWritable({ highWaterMark: 5, write: async () => { await new Promise((r) => setTimeout(r, 3)); } });
+    { name: "buffered_counts_in_flight_chunks", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const w = createWritable({ highWaterMark: 5, write: async () => { await sleep(3); } });
 w.write(1); w.write(2); w.write(3);
 assert(w.buffered() === 3, 'three buffered, including the one being written');
 await w.end();
 assert(w.buffered() === 0, 'empty at the end');` },
-    { name: "drain_fires_when_buffer_empties", code: `const written = [];
-const w = createWritable({ highWaterMark: 2, write: async (c) => { await new Promise((r) => setTimeout(r, 3)); written.push(c); } });
+    { name: "drain_fires_when_buffer_empties", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const written = [];
+const w = createWritable({ highWaterMark: 2, write: async (c) => { await sleep(3); written.push(c); } });
 let drains = 0; let writtenAtDrain = -1;
 w.onDrain(() => { drains++; writtenAtDrain = written.length; });
 w.write('a');
 assert(w.write('b') === false, 'now full');
-await new Promise((r) => setTimeout(r, 30));
+await sleep(30);
 assert(drains === 1, 'drain exactly once, got ' + drains);
 assert(writtenAtDrain === 2, 'only after everything was written, saw ' + writtenAtDrain);` },
-    { name: "no_drain_if_never_full", code: `const w = createWritable({ highWaterMark: 5, write: async () => {} });
+    { name: "no_drain_if_never_full", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const w = createWritable({ highWaterMark: 5, write: async () => {} });
 let drains = 0; w.onDrain(() => drains++);
 w.write(1); w.write(2);
 await w.end();
-await new Promise((r) => setTimeout(r, 5));
+await sleep(5);
 assert(drains === 0, 'drain is only for producers that were told to stop');` },
-    { name: "can_write_again_after_drain", code: `const w = createWritable({ highWaterMark: 1, write: async () => {} });
+    { name: "can_write_again_after_drain", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const w = createWritable({ highWaterMark: 1, write: async () => {} });
 assert(w.write('a') === false, 'full immediately with mark 1');
 await new Promise((r) => w.onDrain(r));
 assert(w.buffered() === 0, 'empty at drain');
 assert(w.write('b') === false, 'a single chunk fills mark 1 again');
 let drains = 0; w.onDrain(() => drains++);
 await w.end();
-await new Promise((r) => setTimeout(r, 5));
+await sleep(5);
 assert(drains === 1, 'second drain after second fill');` },
-    { name: "end_waits_for_all_chunks", code: `const written = [];
-const w = createWritable({ highWaterMark: 10, write: async (c) => { await new Promise((r) => setTimeout(r, 5)); written.push(c); } });
+    { name: "end_waits_for_all_chunks", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const written = [];
+const w = createWritable({ highWaterMark: 10, write: async (c) => { await sleep(5); written.push(c); } });
 w.write(1); w.write(2); w.write(3);
 await w.end();
 assert(written.length === 3, 'end resolves only after all are written');` },
@@ -112,9 +118,10 @@ try { await w.end(); } catch (e) { err = e; }
 assert(err && err.message === 'disk full', 'end rejects with the sink error');
 assert(attempted.join('') === 'ab', 'c was never attempted: ' + attempted);
 assert(w.buffered() === 0, 'buffer cleared');` },
-    { name: "after_failure_writes_return_false_and_end_rejects", code: `const w = createWritable({ write: async () => { throw new Error('bad'); } });
+    { name: "after_failure_writes_return_false_and_end_rejects", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const w = createWritable({ write: async () => { throw new Error('bad'); } });
 w.write(1);
-await new Promise((r) => setTimeout(r, 5));
+await sleep(5);
 assert(w.write(2) === false, 'writes are refused after failure');
 let err = null;
 try { await w.end(); } catch (e) { err = e; }

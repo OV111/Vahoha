@@ -60,7 +60,8 @@ await h({ id: 'a' });
 const r = await h({ id: 'a' });
 assert(n === 1, 'handler ran once, ran ' + n);
 assert(r === 'result', 'duplicate gets the original result');` },
-    { name: "concurrent_duplicates_share_one_run", code: `let n = 0; const h = createIdempotentHandler(() => new Promise((r) => setTimeout(() => { n++; r('x'); }, 10)));
+    { name: "concurrent_duplicates_share_one_run", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+let n = 0; const h = createIdempotentHandler(async () => { await sleep(10); n++; return 'x'; });
 const results = await Promise.all([h({ id: 'a' }), h({ id: 'a' }), h({ id: 'a' })]);
 assert(n === 1, 'one run for three simultaneous deliveries, ran ' + n);
 assert(results.join('') === 'xxx', 'all get the result');` },
@@ -73,7 +74,8 @@ try { await h({ id: 'a' }); } catch (e) { err = e; }
 assert(err && err.message === 'boom', 'first call rejects');
 const r = await h({ id: 'a' });
 assert(r === 'ok' && n === 2, 'retry runs the handler again');` },
-    { name: "concurrent_failure_shared_then_retry", code: `let n = 0; const h = createIdempotentHandler(() => new Promise((_, rej) => setTimeout(() => { n++; rej(new Error('x')); }, 5)));
+    { name: "concurrent_failure_shared_then_retry", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+let n = 0; const h = createIdempotentHandler(async () => { await sleep(5); n++; throw new Error('x'); });
 const results = await Promise.allSettled([h({ id: 'a' }), h({ id: 'a' })]);
 assert(n === 1 && results.every((r) => r.status === 'rejected'), 'both callers see one failure');` },
     { name: "expires_after_ttl", code: `let t = 0; let n = 0; const h = createIdempotentHandler(async () => { n++; }, { ttlMs: 1000, now: () => t });

@@ -77,26 +77,28 @@ first();
 (await b)();
 (await c)();
 assert(order.join('') === 'abc', 'order: ' + order.join(''));` },
-    { name: "limits_concurrency", code: `const s = createSemaphore(3);
+    { name: "limits_concurrency", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const s = createSemaphore(3);
 let running = 0; let max = 0;
 await Promise.all(Array.from({ length: 10 }, () => s.run(async () => {
   running++; max = Math.max(max, running);
-  await new Promise((r) => setTimeout(r, 3));
+  await sleep(3);
   running--;
 })));
 assert(max === 3, 'never more than 3 at once, saw ' + max);
 assert(s.stats().available === 3 && s.stats().waiting === 0, 'all done');` },
-    { name: "mutex_prevents_interleaved_read_modify_write", code: `const mutex = createSemaphore(1);
+    { name: "mutex_prevents_interleaved_read_modify_write", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const mutex = createSemaphore(1);
 let balance = 100;
 const withdraw = (n) => mutex.run(async () => {
   const current = balance;
-  await new Promise((r) => setTimeout(r, 2));
+  await sleep(2);
   balance = current - n;
 });
 await Promise.all([withdraw(10), withdraw(20), withdraw(30)]);
 assert(balance === 40, 'no lost updates, got ' + balance);
 let racy = 100;
-const racyWithdraw = async (n) => { const c = racy; await new Promise((r) => setTimeout(r, 2)); racy = c - n; };
+const racyWithdraw = async (n) => { const c = racy; await sleep(2); racy = c - n; };
 await Promise.all([racyWithdraw(10), racyWithdraw(20), racyWithdraw(30)]);
 assert(racy !== 40, 'without the lock the updates are lost (that is the bug)');` },
     { name: "release_is_idempotent", code: `const s = createSemaphore(1);
@@ -143,12 +145,13 @@ assert(typeof s.tryAcquire(2) === 'function', 'two more fit');
 assert(s.tryAcquire(1) === null, 'full now');
 r3();
 assert(s.stats().available === 3, 'weight returned');` },
-    { name: "head_of_line_blocking_prevents_starvation", code: `const s = createSemaphore(3);
+    { name: "head_of_line_blocking_prevents_starvation", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const s = createSemaphore(3);
 const hold = await s.acquire(2);
 const order = [];
 const big = s.acquire(3).then((r) => { order.push('big'); return r; });
 const small = s.acquire(1).then((r) => { order.push('small'); return r; });
-await new Promise((r) => setTimeout(r, 5));
+await sleep(5);
 assert(order.length === 0, 'the small one must NOT overtake the big waiter even though a permit is free: ' + order);
 assert(s.stats().waiting === 2 && s.stats().available === 1, JSON.stringify(s.stats()));
 hold();

@@ -71,13 +71,14 @@ assert(JSON.stringify(results) === JSON.stringify([10, 20, 30, 40]), 'expected [
       },
     {
       name: "never_exceeds_the_concurrency_limit",
-      code: `let inFlight = 0;
+      code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+let inFlight = 0;
 let maxInFlight = 0;
 const items = [1, 2, 3, 4, 5, 6];
 await asyncPool(2, items, async (n) => {
   inFlight++;
   maxInFlight = Math.max(maxInFlight, inFlight);
-  await new Promise((r) => setTimeout(r, 15));
+  await sleep(15);
   inFlight--;
   return n;
 });
@@ -86,9 +87,10 @@ assert(maxInFlight >= 2, 'with 6 items and concurrency 2, at least 2 should run 
     },
     {
       name: "order_is_preserved_even_when_earlier_items_finish_later",
-      code: `const delays = { 1: 30, 2: 5, 3: 20 };
+      code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const delays = { 1: 30, 2: 5, 3: 20 };
 const results = await asyncPool(3, [1, 2, 3], async (n) => {
-  await new Promise((r) => setTimeout(r, delays[n]));
+  await sleep(delays[n]);
   return n * 100;
 });
 assert(JSON.stringify(results) === JSON.stringify([100, 200, 300]), 'result order must match input order even though item 2 finishes before item 1 — got ' + JSON.stringify(results));`,

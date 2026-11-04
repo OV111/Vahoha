@@ -9,10 +9,11 @@ export default {
   description:
     "A promise can hang forever: a slow database, a dead network. Production code wraps risky calls in a timeout. Done wrong, it also leaves a timer running that keeps Node alive.",
   task:
-    "Write <code>withTimeout(promise, ms)</code> returning a promise that settles like <code>promise</code> if it finishes within <code>ms</code> milliseconds, otherwise rejects with an <code>Error</code> whose message is <code>'Timed out after &lt;ms&gt;ms'</code>.",
+    "Write <code>withTimeout(promise, ms, { setTimer, clearTimer })</code> returning a promise that settles like <code>promise</code> if it finishes within <code>ms</code> milliseconds, otherwise rejects with an <code>Error</code> whose message is <code>'Timed out after &lt;ms&gt;ms'</code>.",
   constraints: [
     "If the promise fulfils or rejects first, pass that result through unchanged.",
-    "The timer must be cleared with <code>clearTimeout</code> as soon as the promise settles.",
+    "The timer must be cleared as soon as the promise settles.",
+    "Start and stop the timer with the <code>setTimer(fn, ms)</code> and <code>clearTimer(id)</code> options, which default to the global <code>setTimeout</code> and <code>clearTimeout</code>. Tests pass in fakes so they can control time.",
     "Plain (non-promise) values are accepted and resolve immediately.",
     "A late result after the timeout is ignored (the returned promise has already rejected).",
   ],
@@ -25,7 +26,7 @@ export default {
       name: "withTimeout.js",
       lang: "js",
       code: `// withTimeout.js
-function withTimeout(promise, ms) {
+function withTimeout(promise, ms, options = {}) {
   // your code here
 }
 
@@ -46,44 +47,70 @@ test('times_out', () => {
 });`,
   },
   hints: [
-    { order: 1, cost: 0, text: "Create a second promise that rejects inside a <code>setTimeout</code>, and store the timer id in a variable declared outside it." },
+    { order: 1, cost: 0, text: "Create a second promise that rejects inside a timer started with <code>setTimer</code>, and store the timer id in a variable declared outside it." },
     { order: 2, cost: 5, text: "<code>Promise.race([promise, timeoutPromise])</code> settles with whichever is first." },
-    { order: 3, cost: 15, text: "Add <code>.finally(() =&gt; clearTimeout(timer))</code> to the race so the timer is always cleaned up." },
+    { order: 3, cost: 15, text: "Add <code>.finally(() =&gt; clearTimer(timer))</code> to the race so the timer is always cleaned up." },
   ],
   hiddenTests: [
-    { name: "resolves_with_the_value", code: `const v = await withTimeout(new Promise((r) => setTimeout(() => r('ok'), 5)), 200);
+    { name: "resolves_with_the_value", code: `const makeTimers = () => { const pending = []; let seq = 0; return { setTimer(fn, ms) { const id = ++seq; pending.push({ id, fn, ms }); return id; }, clearTimer(id) { const i = pending.findIndex((p) => p.id === id); if (i >= 0) pending.splice(i, 1); }, fire() { const p = pending.shift(); if (p) p.fn(); }, count() { return pending.length; }, delay() { return pending.length ? pending[0].ms : null; } }; };
+const timers = makeTimers(); const T = { setTimer: timers.setTimer, clearTimer: timers.clearTimer };
+const v = await withTimeout(Promise.resolve().then(() => 'ok'), 200, T);
 assert(v === 'ok', 'value passes through');` },
-    { name: "rejects_with_the_original_error", code: `const err = new Error('db down'); let got = null;
-try { await withTimeout(Promise.reject(err), 200); } catch (e) { got = e; }
+    { name: "rejects_with_the_original_error", code: `const makeTimers = () => { const pending = []; let seq = 0; return { setTimer(fn, ms) { const id = ++seq; pending.push({ id, fn, ms }); return id; }, clearTimer(id) { const i = pending.findIndex((p) => p.id === id); if (i >= 0) pending.splice(i, 1); }, fire() { const p = pending.shift(); if (p) p.fn(); }, count() { return pending.length; }, delay() { return pending.length ? pending[0].ms : null; } }; };
+const timers = makeTimers(); const T = { setTimer: timers.setTimer, clearTimer: timers.clearTimer };
+const err = new Error('db down'); let got = null;
+try { await withTimeout(Promise.reject(err), 200, T); } catch (e) { got = e; }
 assert(got === err, 'same error object');` },
-    { name: "times_out_with_message", code: `let got = null;
-try { await withTimeout(new Promise(() => {}), 15); } catch (e) { got = e; }
+    { name: "times_out_with_message", code: `const makeTimers = () => { const pending = []; let seq = 0; return { setTimer(fn, ms) { const id = ++seq; pending.push({ id, fn, ms }); return id; }, clearTimer(id) { const i = pending.findIndex((p) => p.id === id); if (i >= 0) pending.splice(i, 1); }, fire() { const p = pending.shift(); if (p) p.fn(); }, count() { return pending.length; }, delay() { return pending.length ? pending[0].ms : null; } }; };
+const timers = makeTimers(); const T = { setTimer: timers.setTimer, clearTimer: timers.clearTimer };
+let got = null;
+const p = withTimeout(new Promise(() => {}), 15, T).catch((e) => { got = e; });
+for (let i = 0; i < 20; i++) await Promise.resolve();
+timers.fire();
+await p;
 assert(got instanceof Error, 'rejects with an Error');
 assert(got.message === 'Timed out after 15ms', 'message: ' + (got && got.message));` },
-    { name: "timeout_actually_waits_ms", code: `const t0 = Date.now();
-try { await withTimeout(new Promise(() => {}), 40); } catch (e) {}
-assert(Date.now() - t0 >= 35, 'should wait about 40ms');` },
-    { name: "plain_values", code: `assert(await withTimeout(42, 50) === 42, 'plain value');` },
-    { name: "late_result_is_ignored", code: `let got = null;
-try { await withTimeout(new Promise((r) => setTimeout(() => r('late'), 60)), 10); } catch (e) { got = e; }
+    { name: "timer_uses_the_ms_given", code: `const makeTimers = () => { const pending = []; let seq = 0; return { setTimer(fn, ms) { const id = ++seq; pending.push({ id, fn, ms }); return id; }, clearTimer(id) { const i = pending.findIndex((p) => p.id === id); if (i >= 0) pending.splice(i, 1); }, fire() { const p = pending.shift(); if (p) p.fn(); }, count() { return pending.length; }, delay() { return pending.length ? pending[0].ms : null; } }; };
+const timers = makeTimers(); const T = { setTimer: timers.setTimer, clearTimer: timers.clearTimer };
+let settled = false;
+const p = withTimeout(new Promise(() => {}), 40, T).catch(() => {}).then(() => { settled = true; });
+for (let i = 0; i < 20; i++) await Promise.resolve();
+assert(timers.delay() === 40, 'the timer must be started with ms, got ' + timers.delay());
+assert(settled === false, 'must not reject before the timer fires');
+timers.fire();
+await p;
+assert(settled === true, 'rejects once the timer fires');` },
+    { name: "plain_values", code: `const makeTimers = () => { const pending = []; let seq = 0; return { setTimer(fn, ms) { const id = ++seq; pending.push({ id, fn, ms }); return id; }, clearTimer(id) { const i = pending.findIndex((p) => p.id === id); if (i >= 0) pending.splice(i, 1); }, fire() { const p = pending.shift(); if (p) p.fn(); }, count() { return pending.length; }, delay() { return pending.length ? pending[0].ms : null; } }; };
+const timers = makeTimers(); const T = { setTimer: timers.setTimer, clearTimer: timers.clearTimer };
+assert(await withTimeout(42, 50, T) === 42, 'plain value');` },
+    { name: "late_result_is_ignored", code: `const makeTimers = () => { const pending = []; let seq = 0; return { setTimer(fn, ms) { const id = ++seq; pending.push({ id, fn, ms }); return id; }, clearTimer(id) { const i = pending.findIndex((p) => p.id === id); if (i >= 0) pending.splice(i, 1); }, fire() { const p = pending.shift(); if (p) p.fn(); }, count() { return pending.length; }, delay() { return pending.length ? pending[0].ms : null; } }; };
+const timers = makeTimers(); const T = { setTimer: timers.setTimer, clearTimer: timers.clearTimer };
+let resolveLate; const slow = new Promise((r) => { resolveLate = r; });
+let got = null;
+const p = withTimeout(slow, 10, T).catch((e) => { got = e; });
+for (let i = 0; i < 20; i++) await Promise.resolve();
+timers.fire();
+await p;
 assert(got && got.message === 'Timed out after 10ms', 'timeout wins');
-await new Promise((r) => setTimeout(r, 70));` },
-    { name: "clears_the_timer_on_success", code: `const orig = globalThis.clearTimeout; let cleared = 0;
-globalThis.clearTimeout = (id) => { cleared++; return orig(id); };
-try { await withTimeout(Promise.resolve(1), 1000); } finally { globalThis.clearTimeout = orig; }
-assert(cleared >= 1, 'clearTimeout must be called when the promise wins');` },
-    { name: "clears_the_timer_on_failure", code: `const orig = globalThis.clearTimeout; let cleared = 0;
-globalThis.clearTimeout = (id) => { cleared++; return orig(id); };
-try { await withTimeout(Promise.reject(new Error('x')), 1000); } catch (e) {} finally { globalThis.clearTimeout = orig; }
-assert(cleared >= 1, 'also on rejection');` },
+resolveLate('late');
+for (let i = 0; i < 20; i++) await Promise.resolve();
+assert(got.message === 'Timed out after 10ms', 'a late result changes nothing');` },
+    { name: "clears_the_timer_on_success", code: `const makeTimers = () => { const pending = []; let seq = 0; return { setTimer(fn, ms) { const id = ++seq; pending.push({ id, fn, ms }); return id; }, clearTimer(id) { const i = pending.findIndex((p) => p.id === id); if (i >= 0) pending.splice(i, 1); }, fire() { const p = pending.shift(); if (p) p.fn(); }, count() { return pending.length; }, delay() { return pending.length ? pending[0].ms : null; } }; };
+const timers = makeTimers(); const T = { setTimer: timers.setTimer, clearTimer: timers.clearTimer };
+await withTimeout(Promise.resolve(1), 1000, T);
+assert(timers.count() === 0, 'the timer must be cleared when the promise wins');` },
+    { name: "clears_the_timer_on_failure", code: `const makeTimers = () => { const pending = []; let seq = 0; return { setTimer(fn, ms) { const id = ++seq; pending.push({ id, fn, ms }); return id; }, clearTimer(id) { const i = pending.findIndex((p) => p.id === id); if (i >= 0) pending.splice(i, 1); }, fire() { const p = pending.shift(); if (p) p.fn(); }, count() { return pending.length; }, delay() { return pending.length ? pending[0].ms : null; } }; };
+const timers = makeTimers(); const T = { setTimer: timers.setTimer, clearTimer: timers.clearTimer };
+try { await withTimeout(Promise.reject(new Error('x')), 1000, T); } catch (e) {}
+assert(timers.count() === 0, 'also on rejection');` },
   ],
   solution: {
-    code: `function withTimeout(promise, ms) {
+    code: `function withTimeout(promise, ms, { setTimer = (fn, t) => setTimeout(fn, t), clearTimer = (id) => clearTimeout(id) } = {}) {
   let timer;
   const timeout = new Promise((_, reject) => {
-    timer = setTimeout(() => reject(new Error('Timed out after ' + ms + 'ms')), ms);
+    timer = setTimer(() => reject(new Error('Timed out after ' + ms + 'ms')), ms);
   });
-  return Promise.race([Promise.resolve(promise), timeout]).finally(() => clearTimeout(timer));
+  return Promise.race([Promise.resolve(promise), timeout]).finally(() => clearTimer(timer));
 }
 
 module.exports = withTimeout;`,

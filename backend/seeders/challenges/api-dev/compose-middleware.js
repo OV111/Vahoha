@@ -65,10 +65,11 @@ assert(c.log.join('') === 'a', 'second must not run');` },
     { name: "sync_middleware_works", code: `const c = { log: [] };
 await compose([(x, next) => { x.log.push(1); return next(); }, (x) => { x.log.push(2); }])(c);
 assert(c.log.join('') === '12', 'sync functions');` },
-    { name: "awaits_async_downstream", code: `const c = { log: [] };
+    { name: "awaits_async_downstream", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const c = { log: [] };
 await compose([
   async (x, next) => { await next(); x.log.push('after'); },
-  async (x) => { await new Promise((r) => setTimeout(r, 5)); x.log.push('slow'); },
+  async (x) => { await sleep(5); x.log.push('slow'); },
 ])(c);
 assert(c.log.join(',') === 'slow,after', 'next() must wait for downstream: ' + c.log);` },
     { name: "error_rejects", code: `let err = null;

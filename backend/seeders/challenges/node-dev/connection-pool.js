@@ -9,13 +9,14 @@ export default {
   description:
     "Opening a database connection is slow and servers allow only a few hundred. Prisma and <code>pg</code> use a pool: a fixed set of reusable connections. When all are busy, requests wait in line (and eventually time out) instead of overwhelming the database.",
   task:
-    "Write <code>createPool({ create, destroy, max = 3, acquireTimeoutMs = 1000 })</code> returning <code>{ acquire, release, discard, stats, end }</code>. <code>create()</code> and <code>destroy(resource)</code> are async.",
+    "Write <code>createPool({ create, destroy, max = 3, acquireTimeoutMs = 1000, setTimer, clearTimer })</code> returning <code>{ acquire, release, discard, stats, end }</code>. <code>create()</code> and <code>destroy(resource)</code> are async.",
   constraints: [
     "<code>acquire()</code> resolves with a resource: reuse an idle one (oldest idle first); else create one if fewer than <code>max</code> exist (count it immediately so concurrent acquires never exceed <code>max</code>); else wait in a FIFO queue.",
     "A waiter that is not served within <code>acquireTimeoutMs</code> is removed from the queue and rejects with <code>Error('Timed out waiting for a connection')</code>.",
     "<code>release(resource)</code> hands the resource straight to the first waiter, or makes it idle. Releasing something not currently in use throws <code>Error('Resource not in use')</code>.",
     "<code>discard(resource)</code> (for a broken connection) removes it from the pool, calls <code>destroy</code>, and if someone is waiting creates a replacement for the first waiter. If <code>create</code> fails, <code>acquire</code> rejects with that error and the slot is freed.",
     "<code>stats()</code> is <code>{ total, idle, inUse, waiting }</code>. <code>end()</code> closes the pool: waiters reject with <code>Error('Pool is closed')</code>, idle resources are destroyed, in-use ones are destroyed when released, later <code>acquire</code> calls reject with <code>Error('Pool is closed')</code>, and the returned promise resolves once every resource is destroyed.",
+    "Start and stop the acquire timeout with the <code>setTimer(fn, ms)</code> and <code>clearTimer(id)</code> options, which default to the global <code>setTimeout</code> and <code>clearTimeout</code>. Tests pass in fakes so they can control time.",
   ],
   example: `const conn = await pool.acquire(); try { await conn.query('...'); } finally { pool.release(conn); }`,
   tags: ["pooling","postgres","prisma","concurrency"],
@@ -48,7 +49,7 @@ test('stats', () => {
   },
   hints: [
     { order: 1, cost: 0, text: "Keep <code>idle</code> (array), <code>inUse</code> (Set), <code>waiters</code> (array of <code>{ resolve, reject, timer }</code>) and a <code>total</code> counter that you increment BEFORE awaiting <code>create()</code>." },
-    { order: 2, cost: 5, text: "Waiting: return a promise, push the waiter, start a <code>setTimeout</code> that removes it from <code>waiters</code> and rejects. On <code>release</code>, <code>shift()</code> a waiter, <code>clearTimeout</code> its timer and resolve it with the resource." },
+    { order: 2, cost: 5, text: "Waiting: return a promise, push the waiter, start a timer with <code>setTimer</code> that removes it from <code>waiters</code> and rejects. On <code>release</code>, <code>shift()</code> a waiter, <code>clearTimer</code> its timer and resolve it with the resource." },
     { order: 3, cost: 15, text: "For <code>end()</code>, set a <code>closed</code> flag, reject all waiters, destroy idle ones, and if <code>total &gt; 0</code> wait on a promise that resolves when <code>total</code> reaches 0." },
   ],
   hiddenTests: [
@@ -66,19 +67,24 @@ const a = await p.acquire(); const b = await p.acquire();
 p.release(a); p.release(b);
 assert((await p.acquire()) === a, 'oldest idle first');
 assert((await p.acquire()) === b, 'then the next');` },
-    { name: "never_exceeds_max_under_concurrency", code: `let created = 0;
-const p = createPool({ create: async () => { created++; await new Promise((r) => setTimeout(r, 2)); return { id: created }; }, max: 3, acquireTimeoutMs: 500 });
+    { name: "never_exceeds_max_under_concurrency", code: `const makeTimers = () => { const pending = []; let seq = 0; return { setTimer(fn, ms) { const id = ++seq; pending.push({ id, fn, ms }); return id; }, clearTimer(id) { const i = pending.findIndex((p) => p.id === id); if (i >= 0) pending.splice(i, 1); }, fire() { const p = pending.shift(); if (p) p.fn(); }, count() { return pending.length; }, delay() { return pending.length ? pending[0].ms : null; } }; };
+const timers = makeTimers(); const T = { setTimer: timers.setTimer, clearTimer: timers.clearTimer };
+const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+let created = 0;
+const p = createPool({ create: async () => { created++; await sleep(2); return { id: created }; }, max: 3, acquireTimeoutMs: 500, ...T });
 const acquired = [];
 const workers = Array.from({ length: 10 }, async () => {
   const c = await p.acquire();
   acquired.push(c);
-  await new Promise((r) => setTimeout(r, 3));
+  await sleep(3);
   p.release(c);
 });
 await Promise.all(workers);
 assert(created <= 3, 'at most max connections were created: ' + created);
 assert(acquired.length === 10 && p.stats().total === created, 'everyone was served');` },
-    { name: "waiters_are_served_fifo_when_resources_are_released", code: `const p = createPool({ create: async () => ({}), max: 1 });
+    { name: "waiters_are_served_fifo_when_resources_are_released", code: `const makeTimers = () => { const pending = []; let seq = 0; return { setTimer(fn, ms) { const id = ++seq; pending.push({ id, fn, ms }); return id; }, clearTimer(id) { const i = pending.findIndex((p) => p.id === id); if (i >= 0) pending.splice(i, 1); }, fire() { const p = pending.shift(); if (p) p.fn(); }, count() { return pending.length; }, delay() { return pending.length ? pending[0].ms : null; } }; };
+const timers = makeTimers(); const T = { setTimer: timers.setTimer, clearTimer: timers.clearTimer };
+const p = createPool({ create: async () => ({}), max: 1, ...T });
 const first = await p.acquire();
 const order = [];
 const w1 = p.acquire().then((c) => { order.push('w1'); return c; });
@@ -91,23 +97,33 @@ p.release(c1);
 await w2;
 assert(order.join() === 'w1,w2', 'then the second');
 assert(p.stats().total === 1, 'still one connection');` },
-    { name: "waiting_times_out_and_leaves_the_queue", code: `const p = createPool({ create: async () => ({}), max: 1, acquireTimeoutMs: 20 });
+    { name: "waiting_times_out_and_leaves_the_queue", code: `const makeTimers = () => { const pending = []; let seq = 0; return { setTimer(fn, ms) { const id = ++seq; pending.push({ id, fn, ms }); return id; }, clearTimer(id) { const i = pending.findIndex((p) => p.id === id); if (i >= 0) pending.splice(i, 1); }, fire() { const p = pending.shift(); if (p) p.fn(); }, count() { return pending.length; }, delay() { return pending.length ? pending[0].ms : null; } }; };
+const timers = makeTimers(); const T = { setTimer: timers.setTimer, clearTimer: timers.clearTimer };
+const p = createPool({ create: async () => ({}), max: 1, acquireTimeoutMs: 20, ...T });
 const held = await p.acquire();
-let err = null; const t0 = Date.now();
-try { await p.acquire(); } catch (e) { err = e; }
+let err = null;
+const waiting = p.acquire().catch((e) => { err = e; });
+for (let i = 0; i < 20; i++) await Promise.resolve();
+assert(timers.delay() === 20, 'the waiter timer must use acquireTimeoutMs, got ' + timers.delay());
+assert(err === null, 'still waiting before the timer fires');
+timers.fire();
+await waiting;
 assert(err && err.message === 'Timed out waiting for a connection', 'message: ' + (err && err.message));
-assert(Date.now() - t0 >= 15, 'waited about the timeout');
 assert(p.stats().waiting === 0, 'removed from the queue');
 p.release(held);
 assert(p.stats().idle === 1 && p.stats().inUse === 0, 'released resource goes idle, not to the dead waiter');` },
-    { name: "a_served_waiter_does_not_time_out_later", code: `const p = createPool({ create: async () => ({}), max: 1, acquireTimeoutMs: 30 });
+    { name: "a_served_waiter_does_not_time_out_later", code: `const makeTimers = () => { const pending = []; let seq = 0; return { setTimer(fn, ms) { const id = ++seq; pending.push({ id, fn, ms }); return id; }, clearTimer(id) { const i = pending.findIndex((p) => p.id === id); if (i >= 0) pending.splice(i, 1); }, fire() { const p = pending.shift(); if (p) p.fn(); }, count() { return pending.length; }, delay() { return pending.length ? pending[0].ms : null; } }; };
+const timers = makeTimers(); const T = { setTimer: timers.setTimer, clearTimer: timers.clearTimer };
+const p = createPool({ create: async () => ({}), max: 1, acquireTimeoutMs: 30, ...T });
 const held = await p.acquire();
 const waiting = p.acquire();
 p.release(held);
 const got = await waiting;
-await new Promise((r) => setTimeout(r, 50));
-assert(got === held && p.stats().inUse === 1, 'timer was cleared, nothing rejected');` },
-    { name: "stats_track_every_state", code: `const p = createPool({ create: async () => ({}), max: 2, acquireTimeoutMs: 100 });
+assert(timers.count() === 0, 'the waiter timer must be cleared once it is served, ' + timers.count() + ' left');
+assert(got === held && p.stats().inUse === 1, 'served with the released resource');` },
+    { name: "stats_track_every_state", code: `const makeTimers = () => { const pending = []; let seq = 0; return { setTimer(fn, ms) { const id = ++seq; pending.push({ id, fn, ms }); return id; }, clearTimer(id) { const i = pending.findIndex((p) => p.id === id); if (i >= 0) pending.splice(i, 1); }, fire() { const p = pending.shift(); if (p) p.fn(); }, count() { return pending.length; }, delay() { return pending.length ? pending[0].ms : null; } }; };
+const timers = makeTimers(); const T = { setTimer: timers.setTimer, clearTimer: timers.clearTimer };
+const p = createPool({ create: async () => ({}), max: 2, acquireTimeoutMs: 100, ...T });
 const a = await p.acquire(); const b = await p.acquire();
 const waiting = p.acquire();
 assert(JSON.stringify(p.stats()) === '{"total":2,"idle":0,"inUse":2,"waiting":1}', 'busy: ' + JSON.stringify(p.stats()));
@@ -137,15 +153,19 @@ await p.discard(bad);
 assert(destroyed.join() === '1' && p.stats().total === 0, 'destroyed and gone');
 const fresh = await p.acquire();
 assert(fresh.id === 2, 'a new connection is created');` },
-    { name: "discard_serves_a_waiter_with_a_new_connection", code: `let n = 0;
-const p = createPool({ create: async () => ({ id: ++n }), max: 1, acquireTimeoutMs: 200 });
+    { name: "discard_serves_a_waiter_with_a_new_connection", code: `const makeTimers = () => { const pending = []; let seq = 0; return { setTimer(fn, ms) { const id = ++seq; pending.push({ id, fn, ms }); return id; }, clearTimer(id) { const i = pending.findIndex((p) => p.id === id); if (i >= 0) pending.splice(i, 1); }, fire() { const p = pending.shift(); if (p) p.fn(); }, count() { return pending.length; }, delay() { return pending.length ? pending[0].ms : null; } }; };
+const timers = makeTimers(); const T = { setTimer: timers.setTimer, clearTimer: timers.clearTimer };
+let n = 0;
+const p = createPool({ create: async () => ({ id: ++n }), max: 1, acquireTimeoutMs: 200, ...T });
 const bad = await p.acquire();
 const waiting = p.acquire();
 await p.discard(bad);
 const replacement = await waiting;
 assert(replacement.id === 2 && p.stats().total === 1 && p.stats().inUse === 1, 'waiter got a fresh one: ' + JSON.stringify(p.stats()));` },
-    { name: "end_rejects_waiters_destroys_idle_and_waits_for_in_use", code: `const destroyed = []; let n = 0;
-const p = createPool({ create: async () => ({ id: ++n }), destroy: async (r) => { destroyed.push(r.id); }, max: 2, acquireTimeoutMs: 500 });
+    { name: "end_rejects_waiters_destroys_idle_and_waits_for_in_use", code: `const makeTimers = () => { const pending = []; let seq = 0; return { setTimer(fn, ms) { const id = ++seq; pending.push({ id, fn, ms }); return id; }, clearTimer(id) { const i = pending.findIndex((p) => p.id === id); if (i >= 0) pending.splice(i, 1); }, fire() { const p = pending.shift(); if (p) p.fn(); }, count() { return pending.length; }, delay() { return pending.length ? pending[0].ms : null; } }; };
+const timers = makeTimers(); const T = { setTimer: timers.setTimer, clearTimer: timers.clearTimer };
+const destroyed = []; let n = 0;
+const p = createPool({ create: async () => ({ id: ++n }), destroy: async (r) => { destroyed.push(r.id); }, max: 2, acquireTimeoutMs: 500, ...T });
 const a = await p.acquire(); const b = await p.acquire();
 p.release(b);
 const c = await p.acquire();
@@ -155,7 +175,7 @@ let waiterErr = null;
 d.catch((e) => { waiterErr = e; });
 let ended = false;
 const endPromise = p.end().then(() => { ended = true; });
-await new Promise((r) => setTimeout(r, 10));
+for (let i = 0; i < 20; i++) await Promise.resolve();
 assert(waiterErr && waiterErr.message === 'Pool is closed', 'waiter rejected');
 assert(ended === false, 'still waiting for in-use connections');
 p.release(a); p.release(c);
@@ -169,7 +189,7 @@ try { await p.acquire(); } catch (e) { err = e; }
 assert(err && err.message === 'Pool is closed', 'message: ' + (err && err.message));` },
   ],
   solution: {
-    code: `function createPool({ create, destroy = async () => {}, max = 3, acquireTimeoutMs = 1000 }) {
+    code: `function createPool({ create, destroy = async () => {}, max = 3, acquireTimeoutMs = 1000, setTimer = (fn, ms) => setTimeout(fn, ms), clearTimer = (id) => clearTimeout(id) }) {
   const idle = [];
   const inUse = new Set();
   const waiters = [];
@@ -209,7 +229,7 @@ assert(err && err.message === 'Pool is closed', 'message: ' + (err && err.messag
       }
       return new Promise((resolve, reject) => {
         const waiter = { resolve, reject, timer: null };
-        waiter.timer = setTimeout(() => {
+        waiter.timer = setTimer(() => {
           const index = waiters.indexOf(waiter);
           if (index !== -1) waiters.splice(index, 1);
           reject(new Error('Timed out waiting for a connection'));
@@ -227,7 +247,7 @@ assert(err && err.message === 'Pool is closed', 'message: ' + (err && err.messag
       }
       const waiter = waiters.shift();
       if (waiter) {
-        clearTimeout(waiter.timer);
+        clearTimer(waiter.timer);
         inUse.add(resource);
         waiter.resolve(resource);
         return;
@@ -241,7 +261,7 @@ assert(err && err.message === 'Pool is closed', 'message: ' + (err && err.messag
       await destroy(resource);
       const waiter = closed ? undefined : waiters.shift();
       if (waiter) {
-        clearTimeout(waiter.timer);
+        clearTimer(waiter.timer);
         try {
           const replacement = await spawn();
           inUse.add(replacement);
@@ -258,7 +278,7 @@ assert(err && err.message === 'Pool is closed', 'message: ' + (err && err.messag
     async end() {
       closed = true;
       for (const waiter of waiters.splice(0)) {
-        clearTimeout(waiter.timer);
+        clearTimer(waiter.timer);
         waiter.reject(new Error('Pool is closed'));
       }
       for (const resource of idle.splice(0)) {

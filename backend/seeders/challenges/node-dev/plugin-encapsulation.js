@@ -65,8 +65,9 @@ const a = await app.inject({ method: 'GET', url: '/made' });
 assert(a.status === 201 && a.body.ok === true, 'status and send');
 const b = await app.inject({ method: 'GET', url: '/returned' });
 assert(b.status === 200 && b.body.n === 1, 'return value is sent with 200');` },
-    { name: "request_object_and_async_handlers", code: `const app = createApp();
-app.post('/echo', async (req) => { await new Promise((r) => setTimeout(r, 2)); return { m: req.method, u: req.url, b: req.body }; });
+    { name: "request_object_and_async_handlers", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const app = createApp();
+app.post('/echo', async (req) => { await sleep(2); return { m: req.method, u: req.url, b: req.body }; });
 const r = await app.inject({ method: 'POST', url: '/echo', body: { x: 1 } });
 assert(r.body.m === 'POST' && r.body.u === '/echo' && r.body.b.x === 1, 'req: ' + JSON.stringify(r.body));` },
     { name: "prefix_and_nested_prefix", code: `const app = createApp();
@@ -81,10 +82,11 @@ assert((await app.inject({ method: 'GET', url: '/api/users' })).body === 'users'
 assert((await app.inject({ method: 'GET', url: '/api/v1/ping' })).body === 'ping', 'nested prefix');
 assert((await app.inject({ method: 'GET', url: '/' })).body === 'top', 'root route');
 assert((await app.inject({ method: 'GET', url: '/users' })).status === 404, 'not mounted without the prefix');` },
-    { name: "plugins_run_in_order_depth_first_and_awaited", code: `const trace = []; const app = createApp();
+    { name: "plugins_run_in_order_depth_first_and_awaited", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const trace = []; const app = createApp();
 app.register(async (a) => {
   trace.push('a:start');
-  a.register(async () => { await new Promise((r) => setTimeout(r, 5)); trace.push('a1'); });
+  a.register(async () => { await sleep(5); trace.push('a1'); });
   a.register(async () => { trace.push('a2'); });
   trace.push('a:end');
 });

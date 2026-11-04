@@ -120,12 +120,13 @@ try {
 } catch (e) { err = e; }
 assert(err && err.code === 'P2002', 'second write fails');
 assert(db.findMany('profiles').length === 0, 'the first write was rolled back, so no orphan profile');` },
-    { name: "transaction_sees_its_own_writes_but_outsiders_do_not", code: `const db = createDb({ tables: { users: {} } });
+    { name: "transaction_sees_its_own_writes_but_outsiders_do_not", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const db = createDb({ tables: { users: {} } });
 let outsideDuring = null; let insideDuring = null;
 await db.$transaction(async (tx) => {
   const u = tx.create('users', { name: 'A' });
   insideDuring = tx.findById('users', u.id);
-  await new Promise((r) => setTimeout(r, 5));
+  await sleep(5);
   outsideDuring = db.findMany('users').length;
 });
 assert(insideDuring && insideDuring.name === 'A', 'tx reads its own write');
@@ -135,11 +136,12 @@ assert(db.findMany('users').length === 1, 'visible after commit');` },
 try { await db.$transaction(async (tx) => { tx.create('users', {}); tx.create('users', {}); throw new Error('x'); }); } catch (e) {}
 const next = db.create('users', {});
 assert(next.id === 3, 'ids 1 and 2 were consumed by the rolled-back transaction, got ' + next.id);` },
-    { name: "concurrent_transactions_run_one_at_a_time", code: `const db = createDb({ tables: { counters: {} } });
+    { name: "concurrent_transactions_run_one_at_a_time", code: `const sleep = async (ms) => { for (let i = 0; i < ms * 20; i++) await Promise.resolve(); };
+const db = createDb({ tables: { counters: {} } });
 db.create('counters', { n: 0 });
 const increment = () => db.$transaction(async (tx) => {
   const c = tx.findById('counters', 1);
-  await new Promise((r) => setTimeout(r, 2));
+  await sleep(2);
   tx.update('counters', 1, { n: c.n + 1 });
 });
 await Promise.all([increment(), increment(), increment(), increment(), increment()]);
