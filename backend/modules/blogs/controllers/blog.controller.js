@@ -2,6 +2,7 @@ import Busboy from "busboy";
 import { ObjectId } from "mongodb";
 import { uploadImage } from "../../../utils/uploadImage.js";
 import { makeErrorHandler } from "../../../utils/respond.js";
+import { verifyAccessToken } from "../../../utils/jwtToken.js";
 
 const ALLOWED_IMAGE_MIME_TYPES = new Set([
   "image/jpeg",
@@ -108,7 +109,10 @@ export const getBlogById = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid blog id" });
     }
     const db = req.app.locals.db;
-    const blog = await getBlogByIdService(db, req.params.id);
+    // Public route, but the author's own token unlocks their drafts (EditBlog).
+    const bearer = req.headers.authorization?.replace("Bearer ", "");
+    const viewer = bearer ? verifyAccessToken(bearer) : null;
+    const blog = await getBlogByIdService(db, req.params.id, viewer?.id ?? viewer?._id ?? null);
     res.json({ success: true, data: blog });
   } catch (err) {
     sendError(err, req, res);

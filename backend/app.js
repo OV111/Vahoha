@@ -54,7 +54,10 @@ export function createApp(db) {
   // spoof a fresh IP per request and walk straight past the limits.
   app.set("trust proxy", 1);
 
-  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  // The spec lists every route, so it is a map for an attacker; dev only.
+  if (process.env.NODE_ENV !== "production") {
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  }
 
   // Security headers for everything below. Mounted after /api-docs on purpose:
   // helmet's default CSP blocks the inline scripts Swagger UI relies on.

@@ -107,7 +107,6 @@ export const updateSettingsService = async (db, userId, fields, files) => {
 
   const statsUpdate = { lastActive: new Date() };
   if (fields.bio !== undefined) statsUpdate.bio = fields.bio;
-  if (fields.postsCount !== undefined) statsUpdate.postsCount = Number(fields.postsCount);
   for (const key of PROFILE_LINK_FIELDS) {
     if (fields[key] !== undefined) statsUpdate[key] = sanitizeProfileLink(fields[key], key);
   }
@@ -303,7 +302,6 @@ export const getMutualFollowersService = async (db, userId) => {
           firstName: 1,
           lastName: 1,
           username: 1,
-          email: 1,
           stats: 1,
         },
       },

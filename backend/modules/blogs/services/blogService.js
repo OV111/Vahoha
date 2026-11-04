@@ -304,11 +304,15 @@ const loadBlogs = async (db, query) => {
   };
 };
 
-export const getBlogByIdService = async (db, rawId) => {
+// A draft is visible only to its author; anyone else gets the same 404 as a missing id.
+export const getBlogByIdService = async (db, rawId, viewerId = null) => {
   const blogs = db.collection("blogs");
-  const [blog] = await blogs
-    .aggregate([{ $match: { _id: new ObjectId(rawId) } }, ...authorLookup])
-    .toArray();
+  const visible = { status: { $ne: "draft" } };
+  const match = {
+    _id: new ObjectId(rawId),
+    ...(viewerId ? { $or: [visible, { author: new ObjectId(viewerId) }] } : visible),
+  };
+  const [blog] = await blogs.aggregate([{ $match: match }, ...authorLookup]).toArray();
 
   if (!blog) throw new NotFoundError("Blog not found");
   await blogs.updateOne({ _id: blog._id }, { $inc: { views: 1 } });
