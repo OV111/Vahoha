@@ -5167,7 +5167,159 @@
         }
       ],
       "challenge": "Take a 150-line function from your own code and rewrite it for readability. List each smell you removed and why.",
-      "estimatedTime": "1 week"
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Readable Code",
+          "children": [
+            {
+              "title": "Intent-revealing names",
+              "description": "A name should say why something exists and how it is used. If you need a comment to explain a variable, rename it instead.",
+              "resources": [
+                {
+                  "label": "Clean Code (Robert C. Martin)",
+                  "url": "https://www.oreilly.com/library/view/clean-code-a/9780136083238/",
+                  "type": "book"
+                },
+                {
+                  "label": "A Philosophy of Software Design (Ousterhout)",
+                  "url": "https://web.stanford.edu/~ouster/cgi-bin/book.php",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Small functions, one level of abstraction",
+              "description": "A function should do one thing at one level of detail. Extract the steps so the top-level function reads like an outline.",
+              "resources": [
+                {
+                  "label": "Clean Code (Robert C. Martin)",
+                  "url": "https://www.oreilly.com/library/view/clean-code-a/9780136083238/",
+                  "type": "book"
+                },
+                {
+                  "label": "Refactoring Guru - Extract Method",
+                  "url": "https://refactoring.guru/extract-method",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Comments and Formatting",
+          "children": [
+            {
+              "title": "When a comment helps",
+              "description": "Good comments record why a decision was made, a trap, or a constraint the code cannot show. Comments that repeat the code only go stale.",
+              "resources": [
+                {
+                  "label": "A Philosophy of Software Design (Ousterhout)",
+                  "url": "https://web.stanford.edu/~ouster/cgi-bin/book.php",
+                  "type": "book"
+                },
+                {
+                  "label": "Clean Code (Robert C. Martin)",
+                  "url": "https://www.oreilly.com/library/view/clean-code-a/9780136083238/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Linters and team conventions",
+              "description": "Let tools settle style arguments. A formatter and linter in CI keep diffs about behavior, not whitespace.",
+              "resources": [
+                {
+                  "label": "ESLint docs",
+                  "url": "https://eslint.org/docs/latest/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Prettier docs",
+                  "url": "https://prettier.io/docs/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Code Smells",
+          "children": [
+            {
+              "title": "Long method and large class",
+              "description": "Size is a symptom: the unit is doing several jobs. Split along responsibilities and name each piece for what it does.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Code Smells",
+                  "url": "https://refactoring.guru/refactoring/smells",
+                  "type": "article"
+                },
+                {
+                  "label": "Martin Fowler - CodeSmell",
+                  "url": "https://martinfowler.com/bliki/CodeSmell.html",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Duplication",
+              "description": "Copied logic must be fixed in every copy. Extract it once the third copy appears, and only when the copies truly mean the same thing.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Code Smells",
+                  "url": "https://refactoring.guru/refactoring/smells",
+                  "type": "article"
+                },
+                {
+                  "label": "Refactoring (Martin Fowler)",
+                  "url": "https://refactoring.com/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Handling Errors",
+          "children": [
+            {
+              "title": "Errors without noise",
+              "description": "Handle failures at the level that can do something about them. Scattered try/catch blocks and silent returns hide the real flow.",
+              "resources": [
+                {
+                  "label": "Clean Code (Robert C. Martin)",
+                  "url": "https://www.oreilly.com/library/view/clean-code-a/9780136083238/",
+                  "type": "book"
+                },
+                {
+                  "label": "Google Style Guides",
+                  "url": "https://google.github.io/styleguide/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Consistent error strategy",
+              "description": "Pick one style per codebase (exceptions, result values) and use it everywhere, so callers know what to expect.",
+              "resources": [
+                {
+                  "label": "A Philosophy of Software Design (Ousterhout)",
+                  "url": "https://web.stanford.edu/~ouster/cgi-bin/book.php",
+                  "type": "book"
+                },
+                {
+                  "label": "Clean Code (Robert C. Martin)",
+                  "url": "https://www.oreilly.com/library/view/clean-code-a/9780136083238/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "software-design-2",
@@ -5205,7 +5357,159 @@
         }
       ],
       "challenge": "Model a library system with inheritance, then redo it with composition. Write down which version is easier to change.",
-      "estimatedTime": "1.5 weeks"
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Encapsulation",
+          "children": [
+            {
+              "title": "Hiding internal state",
+              "description": "Keep fields private and expose behavior. Callers then depend on what an object does, so you can change how it works.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Encapsulation",
+                  "url": "https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)",
+                  "type": "article"
+                },
+                {
+                  "label": "Head First Object-Oriented Analysis and Design",
+                  "url": "https://www.oreilly.com/library/view/head-first-object-oriented/0596008678/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Tell, do not ask",
+              "description": "Instead of pulling data out to make a decision, tell the object what to do. Logic ends up next to the data it uses.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - TellDontAsk",
+                  "url": "https://martinfowler.com/bliki/TellDontAsk.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Wikipedia - Law of Demeter",
+                  "url": "https://en.wikipedia.org/wiki/Law_of_Demeter",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Inheritance and Composition",
+          "children": [
+            {
+              "title": "Why inheritance is fragile",
+              "description": "A subclass is tied to its parent's internals, so a change in the base can break every child. Use inheritance only for a true is-a relationship.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Composition over inheritance",
+                  "url": "https://en.wikipedia.org/wiki/Composition_over_inheritance",
+                  "type": "article"
+                },
+                {
+                  "label": "Head First Object-Oriented Analysis and Design",
+                  "url": "https://www.oreilly.com/library/view/head-first-object-oriented/0596008678/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Composition over inheritance",
+              "description": "Build behavior by combining small objects you can swap at runtime, instead of fixing it in a class tree.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Composition over inheritance",
+                  "url": "https://en.wikipedia.org/wiki/Composition_over_inheritance",
+                  "type": "article"
+                },
+                {
+                  "label": "Refactoring Guru - Strategy",
+                  "url": "https://refactoring.guru/design-patterns/strategy",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Polymorphism",
+          "children": [
+            {
+              "title": "Polymorphism and interfaces",
+              "description": "Code against what an object can do, not its concrete class. A new implementation then plugs in without touching the callers.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Polymorphism",
+                  "url": "https://en.wikipedia.org/wiki/Polymorphism_(computer_science)",
+                  "type": "article"
+                },
+                {
+                  "label": "A Philosophy of Software Design (Ousterhout)",
+                  "url": "https://web.stanford.edu/~ouster/cgi-bin/book.php",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Replacing type checks",
+              "description": "A chain of if or switch on a type tag is a hint to push the behavior into each type instead.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Replace Conditional with Polymorphism",
+                  "url": "https://refactoring.guru/replace-conditional-with-polymorphism",
+                  "type": "article"
+                },
+                {
+                  "label": "Refactoring Guru - Code Smells",
+                  "url": "https://refactoring.guru/refactoring/smells",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Coupling and Cohesion",
+          "children": [
+            {
+              "title": "Cohesion",
+              "description": "A cohesive class has parts that belong together. If you cannot name it without \"and\", it probably does two jobs.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Cohesion",
+                  "url": "https://en.wikipedia.org/wiki/Cohesion_(computer_science)",
+                  "type": "article"
+                },
+                {
+                  "label": "A Philosophy of Software Design (Ousterhout)",
+                  "url": "https://web.stanford.edu/~ouster/cgi-bin/book.php",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Coupling and the Law of Demeter",
+              "description": "A method should talk to its direct collaborators, not reach through a chain of objects. Long chains spread knowledge across the code.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Law of Demeter",
+                  "url": "https://en.wikipedia.org/wiki/Law_of_Demeter",
+                  "type": "article"
+                },
+                {
+                  "label": "Wikipedia - Coupling",
+                  "url": "https://en.wikipedia.org/wiki/Coupling_(computer_programming)",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "software-design-3",
@@ -5243,7 +5547,159 @@
         }
       ],
       "challenge": "Find one class in a real project that breaks two SOLID principles. Refactor it and explain each change in a short write-up.",
-      "estimatedTime": "1.5 weeks"
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Single Responsibility and Open/Closed",
+          "children": [
+            {
+              "title": "Single responsibility",
+              "description": "A module should have one reason to change. Group code by who asks for changes, not by technical layer.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Single-responsibility principle",
+                  "url": "https://en.wikipedia.org/wiki/Single-responsibility_principle",
+                  "type": "article"
+                },
+                {
+                  "label": "Clean Architecture (Robert C. Martin)",
+                  "url": "https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Open for extension, closed for modification",
+              "description": "Add behavior by adding new code, not by editing tested code. Abstractions and strategies are the usual way to get there.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Open-closed principle",
+                  "url": "https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle",
+                  "type": "article"
+                },
+                {
+                  "label": "Refactoring Guru - Strategy",
+                  "url": "https://refactoring.guru/design-patterns/strategy",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Substitution and Interfaces",
+          "children": [
+            {
+              "title": "Liskov substitution",
+              "description": "Any subtype must work wherever its parent is expected. A subclass that throws on an inherited method breaks that promise.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Liskov substitution principle",
+                  "url": "https://en.wikipedia.org/wiki/Liskov_substitution_principle",
+                  "type": "article"
+                },
+                {
+                  "label": "Head First Object-Oriented Analysis and Design",
+                  "url": "https://www.oreilly.com/library/view/head-first-object-oriented/0596008678/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Interface segregation",
+              "description": "Many small, focused interfaces beat one large one. Clients should not depend on methods they never call.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Interface segregation principle",
+                  "url": "https://en.wikipedia.org/wiki/Interface_segregation_principle",
+                  "type": "article"
+                },
+                {
+                  "label": "Wikipedia - SOLID",
+                  "url": "https://en.wikipedia.org/wiki/SOLID",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Dependency Inversion",
+          "children": [
+            {
+              "title": "Depending on abstractions",
+              "description": "High-level policy should not import low-level details. Both depend on an interface owned by the high-level side.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Dependency inversion principle",
+                  "url": "https://en.wikipedia.org/wiki/Dependency_inversion_principle",
+                  "type": "article"
+                },
+                {
+                  "label": "Clean Architecture (Robert C. Martin)",
+                  "url": "https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Dependency injection",
+              "description": "Pass collaborators in instead of creating them inside. That makes code configurable and lets tests supply fakes.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - Inversion of Control Containers and the Dependency Injection pattern",
+                  "url": "https://martinfowler.com/articles/injection.html",
+                  "type": "article"
+                },
+                {
+                  "label": "NestJS - Providers",
+                  "url": "https://docs.nestjs.com/providers",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Using SOLID with Judgment",
+          "children": [
+            {
+              "title": "When SOLID is over-engineering",
+              "description": "An interface with one implementation and a factory for a constant adds cost without benefit. Apply a principle when change actually hurts.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - Yagni",
+                  "url": "https://martinfowler.com/bliki/Yagni.html",
+                  "type": "article"
+                },
+                {
+                  "label": "A Philosophy of Software Design (Ousterhout)",
+                  "url": "https://web.stanford.edu/~ouster/cgi-bin/book.php",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Spotting violations in real code",
+              "description": "A class that needs edits for every new feature, or tests that need heavy setup, usually breaks one of the principles.",
+              "resources": [
+                {
+                  "label": "Wikipedia - SOLID",
+                  "url": "https://en.wikipedia.org/wiki/SOLID",
+                  "type": "article"
+                },
+                {
+                  "label": "Refactoring Guru - Code Smells",
+                  "url": "https://refactoring.guru/refactoring/smells",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "software-design-4",
@@ -5281,7 +5737,159 @@
         }
       ],
       "challenge": "Build a notification sender that creates email, SMS and push senders through a factory. Add a new channel without editing existing code.",
-      "estimatedTime": "1 week"
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Factories",
+          "children": [
+            {
+              "title": "Factory method",
+              "description": "Let a method decide which class to create, so callers depend on a product interface and not a concrete type.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Factory Method",
+                  "url": "https://refactoring.guru/design-patterns/factory-method",
+                  "type": "article"
+                },
+                {
+                  "label": "Design Patterns (Gang of Four)",
+                  "url": "https://www.oreilly.com/library/view/design-patterns-elements/0201633612/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Abstract factory",
+              "description": "Create whole families of related objects, such as one UI theme's widgets, behind one interface.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Abstract Factory",
+                  "url": "https://refactoring.guru/design-patterns/abstract-factory",
+                  "type": "article"
+                },
+                {
+                  "label": "Head First Design Patterns",
+                  "url": "https://www.oreilly.com/library/view/head-first-design/9781492077992/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Builder",
+          "children": [
+            {
+              "title": "Builder for complex construction",
+              "description": "Build an object step by step when it has many optional parts. It replaces long constructors with readable, named calls.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Builder",
+                  "url": "https://refactoring.guru/design-patterns/builder",
+                  "type": "article"
+                },
+                {
+                  "label": "Head First Design Patterns",
+                  "url": "https://www.oreilly.com/library/view/head-first-design/9781492077992/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Builders in practice",
+              "description": "Fluent query builders and request configurators are everyday examples. Validate the result when you call build.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Builder",
+                  "url": "https://refactoring.guru/design-patterns/builder",
+                  "type": "article"
+                },
+                {
+                  "label": "Refactoring Guru - Creational Patterns",
+                  "url": "https://refactoring.guru/design-patterns/creational-patterns",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Singleton and Sharing",
+          "children": [
+            {
+              "title": "Singleton and why it hurts testing",
+              "description": "A global instance hides dependencies and leaks state between tests. Prefer passing one shared object in.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Singleton",
+                  "url": "https://refactoring.guru/design-patterns/singleton",
+                  "type": "article"
+                },
+                {
+                  "label": "Game Programming Patterns - Singleton",
+                  "url": "https://gameprogrammingpatterns.com/singleton.html",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Object pools and prototypes",
+              "description": "Reuse expensive objects or clone a ready-made one instead of building from scratch. Measure before you add the complexity.",
+              "resources": [
+                {
+                  "label": "Game Programming Patterns - Object Pool",
+                  "url": "https://gameprogrammingpatterns.com/object-pool.html",
+                  "type": "book"
+                },
+                {
+                  "label": "Refactoring Guru - Prototype",
+                  "url": "https://refactoring.guru/design-patterns/prototype",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Choosing Without Patterns",
+          "children": [
+            {
+              "title": "Dependency injection as a replacement",
+              "description": "A container or plain constructor arguments often remove the need for factories and singletons.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - Inversion of Control Containers and the Dependency Injection pattern",
+                  "url": "https://martinfowler.com/articles/injection.html",
+                  "type": "article"
+                },
+                {
+                  "label": "NestJS - Providers",
+                  "url": "https://docs.nestjs.com/providers",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "A pattern or a plain function",
+              "description": "In many languages a function or an object literal does the job. Use a pattern when it removes real duplication or coupling.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Creational Patterns",
+                  "url": "https://refactoring.guru/design-patterns/creational-patterns",
+                  "type": "article"
+                },
+                {
+                  "label": "Martin Fowler - Yagni",
+                  "url": "https://martinfowler.com/bliki/Yagni.html",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "software-design-5",
@@ -5319,7 +5927,159 @@
         }
       ],
       "challenge": "Wrap two different payment providers behind one interface with adapters, then add logging with a decorator.",
-      "estimatedTime": "1 week"
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Adapting and Simplifying",
+          "children": [
+            {
+              "title": "Adapter for third-party APIs",
+              "description": "Wrap an outside API in your own interface so a vendor change touches one file, not the whole codebase.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Adapter",
+                  "url": "https://refactoring.guru/design-patterns/adapter",
+                  "type": "article"
+                },
+                {
+                  "label": "Microsoft Azure - Anti-corruption layer pattern",
+                  "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/anti-corruption-layer",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Facade",
+              "description": "Give a messy subsystem one simple entry point. Callers use the facade, and the details can change behind it.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Facade",
+                  "url": "https://refactoring.guru/design-patterns/facade",
+                  "type": "article"
+                },
+                {
+                  "label": "Design Patterns (Gang of Four)",
+                  "url": "https://www.oreilly.com/library/view/design-patterns-elements/0201633612/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Wrapping Objects",
+          "children": [
+            {
+              "title": "Decorator for stacking behavior",
+              "description": "Wrap an object with another that has the same interface to add logging, caching or retries without subclassing.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Decorator",
+                  "url": "https://refactoring.guru/design-patterns/decorator",
+                  "type": "article"
+                },
+                {
+                  "label": "Head First Design Patterns",
+                  "url": "https://www.oreilly.com/library/view/head-first-design/9781492077992/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Proxy for access and lazy loading",
+              "description": "A stand-in controls access to the real object. Use it for permission checks, lazy loading and caching.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Proxy",
+                  "url": "https://refactoring.guru/design-patterns/proxy",
+                  "type": "article"
+                },
+                {
+                  "label": "MDN - Proxy",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Trees and Composition",
+          "children": [
+            {
+              "title": "Composite for tree structures",
+              "description": "Treat a single item and a group of items the same way. File systems and UI component trees follow this shape.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Composite",
+                  "url": "https://refactoring.guru/design-patterns/composite",
+                  "type": "article"
+                },
+                {
+                  "label": "Design Patterns (Gang of Four)",
+                  "url": "https://www.oreilly.com/library/view/design-patterns-elements/0201633612/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Walking a composite",
+              "description": "Operations such as size or render recurse over children. Keep the child list behind the composite's interface.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Composite",
+                  "url": "https://refactoring.guru/design-patterns/composite",
+                  "type": "article"
+                },
+                {
+                  "label": "Refactoring Guru - Structural Patterns",
+                  "url": "https://refactoring.guru/design-patterns/structural-patterns",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Patterns You Already Use",
+          "children": [
+            {
+              "title": "Middleware as a chain",
+              "description": "Express middleware wraps each request with small steps. That is the decorator and chain ideas in daily use.",
+              "resources": [
+                {
+                  "label": "Express - Using middleware",
+                  "url": "https://expressjs.com/en/guide/using-middleware.html",
+                  "type": "docs"
+                },
+                {
+                  "label": "Refactoring Guru - Chain of Responsibility",
+                  "url": "https://refactoring.guru/design-patterns/chain-of-responsibility",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Choosing among structural patterns",
+              "description": "Adapter changes an interface, facade simplifies one, decorator adds behavior and proxy controls access. Name the problem first.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Structural Patterns",
+                  "url": "https://refactoring.guru/design-patterns/structural-patterns",
+                  "type": "article"
+                },
+                {
+                  "label": "Head First Design Patterns",
+                  "url": "https://www.oreilly.com/library/view/head-first-design/9781492077992/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "software-design-6",
@@ -5357,7 +6117,159 @@
         }
       ],
       "challenge": "Implement a vending machine as a state machine, then a pricing engine with swappable discount strategies.",
-      "estimatedTime": "1.5 weeks"
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Swapping Behavior",
+          "children": [
+            {
+              "title": "Strategy to swap algorithms",
+              "description": "Put each algorithm behind a common interface and choose one at runtime. It replaces large conditionals.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Strategy",
+                  "url": "https://refactoring.guru/design-patterns/strategy",
+                  "type": "article"
+                },
+                {
+                  "label": "Passport - Strategies",
+                  "url": "https://www.passportjs.org/concepts/authentication/strategies/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Template method",
+              "description": "A base class fixes the steps of a process and lets subclasses fill in some of them. Prefer strategy when you can.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Template Method",
+                  "url": "https://refactoring.guru/design-patterns/template-method",
+                  "type": "article"
+                },
+                {
+                  "label": "Design Patterns (Gang of Four)",
+                  "url": "https://www.oreilly.com/library/view/design-patterns-elements/0201633612/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Events and Observers",
+          "children": [
+            {
+              "title": "Observer and event-driven design",
+              "description": "A subject notifies subscribers without knowing who they are. Event emitters and UI listeners work this way.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Observer",
+                  "url": "https://refactoring.guru/design-patterns/observer",
+                  "type": "article"
+                },
+                {
+                  "label": "Node.js - Events",
+                  "url": "https://nodejs.org/api/events.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Observer pitfalls",
+              "description": "Forgotten unsubscribes leak memory, and long event chains are hard to trace. Keep handlers small and name events clearly.",
+              "resources": [
+                {
+                  "label": "Game Programming Patterns - Observer",
+                  "url": "https://gameprogrammingpatterns.com/observer.html",
+                  "type": "book"
+                },
+                {
+                  "label": "MDN - EventTarget",
+                  "url": "https://developer.mozilla.org/en-US/docs/Web/API/EventTarget",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Commands and State",
+          "children": [
+            {
+              "title": "Command, undo and queues",
+              "description": "Turn a request into an object so you can queue it, log it, retry it or undo it.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Command",
+                  "url": "https://refactoring.guru/design-patterns/command",
+                  "type": "article"
+                },
+                {
+                  "label": "Game Programming Patterns - Command",
+                  "url": "https://gameprogrammingpatterns.com/command.html",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "State machines",
+              "description": "Model behavior that changes with state as explicit states and transitions, not flags scattered in conditionals.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - State",
+                  "url": "https://refactoring.guru/design-patterns/state",
+                  "type": "article"
+                },
+                {
+                  "label": "Wikipedia - Finite-state machine",
+                  "url": "https://en.wikipedia.org/wiki/Finite-state_machine",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Spotting Patterns",
+          "children": [
+            {
+              "title": "Chain of responsibility",
+              "description": "Pass a request along a list of handlers until one deals with it. Auth, validation and error handling pipelines use it.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Chain of Responsibility",
+                  "url": "https://refactoring.guru/design-patterns/chain-of-responsibility",
+                  "type": "article"
+                },
+                {
+                  "label": "Express - Using middleware",
+                  "url": "https://expressjs.com/en/guide/using-middleware.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Patterns inside frameworks",
+              "description": "Reducers, hooks, middleware and plugins are patterns with new names. Recognizing them speeds up learning a new framework.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Behavioral Patterns",
+                  "url": "https://refactoring.guru/design-patterns/behavioral-patterns",
+                  "type": "article"
+                },
+                {
+                  "label": "Game Programming Patterns (Nystrom)",
+                  "url": "https://gameprogrammingpatterns.com/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "software-design-7",
@@ -5395,7 +6307,159 @@
         }
       ],
       "challenge": "Pick an untested module, add characterization tests, then refactor it in at least five small commits with passing tests each time.",
-      "estimatedTime": "2 weeks"
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "A Safety Net",
+          "children": [
+            {
+              "title": "Characterization tests",
+              "description": "Before changing legacy code, write tests that pin down what it does today, right or wrong. They tell you if a change altered behavior.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Characterization test",
+                  "url": "https://en.wikipedia.org/wiki/Characterization_test",
+                  "type": "article"
+                },
+                {
+                  "label": "Working Effectively with Legacy Code (Feathers)",
+                  "url": "https://www.oreilly.com/library/view/working-effectively-with/0131177052/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Seams for testing",
+              "description": "Find or create a place where you can swap a dependency without editing the code under test. Then you can test the untested.",
+              "resources": [
+                {
+                  "label": "Working Effectively with Legacy Code (Feathers)",
+                  "url": "https://www.oreilly.com/library/view/working-effectively-with/0131177052/",
+                  "type": "book"
+                },
+                {
+                  "label": "Martin Fowler - Mocks Aren't Stubs",
+                  "url": "https://martinfowler.com/articles/mocksArentStubs.html",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Small Steps",
+          "children": [
+            {
+              "title": "The refactoring catalog",
+              "description": "Named, small transformations with known safe steps. Work from the catalog and run tests after each one.",
+              "resources": [
+                {
+                  "label": "Refactoring.com - Catalog",
+                  "url": "https://refactoring.com/catalog/",
+                  "type": "article"
+                },
+                {
+                  "label": "Refactoring Guru - Refactoring techniques",
+                  "url": "https://refactoring.guru/refactoring/techniques",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Extract, move and rename",
+              "description": "These three moves do most of the work. Extract a function, move it to the class that owns the data, then rename for clarity.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Extract Method",
+                  "url": "https://refactoring.guru/extract-method",
+                  "type": "article"
+                },
+                {
+                  "label": "Refactoring Guru - Move Method",
+                  "url": "https://refactoring.guru/move-method",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Bigger Changes",
+          "children": [
+            {
+              "title": "Replace conditionals with polymorphism",
+              "description": "When a type switch repeats across the code, move each branch into its own class behind one interface.",
+              "resources": [
+                {
+                  "label": "Refactoring Guru - Replace Conditional with Polymorphism",
+                  "url": "https://refactoring.guru/replace-conditional-with-polymorphism",
+                  "type": "article"
+                },
+                {
+                  "label": "Refactoring Guru - Rename Method",
+                  "url": "https://refactoring.guru/rename-method",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Strangler pattern for rewrites",
+              "description": "Build the new system around the old one and move traffic over piece by piece. You never need a risky big-bang switch.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - StranglerFigApplication",
+                  "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Martin Fowler - BranchByAbstraction",
+                  "url": "https://martinfowler.com/bliki/BranchByAbstraction.html",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Knowing It Worked",
+          "children": [
+            {
+              "title": "Measuring a refactor",
+              "description": "Check that tests still pass, that the change is smaller or clearer, and that the next feature is easier. A refactor with no payoff is churn.",
+              "resources": [
+                {
+                  "label": "Refactoring (Martin Fowler)",
+                  "url": "https://refactoring.com/",
+                  "type": "book"
+                },
+                {
+                  "label": "Martin Fowler - CodeSmell",
+                  "url": "https://martinfowler.com/bliki/CodeSmell.html",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Refactoring in a team",
+              "description": "Keep refactoring commits separate from feature commits and review them on their own. Small, frequent changes are easier to reverse.",
+              "resources": [
+                {
+                  "label": "Refactoring (Martin Fowler)",
+                  "url": "https://refactoring.com/",
+                  "type": "book"
+                },
+                {
+                  "label": "A Philosophy of Software Design (Ousterhout)",
+                  "url": "https://web.stanford.edu/~ouster/cgi-bin/book.php",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "software-design-8",
@@ -5433,7 +6497,159 @@
         }
       ],
       "challenge": "Restructure a small Express app into controller, service and repository layers, with the database swappable behind an interface.",
-      "estimatedTime": "2 weeks"
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Layers",
+          "children": [
+            {
+              "title": "Layered architecture and its leaks",
+              "description": "Presentation, domain and data layers keep concerns apart. Layers leak when SQL or HTTP details climb into the domain.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - PresentationDomainDataLayering",
+                  "url": "https://martinfowler.com/bliki/PresentationDomainDataLayering.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Clean Architecture (Robert C. Martin)",
+                  "url": "https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Controllers, services and repositories",
+              "description": "Controllers translate HTTP, services hold the rules and repositories hide storage. Each calls only the layer below.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - PresentationDomainDataLayering",
+                  "url": "https://martinfowler.com/bliki/PresentationDomainDataLayering.html",
+                  "type": "article"
+                },
+                {
+                  "label": "The Clean Architecture (Uncle Bob)",
+                  "url": "https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Ports and Adapters",
+          "children": [
+            {
+              "title": "Ports and adapters",
+              "description": "The core defines ports, the interfaces it needs. Adapters for databases, queues and web plug into them from outside.",
+              "resources": [
+                {
+                  "label": "Hexagonal architecture (Alistair Cockburn)",
+                  "url": "https://alistair.cockburn.us/hexagonal-architecture/",
+                  "type": "article"
+                },
+                {
+                  "label": "Netflix - Ready for changes with Hexagonal Architecture",
+                  "url": "https://netflixtechblog.com/ready-for-changes-with-hexagonal-architecture-b315ec967749",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Swapping adapters",
+              "description": "Because the core never imports an adapter, you can replace a database or add a CLI without rewriting business rules.",
+              "resources": [
+                {
+                  "label": "Hexagonal architecture (Alistair Cockburn)",
+                  "url": "https://alistair.cockburn.us/hexagonal-architecture/",
+                  "type": "article"
+                },
+                {
+                  "label": "Clean Architecture (Robert C. Martin)",
+                  "url": "https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "The Dependency Rule",
+          "children": [
+            {
+              "title": "Dependencies point inward",
+              "description": "Source code in outer rings may know about inner rings, never the reverse. The domain imports nothing from the framework.",
+              "resources": [
+                {
+                  "label": "The Clean Architecture (Uncle Bob)",
+                  "url": "https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Clean Architecture (Robert C. Martin)",
+                  "url": "https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Domain free of framework code",
+              "description": "Keep entities as plain classes. Annotations and ORM types belong in adapters, where they cannot spread.",
+              "resources": [
+                {
+                  "label": "Clean Architecture (Robert C. Martin)",
+                  "url": "https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/",
+                  "type": "book"
+                },
+                {
+                  "label": "Wikipedia - Dependency inversion principle",
+                  "url": "https://en.wikipedia.org/wiki/Dependency_inversion_principle",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Testing by Layer",
+          "children": [
+            {
+              "title": "Unit tests for the core",
+              "description": "Domain logic with no I/O needs no mocks and runs in milliseconds. Put most of your tests here.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - TestPyramid",
+                  "url": "https://martinfowler.com/bliki/TestPyramid.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Clean Architecture (Robert C. Martin)",
+                  "url": "https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Integration tests for adapters",
+              "description": "Test each adapter against the real thing, such as a database container, and keep those tests few and focused.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - TestPyramid",
+                  "url": "https://martinfowler.com/bliki/TestPyramid.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Martin Fowler - Mocks Aren't Stubs",
+                  "url": "https://martinfowler.com/articles/mocksArentStubs.html",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "software-design-9",
@@ -5471,7 +6687,159 @@
         }
       ],
       "challenge": "Model an online store with aggregates and bounded contexts for orders, catalog and billing. Draw the context map and justify each boundary.",
-      "estimatedTime": "2 weeks"
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Shared Language",
+          "children": [
+            {
+              "title": "Ubiquitous language",
+              "description": "Use the same words in conversation, documents and code. If the business says \"policy\", the class is not called \"Contract\".",
+              "resources": [
+                {
+                  "label": "Martin Fowler - UbiquitousLanguage",
+                  "url": "https://martinfowler.com/bliki/UbiquitousLanguage.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Domain-Driven Design (Eric Evans)",
+                  "url": "https://www.domainlanguage.com/ddd/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Modeling with domain experts",
+              "description": "Sketch the model together, listen for words that mean different things, and rename in code when understanding changes.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - DomainDrivenDesign",
+                  "url": "https://martinfowler.com/bliki/DomainDrivenDesign.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Domain-Driven Design (Eric Evans)",
+                  "url": "https://www.domainlanguage.com/ddd/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Building Blocks",
+          "children": [
+            {
+              "title": "Entities and value objects",
+              "description": "An entity has an identity that persists. A value object is defined by its values and is immutable, such as money or a date range.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - EvansClassification",
+                  "url": "https://martinfowler.com/bliki/EvansClassification.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Martin Fowler - ValueObject",
+                  "url": "https://martinfowler.com/bliki/ValueObject.html",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Aggregates and consistency",
+              "description": "An aggregate is a cluster that changes together under one root. Keep transactions inside one aggregate.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - DDD_Aggregate",
+                  "url": "https://martinfowler.com/bliki/DDD_Aggregate.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Domain-Driven Design (Eric Evans)",
+                  "url": "https://www.domainlanguage.com/ddd/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Events and Boundaries",
+          "children": [
+            {
+              "title": "Domain events",
+              "description": "Record that something important happened, such as OrderPlaced, and let other parts react without being called directly.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - Domain Event",
+                  "url": "https://martinfowler.com/eaaDev/DomainEvent.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Martin Fowler - DomainDrivenDesign",
+                  "url": "https://martinfowler.com/bliki/DomainDrivenDesign.html",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Bounded contexts",
+              "description": "A word can mean different things in different parts of a business. Give each meaning its own context and model.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - BoundedContext",
+                  "url": "https://martinfowler.com/bliki/BoundedContext.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Domain-Driven Design (Eric Evans)",
+                  "url": "https://www.domainlanguage.com/ddd/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Applying It",
+          "children": [
+            {
+              "title": "Context maps and translation",
+              "description": "Show how contexts relate and translate between them at the border. An anti-corruption layer stops a legacy model from leaking in.",
+              "resources": [
+                {
+                  "label": "Microsoft Azure - Anti-corruption layer pattern",
+                  "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/anti-corruption-layer",
+                  "type": "docs"
+                },
+                {
+                  "label": "Martin Fowler - BoundedContext",
+                  "url": "https://martinfowler.com/bliki/BoundedContext.html",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "When DDD is too heavy",
+              "description": "A simple CRUD app does not need aggregates and events. Use the full approach only where the domain is complex and changing.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - DomainDrivenDesign",
+                  "url": "https://martinfowler.com/bliki/DomainDrivenDesign.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Martin Fowler - Yagni",
+                  "url": "https://martinfowler.com/bliki/Yagni.html",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "software-design-10",
@@ -5509,7 +6877,159 @@
         }
       ],
       "challenge": "Map the modules in a project you know, draw the dependency graph, and fix one boundary violation.",
-      "estimatedTime": "1.5 weeks"
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Modular Monolith",
+          "children": [
+            {
+              "title": "Structuring a modular monolith",
+              "description": "One deployable, split into modules with clear owners. You get most of the benefit of services without the network.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - MonolithFirst",
+                  "url": "https://martinfowler.com/bliki/MonolithFirst.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Martin Fowler - Microservice Premium",
+                  "url": "https://martinfowler.com/bliki/MicroservicePremium.html",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Public interfaces between modules",
+              "description": "Each module exposes a small API and hides the rest. Other modules never reach into its tables or classes.",
+              "resources": [
+                {
+                  "label": "A Philosophy of Software Design (Ousterhout)",
+                  "url": "https://web.stanford.edu/~ouster/cgi-bin/book.php",
+                  "type": "book"
+                },
+                {
+                  "label": "Wikipedia - Coupling",
+                  "url": "https://en.wikipedia.org/wiki/Coupling_(computer_programming)",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Dependencies",
+          "children": [
+            {
+              "title": "Direction of dependencies",
+              "description": "Draw the module graph and keep it acyclic. A cycle means two modules are really one.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Coupling",
+                  "url": "https://en.wikipedia.org/wiki/Coupling_(computer_programming)",
+                  "type": "article"
+                },
+                {
+                  "label": "Clean Architecture (Robert C. Martin)",
+                  "url": "https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Detecting hidden coupling",
+              "description": "Shared tables, shared constants and changes that always happen together reveal coupling the imports do not show.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Coupling",
+                  "url": "https://en.wikipedia.org/wiki/Coupling_(computer_programming)",
+                  "type": "article"
+                },
+                {
+                  "label": "Refactoring Guru - Code Smells",
+                  "url": "https://refactoring.guru/refactoring/smells",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Sharing and Splitting",
+          "children": [
+            {
+              "title": "Shared libraries versus duplication",
+              "description": "A shared library couples every user to its release. Duplicating a small piece is sometimes cheaper than a shared dependency.",
+              "resources": [
+                {
+                  "label": "A Philosophy of Software Design (Ousterhout)",
+                  "url": "https://web.stanford.edu/~ouster/cgi-bin/book.php",
+                  "type": "book"
+                },
+                {
+                  "label": "Building Microservices (Sam Newman)",
+                  "url": "https://samnewman.io/books/building_microservices_2nd_edition/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Moving from monolith to services",
+              "description": "Extract a service when a boundary is stable and a team or scaling need justifies the cost of a network call.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - MonolithFirst",
+                  "url": "https://martinfowler.com/bliki/MonolithFirst.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Building Microservices (Sam Newman)",
+                  "url": "https://samnewman.io/books/building_microservices_2nd_edition/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "People and Structure",
+          "children": [
+            {
+              "title": "Conway's law",
+              "description": "A system's design mirrors the communication of the teams that build it. Shape teams to match the architecture you want.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - ConwaysLaw",
+                  "url": "https://martinfowler.com/bliki/ConwaysLaw.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Building Microservices (Sam Newman)",
+                  "url": "https://samnewman.io/books/building_microservices_2nd_edition/",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Team-aligned boundaries",
+              "description": "Give each team ownership of a whole module so it can ship without coordinating every change.",
+              "resources": [
+                {
+                  "label": "Martin Fowler - ConwaysLaw",
+                  "url": "https://martinfowler.com/bliki/ConwaysLaw.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Martin Fowler - BoundedContext",
+                  "url": "https://martinfowler.com/bliki/BoundedContext.html",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "software-design-11",
@@ -5547,7 +7067,159 @@
         }
       ],
       "challenge": "Design the public interface of a small library, write usage examples first, then evolve it with one breaking and one non-breaking change.",
-      "estimatedTime": "1.5 weeks"
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Shape of an Interface",
+          "children": [
+            {
+              "title": "Small, deep interfaces",
+              "description": "A good interface is simple to use and hides a lot of work. Wide interfaces with shallow behavior make users learn more than they gain.",
+              "resources": [
+                {
+                  "label": "A Philosophy of Software Design (Ousterhout)",
+                  "url": "https://web.stanford.edu/~ouster/cgi-bin/book.php",
+                  "type": "book"
+                },
+                {
+                  "label": "Google API Design Guide",
+                  "url": "https://cloud.google.com/apis/design",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Naming and consistency",
+              "description": "Use the same name and shape for the same idea across the API, so a user can guess correctly.",
+              "resources": [
+                {
+                  "label": "Google API Design Guide",
+                  "url": "https://cloud.google.com/apis/design",
+                  "type": "docs"
+                },
+                {
+                  "label": "Clean Code (Robert C. Martin)",
+                  "url": "https://www.oreilly.com/library/view/clean-code-a/9780136083238/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Inputs and Errors",
+          "children": [
+            {
+              "title": "Validation at the boundary",
+              "description": "Check and parse input once where it enters, then pass trusted types inward. Do not re-check in every function.",
+              "resources": [
+                {
+                  "label": "Parse, don't validate",
+                  "url": "https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/",
+                  "type": "article"
+                },
+                {
+                  "label": "A Philosophy of Software Design (Ousterhout)",
+                  "url": "https://web.stanford.edu/~ouster/cgi-bin/book.php",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Error handling strategy",
+              "description": "Return errors that say what happened and what the caller can do. Keep error shapes the same across the whole API.",
+              "resources": [
+                {
+                  "label": "Google API Design Guide",
+                  "url": "https://cloud.google.com/apis/design",
+                  "type": "docs"
+                },
+                {
+                  "label": "A Philosophy of Software Design (Ousterhout)",
+                  "url": "https://web.stanford.edu/~ouster/cgi-bin/book.php",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Change Over Time",
+          "children": [
+            {
+              "title": "Backward-compatible changes",
+              "description": "Adding an optional field is safe. Removing or renaming one breaks callers, so treat it as a new version.",
+              "resources": [
+                {
+                  "label": "Semantic Versioning 2.0.0",
+                  "url": "https://semver.org/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Martin Fowler - TolerantReader",
+                  "url": "https://martinfowler.com/bliki/TolerantReader.html",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Versioning",
+              "description": "Version when you must break compatibility, give users a clear deprecation window, and avoid running too many versions at once.",
+              "resources": [
+                {
+                  "label": "Semantic Versioning 2.0.0",
+                  "url": "https://semver.org/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Google API Design Guide",
+                  "url": "https://cloud.google.com/apis/design",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Reliable Behavior",
+          "children": [
+            {
+              "title": "Idempotency",
+              "description": "A repeated request should have the same effect as one. Idempotency keys make retries safe for payments and orders.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Idempotence",
+                  "url": "https://en.wikipedia.org/wiki/Idempotence",
+                  "type": "article"
+                },
+                {
+                  "label": "MDN - Idempotent (HTTP glossary)",
+                  "url": "https://developer.mozilla.org/en-US/docs/Glossary/Idempotent",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Documenting the contract",
+              "description": "Write the contract in a machine-readable spec and keep it in sync with the code through tests or generation.",
+              "resources": [
+                {
+                  "label": "OpenAPI Specification",
+                  "url": "https://swagger.io/specification/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Google API Design Guide",
+                  "url": "https://cloud.google.com/apis/design",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "software-design-12",
@@ -5585,7 +7257,159 @@
         }
       ],
       "challenge": "Solve three problems (parking lot, LRU cache, elevator) in 45 minutes each: class diagram, core code and one extension per problem.",
-      "estimatedTime": "2 weeks"
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "A Method",
+          "children": [
+            {
+              "title": "A framework for LLD rounds",
+              "description": "Clarify requirements, list entities, define relationships, sketch the main classes and methods, then walk through a scenario.",
+              "resources": [
+                {
+                  "label": "Awesome Low Level Design",
+                  "url": "https://github.com/ashishps1/awesome-low-level-design",
+                  "type": "article"
+                },
+                {
+                  "label": "Grokking the Low Level Design Interview",
+                  "url": "https://www.educative.io/courses/grokking-the-low-level-design-interview-using-ood-principles",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Choosing patterns on purpose",
+              "description": "Name the variation you expect, such as pricing rules, and use a pattern for that point only. Say why out loud.",
+              "resources": [
+                {
+                  "label": "Head First Design Patterns",
+                  "url": "https://www.oreilly.com/library/view/head-first-design/9781492077992/",
+                  "type": "book"
+                },
+                {
+                  "label": "Refactoring Guru - Design Patterns",
+                  "url": "https://refactoring.guru/design-patterns",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Classic Systems",
+          "children": [
+            {
+              "title": "Parking lot and elevator",
+              "description": "Practice modeling spaces, vehicles and requests. The elevator adds a scheduling strategy and a state machine.",
+              "resources": [
+                {
+                  "label": "Awesome Low Level Design",
+                  "url": "https://github.com/ashishps1/awesome-low-level-design",
+                  "type": "article"
+                },
+                {
+                  "label": "Refactoring Guru - State",
+                  "url": "https://refactoring.guru/design-patterns/state",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "LRU cache and rate limiter",
+              "description": "Both combine a data structure with a policy. Make the eviction or limiting policy swappable.",
+              "resources": [
+                {
+                  "label": "Awesome Low Level Design",
+                  "url": "https://github.com/ashishps1/awesome-low-level-design",
+                  "type": "article"
+                },
+                {
+                  "label": "Refactoring Guru - Strategy",
+                  "url": "https://refactoring.guru/design-patterns/strategy",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "State-Heavy Problems",
+          "children": [
+            {
+              "title": "Chess and tic-tac-toe",
+              "description": "Model the board, pieces and rules separately. Keep move validation out of the piece classes if rules grow.",
+              "resources": [
+                {
+                  "label": "Awesome Low Level Design",
+                  "url": "https://github.com/ashishps1/awesome-low-level-design",
+                  "type": "article"
+                },
+                {
+                  "label": "Game Programming Patterns - State",
+                  "url": "https://gameprogrammingpatterns.com/state.html",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Booking and inventory",
+              "description": "Think about concurrent requests and double booking. Model holds, confirmations and expirations explicitly.",
+              "resources": [
+                {
+                  "label": "Awesome Low Level Design",
+                  "url": "https://github.com/ashishps1/awesome-low-level-design",
+                  "type": "article"
+                },
+                {
+                  "label": "Martin Fowler - DDD_Aggregate",
+                  "url": "https://martinfowler.com/bliki/DDD_Aggregate.html",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Presenting Your Design",
+          "children": [
+            {
+              "title": "Explaining trade-offs",
+              "description": "State what you chose, what you gave up and when you would choose differently. That is what the interviewer is listening for.",
+              "resources": [
+                {
+                  "label": "Grokking the Low Level Design Interview",
+                  "url": "https://www.educative.io/courses/grokking-the-low-level-design-interview-using-ood-principles",
+                  "type": "article"
+                },
+                {
+                  "label": "A Philosophy of Software Design (Ousterhout)",
+                  "url": "https://web.stanford.edu/~ouster/cgi-bin/book.php",
+                  "type": "book"
+                }
+              ]
+            },
+            {
+              "title": "Extending the design",
+              "description": "Expect a follow-up that adds a requirement. A clean design absorbs it with a new class, not edits across many.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Open-closed principle",
+                  "url": "https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle",
+                  "type": "article"
+                },
+                {
+                  "label": "Awesome Low Level Design",
+                  "url": "https://github.com/ashishps1/awesome-low-level-design",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "leetcode-patterns": [
@@ -5625,7 +7449,159 @@
         }
       ],
       "challenge": "Set up your tracker and plan a 4-week schedule. Solve 5 easy problems and log the pattern, time and mistakes for each.",
-      "estimatedTime": "1 week"
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Sequencing Practice",
+          "children": [
+            {
+              "title": "Easy, medium and hard in order",
+              "description": "Start with easy problems to learn the patterns, then mediums on the same pattern, and hards last. Jumping to hards early only teaches frustration.",
+              "resources": [
+                {
+                  "label": "NeetCode roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                },
+                {
+                  "label": "Grind 75",
+                  "url": "https://www.techinterviewhandbook.org/grind75/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Curated lists",
+              "description": "Pick one list such as Grind 75 or the NeetCode roadmap and finish it. Switching lists every week gives you breadth but no depth.",
+              "resources": [
+                {
+                  "label": "Grind 75",
+                  "url": "https://www.techinterviewhandbook.org/grind75/",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode practice",
+                  "url": "https://neetcode.io/practice",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Working a Problem",
+          "children": [
+            {
+              "title": "The 20-minute rule",
+              "description": "Spend about 20 minutes on your own, then read a hint, then the solution. After reading, close it and solve the problem again from scratch.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook - Coding interview study plan",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                },
+                {
+                  "label": "LeetCode problem set",
+                  "url": "https://leetcode.com/problemset/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Avoiding the memorize trap",
+              "description": "Memorized solutions fail on the first variation. After each problem, write down the pattern, the signal that told you to use it, and what would change it.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook - Coding interview study plan",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Tracking",
+          "children": [
+            {
+              "title": "Logging attempts and mistakes",
+              "description": "Record the date, time taken, pattern and the exact mistake. Your own mistake log shows which patterns need work.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook - Coding interview study plan",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                },
+                {
+                  "label": "LeetCode problem set",
+                  "url": "https://leetcode.com/problemset/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Spaced repetition",
+              "description": "Re-solve a problem after a day, a week and a month. Retrieval after a gap is what makes a pattern stick.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Spaced repetition",
+                  "url": "https://en.wikipedia.org/wiki/Spaced_repetition",
+                  "type": "article"
+                },
+                {
+                  "label": "Grind 75",
+                  "url": "https://www.techinterviewhandbook.org/grind75/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Your Own Notes",
+          "children": [
+            {
+              "title": "Pattern notes",
+              "description": "For each pattern keep a short template, its signal words, its time and space cost, and two problems that use it.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook - Algorithms cheatsheet",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/study-cheatsheet/",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Reviewing weak patterns",
+              "description": "Once a week, pick the pattern with the most mistakes in your log and do three fresh problems on it.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook - Coding interview study plan",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                },
+                {
+                  "label": "Grind 75",
+                  "url": "https://www.techinterviewhandbook.org/grind75/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "leetcode-patterns-2",
@@ -5663,7 +7639,159 @@
         }
       ],
       "challenge": "Solve 10 array and hashing problems. Explain the shared pattern across any three of them in your own words.",
-      "estimatedTime": "1 week"
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Hashing Basics",
+          "children": [
+            {
+              "title": "Contains Duplicate and Two Sum",
+              "description": "A set answers \"seen before?\" in constant time, and a map from value to index turns Two Sum from quadratic into one pass.",
+              "resources": [
+                {
+                  "label": "LeetCode - Contains Duplicate",
+                  "url": "https://leetcode.com/problems/contains-duplicate/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Two Sum",
+                  "url": "https://leetcode.com/problems/two-sum/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Group Anagrams and Top K Frequent",
+              "description": "Use a canonical key such as sorted letters or a count tuple to group items. Bucket by frequency to avoid a full sort.",
+              "resources": [
+                {
+                  "label": "LeetCode - Group Anagrams",
+                  "url": "https://leetcode.com/problems/group-anagrams/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Top K Frequent Elements",
+                  "url": "https://leetcode.com/problems/top-k-frequent-elements/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Prefix and Product Tricks",
+          "children": [
+            {
+              "title": "Product of Array Except Self",
+              "description": "Build a prefix product going right and a suffix product going left. No division is needed, and you can reuse the output array.",
+              "resources": [
+                {
+                  "label": "LeetCode - Product of Array Except Self",
+                  "url": "https://leetcode.com/problems/product-of-array-except-self/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Prefix sum",
+                  "url": "https://en.wikipedia.org/wiki/Prefix_sum",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Subarray Sum Equals K",
+              "description": "Store counts of each prefix sum. A subarray sums to k when the current prefix minus k was seen before.",
+              "resources": [
+                {
+                  "label": "LeetCode - Subarray Sum Equals K",
+                  "url": "https://leetcode.com/problems/subarray-sum-equals-k/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Prefix sum",
+                  "url": "https://en.wikipedia.org/wiki/Prefix_sum",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Sets and Sequences",
+          "children": [
+            {
+              "title": "Longest Consecutive Sequence",
+              "description": "Put numbers in a set and only start counting from a number that has no predecessor. Each element is visited once, giving linear time.",
+              "resources": [
+                {
+                  "label": "LeetCode - Longest Consecutive Sequence",
+                  "url": "https://leetcode.com/problems/longest-consecutive-sequence/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - Hash table",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/hash-table/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Valid Anagram",
+              "description": "Compare character counts instead of sorting. A fixed-size array is enough when the alphabet is small.",
+              "resources": [
+                {
+                  "label": "LeetCode - Valid Anagram",
+                  "url": "https://leetcode.com/problems/valid-anagram/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - String",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/string/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Encoding Problems",
+          "children": [
+            {
+              "title": "Valid Sudoku",
+              "description": "Track what you have seen per row, column and box with sets. The box index is row divided by 3 and column divided by 3.",
+              "resources": [
+                {
+                  "label": "LeetCode - Valid Sudoku",
+                  "url": "https://leetcode.com/problems/valid-sudoku/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - Array",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/array/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Choosing the key",
+              "description": "Most hashing problems come down to picking the right key. Ask what two items must share to count as the same.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook - Hash table",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/hash-table/",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "leetcode-patterns-3",
@@ -5701,7 +7829,159 @@
         }
       ],
       "challenge": "Solve 10 problems. For each, write down the signal in the statement that told you to use a window or two pointers.",
-      "estimatedTime": "1 week"
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Opposite-End Pointers",
+          "children": [
+            {
+              "title": "Valid Palindrome and Two Sum II",
+              "description": "On sorted or symmetric data, start at both ends and move the pointer that can improve the answer.",
+              "resources": [
+                {
+                  "label": "LeetCode - Valid Palindrome",
+                  "url": "https://leetcode.com/problems/valid-palindrome/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Two Sum II",
+                  "url": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "3Sum and Container With Most Water",
+              "description": "Sort, fix one value and run two pointers on the rest, skipping duplicates. For the container, move the shorter wall inward.",
+              "resources": [
+                {
+                  "label": "LeetCode - 3Sum",
+                  "url": "https://leetcode.com/problems/3sum/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Container With Most Water",
+                  "url": "https://leetcode.com/problems/container-with-most-water/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Fixed and Growing Windows",
+          "children": [
+            {
+              "title": "Best Time to Buy and Sell Stock",
+              "description": "Track the lowest price so far and the best profit as you scan. It is a window whose left edge jumps to a new low.",
+              "resources": [
+                {
+                  "label": "LeetCode - Best Time to Buy and Sell Stock",
+                  "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - Array",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/array/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Longest Substring Without Repeating Characters",
+              "description": "Grow the right edge, and when a repeat appears move the left edge past it. A map of last positions makes the jump direct.",
+              "resources": [
+                {
+                  "label": "LeetCode - Longest Substring Without Repeating Characters",
+                  "url": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - String",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/string/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Hard Windows",
+          "children": [
+            {
+              "title": "Minimum Window Substring",
+              "description": "Count what you need, expand until the window is valid, then shrink from the left while it stays valid, recording the best.",
+              "resources": [
+                {
+                  "label": "LeetCode - Minimum Window Substring",
+                  "url": "https://leetcode.com/problems/minimum-window-substring/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - String",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/string/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Sliding Window Maximum",
+              "description": "Keep a deque of indices whose values decrease. The front is always the maximum, and you drop indices that leave the window.",
+              "resources": [
+                {
+                  "label": "LeetCode - Sliding Window Maximum",
+                  "url": "https://leetcode.com/problems/sliding-window-maximum/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - String",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/string/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Recognizing the Pattern",
+          "children": [
+            {
+              "title": "Signals for two pointers",
+              "description": "Sorted input, a pair or triple target, or in-place rearranging usually points to two pointers.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook - Array",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/array/",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook - Array",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/array/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Signals for a window",
+              "description": "A contiguous subarray or substring with a constraint, asking for the longest, shortest or count, suggests a window.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook - String",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/string/",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "leetcode-patterns-4",
@@ -5739,7 +8019,159 @@
         }
       ],
       "challenge": "Solve 8 problems, including 2 monotonic stack problems. Draw the stack state step by step for one of them.",
-      "estimatedTime": "1 week"
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Stack Basics",
+          "children": [
+            {
+              "title": "Valid Parentheses and Min Stack",
+              "description": "A stack matches the most recent opener first. Store the running minimum next to each value to answer min in constant time.",
+              "resources": [
+                {
+                  "label": "LeetCode - Valid Parentheses",
+                  "url": "https://leetcode.com/problems/valid-parentheses/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Min Stack",
+                  "url": "https://leetcode.com/problems/min-stack/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Evaluate Reverse Polish Notation",
+              "description": "Push numbers, and on an operator pop two operands and push the result. Watch the order for subtraction and division.",
+              "resources": [
+                {
+                  "label": "LeetCode - Evaluate Reverse Polish Notation",
+                  "url": "https://leetcode.com/problems/evaluate-reverse-polish-notation/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Stack",
+                  "url": "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Monotonic Stack",
+          "children": [
+            {
+              "title": "Daily Temperatures",
+              "description": "Keep a stack of indices with decreasing temperatures. When a warmer day arrives, pop and record the distance.",
+              "resources": [
+                {
+                  "label": "LeetCode - Daily Temperatures",
+                  "url": "https://leetcode.com/problems/daily-temperatures/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - Coding interview study plan",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Next Greater Element",
+              "description": "Store each element's answer when it is popped by a larger value. Each element is pushed and popped once, so it is linear.",
+              "resources": [
+                {
+                  "label": "LeetCode - Next Greater Element I",
+                  "url": "https://leetcode.com/problems/next-greater-element-i/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Stack",
+                  "url": "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Harder Stack Problems",
+          "children": [
+            {
+              "title": "Largest Rectangle in Histogram",
+              "description": "A bar's rectangle extends to the nearest shorter bar on each side. A stack of increasing heights finds both edges in one pass.",
+              "resources": [
+                {
+                  "label": "LeetCode - Largest Rectangle in Histogram",
+                  "url": "https://leetcode.com/problems/largest-rectangle-in-histogram/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Stack",
+                  "url": "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Car Fleet",
+              "description": "Sort by position, compute arrival times, and use a stack where a slower car ahead absorbs those behind it.",
+              "resources": [
+                {
+                  "label": "LeetCode - Car Fleet",
+                  "url": "https://leetcode.com/problems/car-fleet/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Stack",
+                  "url": "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Stacks and Recursion",
+          "children": [
+            {
+              "title": "Generate Parentheses",
+              "description": "Build strings while tracking open and close counts. Only add a close when it would not exceed the opens.",
+              "resources": [
+                {
+                  "label": "LeetCode - Generate Parentheses",
+                  "url": "https://leetcode.com/problems/generate-parentheses/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Backtracking",
+                  "url": "https://en.wikipedia.org/wiki/Backtracking",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Recursion as a stack",
+              "description": "The call stack is a stack. Any recursive solution can be written with an explicit stack when depth is a concern.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Depth-first search",
+                  "url": "https://en.wikipedia.org/wiki/Depth-first_search",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook - Coding interview study plan",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "leetcode-patterns-5",
@@ -5777,7 +8209,159 @@
         }
       ],
       "challenge": "Solve 8 problems. Write one reusable binary search template and note exactly where off-by-one errors appear.",
-      "estimatedTime": "1 week"
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Classic Search",
+          "children": [
+            {
+              "title": "Binary Search and Search Insert Position",
+              "description": "Keep a range that must contain the answer and halve it. The insert position is where the left pointer ends up.",
+              "resources": [
+                {
+                  "label": "LeetCode - Binary Search",
+                  "url": "https://leetcode.com/problems/binary-search/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Search Insert Position",
+                  "url": "https://leetcode.com/problems/search-insert-position/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Avoiding off-by-one errors",
+              "description": "Choose one convention, such as a half-open range, and keep it. Compute the middle as left plus half the distance.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Binary search",
+                  "url": "https://en.wikipedia.org/wiki/Binary_search_algorithm",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook - Coding interview study plan",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Rotated Arrays",
+          "children": [
+            {
+              "title": "Search in Rotated Sorted Array",
+              "description": "At each step one half is sorted. Check whether the target lies in the sorted half, and go there or to the other half.",
+              "resources": [
+                {
+                  "label": "LeetCode - Search in Rotated Sorted Array",
+                  "url": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Binary search",
+                  "url": "https://en.wikipedia.org/wiki/Binary_search_algorithm",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Find Minimum in Rotated Sorted Array",
+              "description": "Compare the middle to the right end. If the middle is larger, the minimum is to its right.",
+              "resources": [
+                {
+                  "label": "LeetCode - Find Minimum in Rotated Sorted Array",
+                  "url": "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Binary search",
+                  "url": "https://en.wikipedia.org/wiki/Binary_search_algorithm",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Search on the Answer",
+          "children": [
+            {
+              "title": "Koko Eating Bananas",
+              "description": "When the answer is a number and you can check a guess quickly, binary search over the range of answers.",
+              "resources": [
+                {
+                  "label": "LeetCode - Koko Eating Bananas",
+                  "url": "https://leetcode.com/problems/koko-eating-bananas/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Binary search",
+                  "url": "https://en.wikipedia.org/wiki/Binary_search_algorithm",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Time Based Key-Value Store",
+              "description": "Store timestamps in increasing order per key and binary search for the latest one at or before the query.",
+              "resources": [
+                {
+                  "label": "LeetCode - Time Based Key-Value Store",
+                  "url": "https://leetcode.com/problems/time-based-key-value-store/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Binary search",
+                  "url": "https://en.wikipedia.org/wiki/Binary_search_algorithm",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Hard Binary Search",
+          "children": [
+            {
+              "title": "Median of Two Sorted Arrays",
+              "description": "Binary search the cut position in the smaller array so the left halves together hold half the elements.",
+              "resources": [
+                {
+                  "label": "LeetCode - Median of Two Sorted Arrays",
+                  "url": "https://leetcode.com/problems/median-of-two-sorted-arrays/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Binary search",
+                  "url": "https://en.wikipedia.org/wiki/Binary_search_algorithm",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Recognizing monotonic checks",
+              "description": "If a yes or no check flips only once as the input grows, binary search applies even when nothing is sorted.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Binary search",
+                  "url": "https://en.wikipedia.org/wiki/Binary_search_algorithm",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "leetcode-patterns-6",
@@ -5815,7 +8399,159 @@
         }
       ],
       "challenge": "Solve 8 problems. Implement LRU Cache with a hash map and a doubly linked list, and explain why both are needed.",
-      "estimatedTime": "1 week"
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Pointer Manipulation",
+          "children": [
+            {
+              "title": "Reverse Linked List",
+              "description": "Walk the list and flip each next pointer, keeping the previous node. Save next before you overwrite it.",
+              "resources": [
+                {
+                  "label": "LeetCode - Reverse Linked List",
+                  "url": "https://leetcode.com/problems/reverse-linked-list/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - Linked list",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/linked-list/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Merge Two Sorted Lists",
+              "description": "Use a dummy head and attach the smaller node each step. The dummy avoids special cases for the first node.",
+              "resources": [
+                {
+                  "label": "LeetCode - Merge Two Sorted Lists",
+                  "url": "https://leetcode.com/problems/merge-two-sorted-lists/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - Linked list",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/linked-list/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Fast and Slow Pointers",
+          "children": [
+            {
+              "title": "Linked List Cycle and Cycle II",
+              "description": "A fast pointer moves two steps and a slow one moves one. They meet if there is a cycle, and a second pass finds its start.",
+              "resources": [
+                {
+                  "label": "LeetCode - Linked List Cycle",
+                  "url": "https://leetcode.com/problems/linked-list-cycle/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Linked List Cycle II",
+                  "url": "https://leetcode.com/problems/linked-list-cycle-ii/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Finding the middle",
+              "description": "When the fast pointer reaches the end, the slow one is at the middle. This is the first step in many list problems.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Cycle detection",
+                  "url": "https://en.wikipedia.org/wiki/Cycle_detection",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook - Linked list",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/linked-list/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Combining Techniques",
+          "children": [
+            {
+              "title": "Reorder List and Remove Nth Node From End",
+              "description": "Find the middle, reverse the second half and merge. For the nth node, space two pointers n apart.",
+              "resources": [
+                {
+                  "label": "LeetCode - Reorder List",
+                  "url": "https://leetcode.com/problems/reorder-list/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Remove Nth Node From End of List",
+                  "url": "https://leetcode.com/problems/remove-nth-node-from-end-of-list/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Add Two Numbers",
+              "description": "Walk both lists with a carry and build the result. Handle different lengths and a final carry.",
+              "resources": [
+                {
+                  "label": "LeetCode - Add Two Numbers",
+                  "url": "https://leetcode.com/problems/add-two-numbers/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - Linked list",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/linked-list/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Lists with Extra Structure",
+          "children": [
+            {
+              "title": "LRU Cache",
+              "description": "Pair a hash map with a doubly linked list so lookup and move-to-front are both constant time.",
+              "resources": [
+                {
+                  "label": "LeetCode - LRU Cache",
+                  "url": "https://leetcode.com/problems/lru-cache/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Cache replacement policies",
+                  "url": "https://en.wikipedia.org/wiki/Cache_replacement_policies",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Copy List With Random Pointer",
+              "description": "Map each original node to its copy, then wire up next and random in a second pass. Or interleave copies to save space.",
+              "resources": [
+                {
+                  "label": "LeetCode - Copy List with Random Pointer",
+                  "url": "https://leetcode.com/problems/copy-list-with-random-pointer/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - Linked list",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/linked-list/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "leetcode-patterns-7",
@@ -5853,7 +8589,159 @@
         }
       ],
       "challenge": "Solve 12 tree problems. Group them into 'return a value up' versus 'carry state down' and note the template for each.",
-      "estimatedTime": "1.5 weeks"
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Recursive Basics",
+          "children": [
+            {
+              "title": "Invert Binary Tree and Maximum Depth",
+              "description": "Many tree problems are solved by trusting recursion: solve the children, then combine at the node.",
+              "resources": [
+                {
+                  "label": "LeetCode - Invert Binary Tree",
+                  "url": "https://leetcode.com/problems/invert-binary-tree/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Maximum Depth of Binary Tree",
+                  "url": "https://leetcode.com/problems/maximum-depth-of-binary-tree/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Same Tree, Subtree and Balanced Tree",
+              "description": "Compare two trees node by node. Balanced Tree returns height and a flag together to avoid repeated work.",
+              "resources": [
+                {
+                  "label": "LeetCode - Same Tree",
+                  "url": "https://leetcode.com/problems/same-tree/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Balanced Binary Tree",
+                  "url": "https://leetcode.com/problems/balanced-binary-tree/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Level by Level",
+          "children": [
+            {
+              "title": "Level Order Traversal",
+              "description": "Use a queue and process one level at a time by counting how many nodes are in the queue at the start of each round.",
+              "resources": [
+                {
+                  "label": "LeetCode - Binary Tree Level Order Traversal",
+                  "url": "https://leetcode.com/problems/binary-tree-level-order-traversal/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Tree traversal",
+                  "url": "https://en.wikipedia.org/wiki/Tree_traversal",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Right Side View",
+              "description": "Take the last node of each level, or do a depth-first walk that visits the right child first.",
+              "resources": [
+                {
+                  "label": "LeetCode - Binary Tree Right Side View",
+                  "url": "https://leetcode.com/problems/binary-tree-right-side-view/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Breadth-first search",
+                  "url": "https://en.wikipedia.org/wiki/Breadth-first_search",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Ancestors and Search Trees",
+          "children": [
+            {
+              "title": "Lowest Common Ancestor",
+              "description": "If the two targets are found in different subtrees, the current node is the answer. In a search tree, compare values to go left or right.",
+              "resources": [
+                {
+                  "label": "LeetCode - Lowest Common Ancestor of a Binary Tree",
+                  "url": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Lowest common ancestor",
+                  "url": "https://en.wikipedia.org/wiki/Lowest_common_ancestor",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Validate BST and Kth Smallest",
+              "description": "Pass down the allowed range for validation. An in-order walk visits search tree values in sorted order.",
+              "resources": [
+                {
+                  "label": "LeetCode - Validate Binary Search Tree",
+                  "url": "https://leetcode.com/problems/validate-binary-search-tree/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Kth Smallest Element in a BST",
+                  "url": "https://leetcode.com/problems/kth-smallest-element-in-a-bst/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Hard Tree Problems",
+          "children": [
+            {
+              "title": "Binary Tree Maximum Path Sum",
+              "description": "Return the best downward path from each node, but update a global best using both children. Ignore negative branches.",
+              "resources": [
+                {
+                  "label": "LeetCode - Binary Tree Maximum Path Sum",
+                  "url": "https://leetcode.com/problems/binary-tree-maximum-path-sum/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - Tree",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/tree/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Serialize and Deserialize",
+              "description": "Write the tree in pre-order with markers for empty nodes. Reading it back uses the same order.",
+              "resources": [
+                {
+                  "label": "LeetCode - Serialize and Deserialize Binary Tree",
+                  "url": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Tree traversal",
+                  "url": "https://en.wikipedia.org/wiki/Tree_traversal",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "leetcode-patterns-8",
@@ -5891,7 +8779,159 @@
         }
       ],
       "challenge": "Solve 8 problems. Explain why a size-k min-heap beats sorting for top-k, with the Big-O for both.",
-      "estimatedTime": "1 week"
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Heap Basics",
+          "children": [
+            {
+              "title": "Kth Largest Element in a Stream",
+              "description": "Keep a min-heap of size k. Its top is always the kth largest seen so far.",
+              "resources": [
+                {
+                  "label": "LeetCode - Kth Largest Element in a Stream",
+                  "url": "https://leetcode.com/problems/kth-largest-element-in-a-stream/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Heap",
+                  "url": "https://en.wikipedia.org/wiki/Heap_(data_structure)",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Last Stone Weight",
+              "description": "Repeatedly take the two largest values. A max-heap does that in logarithmic time per step.",
+              "resources": [
+                {
+                  "label": "LeetCode - Last Stone Weight",
+                  "url": "https://leetcode.com/problems/last-stone-weight/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Priority queue",
+                  "url": "https://en.wikipedia.org/wiki/Priority_queue",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Top K Problems",
+          "children": [
+            {
+              "title": "K Closest Points to Origin",
+              "description": "Keep a heap of size k keyed by distance. Compare squared distances to avoid square roots.",
+              "resources": [
+                {
+                  "label": "LeetCode - K Closest Points to Origin",
+                  "url": "https://leetcode.com/problems/k-closest-points-to-origin/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - Heap",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/heap/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Top K Frequent Elements",
+              "description": "Count with a map, then use a size-k heap or bucket by frequency for linear time.",
+              "resources": [
+                {
+                  "label": "LeetCode - Top K Frequent Elements",
+                  "url": "https://leetcode.com/problems/top-k-frequent-elements/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - Heap",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/heap/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Scheduling and Merging",
+          "children": [
+            {
+              "title": "Task Scheduler",
+              "description": "Always run the most frequent remaining task, and use a cooldown queue. A counting formula gives the same answer.",
+              "resources": [
+                {
+                  "label": "LeetCode - Task Scheduler",
+                  "url": "https://leetcode.com/problems/task-scheduler/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Priority queue",
+                  "url": "https://en.wikipedia.org/wiki/Priority_queue",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Merge K Sorted Lists",
+              "description": "Put the head of each list in a min-heap, pop the smallest and push its next node.",
+              "resources": [
+                {
+                  "label": "LeetCode - Merge k Sorted Lists",
+                  "url": "https://leetcode.com/problems/merge-k-sorted-lists/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Heap",
+                  "url": "https://en.wikipedia.org/wiki/Heap_(data_structure)",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Two Heaps",
+          "children": [
+            {
+              "title": "Find Median from Data Stream",
+              "description": "Keep a max-heap for the lower half and a min-heap for the upper half, balanced in size. The median is at the tops.",
+              "resources": [
+                {
+                  "label": "LeetCode - Find Median from Data Stream",
+                  "url": "https://leetcode.com/problems/find-median-from-data-stream/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Heap",
+                  "url": "https://en.wikipedia.org/wiki/Heap_(data_structure)",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "When to use a heap",
+              "description": "Reach for a heap when you repeatedly need the smallest or largest item from a changing set.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Priority queue",
+                  "url": "https://en.wikipedia.org/wiki/Priority_queue",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook - Heap",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/heap/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "leetcode-patterns-9",
@@ -5929,7 +8969,159 @@
         }
       ],
       "challenge": "Solve 8 problems with one shared backtracking template. Mark where each one prunes and how much that saves.",
-      "estimatedTime": "1.5 weeks"
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Subsets and Permutations",
+          "children": [
+            {
+              "title": "Subsets and Subsets II",
+              "description": "For each element choose to include it or not. Sort and skip equal neighbors at the same depth to avoid duplicates.",
+              "resources": [
+                {
+                  "label": "LeetCode - Subsets",
+                  "url": "https://leetcode.com/problems/subsets/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Subsets II",
+                  "url": "https://leetcode.com/problems/subsets-ii/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Permutations",
+              "description": "Build one position at a time, using a used marker or swapping in place. Undo the choice after the recursive call.",
+              "resources": [
+                {
+                  "label": "LeetCode - Permutations",
+                  "url": "https://leetcode.com/problems/permutations/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Backtracking",
+                  "url": "https://en.wikipedia.org/wiki/Backtracking",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Choosing with Limits",
+          "children": [
+            {
+              "title": "Combination Sum",
+              "description": "Recurse with a remaining target and a start index so the same combination is not built in different orders.",
+              "resources": [
+                {
+                  "label": "LeetCode - Combination Sum",
+                  "url": "https://leetcode.com/problems/combination-sum/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Backtracking",
+                  "url": "https://en.wikipedia.org/wiki/Backtracking",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Word Search",
+              "description": "Depth-first search on a grid, marking the current cell as visited and restoring it when you return.",
+              "resources": [
+                {
+                  "label": "LeetCode - Word Search",
+                  "url": "https://leetcode.com/problems/word-search/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Depth-first search",
+                  "url": "https://en.wikipedia.org/wiki/Depth-first_search",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Partitioning and Mapping",
+          "children": [
+            {
+              "title": "Palindrome Partitioning",
+              "description": "At each position try every prefix that is a palindrome and recurse on the rest. Precompute palindromes to speed it up.",
+              "resources": [
+                {
+                  "label": "LeetCode - Palindrome Partitioning",
+                  "url": "https://leetcode.com/problems/palindrome-partitioning/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Backtracking",
+                  "url": "https://en.wikipedia.org/wiki/Backtracking",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Letter Combinations of a Phone Number",
+              "description": "Each digit maps to letters. Choose one per digit and build the string as you go.",
+              "resources": [
+                {
+                  "label": "LeetCode - Letter Combinations of a Phone Number",
+                  "url": "https://leetcode.com/problems/letter-combinations-of-a-phone-number/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Backtracking",
+                  "url": "https://en.wikipedia.org/wiki/Backtracking",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Pruning",
+          "children": [
+            {
+              "title": "N-Queens",
+              "description": "Track used columns and both diagonals in sets. Place a queen row by row and backtrack when a row has no safe cell.",
+              "resources": [
+                {
+                  "label": "LeetCode - N-Queens",
+                  "url": "https://leetcode.com/problems/n-queens/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Eight queens puzzle",
+                  "url": "https://en.wikipedia.org/wiki/Eight_queens_puzzle",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Choose, explore, undo",
+              "description": "Every backtracking solution has the same three steps. Pruning early cuts the search tree most.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Backtracking",
+                  "url": "https://en.wikipedia.org/wiki/Backtracking",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook - Coding interview study plan",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "leetcode-patterns-10",
@@ -5967,7 +9159,159 @@
         }
       ],
       "challenge": "Solve 10 graph problems. For each, write what the nodes and edges are, because that is the hardest step.",
-      "estimatedTime": "2 weeks"
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Grid Traversal",
+          "children": [
+            {
+              "title": "Number of Islands and Max Area of Island",
+              "description": "Scan the grid and start a search at each unvisited land cell, marking cells as you visit them. Count starts or track area.",
+              "resources": [
+                {
+                  "label": "LeetCode - Number of Islands",
+                  "url": "https://leetcode.com/problems/number-of-islands/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Max Area of Island",
+                  "url": "https://leetcode.com/problems/max-area-of-island/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Pacific Atlantic Water Flow",
+              "description": "Search backward from each ocean's border to find cells that can reach it, then intersect the two sets.",
+              "resources": [
+                {
+                  "label": "LeetCode - Pacific Atlantic Water Flow",
+                  "url": "https://leetcode.com/problems/pacific-atlantic-water-flow/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Depth-first search",
+                  "url": "https://en.wikipedia.org/wiki/Depth-first_search",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "BFS Problems",
+          "children": [
+            {
+              "title": "Clone Graph and Rotting Oranges",
+              "description": "Clone with a map from old node to new node. For oranges, start BFS from all rotten ones and count levels.",
+              "resources": [
+                {
+                  "label": "LeetCode - Clone Graph",
+                  "url": "https://leetcode.com/problems/clone-graph/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Rotting Oranges",
+                  "url": "https://leetcode.com/problems/rotting-oranges/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Word Ladder",
+              "description": "Treat words as nodes and one-letter changes as edges. BFS gives the shortest sequence length.",
+              "resources": [
+                {
+                  "label": "LeetCode - Word Ladder",
+                  "url": "https://leetcode.com/problems/word-ladder/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Breadth-first search",
+                  "url": "https://en.wikipedia.org/wiki/Breadth-first_search",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Ordering and Cycles",
+          "children": [
+            {
+              "title": "Course Schedule I and II",
+              "description": "Detect a cycle in a directed graph. Topological sort with in-degree counts also gives a valid order.",
+              "resources": [
+                {
+                  "label": "LeetCode - Course Schedule",
+                  "url": "https://leetcode.com/problems/course-schedule/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Course Schedule II",
+                  "url": "https://leetcode.com/problems/course-schedule-ii/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Topological sort",
+              "description": "Repeatedly take nodes with no incoming edges. If you cannot take all of them, there is a cycle.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Topological sorting",
+                  "url": "https://en.wikipedia.org/wiki/Topological_sorting",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook - Graph",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/graph/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Union-Find",
+          "children": [
+            {
+              "title": "Connected Components and Valid Tree",
+              "description": "Union the endpoints of each edge. A tree has n-1 edges and no edge joins nodes already connected.",
+              "resources": [
+                {
+                  "label": "LeetCode - Number of Connected Components in an Undirected Graph",
+                  "url": "https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Graph Valid Tree",
+                  "url": "https://leetcode.com/problems/graph-valid-tree/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Union-find with path compression",
+              "description": "Find with path compression and union by rank give near-constant time. It suits problems that merge groups over time.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Disjoint-set (union-find)",
+                  "url": "https://en.wikipedia.org/wiki/Disjoint-set_data_structure",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook - Graph",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/graph/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "leetcode-patterns-11",
@@ -6005,7 +9349,159 @@
         }
       ],
       "challenge": "Solve 6 problems. Write a decision table: which algorithm for which graph property, with an example for each.",
-      "estimatedTime": "1.5 weeks"
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Weighted Shortest Paths",
+          "children": [
+            {
+              "title": "Network Delay Time",
+              "description": "Run Dijkstra from the source with a min-heap. The answer is the largest shortest distance, or -1 if some node is unreachable.",
+              "resources": [
+                {
+                  "label": "LeetCode - Network Delay Time",
+                  "url": "https://leetcode.com/problems/network-delay-time/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Dijkstra's algorithm",
+                  "url": "https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Cheapest Flights Within K Stops",
+              "description": "Limit the number of edges. Bellman-Ford with k+1 rounds, or BFS with a stop count, handles the constraint.",
+              "resources": [
+                {
+                  "label": "LeetCode - Cheapest Flights Within K Stops",
+                  "url": "https://leetcode.com/problems/cheapest-flights-within-k-stops/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Bellman-Ford algorithm",
+                  "url": "https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Minimax Paths",
+          "children": [
+            {
+              "title": "Path With Minimum Effort",
+              "description": "The cost of a path is its worst step, not the sum. Dijkstra works with max as the combine rule, or binary search the answer.",
+              "resources": [
+                {
+                  "label": "LeetCode - Path With Minimum Effort",
+                  "url": "https://leetcode.com/problems/path-with-minimum-effort/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Dijkstra's algorithm",
+                  "url": "https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Swim in Rising Water",
+              "description": "Again the cost is the largest value on the path. Use a heap that always expands the lowest-cost frontier cell.",
+              "resources": [
+                {
+                  "label": "LeetCode - Swim in Rising Water",
+                  "url": "https://leetcode.com/problems/swim-in-rising-water/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Dijkstra's algorithm",
+                  "url": "https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Spanning Trees",
+          "children": [
+            {
+              "title": "Min Cost to Connect All Points",
+              "description": "Connect all points at the lowest total cost. Prim's with a heap or Kruskal's with union-find both work.",
+              "resources": [
+                {
+                  "label": "LeetCode - Min Cost to Connect All Points",
+                  "url": "https://leetcode.com/problems/min-cost-to-connect-all-points/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Minimum spanning tree",
+                  "url": "https://en.wikipedia.org/wiki/Minimum_spanning_tree",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Prim's and Kruskal's",
+              "description": "Prim's grows one tree from a start node, and Kruskal's sorts edges and adds those that join separate components.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Minimum spanning tree",
+                  "url": "https://en.wikipedia.org/wiki/Minimum_spanning_tree",
+                  "type": "article"
+                },
+                {
+                  "label": "Wikipedia - Disjoint-set (union-find)",
+                  "url": "https://en.wikipedia.org/wiki/Disjoint-set_data_structure",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Euler Paths",
+          "children": [
+            {
+              "title": "Reconstruct Itinerary",
+              "description": "Use every ticket exactly once, visiting airports in lexical order. Hierholzer's algorithm builds the path in reverse.",
+              "resources": [
+                {
+                  "label": "LeetCode - Reconstruct Itinerary",
+                  "url": "https://leetcode.com/problems/reconstruct-itinerary/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - Graph",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/graph/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Choosing a shortest-path algorithm",
+              "description": "BFS for unit weights, Dijkstra for non-negative weights, and Bellman-Ford for negative weights or hop limits.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Dijkstra's algorithm",
+                  "url": "https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm",
+                  "type": "article"
+                },
+                {
+                  "label": "Wikipedia - Bellman-Ford algorithm",
+                  "url": "https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "leetcode-patterns-12",
@@ -6043,7 +9539,159 @@
         }
       ],
       "challenge": "Solve 10 problems. For each, write the state, the transition and the base case before you code.",
-      "estimatedTime": "2 weeks"
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "One-Dimensional DP",
+          "children": [
+            {
+              "title": "Climbing Stairs and House Robber",
+              "description": "The answer at position i depends on one or two earlier answers. Keep only those and use constant space.",
+              "resources": [
+                {
+                  "label": "LeetCode - Climbing Stairs",
+                  "url": "https://leetcode.com/problems/climbing-stairs/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - House Robber",
+                  "url": "https://leetcode.com/problems/house-robber/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "House Robber II",
+              "description": "With a circular street, solve two linear cases: skip the first house, or skip the last, and take the better.",
+              "resources": [
+                {
+                  "label": "LeetCode - House Robber II",
+                  "url": "https://leetcode.com/problems/house-robber-ii/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Dynamic programming",
+                  "url": "https://en.wikipedia.org/wiki/Dynamic_programming",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Coin and Subset Problems",
+          "children": [
+            {
+              "title": "Coin Change and Coin Change II",
+              "description": "The first asks for the fewest coins, the second for the number of ways. Loop order controls whether order matters.",
+              "resources": [
+                {
+                  "label": "LeetCode - Coin Change",
+                  "url": "https://leetcode.com/problems/coin-change/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Coin Change II",
+                  "url": "https://leetcode.com/problems/coin-change-ii/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Partition Equal Subset Sum",
+              "description": "Reduce to a 0/1 knapsack: can a subset reach half the total? Iterate the sums backward to use each item once.",
+              "resources": [
+                {
+                  "label": "LeetCode - Partition Equal Subset Sum",
+                  "url": "https://leetcode.com/problems/partition-equal-subset-sum/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Knapsack problem",
+                  "url": "https://en.wikipedia.org/wiki/Knapsack_problem",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Sequences",
+          "children": [
+            {
+              "title": "Longest Increasing Subsequence",
+              "description": "A table of the best length ending at each index is quadratic. Patience sorting with binary search gets n log n.",
+              "resources": [
+                {
+                  "label": "LeetCode - Longest Increasing Subsequence",
+                  "url": "https://leetcode.com/problems/longest-increasing-subsequence/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Longest increasing subsequence",
+                  "url": "https://en.wikipedia.org/wiki/Longest_increasing_subsequence",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Maximum Product Subarray",
+              "description": "Track both the maximum and minimum product ending here, because a negative can flip them.",
+              "resources": [
+                {
+                  "label": "LeetCode - Maximum Product Subarray",
+                  "url": "https://leetcode.com/problems/maximum-product-subarray/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Dynamic programming",
+                  "url": "https://en.wikipedia.org/wiki/Dynamic_programming",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Strings",
+          "children": [
+            {
+              "title": "Word Break and Decode Ways",
+              "description": "Ask whether a prefix can be formed from a valid piece plus a valid shorter prefix. Fill the table left to right.",
+              "resources": [
+                {
+                  "label": "LeetCode - Word Break",
+                  "url": "https://leetcode.com/problems/word-break/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Decode Ways",
+                  "url": "https://leetcode.com/problems/decode-ways/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Defining the state",
+              "description": "Write what dp[i] means in one sentence before coding. A clear state makes the recurrence easy to see.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Dynamic programming",
+                  "url": "https://en.wikipedia.org/wiki/Dynamic_programming",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "leetcode-patterns-13",
@@ -6081,7 +9729,159 @@
         }
       ],
       "challenge": "Solve 8 problems. Redo two of them with O(n) space and explain what you dropped.",
-      "estimatedTime": "2 weeks"
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Grid DP",
+          "children": [
+            {
+              "title": "Unique Paths and Minimum Path Sum",
+              "description": "Each cell depends on the cell above and the one to the left. A single row of storage is enough.",
+              "resources": [
+                {
+                  "label": "LeetCode - Unique Paths",
+                  "url": "https://leetcode.com/problems/unique-paths/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Minimum Path Sum",
+                  "url": "https://leetcode.com/problems/minimum-path-sum/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Grid DP with obstacles",
+              "description": "Set blocked cells to zero ways or infinite cost, and watch the first row and column carefully.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Dynamic programming",
+                  "url": "https://en.wikipedia.org/wiki/Dynamic_programming",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook - Coding interview study plan",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Two-String DP",
+          "children": [
+            {
+              "title": "Longest Common Subsequence",
+              "description": "Compare the ends of both strings. If they match, extend the diagonal; otherwise take the better of dropping one character.",
+              "resources": [
+                {
+                  "label": "LeetCode - Longest Common Subsequence",
+                  "url": "https://leetcode.com/problems/longest-common-subsequence/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Longest common subsequence",
+                  "url": "https://en.wikipedia.org/wiki/Longest_common_subsequence",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Edit Distance",
+              "description": "Insert, delete or replace costs one each. The table cell takes the minimum of its three neighbors plus the right cost.",
+              "resources": [
+                {
+                  "label": "LeetCode - Edit Distance",
+                  "url": "https://leetcode.com/problems/edit-distance/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Edit distance",
+                  "url": "https://en.wikipedia.org/wiki/Edit_distance",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Palindromes",
+          "children": [
+            {
+              "title": "Longest Palindromic Substring",
+              "description": "Expand around each center, for odd and even lengths, in quadratic time. A DP table works too.",
+              "resources": [
+                {
+                  "label": "LeetCode - Longest Palindromic Substring",
+                  "url": "https://leetcode.com/problems/longest-palindromic-substring/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Dynamic programming",
+                  "url": "https://en.wikipedia.org/wiki/Dynamic_programming",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Choosing expansion or a table",
+              "description": "Expansion uses less memory and is simple. A table helps when you need many palindrome queries.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Dynamic programming",
+                  "url": "https://en.wikipedia.org/wiki/Dynamic_programming",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook - String",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/string/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Hard String DP",
+          "children": [
+            {
+              "title": "Interleaving String and Distinct Subsequences",
+              "description": "Both use a table indexed by how much of each string is consumed. Define each cell as a yes/no or a count.",
+              "resources": [
+                {
+                  "label": "LeetCode - Interleaving String",
+                  "url": "https://leetcode.com/problems/interleaving-string/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Distinct Subsequences",
+                  "url": "https://leetcode.com/problems/distinct-subsequences/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Regular Expression Matching",
+              "description": "Handle the star by either skipping its pattern part or using it to match one more character. Memoize on both indexes.",
+              "resources": [
+                {
+                  "label": "LeetCode - Regular Expression Matching",
+                  "url": "https://leetcode.com/problems/regular-expression-matching/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Dynamic programming",
+                  "url": "https://en.wikipedia.org/wiki/Dynamic_programming",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "leetcode-patterns-14",
@@ -6119,7 +9919,159 @@
         }
       ],
       "challenge": "Solve 10 problems. For each greedy one, state in a sentence why the greedy choice is safe.",
-      "estimatedTime": "1.5 weeks"
+      "estimatedTime": "1.5 weeks",
+      "sideLeft": [
+        {
+          "title": "Intervals",
+          "children": [
+            {
+              "title": "Merge Intervals and Insert Interval",
+              "description": "Sort by start and extend the last interval while the next one overlaps. Insert can be done in one pass.",
+              "resources": [
+                {
+                  "label": "LeetCode - Merge Intervals",
+                  "url": "https://leetcode.com/problems/merge-intervals/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Insert Interval",
+                  "url": "https://leetcode.com/problems/insert-interval/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Non-overlapping Intervals and Meeting Rooms II",
+              "description": "Sort by end to keep the most intervals. For rooms, sweep sorted starts and ends or use a min-heap of end times.",
+              "resources": [
+                {
+                  "label": "LeetCode - Non-overlapping Intervals",
+                  "url": "https://leetcode.com/problems/non-overlapping-intervals/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Meeting Rooms II",
+                  "url": "https://leetcode.com/problems/meeting-rooms-ii/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Greedy Choices",
+          "children": [
+            {
+              "title": "Jump Game I and II",
+              "description": "Track the farthest reachable index. For the minimum jumps, treat each jump as a level in a BFS over ranges.",
+              "resources": [
+                {
+                  "label": "LeetCode - Jump Game",
+                  "url": "https://leetcode.com/problems/jump-game/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Jump Game II",
+                  "url": "https://leetcode.com/problems/jump-game-ii/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Gas Station and Partition Labels",
+              "description": "A running total that never recovers tells you where to restart. For labels, extend the current part to the last occurrence.",
+              "resources": [
+                {
+                  "label": "LeetCode - Gas Station",
+                  "url": "https://leetcode.com/problems/gas-station/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Partition Labels",
+                  "url": "https://leetcode.com/problems/partition-labels/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Bits",
+          "children": [
+            {
+              "title": "Single Number and Number of 1 Bits",
+              "description": "XOR cancels equal values, so duplicates vanish. Clear the lowest set bit with n and n-1 to count bits.",
+              "resources": [
+                {
+                  "label": "LeetCode - Single Number",
+                  "url": "https://leetcode.com/problems/single-number/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LeetCode - Number of 1 Bits",
+                  "url": "https://leetcode.com/problems/number-of-1-bits/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Bit tricks",
+              "description": "Know shifts, masks, and, or, xor. A few identities solve many problems in constant space.",
+              "resources": [
+                {
+                  "label": "Wikipedia - Bitwise operation",
+                  "url": "https://en.wikipedia.org/wiki/Bitwise_operation",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook - Algorithms cheatsheet",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/study-cheatsheet/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Math",
+          "children": [
+            {
+              "title": "Reverse Integer",
+              "description": "Build the result digit by digit and check for overflow before each multiply. Say how you handle the limits.",
+              "resources": [
+                {
+                  "label": "LeetCode - Reverse Integer",
+                  "url": "https://leetcode.com/problems/reverse-integer/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Tech Interview Handbook - Algorithms cheatsheet",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/study-cheatsheet/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Pow(x, n)",
+              "description": "Square the base and halve the exponent to get logarithmic time. Handle negative exponents and the minimum integer.",
+              "resources": [
+                {
+                  "label": "LeetCode - Pow(x, n)",
+                  "url": "https://leetcode.com/problems/powx-n/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Wikipedia - Exponentiation by squaring",
+                  "url": "https://en.wikipedia.org/wiki/Exponentiation_by_squaring",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "leetcode-patterns-15",
@@ -6157,7 +10109,159 @@
         }
       ],
       "challenge": "Complete 6 timed rounds of one medium problem each. Score yourself on approach, code, testing and communication.",
-      "estimatedTime": "2 weeks"
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Before You Code",
+          "children": [
+            {
+              "title": "Setting up a timed round",
+              "description": "Practice with a timer and no hints. 45 minutes for one medium, or 25 for each of two, matches a real round.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook - Mock interviews",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                },
+                {
+                  "label": "Grind 75",
+                  "url": "https://www.techinterviewhandbook.org/grind75/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Clarify, then give examples",
+              "description": "Restate the problem, ask about input size, duplicates and edge cases, and work one example by hand before you code.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook - Coding interview rubrics",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-rubrics/",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook - Coding interview study plan",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "While You Code",
+          "children": [
+            {
+              "title": "Thinking aloud",
+              "description": "Say the brute force first, then what slows it down, then the idea that fixes it. A silent candidate gives the interviewer nothing to score.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook - Coding interview rubrics",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-rubrics/",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook - Mock interviews",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Writing clean code under time",
+              "description": "Use clear names, small helpers and consistent structure. Fix mistakes calmly instead of starting again.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook - Coding interview rubrics",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-rubrics/",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook - Coding interview study plan",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "After You Code",
+          "children": [
+            {
+              "title": "Testing your own solution",
+              "description": "Trace your code on the example, then on an empty input, a single item and the largest case. Find bugs before the interviewer does.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook - Coding interview rubrics",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-rubrics/",
+                  "type": "article"
+                },
+                {
+                  "label": "Tech Interview Handbook - Mock interviews",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Follow-ups and complexity",
+              "description": "State time and space cost, and be ready for a variation such as streaming input or lower memory.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook - Algorithms cheatsheet",
+                  "url": "https://www.techinterviewhandbook.org/algorithms/study-cheatsheet/",
+                  "type": "article"
+                },
+                {
+                  "label": "Introduction to Algorithms (CLRS)",
+                  "url": "https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/",
+                  "type": "book"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Learning from Rounds",
+          "children": [
+            {
+              "title": "Reviewing a mock round",
+              "description": "Write down where time went, what you missed and which pattern you did not recognize. Fix those before the next round.",
+              "resources": [
+                {
+                  "label": "Tech Interview Handbook - Coding interview study plan",
+                  "url": "https://www.techinterviewhandbook.org/coding-interview-prep/",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode roadmap",
+                  "url": "https://neetcode.io/roadmap",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Weekly review of weak patterns",
+              "description": "Rank patterns by mistakes, redo the worst two with fresh problems, and re-time yourself.",
+              "resources": [
+                {
+                  "label": "Grind 75",
+                  "url": "https://www.techinterviewhandbook.org/grind75/",
+                  "type": "article"
+                },
+                {
+                  "label": "NeetCode practice",
+                  "url": "https://neetcode.io/practice",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }
