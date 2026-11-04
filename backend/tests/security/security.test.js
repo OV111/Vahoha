@@ -613,3 +613,50 @@ describe('Security — password never leaked in responses', () => {
     })
   })
 })
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 11. GitHub OAuth state is bound to the initiating browser (login CSRF)
+// ─────────────────────────────────────────────────────────────────────────────
+describe('Security — GitHub OAuth state binding', () => {
+  let oauthRequest
+
+  beforeAll(async () => {
+    const { default: express } = await import('express')
+    const { default: cookieParser } = await import('cookie-parser')
+    const { githubRedirect, githubCallback } = await import(
+      '../../modules/auth/controllers/auth.controller.js'
+    )
+    process.env.FRONTEND_URL = 'http://frontend.test'
+    const app = express()
+    app.use(cookieParser())
+    app.get('/auth/github', githubRedirect)
+    app.get('/auth/github/callback', githubCallback)
+    oauthRequest = supertest(app)
+  })
+
+  const startFlow = async () => {
+    const res = await oauthRequest.get('/auth/github')
+    const state = new URL(res.headers.location).searchParams.get('state')
+    return { state, cookie: res.headers['set-cookie'][0].split(';')[0] }
+  }
+
+  it('sets a cookie carrying the same nonce as the state parameter', async () => {
+    const { state, cookie } = await startFlow()
+    expect(cookie).toBe(`oauth_state=${state}`)
+  })
+
+  it('rejects a callback with a valid state but no cookie (attacker-supplied URL)', async () => {
+    const { state } = await startFlow()
+    const res = await oauthRequest.get(`/auth/github/callback?code=x&state=${state}`)
+    expect(res.headers.location).toContain('reason=csrf')
+  })
+
+  it('rejects a callback whose cookie belongs to a different flow', async () => {
+    const attacker = await startFlow()
+    const victim = await startFlow()
+    const res = await oauthRequest
+      .get(`/auth/github/callback?code=x&state=${attacker.state}`)
+      .set('Cookie', victim.cookie)
+    expect(res.headers.location).toContain('reason=csrf')
+  })
+})

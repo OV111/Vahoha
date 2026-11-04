@@ -57,6 +57,25 @@ const createOAuthNonce = (linkUserId = null) => {
   return nonce;
 };
 
+// The nonce alone only proves the server issued it, not who is finishing the
+// flow. Pinning it to the initiating browser with this cookie stops login CSRF:
+// an attacker cannot hand a victim a callback URL built from their own state.
+const OAUTH_STATE_COOKIE = "oauth_state";
+const OAUTH_STATE_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax",
+  path: "/auth/github",
+};
+
+const startGithubOAuth = (res, linkUserId) => {
+  const nonce = createOAuthNonce(linkUserId);
+  res.cookie(OAUTH_STATE_COOKIE, nonce, { ...OAUTH_STATE_COOKIE_OPTIONS, maxAge: NONCE_TTL_MS });
+  res.redirect(
+    `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&scope=user:email&state=${nonce}`,
+  );
+};
+
 /** Returns the nonce record ({ linkUserId }) if valid, or null. */
 const consumeOAuthNonce = (nonce) => {
   if (!nonce) return null;
@@ -285,9 +304,7 @@ const googleAuth = async (data) => {
 };
 
 const githubRedirect = (req, res) => {
-  const nonce = createOAuthNonce();
-  const url = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&scope=user:email&state=${nonce}`;
-  res.redirect(url);
+  startGithubOAuth(res, null);
 };
 
 const githubLinkRedirect = (req, res) => {
@@ -299,9 +316,7 @@ const githubLinkRedirect = (req, res) => {
     return res.redirect(`${process.env.FRONTEND_URL}/oauth-failure?reason=unauthenticated`);
   }
 
-  const nonce = createOAuthNonce(decoded.id);
-  const url = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&scope=user:email&state=${nonce}`;
-  res.redirect(url);
+  startGithubOAuth(res, decoded.id);
 };
 
 const githubDisconnect = async (req, res) => {
@@ -325,6 +340,19 @@ const githubDisconnect = async (req, res) => {
 const githubCallback = async (req, res) => {
   try {
     const { code, state } = req.query;
+
+    // state is always a nonce from createOAuthNonce — link mode and sign-in
+    // mode differ only in whether that nonce carries a linkUserId (proven
+    // earlier via the requester's own refresh cookie in githubLinkRedirect).
+    // Checked before the code exchange so a forged callback costs no GitHub call.
+    const boundState = req.cookies?.[OAUTH_STATE_COOKIE];
+    res.clearCookie(OAUTH_STATE_COOKIE, OAUTH_STATE_COOKIE_OPTIONS);
+    const nonceRecord =
+      typeof state === "string" && boundState === state ? consumeOAuthNonce(state) : null;
+    if (!nonceRecord) {
+      return res.redirect(`${process.env.FRONTEND_URL}/oauth-failure?reason=csrf`);
+    }
+
     const tokenResponse = await fetch(
       "https://github.com/login/oauth/access_token",
       {
@@ -373,14 +401,6 @@ const githubCallback = async (req, res) => {
     const db = await connectDB();
     const users = db.collection("users");
     const usersStats = db.collection("usersStats");
-
-    // state is always a nonce from createOAuthNonce — link mode and sign-in
-    // mode differ only in whether that nonce carries a linkUserId (proven
-    // earlier via the requester's own refresh cookie in githubLinkRedirect).
-    const nonceRecord = consumeOAuthNonce(state);
-    if (!nonceRecord) {
-      return res.redirect(`${process.env.FRONTEND_URL}/oauth-failure?reason=csrf`);
-    }
 
     if (nonceRecord.linkUserId) {
       await users.updateOne(
