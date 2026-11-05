@@ -20,6 +20,6 @@ try {
   console.log(formatConfigReport(assertEnv()));
 } catch (err) {
   if (!(err instanceof EnvError)) throw err;
-  console.error(`${err.message}\nFix the variables above (see .env.example) and start again.`);
+  console.error(`${err.message}\nFix the variables above (see backend/config/env.js) and start again.`);
   process.exit(1);
 }

@@ -30,20 +30,6 @@ tests/             Playwright specs
 docs/              this folder
 ```
 
-## Run locally
-
-```
-npm ci
-cp .env.example backend/.env     # then fill in the values (see below)
-npm run dev:full                 # Redis (Docker) + frontend + backend
-```
-
-Or run `npm run dev` (frontend, port 5173) and `npm run server` (backend, port 5000) separately. Seed the data first: `npm run seed:roadmap`, then see [`engineering/DEPLOYMENT.md`](engineering/DEPLOYMENT.md#seeding-a-new-database). Checks: `npm run lint`, `npm run build`, `npm run test:unit`.
-
-## Environment variables
-
-Names, grouped by purpose, are in [`engineering/DEPLOYMENT.md`](engineering/DEPLOYMENT.md#environment-variables). `.env.example` is the template. Never commit values.
-
 ## engineering/ — how the system is built and run
 
 | Doc | What it is |

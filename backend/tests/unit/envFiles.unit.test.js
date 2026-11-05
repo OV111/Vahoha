@@ -1,22 +1,18 @@
 /**
  * Keeps the places that list environment variables from drifting apart:
- * config/env.js (the source of truth), .env.example, render.yaml and the
- * deployment doc. A failure here means one of them was edited alone.
+ * config/env.js (the source of truth) and render.yaml. A failure here means
+ * one of them was edited alone.
  */
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { ENV_SPECS, FRONTEND_ENV_SPECS, renderEnvExample } from '../../config/env.js'
+import { ENV_SPECS } from '../../config/env.js'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..')
 const read = (file) => readFileSync(path.join(root, file), 'utf8').replace(/\r\n/g, '\n')
 
 const specNames = ENV_SPECS.map((s) => s.name)
-const frontendNames = FRONTEND_ENV_SPECS.map((s) => s.name)
-
-// `NAME=value` or a commented-out `# NAME=value` (optional variables ship commented out).
-const exampleNames = (text) => [...text.matchAll(/^(?:# )?([A-Za-z_][A-Za-z0-9_]*)=/gm)].map((m) => m[1])
 
 describe('ENV_SPECS', () => {
   it('has no duplicate names', () => {
@@ -34,34 +30,6 @@ describe('ENV_SPECS', () => {
   it('uses no real-looking secret as a placeholder', () => {
     for (const spec of ENV_SPECS) {
       expect(spec.example, spec.name).not.toMatch(/^(sk-|ghp_|gho_|AKIA)[A-Za-z0-9]{16,}/)
-    }
-  })
-})
-
-describe('.env.example', () => {
-  const example = read('.env.example')
-  const names = exampleNames(example)
-
-  it('lists every variable the server checks', () => {
-    expect(specNames.filter((n) => !names.includes(n))).toEqual([])
-  })
-
-  it('lists nothing the server does not know about, apart from the frontend section', () => {
-    expect(names.filter((n) => !specNames.includes(n) && !frontendNames.includes(n))).toEqual([])
-  })
-
-  it('lists each variable once', () => {
-    expect(new Set(names).size).toBe(names.length)
-  })
-
-  it('is exactly what renderEnvExample() produces (regenerate it when a spec changes)', () => {
-    expect(example).toBe(renderEnvExample())
-  })
-
-  it('ships the always-required variables as placeholders and everything else commented out', () => {
-    for (const spec of ENV_SPECS) {
-      const active = new RegExp(`^${spec.name}=`, 'm').test(example)
-      expect(active, `${spec.name} should be ${spec.requirement === 'required' ? 'an active line' : 'commented out'}`).toBe(spec.requirement === 'required')
     }
   })
 })
@@ -103,14 +71,5 @@ describe('render.yaml', () => {
 
   it('lists every required variable', () => {
     for (const spec of ENV_SPECS.filter((s) => s.requirement !== 'optional')) expect(renderKeys, spec.name).toContain(spec.name)
-  })
-})
-
-describe('the deployment doc', () => {
-  const doc = read('docs/engineering/DEPLOYMENT.md')
-
-  it('mentions every backend and frontend variable', () => {
-    const missing = [...specNames, ...frontendNames].filter((n) => !doc.includes(`\`${n}\``))
-    expect(missing).toEqual([])
   })
 })

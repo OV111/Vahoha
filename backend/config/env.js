@@ -4,8 +4,8 @@
 // at deploy time (or logs a clear "feature is off" line) and never surprises
 // someone on their first request.
 //
-// The same ENV_SPECS array drives the checks, the generated `.env.example` and the
-// tests that keep `.env.example`, render.yaml and the docs from drifting apart.
+// The same ENV_SPECS array drives the checks and the tests that keep render.yaml
+// from drifting apart.
 //
 // Rules for this file:
 //  - It only DESCRIBES the existing meaning of each variable. A flag that the code
@@ -461,7 +461,7 @@ export const ENV_SPECS = [
   },
 ];
 
-/** Frontend (Vite) variables: not read by the backend, listed so `.env.example` documents everything. */
+/** Frontend (Vite) variables: not read by the backend, listed here as the one reference. */
 export const FRONTEND_ENV_SPECS = [
   { name: "VITE_API_BASE_URL", description: "Backend API base URL, no trailing slash.", example: "http://localhost:5000" },
   { name: "VITE_WS_URL", description: "Backend WebSocket URL.", example: "ws://localhost:5000" },
@@ -666,59 +666,4 @@ export function formatConfigReport(result) {
     for (const w of result.warnings) lines.push(`    - ${w.name}: ${w.message}`);
   }
   return lines.join("\n");
-}
-
-// ── .env.example ────────────────────────────────────────────────────────────
-
-const GROUP_TITLES = {
-  core: "Core",
-  auth: "Sign-in and GitHub",
-  ai: "AI",
-  email: "Email",
-  uploads: "Image uploads",
-  billing: "Billing (Polar)",
-  redis: "Redis",
-  monitoring: "Monitoring",
-  flags: "Switches",
-  local: "Local and scripts only",
-};
-
-const REQUIREMENT_TEXT = {
-  required: "REQUIRED.",
-  production: "REQUIRED in production, optional while developing.",
-  optional: "Optional.",
-};
-
-/**
- * The text of `.env.example`, built from ENV_SPECS so the template can never
- * disagree with what the server checks. Variables required in EVERY environment are
- * active lines with placeholders; the rest (including FRONTEND_URL, which is only
- * required in production) are commented out, so copying the file into a local setup
- * does not point it at production.
- */
-export function renderEnvExample() {
-  const out = [
-    "# Vahoha configuration template. Placeholders only: NEVER commit real values.",
-    "#",
-    "# Backend variables go in backend/.env (or backend/.env.local, which wins). On Render",
-    "# they are set in the dashboard. They are checked once at boot (backend/config/env.js):",
-    "# a REQUIRED one that is missing stops the server and lists every problem together.",
-    "#",
-    "# Frontend (VITE_*) variables go in the root .env.development / .env.production files",
-    "# locally and in the project settings on Vercel. Only public values belong there.",
-    "",
-  ];
-  for (const [group, title] of Object.entries(GROUP_TITLES)) {
-    out.push(`# ── ${title} ${"─".repeat(Math.max(3, 68 - title.length))}`, "");
-    for (const spec of ENV_SPECS.filter((s) => s.group === group)) {
-      out.push(`# ${spec.description}`);
-      out.push(`# ${REQUIREMENT_TEXT[spec.requirement]} If missing: ${spec.effect}.`);
-      out.push(`${spec.requirement === "required" ? "" : "# "}${spec.name}=${spec.example}`, "");
-    }
-  }
-  out.push(`# ── Frontend (Vite) ${"─".repeat(52)}`, "");
-  for (const spec of FRONTEND_ENV_SPECS) {
-    out.push(`# ${spec.description}`, `# ${spec.name}=${spec.example}`, "");
-  }
-  return `${out.join("\n").trimEnd()}\n`;
 }

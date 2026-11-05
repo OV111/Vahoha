@@ -51,40 +51,7 @@ Backend env files are loaded in this order by `backend/config/bootEnv.js` (the f
 
 ## Environment variables
 
-Names only. **Never commit values.** Backend variables are set on Render (`sync: false` means you enter it in the dashboard).
-
-### Backend
-
-| Group | Variables |
-|---|---|
-| Core (required) | `MONGO_URI`, `JWT_Secret` (the name has that exact casing), `JWT_REFRESH_SECRET` (must differ from `JWT_Secret`), `FRONTEND_URL` (required in production: `https`, no trailing slash or path; also the CORS origin) |
-| Runtime | `NODE_ENV`, `NODE_VERSION`, `PORT`, `HUSKY=0`, `NODE_OPTIONS` |
-| AI | `GROQ_API_KEY`, `GROQ_GATE_TPM` (your Groq tier's tokens per minute, so learners together can't go over it), `GROQ_GATE_CONCURRENCY`, `CAPSTONE_REVIEW_MAX_CHARS`, `GEMINI_API_KEY` (unused today: nothing imports `config/gemini.js`) |
-| Auth providers | `GOOGLE_CLIENT_ID`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` (set both or neither), `GITHUB_TOKEN` (repo reads for capstone checks and the Project Map scan; public repos, read-only) |
-| Email | `RESEND_API_KEY`, `EMAIL_FROM` (set both or neither), `CONTACT_INBOX`, `WEEKLY_SUMMARY_CRON_SECRET` (same value as the GitHub repository secret the weekly-summary workflow sends), `API_PUBLIC_URL` (this API's origin, for Gmail's one-click unsubscribe) |
-| Media | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` (all three or none) |
-| Redis | `REDIS_ENABLED` (`false` runs without the notification queue and Redis login throttling), `REDIS_URL`, or `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD` |
-| Billing | `POLAR_ENVIRONMENT`, `POLAR_ACCESS_TOKEN`, `POLAR_PRO_PRODUCT_ID`, `POLAR_WEBHOOK_SECRET`, `BILLING_ENFORCED` (see [Billing](BILLING.md)) |
-| Monitoring | `SENTRY_DSN` (the `vahoha-api` project; unset = nothing is sent to Sentry). The release is the deployed commit, read from Render's `RENDER_GIT_COMMIT` |
-| Switches | `CANDIDATES_ENABLED` (recruiter candidates API, closed by default), `MAINTENANCE_MODE` (every route answers 503), `CACHE_ENABLED` (`false` turns the server cache off), `ALLOW_UNSAFE_RUNNER` (never in production: the server refuses to start), `WS_EXTRA_ORIGINS` |
-| Local and scripts only | `GROQ_TPM_LIMIT` (free-tier workaround, never in production), `EVAL_JUDGE_MODEL` (eval script), `DNS_SERVERS`, `ALLOW_UNBANKED_PUBLISH` (capstone seeder) |
-
-`backend/config/env.js` is the source of truth for this list. `.env.example` is generated from it, and `backend/tests/unit/envFiles.unit.test.js` fails if `.env.example`, `render.yaml` or this table drift away from it.
-
-#### Checked at boot
-
-The server validates every variable once, before it connects to anything, and reports **all** problems together. It never prints a value, only the name and what is wrong.
-
-- **It refuses to start** (exit 1) when: `MONGO_URI` is missing or not `mongodb://` / `mongodb+srv://`; `JWT_Secret` or `JWT_REFRESH_SECRET` is missing or they are the same; in production, `FRONTEND_URL` is missing, not `https`, or has a trailing slash or path; in production, `ALLOW_UNSAFE_RUNNER=true`; `BILLING_ENFORCED=true` without the three Polar secrets.
-- **It starts and logs a warning** for: a missing `GROQ_API_KEY`, `GITHUB_TOKEN` or `GOOGLE_CLIENT_ID`; a half-set pair (email, GitHub sign-in, Cloudinary); no Redis setting in production; `GROQ_TPM_LIMIT` in production; `CACHE_ENABLED=false` in production; a JWT secret under 32 characters; a number or flag with an invalid value. A feature that is off (no email, no uploads, no billing checkout) is listed with the missing variables in the startup report.
-
-### Frontend (Vercel)
-
-`VITE_API_BASE_URL`, `VITE_WS_URL`, `VITE_GOOGLE_CLIENT_ID`, `VITE_POSTHOG_KEY`, `VITE_POSTHOG_HOST`, `VITE_SENTRY_DSN` (the `vahoha-web` project).
-
-Build-time only, set in Vercel and never in a `.env` file: `SENTRY_AUTH_TOKEN`, a Sentry organization token (Settings → Developer Settings → Organization Tokens, named `vercel-sourcemaps`). With it, `vite.config.js` uploads source maps for the deployed commit and deletes them from `dist/`; without it, the build skips the upload and production stack traces stay minified.
-
-The `.env*` files are gitignored; only `.env.example` is tracked. Production frontend values go in Vercel's project settings (`.env.production` is a local copy). Only public `VITE_*` values belong in the frontend.
+Set in the Render and Vercel dashboards. **Never commit values.** Backend list and rules: `backend/config/env.js`, checked once at boot. Frontend rules: [`FRONTEND_ENV.md`](FRONTEND_ENV.md).
 
 ---
 

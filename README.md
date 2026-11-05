@@ -33,7 +33,7 @@ Vahoha is a learning platform for developers who want proof they actually unders
 | **Backend** | Node.js 22–24 (ESM), Express 5, MongoDB (native driver), WebSockets (`ws`), Zod |
 | **AI** | Groq (`openai/gpt-oss-120b`) for the mentor, teach-back grading and exam-bank generation |
 | **Auth** | JWT access tokens (15 min) + rotating httpOnly refresh cookie, bcrypt, Google and GitHub OAuth |
-| **Billing** | Polar (Merchant of Record), signed webhooks. Built, **not enforced** (`BILLING_ENFORCED=false`) |
+| **Billing** | Polar (Merchant of Record), signed webhooks. Built, **not enforced** |
 | **Infrastructure** | Redis, BullMQ, Cloudinary, `isolated-vm` (code-runner sandbox), Docker |
 | **Email** | Resend |
 | **Monitoring** | Sentry (errors, traces, error replays) for the API and the web app; PostHog for product analytics |
@@ -69,170 +69,6 @@ Vahoha is a learning platform for developers who want proof they actually unders
 
 ---
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 22.12 or newer, below 25 (`engines` in `package.json`)
-- MongoDB (local or Atlas)
-- Redis (local or Docker). Optional: set `REDIS_ENABLED=false` to skip it
-
-### Install
-
-```bash
-npm install
-# copy .env.example: backend values into backend/.env, VITE_* values into .env.development
-```
-
-### Run
-
-```bash
-# Frontend + backend + Redis together
-npm run dev:full
-
-# Frontend only
-npm run dev
-
-# Backend only
-npm run server
-
-# Start Redis via Docker (if not already running)
-npm run redis
-```
-
-### Seed content (once per database)
-
-```bash
-npm run seed:roadmap                     # tracks and layers
-npm run seed:challenges                  # Arena challenges
-npm run seed:capstones                   # capstone briefs
-npm run seed:concepts                    # concept definitions for the mentor
-npm run seed:rubrics                     # teach-back rubrics
-node backend/seeders/examSeeder.js       # exam banks via Groq; see docs/product/EXAM_INTEGRITY.md
-npm run admin:grant -- you@example.com   # make yourself an admin
-```
-
-### Build
-
-```bash
-npm run build
-```
-
-The build checks the `VITE_*` variables first and stops if `VITE_API_BASE_URL` or `VITE_WS_URL` is missing or malformed (see Environment Variables).
-
----
-
-## Testing
-
-```bash
-npm run test:unit           # Unit tests
-npm run test:frontend       # Frontend tests (tests/unit)
-npx playwright test         # E2E (tests/e2e)
-npm run test:integration    # Integration (real MongoDB via in-memory server)
-npm run test:api            # API contract tests
-npm run test:websocket      # WebSocket tests
-npm run test:queue          # BullMQ worker tests
-npm run test:security       # Security tests
-npm run test:performance    # Performance benchmarks
-npm run test:concurrency    # Race-condition and concurrency tests
-npm run test:unit:coverage  # Coverage report
-npm run lint
-```
-
----
-
-## Project Structure
-
-```
-├── backend/
-│   ├── app.js              # Express app factory (helmet, CORS, routes)
-│   ├── server.js           # Entry point (HTTP + WebSocket + workers)
-│   ├── config/             # DB (and indexes), Redis, Cloudinary, Swagger
-│   ├── routes/             # Route definitions
-│   ├── controllers/        # Route handlers
-│   ├── services/           # Business logic (exam engine, events, blogs, agent/…)
-│   ├── modules/            # Self-contained features: system-map, teams, capstone, billing, mastery, …
-│   ├── middleware/         # authenticate, requireAdmin, validate, aiRateLimit
-│   ├── tools/              # Mentor tool definitions
-│   ├── seeders/ scripts/   # Content seeding and one-off maintenance
-│   ├── workers/ queues/    # BullMQ
-│   ├── websocket/          # Chat server
-│   └── tests/              # unit | integration | api | security | perf | ws | queue
-├── src/
-│   ├── features/           # One folder per product area (Roadmap, AI-Agent, mastery, billing, …)
-│   ├── pages/              # Route-level pages
-│   ├── components/         # Shared UI
-│   ├── stores/             # Zustand state
-│   └── data/roadmaps/      # Roadmap content, one JSON file per category
-├── tests/
-│   ├── unit/               # Frontend unit tests
-│   └── e2e/                # Playwright specs
-├── constants/              # Shared constants (API base URL, categories)
-├── config/                 # Vitest configs per test suite
-├── docs/                   # Plans, specs and strategy (index below)
-└── public/                 # Static assets
-```
-
----
-
-## Environment Variables
-
-The full list, with what each one does, is in [`.env.example`](.env.example). The backend checks its settings once at startup and stops with a list of every problem.
-
-`backend/.env`:
-
-```env
-# Server
-PORT=5000
-FRONTEND_URL=http://localhost:5173
-NODE_ENV=development
-
-# Database
-MONGO_URI=
-
-# Auth (note the capitalisation of JWT_Secret)
-JWT_Secret=
-JWT_REFRESH_SECRET=
-GOOGLE_CLIENT_ID=
-GITHUB_CLIENT_ID=
-GITHUB_CLIENT_SECRET=
-
-# Redis (optional: REDIS_ENABLED=false skips it)
-REDIS_ENABLED=true
-REDIS_URL=
-
-# AI
-GROQ_API_KEY=
-
-# Images and email
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-RESEND_API_KEY=
-
-# Billing (see docs/engineering/BILLING.md); keep BILLING_ENFORCED=false during the pilot
-POLAR_ACCESS_TOKEN=
-POLAR_PRO_PRODUCT_ID=
-POLAR_WEBHOOK_SECRET=
-BILLING_ENFORCED=false
-
-# Error monitoring (optional: unset = nothing is sent to Sentry)
-SENTRY_DSN=
-```
-
-Frontend (`.env.development`, `.env.production`): `VITE_API_BASE_URL`, `VITE_WS_URL`, `VITE_GOOGLE_CLIENT_ID`, `VITE_POSTHOG_KEY`, `VITE_POSTHOG_HOST`, `VITE_SENTRY_DSN`.
-Vercel also needs `SENTRY_AUTH_TOKEN` (build-time secret, never in a `.env` file) so production builds upload source maps to Sentry.
-The `.env.*` files are not committed, so **Vercel builds only see the variables set in the project settings**. Set each one for Production *and* Preview, or the build stops. Rules: [`docs/engineering/FRONTEND_ENV.md`](docs/engineering/FRONTEND_ENV.md).
-Other switches (`MAINTENANCE_MODE`, `ALLOW_UNSAFE_RUNNER`, `WS_EXTRA_ORIGINS`, `CONTACT_INBOX`) are explained in `docs/DEPLOYMENT.md`.
-
----
-
-## API Docs
-
-Swagger UI is available at `/api-docs` when the backend is running.
-
----
-
 ## Status
 
 | Status | Milestone |
@@ -249,19 +85,13 @@ Swagger UI is available at `/api-docs` when the backend is running.
 | ✅ | Project map: editor, repo scan, sharing, comments |
 | ✅ | Labs: Foundations room, first system lab |
 | ✅ | Pilot analytics: events and funnel |
-| ✅ | Error monitoring: Sentry on API and web app (production env vars still to set) |
+| ✅ | Error monitoring: Sentry on API and web app |
 | 🟡 | Exam banks: generator built; banks must be seeded and hand-checked per layer |
 | 🔲 | Voice exam (teach-back): specified, not built |
 | 🔲 | Public progress profiles, full admin panel |
 | 🔲 | Real users: the pilot has not started |
 
 Day-to-day status and the pre-pilot checklist: `docs/PILOT_STATUS.md`.
-
----
-
-## Deployment
-
-Backend on Render (`render.yaml`), frontend on Vercel (`vercel.json`), database on MongoDB Atlas. Pushing to `master` deploys production; other branches get Vercel preview builds only. A `Dockerfile` is included for running the API in a container. Full steps: `docs/DEPLOYMENT.md`.
 
 ---
 

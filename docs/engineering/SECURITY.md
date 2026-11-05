@@ -22,7 +22,7 @@
 | **Headers** | `helmet` (custom CSP for PostHog, blob workers), mounted after `/api-docs`. Vercel adds HSTS, `nosniff`, `X-Frame-Options: DENY`, COOP, Referrer-Policy | `app.js`, `vercel.json` |
 | **CORS** | One origin (`FRONTEND_URL`), credentials on. WebSocket handshakes from other origins are refused | `app.js`, `websocket/origin.js` |
 | **Proxy** | `trust proxy` is 1 (Render adds one hop), so `req.ip` is the client and limiters cannot be walked past with a spoofed header | `app.js` |
-| **Secrets** | Read from environment variables. `.env*` files are gitignored (only `.env.example` is tracked). The server refuses to boot without the JWT secrets or `MONGO_URI`. Billing config fails closed: no webhook secret means every webhook is rejected (503) | `server.js`, `billingConfig.js` |
+| **Secrets** | Read from environment variables. `.env*` files are gitignored. The server refuses to boot without the JWT secrets or `MONGO_URI`. Billing config fails closed: no webhook secret means every webhook is rejected (503) | `server.js`, `billingConfig.js` |
 | **Webhooks** | Polar webhook signature checked over the raw body. Stale or replayed events are safe | `webhookService.js` |
 | **Uploads** | Magic-byte check on uploads (`utils/fileSignature.js`). Files live on Cloudinary, only URLs in Mongo | `profile`, `chat` |
 | **Code runner** | Submitted challenge code runs in an `isolated-vm` isolate (64 MB, 5 s). In production it fails closed if the addon is missing. The grading harness freezes intrinsics and takes the export name from the challenge, not the client | `runnerService.js` |
