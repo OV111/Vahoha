@@ -16,3 +16,6 @@ export const TO = {
   capstone: "/capstone",
   recruiters: FEATURES.candidates ? "/candidates" : "/my-profile",
 };
+
+// The three acts of the story, shared by the diagram and the phone list.
+export const PHASES = { learn: "Learn", prove: "Prove it", seen: "Get seen" };

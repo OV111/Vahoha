@@ -8,7 +8,7 @@ import vahohaMark from "@/assets/brand/vahoha-mark-96.webp";
 const HowItWorks = lazy(() => import("../components/home/HowItWorks"));
 
 const Home = () => {
-  const { auth } = useAuthStore();
+  const auth = useAuthStore((state) => state.auth);
   const { hash, key } = useLocation();
 
 
