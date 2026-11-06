@@ -23,6 +23,7 @@ import ConversationRow from "../components/ConversationRow";
 import ConversationFilters from "../components/ConversationFilters";
 import RequestRow from "../components/RequestRow";
 import { getAccessToken, apiFetch } from "../../../../constants/api";
+import { closeSocket, openSocket } from "@/lib/socket";
 
 const getUserIdFromJWT = (token) => {
   if (!token) return null;
@@ -88,9 +89,9 @@ const Chats = () => {
     `${activeUser?.firstName ?? ""} ${activeUser?.lastName ?? ""}`.trim() ||
     "Name Surname";
 
-  // ws implementation //////////////////////////////////////////////
   const token = getAccessToken();
   const [socket, setSocket] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
   const senderId = getUserIdFromJWT(token);
   const receiverId = activeUser?._id;
   const roomId = isGroupActive
@@ -193,95 +194,84 @@ const Chats = () => {
 
 
   useEffect(() => {
-    const ws = new WebSocket(import.meta.env.VITE_WS_URL);
+    const ws = openSocket();
+    setSocket(ws);
 
-    ws.onopen = () => {
-      ws.send(JSON.stringify({ type: "auth", token }));
-      ws.send(
-        JSON.stringify({
-          type: "load_last_messages",
+    // Fires again after every reconnect: the server forgot this socket's rooms.
+    ws.on("connect", () => {
+      ws.emit("load_last_messages");
+      setIsConnected(true);
+    });
+    ws.on("disconnect", () => setIsConnected(false));
+    ws.on("connect_error", (err) => {
+      console.error("Chat socket error:", err.message);
+      setIsLoadingLastMessages(false);
+    });
+    ws.on("chat_error", (payload) => {
+      toast.error(payload.message || "Something went wrong");
+    });
+    ws.on("sended_message", (payload) => {
+      setChatMessages((prev) => [...prev, payload.message]);
+    });
+    ws.on("message_reaction", (payload) => {
+      setChatMessages((prev) =>
+        prev.map((m) => {
+          if (String(m._id) !== payload.messageId) return m;
+          const reactions = { ...m.reactions };
+          if (payload.emoji) reactions[payload.userId] = payload.emoji;
+          else delete reactions[payload.userId];
+          return { ...m, reactions };
         }),
       );
-      setSocket(ws);
-    };
-    ws.onmessage = (event) => {
-      const payload = JSON.parse(event.data);
-      if (payload.type === "error") {
-        toast.error(payload.message || "Something went wrong");
-      } else if (payload.type === "sended_message") {
-        setChatMessages((prev) => [...prev, payload.message]);
-      } else if (payload.type === "message_reaction") {
-        setChatMessages((prev) =>
-          prev.map((m) => {
-            if (String(m._id) !== payload.messageId) return m;
-            const reactions = { ...m.reactions };
-            if (payload.emoji) reactions[payload.userId] = payload.emoji;
-            else delete reactions[payload.userId];
-            return { ...m, reactions };
-          }),
+    });
+    ws.on("message_history", (payload) => {
+      setChatMessages(payload.messageHistory || []);
+      setIsLoadingHistory(false);
+    });
+    ws.on("load_last_messages", (payload) => {
+      setRooms(payload.roomsData || []);
+      setIsLoadingLastMessages(false);
+    });
+    const onGroupChange = (payload) => {
+      const room = payload.room;
+      const currentUserId = getUserIdFromJWT(getAccessToken());
+      const isStillMember = room.members.includes(String(currentUserId));
+
+      setRooms((prev) => {
+        if (!isStillMember) return prev.filter((r) => r._id !== room._id);
+        const idx = prev.findIndex((r) => r._id === room._id);
+        if (idx === -1) return [...prev, room];
+        const next = [...prev];
+        // The broadcast room is shared by all members, so it carries no
+        // per-user settings — keep this user's own.
+        next[idx] = { ...room, mySettings: prev[idx].mySettings };
+        return next;
+      });
+
+      if (!isStillMember) {
+        setActiveConversation((prev) =>
+          prev?.kind === "group" && prev.room._id === room._id ? null : prev,
         );
-      } else if (payload.type === "message_history") {
-        setChatMessages(payload.messageHistory || []);
-        setIsLoadingHistory(false);
-      } else if (payload.type === "load_last_messages") {
-        setRooms(payload.roomsData || []);
-        setIsLoadingLastMessages(false);
-      } else if (
-        payload.type === "group_created" ||
-        payload.type === "group_updated"
-      ) {
-        const room = payload.room;
-        const currentUserId = getUserIdFromJWT(getAccessToken());
-        const isStillMember = room.members.includes(String(currentUserId));
-
-        setRooms((prev) => {
-          if (!isStillMember) return prev.filter((r) => r._id !== room._id);
-          const idx = prev.findIndex((r) => r._id === room._id);
-          if (idx === -1) return [...prev, room];
-          const next = [...prev];
-          // The broadcast room is shared by all members, so it carries no
-          // per-user settings — keep this user's own.
-          next[idx] = { ...room, mySettings: prev[idx].mySettings };
-          return next;
-        });
-
-        if (!isStillMember) {
-          setActiveConversation((prev) =>
-            prev?.kind === "group" && prev.room._id === room._id ? null : prev,
-          );
-        }
       }
     };
-    ws.onerror = (err) => {
-      console.error("WebSocket error:", err);
-      setIsLoadingLastMessages(false);
-    };
-    ws.onclose = () => {
-      return () => ws.close();
-    };
-    return () => ws.close();
-    // Open one socket per mount; token is read once at connect time.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    ws.on("group_created", onGroupChange);
+    ws.on("group_updated", onGroupChange);
+
+    return () => closeSocket(ws);
   }, []);
 
   useEffect(() => {
-    if (!socket || !activeConversation || !roomId) return;
-    if (socket.readyState !== WebSocket.OPEN) return;
+    if (!socket || !isConnected || !activeConversation || !roomId) return;
     setIsLoadingHistory(true);
     setChatMessages([]);
 
-    socket.send(
-      JSON.stringify({
-        type: "join_room",
-        roomId,
-        senderId,
-        // Only meaningful for a direct chat's implicit first-message room
-        // creation — a group's roomId already resolves to an existing room.
-        receiverId: isGroupActive ? undefined : receiverId,
-        message: "Creating Room",
-      }),
-    );
-  }, [socket, activeConversation, roomId, senderId, receiverId, isGroupActive]);
+    socket.emit("join_room", {
+      roomId,
+      // Only meaningful for a direct chat's implicit first-message room
+      // creation — a group's roomId already resolves to an existing room.
+      receiverId: isGroupActive ? undefined : receiverId,
+    });
+  }, [socket, isConnected, activeConversation, roomId, receiverId, isGroupActive]);
 
   // Patch (or create a stub for) a room in the list. A direct chat's room is
   // created server-side on join, so it may not be in `rooms` yet.
@@ -402,23 +392,21 @@ const Chats = () => {
 
   const handleSendMessage = () => {
     if (!draftMessage.trim() || !roomId) return;
-    socket.send(
-      JSON.stringify({
-        type: "send_message",
-        roomId,
-        text: draftMessage,
-      }),
-    );
+    // Socket.IO would queue this and replay it on reconnect, before the room is joined
+    // again, so the server would refuse it after the draft was already cleared.
+    if (!isConnected) {
+      toast.error("Reconnecting. Try again in a moment.");
+      return;
+    }
+    socket.emit("send_message", { roomId, text: draftMessage });
     setDraftMessage("");
   };
 
   // emoji === null removes my reaction. The server broadcasts the result back
   // (including to me), so state updates in one place: the message_reaction case.
   const handleReact = (messageId, emoji) => {
-    if (!roomId || !socket) return;
-    socket.send(
-      JSON.stringify({ type: "react_message", roomId, messageId, emoji }),
-    );
+    if (!roomId || !isConnected) return;
+    socket.emit("react_message", { roomId, messageId, emoji });
   };
 
   // The server saves the clip and broadcasts it over the socket, so the new

@@ -7,22 +7,17 @@ import {
   loadMessages,
   loadRoomsForUser,
 } from "../modules/chat/index.js";
+import { chatRoom, getIo } from "./connectionRegistry.js";
 
 // Transport layer only: socket presence, broadcasting and notification
 // fan-out. All persistence lives in modules/chat/services/chatService.js.
 
-const rooms = new Map(); // roomId -> Set<ws> (sockets currently viewing that room)
+const sendError = (socket, message) => socket.emit("chat_error", { message });
 
-const sendError = (ws, message) =>
-  ws.send(JSON.stringify({ type: "error", message }));
-
-export const joinRoom = async (ws, data) => {
+export const joinRoom = async (socket, data) => {
   const { roomId, receiverId } = data;
-  const senderId = ws.userId;
-  if (!roomId) return sendError(ws, "Room ID is missing");
-  if (!senderId) return sendError(ws, "User id is missing");
-
-  if (!rooms.has(roomId)) rooms.set(roomId, new Set());
+  const senderId = socket.data.userId;
+  if (!roomId || typeof roomId !== "string") return sendError(socket, "Room ID is missing");
 
   let db;
   let clearedAt = null;
@@ -33,31 +28,32 @@ export const joinRoom = async (ws, data) => {
       userId: senderId,
       receiverId,
     });
-    if (error) return sendError(ws, error);
+    if (error) return sendError(socket, error);
     clearedAt = room.memberSettings?.[senderId]?.clearedAt ?? null;
   } catch (err) {
     console.error("joinRoom failed:", err);
-    return sendError(ws, "Error with DB");
+    return sendError(socket, "Error with DB");
   }
 
-  rooms.get(roomId).add(ws);
+  // The socket can close during the awaits above. Its rooms were already cleaned up
+  // by then, so joining now would leave a dead entry in the room for good.
+  if (!socket.connected) return;
+  socket.join(chatRoom(roomId));
   const messageHistory = await loadMessages(db, roomId, 50, clearedAt);
-  ws.send(JSON.stringify({ type: "message_history", roomId, messageHistory }));
-  ws.send(JSON.stringify({ type: "joined_room", roomId }));
+  socket.emit("message_history", { roomId, messageHistory });
+  socket.emit("joined_room", { roomId });
 };
 
 // Broadcast to every socket currently viewing this room, and track who's
 // actually present so we only queue notifications for absent members —
 // works the same way for a 2-person room or an N-person group. Shared by text
 // (websocket) and voice notes (HTTP upload).
-export const deliverChatMessage = (roomId, senderId, { members, mutedMembers = [], message }) => {
-  const presentUserIds = new Set();
-  rooms.get(roomId)?.forEach((clientSocket) => {
-    if (clientSocket.readyState === WebSocket.OPEN) {
-      presentUserIds.add(clientSocket.userId);
-      clientSocket.send(JSON.stringify({ type: "sended_message", message }));
-    }
-  });
+export const deliverChatMessage = async (roomId, senderId, { members, mutedMembers = [], message }) => {
+  const io = getIo();
+  const room = chatRoom(roomId);
+  const viewers = await io.in(room).fetchSockets();
+  const presentUserIds = new Set(viewers.map((viewer) => viewer.data.userId));
+  io.to(room).emit("sended_message", { message });
 
   // Muted members still receive the message, just no notification.
   members
@@ -76,71 +72,57 @@ export const deliverChatMessage = (roomId, senderId, { members, mutedMembers = [
     });
 };
 
-export const sendMessage = async (ws, data) => {
+export const sendMessage = async (socket, data) => {
   const { roomId, text } = data;
-  const senderId = ws.userId;
-  if (!roomId || !senderId || !text?.trim()) {
-    return sendError(ws, "Missing required fields");
+  const senderId = socket.data.userId;
+  if (!roomId || !text?.trim()) {
+    return sendError(socket, "Missing required fields");
   }
-  if (!rooms.has(roomId)) {
-    return sendError(ws, "Room does not exist");
+  if (!socket.rooms.has(chatRoom(roomId))) {
+    return sendError(socket, "Room does not exist");
   }
 
   try {
     const db = await connectDB();
     const saved = await saveMessage(db, { roomId, senderId, text });
-    if (saved.error) return sendError(ws, saved.error);
-    deliverChatMessage(roomId, senderId, saved);
+    if (saved.error) return sendError(socket, saved.error);
+    await deliverChatMessage(roomId, senderId, saved);
   } catch (error) {
     console.error("sendMessage failed:", error);
-    return sendError(ws, "Failed to send message");
+    return sendError(socket, "Failed to send message");
   }
 };
 
 // emoji === null (or omitted) removes the sender's reaction. The client decides
 // toggle-vs-replace, so the server stays a plain "set this user's reaction".
-export const reactToMessage = async (ws, data) => {
+export const reactToMessage = async (socket, data) => {
   const { roomId, messageId, emoji = null } = data;
-  const userId = ws.userId;
-  if (!roomId || !messageId || !userId) {
-    return sendError(ws, "Missing required fields");
+  const userId = socket.data.userId;
+  if (!roomId || !messageId) {
+    return sendError(socket, "Missing required fields");
   }
-  const sockets = rooms.get(roomId);
-  if (!sockets?.has(ws)) return sendError(ws, "Room does not exist");
+  const room = chatRoom(roomId);
+  if (!socket.rooms.has(room)) return sendError(socket, "Room does not exist");
 
   try {
     const db = await connectDB();
     const result = await setMessageReaction(db, { roomId, messageId, userId, emoji });
-    if (result.error) return sendError(ws, result.error);
+    if (result.error) return sendError(socket, result.error);
 
-    const payload = JSON.stringify({
-      type: "message_reaction",
+    getIo().to(room).emit("message_reaction", {
       roomId,
       messageId: result.messageId,
       userId: result.userId,
       emoji: result.emoji,
     });
-    sockets.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) client.send(payload);
-    });
   } catch (error) {
     console.error("reactToMessage failed:", error);
-    return sendError(ws, "Failed to react");
+    return sendError(socket, "Failed to react");
   }
 };
 
-export const removeFromRooms = (ws) => {
-  for (const [roomId, sockets] of rooms.entries()) {
-    sockets.delete(ws);
-    if (sockets.size === 0) rooms.delete(roomId);
-  }
-};
-
-export const loadLastMessages = async (ws) => {
-  const userId = ws.userId;
-  if (!userId) return sendError(ws, "userId is not defined");
-
+export const loadLastMessages = async (socket) => {
   const db = await connectDB();
-  const roomsData = await loadRoomsForUser(db, userId);
-  return ws.send(JSON.stringify({ type: "load_last_messages", roomsData }));
+  const roomsData = await loadRoomsForUser(db, socket.data.userId);
+  socket.emit("load_last_messages", { roomsData });
 };

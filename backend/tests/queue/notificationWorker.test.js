@@ -2,7 +2,7 @@
  * Step 6 — Queue / Worker tests
  *
  * Strategy: vi.hoisted() captures the Worker processor function before any
- * module code runs.  connectDB and getWss are fully mocked so no real Redis
+ * module code runs.  connectDB and sendToUser are fully mocked so no real Redis
  * or MongoDB connection is needed.  A MongoMemoryServer provides a real DB
  * for the assertions that verify document shape / insertion.
  */
@@ -44,10 +44,10 @@ const mockConnectDB = vi.hoisted(() => vi.fn())
 vi.mock('../../config/db.js', () => ({ default: mockConnectDB }))
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Step 4 — mock getWss
+// Step 4 — mock sendToUser
 // ─────────────────────────────────────────────────────────────────────────────
-const mockGetWss = vi.hoisted(() => vi.fn())
-vi.mock('../../websocket/index.js', () => ({ getWss: mockGetWss }))
+const mockSendToUser = vi.hoisted(() => vi.fn())
+vi.mock('../../websocket/connectionRegistry.js', () => ({ sendToUser: mockSendToUser }))
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MongoMemoryServer lifecycle
@@ -74,9 +74,6 @@ afterAll(async () => {
 
 beforeEach(async () => {
   vi.clearAllMocks()
-
-  // Default: wss returns null (no WebSocket server)
-  mockGetWss.mockReturnValue(null)
 
   // Default: connectDB resolves to the real in-memory DB
   mockConnectDB.mockResolvedValue(realDb)
@@ -175,54 +172,13 @@ describe('notificationWorker processor', () => {
       lastName: 'Actor',
     })
 
-    const mockSend = vi.fn()
-    const mockClient = { userId: targetUserId, readyState: 1, send: mockSend }
-    mockGetWss.mockReturnValue({ clients: [mockClient] })
-
     await processorRef.fn({ data: { type: 'follow', actorId, targetUserId } })
 
-    expect(mockSend).toHaveBeenCalledOnce()
-    const sentPayload = JSON.parse(mockSend.mock.calls[0][0])
-    expect(sentPayload.type).toBe('notification')
-    expect(sentPayload.data.type).toBe('follow')
-  })
-
-  it('does NOT send WebSocket notification when target user is not connected', async () => {
-    const actorId = new ObjectId().toString()
-    const targetUserId = new ObjectId().toString()
-
-    await realDb.collection('users').insertOne({
-      _id: new ObjectId(actorId),
-      username: 'wsactor2',
-      firstName: 'A',
-      lastName: 'B',
-    })
-
-    const mockSend = vi.fn()
-    // Client belongs to a different user, not targetUserId
-    const mockClient = { userId: 'different-user-id', readyState: 1, send: mockSend }
-    mockGetWss.mockReturnValue({ clients: [mockClient] })
-
-    await processorRef.fn({ data: { type: 'follow', actorId, targetUserId } })
-
-    expect(mockSend).not.toHaveBeenCalled()
-  })
-
-  it('does NOT send WebSocket notification when wss is null', async () => {
-    const actorId = new ObjectId().toString()
-    const targetUserId = new ObjectId().toString()
-
-    await realDb.collection('users').insertOne({
-      _id: new ObjectId(actorId),
-      username: 'noWssActor',
-      firstName: 'No',
-      lastName: 'Wss',
-    })
-
-    // Default beforeEach already sets mockGetWss.mockReturnValue(null)
-    await expect(
-      processorRef.fn({ data: { type: 'follow', actorId, targetUserId } })
-    ).resolves.not.toThrow()
+    expect(mockSendToUser).toHaveBeenCalledOnce()
+    const [sentTo, payload] = mockSendToUser.mock.calls[0]
+    expect(sentTo).toBe(targetUserId)
+    expect(payload.type).toBe('notification')
+    expect(payload.data.type).toBe('follow')
   })
 
   it('throws on DB error so BullMQ can retry', async () => {

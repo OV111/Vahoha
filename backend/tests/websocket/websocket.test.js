@@ -6,15 +6,15 @@
  * - `connectDB` is mocked so chatHandler's DB calls succeed without a real
  *   MongoDB.  The mock collection returns sensible stub values.
  * - `notificationQueue` (bullmq) is mocked to avoid a live Redis dependency.
- * - A real http.Server + ws.WebSocketServer is started on an OS-assigned port
+ * - A real http.Server + Socket.IO server is started on an OS-assigned port
  *   (port 0) in beforeAll and torn down in afterAll.
- * - Test clients are plain `ws` WebSocket instances connecting to that server.
+ * - Test clients are real socket.io-client instances connecting to that server.
  */
 
 import { describe, it, expect, vi, beforeAll, afterAll, afterEach } from 'vitest'
 import http from 'node:http'
 import process from 'node:process'
-import WebSocket from 'ws'
+import { io as connectClient } from 'socket.io-client'
 import jwt from 'jsonwebtoken'
 
 // ─── Hoisted mocks ────────────────────────────────────────────────────────────
@@ -94,89 +94,35 @@ const makeMockDb = (overrides = {}) => {
 }
 
 /**
- * Return a Promise that resolves with the first parsed JSON message whose
- * `.type` matches `type`.  Rejects after `timeoutMs` milliseconds.
- *
- * @param {WebSocket} ws
- * @param {string}    type
- * @param {number}    [timeoutMs=3000]
+ * Resolves with the next payload of `event`, or rejects after `timeoutMs`.
  */
-const waitForMsg = (ws, type, timeoutMs = 3000) =>
+const waitForMsg = (socket, event, timeoutMs = 3000) =>
   new Promise((resolve, reject) => {
     const timer = setTimeout(
-      () => reject(new Error(`waitForMsg('${type}') timed out after ${timeoutMs}ms`)),
+      () => reject(new Error(`waitForMsg('${event}') timed out after ${timeoutMs}ms`)),
       timeoutMs,
     )
-
-    const onMessage = (raw) => {
-      let msg
-      try { msg = JSON.parse(raw.toString()) } catch { return }
-      if (msg.type === type) {
-        clearTimeout(timer)
-        ws.off('message', onMessage)
-        resolve(msg)
-      }
-    }
-
-    ws.on('message', onMessage)
+    socket.once(event, (payload) => {
+      clearTimeout(timer)
+      resolve(payload)
+    })
   })
 
-/**
- * Wait for the WebSocket close event, or reject after `timeoutMs`.
- */
-const waitForClose = (ws, timeoutMs = 3000) =>
-  new Promise((resolve, reject) => {
-    if (ws.readyState === WebSocket.CLOSED) return resolve()
-    const timer = setTimeout(
-      () => reject(new Error(`waitForClose timed out after ${timeoutMs}ms`)),
-      timeoutMs,
-    )
-    ws.once('close', () => { clearTimeout(timer); resolve() })
-  })
-
-/**
- * Connect a new WebSocket to the test server and wait until it is OPEN.
- */
-const connect = (port) =>
-  new Promise((resolve, reject) => {
-    const ws = new WebSocket(`ws://localhost:${port}`)
-    ws.once('open',  () => resolve(ws))
-    ws.once('error', reject)
-  })
-
-/**
- * Send a JSON message through the given WebSocket.
- */
-const send = (ws, payload) => ws.send(JSON.stringify(payload))
-
-/**
- * Authenticate `ws` with a freshly minted token and wait for the next message
- * (which proves the auth was accepted — the server continues processing).
- * We do this by performing auth then immediately sending a `load_last_messages`
- * request and waiting for its response (a reliable echo back).
- *
- * Returns the token's user id.
- */
-const authenticate = async (ws, userId = '507f1f77bcf86cd799439011') => {
-  const token = makeToken(userId)
-  send(ws, { type: 'auth', token })
-  // Give the server a tick to process the auth message before we continue.
-  await new Promise((r) => setTimeout(r, 50))
-  return userId
-}
+const clientFor = (auth) =>
+  connectClient(`http://127.0.0.1:${port}`, { transports: ['websocket'], auth, reconnection: false, forceNew: true })
 
 // ─── Server lifecycle ─────────────────────────────────────────────────────────
 
 let server
+let io
 let port
-/** @type {WebSocket[]} */
 let openClients = []
 
 beforeAll(async () => {
   mockConnectDB.mockResolvedValue(makeMockDb())
 
   server = http.createServer()
-  initWebSocketServer(server)
+  io = initWebSocketServer(server)
 
   await new Promise((resolve, reject) => {
     server.listen(0, '127.0.0.1', () => {
@@ -188,19 +134,11 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  await new Promise((resolve) => server.close(resolve))
+  await io.close()
 })
 
 afterEach(async () => {
-  // Close every client opened during the test and drain the list.
-  await Promise.all(
-    openClients.map((ws) => {
-      if (ws.readyState !== WebSocket.CLOSED && ws.readyState !== WebSocket.CLOSING) {
-        ws.close()
-      }
-      return waitForClose(ws).catch(() => {})
-    }),
-  )
+  openClients.forEach((socket) => socket.disconnect())
   openClients = []
   vi.clearAllMocks()
   // Re-apply the default mock so future tests don't fail due to missing stub.
@@ -208,10 +146,17 @@ afterEach(async () => {
 })
 
 // ─── Helper that opens a client and registers it for auto-cleanup ─────────────
-const openClient = async () => {
-  const ws = await connect(port)
-  openClients.push(ws)
-  return ws
+const openClient = async (userId = '507f1f77bcf86cd799439011') => {
+  const socket = clientFor({ token: makeToken(userId) })
+  openClients.push(socket)
+  await waitForMsg(socket, 'connect')
+  return socket
+}
+
+const joinRoom = (socket, roomId, receiverId) => {
+  const done = Promise.all([waitForMsg(socket, 'joined_room'), waitForMsg(socket, 'message_history')])
+  socket.emit('join_room', { roomId, receiverId })
+  return done
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -219,32 +164,30 @@ const openClient = async () => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 describe('WebSocket — auth', () => {
-  it('closes the connection for an invalid token', async () => {
-    const ws = await openClient()
-    send(ws, { type: 'auth', token: 'badtoken' })
-    await waitForClose(ws)
-    expect(ws.readyState).toBe(WebSocket.CLOSED)
+  it('refuses the handshake for an invalid token', async () => {
+    const socket = clientFor({ token: 'badtoken' })
+    openClients.push(socket)
+    const err = await waitForMsg(socket, 'connect_error')
+    expect(err.message).toBe('unauthorized')
+    expect(socket.connected).toBe(false)
   })
 
-  it('closes connection when a non-auth message is sent before authenticating', async () => {
-    const ws = await openClient()
-    // Send a join_room without authenticating first.
-    send(ws, { type: 'join_room', roomId: 'x' })
-    await waitForClose(ws)
-    expect(ws.readyState).toBe(WebSocket.CLOSED)
+  it('refuses the handshake when no token is sent', async () => {
+    const socket = clientFor({})
+    openClients.push(socket)
+    const err = await waitForMsg(socket, 'connect_error')
+    expect(err.message).toBe('unauthorized')
   })
 
-  it('authenticated client can send subsequent messages without being closed', async () => {
-    const ws = await openClient()
-    await authenticate(ws)
+  it('authenticated client can send messages without being disconnected', async () => {
+    const socket = await openClient()
 
-    // Send load_last_messages — a safe, always-valid request for an authed client.
-    send(ws, { type: 'load_last_messages' })
+    // load_last_messages — a safe, always-valid request for an authed client.
+    socket.emit('load_last_messages')
 
-    // Server responds, connection stays open.
-    const response = await waitForMsg(ws, 'load_last_messages')
-    expect(response.type).toBe('load_last_messages')
-    expect(ws.readyState).toBe(WebSocket.OPEN)
+    const response = await waitForMsg(socket, 'load_last_messages')
+    expect(Array.isArray(response.roomsData)).toBe(true)
+    expect(socket.connected).toBe(true)
   })
 })
 
@@ -254,43 +197,30 @@ describe('WebSocket — auth', () => {
 
 describe('WebSocket — join_room', () => {
   it('returns error when roomId is missing', async () => {
-    const ws = await openClient()
-    await authenticate(ws)
+    const socket = await openClient()
 
-    send(ws, { type: 'join_room', receiverId: 'user-abc' })
-    const msg = await waitForMsg(ws, 'error')
+    socket.emit('join_room', { receiverId: 'user-abc' })
+    const msg = await waitForMsg(socket, 'chat_error')
     expect(msg.message).toMatch(/room id is missing/i)
   })
 
   it('returns error when the room does not exist and no receiverId is given', async () => {
-    const ws = await openClient()
-    await authenticate(ws)
+    const socket = await openClient()
 
     // Without a receiverId, chatHandler can't implicitly create a direct
     // room — that's also how a bad/expired group roomId is rejected, since
     // groups must be created via the REST endpoint first.
-    send(ws, { type: 'join_room', roomId: 'room1' })
-    const msg = await waitForMsg(ws, 'error')
+    socket.emit('join_room', { roomId: 'room1' })
+    const msg = await waitForMsg(socket, 'chat_error')
     expect(msg.message).toMatch(/room does not exist/i)
   })
 
   it('sends joined_room and message_history on success', async () => {
-    const ws = await openClient()
-    await authenticate(ws)
+    const socket = await openClient()
 
-    // Collect both expected messages in parallel before sending.
-    const [joinedRoom, messageHistory] = await Promise.all([
-      waitForMsg(ws, 'joined_room'),
-      waitForMsg(ws, 'message_history'),
-      // Trigger after both listeners are registered.
-      Promise.resolve().then(() =>
-        send(ws, { type: 'join_room', roomId: PAIR_ROOM, receiverId: OTHER_USER }),
-      ),
-    ])
+    const [joinedRoom, messageHistory] = await joinRoom(socket, PAIR_ROOM, OTHER_USER)
 
-    expect(joinedRoom.type).toBe('joined_room')
     expect(joinedRoom.roomId).toBe(PAIR_ROOM)
-    expect(messageHistory.type).toBe('message_history')
     expect(Array.isArray(messageHistory.messageHistory)).toBe(true)
   })
 })
@@ -301,36 +231,20 @@ describe('WebSocket — join_room', () => {
 
 describe('WebSocket — send_message', () => {
   it('returns error when required fields are missing', async () => {
-    const ws = await openClient()
-    await authenticate(ws)
-
-    // Join the room first so it exists in the in-memory Map.
-    await Promise.all([
-      waitForMsg(ws, 'joined_room'),
-      waitForMsg(ws, 'message_history'),
-      Promise.resolve().then(() =>
-        send(ws, { type: 'join_room', roomId: PAIR_ROOM, receiverId: OTHER_USER }),
-      ),
-    ])
+    const socket = await openClient()
+    await joinRoom(socket, PAIR_ROOM, OTHER_USER)
 
     // Send without the required `text` field.
-    send(ws, { type: 'send_message', roomId: PAIR_ROOM })
-    const msg = await waitForMsg(ws, 'error')
+    socket.emit('send_message', { roomId: PAIR_ROOM })
+    const msg = await waitForMsg(socket, 'chat_error')
     expect(msg.message).toMatch(/missing required fields/i)
   })
 
-  it('returns error when room does not exist', async () => {
-    const ws = await openClient()
-    await authenticate(ws)
+  it('returns error when this socket has not joined the room', async () => {
+    const socket = await openClient()
 
-    // Do NOT join any room — the in-memory Map won't have 'nonexistent'.
-    send(ws, {
-      type: 'send_message',
-      roomId: 'nonexistent',
-      receiverId: 'user-x',
-      text: 'hi',
-    })
-    const msg = await waitForMsg(ws, 'error')
+    socket.emit('send_message', { roomId: 'nonexistent', text: 'hi' })
+    const msg = await waitForMsg(socket, 'chat_error')
     expect(msg.message).toMatch(/room does not exist/i)
   })
 
@@ -351,38 +265,16 @@ describe('WebSocket — send_message', () => {
       }),
     )
 
-    const [clientA, clientB] = await Promise.all([openClient(), openClient()])
-    await authenticate(clientA, '507f1f77bcf86cd799439011')
-    await authenticate(clientB, '507f1f77bcf86cd799439012')
+    const clientA = await openClient('507f1f77bcf86cd799439011')
+    const clientB = await openClient('507f1f77bcf86cd799439012')
 
-    // Both clients join the same room.
-    await Promise.all([
-      waitForMsg(clientA, 'joined_room'),
-      waitForMsg(clientA, 'message_history'),
-      Promise.resolve().then(() =>
-        send(clientA, { type: 'join_room', roomId: 'shared-room', receiverId: '507f1f77bcf86cd799439012' }),
-      ),
-    ])
-    await Promise.all([
-      waitForMsg(clientB, 'joined_room'),
-      waitForMsg(clientB, 'message_history'),
-      Promise.resolve().then(() =>
-        send(clientB, { type: 'join_room', roomId: 'shared-room', receiverId: '507f1f77bcf86cd799439011' }),
-      ),
-    ])
+    await joinRoom(clientA, 'shared-room', '507f1f77bcf86cd799439012')
+    await joinRoom(clientB, 'shared-room', '507f1f77bcf86cd799439011')
 
     // clientA sends a message; both listen for the broadcast.
-    const [, broadcastToB] = await Promise.all([
-      waitForMsg(clientA, 'sended_message'),
-      waitForMsg(clientB, 'sended_message'),
-      Promise.resolve().then(() =>
-        send(clientA, {
-          type:   'send_message',
-          roomId: 'shared-room',
-          text:   'Hello from A',
-        }),
-      ),
-    ])
+    const received = Promise.all([waitForMsg(clientA, 'sended_message'), waitForMsg(clientB, 'sended_message')])
+    clientA.emit('send_message', { roomId: 'shared-room', text: 'Hello from A' })
+    const [, broadcastToB] = await received
 
     expect(broadcastToB.message.text).toBe('Hello from A')
     expect(broadcastToB.message.senderId).toBe('507f1f77bcf86cd799439011')
@@ -396,8 +288,9 @@ describe('WebSocket — send_message', () => {
     // Room lastMessage was also updated.
     expect(updateOneSpy).toHaveBeenCalled()
 
-    // Sender's connection remains open (no error forced a close).
-    expect(clientA.readyState).toBe(WebSocket.OPEN)
+    // Both members were present, so nobody is queued a notification.
+    expect(mockNotificationAdd).not.toHaveBeenCalled()
+    expect(clientA.connected).toBe(true)
   })
 })
 
@@ -424,13 +317,11 @@ describe('WebSocket — load_last_messages', () => {
 
     mockConnectDB.mockResolvedValue(makeMockDb({ roomsFind: findStub }))
 
-    const ws = await openClient()
-    await authenticate(ws)
+    const socket = await openClient()
 
-    send(ws, { type: 'load_last_messages' })
-    const msg = await waitForMsg(ws, 'load_last_messages')
+    socket.emit('load_last_messages')
+    const msg = await waitForMsg(socket, 'load_last_messages')
 
-    expect(msg.type).toBe('load_last_messages')
     expect(Array.isArray(msg.roomsData)).toBe(true)
     expect(msg.roomsData).toHaveLength(2)
     expect(msg.roomsData[0]._id).toBe('room-a')

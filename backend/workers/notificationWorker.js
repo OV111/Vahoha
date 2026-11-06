@@ -1,7 +1,7 @@
 import { Worker } from "bullmq";
 import { createNotification } from "../modules/notifications/index.js";
 import connectDB from "../config/db.js";
-import { getWss } from "../websocket/index.js";
+import { sendToUser } from "../websocket/connectionRegistry.js";
 import { redisConnection } from "../config/redis.js";
 import process from "process";
 import dotenv from "dotenv";
@@ -27,16 +27,7 @@ const NotificationWorker = REDIS_ENABLED ? new Worker(
       const db = await connectDB();
       const newNotification = await createNotification(db, { type, actorId, targetUserId });
 
-      const wss = getWss();
-      if (wss) {
-        for (const client of wss.clients) {
-          if (client.userId === targetUserId && client.readyState === 1) {
-            client.send(
-              JSON.stringify({ type: "notification", data: newNotification }),
-            );
-          }
-        }
-      }
+      sendToUser(targetUserId, { type: "notification", data: newNotification });
     } catch (err) {
       console.error("Error occurred while processing notification:", err);
       throw err;

@@ -103,12 +103,10 @@ describe('createShutdown', () => {
     expect(exit).toHaveBeenCalledWith(0)
   })
 
-  it('closes open WebSockets with 1001 "going away" so clients reconnect', async () => {
-    const a = { close: vi.fn() }
-    const b = { close: vi.fn() }
-    await createShutdown({ server: fakeServer(), wss: { clients: new Set([a, b]) }, exit: vi.fn(), log: silent })('SIGTERM')
-    expect(a.close).toHaveBeenCalledWith(1001, expect.any(String))
-    expect(b.close).toHaveBeenCalledWith(1001, expect.any(String))
+  it('closes the socket server so clients reconnect to the new instance', async () => {
+    const io = { close: vi.fn() }
+    await createShutdown({ server: fakeServer(), io, exit: vi.fn(), log: silent })('SIGTERM')
+    expect(io.close).toHaveBeenCalledOnce()
   })
 
   it('keeps going when one dependency fails to close', async () => {

@@ -83,7 +83,7 @@ describe("VITE_WS_URL in a production build", () => {
   });
 
   it("allows a path", () => {
-    expect(check({ VITE_WS_URL: "wss://api.example.com/socket" })).toEqual({ errors: [], warnings: [] });
+    expect(check({ VITE_WS_URL: "wss://api.example.com/socket" }).errors[0]).toMatch(/must not have a path/);
   });
 });
 

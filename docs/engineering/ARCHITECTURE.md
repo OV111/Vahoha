@@ -231,7 +231,7 @@ Closed since the last version of this doc:
 | Onboarding answers go nowhere | **Fixed** | `modules/onboarding`, `startPath` stores `skillLevel` |
 | JWT in localStorage | **Fixed** | Access token in memory, httpOnly refresh cookie |
 | `/api` prefix mismatch | **Decided** | New routes use `/api`. Legacy routes stay bare (`/blogs`, `/library`, auth) |
-| WebSocket rooms map never shrinks | **Fixed** | `removeFromRooms` on close |
+| WebSocket rooms map never shrinks | **Fixed** | Socket.IO removes a socket from its rooms on disconnect |
 | Layer gating relied on localStorage | **Fixed** | `userProgress`, `examEngineService.js` |
 | No consistent error response shape | **Open** | See fix 2 above |
 | `passedAt` sort on failed attempts | **Fixed** | `takenAt` |

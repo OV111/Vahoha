@@ -45,7 +45,7 @@ const startServer = async () => {
     // importing the websocket layer, which would be a circular import.
     app.locals.deliverChatMessage = deliverChatMessage;
 
-    const wss = initWebSocketServer(server);
+    const io = initWebSocketServer(server);
 
     server.listen(PORT, "0.0.0.0", () => {
       console.log(`Main Server is Running at http://0.0.0.0:${PORT}`);
@@ -53,7 +53,7 @@ const startServer = async () => {
 
     const shutdown = createShutdown({
       server,
-      wss,
+      io,
       // Worker first (stop pulling jobs), then the queue and Redis it uses,
       // MongoDB last because everything above may still write to it.
       closers: [

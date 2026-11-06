@@ -11,7 +11,7 @@ A learning platform for developers. A learner picks a roadmap track and works th
 | Part | Tech |
 |---|---|
 | Frontend | React 19, Vite 7, React Router 7, Zustand, Tailwind 4, CodeMirror 6, plain `fetch` hooks. SSR prerender pass for SEO |
-| Backend | Node 22, Express 5 (ESM), MongoDB native driver, Zod, BullMQ + Redis, `ws`, `isolated-vm` code sandbox, JWT |
+| Backend | Node 22, Express 5 (ESM), MongoDB native driver, Zod, BullMQ + Redis, Socket.IO, `isolated-vm` code sandbox, JWT |
 | AI | Groq (`openai/gpt-oss-120b`) |
 | Services | Polar (billing), Resend (email), Cloudinary (media), GitHub API and OAuth, Google sign-in, PostHog |
 | Hosting | Vercel (frontend), Render (backend), MongoDB Atlas |

@@ -63,10 +63,10 @@ export function checkViteEnv(env, { mode }) {
     }
   }
 
-  // ── VITE_WS_URL: handed straight to new WebSocket(value) ─────────────────────
+  // ── VITE_WS_URL: handed straight to Socket.IO's io(value) ────────────────────
   const ws = env.VITE_WS_URL;
   if (!present(ws)) {
-    problem("VITE_WS_URL is missing: new WebSocket(undefined) throws when chat or notifications connect.");
+    problem("VITE_WS_URL is missing: chat and notifications would try to connect to the frontend host.");
   } else {
     const url = parse(ws);
     if (!url) {
@@ -80,8 +80,9 @@ export function checkViteEnv(env, { mode }) {
             : "VITE_WS_URL should start with wss:// unless it points at localhost.",
         );
       }
-      // The socket server accepts any path and new WebSocket() takes a trailing slash,
-      // so this one cannot break anything: worth a note, not a failed build.
+      // Socket.IO reads a URL path as a namespace, and the server only has the default one.
+      if (url.pathname !== "/") problem("VITE_WS_URL must not have a path (Socket.IO would treat it as a namespace and refuse to connect).");
+      // A bare trailing slash cannot break anything: worth a note, not a failed build.
       if (ws.trim().endsWith("/")) warnings.push("VITE_WS_URL ends with a slash; it works, but the other URL must not, so keep them alike.");
     }
   }

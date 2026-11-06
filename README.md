@@ -30,7 +30,7 @@ Vahoha is a learning platform for developers who want proof they actually unders
 | Layer | Technologies |
 |---|---|
 | **Frontend** | React 19, Vite 7, Tailwind v4, Zustand, Framer Motion, GSAP, CodeMirror |
-| **Backend** | Node.js 22–24 (ESM), Express 5, MongoDB (native driver), WebSockets (`ws`), Zod |
+| **Backend** | Node.js 22–24 (ESM), Express 5, MongoDB (native driver), Socket.IO, Zod |
 | **AI** | Groq (`openai/gpt-oss-120b`) for the mentor, teach-back grading and exam-bank generation |
 | **Auth** | JWT access tokens (15 min) + rotating httpOnly refresh cookie, bcrypt, Google and GitHub OAuth |
 | **Billing** | Polar (Merchant of Record), signed webhooks. Built, **not enforced** |
@@ -61,7 +61,7 @@ Vahoha is a learning platform for developers who want proof they actually unders
 
 - **Coding challenges (Arena):** catalog, sandboxed grading, community proposals with admin review, XP-priced hints
 - **Build Teams:** teams build together; PR sync, per-member defense, ratings and a public evidence page for recruiters
-- **Community:** Markdown blog, profiles, follows, DMs and group chat over WebSockets (voice notes, attachments, reactions), queue-backed notifications
+- **Community:** Markdown blog, profiles, follows, DMs and group chat over Socket.IO (voice notes, attachments, reactions), queue-backed notifications
 - **Recruiter scorecards:** opt-in public candidate page. The candidates list is built but switched off (`constants/features.js`)
 - **Billing:** Polar checkout and subscription state (inert until enabled)
 - **Pilot analytics:** 7 server-side events and an admin-only funnel (`GET /api/admin/funnel`)

@@ -111,6 +111,8 @@
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1",
     "resend": "^6.12.3",
+    "socket.io": "^4.8.4",
+    "socket.io-client": "^4.8.4",
     "sonner": "^2.0.8",
     "sucrase": "^3.35.0",
     "swagger-jsdoc": "^6.2.8",
@@ -118,7 +120,6 @@
     "tailwind-merge": "^3.5.0",
     "tailwindcss-animate": "^1.0.7",
     "unpdf": "1.8.1",
-    "ws": "^8.19.0",
     "zod": "^3.25.76",
     "zustand": "^5.0.8"
   },

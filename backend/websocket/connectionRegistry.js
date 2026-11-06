@@ -1,34 +1,26 @@
-// Tracks which live sockets belong to which authenticated user, independent of
-// which chat rooms they've joined. REST endpoints (group create/add/remove/etc.)
-// use this to push realtime updates to affected users even if they don't
-// currently have that room open.
-const userSockets = new Map(); // userId (string) -> Set<ws>
+// The Socket.IO server and the rooms it addresses. REST endpoints (group create,
+// add, remove...) and the notification queue use this to push realtime updates to
+// users, even if they don't currently have that chat open.
+let io = null;
 
-export const registerUserSocket = (userId, ws) => {
-  if (!userId) return;
-  const key = userId.toString();
-  if (!userSockets.has(key)) userSockets.set(key, new Set());
-  userSockets.get(key).add(ws);
+export const bindIo = (server) => {
+  io = server;
+};
+export const getIo = () => io;
+
+// Prefixed so a client-supplied chat room id can never name another user's private
+// room or a socket's own default room.
+export const userRoom = (userId) => `user:${userId}`;
+export const chatRoom = (roomId) => `chat:${roomId}`;
+
+export const countUserSockets = (userId) => io?.sockets.adapter.rooms.get(userRoom(userId))?.size ?? 0;
+
+export const sendToUser = (userId, { type, ...payload }) => {
+  io?.to(userRoom(userId)).emit(type, payload);
 };
 
-export const unregisterUserSocket = (userId, ws) => {
-  if (!userId) return;
-  const key = userId.toString();
-  const sockets = userSockets.get(key);
-  if (!sockets) return;
-  sockets.delete(ws);
-  if (sockets.size === 0) userSockets.delete(key);
-};
-
-export const sendToUser = (userId, payload) => {
-  const sockets = userSockets.get(userId?.toString());
-  if (!sockets?.size) return;
-  const message = JSON.stringify(payload);
-  sockets.forEach((ws) => {
-    if (ws.readyState === WebSocket.OPEN) ws.send(message);
-  });
-};
-
+// One user at a time on purpose: io.to([]) means "everyone", so an empty member
+// list passed as an array of rooms would broadcast to the whole server.
 export const notifyUsers = (userIds, payload) => {
   new Set(userIds.map(String)).forEach((id) => sendToUser(id, payload));
 };

@@ -1,16 +1,18 @@
 /**
- * WebSocket flood control and frame size.
+ * Socket flood control and packet size.
  *
  * A socket never goes through Express, so the REST rate limits don't cover it.
- * These tests run the real server (real `ws`, real handler) and check that:
- *  - a connection that floods gets "rate_limited" frames, then is closed (1008);
- *  - a frame over the size cap closes the connection (1009) before it is parsed;
+ * These tests run the real server (real Socket.IO, real handler) and check that:
+ *  - a connection that floods gets "rate_limited" errors, then is disconnected;
+ *  - a packet over the size cap closes the connection before it is handled;
  *  - ordinary chat traffic is untouched.
  */
 
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest'
 import http from 'node:http'
-import WebSocket from 'ws'
+import process from 'node:process'
+import { io as connectClient } from 'socket.io-client'
+import jwt from 'jsonwebtoken'
 
 vi.mock('../../config/db.js', () => ({ default: vi.fn() }))
 vi.mock('../../queues/notificationQueue.js', () => ({ default: { add: vi.fn() } }))
@@ -19,31 +21,31 @@ import initWebSocketServer, { MAX_MESSAGE_BYTES } from '../../websocket/index.js
 import { MESSAGE_LIMIT, MAX_STRIKES } from '../../websocket/messageLimiter.js'
 
 let server
-let wss
+let io
 let url
 
 beforeAll(async () => {
   server = http.createServer()
-  wss = initWebSocketServer(server)
+  io = initWebSocketServer(server)
   await new Promise((resolve) => server.listen(0, resolve))
-  url = `ws://127.0.0.1:${server.address().port}`
+  url = `http://127.0.0.1:${server.address().port}`
 })
 
 afterAll(async () => {
-  wss.clients.forEach((c) => c.terminate())
-  await new Promise((resolve) => wss.close(resolve))
-  await new Promise((resolve) => server.close(resolve))
+  await io.close()
 })
 
-/** Opens a client and records every frame it receives and how it closes. */
+const token = () => jwt.sign({ id: 'flood-user', type: 'access' }, process.env.JWT_Secret, { expiresIn: '1h' })
+
+/** Opens a client and records every error it receives and why it disconnects. */
 const connect = () =>
   new Promise((resolve, reject) => {
-    const ws = new WebSocket(url)
-    const seen = { frames: [], closed: null }
-    ws.on('message', (m) => seen.frames.push(JSON.parse(m.toString())))
-    ws.on('close', (code) => (seen.closed = code))
-    ws.on('open', () => resolve({ ws, seen }))
-    ws.on('error', reject)
+    const socket = connectClient(url, { transports: ['websocket'], auth: { token: token() }, reconnection: false, forceNew: true })
+    const seen = { errors: [], reason: null }
+    socket.on('chat_error', (e) => seen.errors.push(e))
+    socket.on('disconnect', (reason) => (seen.reason = reason))
+    socket.on('connect', () => resolve({ socket, seen }))
+    socket.on('connect_error', reject)
   })
 
 const until = async (check, ms = 2000) => {
@@ -56,46 +58,38 @@ const until = async (check, ms = 2000) => {
 
 describe('message flood control', () => {
   it('leaves ordinary traffic alone', async () => {
-    const { ws, seen } = await connect()
-    for (let i = 0; i < MESSAGE_LIMIT; i++) ws.send('not json')
+    const { socket, seen } = await connect()
+    for (let i = 0; i < MESSAGE_LIMIT; i++) socket.emit('unknown_event')
     await new Promise((r) => setTimeout(r, 200))
-    expect(seen.frames).toEqual([])
-    expect(seen.closed).toBeNull()
-    ws.close()
+    expect(seen.errors).toEqual([])
+    expect(seen.reason).toBeNull()
+    socket.disconnect()
   })
 
-  it('answers a flood with rate_limited frames, then closes the connection', async () => {
-    const { ws, seen } = await connect()
-    for (let i = 0; i < MESSAGE_LIMIT + MAX_STRIKES + 5; i++) ws.send('not json')
+  it('answers a flood with rate_limited errors, then disconnects the client', async () => {
+    const { socket, seen } = await connect()
+    for (let i = 0; i < MESSAGE_LIMIT + MAX_STRIKES + 5; i++) socket.emit('unknown_event')
 
-    await until(() => seen.closed !== null)
-    expect(seen.closed).toBe(1008)
-    expect(seen.frames.length).toBe(MAX_STRIKES - 1)
-    expect(seen.frames.every((f) => f.type === 'error' && f.code === 'rate_limited')).toBe(true)
-  })
-
-  it('counts every message type, including the pre-auth ones', async () => {
-    const { ws, seen } = await connect()
-    for (let i = 0; i < MESSAGE_LIMIT; i++) ws.send(JSON.stringify({ type: 'auth', token: 'garbage' }))
-    // Each bad auth closes the socket, so the flood is cut off by the server either way.
-    await until(() => seen.closed !== null)
-    expect(seen.closed).not.toBeNull()
+    await until(() => seen.reason !== null)
+    expect(seen.reason).toBe('io server disconnect')
+    expect(seen.errors.length).toBe(MAX_STRIKES - 1)
+    expect(seen.errors.every((e) => e.code === 'rate_limited')).toBe(true)
   })
 })
 
-describe('frame size', () => {
-  it('closes a connection that sends a frame over the cap', async () => {
-    const { ws, seen } = await connect()
-    ws.send('x'.repeat(MAX_MESSAGE_BYTES + 1))
-    await until(() => seen.closed !== null)
-    expect(seen.closed).toBe(1009) // "message too big"
+describe('packet size', () => {
+  it('closes a connection that sends a packet over the cap', async () => {
+    const { socket, seen } = await connect()
+    socket.emit('send_message', 'x'.repeat(MAX_MESSAGE_BYTES + 1))
+    await until(() => seen.reason !== null)
+    expect(seen.reason).not.toBe('io client disconnect')
   })
 
-  it('accepts a frame right at the cap', async () => {
-    const { ws, seen } = await connect()
-    ws.send('x'.repeat(MAX_MESSAGE_BYTES))
+  it('accepts a packet just under the cap', async () => {
+    const { socket, seen } = await connect()
+    socket.emit('unknown_event', 'x'.repeat(MAX_MESSAGE_BYTES - 100))
     await new Promise((r) => setTimeout(r, 200))
-    expect(seen.closed).toBeNull()
-    ws.close()
+    expect(seen.reason).toBeNull()
+    socket.disconnect()
   })
 })

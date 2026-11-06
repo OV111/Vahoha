@@ -16,7 +16,7 @@ import process from "node:process";
  */
 export const createShutdown = ({
   server,
-  wss = null,
+  io = null,
   closers = [],
   exit = (code) => process.exit(code),
   timeoutMs = 10_000,
@@ -39,9 +39,9 @@ export const createShutdown = ({
       // 1. Stop accepting new HTTP connections; resolves when open requests finish.
       const httpClosed = new Promise((resolve) => server.close(() => resolve()));
 
-      // 2. WebSockets keep the HTTP server open forever unless told to go.
-      //    1001 = "going away", so clients know to reconnect to the new instance.
-      if (wss) for (const client of wss.clients) client.close(1001, "Server restarting");
+      // 2. Sockets keep the HTTP server open forever unless told to go. Clients see a
+      //    dropped transport, not a server kick, so they reconnect to the new instance.
+      io?.close();
 
       await httpClosed;
 

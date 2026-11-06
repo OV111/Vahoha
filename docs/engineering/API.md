@@ -75,17 +75,18 @@ HTTP routes live under `/my-profile/chats/...` (profile module delegates to `mod
 
 All of the above: Auth `Bearer*`.
 
-**WebSocket** (same server, `ws`; origin checked by `websocket/origin.js`). Client sends JSON:
+**WebSocket** (same server, Socket.IO with the `websocket` transport only; origin checked by `websocket/origin.js`). The access token goes in the handshake (`auth: { token }`). A bad or missing token is refused with `connect_error` `unauthorized`; more than 12 sockets for one user with `too_many_connections`.
 
-| `type` | Payload | Notes |
+Client emits:
+
+| Event | Payload | Notes |
 |---|---|---|
-| `auth` | `{ token }` | Must be first. Invalid token closes the socket |
-| `join_room` | room data | Membership checked |
-| `send_message` | message data | |
-| `react_message` | reaction data | |
+| `join_room` | `{ roomId, receiverId? }` | Membership checked. Must be repeated after a reconnect |
+| `send_message` | `{ roomId, text }` | The socket must have joined the room |
+| `react_message` | `{ roomId, messageId, emoji }` | `emoji: null` removes the reaction |
 | `load_last_messages` | - | |
 
-Payload shapes: `TODO: confirm` (`websocket/chatHandler.js`).
+Server emits: `message_history`, `joined_room`, `sended_message`, `message_reaction`, `load_last_messages`, `group_created`, `group_updated`, `notification`, `chat_error`.
 
 ## Blogs, library and search
 
