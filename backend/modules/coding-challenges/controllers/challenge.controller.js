@@ -10,6 +10,9 @@ import {
   getLayerProgressService,
   getLeaderboardService,
 } from "../services/progressService.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+
+const sendError = makeErrorHandler("challenges");
 
 export const listChallenges = async (req, res) => {
   try {
@@ -20,7 +23,7 @@ export const listChallenges = async (req, res) => {
     );
     res.json({ success: true, ...result });
   } catch (err) {
-    res.status(err.status ?? 500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -29,7 +32,7 @@ export const listTracks = async (req, res) => {
     const data = await listTracksService(req.app.locals.db, req.user._id.toString());
     res.json({ success: true, data });
   } catch (err) {
-    res.status(err.status ?? 500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -42,7 +45,7 @@ export const getChallenge = async (req, res) => {
     );
     res.json({ success: true, data });
   } catch (err) {
-    res.status(err.status ?? 500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -51,7 +54,7 @@ export const getTagCounts = async (req, res) => {
     const data = await getTagCountsService(req.app.locals.db, req.query);
     res.json({ success: true, ...data });
   } catch (err) {
-    res.status(err.status ?? 500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -63,7 +66,7 @@ export const getPersonalStats = async (req, res) => {
     );
     res.json({ success: true, data });
   } catch (err) {
-    res.status(err.status ?? 500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -75,7 +78,7 @@ export const getLayerProgress = async (req, res) => {
     );
     res.json({ success: true, data });
   } catch (err) {
-    res.status(err.status ?? 500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -92,7 +95,7 @@ export const getLeaderboard = async (req, res) => {
     );
     res.json({ success: true, data });
   } catch (err) {
-    res.status(err.status ?? 500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -101,6 +104,6 @@ export const getDailyChallenge = async (req, res) => {
     const data = await getDailyChallengeService(req.app.locals.db);
     res.json({ success: true, data });
   } catch (err) {
-    res.status(err.status ?? 500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };

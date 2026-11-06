@@ -370,14 +370,14 @@ describe('Security — auth bypass attempts', () => {
     expect(res.status).toBe(401)
   })
 
-  it('GET /my-profile/followers with no token returns 403', async () => {
+  it('GET /my-profile/followers with no token returns 401', async () => {
     const res = await request.get('/my-profile/followers')
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
   })
 
-  it('GET /my-profile/following with no token returns 403', async () => {
+  it('GET /my-profile/following with no token returns 401', async () => {
     const res = await request.get('/my-profile/following')
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
   })
 
   it('Authorization header with wrong scheme is rejected', async () => {

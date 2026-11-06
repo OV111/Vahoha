@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { authenticate } from "../../../middleware/authenticate.js";
 import {
   getProfile,
   updateLastActive,
@@ -40,6 +41,10 @@ import {
 } from "../../chat/index.js";
 
 const router = Router();
+
+// Mounted at /my-profile only, and every route here is the signed-in user's own.
+// It also runs before any body is read, so a bad token can't start an upload.
+router.use(authenticate);
 
 /**
  * @openapi

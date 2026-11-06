@@ -1,5 +1,6 @@
 import express from "express";
 import * as Sentry from "@sentry/node";
+import { makeErrorHandler } from "./utils/respond.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import helmet from "helmet";
@@ -8,7 +9,7 @@ import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger.js";
 
 import authRoutes from "./modules/auth/index.js";
-import { blogRoutes, postRoutes } from "./modules/blogs/index.js";
+import { blogRoutes } from "./modules/blogs/index.js";
 import profileRoutes from "./modules/profile/index.js";
 import userRoutes from "./modules/users/index.js";
 import searchRoutes from "./modules/search/index.js";
@@ -116,7 +117,6 @@ export function createApp(db) {
   app.use("/api/library", digestRoutes);
 
   app.use(authRoutes);
-  app.use(postRoutes);
   app.use("/my-profile", profileRoutes);
   app.use(userRoutes);
   app.use("/search", searchRoutes);
@@ -144,5 +144,8 @@ export function createApp(db) {
   Sentry.setupExpressErrorHandler(app);
 
   app.use(notFound)
+  // Last, for whatever no module handled: bad JSON bodies, thrown middleware, async
+  // rejections. Without it Express's default handler would answer in HTML.
+  app.use(makeErrorHandler("app"));
   return app;
 }

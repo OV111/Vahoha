@@ -1,5 +1,8 @@
 import { getDigestService, setConceptKnownService } from "../services/digestService.js";
 import { submitConceptCheckService } from "../services/checkService.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+
+const sendError = makeErrorHandler("library");
 
 export const getDigest = async (req, res) => {
   try {
@@ -7,7 +10,7 @@ export const getDigest = async (req, res) => {
     if (!data) return res.status(404).json({ success: false, message: "No digest for this book" });
     res.json({ success: true, data });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -18,7 +21,7 @@ export const setConceptKnown = async (req, res) => {
     if (!result) return res.status(404).json({ success: false, message: "Concept not found" });
     res.json({ success: true, ...result });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -29,6 +32,6 @@ export const submitConceptCheck = async (req, res) => {
     if (!result) return res.status(404).json({ success: false, message: "Check not found" });
     res.json({ success: true, ...result });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };

@@ -7,6 +7,9 @@ import {
   toggleSaveResourceService,
   getSavedResourceIdsService,
 } from "../services/libraryService.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+
+const sendError = makeErrorHandler("library");
 
 export const getResources = async (req, res) => {
   try {
@@ -14,7 +17,7 @@ export const getResources = async (req, res) => {
     const result = await getResourcesService(db, req.query);
     res.json({ success: true, ...result });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -27,8 +30,8 @@ export const getResourceById = async (req, res) => {
     const resource = await getResourceByIdService(db, req.params.id);
     res.json({ success: true, data: resource });
   } catch (err) {
-    const status = err.message === "Resource not found" ? 404 : 500;
-    res.status(status).json({ success: false, message: err.message });
+    if (err.message === "Resource not found") err.status = 404;
+    sendError(err, req, res);
   }
 };
 
@@ -38,8 +41,8 @@ export const getResourcesByLayer = async (req, res) => {
     const resources = await getResourcesByLayerService(db, req.params.layerId);
     res.json({ success: true, data: resources });
   } catch (err) {
-    const status = err.message === "Invalid layer id" ? 400 : 500;
-    res.status(status).json({ success: false, message: err.message });
+    if (err.message === "Invalid layer id") err.status = 400;
+    sendError(err, req, res);
   }
 };
 
@@ -52,7 +55,7 @@ export const toggleSaveResource = async (req, res) => {
     const result = await toggleSaveResourceService(db, req.params.id, req.user._id);
     res.json({ success: true, ...result });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -62,7 +65,7 @@ export const getSavedResourceIds = async (req, res) => {
     const ids = await getSavedResourceIdsService(db, req.user._id);
     res.json({ success: true, ids });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -72,6 +75,6 @@ export const getResourceCounts = async (req, res) => {
     const counts = await getResourceCountsByTypeService(db);
     res.json({ success: true, data: counts });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };

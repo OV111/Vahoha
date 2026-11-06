@@ -7,13 +7,16 @@ import {
   setConceptReviewed,
   setDigestVisibility,
 } from "../services/adminLibraryService.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+
+const sendError = makeErrorHandler("library admin");
 
 export const getDigests = async (req, res) => {
   try {
     const digests = await listDigests(req.app.locals.db);
     res.json({ success: true, data: digests });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -23,7 +26,7 @@ export const getConcepts = async (req, res) => {
     if (!data) return res.status(404).json({ success: false, message: "Library item not found" });
     res.json({ success: true, data });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -34,7 +37,7 @@ export const patchConceptReviewed = async (req, res) => {
     if (!found) return res.status(404).json({ success: false, message: "Concept not found" });
     res.json({ success: true, reviewed: req.body.reviewed });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -47,7 +50,7 @@ export const patchVisibility = async (req, res) => {
     if (err instanceof PublishRefusedError) {
       return res.status(409).json({ success: false, message: err.message });
     }
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -69,6 +72,6 @@ export const importDigest = async (req, res) => {
     const result = await applyDigestImport(db, parsed.data, { reviewed: req.body.reviewed });
     res.json({ success: true, applied: true, plan, result });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };

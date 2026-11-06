@@ -1,5 +1,8 @@
 import { submitAttemptService } from "../services/submissionService.js";
 import { describeRunner } from "../services/runnerService.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+
+const sendError = makeErrorHandler("challenges");
 
 export const submit = async (req, res) => {
   try {
@@ -11,7 +14,7 @@ export const submit = async (req, res) => {
     );
     res.json({ success: true, ...data });
   } catch (err) {
-    res.status(err.status ?? 500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 

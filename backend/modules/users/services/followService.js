@@ -1,35 +1,4 @@
 import { ObjectId } from "mongodb";
-import { verifyToken } from "../../../utils/jwtToken.js";
-
-export const getAuthToken = (authorization = "") => {
-  if (!authorization.startsWith("Bearer ")) {
-    return {
-      ok: false,
-      status: 403,
-      message: "Missing or invalid auth header",
-    };
-  }
-  const token = authorization.slice(7).trim();
-  if (!token) {
-    return { ok: false, status: 403, message: "Token is required" };
-  }
-  try {
-    const payload = verifyToken(token);
-    if (!payload?.id) {
-      return { ok: false, status: 403, message: "Invalid token payload" };
-    }
-
-    return {
-      ok: true,
-      status: 200,
-      userId: payload.id,
-      userObjectId: new ObjectId(payload.id),
-      payload,
-    };
-  } catch {
-    return { ok: false, status: 403, message: "Invalid or expired token" };
-  }
-};
 
 // What a connection row may expose about ANOTHER user. An explicit allow-list:
 // `{ password: 0 }` (the old projection) shipped every other field — email,

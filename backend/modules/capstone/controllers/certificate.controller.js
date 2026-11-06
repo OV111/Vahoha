@@ -1,9 +1,8 @@
 import { getPublicCertificateService, listMyCertificatesService } from "../services/certificateService.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
 
-const sendError = (res, err) => {
-  if (!err.status) console.error("certificate error:", err);
-  res.status(err.status ?? 500).json({ success: false, message: err.status ? err.message : "Something went wrong" });
-};
+const sendError = makeErrorHandler("certificates");
+
 
 export const getPublicCertificate = async (req, res) => {
   try {

@@ -12,8 +12,8 @@ import express from 'express'
 import { ObjectId } from 'mongodb'
 import { signUp, login } from '../../modules/auth/controllers/auth.controller.js'
 import { verifyToken } from '../../utils/jwtToken.js'
+import { authenticate } from '../../middleware/authenticate.js'
 import {
-  getAuthToken,
   getFollowersData,
   getFollowingData,
 } from '../../modules/users/services/followService.js'
@@ -86,12 +86,9 @@ export function createApp(db) {
   })
 
   // ── GET /my-profile/followers ───────────────────────────────────────────────
-  app.get('/my-profile/followers', async (req, res) => {
-    const auth = getAuthToken(req.headers.authorization)
-    if (!auth.ok) return res.status(auth.status).json({ message: auth.message })
-
+  app.get('/my-profile/followers', authenticate, async (req, res) => {
     const data = await getFollowersData({
-      userId: auth.userObjectId,
+      userId: req.user._id,
       db,
       page: Number(req.query.page) || 1,
       limit: Number(req.query.limit) || 25,
@@ -100,12 +97,9 @@ export function createApp(db) {
   })
 
   // ── GET /my-profile/following ───────────────────────────────────────────────
-  app.get('/my-profile/following', async (req, res) => {
-    const auth = getAuthToken(req.headers.authorization)
-    if (!auth.ok) return res.status(auth.status).json({ message: auth.message })
-
+  app.get('/my-profile/following', authenticate, async (req, res) => {
     const data = await getFollowingData({
-      userId: auth.userObjectId,
+      userId: req.user._id,
       db,
       page: Number(req.query.page) || 1,
       limit: Number(req.query.limit) || 25,

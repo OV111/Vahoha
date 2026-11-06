@@ -1,18 +1,11 @@
 import { describe, it, expect, vi } from 'vitest'
 import { ObjectId } from 'mongodb'
-import jwt from 'jsonwebtoken'
-import process from 'node:process'
-import { getAuthToken, getFollowersData, getFollowingData } from '../../modules/users/services/followService.js'
+import { getFollowersData, getFollowingData } from '../../modules/users/services/followService.js'
 
-// setup.js sets JWT_Secret before this runs
-const SECRET = process.env.JWT_Secret || 'test-secret-key-for-unit-tests-only'
 const VALID_OID = '507f1f77bcf86cd799439011'
 const OTHER_OID = '507f1f77bcf86cd799439022'
 
 // ─── helpers ────────────────────────────────────────────────────────────────
-
-const makeValidToken = (id = VALID_OID) =>
-  jwt.sign({ id, type: 'access' }, SECRET, { expiresIn: '1h' })
 
 /**
  * Build a mock DB whose collections return the provided data.
@@ -55,88 +48,6 @@ const makeDb = ({
     }),
   }
 }
-
-// ─────────────────────────────────────────────
-// getAuthToken
-// ─────────────────────────────────────────────
-describe('getAuthToken', () => {
-  it('returns 403 when authorization header is absent', () => {
-    const result = getAuthToken(undefined)
-    expect(result.ok).toBe(false)
-    expect(result.status).toBe(403)
-  })
-
-  it('returns 403 when authorization header is empty', () => {
-    const result = getAuthToken('')
-    expect(result.ok).toBe(false)
-    expect(result.status).toBe(403)
-  })
-
-  it('returns 403 when header does not start with "Bearer "', () => {
-    const result = getAuthToken('Token some-token')
-    expect(result.ok).toBe(false)
-    expect(result.status).toBe(403)
-    expect(result.message).toMatch(/missing or invalid/i)
-  })
-
-  it('returns 403 when token after "Bearer " is empty', () => {
-    const result = getAuthToken('Bearer ')
-    expect(result.ok).toBe(false)
-    expect(result.status).toBe(403)
-    expect(result.message).toMatch(/token is required/i)
-  })
-
-  it('returns 403 for an invalid JWT', () => {
-    const result = getAuthToken('Bearer invalid.jwt.value')
-    expect(result.ok).toBe(false)
-    expect(result.status).toBe(403)
-    // verifyToken catches the error internally and returns null,
-    // so getAuthToken hits the !payload?.id branch
-    expect(result.message).toMatch(/invalid token payload/i)
-  })
-
-  it('returns 403 for an expired JWT', () => {
-    const expired = jwt.sign(
-      { id: VALID_OID, exp: Math.floor(Date.now() / 1000) - 10 },
-      SECRET,
-    )
-    const result = getAuthToken(`Bearer ${expired}`)
-    expect(result.ok).toBe(false)
-    expect(result.status).toBe(403)
-  })
-
-  it('returns 403 for a JWT signed with a different secret', () => {
-    const foreign = jwt.sign({ id: VALID_OID }, 'wrong-secret')
-    const result = getAuthToken(`Bearer ${foreign}`)
-    expect(result.ok).toBe(false)
-    expect(result.status).toBe(403)
-  })
-
-  it('returns 403 when the JWT payload has no id field', () => {
-    const noId = jwt.sign({ username: 'testuser' }, SECRET)
-    const result = getAuthToken(`Bearer ${noId}`)
-    expect(result.ok).toBe(false)
-    expect(result.status).toBe(403)
-    expect(result.message).toMatch(/invalid token payload/i)
-  })
-
-  it('returns ok:true with userId and userObjectId for a valid JWT', () => {
-    const token = makeValidToken(VALID_OID)
-    const result = getAuthToken(`Bearer ${token}`)
-
-    expect(result.ok).toBe(true)
-    expect(result.status).toBe(200)
-    expect(result.userId).toBe(VALID_OID)
-    expect(result.userObjectId).toBeInstanceOf(ObjectId)
-    expect(result.userObjectId.toString()).toBe(VALID_OID)
-  })
-
-  it('includes the full decoded payload in the result', () => {
-    const token = makeValidToken(VALID_OID)
-    const result = getAuthToken(`Bearer ${token}`)
-    expect(result.payload).toMatchObject({ id: VALID_OID })
-  })
-})
 
 // ─────────────────────────────────────────────
 // getFollowersData — null / undefined userId guard

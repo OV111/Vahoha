@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { getUserProfile, followUser, unfollowUser } from "../controllers/user.controller.js";
 import { publicReadLimiter, toggleLimiter } from "../../../middleware/rateLimits.js";
+import { authenticate } from "../../../middleware/authenticate.js";
 
 const router = Router();
 
@@ -65,8 +66,9 @@ const router = Router();
  *         description: Unfollowed
  */
 
-router.get("/users/:username", publicReadLimiter, getUserProfile);
-router.post("/users/:username/follow", toggleLimiter, followUser);
-router.delete("/users/:username/follow", toggleLimiter, unfollowUser);
+// Per route: this router is mounted at the root, so router.use() would run on every API request.
+router.get("/users/:username", publicReadLimiter, authenticate, getUserProfile);
+router.post("/users/:username/follow", toggleLimiter, authenticate, followUser);
+router.delete("/users/:username/follow", toggleLimiter, authenticate, unfollowUser);
 
 export default router;

@@ -1,4 +1,7 @@
 import { ObjectId } from "mongodb";
+import { makeErrorHandler } from "../utils/respond.js";
+
+const sendError = makeErrorHandler("admin");
 
 /**
  * Gate for admin-only routes. Always runs *after* `authenticate`, which has
@@ -29,6 +32,6 @@ export const requireAdmin = async (req, res, next) => {
 
     next();
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };

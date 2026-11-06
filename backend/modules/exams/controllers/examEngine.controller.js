@@ -1,5 +1,8 @@
 import { generateAttempt, submitAttempt, submitTeachBack, submitTeachBackFollowUp } from "../services/examEngineService.js";
 import { trackEvent } from "../../../services/eventService.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+
+const sendError = makeErrorHandler("exams");
 
 export const generate = async (req, res) => {
   try {
@@ -17,8 +20,7 @@ export const generate = async (req, res) => {
     const attempt = await generateAttempt(db, userId, path, layer);
     res.json(attempt);
   } catch (err) {
-    const status = err.status ?? 500;
-    res.status(status).json({ message: err.message ?? "Failed to generate test" });
+    sendError(err, req, res);
   }
 };
 
@@ -39,8 +41,7 @@ export const submit = async (req, res) => {
     const result = await submitAttempt(db, userId, attemptId, answers, integrity);
     res.json(result);
   } catch (err) {
-    const status = err.status ?? 500;
-    res.status(status).json({ message: err.message ?? "Failed to submit test" });
+    sendError(err, req, res);
   }
 };
 
@@ -67,8 +68,7 @@ export const submitTeachBackAnswer = async (req, res) => {
     await trackEvent(db, userId, "teach_back", { path, layer, topic, score: result.score, passed: result.passed, followUp: false });
     res.json(result);
   } catch (err) {
-    const status = err.status ?? 500;
-    res.status(status).json({ message: err.message ?? "Failed to grade teach-back answer" });
+    sendError(err, req, res);
   }
 };
 
@@ -89,7 +89,6 @@ export const submitTeachBackFollowUpAnswer = async (req, res) => {
     await trackEvent(db, userId, "teach_back", { sessionId, score: result.score, passed: result.passed, followUp: true });
     res.json(result);
   } catch (err) {
-    const status = err.status ?? 500;
-    res.status(status).json({ message: err.message ?? "Failed to grade follow-up answer" });
+    sendError(err, req, res);
   }
 };

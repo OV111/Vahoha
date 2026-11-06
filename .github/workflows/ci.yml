@@ -26,6 +26,10 @@ jobs:
       # Installs exactly what package-lock.json says (reproducible, unlike `npm install`).
       - run: npm ci
 
+      # Critical only for now: zod 3 has an open high advisory that needs its own
+      # migration. Raise this to high once that is done.
+      - run: npm audit --omit=dev --audit-level=critical
+
       - run: npm run lint
       # vite.config.js refuses a production build without these two. They are the
       # public API URLs that ship in the bundle anyway, not secrets.
@@ -34,3 +38,4 @@ jobs:
           VITE_API_BASE_URL: https://api.vahoha.com
           VITE_WS_URL: wss://api.vahoha.com
       - run: npm run test:unit
+      - run: npm run test:security

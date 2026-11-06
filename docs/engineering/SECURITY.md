@@ -41,19 +41,15 @@ Verified against the code on 2026-10-21. Ordered by severity.
 |---|---|---|---|---|
 | 1 | **Secrets rotation unconfirmed** | High | The June audit found live secrets in `.env`; whether they were rotated cannot be seen from code. A dev GitHub client secret was pasted into a chat, and a Polar sandbox token and secret were exposed in the past | Rotate all, then record it |
 | 2 | **Code runner not independently reviewed** | High | Largest attack surface. The sandbox is `isolated-vm`; there has been no external review. If the native addon fails to build the runner refuses submissions in production (good), unless `ALLOW_UNSAFE_RUNNER=true` | Confirm the runner reports `isolated-vm` after every deploy; get a review before public traffic |
-| 3 | **Dependency advisories** | High | `npm audit --omit=dev` reports high-severity advisories (for example `lodash`, `ip-address`, `minimatch`, `brace-expansion`, `nanoid`, `postcss`), some in transitive packages. The October audit also named `ws`, `path-to-regexp`, `express-rate-limit`, `qs` | `npm audit fix`, then review what remains. Add `npm audit` to CI |
-| 4 | **WebSocket abuse** | Medium | No `maxPayload` on the `ws` server and no per-message size cap or rate limit. A socket stays open after its access token expires | Set `maxPayload`, cap message length, rate-limit per user, re-check token age |
-| 5 | **Error text leaks** | Medium | About 15 handlers still return `error: err.message` (for example signup and the GitHub callback). There is no global error handler | One error middleware and typed errors; stop returning `err.message` |
+| 3 | **Dependency advisories** | Medium | After `npm audit fix` on 2026-11-05, `npm audit --omit=dev` still reports `zod` 3 (high, oversized collections; `express.json()` keeps its default 100 KB body limit) and moderates through `@sentry/node` and `@tailwindcss/typography`, where npm only offers a version change that needs checking | Migrate to `zod` 4 on its own. Add `npm audit` to CI |
+| 4 | **Socket token expiry** | Medium | Packet size, message rate, unauthenticated connections, sockets per user and dead sockets are limited (`backend/websocket/`). The token is checked at the handshake, so a socket stays open after its 15-minute access token expires. A client that stops reading is only dropped by the heartbeat timeout (about 45 s) | Disconnect at token expiry. The client already reconnects with the current token, but rejoining refetches the open chat, so this needs a smoother rejoin first |
 | 6 | **Rate limits are per process** | Medium | Limiter stores for AI, billing and most routes are in memory, so a restart resets them and a second instance doubles them. Auth limits use Redis when available | Redis store before scaling out |
 | 7 | **`/api-docs` is public in production** | Low | Swagger UI is mounted unconditionally and lists every route | Disable or gate it when `NODE_ENV=production` |
-| 8 | **Mixed auth pattern** | Medium | `/my-profile`, `/users` and `POST /blogs` check the token inside each controller instead of with the `authenticate` middleware. One missed call is an open route. Chat controllers use their own local `authenticate` helper | Mount `authenticate` on those routers and remove the copies |
-| 9 | **Two `POST /blogs` handlers** | Low | `blogs.routes.js` (authenticated) and `post.routes.js` (checks inside the controller) both register `POST /blogs`. `TODO: confirm` which one serves requests and delete the other | Delete the duplicate |
 | 10 | **Draft posts and email exposure** | Low | From the October audit: draft blogs readable by id, the mutual-followers response includes email, `getClientIp` trusts the first `X-Forwarded-For` entry, `postsCount` is user-settable, few length limits on profile fields. `TODO: confirm` each is still open | Re-test, then fix |
 | 11 | **Unverified email on password signup** | Low | Email is verified only through OAuth and magic link. `claimVerifiedEmail` handles the takeover case. `TODO: confirm` no password flow treats an unverified email as proof | Add email verification on password signup |
 | 12 | **Sign-in message differences** | Low | Login says "Invalid email or password", but deliberately gives a different hint to a Google-only account, which reveals that an email is registered with Google | Accept, or return the same message |
-| 13 | **Single-instance WebSocket state** | Low | The `rooms` map is in memory, so chat breaks under more than one instance | Redis pub/sub when scaling |
+| 13 | **Single-instance sockets** | Low | Socket.IO rooms are in memory, so chat breaks under more than one instance | Add the Socket.IO Redis adapter when scaling |
 | 14 | **Partial monitoring** | Low | Sentry reports API and web app errors once `SENTRY_DSN` / `VITE_SENTRY_DSN` are set in production. No alert rules, uptime check or log retention yet | Sentry alert rules, Better Stack uptime check, Atlas alerts |
-| 15 | **No security tests in CI** | Low | `npm run test:security` exists but CI runs only lint, build and unit tests | Add it to the workflow |
 
 ---
 
@@ -76,19 +72,19 @@ Verified against the code on 2026-10-21. Ordered by severity.
 | Plaintext session cookie, no `Secure` | httpOnly `Secure` cookie |
 | No security headers | `helmet` plus Vercel headers |
 | Unbounded LLM cost | Per-user burst and daily limits |
+| About 60 handlers returned `err.message`, no global error handler | One handler (`makeErrorHandler` in `utils/respond.js`), also mounted last in `app.js`. Only messages our own code wrote reach the user |
+| Token checked by hand in controllers, two `POST /blogs` handlers | `authenticate` middleware on `/my-profile`, `/users` and GitHub disconnect; dead `POST /blogs` deleted |
+| No dependency or security checks in CI | CI runs `npm audit` (critical) and `test:security` |
 
 ---
 
 ## Fix order
 
 1. Rotate and record all secrets (risk 1).
-2. Run `npm audit fix` and add `npm audit` and `test:security` to CI (risks 3, 15).
+2. Migrate to `zod` 4, then raise the CI audit to high (risk 3).
 3. Verify the runner in production and book a review (risk 2).
-4. Mount `authenticate` on `/my-profile`, `/users` and `/blogs`; delete the duplicate `POST /blogs` (risks 8, 9).
-5. One error handler, no `err.message` in responses (risk 5).
-6. WebSocket limits (risk 4).
-7. Hide `/api-docs` in production (risk 7).
-8. Redis-backed limiters and error monitoring before more than one instance or real traffic (risks 6, 13, 14).
+4. Disconnect sockets at token expiry (risk 4).
+5. Redis-backed limiters and error monitoring before more than one instance or real traffic (risks 6, 13, 14).
 
 ---
 

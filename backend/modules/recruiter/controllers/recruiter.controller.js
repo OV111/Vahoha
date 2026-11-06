@@ -1,13 +1,16 @@
 import { getScorecardService } from "../services/scorecardService.js";
 import { getSettingsService, saveSettingsService } from "../services/settingsService.js";
 import { listCandidatesService } from "../services/candidateService.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+
+const sendError = makeErrorHandler("recruiter");
 
 const handle = (fn) => async (req, res) => {
   try {
     res.json({ success: true, data: await fn(req) });
   } catch (err) {
     if (!err.status) console.error("recruiter error:", err);
-    res.status(err.status ?? 500).json({ success: false, message: err.status ? err.message : "Something went wrong" });
+    sendError(err, req, res);
   }
 };
 

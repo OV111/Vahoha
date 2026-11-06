@@ -1,7 +1,5 @@
 import { ObjectId } from "mongodb";
 import busboy from "busboy";
-import { verifyToken } from "../../../utils/jwtToken.js";
-import { getAuthToken } from "../../users/index.js";
 import {
   getProfileService,
   updateLastActiveService,
@@ -21,45 +19,34 @@ import {
   markAllNotificationsRead,
   deleteNotification,
 } from "../../notifications/index.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+
+const sendError = makeErrorHandler("profile");
 
 export const getProfile = async (req, res) => {
   try {
-    const token = req.headers.authorization?.replace("Bearer ", "");
-    const verified = verifyToken(token);
-    // 401, not 403: the client answers a 401 by refreshing the session.
-    if (!token || !verified)
-      return res.status(401).json({ message: "Unauthorized: Invalid Token" });
-
-    const userId = new ObjectId(verified.id);
+    const userId = req.user._id;
     const result = await getProfileService(req.app.locals.db, userId);
     res.status(200).json(result);
   } catch (err) {
-    res.status(err.status ?? 500).json({ message: err.message || "Server Error" });
+    sendError(err, req, res);
   }
 };
 
 export const updateLastActive = async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-    const verified = verifyToken(token);
-    if (!verified) return res.status(401).json({ message: "Unauthorized" });
-
-    const userId = new ObjectId(verified.id);
+    const userId = req.user._id;
     await updateLastActiveService(req.app.locals.db, userId, new Date());
     res.status(200).json({ message: "Updated" });
   } catch (err) {
-    res.status(500).json({ message: "Server Error", error: err.message });
+    sendError(err, req, res);
   }
 };
 
 export const checkUsernameAvailable = async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-    const verified = verifyToken(token);
-    if (!verified) return res.status(401).json({ message: "Unauthorized" });
-
     const username = req.query.username?.toString() || "";
-    const userId = new ObjectId(verified.id);
+    const userId = req.user._id;
     const result = await checkUsernameAvailableService(
       req.app.locals.db,
       userId,
@@ -67,16 +54,13 @@ export const checkUsernameAvailable = async (req, res) => {
     );
     res.status(200).json(result);
   } catch (err) {
-    res.status(500).json({ message: "Server Error", error: err.message });
+    sendError(err, req, res);
   }
 };
 
 export const removeCv = async (req, res) => {
   try {
-    const verified = verifyToken(req.headers.authorization?.split(" ")[1]);
-    if (!verified) return res.status(401).json({ message: "Unauthorized" });
-
-    await removeCvService(req.app.locals.db, new ObjectId(verified.id));
+    await removeCvService(req.app.locals.db, req.user._id);
     res.status(200).json({ message: "CV removed" });
   } catch {
     res.status(500).json({ message: "Couldn't remove the CV" });
@@ -85,11 +69,6 @@ export const removeCv = async (req, res) => {
 
 
 export const updateSettings = (req, res) => {
-  // Verify BEFORE reading the body: files stream to Cloudinary as they arrive,
-  // so checking later would let an invalid token still upload.
-  const verified = verifyToken(req.headers.authorization?.replace("Bearer ", ""));
-  if (!verified) return res.status(401).json({ message: "Unauthorized: Invalid Token!" });
-
   const bb = busboy({ headers: req.headers, limits: { fileSize: 10 * 1024 * 1024 } });
   const fields = {};
   const fileUploads = {};
@@ -123,13 +102,11 @@ export const updateSettings = (req, res) => {
         resolved[key] = await promise;
       }
 
-      const userId = new ObjectId(verified.id);
+      const userId = req.user._id;
       const result = await updateSettingsService(req.app.locals.db, userId, fields, resolved);
       res.status(200).json({ message: "Changes Saved", ...result });
     } catch (err) {
-      res
-        .status(err.status ?? 500)
-        .json({ message: err.message || "Error updating profile" });
+      sendError(err, req, res);
     }
   });
 
@@ -138,15 +115,11 @@ export const updateSettings = (req, res) => {
 
 export const getNotifications = async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-    const verified = verifyToken(token);
-    if (!verified) return res.status(401).json({ message: "Unauthorized" });
-
-    const userId = new ObjectId(verified.id);
+    const userId = req.user._id;
     const results = await getNotificationsService(req.app.locals.db, userId);
     res.status(200).json(results);
   } catch (err) {
-    res.status(500).json({ message: "Server Error", error: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -154,9 +127,7 @@ export const getNotifications = async (req, res) => {
 // 404 when nothing of theirs matched.
 const notificationAction = (run) => async (req, res) => {
   try {
-    const verified = verifyToken(req.headers.authorization?.split(" ")[1]);
-    if (!verified) return res.status(401).json({ message: "Unauthorized" });
-    const ok = await run(req.app.locals.db, new ObjectId(verified.id), req.params.id);
+    const ok = await run(req.app.locals.db, req.user._id, req.params.id);
     if (ok === false) return res.status(404).json({ message: "Notification not found" });
     res.status(200).json({ success: true });
   } catch (err) {
@@ -173,55 +144,43 @@ export const removeNotification = notificationAction(deleteNotification);
 
 export const getFollowing = async (req, res) => {
   try {
-    const auth = getAuthToken(req.headers.authorization);
-    if (!auth.ok) return res.status(auth.status).json({ message: auth.message });
-
     const data = await getFollowingService(
       req.app.locals.db,
-      auth.userObjectId,
+      req.user._id,
       Number(req.query.page) || 1,
       Number(req.query.limit) || 25,
     );
     res.status(200).json(data);
   } catch (err) {
-    res.status(500).json({ message: "Server Error", error: err.message });
+    sendError(err, req, res);
   }
 };
 
 export const getFollowers = async (req, res) => {
   try {
-    const auth = getAuthToken(req.headers.authorization);
-    if (!auth.ok) return res.status(auth.status).json({ message: auth.message });
-
     const data = await getFollowersService(
       req.app.locals.db,
-      auth.userObjectId,
+      req.user._id,
       Number(req.query.page) || 1,
       Number(req.query.limit) || 25,
     );
     res.status(200).json(data);
   } catch (err) {
-    res.status(500).json({ message: "Server Error", error: err.message });
+    sendError(err, req, res);
   }
 };
 
 export const getMutualFollowers = async (req, res) => {
   try {
-    const auth = getAuthToken(req.headers.authorization);
-    if (!auth.ok) return res.status(auth.status).json({ message: auth.message });
-
-    const mutualFollowers = await getMutualFollowersService(req.app.locals.db, auth.userObjectId);
+    const mutualFollowers = await getMutualFollowersService(req.app.locals.db, req.user._id);
     res.status(200).json({ mutualFollowers });
   } catch (err) {
-    res.status(500).json({ message: "Server Error", error: err.message });
+    sendError(err, req, res);
   }
 };
 
 export const getChatReceiverStats = async (req, res) => {
   try {
-    const auth = getAuthToken(req.headers.authorization);
-    if (!auth.ok) return res.status(auth.status).json({ message: auth.message });
-
     const { receiverId } = req.params;
     if (!ObjectId.isValid(receiverId))
       return res.status(400).json({ message: "Bad Request, invalid receiver id" });
@@ -229,6 +188,6 @@ export const getChatReceiverStats = async (req, res) => {
     const stats = await getChatReceiverStatsService(req.app.locals.db, receiverId);
     res.status(200).json({ message: "Success", code: 200, stats });
   } catch (err) {
-    res.status(500).json({ message: "Server Error", code: 500, error: err.message });
+    sendError(err, req, res);
   }
 };

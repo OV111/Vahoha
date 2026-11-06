@@ -298,9 +298,11 @@ const runInChildProcess = (program) =>
       }
     });
 
-    child.on("error", (e) =>
-      finish({ results: [], fatal: true, error: e.message }),
-    );
+    // run.error is sent to the learner, and a spawn error can name server paths.
+    child.on("error", (e) => {
+      console.error("runner: sandbox failed to start:", e);
+      finish({ results: [], fatal: true, error: "The sandbox could not start." });
+    });
   });
 
 /**

@@ -4,13 +4,16 @@ import {
   overrideAttemptService,
   setCertificateRevokedService,
 } from "../services/adminService.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+
+const sendError = makeErrorHandler("capstone admin");
 
 const handle = (fn) => async (req, res) => {
   try {
     res.json({ success: true, data: await fn(req) });
   } catch (err) {
     if (!err.status) console.error("capstone admin error:", err);
-    res.status(err.status ?? 500).json({ success: false, message: err.status ? err.message : "Something went wrong" });
+    sendError(err, req, res);
   }
 };
 

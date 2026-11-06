@@ -300,18 +300,18 @@ describe('GET /my-profile', () => {
 // GET /my-profile/followers
 // ─────────────────────────────────────────────────────────────────────────────
 describe('GET /my-profile/followers', () => {
-  it('returns 403 with no Authorization header', async () => {
+  it('returns 401 with no Authorization header', async () => {
     const res = await request.get('/my-profile/followers')
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
     expect(res.headers['content-type']).toMatch(/application\/json/)
     expect(res.body).toHaveProperty('message')
   })
 
-  it('returns 403 with a malformed Authorization header', async () => {
+  it('returns 401 with a malformed Authorization header', async () => {
     const res = await request
       .get('/my-profile/followers')
       .set('Authorization', 'InvalidScheme token')
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
   })
 
   it('returns 200 with the correct response shape for a valid token', async () => {
@@ -360,9 +360,9 @@ describe('GET /my-profile/followers', () => {
 // GET /my-profile/following
 // ─────────────────────────────────────────────────────────────────────────────
 describe('GET /my-profile/following', () => {
-  it('returns 403 with no Authorization header', async () => {
+  it('returns 401 with no Authorization header', async () => {
     const res = await request.get('/my-profile/following')
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
   })
 
   it('returns 200 with the correct response shape for a valid token', async () => {

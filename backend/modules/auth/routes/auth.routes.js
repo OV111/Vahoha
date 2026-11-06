@@ -32,6 +32,10 @@ import {
   loginLinkRequestSchema,
   loginLinkConfirmSchema,
 } from "../schemas/auth.schemas.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+import { authenticate } from "../../../middleware/authenticate.js";
+
+const sendError = makeErrorHandler("auth");
 
 // Sends the controller's result as JSON but strips the refresh token first —
 // it must only ever leave the server as the httpOnly cookie already set by
@@ -222,9 +226,7 @@ router.post("/login", validate({ body: loginSchema }), async (req, res) => {
 
     respondWithoutRefreshToken(res, result);
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Server Error.", code: 500, error: err.message });
+    sendError(err, req, res);
   }
 });
 
@@ -244,9 +246,7 @@ router.delete("/log-out", async (req, res) => {
     res.clearCookie(REFRESH_COOKIE_NAME, REFRESH_COOKIE_OPTIONS);
     res.status(200).json({ message: "Logged out succesfully", code: 200 });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Logout Error", code: 500, error: err.message });
+    sendError(err, req, res);
   }
 });
 
@@ -340,11 +340,7 @@ router.post("/google/auth", async (req, res) => {
     }
     respondWithoutRefreshToken(res, result);
   } catch (err) {
-    res.status(500).json({
-      message: "Google Authentication Error",
-      code: 500,
-      error: err.message,
-    });
+    sendError(err, req, res);
   }
 });
 
@@ -381,7 +377,7 @@ router.post("/google/auth", async (req, res) => {
  */
 router.get("/auth/github", githubRedirect);
 router.get("/auth/github/link", githubLinkRedirect);
-router.delete("/auth/github/disconnect", githubDisconnect);
+router.delete("/auth/github/disconnect", authenticate, githubDisconnect);
 router.get("/auth/github/callback", githubCallback);
 router.post(
   "/forgot-password",

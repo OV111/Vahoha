@@ -5,13 +5,16 @@ import {
   rejectProposalService,
   listMyProposalsService,
 } from "../services/proposalService.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+
+const sendError = makeErrorHandler("challenges admin");
 
 const handle = (fn) => async (req, res) => {
   try {
     const data = await fn(req);
     res.json({ success: true, ...(data?.items ? data : { data }) });
   } catch (err) {
-    res.status(err.status ?? 500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 

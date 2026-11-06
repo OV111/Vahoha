@@ -4,6 +4,9 @@ import {
   saveAttemptCodeService,
   revealHintService,
 } from "../services/attemptService.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+
+const sendError = makeErrorHandler("challenges");
 
 export const startAttempt = async (req, res) => {
   try {
@@ -14,7 +17,7 @@ export const startAttempt = async (req, res) => {
     );
     res.json({ success: true, data });
   } catch (err) {
-    res.status(err.status ?? 500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -27,7 +30,7 @@ export const getAttempt = async (req, res) => {
     );
     res.json({ success: true, data });
   } catch (err) {
-    res.status(err.status ?? 500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -41,7 +44,7 @@ export const saveAttemptCode = async (req, res) => {
     );
     res.json({ success: true, data });
   } catch (err) {
-    res.status(err.status ?? 500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };
 
@@ -55,6 +58,6 @@ export const revealHint = async (req, res) => {
     );
     res.json({ success: true, ...data });
   } catch (err) {
-    res.status(err.status ?? 500).json({ success: false, message: err.message });
+    sendError(err, req, res);
   }
 };

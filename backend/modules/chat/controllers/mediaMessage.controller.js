@@ -1,7 +1,9 @@
 import busboy from "busboy";
-import { getAuthToken } from "../../users/index.js";
 import { uploadToCloudinary } from "../../profile/services/profileService.js";
 import { getSendableRoom, saveMessage, MAX_VOICE_MS } from "../services/chatService.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+
+const sendError = makeErrorHandler("chat");
 
 // Voice notes and photo/file attachments share one flow: auth -> room gate ->
 // stream the file (size cap + byte sniffing + Cloudinary) -> save the message
@@ -30,9 +32,6 @@ const safeFileName = (name) =>
  * @param build     ({ fields, url, meta, filename, size }) -> saveMessage payload, or null if invalid
  */
 const handleMediaUpload = ({ field, kind, maxBytes, tooLargeMessage, build }) => async (req, res) => {
-  const auth = getAuthToken(req.headers.authorization);
-  if (!auth.ok) return res.status(auth.status).json({ message: auth.message });
-
   const { roomId } = req.params;
   const db = req.app.locals.db;
   let responded = false;
@@ -45,7 +44,7 @@ const handleMediaUpload = ({ field, kind, maxBytes, tooLargeMessage, build }) =>
   try {
     // Membership/block check BEFORE reading the body, so a non-member's bytes
     // are never uploaded.
-    const gate = await getSendableRoom(db, { roomId, senderId: auth.userId });
+    const gate = await getSendableRoom(db, { roomId, senderId: req.user.id });
     if (gate.error) return fail(403, gate.error);
 
     const bb = busboy({ headers: req.headers, limits: { fileSize: maxBytes, files: 1 } });
@@ -80,18 +79,25 @@ const handleMediaUpload = ({ field, kind, maxBytes, tooLargeMessage, build }) =>
         const url = await upload;
         const payload = build({ fields, url, meta, filename, size });
         if (!payload) return fail(400, "Invalid upload.");
-        const saved = await saveMessage(db, { roomId, senderId: auth.userId, ...payload });
+        const saved = await saveMessage(db, { roomId, senderId: req.user.id, ...payload });
         if (saved.error) return fail(403, saved.error);
-        req.app.locals.deliverChatMessage?.(roomId, auth.userId, saved);
+        // Not awaited: the message is saved, so a failed live push must not fail the upload.
+        req.app.locals.deliverChatMessage?.(roomId, req.user.id, saved)?.catch((err) => {
+          console.error("deliverChatMessage failed:", err);
+        });
         responded = true;
         res.status(201).json({ message: saved.message });
       } catch (err) {
-        fail(err.status ?? 500, err.message || "Upload failed");
+        if (responded) return;
+        responded = true;
+        sendError(err, req, res);
       }
     });
     req.pipe(bb);
   } catch (err) {
-    fail(err.status ?? 500, err.message || "Server Error");
+    if (responded) return;
+    responded = true;
+    sendError(err, req, res);
   }
 };
 

@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import { ObjectId } from "mongodb";
 import { sendPasswordResetEmail, sendLoginLinkEmail } from "../../../utils/emailService.js";
 import connectDB from "../../../config/db.js";
-import { verifyToken, verifyRefreshToken, REFRESH_TOKEN_TTL_MS } from "../../../utils/jwtToken.js";
+import { verifyRefreshToken, REFRESH_TOKEN_TTL_MS } from "../../../utils/jwtToken.js";
 import {
   issueTokenPair,
   rotateRefreshToken,
@@ -15,6 +15,9 @@ import { claimVerifiedEmail } from "../services/accountClaimService.js";
 import { OAuth2Client } from "google-auth-library";
 import { sanitizeUsername } from "../../../utils/username.js";
 import { trackEvent, trackActiveDay } from "../../../services/eventService.js";
+import { makeErrorHandler } from "../../../utils/respond.js";
+
+const sendError = makeErrorHandler("auth");
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -194,7 +197,7 @@ const signUp = async (data) => {
     };
   } catch (err) {
     console.error(err);
-    return { code: 500, message: "Sign Up failed", error: err.message };
+    return { code: 500, message: "Sign Up failed" };
   }
 };
 
@@ -321,19 +324,15 @@ const githubLinkRedirect = (req, res) => {
 
 const githubDisconnect = async (req, res) => {
   try {
-    const token = req.headers.authorization?.replace("Bearer ", "");
-    const verified = verifyToken(token);
-    if (!verified) return res.status(401).json({ message: "Unauthorized" });
-
     const db = await connectDB();
     const users = db.collection("users");
     await users.updateOne(
-      { _id: new ObjectId(verified.id) },
+      { _id: req.user._id },
       { $unset: { githubId: "", githubLogin: "" } },
     );
     res.json({ message: "GitHub disconnected" });
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    sendError(err, req, res);
   }
 };
 

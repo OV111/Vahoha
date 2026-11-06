@@ -9,8 +9,7 @@ export const authenticate = (req, res, next) => {
   }
   const token = authHeader.split(" ")[1];
 
-  // verifyAccessToken (single source of truth, shared with the manual
-  // verifyToken() calls in the controllers) also rejects a refresh token
+  // verifyAccessToken (single source of truth) also rejects a refresh token
   // presented here — refresh tokens are cookie-only and carry type:"refresh".
   const decoded = verifyAccessToken(token);
   if (!decoded) {
@@ -24,6 +23,7 @@ export const authenticate = (req, res, next) => {
 
   req.user = {
     ...decoded,
+    id: String(rawId),
     _id: new ObjectId(rawId),
   };
   next();
