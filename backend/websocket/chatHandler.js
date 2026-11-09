@@ -122,6 +122,26 @@ export const reactToMessage = async (socket, data) => {
   }
 };
 
+// "X is typing…" is a hint, not data: nothing is stored, nobody gets a
+// notification, and a bad packet is dropped silently instead of toasting an error.
+export const setTyping = (socket, data) => {
+  const { roomId, isTyping } = data ?? {};
+  if (!roomId || typeof roomId !== "string") return;
+  const room = chatRoom(roomId);
+  if (!socket.rooms.has(room)) return;
+  socket.to(room).emit("typing", { roomId, userId: socket.data.userId, isTyping: Boolean(isTyping) });
+};
+
+// A closed tab never sends its "stopped typing", so send it for every chat
+// the socket was in. Runs on "disconnecting", while socket.rooms is still filled.
+export const clearTyping = (socket) => {
+  const prefix = chatRoom("");
+  for (const room of socket.rooms) {
+    if (!room.startsWith(prefix)) continue;
+    socket.to(room).emit("typing", { roomId: room.slice(prefix.length), userId: socket.data.userId, isTyping: false });
+  }
+};
+
 export const loadLastMessages = async (socket) => {
   const db = await connectDB();
   const roomsData = await loadRoomsForUser(db, socket.data.userId);

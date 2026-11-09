@@ -9,8 +9,24 @@ const MENU_ITEM =
 
 const skeleton = { baseColor: "#161616", highlightColor: "#262626" };
 
+const TypingLine = ({ text }) => (
+  <p className="flex items-center gap-1.5 truncate text-xs text-purple-600">
+    <span className="flex gap-0.5" aria-hidden="true">
+      {[0, 150, 300].map((delay) => (
+        <span
+          key={delay}
+          className="h-1 w-1 animate-bounce rounded-full bg-purple-600 motion-reduce:animate-none"
+          style={{ animationDelay: `${delay}ms` }}
+        />
+      ))}
+    </span>
+    {text}
+  </p>
+);
+
 /**
  * Top bar of an open chat: back, who it is with, and the actions menu.
+ * `typing` replaces the status line while someone is writing.
  * `onConfirm(kind)` asks the parent to confirm "clear" or "block" first.
  */
 const ChatHeader = ({
@@ -22,6 +38,7 @@ const ChatHeader = ({
   clickedUser,
   isMuted,
   isBlockedByMe,
+  typing,
   onBack,
   onToggleMute,
   onManageMembers,
@@ -80,7 +97,11 @@ const ChatHeader = ({
             {isGroup ? (
               <div>
                 <p className="truncate text-sm text-white/90 lg:text-base">{group?.name || "Group"}</p>
-                <p className="text-xs text-[#8A8A93]">{group?.members?.length ?? 0} members</p>
+                {typing ? (
+                  <TypingLine text={typing} />
+                ) : (
+                  <p className="text-xs text-[#8A8A93]">{group?.members?.length ?? 0} members</p>
+                )}
               </div>
             ) : isLoadingUserStats ? (
               <div className="space-y-0">
@@ -91,7 +112,9 @@ const ChatHeader = ({
               <div>
                 <p className="truncate text-sm text-white/90 lg:text-base">{clickedUser}</p>
                 <div className="flex items-center gap-2 overflow-x-auto text-xs text-[#8A8A93]">
-                  {isOnlineByLastActive(userStats?.lastActive) ? (
+                  {typing ? (
+                    <TypingLine text={typing} />
+                  ) : isOnlineByLastActive(userStats?.lastActive) ? (
                     <>
                       <span className="h-2.5 w-2.5 rounded-full bg-green-400" />
                       <p className="text-xs text-[#8A8A93]">Online</p>

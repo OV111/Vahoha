@@ -20,6 +20,15 @@ const CONFIRM_COPY = {
   },
 };
 
+// Direct chats show just "typing…": the name is already in the header above it.
+const typingLabel = (isGroup, names) => {
+  if (names.length === 0) return null;
+  if (!isGroup) return "typing…";
+  if (names.length === 1) return `${names[0]} is typing…`;
+  if (names.length === 2) return `${names[0]} and ${names[1]} are typing…`;
+  return `${names.length} people are typing…`;
+};
+
 const ChatInterface = ({
   isGroup = false,
   group,
@@ -33,6 +42,7 @@ const ChatInterface = ({
   mutualFollowers = [],
   draftMessage,
   setDraftMessage,
+  typingUserIds = [],
   handleSendMessage,
   onReact,
   onSendVoice,
@@ -63,6 +73,11 @@ const ChatInterface = ({
     });
     return map;
   }, [mutualFollowers]);
+
+  const typing = typingLabel(
+    isGroup,
+    typingUserIds.map((id) => memberNameById.get(id) || "Someone"),
+  );
 
   useEffect(() => {
     if (isLoadingHistory) return;
@@ -98,6 +113,7 @@ const ChatInterface = ({
           clickedUser={clickedUser}
           isMuted={isMuted}
           isBlockedByMe={isBlockedByMe}
+          typing={typing}
           onBack={onBack}
           onToggleMute={onToggleMute}
           onManageMembers={() => setIsMembersOpen(true)}

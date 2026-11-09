@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { joinRoom, loadLastMessages, sendMessage, reactToMessage } from "./chatHandler.js";
+import { joinRoom, loadLastMessages, sendMessage, reactToMessage, setTyping, clearTyping } from "./chatHandler.js";
 import { bindIo, countUserSockets, userRoom } from "./connectionRegistry.js";
 import { verifyToken } from "../utils/jwtToken.js";
 import { isOriginAllowed } from "./origin.js";
@@ -17,6 +17,7 @@ const HANDLERS = {
   join_room: joinRoom,
   send_message: sendMessage,
   react_message: reactToMessage,
+  typing: setTyping,
   load_last_messages: loadLastMessages,
 };
 
@@ -50,6 +51,7 @@ export default function initWebSocketServer(server) {
   io.on("connection", (socket) => {
     pending.signedIn(socket.conn);
     socket.join(userRoom(socket.data.userId));
+    socket.on("disconnecting", () => clearTyping(socket));
 
     const checkRate = createMessageLimiter();
     socket.use((_packet, next) => {

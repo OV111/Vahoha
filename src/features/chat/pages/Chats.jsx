@@ -24,6 +24,7 @@ import ConversationFilters from "../components/ConversationFilters";
 import RequestRow from "../components/RequestRow";
 import { getAccessToken, apiFetch } from "../../../../constants/api";
 import { closeSocket, openSocket } from "@/lib/socket";
+import useTypingIndicator from "../hooks/useTypingIndicator";
 
 const getUserIdFromJWT = (token) => {
   if (!token) return null;
@@ -102,6 +103,16 @@ const Chats = () => {
     : senderId && receiverId
       ? [String(senderId), String(receiverId)].sort().join("_")
       : null;
+
+  const { typingUserIds, notifyTyping, stopTyping } = useTypingIndicator(socket, roomId, senderId);
+
+  // Every edit of the draft (typing, emoji) goes through here. An emptied
+  // draft counts as stopped, not as typing.
+  const handleDraftChange = (text) => {
+    setDraftMessage(text);
+    if (text.trim()) notifyTyping();
+    else stopTyping();
+  };
 
   const roomsById = useMemo(() => {
     const map = {};
@@ -402,6 +413,7 @@ const Chats = () => {
       return;
     }
     socket.emit("send_message", { roomId, text: draftMessage });
+    stopTyping();
     setDraftMessage("");
   };
 
@@ -645,7 +657,8 @@ const Chats = () => {
             senderId={senderId}
             mutualFollowers={mutualFollowers}
             draftMessage={draftMessage}
-            setDraftMessage={setDraftMessage}
+            setDraftMessage={handleDraftChange}
+            typingUserIds={isBlockedByMe ? [] : typingUserIds}
             handleSendMessage={handleSendMessage}
             onReact={handleReact}
             onSendVoice={handleSendVoice}
