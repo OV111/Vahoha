@@ -48,7 +48,7 @@ export const joinRoom = async (socket, data) => {
 // actually present so we only queue notifications for absent members —
 // works the same way for a 2-person room or an N-person group. Shared by text
 // (websocket) and voice notes (HTTP upload).
-export const deliverChatMessage = async (roomId, senderId, { members, mutedMembers = [], message }) => {
+export const deliverChatMessage = async (roomId, senderId, { members, mutedMembers = [], message, isRequest = false }) => {
   const io = getIo();
   const room = chatRoom(roomId);
   const viewers = await io.in(room).fetchSockets();
@@ -64,11 +64,12 @@ export const deliverChatMessage = async (roomId, senderId, { members, mutedMembe
         !mutedMembers.includes(memberId),
     )
     .forEach((targetUserId) => {
-      notificationQueue.add("new_message", {
-        type: "new_message",
-        actorId: senderId,
-        targetUserId,
-      });
+      // A message request is someone the receiver doesn't follow back: it has
+      // its own wording and opens the Requests tab, not the chat list.
+      const type = isRequest ? "message_request" : "new_message";
+      Promise.resolve(
+        notificationQueue.add(type, { type, actorId: String(senderId), targetUserId }),
+      ).catch((err) => console.error(`Could not queue ${type} notification:`, err));
     });
 };
 

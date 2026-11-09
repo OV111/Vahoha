@@ -1,5 +1,5 @@
 import { Worker } from "bullmq";
-import { createNotification } from "../modules/notifications/index.js";
+import { createNotification, SYSTEM_TYPES } from "../modules/notifications/index.js";
 import connectDB from "../config/db.js";
 import { sendToUser } from "../websocket/connectionRegistry.js";
 import { redisConnection } from "../config/redis.js";
@@ -18,16 +18,17 @@ if (!REDIS_ENABLED) {
 const NotificationWorker = REDIS_ENABLED ? new Worker(
   "notifications",
   async (job) => {
-    const { type, actorId, targetUserId } = job.data;
+    const { type, actorId, targetUserId, ref, meta } = job.data;
     // Cheap guard before touching the DB; createNotification re-checks for
-    // any other caller.
-    if (!type || !actorId || !targetUserId) return;
-    if (actorId === targetUserId) return;
+    // any other caller. System types (capstone review) have no actor.
+    const system = SYSTEM_TYPES.has(type);
+    if (!type || !targetUserId || (!system && !actorId)) return;
+    if (!system && actorId === targetUserId) return;
     try {
       const db = await connectDB();
-      const newNotification = await createNotification(db, { type, actorId, targetUserId });
-
-      sendToUser(targetUserId, { type: "notification", data: newNotification });
+      const newNotification = await createNotification(db, { type, actorId, targetUserId, ref, meta });
+      // null = nothing was stored (missing field or self-notification).
+      if (newNotification) sendToUser(targetUserId, { type: "notification", data: newNotification });
     } catch (err) {
       console.error("Error occurred while processing notification:", err);
       throw err;

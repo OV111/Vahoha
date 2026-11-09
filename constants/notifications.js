@@ -1,7 +1,9 @@
-import { UserPlus, MessageCircle, Heart, FileText } from "lucide-react";
+import { UserPlus, MessageCircle, Heart, FileText, MessageSquare, Inbox, GraduationCap } from "lucide-react";
 
-export const FILTERS = ["All", "Unread", "Follows", "Messages", "Likes", "Posts"];
+export const FILTERS = ["All", "Unread", "Follows", "Messages", "Comments", "Likes", "Posts"];
 
+// `label` is a string shown after the sender's name, or a function of the
+// notification. `system` types come from Vahoha itself and have no sender.
 export const TYPE_META = {
   follow: {
     icon: UserPlus,
@@ -14,6 +16,28 @@ export const TYPE_META = {
     color: "text-blue-500",
     bg: "bg-blue-100 dark:bg-blue-950/40",
     label: "sent you a message",
+  },
+  message_request: {
+    icon: Inbox,
+    color: "text-sky-500",
+    bg: "bg-sky-100 dark:bg-sky-950/40",
+    label: "sent you a message request",
+  },
+  post_comment: {
+    icon: MessageSquare,
+    color: "text-emerald-500",
+    bg: "bg-emerald-100 dark:bg-emerald-950/40",
+    label: "commented on your post",
+  },
+  capstone_review: {
+    icon: GraduationCap,
+    color: "text-amber-500",
+    bg: "bg-amber-100 dark:bg-amber-950/40",
+    system: true,
+    label: (n) =>
+      n.meta?.passed
+        ? "Your capstone review passed. Your defense is next."
+        : "Your capstone review is ready.",
   },
   post_like: {
     icon: Heart,
@@ -30,8 +54,9 @@ export const TYPE_META = {
 };
 
 export const FILTER_TYPE_MAP = {
-  Follows: "follow",
-  Messages: "new_message",
-  Likes: "post_like",
-  Posts: "new_post",
+  Follows: ["follow"],
+  Messages: ["new_message", "message_request"],
+  Comments: ["post_comment"],
+  Likes: ["post_like"],
+  Posts: ["new_post"],
 };

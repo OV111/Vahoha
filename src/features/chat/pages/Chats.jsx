@@ -66,8 +66,11 @@ const Chats = () => {
   // Message requests from people I'm not mutual followers with. `tab` switches
   // the left column between normal chats and the incoming requests to answer.
   const [requests, setRequests] = useState({ incoming: [], outgoing: [], accepted: [] });
-  const [tab, setTab] = useState("chats"); // "chats" | "requests"
   const location = useLocation();
+  // "chats" | "requests"; a message-request notification links to ?tab=requests.
+  const [tab, setTab] = useState(() =>
+    new URLSearchParams(location.search).get("tab") === "requests" ? "requests" : "chats",
+  );
 
   const loadRequests = useCallback(async () => {
     try {

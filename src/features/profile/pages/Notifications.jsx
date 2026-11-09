@@ -36,8 +36,14 @@ const hrefFor = (n) => {
   if (n.type === "follow" && n.senderUsername)
     return `/users/${n.senderUsername}`;
   if (n.type === "new_message") return "/my-profile/chats";
+  if (n.type === "message_request") return "/my-profile/chats?tab=requests";
+  if (n.type === "post_comment" && n.ref?.id) return `/posts/blog_${n.ref.id}`;
+  if (n.type === "capstone_review" && n.ref?.id) return `/capstone/${n.ref.id}`;
   return null;
 };
+
+/** Accessible name for the row's buttons ("Mark … as read"). */
+const subjectOf = (n, meta) => (meta.system ? "this" : `${n.senderName}'s`);
 
 const FOCUS =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-purple-400";
@@ -56,8 +62,12 @@ function NotificationRow({ notif, onRead, onDelete }) {
       </span>
       <span className="min-w-0 flex-1">
         <span className="block text-[15px] leading-snug text-neutral-200">
-          <span className="font-semibold text-white">{notif.senderName}</span>{" "}
-          {meta.label}
+          {!meta.system && (
+            <>
+              <span className="font-semibold text-white">{notif.senderName}</span>{" "}
+            </>
+          )}
+          {typeof meta.label === "function" ? meta.label(notif) : meta.label}
           {notif.meta?.postTitle && (
             <span className="text-neutral-300">
               {" "}
@@ -78,13 +88,13 @@ function NotificationRow({ notif, onRead, onDelete }) {
   return (
     <li
       className={`group relative flex items-center gap-1 pr-3 transition-colors hover:bg-white/[0.025] ${
-        notif.read ? "" : "bg-purple-500/[0.05]"
+        notif.read ? "" : "bg-purple-600/[0.06]"
       }`}
     >
       {!notif.read && (
         <span
           aria-hidden="true"
-          className="absolute inset-y-4 left-0 w-0.5 rounded-full bg-purple-400"
+          className="absolute inset-y-4 left-0 w-0.5 rounded-full bg-purple-600"
         />
       )}
 
@@ -101,7 +111,7 @@ function NotificationRow({ notif, onRead, onDelete }) {
       {!notif.read && (
         <span
           aria-hidden="true"
-          className="size-2 shrink-0 rounded-full bg-purple-400"
+          className="size-2 shrink-0 rounded-full bg-purple-600"
         />
       )}
 
@@ -111,7 +121,7 @@ function NotificationRow({ notif, onRead, onDelete }) {
           <button
             type="button"
             onClick={() => onRead(notif._id)}
-            aria-label={`Mark ${notif.senderName}'s notification as read`}
+            aria-label={`Mark ${subjectOf(notif, meta)} notification as read`}
             className={`rounded-lg p-2 text-neutral-400 hover:bg-white/[0.06] hover:text-purple-300 ${FOCUS}`}
           >
             <CheckCheck size={16} aria-hidden="true" />
@@ -120,7 +130,7 @@ function NotificationRow({ notif, onRead, onDelete }) {
         <button
           type="button"
           onClick={() => onDelete(notif._id)}
-          aria-label={`Delete ${notif.senderName}'s notification`}
+          aria-label={`Delete ${subjectOf(notif, meta)} notification`}
           className={`rounded-lg p-2 text-neutral-400 hover:bg-red-500/10 hover:text-red-300 ${FOCUS}`}
         >
           <Trash2 size={16} aria-hidden="true" />
@@ -224,8 +234,8 @@ const Notifications = () => {
     () =>
       notifications.filter((n) => {
         if (activeFilter === "Unread") return !n.read;
-        const type = FILTER_TYPE_MAP[activeFilter];
-        return type ? n.type === type : true;
+        const types = FILTER_TYPE_MAP[activeFilter];
+        return types ? types.includes(n.type) : true;
       }),
     [notifications, activeFilter],
   );
@@ -315,7 +325,7 @@ const Notifications = () => {
             }
             body={
               activeFilter === "All"
-                ? "When someone follows you or messages you, it shows up here."
+                ? "Follows, messages, comments on your posts and capstone reviews show up here."
                 : "No notifications match this filter."
             }
           />

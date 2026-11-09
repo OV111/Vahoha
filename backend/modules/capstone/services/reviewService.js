@@ -17,6 +17,7 @@
 import { randomBytes } from "crypto";
 import { ObjectId } from "mongodb";
 import { trackEvent } from "../../../services/eventService.js";
+import { notify } from "../../../queues/notify.js";
 import { addWeakSpot } from "../../../services/weakSpotService.js";
 import { recomputeMastery } from "../../../services/learnerMasteryService.js";
 import {
@@ -155,6 +156,14 @@ export const reviewService = async (db, userId, trackId) => {
     } catch (err) {
       console.error("capstone weak-spot/mastery update failed (review already saved):", err);
     }
+
+    // A review takes up to ~40 s and the learner may have left the page.
+    notify({
+      type: "capstone_review",
+      targetUserId: userId,
+      ref: { kind: "capstone", id: trackId },
+      meta: { passed, title: brief.title },
+    });
 
     if (!passed) {
       await trackEvent(db, userId, "capstone_failed", {

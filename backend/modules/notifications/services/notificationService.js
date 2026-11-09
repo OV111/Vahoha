@@ -4,20 +4,30 @@ import { ObjectId } from "mongodb";
 // lives in workers/notificationWorker.js; this module only reads and writes
 // the `notifications` collection.
 
+// Sent by the platform about the user's own work, so there is no actor.
+export const SYSTEM_TYPES = new Set(["capstone_review"]);
+
+const plainObject = (v) => (v && typeof v === "object" && !Array.isArray(v) ? v : undefined);
+
 // Builds and stores a notification. Returns null — writing nothing — when a
 // required field is missing or the user would be notifying themselves.
-export async function createNotification(db, { type, actorId, targetUserId }) {
-  if (!type || !actorId || !targetUserId) return null;
-  if (actorId === targetUserId) return null;
+// `ref` says what the notification is about (e.g. { kind: "post", id }) so the
+// inbox can link to it; `meta` holds display details (e.g. { postTitle }).
+export async function createNotification(db, { type, actorId, targetUserId, ref, meta }) {
+  const system = SYSTEM_TYPES.has(type);
+  if (!type || !targetUserId || (!system && !actorId)) return null;
+  if (!system && actorId === targetUserId) return null;
 
-  const actor = await db.collection("users").findOne(
-    { _id: new ObjectId(actorId) },
-    { projection: { username: 1, firstName: 1, lastName: 1 } },
-  );
+  const actor = system
+    ? null
+    : await db.collection("users").findOne(
+        { _id: new ObjectId(actorId) },
+        { projection: { username: 1, firstName: 1, lastName: 1 } },
+      );
 
   const notification = {
     type,
-    actorId,
+    ...(!system && { actorId }),
     targetUserId,
     read: false,
     createdAt: new Date(),
@@ -25,6 +35,8 @@ export async function createNotification(db, { type, actorId, targetUserId }) {
     // filter(Boolean) so a deleted actor or a missing name part never renders
     // as the literal text "undefined".
     senderName: [actor?.firstName, actor?.lastName].filter(Boolean).join(" "),
+    ...(plainObject(ref) && { ref }),
+    ...(plainObject(meta) && { meta }),
   };
 
   await db.collection("notifications").insertOne(notification);

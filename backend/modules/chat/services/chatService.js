@@ -233,6 +233,7 @@ export async function saveMessage(db, { roomId, senderId, text = "", voice = nul
     members: room.members,
     mutedMembers,
     message: { _id: inserted.insertedId, ...messageDoc },
+    isRequest: room.status === "pending",
   };
 }
 

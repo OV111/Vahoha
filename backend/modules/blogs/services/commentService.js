@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { clearBlogListCache } from "./blogService.js";
+import { notify } from "../../../queues/notify.js";
 import { ForbiddenError, NotFoundError } from "../../../utils/httpErrors.js";
 
 const authorLookup = [
@@ -63,10 +64,21 @@ export const postCommentService = async (db, blogId, userId, text) => {
     blogs.findOneAndUpdate(
       { _id: new ObjectId(blogId) },
       { $push: { comments: insertedId } },
-      { returnDocument: "after", projection: { comments: 1 } },
+      { returnDocument: "after", projection: { comments: 1, author: 1, title: 1 } },
     ),
   ]);
   clearBlogListCache(); // the list shows the comment count
+
+  // The author's own comments are dropped by createNotification.
+  if (blog?.author) {
+    notify({
+      type: "post_comment",
+      actorId: String(userId),
+      targetUserId: String(blog.author),
+      ref: { kind: "post", id: String(blogId) },
+      meta: { postTitle: blog.title },
+    });
+  }
 
   return {
     ...doc,

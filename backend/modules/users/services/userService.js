@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import notificationQueue from "../../../queues/notificationQueue.js";
+import { notify } from "../../../queues/notify.js";
 
 import { withLayerTitles } from "../../../services/examHistoryService.js";
 import { listPublicCertificatesForUser } from "../../capstone/index.js";
@@ -82,7 +82,7 @@ export const followUserService = async (db, userName, currentUserId) => {
     throw err;
   }
 
-  notificationQueue.add("follow", {
+  notify({
     type: "follow",
     actorId: currentUserId.toString(),
     targetUserId: targetUser._id.toString(),
