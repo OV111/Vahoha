@@ -415,7 +415,7 @@ const Settings = () => {
                   />
                   <ImageDropZone
                     label="Banner Image"
-                    hint="Recommended 1500 × 350 px (wide), under 1 MB. Keep faces and key shapes in the middle; the top and bottom get cropped."
+                    hint="1500 × 350 px, under 1 MB. Top and bottom may be cropped."
                     image={bannerImage}
                     currentUrl={stats?.bannerImage}
                     onImageChange={setBannerImage}

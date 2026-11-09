@@ -138,7 +138,7 @@ export function UnreadBadge({ dot = false, className = "" }) {
       <span
         role="status"
         aria-label={label}
-        className={`absolute -top-0.5 -right-0.5 size-3 rounded-full border-2 border-black bg-fuchsia-500 ${className}`}
+        className={`absolute -top-0.5 -right-0.5 size-3 rounded-full border-2 border-black bg-purple-600 ${className}`}
       />
     );
   }
@@ -146,7 +146,7 @@ export function UnreadBadge({ dot = false, className = "" }) {
     <span
       role="status"
       aria-label={label}
-      className={`ml-auto min-w-5 rounded-full bg-fuchsia-600 px-1.5 py-0.5 text-center text-[11px] leading-none font-semibold text-white ${className}`}
+      className={`ml-auto min-w-5 rounded-full bg-purple-600 px-1.5 py-0.5 text-center text-[11px] leading-none font-semibold text-white ${className}`}
     >
       {unread > 99 ? "99+" : unread}
     </span>

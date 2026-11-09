@@ -20,7 +20,7 @@ const LoadingSuspense = ({ fill = false, size = 44 }) => {
       role="status"
       aria-label="Loading"
     >
-      <TailChase size={String(size)}speed="1.75" color={isDark ? "#a855f7" : "#7c3aed"} />
+      <TailChase size={String(size)}speed="1.75" color="#9333ea" />
     </div>
   );
 };
