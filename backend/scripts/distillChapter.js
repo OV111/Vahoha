@@ -6,7 +6,7 @@
  *     --chapter "<name>" --source <source.json> --out <out.json> [--dry-prompt]
  *
  * --text    the chapter as plain text (extract it from the PDF first; this script does not parse PDFs)
- * --rubric  the hand-written rubric (docs/ideas/book-digest/rubric-v1.md is the draft)
+ * --rubric  the hand-written rubric
  * --source  the book's library entry, same shape as `source` in digestImportSchema
  * --dry-prompt  print the prompt and its token estimate, call nothing
  *

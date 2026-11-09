@@ -3,8 +3,8 @@ import { z } from "zod";
 /**
  * Schemas for the /api/ai-agent routes.
  *
- * These are the first Zod schemas in the codebase — docs/strategy/VISION.md Recommendation #8
- * commits every NEW route to validating at the boundary, so unvalidated payloads
+ * These are the first Zod schemas in the codebase, and every
+ * NEW route commits to validating at the boundary, so unvalidated payloads
  * can never reach a service (or the model) in the first place.
  */
 

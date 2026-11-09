@@ -9,7 +9,7 @@
 |---|---|
 | Is anyone charged? | **No.** `BILLING_ENFORCED=false` in `render.yaml`, so every check passes. The pilot runs fully free |
 | What is built? | Polar checkout, signed webhook, subscription state, pricing page, billing page, customer portal link |
-| Tested against real Polar? | The automated tests use a fake Polar. `docs/strategy/BUSINESS_MODEL.md` says a real sandbox checkout was run. **This doc cannot confirm it. Re-run the sandbox test below before relying on it** |
+| Tested against real Polar? | The automated tests use a fake Polar. A real sandbox checkout is unconfirmed. ** Re-run the sandbox test below before relying on it** |
 | What is the price model? | **Flat $15/month per person.** Not metered, not pay-per-token |
 | Is a user ever billed for tokens? | **No.** There is no usage-based billing. The AI cost (Groq tokens) is ours. It is controlled by count caps, not by charging users |
 | Which routes check the plan? | Two so far (see [Who is limited by what](#who-is-limited-by-what)) |
@@ -71,7 +71,7 @@ Browser ──GET /api/billing/subscription──▶ plan, status, renewal date
 ## First-time setup (sandbox)
 
 1. Create a sandbox account at <https://sandbox.polar.sh> and an organization. Sandbox is fully isolated from production and uses Stripe test cards.
-2. **Products → New product:** "Pro", recurring, monthly, price **$15** (still an open pricing decision — see `docs/strategy/BUSINESS_MODEL.md`). Copy the product id.
+2. **Products → New product:** "Pro", recurring, monthly, price **$15** (still an open pricing decision — see `docs/founder/business-model.md`). Copy the product id.
 3. **Settings → Developers → New Access Token** with at least the scopes `checkouts:write`, `customer_sessions:write`, `subscriptions:read`. Copy it once (it is shown once).
 4. **Webhooks:** Polar must be able to reach your server, so `localhost` will not work. Run a tunnel (`ngrok http 3000`, or `cloudflared tunnel --url http://localhost:3000`) and add an endpoint:
    - URL: `https://<tunnel-host>/api/billing/webhook`
@@ -104,7 +104,7 @@ The capstone review, the defense questions, the mentor and teach-back all call G
 - **What a review needs.** The default budget is 80,000 characters of code (about 23k tokens) plus roughly 1.4k to 2.3k tokens of prompt (measured over all seeded briefs) and up to 8k tokens of output. A small, tidy project such as a notes API is already about 31k characters (9k tokens), so real capstones do not fit the free tier.
 - **Local setting.** `GROQ_TPM_LIMIT=8000` in `backend/.env` sizes every request to fit: the code budget shrinks to what the limit leaves, `max_tokens` becomes whatever is left after the input, and reasoning drops to `low`. On the free tier a review sees roughly 10k characters of code, so scores are noisier. Remove the variable on a paid tier and nothing is clamped.
 - **Code:** `backend/modules/capstone/lib/tokenBudget.js` (pure, unit-tested), applied in `reviewModel.js` and `repoFiles.js`. The SDK already retries 429s itself.
-- **Before real users:** move the Groq key to a paid tier and set the real limit (or leave it unset). Price one review from the `usage` stored on each review document, then check that the $15 Pro price covers a learner's reviews and defense attempts. Pricing is still the open decision in `docs/strategy/BUSINESS_MODEL.md`.
+- **Before real users:** move the Groq key to a paid tier and set the real limit (or leave it unset). Price one review from the `usage` stored on each review document, then check that the $15 Pro price covers a learner's reviews and defense attempts. Pricing is still the open decision in `docs/founder/business-model.md`.
 
 ## What is NOT built
 

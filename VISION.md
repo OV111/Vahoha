@@ -1,9 +1,9 @@
 # Vahoha (formerly DevsWebs) — Vision
 
-> Living document. Business/product framing only — build status, phase plans, and architecture detail live in `docs/product/PRODUCT_STATUS.md`, `docs/product/PRODUCT_ROADMAP.md`, `docs/engineering/ARCHITECTURE.md`, `docs/strategy/BUSINESS_MODEL.md`, and `docs/strategy/STARTUP_ADVISOR_ANALYSIS.md`.
+> Living document. Business/product framing only — build status, phase plans, and architecture detail live in `docs/PILOT_STATUS.md`, `docs/engineering/ARCHITECTURE.md` and `docs/founder/business-model.md`.
 > Last updated: 2026-11-02. Added the roadmap UX fixes from a side-by-side review against roadmap.sh.
 > Earlier (2026-10-21): Synced with the code and `docs/PILOT_STATUS.md`: lessons and labs, the pilot-track question, product docs and founder docs added; the deleted build plan is no longer cited. Earlier (2026-10-11): Positioning sharpened by the competitor matrix (`docs/founder/competitor-matrix.md`): the difference is defended, reviewed evidence, not gating or an AI tutor. Traction, XP and Build Teams updated to match the code.
-> Earlier (2026-10-02): corrected against the code and `docs/strategy/STARTUP_CRITIQUE_2026-10.md`; exam-integrity and "no competitor" claims were overstated.
+> Earlier (2026-10-02): corrected against the code; exam-integrity and "no competitor" claims were overstated.
 
 ---
 
@@ -53,7 +53,7 @@ Learn → Build → Break → Fix → Get evaluated → Defend your decisions
    → Improve → Prove it → Take the next, harder challenge
 ```
 
-Much of this already exists: exams, Coding Challenges, Capstone repository review, and the Capstone technical defense (questions about your own code, answered under a timer). What is added over time is *Break* (realistic failure scenarios), *Fix* rounds after a review, and a weakness → targeted challenge → reassessment loop on the existing mastery data. Progress should come from evidence of ability (challenges, projects, defense answers, repeated performance), kept distinct from content completion. Status per feature is in `docs/product/PRODUCT_STATUS.md`; what comes next is in `docs/product/PRODUCT_ROADMAP.md`. None of this changes the pilot plan in section 10.
+Much of this already exists: exams, Coding Challenges, Capstone repository review, and the Capstone technical defense (questions about your own code, answered under a timer). What is added over time is *Break* (realistic failure scenarios), *Fix* rounds after a review, and a weakness → targeted challenge → reassessment loop on the existing mastery data. Progress should come from evidence of ability (challenges, projects, defense answers, repeated performance), kept distinct from content completion. Status per feature and what comes next are in `docs/PILOT_STATUS.md`. None of this changes the pilot plan in section 10.
 
 ### The learner journey, in short
 
@@ -82,7 +82,7 @@ Since 2026-10-10 these are connected, not separate features: capstone and team r
 ## 5. Why now
 
 - **LLMs make a real 1:1 mentor economically possible for the first time.** A tool-use agent with live access to a learner's actual data (not a static prompt) was not affordable or buildable as a solo project even two years ago; API pricing and tool-calling maturity make it viable now.
-- **The credential trust problem is getting worse, not better.** As AI makes it trivially easy to generate a polished resume, project, or cover letter, the market signal that actually differentiates candidates shifts toward *verified, hard-to-fake proof of understanding* — which is what a graded exam record can provide and a GitHub repo or a resume bullet does not. **Caveat (2026-10-02):** today's exam is multiple choice, which an LLM can answer, and it has no proctoring, so it works as practice and self-diagnosis, not as proof. The strongest proof that exists today is the capstone defense: timed, typed questions about the learner's own repository, graded against a rubric. It is AI-reviewed and not proctored, so the honest word is "defended", never "verified" or "hard to fake" (`docs/product/EXAM_INTEGRITY.md`). The spoken teach-back exam (`docs/product/VOICE_EXAM_SPEC.md`) is the planned stronger credential.
+- **The credential trust problem is getting worse, not better.** As AI makes it trivially easy to generate a polished resume, project, or cover letter, the market signal that actually differentiates candidates shifts toward *verified, hard-to-fake proof of understanding* — which is what a graded exam record can provide and a GitHub repo or a resume bullet does not. **Caveat (2026-10-02):** today's exam is multiple choice, which an LLM can answer, and it has no proctoring, so it works as practice and self-diagnosis, not as proof. The strongest proof that exists today is the capstone defense: timed, typed questions about the learner's own repository, graded against a rubric. It is AI-reviewed and not proctored, so the honest word is "defended", never "verified" or "hard to fake" (`docs/product/EXAM_INTEGRITY.md`). A spoken teach-back exam is the planned stronger credential.
 - **Existing free platforms (freeCodeCamp, The Odin Project) have enormous audiences but no accountability layer**, leaving room for a product that adds verification on top of a familiar "structured path" mental model. **The lane is narrower than it looked in September:** roadmap.sh sells AI courses and quizzes, and Boot.dev sells gamified backend learning with an AI tutor and is profitable (see section 9). The open lane is proof, not teaching.
 
 ---
@@ -112,7 +112,7 @@ Freemium SaaS, expanding later into a two-sided marketplace (developers prove sk
 | Employer Access *(future)* | $159/month | Hiring managers/recruiters | Search verified profiles + progression data |
 | Featured Company *(future)* | $599/month | Actively hiring companies | Above + visibility to developers on-platform |
 
-Pricing logic: the original reasoning ("below Cursor and Copilot, covers Claude API cost") no longer holds. The mentor runs on Groq `gpt-oss-120b`, a heavy user costs roughly $1–2/month, so price is a **willingness-to-pay question, not a cost question**, and the anchors are Codecademy Plus $14.99 / Pro $19.99 a month, Boot.dev about $33 a month, and roadmap.sh's Team plan $10 per seat (checked 2026-10-11, sources in `docs/founder/competitor-matrix.md`). $15 is a hypothesis to test with a $15 early-access payment (`docs/strategy/OUTREACH_KIT.md`). Billing exists (Polar) but is switched off: everything is free during the pilot. Unit economics live in `docs/strategy/BUSINESS_MODEL.md`.
+Pricing logic: the original reasoning ("below Cursor and Copilot, covers Claude API cost") no longer holds. The mentor runs on Groq `gpt-oss-120b`, a heavy user costs roughly $1–2/month, so price is a **willingness-to-pay question, not a cost question**, and the anchors are Codecademy Plus $14.99 / Pro $19.99 a month, Boot.dev about $33 a month, and roadmap.sh's Team plan $10 per seat (checked 2026-10-11, sources in `docs/founder/competitor-matrix.md`). $15 is a hypothesis to test with a $15 early-access payment (`docs/founder/OUTREACH_KIT.md`). Billing exists (Polar) but is switched off: everything is free during the pilot. Unit economics live in `docs/founder/business-model.md`.
 
 The employer-facing tiers are Phase 13+ and explicitly gated on reaching 500+ verified developer profiles first — there's no employer product worth selling without a real pool of verified supply.
 
@@ -160,17 +160,17 @@ Note: freeCodeCamp/The Odin Project are lower threat because they are passive co
 - 178 tracks in 16 categories (Frontend Developer now sits under Full Stack; it, Data Structures & Algorithms, System Design and AI Agents Engineer were authored 2026-10-16; no tracks are coming soon); exam-bank generator built, but banks still have to be seeded and hand-checked for the first track
 - **13 accounts on 2026-10-11 (TODO: confirm how many are real people), zero revenue, zero interviews with target users**
 
-**Next 90 days:** no new features. Hand-seed and check Backend Layers 1–3, run 15 interviews with self-taught backend developers, ask each for a $15 early-access payment, run the Wizard-of-Oz oral exam by hand, and read the funnel weekly. Day-60 gate and kill criteria are in `docs/strategy/STARTUP_REVIEW_2026-10.md` §8–9 and `docs/strategy/OUTREACH_KIT.md`.
+**Next 90 days:** no new features. Hand-seed and check Backend Layers 1–3, run 15 interviews with self-taught backend developers, ask each for a $15 early-access payment, run the Wizard-of-Oz oral exam by hand, and read the funnel weekly. Kill criteria are in `docs/founder/OUTREACH_KIT.md`.
 
 **If the tests pass:** widen to 50 users on one path, then decide between B2C and instructor-led cohorts (bootcamps and universities) from the data. **If they fail:** treat the project as a portfolio piece; that outcome should be agreed before the experiment starts.
 
-Build status lives in `docs/PILOT_STATUS.md` and `docs/product/PRODUCT_STATUS.md`.
+Build status lives in `docs/PILOT_STATUS.md`.
 
 ---
 
 ## 11. Metrics
 
-The few numbers that actually define success, pulled from the unit-economics model in `docs/strategy/BUSINESS_MODEL.md`. The first one is measured by the pilot funnel (`GET /api/admin/funnel`); the rest need paying users and are unmeasured:
+The few numbers that actually define success, pulled from the unit-economics model in `docs/founder/business-model.md`. The first one is measured by the pilot funnel (`GET /api/admin/funnel`); the rest need paying users and are unmeasured:
 
 - **North star: share of new signups who return within 7 days and start a second layer.** The core product-health signal; if this is low, the loop isn't working regardless of anything else. Definitions and the other pilot metrics: `docs/founder/metrics.md`.
 - **MRR growth rate** — target >15%/month once paid tiers are live; below 10% is a warning sign.
@@ -190,7 +190,7 @@ That verified population is what unlocks the second half of the business: an emp
 
 ## XP and voice (ideas, not built)
 
-Short versions of `docs/product/XP_SYSTEM.md` and `docs/product/VOICE_EXAM_SPEC.md`. Both stay frozen until pilot data says otherwise.
+XP detail is in `docs/product/XP_SYSTEM.md`. Both stay frozen until pilot data says otherwise.
 
 **XP.** Since 2026-10-10 every source goes through one ledger (`awardXp`, once per user and source): 50 XP for a first layer-exam pass (+25 at 90%+), each challenge's own XP on its first solve, 300 for a capstone, 300 for the first passed defense on a team. Hints still spend XP. Everything beyond that stays frozen. One rule governs every idea: **XP measures effort, never proof.** It can't unlock layers, skip exams, buy attempts or be bought with money, and mastery and verified results stay a separate number. Levels, XP decay, XP in mentor answers and an XP headline on public profiles are rejected. Streaks are the remaining candidate, and only if the pilot shows people don't return for Layer 2. Boot.dev already sells XP in this niche, so it is not a differentiator.
 
@@ -202,7 +202,7 @@ Short versions of `docs/product/XP_SYSTEM.md` and `docs/product/VOICE_EXAM_SPEC.
 - **Fair grading:** each credited point must cite a quote that really appears in the transcript, the app (not the model) decides pass/fail, and accent, fluency and pace are never graded. Typing is always allowed. Soft gate: the MCQ still unlocks the next layer, and the voice exam adds a "verified" status. A failed attempt feeds the mentor and needs a 24-hour wait plus a mentor review before the retry.
 - **Privacy and cost:** audio is deleted right after transcription and only the text is kept. Speech-to-text runs on Groq Whisper under a separate voice API key with its own budget, so voice can never starve the mentor. ElevenLabs is deferred: our AI replies in text, so a premium voice adds cost without better grading.
 
-The text-and-dictation teach-back is live for a few topics. The biggest cost is writing rubrics (about 20–30 minutes per topic), and there is no hard gate before human calibration (Cohen's kappa of 0.7 or more). The first step is a hand-run weekly review with 5 pilot learners. Full plan: `docs/product/FUTURE_IDEAS.md` (Voice AI Progress Review) and `docs/product/VOICE_EXAM_SPEC.md`.
+The text-and-dictation teach-back is live for a few topics. The biggest cost is writing rubrics (about 20–30 minutes per topic), and there is no hard gate before human calibration (Cohen's kappa of 0.7 or more). The first step is a hand-run weekly review with 5 pilot learners.
 
 ---
 
@@ -250,7 +250,7 @@ Most of the problems are wording and layout. The progress data itself is correct
 
 ## Notes & ideas (not committed, not scoped)
 
-**Build Teams (MVP built 2026-10-04, never run).** The idea below is now an MVP (see section 10); the open question is operational: can a hand-run team of strangers stay active for 6 weeks. Developers who share the same aim (for example "backend, mid-level in six months") are grouped, build a real production-grade project together, and some teams might go on to start a company. Only learners who passed a track's capstone would join, so every member has a verified baseline, and the platform already knows each member's strengths and gaps for matching. The startup is a possible outcome, not a feature, and the legal side (equity, IP) is out of scope. Validate with one hand-run team before any further product work. Details in `docs/product/FUTURE_IDEAS.md`.
+**Build Teams (MVP built 2026-10-04, never run).** The idea below is now an MVP (see section 10); the open question is operational: can a hand-run team of strangers stay active for 6 weeks. Developers who share the same aim (for example "backend, mid-level in six months") are grouped, build a real production-grade project together, and some teams might go on to start a company. Only learners who passed a track's capstone would join, so every member has a verified baseline, and the platform already knows each member's strengths and gaps for matching. The startup is a possible outcome, not a feature, and the legal side (equity, IP) is out of scope. Validate with one hand-run team before any further product work. Details in `docs/product/BUILD_TEAMS_SPEC.md`.
 
 **Onboarding (thinking, not scoped).** A brand-new user lands in a platform with many features and has no obvious first step. Onboarding exists to take a new user to a first win (read a layer, pass its exam, ask the mentor) and nothing wider, because the number that matters is whether people come back and start a second layer. It should stay small and be judged by the pilot funnel. Before building any of it, watch a few real people sign up. It also depends on two pilot blockers: real email sending and a seeded, hand-checked first exam.
 
@@ -258,4 +258,4 @@ Most of the problems are wording and layout. The progress data itself is correct
 
 **Evidence profile and employer assessments (long-term).** A profile that shows each skill together with the evidence behind it, and later companies running their own build-and-evaluate assessments on the same engine. Both are future extensions of section 12, not current requirements.
 
-Longer-form speculative concepts — Collaborative Build Teams, Sponsored Real Projects, Screening-as-a-Service, University/Bootcamp Licensing, Voice AI Teach-Back — are written up in detail in `docs/product/FUTURE_IDEAS.md`. None of them are in scope until the MVP loop above is validated with real users; they're kept there so the idea isn't lost, not because they're next.
+Longer-form speculative concepts — Collaborative Build Teams, Sponsored Real Projects, Screening-as-a-Service, University/Bootcamp Licensing, Voice AI Teach-Back — are not in scope until the MVP loop above is validated with real users.

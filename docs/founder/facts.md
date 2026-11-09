@@ -1,9 +1,9 @@
 # Facts: Vahoha
 
-Checked 2026-10-21 against the code, `docs/PILOT_STATUS.md` and `docs/strategy/`. "TODO: confirm" means the files can't answer it. Strategy docs are partly stale; where they disagree with the code, the code wins.
+Checked 2026-10-21 against the code, `docs/PILOT_STATUS.md` and `VISION.md`. "TODO: confirm" means the files can't answer it. Where docs disagree with the code, the code wins.
 
 ## What it is
-- **One-liner:** a learning platform for developers who want proof, not a completion badge (`docs/strategy/VISION.md` §1).
+- **One-liner:** a learning platform for developers who want proof, not a completion badge (`VISION.md` §1).
 - **Owner:** Vahe Ohanyan, solo, part time. Owns vahoha.com; package name `vahoha`.
 - **Problem:** nothing checks whether a self-taught or junior developer understood what they consumed. Mid-level skills (design, testing, debugging, defending decisions) are the ones nobody verifies.
 - **Primary user:** self-taught or bootcamp backend developer, 0-3 years in, aiming at mid-level (persona Daniel, `persona-gen.md`). TODO: confirm with interviews.

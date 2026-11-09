@@ -1,6 +1,6 @@
 # Go to market: first 100 users
 
-Status 2026-10-21: 13 accounts, zero interviews logged, nobody paid. This plan reuses `docs/strategy/OUTREACH_KIT.md` and `GROWTH_PLAYBOOK.md`. Targets below are goals, not forecasts.
+Status 2026-10-21: 13 accounts, zero interviews logged, nobody paid. This plan reuses `OUTREACH_KIT.md`. Targets below are goals, not forecasts.
 
 ## Before anyone is invited
 From `docs/PILOT_STATUS.md` "Left before the first user":
@@ -27,7 +27,7 @@ Self-taught or bootcamp developer aiming at backend (or the chosen track), job-h
 | Discords (The Odin Project, 100Devs, freeCodeCamp) | Stage 1-2 | $0 | Answer questions for a few days before any DM |
 | Your network | Stage 1 | $0 | Only job-hunting juniors, not friends being nice |
 | roadmap.sh users | Stage 3 | $0 | Message: "Finished a roadmap? Prove it". A channel, not a rival (`competitor-matrix.md`) |
-| Build in public on X | All | $0 | 20 min a day, real work (`GROWTH_PLAYBOOK.md`) |
+| Build in public on X | All | $0 | 20 min a day, real work |
 | Blog posts tagged to roadmap layers | Stage 3 | $0 | Built. Pre-rendered SEO for the blog was deliberately postponed to after the pilot |
 | Public capstone certificate and evidence page | Stage 3 | $0 | Each pass produces a shareable page. Only works once someone passes |
 | Product Hunt / Hacker News launch | After stage 2 | $0 | Only with a few real testimonials. TODO: decide |

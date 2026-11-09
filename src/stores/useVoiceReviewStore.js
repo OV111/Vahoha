@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-// Voice AI Progress Review — scaffold only, not implemented. See docs/product/VOICE_EXAM_SPEC.md.
+// Voice AI Progress Review — scaffold only, not implemented.
 
 const useVoiceReviewStore = create((set) => ({
   isRecording: false,

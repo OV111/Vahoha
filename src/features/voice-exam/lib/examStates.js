@@ -1,4 +1,4 @@
-// Mirrors the backend state machine in docs/product/VOICE_EXAM_SPEC.md (section 4.2).
+// Mirrors the planned backend exam state machine.
 // The UI renders from `attempt.state`; it never invents a state of its own.
 export const EXAM_STATES = Object.freeze({
   AWAITING_EXPLANATION: "AWAITING_EXPLANATION",

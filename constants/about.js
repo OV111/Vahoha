@@ -1,6 +1,6 @@
 import { Lock, Target, Bot } from "lucide-react";
 
-// Copy for the About page (src/pages/About.jsx), following docs/strategy/VISION.md.
+// Copy for the About page (src/pages/About.jsx), following VISION.md.
 // Everything here must be true today: no invented user counts, and status items
 // only for work that's built or actually planned.
 

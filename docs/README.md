@@ -42,7 +42,6 @@ docs/              this folder
 | [`AI.md`](engineering/AI.md) | Models, prompts, cost controls, guardrails, evals |
 | [`BILLING.md`](engineering/BILLING.md) | Polar billing setup, plan gates and usage limits |
 | [`adr/`](engineering/adr/) | Architecture decision records (template plus four inferred decisions) |
-| [`ISSUES.md`](engineering/ISSUES.md) | Known UI issues (not yet reviewed) |
 
 ## product/ — how features should behave
 
@@ -54,31 +53,28 @@ docs/              this folder
 | [`FOUNDATIONS_LESSON_GUIDE.md`](product/FOUNDATIONS_LESSON_GUIDE.md) | How to write Foundations lessons |
 | [`ROADMAP_LAYER_AUTHORING.md`](product/ROADMAP_LAYER_AUTHORING.md) | How to author roadmap layers |
 | [`XP_SYSTEM.md`](product/XP_SYSTEM.md) | XP rules, current ledger, ideas with critiques |
-| [`VOICE_EXAM_SPEC.md`](product/VOICE_EXAM_SPEC.md) | Spoken teach-back exam spec (frozen) |
-| [`VERIFICATION_PRACTICE_IDEAS.md`](product/VERIFICATION_PRACTICE_IDEAS.md) | Bug hunt, peer code review, oral defense, explain-back (ideas, parked) |
-| [`FUTURE_IDEAS.md`](product/FUTURE_IDEAS.md) | Unscoped ideas, parked until the pilot |
 
-## strategy/ — why, for whom, and how to grow
+## founder/ — why, for whom, and how to find users
+
+Founder-skill outputs (skills write here, keep the path) plus the outreach kit.
 
 | Doc | What it is |
 |---|---|
-| [`BIG_BETS.md`](strategy/BIG_BETS.md) | Brainstorm of large bets toward a $100M company (ideas, untested) |
-| [`VISION.md`](strategy/VISION.md) | Business and product framing |
-| [`BUSINESS_MODEL.md`](strategy/BUSINESS_MODEL.md) | Pricing and revenue model |
-| [`GROWTH_PLAYBOOK.md`](strategy/GROWTH_PLAYBOOK.md) | Growth channels |
-| [`OUTREACH_KIT.md`](strategy/OUTREACH_KIT.md) | Finding and interviewing the first users |
-| [`STARTUP_CRITIQUE_2026-10.md`](strategy/STARTUP_CRITIQUE_2026-10.md) | Honest critique and the fixes list |
-| [`STARTUP_REVIEW_2026-10.md`](strategy/STARTUP_REVIEW_2026-10.md) | Competitive review and 90-day plan |
-| [`ADVISORY_BOARD_REPORT.md`](strategy/ADVISORY_BOARD_REPORT.md) | Advisory review and pre-pilot checklist |
-| [`STARTUP_ADVISOR_ANALYSIS.md`](strategy/STARTUP_ADVISOR_ANALYSIS.md) | Advisor analysis |
-| [`FOUNDER_THINKING.md`](strategy/FOUNDER_THINKING.md) | Learning plan: 7 founder concepts, the problem chain, products to reverse-engineer |
+| [`facts.md`](founder/facts.md) | Checked facts about Vahoha |
+| [`pitch.md`](founder/pitch.md) | One-page pitch |
+| [`business-model.md`](founder/business-model.md) | Pricing and revenue hypotheses |
+| [`mvp-scope.md`](founder/mvp-scope.md) | What is in and out for the pilot |
+| [`metrics.md`](founder/metrics.md) | The few numbers to watch |
+| [`go-to-market.md`](founder/go-to-market.md) | First 100 users |
+| [`OUTREACH_KIT.md`](founder/OUTREACH_KIT.md) | Finding and interviewing the first users, the $15 payment ask |
+| [`user-interviews.md`](founder/user-interviews.md) | Interview script |
+| [`persona-gen.md`](founder/persona-gen.md), [`competitor-matrix.md`](founder/competitor-matrix.md), [`validate-idea.md`](founder/validate-idea.md) | Who it is for, who else is there, the idea verdict |
+| [`FOUNDER_THINKING.md`](founder/FOUNDER_THINKING.md) | Learning plan: 7 founder concepts, the problem chain, products to reverse-engineer |
 
 ## Other folders
 
 | Folder | What it is |
 |---|---|
-| [`founder/`](founder/) | Outputs of the founder skills (idea validation, personas, interview script, competitor matrix). Skills write here, keep the path |
-| [`ideas/`](ideas/) | Design notes for ideas not yet scheduled (`book-digest/`) |
 | [`challenge-prompts/`](challenge-prompts/) | Prompts and outputs for authoring coding challenges |
 | [`exam-prompts/`](exam-prompts/) | Prompts and outputs for exam question banks, one folder per track group |
 | [`capstone-prompts/`](capstone-prompts/) | Prompts and outputs for generating capstone briefs (`backend/scripts/capstonePrompt.js` writes here) |

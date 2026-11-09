@@ -21,7 +21,7 @@ Updated 2026-10-21. Most of this is already built; the MVP is "what a pilot user
 | **Later** | Build Teams with real people | Built, never run | After capstone passers exist |
 | **Later** | Recruiter scorecard open to recruiters | Built, closed | After a hiring manager says it matters |
 | **Later** | Readiness score | Built, private | Shows "none" until data exists |
-| **Later** | Book Digest | Idea only | `docs/ideas/book-digest/README.md`, after the MERN pilot |
+| **Later** | Book Digest | Idea only | After the MERN pilot |
 | **Later** | Server-side lesson progress | Not built | Lessons use localStorage today |
 | **Later** | Backend repository layer (A1-A7) | Not started | After deploy |
 

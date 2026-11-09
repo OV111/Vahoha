@@ -4,7 +4,7 @@ import useVoiceReviewStore from "@/stores/useVoiceReviewStore";
 import posthog, { isPostHogConfigured } from "@/lib/posthog";
 
 // Voice AI Progress Review — frontend capture only, for now.
-// Uses the browser's built-in Web Speech API (free, client-side) per docs/product/VOICE_EXAM_SPEC.md's
+// Uses the browser's built-in Web Speech API (free, client-side) per the
 // free-tier decision. Nothing here is sent to the backend yet — voiceReviewService.js
 // and the /api/voice-review routes are still unimplemented stubs.
 

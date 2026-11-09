@@ -1,8 +1,80 @@
 # Pilot Status
 
-> Updated: 2026-10-21 · Tracks the pre-pilot checklist (`docs/strategy/ADVISORY_BOARD_REPORT.md` §9) and the fixes from `docs/strategy/STARTUP_CRITIQUE_2026-10.md`.
+> Updated: 2026-11-09 · The one status doc: what each feature does today, what is done, what is left before the first user, and what comes after. When this disagrees with the code, the code wins.
 
-The technical prep for the pilot is mostly done. What's left is mostly yours: content review, setup, and talking to users.
+The technical prep for the pilot is mostly done. What's left is mostly yours: content review, setup, and talking to users. Nothing below has been used by a real user yet.
+
+## Feature status
+
+**Live** = works end to end in code. **Partial** = works with gaps. **Prototype** = UI or mock only.
+
+### Learning core
+
+| Area | Route | Backend | Status | Gaps |
+|---|---|---|---|---|
+| Roadmaps (15 categories) | `/roadmaps` | `roadmap` | Live | Layer order enforced server-side; layers without seeded data fail open |
+| Layer test (MCQ) | `/roadmaps/exam/:layerId` | `exams` | Live | 15 of up to 60 questions, pass 80, 3/day, 30-min cooldown. Banks need re-seeding and a hand check. See `product/EXAM_INTEGRITY.md` |
+| Lessons (step player) | `/learn/:track/:layer/:topic` | none (localStorage) | Partial | 2 draft lessons, MERN layer 2 only. Progress not saved server-side |
+| Labs | `/labs`, `/labs/:room` | none yet | Partial | 1 lab (closures) with real grading in the worker. `product/LAB_SYSTEM.md` |
+| Foundations | `/labs/foundations` | none | Live | Free guest lessons, 3 written (command line, how computers work, version control) |
+| Coding challenges | `/coding-challenges` | `coding-challenges` | Partial | 205 challenges, JS/TS. Sandbox-breaking ones rewritten 2026-11-04, not yet seeded (item 15). Judge0 runner reverted |
+| AI mentor | `/ai-agent` | `ai-agent` | Live | 30 messages/day for all; Pro is not higher in code. Groq free tier rate-limits |
+| Teach-back (text, dictation) | inside mentor and tests | `exams` | Partial | Few rubrics. Not calibrated against humans |
+| Mastery | `/progress` | `mastery` | Live | Detail view is a Pro gate, inert |
+| XP | profile, arena | `services/xpService.js` | Live | One ledger. `product/XP_SYSTEM.md` |
+| Job readiness (5 areas) | `/progress` | `readiness` | Live, private | Shows "none" until a capstone or team exists |
+
+### Proof
+
+| Area | Route | Backend | Status | Gaps |
+|---|---|---|---|---|
+| Capstone (brief, repo, AI review, timed defense) | `/capstone/:trackId` | `capstone` | Live | 17 published, 18 drafts, 141 waiting on question banks. Needs the production GitHub OAuth app and Groq paid tier |
+| Public certificate / verify page | `/verify/:publicId` | `capstone` | Live | Plan gate inert |
+| Build Teams | `/team`, `/evidence/:publicId` | `teams` | Partial | Built, never run with a real team. Manual matching by admin |
+| Recruiter scorecard | `/candidate/:username`, `/candidates` | `recruiter` | Partial | Opt-in; candidates list closed to recruiters |
+| Project Map | `/project-map`, `/map/:publicId` | `system-map` | Partial | AI parts tested with mocks only (item 12) |
+| Voice exam | `/voice-exam/:layerId` | none | Prototype | Mock API, one layer. Frozen |
+| Voice review | `/voice-review` | scaffold | Prototype | Empty |
+
+### Community and account
+
+| Area | Route | Status | Gaps |
+|---|---|---|---|
+| Blogs (tagged to layers) | `/blogs`, `/add-blog` | Live | Blog SEO prerender postponed |
+| Library | `/libs` | Live | |
+| Profiles, followers, chat, notifications | `/users/:username`, `/chats` | Live | |
+| Auth (email, Google, GitHub, magic link) | `/get-started` | Partial | Real email sending not set up, so reset and magic link don't reach users (item 10) |
+| Billing (Polar) | `/pricing`, `/billing` | Partial | Not enforced (`BILLING_ENFORCED=false`). Checkout tested against a fake Polar in CI; a real sandbox checkout is unconfirmed |
+| Admin (funnel, capstone, team) | `/capstone/admin`, `/team/admin` | Live | Admin-only; non-admins see 404 |
+
+## User flows
+
+Events come from `backend/services/eventService.js`. Use them to find where users drop.
+
+**1. First session (the pilot loop)**
+
+| Step | Where | Event |
+|---|---|---|
+| Sign up | `/get-started` | `signup` |
+| Pick a path | `/roadmaps` | `path_selected` |
+| Study a layer | `/learn/:track/:layer` (lessons, library, posts for the layer) | none |
+| Ask the mentor | `/ai-agent` | `mentor_message` |
+| Take the layer test | `/roadmaps/exam/:layerId` | `exam_started`, `exam_submitted` |
+| Pass (80+) | next layer unlocks, XP awarded once per layer | none |
+| Fail | weak topics recorded, 30-min cooldown, mentor suggests review, retry (3 per day) | none |
+| Come back | any later visit | `active_day` |
+
+Success: a stranger completes this in one sitting and returns within 7 days (`founder/metrics.md`).
+
+**2. Practice.** Solve a challenge in JS or TS; hidden tests run in a browser worker or on the server; the first solve gives XP (`challenge_solved`). Hints cost XP. 30 graded submissions a day on Free.
+
+**3. Proof (capstone).** Read the brief and connect GitHub (`capstone_started`), submit a repo owned by your GitHub login (`capstone_submitted`), get an AI repo review (3 attempts), then a timed typed defense about your own code; a failed session waits 72 hours (`capstone_passed` / `capstone_failed`). A pass gives a public certificate and 300 XP.
+
+**4. Team evidence.** An admin places a capstone passer in a team; merged PRs sync; each member defends their own PRs (`team_defense_passed`, 300 XP); peers rate; evidence is issued with consent (`team_evidence_issued`). Never run with real people.
+
+**5. Recruiter view.** The learner opts in, a public scorecard appears at `/candidate/:username`, recruiters browse `/candidates`.
+
+Open: walk a failed test on production to check the copy and next action; decide how a user learns Teams exists before passing a capstone.
 
 ## Done
 
@@ -16,7 +88,6 @@ The technical prep for the pilot is mostly done. What's left is mostly yours: co
 | JWT tamper tests actually run | `1a8c5d2` | Were erroring on a bad import; now pass |
 | Event tracking (7 events) + admin funnel | `c89aadf` | `GET /api/admin/funnel?days=30` |
 | Blog posts tagged with roadmap layers; "Posts for this layer" in the layer drawer | `39d6023` | `layerIds` on posts, `GET /blogs?layer=<id>`, layer picker in the blog editors. SEO for the blog (pre-rendering) deliberately left until after the pilot |
-| Docs: critique, exam integrity, outreach kit, XP system | `3c4a6f7`, `1a8c5d2` | Also tabs in the online critique doc |
 | Readiness wired to real data; mentor sees team work | `a508356` | `GET /api/readiness/me` + "Job readiness" card on `/progress`. Capstone and teams each expose one function (`getCapstoneEvidence`, `getMemberStats`); recruiter no longer reads teams collections directly. Private only, not on the scorecard. Shows "none" until a real team exists |
 | Funnel follows the proof pipeline | `a508356` | New events `challenge_solved` (first solve), `team_defense_passed`, `team_evidence_issued` (first issue, one per member). `GET /api/admin/funnel` adds `solvedChallenge`, `passedCapstone`, `passedTeamDefense` |
 | Unique accounts under concurrent signups | 2026-10-11 | Unique indexes on `users.username` and `users.email` (strings only; GitHub users may have none). Signup, Google and GitHub account creation retry with the next free username on a race; a racing duplicate email gets 409. Index creation at startup is non-fatal (logged). Atlas checked read-only first: 13 users, 0 duplicates |
@@ -53,23 +124,40 @@ The technical prep for the pilot is mostly done. What's left is mostly yours: co
 | 2 | Hand-check every question marked `reviewed: false` | You | About 135 questions. A wrong answer key on a gated exam destroys trust |
 | 3 | Make yourself admin so you can read the funnel | You | `npm run admin:grant -- you@example.com` |
 | 4 | ~~Pick one product name~~ | Done | Vahoha. README, VISION and strategy docs updated 2026-10-02 |
-| 5 | ~~Remove "AI-proctored" and "hard to fake" claims~~ | Done | `docs/strategy/VISION.md` now says "defended", not "verified" (see `docs/product/EXAM_INTEGRITY.md`) |
+| 5 | ~~Remove "AI-proctored" and "hard to fake" claims~~ | Done | `VISION.md` now says "defended", not "verified" (see `docs/product/EXAM_INTEGRITY.md`) |
 | 6 | Confirm Redis is on in production | You | Auth rate-limit counters depend on it |
 | 7 | Check Groq limits for about 10 concurrent users | You | Move to the paid tier if the free tier rate-limits |
-| 8 | Create the $15 one-off product in Polar | You | For the payment test in `docs/strategy/OUTREACH_KIT.md` |
+| 8 | Create the $15 one-off product in Polar | You | For the payment test in `docs/founder/OUTREACH_KIT.md` |
 | 9 | Run the full loop yourself on production with a new account | You | Sign up, pick a path, take an exam, ask the mentor, then check the funnel shows it |
 | 10 | **Set up real email sending** (blocks password reset and magic-link sign-in) | You | In Resend, verify `vahoha.com` (DNS records), then set `EMAIL_FROM="Vahoha <no-reply@vahoha.com>"` and `RESEND_API_KEY` on Render. Until then mail comes from Resend's test sender (`onboarding@resend.dev`), which delivers only to the Resend account owner, so no real user gets a reset or sign-in email. Test locally with your own address |
 | 11 | Production env for capstones | You | Separate production GitHub OAuth app (prod callback URL) with `GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET`, plus `GITHUB_TOKEN` on Render. No `GROQ_TPM_LIMIT` in production; move Groq to a paid tier first. Regenerate the dev client secret (it was pasted in a chat) |
 | 12 | Try Project Map for real on production | You | Needs `GITHUB_TOKEN` (the repo scan uses it; without one GitHub allows 60 requests an hour) and a Groq key. The first start creates 5 indexes on Atlas (`system_maps` x4, `system_map_checks`). Scan a real repo with each lens, run the understanding check, share a map and open the link logged out. Everything AI-related has only been tested with mocks |
 | 13 | Before the next deploy, check the production settings against the new startup check | You | On Render: `JWT_Secret` and `JWT_REFRESH_SECRET` must differ, `FRONTEND_URL` must be an https URL with no trailing slash or path. On Vercel: `VITE_GOOGLE_CLIENT_ID` is only in `.env.development`, so set it in the project settings or Google sign-in breaks. A failed boot never replaces the running service (Render keeps the old one) |
 | 14 | **Fix mobile logouts: move the API to `api.vahoha.com`** | You, then me | Confirmed on an iPhone in production: the login cookie is third-party (site on vahoha.com, API on onrender.com), and iOS blocks those, so a reload logs the user out. Render custom domain + DNS CNAME first, verify `/healthz`, then change `VITE_API_BASE_URL` and `VITE_WS_URL`, the GitHub OAuth callback and the Polar webhook. Order matters: `docs/engineering/API_DOMAIN_MIGRATION.md` |
+| 15 | Seed the rewritten challenges | You | `npm run seed:challenges`, so the 21 api-dev / node-dev / javascript challenges rewritten on 2026-11-04 reach Atlas |
+| 16 | Run Build Teams once end to end on a test repo | You | See the Build Teams decision below |
 
+Open question: which track is the pilot track (backend, MERN or frontend)?
 
 ## Then: the pilot
 
-- Send 5 DMs a day (`docs/strategy/OUTREACH_KIT.md`). Target: 15 interviews in 3 weeks.
+- Send 5 DMs a day (`founder/OUTREACH_KIT.md`). Target: 15 interviews in 3 weeks.
 - **Pass:** at least 3 of 15 pay $15. **Kill/pivot:** zero payers.
 - Read the funnel weekly. The number that matters: share of users who return within 7 days and start a second layer.
+
+## Next: after the first 15 interviews
+
+- Fix the top 3 problems seen in demos.
+- Save lesson progress server-side (lesson stage 3 in `product/LEARNING_SYSTEM.md`).
+- More MERN lessons and labs for layers 1-3 (today: 2 lessons, 1 lab).
+- Enforce Free/Pro gates only if payers appear; make the mentor limit plan-aware.
+- Open security items M4, M5, M7 and the remaining Lows.
+
+## Later: only if the pilot supports it
+
+Voice exam backend (after a hand-run oral exam test), more XP changes, blog SEO prerender, more tracks and capstones, employer-side features.
+
+**Not doing:** webcam proctoring, XP that unlocks layers or buys retries, new paths or awards before data.
 
 ## After deploy: backend architecture refactor
 
@@ -94,7 +182,7 @@ Behaviour-preserving cleanups to reach a clean layered design (route, controller
 
 ## Decision: Build Teams MVP built ahead of pilot data (2026-10-04)
 
-Against the "no new features until pilot data" rule and the advice in `docs/strategy/STARTUP_CRITIQUE_2026-10.md` / the validate-idea verdict (pivot, 19/35), the founder chose to build Build Teams now. Risk raised once: the pool of capstone passers is empty. Status: all 8 stages written, ESLint and `vite build` pass; committed (2026-10-05 to 2026-10-12) but never run against GitHub, the database or the model with a real team.
+Against the "no new features until pilot data" rule and the validate-idea verdict (pivot, 19/35), the founder chose to build Build Teams now. Risk raised once: the pool of capstone passers is empty. Status: all 8 stages written, ESLint and `vite build` pass; committed (2026-10-05 to 2026-10-12) but never run against GitHub, the database or the model with a real team.
 
 - **Backend:** `backend/modules/teams` at `/api/teams`. Team record (admin-only writes), contribution sync from merged PRs, per-member defense on their own PR diffs, peer ratings, public evidence snapshot.
 - **Frontend:** `src/features/teams`: `/team` (entry: card on the profile page) and public `/evidence/:publicId`.

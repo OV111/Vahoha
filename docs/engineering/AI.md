@@ -1,6 +1,6 @@
 # AI Features
 
-> **Updated:** 2026-10-21. Read from the code. Cost figures are in [Billing](BILLING.md) and `docs/strategy/BUSINESS_MODEL.md`, not repeated here.
+> **Updated:** 2026-10-21. Read from the code. Cost figures are in [Billing](BILLING.md), not repeated here.
 > See also: [Architecture](ARCHITECTURE.md) · [Security](SECURITY.md) · [API](API.md)
 
 **Contents:** [Overview](#overview) · [Where the prompts live](#where-the-prompts-live) · [Mentor](#mentor-devbot) · [Teach-back](#teach-back-grading) · [Capstone review and defense](#capstone-review-and-defense) · [Cost controls](#cost-controls) · [Guardrails](#guardrails) · [Evaluation](#evaluation) · [Not built](#not-built-or-unused)
@@ -61,7 +61,7 @@ Prompts are string constants in code. There is no prompt store or admin editor.
 
 ## Teach-back grading
 
-`POST /api/exams/submit-teach-back` and `-followup`. The learner explains a concept in their own words. The evaluator scores it against a stored rubric (`teach_back_rubrics`), lists misconceptions detected, and may ask one follow-up. Temperature 0.1, max 2,048 tokens. Results feed `learnerMastery`. Typed text only today; the spoken exam is a frozen spec (`docs/product/VOICE_EXAM_SPEC.md`).
+`POST /api/exams/submit-teach-back` and `-followup`. The learner explains a concept in their own words. The evaluator scores it against a stored rubric (`teach_back_rubrics`), lists misconceptions detected, and may ask one follow-up. Temperature 0.1, max 2,048 tokens. Results feed `learnerMastery`. Typed text only today; the spoken exam is frozen (a UI prototype on a mock API).
 
 ---
 

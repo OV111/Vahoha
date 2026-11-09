@@ -2,7 +2,7 @@
 
 # Interview script: Vahoha core (2026-10-21)
 
-Goal: learn how developers decide they are ready, what they pay for, and what happened at their last job step. Ask for stories, not opinions. Reuses `docs/strategy/OUTREACH_KIT.md` (DM scripts, payment ask). The Build Teams plan follows below.
+Goal: learn how developers decide they are ready, what they pay for, and what happened at their last job step. Ask for stories, not opinions. Reuses `docs/founder/OUTREACH_KIT.md` (DM scripts, payment ask). The Build Teams plan follows below.
 
 ## Questions (about 25 minutes)
 1. What do you do now, and how long have you written code?

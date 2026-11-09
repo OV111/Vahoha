@@ -5,7 +5,7 @@ import {
 } from "../lib/examStates";
 
 // MOCK implementation. Same function signatures the real API layer will have
-// (see "API" in docs/product/VOICE_EXAM_SPEC.md section 10), so swapping to
+// so swapping to
 // fetch() later changes only this file. Every function resolves to an
 // AttemptView or Eligibility from lib/examStates.js.
 

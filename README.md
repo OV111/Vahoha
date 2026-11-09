@@ -49,7 +49,7 @@ Vahoha is a learning platform for developers who want proof they actually unders
 - **Learning roadmaps:** 15 categories of visual paths with tracks and layers. Each layer is locked until you pass its exam; progress is saved server-side
 - **Exam engine:** server-graded multiple choice, 15 questions per attempt, pass mark 80. Answer keys never leave the server, choices are shuffled per attempt, unseen questions are served first, 3 attempts per day plus a cooldown after a fail
 - **AI mentor:** per-user agent with tools into your progress, exam history and weak spots. Socratic (guides, doesn't hand over answers); streaming, sessions, 30 messages a day
-- **Teach-back:** explain a topic in your own words and get it graded against a rubric. One slice shipped; the full voice exam is a spec (`docs/product/VOICE_EXAM_SPEC.md`)
+- **Teach-back:** explain a topic in your own words and get it graded against a rubric. One slice shipped; the full voice exam is not built
 - **Mastery:** per-topic status and a "next step" derived from exams, teach-back and challenge results
 - **Dev library:** curated books, docs and guides mapped to roadmap layers
 - **Blog posts tagged to layers:** a layer shows the posts written for it
@@ -101,19 +101,13 @@ Full index: [`docs/README.md`](docs/README.md).
 
 | Doc | What it is |
 |---|---|
-| `docs/strategy/VISION.md` | Business and product framing |
+| `VISION.md` | Business and product framing |
 | `docs/PILOT_STATUS.md` | What's done, what's left before the first user |
-| `docs/strategy/STARTUP_CRITIQUE_2026-10.md` | Brutally honest review of the project |
-| `docs/strategy/STARTUP_REVIEW_2026-10.md` | Competitive review and 90-day plan |
-| `docs/strategy/OUTREACH_KIT.md` | How to find and interview the first users |
+| `docs/founder/OUTREACH_KIT.md` | How to find and interview the first users |
 | `docs/product/EXAM_INTEGRITY.md` | Anti-cheating plan and its honest limits |
 | `docs/product/XP_SYSTEM.md` | XP ideas, each with a critique |
-| `docs/engineering/ROADMAP_BUILD_PLAN.md` | Build status and phase plan |
-| `docs/product/VOICE_EXAM_SPEC.md` | Spoken teach-back exam spec |
 | `docs/engineering/BILLING.md` | Billing setup and operations |
-| `docs/product/FUTURE_IDEAS.md` | Unscoped ideas, parked until the pilot |
-| `docs/engineering/ARCHITECTURE.md`, `docs/engineering/SECURITY.md`, `docs/engineering/ISSUES.md` | Technical status |
-| `docs/strategy/BUSINESS_MODEL.md`, `docs/strategy/GROWTH_PLAYBOOK.md`, `docs/strategy/ADVISORY_BOARD_REPORT.md`, `docs/strategy/STARTUP_ADVISOR_ANALYSIS.md` | Strategy |
+| `docs/engineering/ARCHITECTURE.md`, `docs/engineering/SECURITY.md` | Technical status |
 | `docs/founder/` | Founder-skill outputs: idea validation, personas, interview script, competitor matrix |
 
 ---

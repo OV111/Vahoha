@@ -1,4 +1,4 @@
-// Speech-to-text wrapper — scaffold only, not implemented. Plan: docs/product/VOICE_EXAM_SPEC.md (§11).
+// Speech-to-text wrapper — scaffold only, not implemented.
 //
 // Groq whisper-large-v3-turbo with the layer glossary as the prompt, called with
 // GROQ_VOICE_API_KEY (falls back to GROQ_API_KEY). Every graded answer goes through
@@ -8,5 +8,5 @@
 // Planned shape: transcribeAudio(audioBuffer, mimeType, { glossary }) -> { text, durationSec, segments }
 
 export const transcribeAudio = async () => {
-  throw new Error("Not implemented — see docs/product/VOICE_EXAM_SPEC.md");
+  throw new Error("Not implemented");
 };

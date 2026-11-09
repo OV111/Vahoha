@@ -4,7 +4,7 @@ import { TRACKS } from "../../../constants/roadmapPaths";
 import { TOPICS } from "../foundations/topics/topics.js";
 
 // The 10 lab rooms: labs grouped by HOW people practice, not by topic name
-// (docs/product/LAB_SYSTEM.md, "Lab families"). Each roadmap category maps to
+// (docs/product/LAB_SYSTEM.md, "Lab rooms"). Each roadmap category maps to
 // one room; a few tracks override their category's room.
 //
 // Accent classes are written out in full so Tailwind can see them.

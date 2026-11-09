@@ -1,5 +1,4 @@
 // Voice AI Progress Review — scaffold only, not implemented.
-// See docs/product/VOICE_EXAM_SPEC.md for the full spec.
 //
 // Planned responsibilities:
 // - transcribeSession(db, userId, path, layer, audio)   -> sends recorded audio to STT (see agent/transcriptionService.js), stores raw transcript
@@ -10,13 +9,13 @@
 // Async v1 only (record -> review after). Live/sync follow-up questioning is a later iteration.
 
 export const transcribeSession = async () => {
-  throw new Error("Not implemented — see docs/product/VOICE_EXAM_SPEC.md");
+  throw new Error("Not implemented");
 };
 
 export const reviewTranscript = async () => {
-  throw new Error("Not implemented — see docs/product/VOICE_EXAM_SPEC.md");
+  throw new Error("Not implemented");
 };
 
 export const getVoiceReviewHistory = async () => {
-  throw new Error("Not implemented — see docs/product/VOICE_EXAM_SPEC.md");
+  throw new Error("Not implemented");
 };

@@ -1,6 +1,6 @@
 # Outreach Kit — Fix 1: Get a Real Payment Signal
 
-> Date: 2026-10-01 · Context: fix #1 in `docs/strategy/STARTUP_CRITIQUE_2026-10.md`
+> Date: 2026-10-01 · Goal: get a real payment signal before building more
 > Goal: 15 interviews in 3 weeks → at least 3 people pay. Zero payers = pivot or stop.
 
 ## Who to find
@@ -66,4 +66,4 @@ Use a **Polar checkout link** (billing runs on Polar; see `docs/engineering/BILL
 | --- | --- | --- |
 | ≥ 3 of 15 paid | Real signal | Keep going: widen to 50 users, stay on the Backend path |
 | 1–2 paid, or ≥ 40% "very disappointed" | Weak signal | Fix the top 3 problems you saw in demos, run 10 more interviews |
-| 0 paid, or most say the pain is "getting interviews" | No signal for this product | Pivot (e.g. the "flight simulator" idea in `docs/strategy/STARTUP_REVIEW_2026-10.md` §12) or treat it as a portfolio project |
+| 0 paid, or most say the pain is "getting interviews" | No signal for this product | Pivot or treat it as a portfolio project |
