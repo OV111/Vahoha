@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { FlaskConical, ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
-import MarkdownMessage from "@/features/ai-agent/components/MarkdownMessage";
+import MarkdownMessage from "@/features/mentor/components/MarkdownMessage";
 import CheckQuestion from "./CheckQuestion";
 import ExplainBack from "./ExplainBack";
 import GoDeeper from "./GoDeeper";
@@ -148,7 +148,7 @@ function Finished({ lesson, content, score, next, testHref, layerTitle, labHref 
           </Link>
         )}
         <Link
-          to="/ai-agent"
+          to="/mentor"
           className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-neutral-700 px-4 text-sm text-neutral-200 hover:border-purple-500"
         >
           <Sparkles size={14} aria-hidden="true" /> Ask the mentor

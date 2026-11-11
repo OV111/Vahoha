@@ -1,5 +1,5 @@
 import { Check, X } from "lucide-react";
-import MarkdownMessage from "@/features/ai-agent/components/MarkdownMessage";
+import MarkdownMessage from "@/features/mentor/components/MarkdownMessage";
 
 const optionClass = (state) => {
   const base =

@@ -18,7 +18,7 @@ export const ABOUT_PILLARS = [
   {
     icon: Bot,
     title: "A mentor that knows your journey",
-    body: "The AI mentor can see your path, test history and weak spots. It guides you to the answer instead of handing it over.",
+    body: "The mentor can see your path, test history and weak spots. It guides you to the answer instead of handing it over.",
   },
 ];
 
@@ -41,7 +41,7 @@ export const ABOUT_STATUS = [
   },
   {
     done: true,
-    label: "AI mentor",
+    label: "Mentor",
     desc: "Grounded in your progress, test history and weak spots.",
   },
   {

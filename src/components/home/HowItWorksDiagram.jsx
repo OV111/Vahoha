@@ -27,7 +27,7 @@ import { SoonTag } from "./hiwShared";
  *                 /                        |         /                 \
  *   Pick - Study ---- Practice ---- Pass the test ---                   ---- Get seen
  *                 \                        |         \                 /
- *                  Code Library ------ AI mentor        Capstone
+ *                  Code Library ------ Mentor        Capstone
  *
  * Line style has one meaning, and the legend says it out loud: solid is required, every
  * learner walks it; dashed is optional help. Every line in the top half has a twin in
@@ -550,7 +550,7 @@ const HowItWorksDiagram = () => {
           inView={appeared}
           delay={0.8}
         />
-        <Circle at={N.mentor} to={TO.mentor} label="AI mentor" sub="Finds your weak spots and helps you retry." icon={MentorNode} active={retried} inView={appeared} delay={1.0} />
+        <Circle at={N.mentor} to={TO.mentor} label="Mentor" sub="Finds your weak spots and helps you retry." icon={MentorNode} active={retried} inView={appeared} delay={1.0} />
         <Circle at={N.teams} to={TO.teams} label="Join a Build Team" sub="Ship real PRs with other learners." icon={JoinTeam} side="top" active={proven} inView={appeared} delay={1.1} />
         <Circle at={N.capstone} to={TO.capstone} label="Capstone" sub="Build and defend a real project." icon={TrophyPop} active={proven} inView={appeared} delay={1.1} />
         <Circle

@@ -1,5 +1,5 @@
 /**
- * LLM-as-judge eval for the AI Mentor.
+ * LLM-as-judge eval for the Mentor.
  *
  * Usage:
  *   npm run eval:mentor                      # all cases
@@ -22,7 +22,7 @@ const { EvalCases } = await import("../evals/mentor/schemas.js");
 const { runMentor } = await import("../evals/mentor/runMentor.js");
 const { judge, JUDGE_MODEL } = await import("../evals/mentor/judge.js");
 const { printReport, summarize } = await import("../evals/mentor/report.js");
-const { MODEL } = await import("../modules/ai-agent/services/streamService.js");
+const { MODEL } = await import("../modules/mentor/services/streamService.js");
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
 const CONCURRENCY = 1; // on-demand tier is 8k tokens/min; raise only on a paid tier

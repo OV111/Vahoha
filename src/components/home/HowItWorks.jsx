@@ -51,7 +51,7 @@ const MOBILE_GROUPS = [
     steps: [
       { to: TO.test, title: "Pass the test", body: "Score 80% to unlock the next layer.", icon: Lock },
       { to: TO.exam, title: "Voice exam", body: "Explain a layer out loud and get a verified result.", icon: ClipboardCheck },
-      { to: TO.mentor, title: "AI mentor", body: "Finds your weak spots and helps you retry.", icon: Bot },
+      { to: TO.mentor, title: "Mentor", body: "Finds your weak spots and helps you retry.", icon: Bot },
     ],
   },
   {

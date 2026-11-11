@@ -61,12 +61,16 @@ async function* trackStream(stream, permit, gate) {
  * `priority`: "continuation" (the next step of a reply already under way), "interactive"
  * (a learner waiting) or "background" (nobody waiting). Throws GroqBusyError when the
  * call cannot start in time; Groq's own errors pass through unchanged.
+ *
+ * `signal` cancels the request (and a stream already under way) when the caller
+ * stops waiting, e.g. the learner closed the tab. Either way the slot is freed:
+ * a cancelled stream throws inside trackStream, whose `finally` releases it.
  */
-export const groqChat = async (params, { priority = "interactive", maxWaitMs = MAX_WAIT_MS[priority], gate = groqGate } = {}) => {
+export const groqChat = async (params, { priority = "interactive", maxWaitMs = MAX_WAIT_MS[priority], gate = groqGate, signal } = {}) => {
   const permit = await gate.acquire({ cost: estimateCallTokens(params), priority: PRIORITY[priority], maxWaitMs });
   let result;
   try {
-    result = await getGroqClient().chat.completions.create(params);
+    result = await getGroqClient().chat.completions.create(params, signal ? { signal } : undefined);
   } catch (err) {
     permit.done();
     noteRateLimit(gate, err);

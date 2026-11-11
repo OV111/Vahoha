@@ -25,7 +25,7 @@ const OAuthSuccess = () => {
       // React Router keeps the window scroll position across navigations, so
       // landing here scrolled down (e.g. from the Google button on GetStarted)
       // would drop you into the next page already scrolled. Same fix as
-      // AiAgent.jsx/ChallengeArena.jsx.
+      // Mentor.jsx/ChallengeArena.jsx.
       window.scrollTo(0, 0);
     })();
   }, [searchParams, navigate, init]);

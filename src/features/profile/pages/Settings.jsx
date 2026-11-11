@@ -16,6 +16,8 @@ import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import SearchSelect from "../components/SearchSelect";
 import MessagePolicySetting from "../components/MessagePolicySetting";
 import WeeklySummarySetting from "../components/WeeklySummarySetting";
+import { SettingsSection, SettingsLinkRow } from "../components/SettingsSection";
+import { SETTINGS_SECTIONS as SECTIONS, SETTINGS_LINKS as LINKS } from "../../../../constants/settingsPage";
 
 const LABEL_CLASS = "text-sm font-medium text-gray-700 dark:text-gray-300";
 
@@ -299,226 +301,237 @@ const Settings = () => {
         subtitle="Manage your account settings and preferences"
       >
         <div className="mt-8 pb-24">
-          <div className="grid gap-8" id="general">
-            <div className="grid gap-5 sm:grid-cols-2 max-w-[880px]">
-              <TextField
-                id="fname"
-                label="First name"
-                loading={isLoading}
-                skeletonProps={skeletonProps}
-                value={formData.fname}
-                placeholder="First name"
-                onChange={(e) => handleChange("fname", e.target.value)}
-              />
-              <TextField
-                id="lname"
-                label="Last name"
-                loading={isLoading}
-                skeletonProps={skeletonProps}
-                value={formData.lname}
-                placeholder="Last name"
-                onChange={(e) => handleChange("lname", e.target.value)}
-              />
-            </div>
-
-            <div className="grid gap-5 sm:grid-cols-2 max-w-[880px]">
-              <div className="grid gap-2 w-full">
-                <label htmlFor="username" className={LABEL_CLASS}>
-                  Username
-                </label>
+          <div className="grid gap-12">
+            <SettingsSection {...SECTIONS.profile}>
+              <div className="flex flex-col gap-6 sm:flex-row max-w-[880px]">
                 {isLoading ? (
-                  <Skeleton height={38} {...skeletonProps} />
+                  <>
+                    <div className="flex-1">
+                      <Skeleton height={120} {...skeletonProps} />
+                    </div>
+                    <div className="flex-1">
+                      <Skeleton height={120} {...skeletonProps} />
+                    </div>
+                  </>
                 ) : (
-                  <div className="relative">
-                    <input
-                      id="username"
-                      name="username"
-                      type="text"
-                      autoComplete="off"
-                      value={formData.username}
-                      placeholder="username"
-                      maxLength={16}
-                      aria-invalid={
-                        usernameStatus === "taken" || usernameStatus === "invalid"
-                      }
-                      className={`${INPUT_CLASS} pr-9 ${
-                        usernameStatus === "taken" ||
-                        usernameStatus === "invalid"
-                          ? "border-red-400! dark:border-red-500!"
-                          : usernameStatus === "available"
-                            ? "border-green-400! dark:border-green-500!"
-                            : ""
-                      }`}
-                      onChange={(e) =>
-                        handleChange(
-                          "username",
-                          // Mirrors the backend's sanitizeUsername so a user
-                          // never types a character the server will reject.
-                          e.target.value
-                            .toLowerCase()
-                            .replace(/[^a-z0-9]/g, ""),
-                        )
-                      }
+                  <>
+                    <ImageDropZone
+                      label="Profile Image"
+                      hint="Square, at least 400 × 400 px."
+                      image={profileImage}
+                      currentUrl={stats?.profileImage}
+                      onImageChange={setProfileImage}
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2">
-                      {usernameStatus === "checking" && (
-                        <Loader2
-                          size={16}
-                          className="animate-spin text-gray-400"
-                        />
-                      )}
-                      {usernameStatus === "available" && (
-                        <Check size={16} className="text-green-500" />
-                      )}
-                      {(usernameStatus === "taken" ||
-                        usernameStatus === "invalid") && (
-                        <X size={16} className="text-red-500" />
-                      )}
-                    </span>
-                  </div>
-                )}
-                {usernameStatus === "taken" ? (
-                  <p className="text-xs text-red-500">
-                    That username is already taken.
-                  </p>
-                ) : usernameStatus === "invalid" ? (
-                  <p className="text-xs text-red-500">
-                    Username must be at least 3 characters.
-                  </p>
-                ) : (
-                  <p className="text-xs text-gray-500 dark:text-gray-500">
-                    Lowercase letters and numbers only, 3–16 characters. This is
-                    your public profile link.
-                  </p>
+                    <ImageDropZone
+                      label="Banner Image"
+                      hint="1500 × 350 px, under 1 MB. Top and bottom may be cropped."
+                      image={bannerImage}
+                      currentUrl={stats?.bannerImage}
+                      onImageChange={setBannerImage}
+                    />
+                  </>
                 )}
               </div>
-            </div>
 
-            <div className="flex flex-col gap-6 sm:flex-row max-w-[880px]">
-              {isLoading ? (
-                <>
-                  <div className="flex-1">
-                    <Skeleton height={120} {...skeletonProps} />
-                  </div>
-                  <div className="flex-1">
-                    <Skeleton height={120} {...skeletonProps} />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <ImageDropZone
-                    label="Profile Image"
-                    hint="Square, at least 400 × 400 px."
-                    image={profileImage}
-                    currentUrl={stats?.profileImage}
-                    onImageChange={setProfileImage}
-                  />
-                  <ImageDropZone
-                    label="Banner Image"
-                    hint="1500 × 350 px, under 1 MB. Top and bottom may be cropped."
-                    image={bannerImage}
-                    currentUrl={stats?.bannerImage}
-                    onImageChange={setBannerImage}
-                  />
-                </>
-              )}
-            </div>
-
-            <div className="grid gap-5 sm:grid-cols-2 max-w-[880px]">
-              <TextField
-                id="bio"
-                label="Bio"
-                loading={isLoading}
-                skeletonProps={skeletonProps}
-                as="textarea"
-                className="sm:col-span-2"
-                value={formData.bio}
-                placeholder="Tell others a bit about yourself and what you're passionate about..."
-                onChange={(e) => handleChange("bio", e.target.value)}
-              />
-            </div>
-
-            <div className="grid gap-5 sm:grid-cols-2 max-w-[880px]">
-              <div className="grid gap-2 w-full">
-                <label htmlFor="timezone" className={LABEL_CLASS}>
-                  Time zone
-                </label>
-                {isLoading ? (
-                  <Skeleton height={38} {...skeletonProps} />
-                ) : (
-                  <SearchSelect
-                    id="timezone"
-                    options={timezoneOptions}
-                    value={formData.timezone}
-                    onChange={(tz) => handleChange("timezone", tz)}
-                    placeholder="Search a time zone"
-                  />
-                )}
+              <div className="grid gap-5 sm:grid-cols-2 max-w-[880px]">
+                <TextField
+                  id="fname"
+                  label="First name"
+                  loading={isLoading}
+                  skeletonProps={skeletonProps}
+                  value={formData.fname}
+                  placeholder="First name"
+                  onChange={(e) => handleChange("fname", e.target.value)}
+                />
+                <TextField
+                  id="lname"
+                  label="Last name"
+                  loading={isLoading}
+                  skeletonProps={skeletonProps}
+                  value={formData.lname}
+                  placeholder="Last name"
+                  onChange={(e) => handleChange("lname", e.target.value)}
+                />
               </div>
-              <TextField
-                id="location"
-                label="Location"
-                loading={isLoading}
-                skeletonProps={skeletonProps}
-                value={formData.location}
-                placeholder="City, Country"
-                onChange={(e) => handleChange("location", e.target.value)}
-              />
-            </div>
 
-            <div className="grid gap-5 sm:grid-cols-2 max-w-[880px]">
-              <TextField
-                id="githubLink"
-                label="GitHub"
-                loading={isLoading}
-                skeletonProps={skeletonProps}
-                value={formData.githubLink}
-                placeholder="Enter URL"
-                inputMode="url"
-                autoComplete="off"
-                onChange={(e) => handleChange("githubLink", e.target.value)}
-              />
-              <TextField
-                id="linkedinLink"
-                label="LinkedIn"
-                loading={isLoading}
-                skeletonProps={skeletonProps}
-                value={formData.linkedinLink}
-                placeholder="Enter URL"
-                inputMode="url"
-                autoComplete="off"
-                onChange={(e) => handleChange("linkedinLink", e.target.value)}
-              />
-            </div>
+              <div className="grid gap-5 sm:grid-cols-2 max-w-[880px]">
+                <div className="grid gap-2 w-full">
+                  <label htmlFor="username" className={LABEL_CLASS}>
+                    Username
+                  </label>
+                  {isLoading ? (
+                    <Skeleton height={38} {...skeletonProps} />
+                  ) : (
+                    <div className="relative">
+                      <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        autoComplete="off"
+                        value={formData.username}
+                        placeholder="username"
+                        maxLength={16}
+                        aria-invalid={
+                          usernameStatus === "taken" || usernameStatus === "invalid"
+                        }
+                        className={`${INPUT_CLASS} pr-9 ${
+                          usernameStatus === "taken" ||
+                          usernameStatus === "invalid"
+                            ? "border-red-400! dark:border-red-500!"
+                            : usernameStatus === "available"
+                              ? "border-green-400! dark:border-green-500!"
+                              : ""
+                        }`}
+                        onChange={(e) =>
+                          handleChange(
+                            "username",
+                            // Mirrors the backend's sanitizeUsername so a user
+                            // never types a character the server will reject.
+                            e.target.value
+                              .toLowerCase()
+                              .replace(/[^a-z0-9]/g, ""),
+                          )
+                        }
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                        {usernameStatus === "checking" && (
+                          <Loader2
+                            size={16}
+                            className="animate-spin text-gray-400"
+                          />
+                        )}
+                        {usernameStatus === "available" && (
+                          <Check size={16} className="text-green-500" />
+                        )}
+                        {(usernameStatus === "taken" ||
+                          usernameStatus === "invalid") && (
+                          <X size={16} className="text-red-500" />
+                        )}
+                      </span>
+                    </div>
+                  )}
+                  {usernameStatus === "taken" ? (
+                    <p className="text-xs text-red-500">
+                      That username is already taken.
+                    </p>
+                  ) : usernameStatus === "invalid" ? (
+                    <p className="text-xs text-red-500">
+                      Username must be at least 3 characters.
+                    </p>
+                  ) : (
+                    <p className="text-xs text-gray-500 dark:text-gray-500">
+                      Lowercase letters and numbers only, 3–16 characters. This is
+                      your public profile link.
+                    </p>
+                  )}
+                </div>
+              </div>
 
-            <div className="grid gap-5 sm:grid-cols-2 max-w-[880px]">
-              <TextField
-                id="twitterLink"
-                label="Twitter"
-                loading={isLoading}
-                skeletonProps={skeletonProps}
-                value={formData.twitterLink}
-                placeholder="Enter URL"
-                inputMode="url"
-                autoComplete="off"
-                onChange={(e) => handleChange("twitterLink", e.target.value)}
-              />
-              <TextField
-                id="mediumLink"
-                label="Medium"
-                loading={isLoading}
-                skeletonProps={skeletonProps}
-                value={formData.mediumLink}
-                placeholder="Enter URL"
-                inputMode="url"
-                autoComplete="off"
-                onChange={(e) => handleChange("mediumLink", e.target.value)}
-              />
-            </div>
+              <div className="grid gap-5 sm:grid-cols-2 max-w-[880px]">
+                <TextField
+                  id="bio"
+                  label="Bio"
+                  loading={isLoading}
+                  skeletonProps={skeletonProps}
+                  as="textarea"
+                  className="sm:col-span-2"
+                  value={formData.bio}
+                  placeholder="Tell others a bit about yourself and what you're passionate about..."
+                  onChange={(e) => handleChange("bio", e.target.value)}
+                />
+              </div>
 
-            <MessagePolicySetting />
+              <div className="grid gap-5 sm:grid-cols-2 max-w-[880px]">
+                <div className="grid gap-2 w-full">
+                  <label htmlFor="timezone" className={LABEL_CLASS}>
+                    Time zone
+                  </label>
+                  {isLoading ? (
+                    <Skeleton height={38} {...skeletonProps} />
+                  ) : (
+                    <SearchSelect
+                      id="timezone"
+                      options={timezoneOptions}
+                      value={formData.timezone}
+                      onChange={(tz) => handleChange("timezone", tz)}
+                      placeholder="Search a time zone"
+                    />
+                  )}
+                </div>
+                <TextField
+                  id="location"
+                  label="Location"
+                  loading={isLoading}
+                  skeletonProps={skeletonProps}
+                  value={formData.location}
+                  placeholder="City, Country"
+                  onChange={(e) => handleChange("location", e.target.value)}
+                />
+              </div>
 
-            <WeeklySummarySetting />
+              <div className="grid gap-5 sm:grid-cols-2 max-w-[880px]">
+                <TextField
+                  id="githubLink"
+                  label="GitHub"
+                  loading={isLoading}
+                  skeletonProps={skeletonProps}
+                  value={formData.githubLink}
+                  placeholder="Enter URL"
+                  inputMode="url"
+                  autoComplete="off"
+                  onChange={(e) => handleChange("githubLink", e.target.value)}
+                />
+                <TextField
+                  id="linkedinLink"
+                  label="LinkedIn"
+                  loading={isLoading}
+                  skeletonProps={skeletonProps}
+                  value={formData.linkedinLink}
+                  placeholder="Enter URL"
+                  inputMode="url"
+                  autoComplete="off"
+                  onChange={(e) => handleChange("linkedinLink", e.target.value)}
+                />
+              </div>
+
+              <div className="grid gap-5 sm:grid-cols-2 max-w-[880px]">
+                <TextField
+                  id="twitterLink"
+                  label="Twitter"
+                  loading={isLoading}
+                  skeletonProps={skeletonProps}
+                  value={formData.twitterLink}
+                  placeholder="Enter URL"
+                  inputMode="url"
+                  autoComplete="off"
+                  onChange={(e) => handleChange("twitterLink", e.target.value)}
+                />
+                <TextField
+                  id="mediumLink"
+                  label="Medium"
+                  loading={isLoading}
+                  skeletonProps={skeletonProps}
+                  value={formData.mediumLink}
+                  placeholder="Enter URL"
+                  inputMode="url"
+                  autoComplete="off"
+                  onChange={(e) => handleChange("mediumLink", e.target.value)}
+                />
+              </div>
+            </SettingsSection>
+
+            <SettingsSection {...SECTIONS.account}>
+              <SettingsLinkRow {...LINKS.connectedAccounts} />
+            </SettingsSection>
+
+            <SettingsSection {...SECTIONS.privacy}>
+              <MessagePolicySetting />
+              <SettingsLinkRow {...LINKS.blocked} />
+            </SettingsSection>
+
+            <SettingsSection {...SECTIONS.email}>
+              <WeeklySummarySetting />
+            </SettingsSection>
 
             <DeleteAccount />
           </div>

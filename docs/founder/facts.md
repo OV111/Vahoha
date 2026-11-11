@@ -10,7 +10,7 @@ Checked 2026-10-21 against the code, `docs/PILOT_STATUS.md` and `VISION.md`. "TO
 - **Position:** "You finished the courses. Now prove you can build and defend it."
 
 ## Status
-- **Built, never used by real users:** roadmap with layer exams, AI mentor with learner context, coding challenges (JS/TS), labs and step-by-step lessons, mastery, XP ledger, capstone with AI review and timed defense, Build Teams, readiness score, recruiter scorecard, Polar billing (inert), voice teach-back.
+- **Built, never used by real users:** roadmap with layer exams, mentor with learner context, coding challenges (JS/TS), labs and step-by-step lessons, mastery, XP ledger, capstone with AI review and timed defense, Build Teams, readiness score, recruiter scorecard, Polar billing (inert), voice teach-back.
 - **Content:** 15 roadmap categories; 205 challenges with passing reference solutions (api-dev, node-dev, javascript, mern, web-game); 17 capstones published, 18 drafts, 141 waiting on question banks.
 - **Exam banks:** the frontend bank is written (900 questions, none hand-checked). Backend banks written by agents have length bias: do not import. About 135 questions for the pilot track still need a hand check.
 - **Deployment:** target is Render + Vercel + Atlas. TODO: confirm whether production is live and which URL.

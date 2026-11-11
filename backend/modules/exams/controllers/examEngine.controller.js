@@ -1,4 +1,4 @@
-import { generateAttempt, submitAttempt, submitTeachBack, submitTeachBackFollowUp } from "../services/examEngineService.js";
+import { generateAttempt, answerQuestion, recordTabLeave, submitTeachBack, submitTeachBackFollowUp } from "../services/examEngineService.js";
 import { trackEvent } from "../../../services/eventService.js";
 import { makeErrorHandler } from "../../../utils/respond.js";
 
@@ -24,22 +24,33 @@ export const generate = async (req, res) => {
   }
 };
 
-export const submit = async (req, res) => {
+export const answer = async (req, res) => {
   try {
     const db = req.app.locals.db;
     const userId = req.user._id.toString();
-    const { attemptId, answers, integrity } = req.body;
+    const { attemptId, questionId, choice } = req.body;
 
     if (!attemptId || typeof attemptId !== "string") {
       return res.status(400).json({ message: "attemptId is required" });
     }
-    if (!answers || typeof answers !== "object" || Array.isArray(answers)) {
-      return res.status(400).json({ message: "answers must be an object mapping questionId to choiceIndex" });
+    if (!questionId || typeof questionId !== "string") {
+      return res.status(400).json({ message: "questionId is required" });
     }
 
-    // integrity is optional and sanitized in the service, never a reason to 400
-    const result = await submitAttempt(db, userId, attemptId, answers, integrity);
-    res.json(result);
+    // choice is validated in the service: anything invalid counts as a skip
+    res.json(await answerQuestion(db, userId, attemptId, questionId, choice));
+  } catch (err) {
+    sendError(err, req, res);
+  }
+};
+
+export const leave = async (req, res) => {
+  try {
+    const { attemptId } = req.body;
+    if (!attemptId || typeof attemptId !== "string") {
+      return res.status(400).json({ message: "attemptId is required" });
+    }
+    res.json(await recordTabLeave(req.app.locals.db, req.user._id.toString(), attemptId));
   } catch (err) {
     sendError(err, req, res);
   }

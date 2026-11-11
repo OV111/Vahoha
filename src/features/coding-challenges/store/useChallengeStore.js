@@ -211,12 +211,12 @@ const useChallengeStore = create((set, get) => ({
    * Grade the attempt server-side against the hidden tests. This is the only
    * result that pays XP — the in-browser Run is advisory.
    */
-  submitAttempt: async (language) => {
+  submitAttempt: async (language, integrity) => {
     const { attempt } = get();
     if (!attempt) return null;
     return request(`/submissions/${attempt._id}`, {
       method: "POST",
-      body: JSON.stringify({ language }),
+      body: JSON.stringify({ language, integrity }),
     });
   },
 

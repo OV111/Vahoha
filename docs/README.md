@@ -4,7 +4,7 @@ Start with [`PILOT_STATUS.md`](PILOT_STATUS.md): what is done, what is left befo
 
 ## What Vahoha is
 
-A learning platform for developers. A learner picks a roadmap track and works through ordered layers. Each layer stays locked until a server-graded test is passed. Around that loop: coding challenges, labs, an AI mentor that knows the learner's weak spots, capstone projects (AI repo review plus a timed defense), and Build Teams that turn merged pull requests into public evidence. Pre-pilot: no real users yet.
+A learning platform for developers. A learner picks a roadmap track and works through ordered layers. Each layer stays locked until a server-graded test is passed. Around that loop: coding challenges, labs, a mentor that knows the learner's weak spots, capstone projects (AI repo review plus a timed defense), and Build Teams that turn merged pull requests into public evidence. Pre-pilot: no real users yet.
 
 ## Stack
 

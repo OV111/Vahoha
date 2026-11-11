@@ -13,7 +13,7 @@ export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 export const DEFAULT_META = {
   title: "Vahoha",
   description:
-    "Pass a graded test to unlock each step of your developer roadmap, with an AI mentor that knows your weak spots.",
+    "Pass a graded test to unlock each step of your developer roadmap, with a mentor that knows your weak spots.",
 };
 
 // Public, indexable pages. Key = pathname.
@@ -38,7 +38,7 @@ export const PUBLIC_PAGES = {
   },
   "/about": {
     title: `About | ${SITE_NAME}`,
-    description: `Why ${SITE_NAME} exists and how it helps developers learn through graded tests and an AI mentor.`,
+    description: `Why ${SITE_NAME} exists and how it helps developers learn through graded tests and a mentor.`,
   },
   "/contact": {
     title: `Contact | ${SITE_NAME}`,
@@ -71,7 +71,7 @@ export const PRIVATE_PREFIXES = [
   "/forgot-password",
   "/reset-password",
   "/oauth-success",
-  "/ai-agent",
+  "/mentor",
   "/billing",
   "/progress",
   "/team",

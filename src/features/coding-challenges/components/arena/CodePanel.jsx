@@ -9,7 +9,7 @@ const FILE_META = {
   test: { dot: C.purple, label: "Jest Test · UTF-8" },
 };
 
-export default function CodePanel({ files, onChangeFile, language = "js", onLanguageChange }) {
+export default function CodePanel({ files, onChangeFile, onPaste, language = "js", onLanguageChange }) {
   const [active, setActive] = useState(0);
   const file = files[active];
 
@@ -80,6 +80,7 @@ export default function CodePanel({ files, onChangeFile, language = "js", onLang
           readOnly={file.lang === "test"}
           typescript={file.lang === "ts"}
           onChange={(code) => onChangeFile?.(file.name, code)}
+          onPaste={onPaste}
         />
       </div>
     </div>

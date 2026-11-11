@@ -12,7 +12,7 @@ router.use("/", teamsRoutes);
 
 export default router;
 
-// Used by the readiness module and the AI mentor's learner context.
+// Used by the readiness module and the mentor's learner context.
 export { getMemberStats } from "./services/team/memberStatsService.js";
 
 // Used by the profile module: a removed or replaced CV drops its Teams estimate.

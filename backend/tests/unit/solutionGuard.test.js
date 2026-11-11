@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { SolutionGuard, OMITTED_NOTE } from '../../modules/ai-agent/services/solutionGuard.js'
+import { SolutionGuard, OMITTED_NOTE } from '../../modules/mentor/services/solutionGuard.js'
 
 // Runs a whole reply through the guard in chunks of `size` characters, the way
 // a token stream would deliver it.

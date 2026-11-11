@@ -42,7 +42,7 @@ export const nextStepFor = (nextAction, activeLayerTitle, frontendUrl) => {
   if (action === "advance") {
     return { text: COPY.nextStep.advance(activeLayerTitle), ctaLabel: COPY.cta.roadmap, url: `${frontendUrl}/roadmaps` };
   }
-  return { text: COPY.nextStep[action](title), ctaLabel: COPY.cta.mentor, url: `${frontendUrl}/ai-agent` };
+  return { text: COPY.nextStep[action](title), ctaLabel: COPY.cta.mentor, url: `${frontendUrl}/mentor` };
 };
 
 const claim = async (col, userId, weekKey, now) => {

@@ -30,7 +30,10 @@ const refreshMastery = async (db, userId) => {
   }
 };
 
-const TIME_LIMIT_SECS = EXAM_RULES.timeLimitSecs;
+const QUESTION_MS = EXAM_RULES.secondsPerQuestion * 1000;
+// Network latency must not turn an answer given on the last second into a skip.
+const ANSWER_GRACE_MS = 5 * 1000;
+const MAX_TAB_LEAVES = EXAM_RULES.maxTabLeaves;
 const QUESTIONS_PER_EXAM = EXAM_RULES.questionsPerExam; // served per attempt, sampled from a bank of QUESTIONS_PER_LAYER (examSeeder.js)
 const MAX_ATTEMPTS_PER_DAY = EXAM_RULES.maxAttemptsPerDay;
 const COOLDOWN_AFTER_FAIL_MINS = EXAM_RULES.cooldownAfterFailMins;
@@ -234,8 +237,13 @@ export const generateAttempt = async (db, userId, path, layer) => {
     path,
     layer,
     questions: selected, // stored WITH answerIdx server-side
+    // Questions are served one at a time: only questions[currentIndex] has
+    // been shown, and `askedAt` is when its clock started.
+    currentIndex: 0,
+    askedAt: now,
+    given: [],
+    tabLeaves: 0,
     startedAt: now,
-    expiresAt: new Date(now.getTime() + TIME_LIMIT_SECS * 1000),
     submitted: false,
     submittedAt: null,
     passed: null,
@@ -246,62 +254,115 @@ export const generateAttempt = async (db, userId, path, layer) => {
   const attemptId = result.insertedId.toString();
   await trackEvent(db, userId, "exam_started", { path, layer, attemptId });
 
-  const clientQuestions = selected.map(({ answerIdx: _A, reviewed: _R, ...rest }) => rest);
-
   return {
     attemptId,
-    timeLimitSecs: TIME_LIMIT_SECS,
     passThreshold: PASS_THRESHOLD,
-    questions: clientQuestions,
+    total: selected.length,
+    secondsPerQuestion: EXAM_RULES.secondsPerQuestion,
+    question: toClientQuestion(selected[0]),
   };
 };
 
-// ── Submit attempt ────────────────────────────────────────────
+// ── Answer one question ───────────────────────────────────────
 
-const MAX_INTEGRITY_COUNT = 1000;
+const toClientQuestion = ({ answerIdx: _A, reviewed: _R, ...rest }) => rest;
 
-// Client-reported, so a cheater can send zeros: these are review flags, never
-// grading input. Malformed values are coerced to 0 rather than rejected — a
-// bad flag must not cost a learner their submitted exam.
-export const sanitizeIntegrity = (raw) => {
-  const count = (v) =>
-    Number.isInteger(v) && v >= 0 ? Math.min(v, MAX_INTEGRITY_COUNT) : 0;
-  return { tabSwitches: count(raw?.tabSwitches), pasteEvents: count(raw?.pasteEvents) };
+const fail = (status, message) => {
+  const err = new Error(message);
+  err.status = status;
+  throw err;
 };
 
-export const submitAttempt = async (db, userId, attemptId, clientAnswers, clientIntegrity) => {
+const attemptFilter = (userId, attemptId) => {
+  if (!ObjectId.isValid(attemptId)) fail(404, "Attempt not found.");
+  return { _id: new ObjectId(attemptId), userId: new ObjectId(userId) };
+};
+
+/**
+ * Is an exam question on the clock RIGHT NOW? The mentor is paused while one
+ * is, otherwise it could be asked the answer. Only the open question's own
+ * timer counts, so an abandoned attempt blocks the mentor for under a minute.
+ */
+export const hasLiveExam = async (db, userId, now = new Date()) =>
+  Boolean(
+    await db.collection("exam_attempts").findOne(
+      {
+        userId: new ObjectId(userId),
+        submitted: false,
+        askedAt: { $gte: new Date(now.getTime() - QUESTION_MS - ANSWER_GRACE_MS) },
+      },
+      { projection: { _id: 1 } },
+    ),
+  );
+
+/**
+ * Answer the open question and get the next one, or the result after the last.
+ * A late or invalid choice is stored as a skip (null). The filter on
+ * `currentIndex` makes a double-click answer one question, not two.
+ */
+export const answerQuestion = async (db, userId, attemptId, questionId, choice) => {
   const collection = db.collection("exam_attempts");
+  const filter = attemptFilter(userId, attemptId);
 
-  const attempt = await collection.findOne({
-    _id: new ObjectId(attemptId),
-    userId: new ObjectId(userId),
+  const attempt = await collection.findOne(filter);
+  if (!attempt) fail(404, "Attempt not found.");
+  if (attempt.submitted) fail(409, "This attempt has already ended.");
+
+  const i = attempt.currentIndex;
+  const q = attempt.questions[i];
+  if (!q || q.id !== questionId) fail(409, "That question is no longer open.");
+
+  const now = new Date();
+  const onTime = now.getTime() - attempt.askedAt.getTime() <= QUESTION_MS + ANSWER_GRACE_MS;
+  const valid = Number.isInteger(choice) && choice >= 0 && choice < q.choices.length;
+
+  const updated = await collection.findOneAndUpdate(
+    { ...filter, submitted: false, currentIndex: i },
+    { $set: { [`given.${i}`]: onTime && valid ? choice : null, currentIndex: i + 1, askedAt: now } },
+    { returnDocument: "after" },
+  );
+  if (!updated) fail(409, "That question is no longer open.");
+
+  const next = updated.questions[i + 1];
+  if (next) return { done: false, number: i + 2, question: toClientQuestion(next) };
+  return { done: true, result: await finishAttempt(db, userId, updated) };
+};
+
+/**
+ * The learner left the exam tab. Earlier leaves only warn; the one that
+ * reaches the limit ends the attempt as a fail, so the cooldown and the daily
+ * limit apply. Nothing is written to exam history, weak spots or mastery:
+ * a voided attempt measured nothing.
+ *
+ * Client-reported, so a modified client can stay silent. It stops the easy
+ * path (switch to another tab and ask an AI), not a second device.
+ */
+export const recordTabLeave = async (db, userId, attemptId) => {
+  const collection = db.collection("exam_attempts");
+  const filter = { ...attemptFilter(userId, attemptId), submitted: false };
+
+  const attempt = await collection.findOneAndUpdate(filter, { $inc: { tabLeaves: 1 } }, { returnDocument: "after" });
+  if (!attempt) fail(409, "This attempt has already ended.");
+
+  const leaves = attempt.tabLeaves;
+  if (leaves < MAX_TAB_LEAVES) return { voided: false, leaves, maxLeaves: MAX_TAB_LEAVES };
+
+  await collection.updateOne(filter, {
+    $set: { submitted: true, submittedAt: new Date(), score: 0, passed: false, voided: true },
   });
+  await trackEvent(db, userId, "exam_voided", { path: attempt.path, layer: attempt.layer, attemptId });
+  return { voided: true, leaves, maxLeaves: MAX_TAB_LEAVES };
+};
 
-  if (!attempt) {
-    const err = new Error("Attempt not found.");
-    err.status = 404;
-    throw err;
-  }
+// ── Grade a finished attempt ──────────────────────────────────
 
-  if (attempt.submitted) {
-    const err = new Error("This attempt has already been submitted.");
-    err.status = 409;
-    throw err;
-  }
-
-  if (new Date() > attempt.expiresAt) {
-    await collection.updateOne(
-      { _id: attempt._id },
-      { $set: { submitted: true, submittedAt: new Date(), timedOut: true } },
-    );
-    const err = new Error("Time limit exceeded.");
-    err.status = 410;
-    throw err;
-  }
+const finishAttempt = async (db, userId, attempt) => {
+  const collection = db.collection("exam_attempts");
+  const attemptId = attempt._id.toString();
 
   // grade server-side
-  const results = attempt.questions.map((q) => {
-    const given = clientAnswers[q.id];
+  const results = attempt.questions.map((q, i) => {
+    const given = attempt.given?.[i] ?? null;
     const correct = given === q.answerIdx;
     return {
       id: q.id,
@@ -319,11 +380,13 @@ export const submitAttempt = async (db, userId, attemptId, clientAnswers, client
   const missedTopics = results.filter((r) => !r.correct).map((r) => r.topic);
   const timeTakenSecs = Math.round((Date.now() - attempt.startedAt.getTime()) / 1000);
 
-  // mark attempt submitted
-  await collection.updateOne(
-    { _id: attempt._id },
-    { $set: { submitted: true, submittedAt: new Date(), score, passed, integrity: sanitizeIntegrity(clientIntegrity) } },
+  // Claim the attempt: a tab leave that voided it in the meantime wins, and
+  // the result is never saved twice.
+  const claimed = await collection.updateOne(
+    { _id: attempt._id, submitted: false },
+    { $set: { submitted: true, submittedAt: new Date(), score, passed } },
   );
+  if (claimed.modifiedCount === 0) fail(409, "This attempt has already ended.");
 
   // save to exam history
   await saveExamResult(db, userId, {

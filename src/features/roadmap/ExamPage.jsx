@@ -4,51 +4,62 @@ import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Clock, ChevronRight, ChevronLeft, CheckCircle2, XCircle,
-  RotateCcw, ArrowLeft, Loader2, AlertTriangle, Timer, ListChecks, Eye,
+  Clock, ChevronRight, CheckCircle2, XCircle,
+  RotateCcw, ArrowLeft, Loader2, AlertTriangle, Timer, ListChecks, Eye, ShieldAlert,
 } from "lucide-react";
 import { API_BASE_URL, authHeaders, apiFetch } from "../../../constants/api";
 import { EXAM_RULES } from "../../../constants/exam";
 import useRoadmapStore from "../../stores/useRoadmapStore";
 import InlineTeachBack from "./components/InlineTeachBack";
+import useCountdown from "@/hooks/useCountdown";
+import NoCopy from "@/components/integrity/NoCopy";
 
-// ── Exam timer (only mounts when exam is ready) ───────────────
-const ExamTimer = ({ timeLimitSecs, onExpire }) => {
-  const [remaining, setRemaining] = useState(timeLimitSecs);
-  // Ref keeps the latest onExpire closure; the interval below is created once,
-  // so calling the prop directly would submit the first render's (empty) answers.
-  const onExpireRef = useRef(onExpire);
-  onExpireRef.current = onExpire;
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setRemaining((s) => (s <= 1 ? 0 : s - 1));
-    }, 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  // Side effect lives outside the state updater (updaters must stay pure).
-  useEffect(() => {
-    if (remaining === 0) onExpireRef.current();
-  }, [remaining]);
-
+// ── Question timer (remounted for every question via its key) ─
+const QuestionTimer = ({ seconds, onExpire }) => {
+  const remaining = useCountdown(seconds, "question", onExpire);
   const mins = String(Math.floor(remaining / 60)).padStart(2, "0");
   const secs = String(remaining % 60).padStart(2, "0");
-  const urgent = remaining < 60;
+  const urgent = remaining <= 10;
 
   return (
     <div
       role="timer"
-      aria-label={`Time remaining ${mins} minutes ${secs} seconds`}
+      aria-label={`${remaining} seconds left for this question`}
       className={`flex items-center gap-1.5 text-sm font-mono px-3 py-1.5 rounded-lg border transition-colors ${urgent ? "border-red-800/60 bg-red-950/30 text-red-400" : "border-neutral-800 bg-neutral-900 text-neutral-400"}`}
     >
       <Clock size={13} className={urgent ? "animate-pulse" : ""} /> {mins}:{secs}
       <span className="sr-only" aria-live="polite">
-        {remaining === 60 ? "One minute remaining" : remaining === 10 ? "Ten seconds remaining" : ""}
+        {remaining === 10 ? "Ten seconds remaining" : ""}
       </span>
     </div>
   );
 };
+
+// ── Voided screen (the learner left the test tab too often) ───
+const VoidedScreen = ({ onBack }) => (
+  <motion.div
+    className="min-h-screen flex items-center justify-center px-6"
+    initial={{ opacity: 0, y: 16 }}
+    animate={{ opacity: 1, y: 0 }}
+  >
+    <div role="alert" className="text-center max-w-sm">
+      <div className="w-16 h-16 rounded-full border border-red-800/50 bg-red-950/20 flex items-center justify-center mx-auto mb-5">
+        <ShieldAlert size={28} className="text-red-400" />
+      </div>
+      <h2 className="text-lg font-semibold text-neutral-200 mb-2">Test ended</h2>
+      <p className="text-sm text-neutral-400 mb-6">
+        You left the test tab {EXAM_RULES.maxTabLeaves} times, so this attempt ended and counts as
+        not passed. You can try again in {EXAM_RULES.cooldownAfterFailMins} minutes.
+      </p>
+      <button
+        onClick={onBack}
+        className="flex min-h-11 items-center gap-2 px-4 py-2.5 rounded-xl border border-neutral-700 text-neutral-400 hover:text-neutral-200 hover:border-neutral-500 text-sm transition-colors mx-auto"
+      >
+        <ArrowLeft size={14} /> Back to Roadmap
+      </button>
+    </div>
+  </motion.div>
+);
 
 // ── Cooldown screen ───────────────────────────────────────────
 const CooldownScreen = ({ message, onBack }) => {
@@ -208,21 +219,29 @@ const ResultScreen = ({ result, passThreshold, onRetry, onBack, path, layer }) =
 // Shown before anything is generated: generating an exam starts the clock and
 // uses up questions the learner hasn't seen yet, so it only happens on Start.
 const ExamIntro = ({ onStart, onBack }) => {
-  const { questionsPerExam, timeLimitSecs, passThreshold, maxAttemptsPerDay, cooldownAfterFailMins } =
-    EXAM_RULES;
+  const {
+    questionsPerExam, secondsPerQuestion, passThreshold, maxAttemptsPerDay, cooldownAfterFailMins, maxTabLeaves,
+  } = EXAM_RULES;
   const rules = [
-    { Icon: ListChecks, text: `${questionsPerExam} multiple-choice questions on this layer.` },
+    {
+      Icon: ListChecks,
+      text: `${questionsPerExam} multiple-choice questions on this layer, one at a time. You can't go back to a question.`,
+    },
     {
       Icon: Clock,
-      text: `${timeLimitSecs / 60} minutes. The clock starts when you press Start and doesn't pause. If it runs out, the answers you've given so far are submitted.`,
+      text: `${secondsPerQuestion} seconds per question. When the time runs out, the choice you selected is sent, or the question is skipped.`,
     },
     { Icon: CheckCircle2, text: `Score ${passThreshold}% or more to pass and unlock the next layer.` },
     {
       Icon: RotateCcw,
       text: `If you don't pass, you can retry after ${cooldownAfterFailMins} minutes, up to ${maxAttemptsPerDay} attempts a day on this layer. Retries use questions you haven't seen yet where possible.`,
     },
-    { Icon: Eye, text: "Switching tabs or pasting is noted for review. It never changes your score." },
-    { Icon: AlertTriangle, text: "Leaving the page in the middle loses your progress." },
+    {
+      Icon: Eye,
+      text: `Stay on this tab. Leaving it gets a warning; leaving it ${maxTabLeaves} times ends the attempt, and it counts as not passed.`,
+    },
+    { Icon: ShieldAlert, text: "Copying the questions is turned off, and your mentor is paused during the test." },
+    { Icon: AlertTriangle, text: "Closing or reloading the page in the middle loses your progress." },
   ];
 
   return (
@@ -281,27 +300,29 @@ function ExamRunner() {
 
   const [loadState, setLoadState] = useState("intro"); // intro | loading | cooldown | error | ready
   const [errorMsg, setErrorMsg] = useState("");
-  const [examData, setExamData] = useState(null);
+  const [examData, setExamData] = useState(null); // { attemptId, passThreshold, total, secondsPerQuestion }
 
-  const [current, setCurrent] = useState(0);
-  const [answers, setAnswers] = useState({});
+  // The server sends one question at a time; earlier ones cannot be reopened.
+  const [question, setQuestion] = useState(null);
+  const [number, setNumber] = useState(1);
   const [selected, setSelected] = useState(null);
   const [result, setResult] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  // Integrity flags sent with the submission (review only, never graded).
-  // A ref, not state: counting a tab switch must not re-render the exam.
-  const integrityRef = useRef({ tabSwitches: 0, pasteEvents: 0 });
+  const [leaveWarning, setLeaveWarning] = useState(false);
+  // A click and the timer running out must not both answer the same question.
+  const sendingRef = useRef(false);
 
   const fetchExam = useCallback(async () => {
-    integrityRef.current = { tabSwitches: 0, pasteEvents: 0 };
     setLoadState("loading");
     setErrorMsg("");
-    setAnswers({});
-    setCurrent(0);
+    setSubmitError("");
+    setLeaveWarning(false);
     setSelected(null);
     setResult(null);
     setExamData(null);
+    setQuestion(null);
+    setNumber(1);
 
     try {
       const res = await apiFetch(`${API_BASE_URL}/api/exams/generate`, {
@@ -322,7 +343,9 @@ function ExamRunner() {
         return;
       }
 
-      setExamData(data);
+      const { question: first, ...meta } = data;
+      setExamData(meta);
+      setQuestion(first);
       setLoadState("ready");
     } catch {
       setErrorMsg("Network error — please try again.");
@@ -347,44 +370,65 @@ function ExamRunner() {
     return () => window.removeEventListener("beforeunload", handler);
   }, [loadState, result]);
 
-  // count tab switches and pastes while an attempt is in progress
+  // Leaving the tab is reported to the server, which counts the leaves and
+  // ends the attempt at the limit. The question timer keeps running meanwhile.
+  const attemptId = examData?.attemptId;
   useEffect(() => {
-    if (loadState !== "ready" || result) return;
-    const onVisibility = () => { if (document.hidden) integrityRef.current.tabSwitches++; };
-    const onPaste = () => { integrityRef.current.pasteEvents++; };
-    document.addEventListener("visibilitychange", onVisibility);
-    document.addEventListener("paste", onPaste);
-    return () => {
-      document.removeEventListener("visibilitychange", onVisibility);
-      document.removeEventListener("paste", onPaste);
+    if (!attemptId || result) return;
+    const onVisibility = async () => {
+      if (!document.hidden) return;
+      try {
+        const res = await apiFetch(`${API_BASE_URL}/api/exams/leave`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", ...authHeaders() },
+          body: JSON.stringify({ attemptId }),
+          keepalive: true, // the tab is in the background; the request must still go out
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.voided) setResult({ voided: true });
+        else setLeaveWarning(true);
+      } catch {
+        /* offline: the server-side question timer still applies */
+      }
     };
-  }, [loadState, result]);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, [attemptId, result]);
 
-  const handleSubmit = useCallback(async (finalAnswers) => {
-    if (submitting || !examData) return;
+  // `choice` is null when the timer ran out with nothing selected (a skip).
+  const sendAnswer = useCallback(async (choice) => {
+    if (sendingRef.current || !attemptId || !question) return;
+    sendingRef.current = true;
     setSubmitting(true);
     setSubmitError("");
     try {
-      const res = await apiFetch(`${API_BASE_URL}/api/exams/submit`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/exams/answer`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...authHeaders() },
-        body: JSON.stringify({ attemptId: examData.attemptId, answers: finalAnswers, integrity: integrityRef.current }),
+        body: JSON.stringify({ attemptId, questionId: question.id, choice }),
       });
       const data = await res.json();
-      // Stay on the exam page on failure: the "error" screen's retry would
-      // refetch a new exam and throw the learner's answers away.
+      // Stay on the question on failure so the learner can retry sending it.
       if (!res.ok) {
-        setSubmitError(data.message ?? "Failed to submit test.");
+        setSubmitError(data.message ?? "Failed to send your answer.");
         return;
       }
-      if (data.passed) setLayerStatus(layerId, "done");
-      setResult(data);
+      if (data.done) {
+        if (data.result.passed) setLayerStatus(layerId, "done");
+        setResult(data.result);
+        return;
+      }
+      setQuestion(data.question);
+      setNumber(data.number);
+      setSelected(null);
     } catch {
-      setSubmitError("Network error while submitting. Please retry.");
+      setSubmitError("Network error while sending your answer. Please retry.");
     } finally {
+      sendingRef.current = false;
       setSubmitting(false);
     }
-  }, [submitting, examData, layerId, setLayerStatus]);
+  }, [attemptId, question, layerId, setLayerStatus]);
 
   // Back to the layer the learner came from, not the top of the page
   // (RoadmapTree scrolls to ?layer= once the tree has loaded).
@@ -437,6 +481,10 @@ function ExamRunner() {
     );
   }
 
+  if (result?.voided) {
+    return <VoidedScreen onBack={goBack} />;
+  }
+
   if (result) {
     return (
       <ResultScreen
@@ -452,28 +500,9 @@ function ExamRunner() {
 
   // ── Exam in progress ───────────────────────────────────────
 
-  const { questions, passThreshold, timeLimitSecs } = examData;
-  const q = questions[current];
-  const total = questions.length;
-  const isLast = current === total - 1;
-
-  const handleNext = () => {
-    if (selected == null) return;
-    const updated = { ...answers, [q.id]: selected };
-    setAnswers(updated);
-    setSelected(null);
-    if (isLast) {
-      handleSubmit(updated);
-    } else {
-      setCurrent((c) => c + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (current === 0) return;
-    setCurrent((c) => c - 1);
-    setSelected(answers[questions[current - 1].id] ?? null);
-  };
+  const { passThreshold, total, secondsPerQuestion } = examData;
+  const q = question;
+  const isLast = number === total;
 
   return (
     <div className="min-h-screen flex flex-col px-6 py-10 max-w-2xl mx-auto">
@@ -485,17 +514,22 @@ function ExamRunner() {
         >
           <ArrowLeft size={14} /> Roadmaps
         </button>
-        {/* Timer only mounts when exam is ready — no wasted seconds */}
-        <ExamTimer
-          key={examData.attemptId}
-          timeLimitSecs={timeLimitSecs}
-          onExpire={() => {
-            if (result) return;
-            // include the choice made on the current, not-yet-saved question
-            handleSubmit(selected == null ? answers : { ...answers, [q.id]: selected });
-          }}
-        />
+        <QuestionTimer key={q.id} seconds={secondsPerQuestion} onExpire={() => sendAnswer(selected)} />
       </div>
+
+      {leaveWarning && (
+        <div role="alert" className="mb-6 flex items-start justify-between gap-3 rounded-xl border border-amber-800/50 bg-amber-950/30 px-4 py-3 text-sm text-amber-200">
+          <span>
+            You left the test tab. If you leave it again, this attempt ends and counts as not passed.
+          </span>
+          <button
+            onClick={() => setLeaveWarning(false)}
+            className="shrink-0 px-3 py-1.5 rounded-lg border border-amber-700/60 text-xs font-medium hover:bg-amber-900/40"
+          >
+            Got it
+          </button>
+        </div>
+      )}
 
       {/* Progress header */}
       <div className="mb-6">
@@ -503,20 +537,20 @@ function ExamRunner() {
           Layer Exam · pass threshold {passThreshold}%
         </p>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-neutral-300">Question {current + 1} of {total}</span>
-          <span className="text-xs text-neutral-400">{Object.keys(answers).length} answered</span>
+          <span className="text-sm text-neutral-300">Question {number} of {total}</span>
+          <span className="text-xs text-neutral-400">no going back</span>
         </div>
         <div
           role="progressbar"
           aria-label="Test progress"
           aria-valuemin={1}
           aria-valuemax={total}
-          aria-valuenow={current + 1}
+          aria-valuenow={number}
           className="h-2 rounded-full bg-neutral-800 overflow-hidden"
         >
           <motion.div
             className="h-full bg-linear-to-r from-purple-600 to-violet-500 rounded-full"
-            animate={{ width: `${((current + 1) / total) * 100}%` }}
+            animate={{ width: `${(number / total) * 100}%` }}
             transition={{ duration: 0.3 }}
           />
         </div>
@@ -532,31 +566,33 @@ function ExamRunner() {
           transition={{ duration: 0.2 }}
           className="flex-1"
         >
-          <div className="mb-6">
-            <span className="text-[10px] uppercase tracking-widest text-purple-500/70 mb-2 block">{q.topic}</span>
-            <h2 className="text-lg font-semibold text-neutral-100 leading-snug">{q.stem}</h2>
-          </div>
+          <NoCopy>
+            <div className="mb-6">
+              <span className="text-[10px] uppercase tracking-widest text-purple-500/70 mb-2 block">{q.topic}</span>
+              <h2 className="text-lg font-semibold text-neutral-100 leading-snug">{q.stem}</h2>
+            </div>
 
-          <div role="radiogroup" aria-label={q.stem} className="space-y-3">
-            {q.choices.map((choice, idx) => (
-              <button
-                key={idx}
-                role="radio"
-                aria-checked={selected === idx}
-                onClick={() => setSelected(idx)}
-                className={`w-full min-h-11 text-left px-4 py-3.5 rounded-xl border text-sm transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 ${
-                  selected === idx
-                    ? "border-purple-500 bg-purple-900/30 text-purple-200"
-                    : "border-neutral-800 bg-neutral-900/60 text-neutral-300 hover:border-neutral-600 hover:bg-neutral-800/60"
-                }`}
-              >
-                <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[11px] font-bold mr-3 shrink-0 ${selected === idx ? "bg-purple-600 text-white" : "bg-neutral-800 text-neutral-500"}`}>
-                  {String.fromCharCode(65 + idx)}
-                </span>
-                {choice}
-              </button>
-            ))}
-          </div>
+            <div role="radiogroup" aria-label={q.stem} className="space-y-3">
+              {q.choices.map((choice, idx) => (
+                <button
+                  key={idx}
+                  role="radio"
+                  aria-checked={selected === idx}
+                  onClick={() => setSelected(idx)}
+                  className={`w-full min-h-11 text-left px-4 py-3.5 rounded-xl border text-sm transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 ${
+                    selected === idx
+                      ? "border-purple-500 bg-purple-900/30 text-purple-200"
+                      : "border-neutral-800 bg-neutral-900/60 text-neutral-300 hover:border-neutral-600 hover:bg-neutral-800/60"
+                  }`}
+                >
+                  <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[11px] font-bold mr-3 shrink-0 ${selected === idx ? "bg-purple-600 text-white" : "bg-neutral-800 text-neutral-500"}`}>
+                    {String.fromCharCode(65 + idx)}
+                  </span>
+                  {choice}
+                </button>
+              ))}
+            </div>
+          </NoCopy>
         </motion.div>
       </AnimatePresence>
 
@@ -564,27 +600,19 @@ function ExamRunner() {
         <div role="alert" className="mt-6 flex items-center justify-between gap-3 rounded-xl border border-red-800/50 bg-red-950/30 px-4 py-3 text-sm text-red-300">
           <span>{submitError}</span>
           <button
-            onClick={() => handleSubmit(answers)}
+            onClick={() => sendAnswer(selected)}
             disabled={submitting}
             className="shrink-0 px-3 py-1.5 rounded-lg bg-red-700/60 hover:bg-red-600/60 text-white text-xs font-medium disabled:opacity-50"
           >
-            Retry submit
+            Retry
           </button>
         </div>
       )}
 
       {/* Navigation */}
-      <div className="flex items-center justify-between mt-8 pt-6 border-t border-neutral-800">
+      <div className="flex items-center justify-end mt-8 pt-6 border-t border-neutral-800">
         <button
-          onClick={handlePrev}
-          disabled={current === 0}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-neutral-800 text-neutral-500 hover:text-neutral-300 hover:border-neutral-600 text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-        >
-          <ChevronLeft size={14} /> Previous
-        </button>
-
-        <button
-          onClick={handleNext}
+          onClick={() => sendAnswer(selected)}
           disabled={selected == null || submitting}
           className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >

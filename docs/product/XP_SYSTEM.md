@@ -21,7 +21,7 @@
 | XP is stored as `userProgress.xpTotal` | `backend/services/userProgressService.js` |
 | **Earned only** by solving Arena coding challenges | `modules/coding-challenges/services/submissionService.js` (`$inc: { xpTotal: xpEarned }`) |
 | **Spent only** on Arena hints, with a guarded update so the balance can't go negative | `modules/coding-challenges/services/attemptService.js` (`xpTotal: { $gte: cost }`) |
-| The mentor can see it | `modules/ai-agent/services/learnerContextService.js` |
+| The mentor can see it | `modules/mentor/services/learnerContextService.js` |
 | `incrementXP()` exists but is never called, and it has no guard against going negative | `userProgressService.js` |
 
 That table is the 2026-10-01 state. Exams, challenges, capstones and team defenses now pay XP through the ledger (see the update above); teach-back still pays none.

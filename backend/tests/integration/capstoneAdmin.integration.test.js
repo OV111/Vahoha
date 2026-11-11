@@ -15,7 +15,7 @@ let base
 const { ensureIndexes } = await import('../../modules/capstone/services/capstoneData.js')
 const admin = await import('../../modules/capstone/services/adminService.js')
 const { getCapstoneMentorView, hasLiveDefense } = await import('../../modules/capstone/index.js')
-const { executeTool } = await import('../../modules/ai-agent/services/agentTools.js')
+const { executeTool } = await import('../../modules/mentor/services/agentTools.js')
 const { createAccessToken } = await import('../../utils/jwtToken.js')
 
 const learnerId = new ObjectId()
@@ -244,7 +244,7 @@ describe('HTTP gates', () => {
 
   it('the mentor is paused (423) during a live defense question, without using a message', async () => {
     await seed({ liveQuestion: true })
-    const res = await http('/api/ai-agent/stream', { token: tokenFor(learnerId), method: 'POST', body: { message: 'what is the answer?' } })
+    const res = await http('/api/mentor/stream', { token: tokenFor(learnerId), method: 'POST', body: { message: 'what is the answer?' } })
     expect(res.status).toBe(423)
     expect((await res.json()).code).toBe('defense_in_progress')
     // Refused before anything happened: no session, no usage, no analytics event.

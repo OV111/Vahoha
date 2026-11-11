@@ -7,6 +7,7 @@ import { trackEvent } from "../../../services/eventService.js";
 import { awardXp } from "../../../services/xpService.js";
 import { pickSubmissionSource } from "../lib/submissionSource.js";
 import { clearLeaderboardCache } from "./progressService.js";
+import { integrityFlags, sanitizeArenaIntegrity } from "../lib/integrityFlags.js";
 
 /**
  * Submission grading.
@@ -21,6 +22,9 @@ import { clearLeaderboardCache } from "./progressService.js";
  */
 
 const ATTEMPTS = "challenge_attempts";
+// Kept apart from the attempt: the attempt document is sent to the learner
+// as it is, and review flags must stay server-side.
+const INTEGRITY = "challenge_integrity";
 const CHALLENGES = "challenges";
 
 /**
@@ -35,7 +39,7 @@ export const matchesHiddenTests = (results, hiddenTests) =>
 const awardFor =(challenge, alreadySolved) =>
   alreadySolved ? 0 : (challenge.xp ?? 0);
 
-export const submitAttemptService = async (db, userId, attemptId, language) => {
+export const submitAttemptService = async (db, userId, attemptId, language, clientIntegrity) => {
   if (!ObjectId.isValid(attemptId)) {
     const err = new Error("Attempt not found");
     err.status = 404;
@@ -144,6 +148,34 @@ export const submitAttemptService = async (db, userId, attemptId, language) => {
     }
   }
 
+  const elapsedSecs = Math.max(
+    0,
+    Math.round((Date.now() - new Date(attempt.startedAt).getTime()) / 1000),
+  );
+
+  // Review flags, first solve only: that is the submission that pays XP and
+  // moves the leaderboard. Never part of the verdict.
+  if (passed && !alreadySolved) {
+    const integrity = sanitizeArenaIntegrity(clientIntegrity);
+    const flags = integrityFlags({
+      integrity,
+      addedChars: Math.max(0, picked.code.length - (challenge.starterFiles?.[0]?.code?.length ?? 0)),
+      elapsedSecs,
+    });
+    if (flags.length) {
+      try {
+        await db.collection(INTEGRITY).updateOne(
+          { userId: new ObjectId(userId), challengeId: challenge._id },
+          { $set: { challengeSlug: challenge.slug, flags, integrity, elapsedSecs, flaggedAt: new Date() } },
+          { upsert: true },
+        );
+      } catch (err) {
+        // A review signal: never fail the learner's submission over it.
+        console.error("challenge integrity flag not saved:", err);
+      }
+    }
+  }
+
   // `saveChallengeResult` overwrites the fields it is given, so the running
   // total has to be carried forward — otherwise re-submitting a solved
   // challenge would rewrite its history to "earned 0".
@@ -156,10 +188,7 @@ export const submitAttemptService = async (db, userId, attemptId, language) => {
     // A solve is permanent — a later failed experiment must not demote it.
     status: passed || alreadySolved ? "solved" : "attempted",
     xpEarned: xpOnRecord,
-    timeTakenSecs: Math.max(
-      0,
-      Math.round((Date.now() - new Date(attempt.startedAt).getTime()) / 1000),
-    ),
+    timeTakenSecs: elapsedSecs,
     attempts: 1,
   });
   // A passing run changes the ranking: drop the cached board so this solver sees it at once.

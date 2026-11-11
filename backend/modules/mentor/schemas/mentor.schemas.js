@@ -1,0 +1,128 @@
+import { z } from "zod";
+
+/**
+ * Schemas for the /api/mentor routes.
+ *
+ * These are the first Zod schemas in the codebase, and every
+ * NEW route commits to validating at the boundary, so unvalidated payloads
+ * can never reach a service (or the model) in the first place.
+ */
+
+// A Mongo ObjectId is exactly 24 hex characters. Validating the SHAPE here is
+// what stops `new ObjectId(garbage)` from throwing a BSONError deep in a
+// service and surfacing as a 500 with a stack trace.
+export const objectId = z
+  .string()
+  .regex(/^[0-9a-fA-F]{24}$/, "Must be a 24-character hex id");
+
+// POST /api/mentor/sessions
+export const createSessionSchema = z.object({
+  // The client sends the first message sliced to 60 chars, or "New conversation".
+  // Optional because a session can legitimately be created untitled.
+  title: z.string().trim().min(1).max(80).optional(),
+});
+
+// GET / PATCH / DELETE /api/mentor/sessions/:id
+export const sessionIdParamSchema = z.object({
+  id: objectId,
+});
+
+// GET /api/mentor/sessions?limit=30&before=<ISO>&q=<text>
+// `before` is the updatedAt of the last row the client already has (keyset paging,
+// so a chat that moves while the learner scrolls cannot be skipped or repeated).
+export const listSessionsQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(50).default(30),
+  before: z.coerce.date().optional(),
+  q: z.string().trim().max(80).optional(),
+  // "true" keeps only chats that were ever tied to a challenge (the sidebar's filter).
+  challenge: z.enum(["true", "false"]).optional(),
+});
+
+// DELETE /api/mentor/sessions — clear all chats; keepPinned=true spares pinned ones
+export const deleteAllSessionsQuerySchema = z.object({
+  keepPinned: z.enum(["true", "false"]).optional(),
+});
+
+// GET /api/mentor/usage?days=30 — the window is capped at the ledger's 90-day life
+export const usageQuerySchema = z.object({
+  days: z.coerce.number().int().min(1).max(90).default(30),
+});
+
+// PATCH /api/mentor/sessions/:id — partial update
+export const updateSessionSchema = z
+  .object({
+    // Same 80-char ceiling createSession truncates to, enforced up front so the
+    // client gets a 400 instead of silently-truncated input.
+    title: z.string().trim().min(1, "title is required").max(80).optional(),
+    pinned: z.boolean().optional(),
+  })
+  // An empty body would otherwise "succeed" while changing nothing but updatedAt,
+  // which would silently reorder the user's session list.
+  .refine((v) => v.title !== undefined || v.pinned !== undefined, {
+    message: "Provide title or pinned",
+  });
+
+/**
+ * Attachment limits — the ENFORCING copy. `constants/mentor.js` mirrors these
+ * for UI feedback only; a client can send anything, so these are what count.
+ * Keep the two in sync if you change them.
+ *
+ * MAX_TOTAL_CHARS is a context-window guard, not just a cost guard: the session
+ * keeps a 20-turn window, so 20 turns x ~4k tokens of attachments stays inside
+ * gpt-oss-120b's 131K context.
+ */
+export const ATTACHMENT_LIMITS = {
+  MAX_FILES: 3,
+  MAX_CHARS_PER_FILE: 8200, // slight headroom over the client's 8000 + truncation marker
+  MAX_TOTAL_CHARS: 16500,
+};
+
+const attachmentSchema = z.object({
+  name: z.string().trim().min(1).max(200),
+  content: z.string().min(1).max(ATTACHMENT_LIMITS.MAX_CHARS_PER_FILE),
+});
+
+/**
+ * What the learner is doing right now (Stage 6).
+ *
+ * `surface` is a closed enum rather than free text on purpose: every field here
+ * is rendered into the system prompt, so an open string would be an injection
+ * vector straight into the mentor's instructions. The remaining fields are
+ * length-capped for the same reason.
+ *
+ * All optional — the mentor works fine without it, and the chat page itself has
+ * no activity to report beyond being the chat page.
+ */
+export const activitySchema = z.object({
+  surface: z.enum(["chat", "exam-results", "roadmap", "challenge", "library"]),
+  path: z.string().trim().max(60).optional(),
+  layer: z.string().trim().max(60).optional(),
+  // Display spelling; the server slugifies it to join against mastery/concepts.
+  topic: z.string().trim().max(120).optional(),
+  // Slug charset only: it is echoed into the prompt, so no free text.
+  challengeSlug: z.string().trim().max(80).regex(/^[a-z0-9-]+$/).optional(),
+});
+
+// POST /api/mentor/stream
+export const streamSchema = z
+  .object({
+    activity: activitySchema.optional(),
+    // useAgentStream.js sends `sessionId: null` when no session exists yet, so
+    // null must be accepted — the controller then creates one.
+    sessionId: objectId.nullish(),
+    // Upper bound is a cost control as much as a validation rule: an unbounded
+    // message is an unbounded prompt, and the user pays per token.
+    message: z.string().trim().min(1, "message is required").max(4000),
+    attachments: z.array(attachmentSchema).max(ATTACHMENT_LIMITS.MAX_FILES).optional(),
+  })
+  // Per-file caps alone don't bound the request — 3 files each just under the
+  // limit would still blow past the budget, so the total is checked separately.
+  .refine(
+    (v) =>
+      (v.attachments ?? []).reduce((sum, a) => sum + a.content.length, 0) <=
+      ATTACHMENT_LIMITS.MAX_TOTAL_CHARS,
+    {
+      message: `Attachments exceed the total size limit of ${ATTACHMENT_LIMITS.MAX_TOTAL_CHARS} characters`,
+      path: ["attachments"],
+    },
+  );

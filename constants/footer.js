@@ -28,7 +28,7 @@ export const PRODUCT_LINKS_AUTH = [
 ];
 export const AI_LINKS = [
   { title: "Foundations", to: "/labs/foundations" },
-  { title: "AI Mentor", to: "/ai-agent" },
+  { title: "Mentor", to: "/mentor" },
   { title: "Explain it back (soon)", to: "/voice-review" },
 ];
 export const COMPANY_LINKS = [

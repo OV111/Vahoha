@@ -1,5 +1,5 @@
 /**
- * What the AI mentor may know about a learner's challenge attempt.
+ * What the mentor may know about a learner's challenge attempt.
  *
  * Rule: the mentor sees exactly what the learner already saw, nothing more.
  * Their own code, and the name + failure message of each hidden test from

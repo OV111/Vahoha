@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { ObjectId } from 'mongodb'
-import { executeTool, toolDefinitions } from '../../modules/ai-agent/services/agentTools.js'
+import { executeTool, toolDefinitions } from '../../modules/mentor/services/agentTools.js'
 
 // Records the filters the tool builds and returns canned rows.
 const fakeDb = ({ resources = [], concepts = [] } = {}) => {

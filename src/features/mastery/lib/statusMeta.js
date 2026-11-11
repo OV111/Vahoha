@@ -37,7 +37,7 @@ export const hrefForTarget = (target) => {
     const path = target.path ? `?path=${encodeURIComponent(target.path)}` : "";
     return `/roadmaps/exam/${encodeURIComponent(target.layerId)}${path}`;
   }
-  if (target.kind === "mentor") return "/ai-agent";
+  if (target.kind === "mentor") return "/mentor";
   return "/roadmaps";
 };
 

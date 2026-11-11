@@ -12,7 +12,7 @@ describe("keysForWrite", () => {
     ["/api/challenges/submit/two-sum", ["mastery", "journey", "readiness", "profile"]],
     ["/api/capstone/api-dev/submit", ["capstone", "readiness", "profile"]],
     ["/api/roadmaps/progress", ["roadmap-progress", "journey", "readiness"]],
-    ["/api/ai-agent/stream", ["journey"]],
+    ["/api/mentor/stream", ["journey"]],
     ["/my-profile/notifications/abc/read", ["notifications"]],
     ["/my-profile/settings", ["profile"]],
     ["/users/ada/follow", ["profile"]],

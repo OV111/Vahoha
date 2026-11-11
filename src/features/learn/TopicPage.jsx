@@ -107,7 +107,7 @@ export default function TopicPage() {
           </Link>
         )}
         <Link
-          to="/ai-agent"
+          to="/mentor"
           className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-purple-600/50 px-4 text-sm font-medium text-purple-300 transition-colors hover:bg-purple-600/20"
         >
           <Sparkles size={14} aria-hidden="true" /> Ask the mentor about this

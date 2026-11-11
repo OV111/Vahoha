@@ -1,4 +1,4 @@
-import MarkdownMessage from "@/features/ai-agent/components/MarkdownMessage";
+import MarkdownMessage from "@/features/mentor/components/MarkdownMessage";
 
 // Short enough not to nag, long enough that "idk" can't unlock the answer.
 const MIN_EXPLAIN_CHARS = 40;

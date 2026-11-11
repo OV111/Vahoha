@@ -5,7 +5,7 @@ import HintsPanel from "./HintsPanel";
 import LoadingSuspense from "../../../../components/feedback/LoadingSuspense";
 
 // Loaded on first use: most arena visits never open the mentor.
-const AiAgent = lazy(() => import("../../../ai-agent/AiAgent"));
+const Mentor = lazy(() => import("../../../mentor/Mentor"));
 
 const TABS = [
   { key: "hints", label: "Hints", icon: Lightbulb },
@@ -13,7 +13,7 @@ const TABS = [
 ];
 
 /**
- * The Arena's right column: Hints and the AI mentor as tabs, collapsible to a
+ * The Arena's right column: Hints and the mentor as tabs, collapsible to a
  * rail. The mentor stays mounted once opened (just hidden), so switching to
  * Hints and back doesn't lose the conversation or its scroll position.
  *
@@ -94,7 +94,7 @@ export default function RightPanel({
         {mentorSeen && (
           <div role="tabpanel" className={`min-h-0 flex-1 ${tab === "mentor" ? "block" : "hidden"}`}>
             <Suspense fallback={<LoadingSuspense fill />}>
-              <AiAgent embedded challengeContext={challengeContext} />
+              <Mentor embedded challengeContext={challengeContext} />
             </Suspense>
           </div>
         )}

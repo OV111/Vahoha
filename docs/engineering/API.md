@@ -4,7 +4,7 @@
 > The generated Swagger UI is at `/api-docs` and covers part of this. Where a request or response shape is not confirmed here it says `TODO: confirm`.
 > See also: [Architecture](ARCHITECTURE.md) · [Security](SECURITY.md) · [Data model](DATA_MODEL.md)
 
-**Contents:** [Conventions](#conventions) · [Auth](#auth) · [Account and profile](#account-and-profile) · [Chat](#chat-http-and-websocket) · [Blogs and library](#blogs-library-and-search) · [Roadmap](#roadmap) · [Exams](#exams) · [Mentor](#ai-mentor) · [Challenges](#coding-challenges) · [Capstone](#capstone) · [Teams](#build-teams) · [Billing](#billing) · [Other](#recruiter-readiness-mastery-onboarding-contact-admin)
+**Contents:** [Conventions](#conventions) · [Auth](#auth) · [Account and profile](#account-and-profile) · [Chat](#chat-http-and-websocket) · [Blogs and library](#blogs-library-and-search) · [Roadmap](#roadmap) · [Exams](#exams) · [Mentor](#mentor) · [Challenges](#coding-challenges) · [Capstone](#capstone) · [Teams](#build-teams) · [Billing](#billing) · [Other](#recruiter-readiness-mastery-onboarding-contact-admin)
 
 ---
 
@@ -130,16 +130,18 @@ Server emits: `message_history`, `joined_room`, `sended_message`, `message_react
 | POST | `/weak-spots` | Body `{ topic, path, layer, source }`. Response `{ weakSpot }` |
 | PATCH | `/weak-spots/:topic/resolve` | |
 
-## AI mentor
+## Mentor
 
-`/api/ai-agent`, all Bearer. Details in [AI](AI.md).
+`/api/mentor`, all Bearer. Details in [AI](AI.md).
 
 | Method | Path | Notes |
 |---|---|---|
-| GET | `/context` | Learner context summary |
-| GET / POST | `/sessions` | V on create (`title`) |
-| GET / PATCH / DELETE | `/sessions/:id` | V. Patch takes `title`, `pinned` |
-| POST | `/stream` | SSE stream. V (`message`, `sessionId`, `activity`, `attachments`). AI limiter. 429 with `resetAt` after 30 messages a day |
+| GET | `/context` | What the mentor runs on. `{ model, tools, limits, usage }`. `limits` has `maxTurns`, `dailyMessageCap`, attachment caps, `contextWindowTokens` and `historyTokenBudget`; `usage` has `used`, `cap`, `remaining` and `tokens: { prompt, completion, total }` for the learner's day |
+| GET | `/usage` | V query: `days` (1 to 90, default 30). Response `{ today, daily, totals, sessions }`: today's messages and tokens with `resetAt`, a zero-filled daily series, totals, and the 20 most recent chats with their token totals (`title` is null for a deleted chat) |
+| GET | `/sessions` | V query: `limit` (1 to 50, default 30), `before` (ISO date, the `updatedAt` of the last chat you have), `q` (title search, max 80), `challenge` (`true` keeps only chats tied to a challenge). Response `{ sessions, hasMore, total }`, no messages. First page: every pinned chat (up to 50), then the newest `limit` unpinned. With `before`: older unpinned only. With `q` or `challenge=true`: pinned and unpinned matches, newest first. `total` is always the unfiltered chat count |
+| POST | `/sessions` | V (`title`) |
+| GET / PATCH / DELETE | `/sessions/:id` | V. Patch takes `title`, `pinned`. Renaming or pinning does not change `updatedAt`: only a conversation turn moves a chat in the list |
+| POST | `/stream` | SSE stream. V (`message`, `sessionId`, `activity`, `attachments`). AI limiter. The daily cap is taken atomically before the model call (429 with `resetAt` after 30 messages, on the learner's own day); a turn that fails before any answer is refunded. A chat that has touched a challenge stays pinned to it, whatever `activity` says later. Closing the connection aborts the model; the partial reply is saved and counted, and no further events are sent. Events: `delta`, `tool_call`, `tool_result`, `title`, `usage` (`{ totalTokens, promptTokens, completionTokens, contextWindowTokens, trimmedMessages }` for the turn; not sent after an abort), `done` |
 
 ## Coding challenges
 

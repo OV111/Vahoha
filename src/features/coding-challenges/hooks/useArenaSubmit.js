@@ -9,10 +9,10 @@ export default function useArenaSubmit(submitAttempt) {
   const [submitting, setSubmitting] = useState(false);
   const [verdict, setVerdict] = useState(null);
 
-  const submit = useCallback(async (language) => {
+  const submit = useCallback(async (language, integrity) => {
     setSubmitting(true);
     try {
-      const nextVerdict = await submitAttempt(language);
+      const nextVerdict = await submitAttempt(language, integrity);
       setVerdict(nextVerdict);
       if (isPostHogConfigured) {
         posthog.capture("coding_challenge_submitted", {

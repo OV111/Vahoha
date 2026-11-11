@@ -2,11 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { GraduationCap, Mic, MicOff, Sparkles } from "lucide-react";
 import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
-import { useSpeechDictation } from "../../ai-agent/lib/useSpeechDictation";
-import TeachBackCard from "../../ai-agent/components/TeachBackCard";
+import { useSpeechDictation } from "../../mentor/lib/useSpeechDictation";
+import TeachBackCard from "../../mentor/components/TeachBackCard";
 
 /**
- * Teach-Back, inline on the exam results screen — no navigation to /ai-agent.
+ * Teach-Back, inline on the exam results screen — no navigation to /mentor.
  * Reuses TeachBackCard for the graded breakdown (same rendering the chat
  * surface uses) and the shared dictation hook for the mic button, so this and
  * the general chat's Teach-Back mode can never drift into two different

@@ -92,7 +92,7 @@ const connectDB = async () => {
       db.collection("exam_attempts").createIndex({ userId: 1, path: 1, layer: 1, startedAt: -1 }),
       db.collection("teach_back_rubrics").createIndex({ path: 1, layer: 1, topic: 1 }, { unique: true }),
       db.collection("teach_back_sessions").createIndex({ userId: 1, path: 1, layer: 1, startedAt: -1 }),
-      // LearnerContext runs these five reads on every AI-mentor turn, so they
+      // LearnerContext runs these five reads on every mentor turn, so they
       // need to be index-backed rather than collection scans.
       db.collection("weakSpots").createIndex({ userId: 1, resolvedAt: 1 }),
       db.collection("weakSpots").createIndex({ userId: 1, slug: 1 }),
@@ -105,6 +105,17 @@ const connectDB = async () => {
       db.collection("learnerMastery").createIndex({ userId: 1, slug: 1 }, { unique: true }),
       // Teaching log is always read as "recent attempts for these topics".
       db.collection("mentor_teaching_log").createIndex({ userId: 1, slug: 1, at: -1 }),
+      // Mentor usage ledger: read per user over a date window, and expired after
+      // 90 days (the longest window the usage page offers).
+      // The sidebar pages a learner's chats newest-first (and title search sorts the same way).
+      db.collection("agent_sessions").createIndex({ userId: 1, updatedAt: -1 }),
+      db.collection("agent_usage_events").createIndex({ userId: 1, at: -1 }),
+      db.collection("agent_usage_events").createIndex({ at: 1 }, { expireAfterSeconds: 90 * 24 * 60 * 60 }),
+      // The daily counters are read as "this user since <date>".
+      db.collection("agent_usage").createIndex({ userId: 1, date: -1 }),
+      // One counter per learner per day. reserveDailyMessage upserts it, and two
+      // simultaneous first-messages of the day must not both create one.
+      db.collection("agent_usage").createIndex({ userId: 1, date: 1 }, { unique: true }),
       // One redirect target per freed-up handle; renaming or reclaiming a
       // username upserts/deletes this row rather than duplicating it.
       db.collection("usernameHistory").createIndex({ oldUsername: 1 }, { unique: true }),

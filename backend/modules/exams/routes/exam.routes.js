@@ -9,13 +9,14 @@ import {
   addWeakSpotRoute,
   resolveWeakSpotRoute,
 } from "../controllers/exam.controller.js";
-import { generate, submit, submitTeachBackAnswer, submitTeachBackFollowUpAnswer } from "../controllers/examEngine.controller.js";
+import { generate, answer, leave, submitTeachBackAnswer, submitTeachBackFollowUpAnswer } from "../controllers/examEngine.controller.js";
 
 const router = Router();
 
 // Exam engine
 router.post("/generate", authenticate, examGenerateLimiter, generate);
-router.post("/submit", authenticate, examSubmitLimiter, submit);
+router.post("/answer", authenticate, examSubmitLimiter, answer);
+router.post("/leave", authenticate, examSubmitLimiter, leave);
 router.post("/submit-teach-back", authenticate, aiBurstLimiter, teachBackDailyLimiter, submitTeachBackAnswer);
 router.post("/submit-teach-back-followup", authenticate, aiBurstLimiter, teachBackDailyLimiter, submitTeachBackFollowUpAnswer);
 
@@ -23,7 +24,7 @@ router.post("/submit-teach-back-followup", authenticate, aiBurstLimiter, teachBa
 router.get("/history", authenticate, getHistory);
 router.get("/history/last", authenticate, getLastExamResult);
 // No client-writable result route: exam rows feed the public recruiter
-// scorecard, so only the server-graded POST /submit may create them.
+// scorecard, so only the server-graded POST /answer may create them.
 
 // Weak spots
 router.get("/weak-spots", authenticate, listWeakSpots);

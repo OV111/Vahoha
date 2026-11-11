@@ -61,7 +61,7 @@ const ResultPanel = ({ result, detailed = false, onClose }) => {
 
       {!result.passed && (
         <div className="rounded-lg bg-neutral-50 dark:bg-neutral-900/60 px-4 py-3 mb-6 text-[13.5px] text-[#1a1f36] dark:text-zinc-200">
-          <p className="mb-1">Next step: review the weak concepts with the AI mentor.</p>
+          <p className="mb-1">Next step: review the weak concepts with the mentor.</p>
           {result.retryAvailableAt && (
             <p className="flex items-center gap-2 text-[#697386] dark:text-zinc-400">
               <Clock size={14} />

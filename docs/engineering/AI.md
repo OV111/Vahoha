@@ -13,8 +13,8 @@ All LLM calls go to **Groq** through the `groq-sdk` client in `backend/config/gr
 
 | Feature | Model | Output | Code |
 |---|---|---|---|
-| AI mentor ("DevBot") | `openai/gpt-oss-120b` | Streamed text (SSE) with tool calls | `modules/ai-agent/services/streamService.js` |
-| Conversation titles | `openai/gpt-oss-20b` | One short title | `modules/ai-agent/services/titleService.js` |
+| Mentor ("DevBot") | `openai/gpt-oss-120b` | Streamed text (SSE) with tool calls | `modules/mentor/services/streamService.js` |
+| Conversation titles | `openai/gpt-oss-20b` | One short title | `modules/mentor/services/titleService.js` |
 | Teach-back grading and follow-up | `openai/gpt-oss-120b` | JSON score against a rubric / one question | `services/teachBackEvaluatorService.js` |
 | Capstone rubric review | `openai/gpt-oss-120b` (`REVIEW_MODEL`) | Strict JSON schema, temperature 0 | `modules/capstone/services/reviewModel.js` |
 | Capstone defense questions and grading | same | Strict JSON schema | `modules/capstone/services/defenseService.js` |
@@ -30,7 +30,7 @@ Prompts are string constants in code. There is no prompt store or admin editor.
 
 | Prompt | File |
 |---|---|
-| Mentor system prompt | `modules/ai-agent/services/streamService.js` (`SYSTEM_PROMPT`, plus the learner summary and current-activity text added per turn) |
+| Mentor system prompt | `modules/mentor/services/streamService.js` (`SYSTEM_PROMPT`, plus the learner summary and current-activity text added per turn) |
 | Teach-back evaluator and follow-up | `services/teachBackEvaluatorService.js` (`SYSTEM_PROMPT`, `FOLLOW_UP_SYSTEM_PROMPT`) |
 | Capstone review | `modules/capstone/lib/reviewPrompt.js` (versioned: `REVIEW_PROMPT_VERSION = "capstone-review-v3"`, bump on any change) |
 | Capstone defense | `modules/capstone/lib/defense.js` |
@@ -41,21 +41,23 @@ Prompts are string constants in code. There is no prompt store or admin editor.
 
 ## Mentor (DevBot)
 
-`POST /api/ai-agent/stream`. A Socratic mentor: it asks leading questions and gives progressive hints, and never writes test answers, capstone code, defense answers or challenge solutions.
+`POST /api/mentor/stream`. A Socratic mentor: it asks leading questions and gives progressive hints, and never writes test answers, capstone code, defense answers or challenge solutions.
 
 **Flow of one turn**
 
-1. Validate the body (Zod) and check the daily cap and burst limit.
+1. Validate the body (Zod), then take one of the day's 30 messages with a single atomic update (`reserveDailyMessage`). Parallel requests can no longer all read "29" and pass. A turn that fails before any answer (model error, mentor busy) gives the message back. "Day" is the learner's own, from the time zone in their profile; an unusable value such as "UTC +4" falls back to the server's local day.
 2. Build the system prompt: the fixed `SYSTEM_PROMPT` plus a short **learner summary** (progress, weak spots, mastery, teaching log) injected on every turn, plus the **current activity** (page, layer, topic, challenge) sent by the frontend.
 3. Fold any attached files into the user message, fenced as data.
 4. Call the model with tools. Run tool calls (up to **5 rounds**), append results, call again.
-5. Stream tokens to the client through the `SolutionGuard`, then save the turn.
+5. Stream tokens to the client through the `SolutionGuard`, then save the turn. If the learner stops the answer or closes the tab, the model call is aborted. The partial reply that had streamed is saved, its tokens and the message still count, and nothing more is written to the closed connection.
 
 **Tools** (`agentTools.js`, all read the real database for the signed-in learner): `get_user_progress`, `get_exam_history`, `get_weak_spots`, `log_weak_spot`, `get_learner_context`, `get_concept`, `log_teaching_attempt`, `get_challenge_attempt`, `get_capstone_status`, `search_posts`, `search_library`, `get_user_profile`.
 
-**Memory:** a 20-turn window per session. There is no cross-session free-text memory. Long-term state is held as structured signals in `weakSpots`, `learnerMastery` and `mentor_teaching_log`.
+**Challenge protection is decided on the server.** When a request names a challenge, the chat is pinned to it (`agent_sessions.challengeSlug`) and the focus prompt and `SolutionGuard` stay on for every later message in that chat, whatever the browser sends. Leaving `activity` out no longer switches them off, and nothing a client sends can clear the pin. A challenge the model itself opens during a turn pins the chat too.
 
-**Attachments:** up to 3 text files, 256 KB each, 8,000 characters per file and 16,000 in total. The model is text-only, so images are rejected with an explanation. Limits are enforced server-side (`aiAgent.schemas.js`); the frontend copy only fails fast.
+**Memory:** a 20-turn window per session, saved with one atomic `$push`/`$slice` so two tabs cannot overwrite each other's turn. What is sent to the model is trimmed by token count (`HISTORY_TOKEN_BUDGET`, oldest turns first), so one large attachment cannot inflate every later request; `trimmedMessages` in the `usage` event says how many were left out. There is no cross-session free-text memory. Long-term state is held as structured signals in `weakSpots`, `learnerMastery` and `mentor_teaching_log`.
+
+**Attachments:** up to 3 text files, 256 KB each, 8,000 characters per file and 16,000 in total. The model is text-only, so images are rejected with an explanation. Limits are enforced server-side (`mentor.schemas.js`); the frontend copy only fails fast.
 
 ---
 
@@ -80,12 +82,12 @@ Team defense reuses the capstone grader on a member's own merged PR diffs.
 
 | Control | Value | Where |
 |---|---|---|
-| Mentor messages per user per day | 30 (same for every plan) | `sessionService.js` (`DAILY_MESSAGE_CAP`) |
+| Mentor messages per user per day | 30 (same for every plan), reserved atomically before the model call, on the learner's own day | `sessionService.js` (`DAILY_MESSAGE_CAP`, `reserveDailyMessage`) |
 | Mentor conversation window | 20 turns | `sessionService.js` (`MAX_TURNS`) |
 | Tool rounds per turn | 5 | `streamService.js` |
 | Burst limit on all LLM routes | 10 per minute per user | `middleware/aiRateLimit.js` |
 | Teach-back | 40 per day per user | `aiRateLimit.js` |
-| Attachment size | 3 files, 16,000 characters | `aiAgent.schemas.js` |
+| Attachment size | 3 files, 16,000 characters | `mentor.schemas.js` |
 | Capstone attempts | 3 per learner and track | `capstone/lib/constants.js` |
 | Capstone code sent to the model | 80,000 characters by default (`CAPSTONE_REVIEW_MAX_CHARS`) | `lib/constants.js`, `repoFiles.js` |
 | Free-tier fit | `GROQ_TPM_LIMIT` sizes input and `max_tokens` to the tier and lowers reasoning effort. **Local only**; unset on a paid tier | `capstone/lib/tokenBudget.js` |
@@ -100,8 +102,9 @@ The limiters are in memory (reset on restart, not shared across instances). No u
 
 | Risk | Defence |
 |---|---|
-| Mentor writes a challenge solution | The prompt forbids it, and `SolutionGuard` sits on the outgoing stream and cuts any fenced code block after 4 lines, so even a jailbroken model cannot hand over a working function |
+| Mentor writes a challenge solution | The prompt forbids it, the chat is pinned to its challenge on the server, and `SolutionGuard` sits on the outgoing stream and cuts any fenced code block after 4 lines, so even a jailbroken model cannot hand over a working function |
 | Prompt injection through attached files | Files are wrapped in `<<<FILE …>>>` markers and labelled as data, with the instruction restated after the content |
+| Prompt injection through tool output | Results of tools (profile bios, post and library text, challenge code) are data, never instructions: the system prompt says so for every turn, not only in challenge mode |
 | Prompt injection through a learner's repository | Repository text is wrapped in delimiters carrying a **random nonce per request**, the prompt says to ignore instructions inside, and `scanForInjection` flags known patterns for admin review (`reviewPrompt.js`) |
 | Learner answers steering the grader | Defense answers are also untrusted and nonce-delimited (`defense.js`) |
 | Mentor hands out exam answers | The prompt tells it never to. The exam-history tool returns scores and missed topics; `TODO: confirm` that no tool can return an answer key. An earlier live test showed a refusal and a Socratic redirect |

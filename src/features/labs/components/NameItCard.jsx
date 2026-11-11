@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { CheckCircle2, ArrowRight, Sparkles } from "lucide-react";
-import MarkdownMessage from "@/features/ai-agent/components/MarkdownMessage";
+import MarkdownMessage from "@/features/mentor/components/MarkdownMessage";
 
 // After the tests pass: one line on what the bug or risk was. Naming it is
 // what turns "I got it to pass" into "I understand what was wrong".

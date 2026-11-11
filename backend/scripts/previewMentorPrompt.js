@@ -20,9 +20,9 @@ dotenv.config({ path: "./backend/.env.local" });
 dotenv.config({ path: "./backend/.env" });
 
 const { getLearnerContext, summarizeLearnerContext } = await import(
-  "../modules/ai-agent/services/learnerContextService.js"
+  "../modules/mentor/services/learnerContextService.js"
 );
-const { buildSystemPrompt, describeActivity } = await import("../modules/ai-agent/services/streamService.js");
+const { buildSystemPrompt, describeActivity } = await import("../modules/mentor/services/streamService.js");
 
 const [, , userIdArg, surface, path, layer, topic] = process.argv;
 

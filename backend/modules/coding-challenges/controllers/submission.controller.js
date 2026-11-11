@@ -11,6 +11,7 @@ export const submit = async (req, res) => {
       req.user._id.toString(),
       req.params.id,
       req.body?.language,
+      req.body?.integrity,
     );
     res.json({ success: true, ...data });
   } catch (err) {

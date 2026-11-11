@@ -10,7 +10,7 @@ Updated 2026-10-21. Most of this is already built; the MVP is "what a pilot user
 |---|---|---|---|
 | **In** | Sign up, pick a path (roadmap) | Built | Email, Google, GitHub. Password reset and magic link blocked until email sending is set up |
 | **In** | Layer lessons and tests (pass mark 80, 30-min cooldown) | Built | Needs one track with hand-checked banks |
-| **In** | AI mentor with learner context (30 msgs/day) | Built | Groq free tier may rate-limit |
+| **In** | Mentor with learner context (30 msgs/day) | Built | Groq free tier may rate-limit |
 | **In** | Coding challenges (JS/TS) | Built | 25 api-dev/node-dev/javascript challenges still fail in the production sandbox (timers, Buffer) |
 | **In** | Capstone with AI review, timed defense, public certificate | Built | Needs the production GitHub OAuth app. 17 capstones published |
 | **In** | Event funnel and admin view | Built | |

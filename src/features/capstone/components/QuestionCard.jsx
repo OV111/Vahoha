@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Clock, FileCode2 } from "lucide-react";
 import useCountdown from "@/hooks/useCountdown";
+import NoCopy from "@/components/integrity/NoCopy";
 
 /**
  * The open defense question, in the original "? question / your answer" style.
@@ -8,8 +9,11 @@ import useCountdown from "@/hooks/useCountdown";
  *
  * - Timer from the server (useCountdown); at 0 whatever is typed is submitted
  *   automatically — the server still accepts it within its short grace.
- * - Paste and tab-switch counts go with the answer: admin-only signals,
- *   never part of the score.
+ * - The question cannot be copied and the answer cannot be pasted or dropped
+ *   in: it has to be typed.
+ * - Paste attempts and tab-switch counts go with the answer: admin-only
+ *   signals, never part of the score. Leaving the tab is not punished here,
+ *   because the question links to the learner's own file on GitHub.
  */
 export default function QuestionCard({ question, total, onAnswer, busy }) {
   const [text, setText] = useState("");
@@ -48,12 +52,14 @@ export default function QuestionCard({ question, total, onAnswer, busy }) {
         <span className="text-purple-500 font-bold text-lg leading-none mt-0.5 shrink-0">
           ?
         </span>
-        <p
-          className="text-[15px] font-semibold text-white leading-snug"
-          style={{ fontFamily: "inherit" }}
-        >
-          {question.text}
-        </p>
+        <NoCopy>
+          <p
+            className="text-[15px] font-semibold text-white leading-snug"
+            style={{ fontFamily: "inherit" }}
+          >
+            {question.text}
+          </p>
+        </NoCopy>
       </div>
       <div className="ml-6 flex flex-col gap-3">
         <div className="flex flex-wrap items-center gap-3">
@@ -87,7 +93,11 @@ export default function QuestionCard({ question, total, onAnswer, busy }) {
           rows={4}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          onPaste={() => setPasteEvents((n) => n + 1)}
+          onPaste={(e) => {
+            e.preventDefault();
+            setPasteEvents((n) => n + 1);
+          }}
+          onDrop={(e) => e.preventDefault()}
           onKeyDown={(e) => {
             if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) send();
           }}
@@ -111,6 +121,9 @@ export default function QuestionCard({ question, total, onAnswer, busy }) {
           </button>
           <p className="text-xs text-neutral-500">
             {text.length}/3000 · Ctrl+Enter to submit
+          </p>
+          <p className="text-xs text-neutral-500">
+            Pasting is turned off, and tab switches are logged for review.
           </p>
         </div>
       </div>

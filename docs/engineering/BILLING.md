@@ -26,7 +26,7 @@ Three different mechanisms exist. Only the first one is about billing.
 
 What the pricing page promises but the code does not do yet:
 
-- **"Higher daily AI mentor limit" for Pro:** the mentor cap is 30 for everyone. It is not plan-aware.
+- **"Higher daily mentor limit" for Pro:** the mentor cap is 30 for everyone. It is not plan-aware.
 - **"First 2 roadmap layers" for Free and "More test attempts" for Pro:** not enforced anywhere.
 - Features marked "Soon" on the page (voice teach-back, verified profile) are not built, and the page labels them so.
 

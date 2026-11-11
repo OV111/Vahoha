@@ -1,11 +1,11 @@
 import { getGroqClient } from "../../config/groq.js";
-import { toolDefinitions } from "../../modules/ai-agent/services/agentTools.js";
+import { toolDefinitions } from "../../modules/mentor/services/agentTools.js";
 import {
   MODEL,
   buildSystemPrompt,
   composeUserMessage,
   describeActivity,
-} from "../../modules/ai-agent/services/streamService.js";
+} from "../../modules/mentor/services/streamService.js";
 import { withRetry } from "./withRetry.js";
 
 const MAX_ROUNDS = 3;

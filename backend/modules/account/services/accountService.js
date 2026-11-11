@@ -124,6 +124,7 @@ const USER_KEYED_COLLECTIONS = [
   "mentor_teaching_log",
   "agent_sessions",
   "agent_usage",
+  "agent_usage_events",
   "challenge_attempts",
   "challengeResults",
   "savedLibraryResources",

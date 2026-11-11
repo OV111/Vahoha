@@ -6,8 +6,9 @@
  */
 export const EXAM_RULES = {
   questionsPerExam: 15,
-  timeLimitSecs: 600,
+  secondsPerQuestion: 40, // one question at a time, no going back
   passThreshold: 80, // percent
   maxAttemptsPerDay: 3, // submitted attempts per layer per day
   cooldownAfterFailMins: 30,
+  maxTabLeaves: 2, // the attempt ends as a fail on this leave; earlier ones warn
 };

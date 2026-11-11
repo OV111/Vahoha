@@ -1,5 +1,5 @@
 /**
- * What the AI mentor may know about a learner's capstone (stage 7).
+ * What the mentor may know about a learner's capstone (stage 7).
  *
  * Two rules:
  *  1. The mentor coaches on FEEDBACK, never on answers: expected points, code

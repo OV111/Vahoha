@@ -31,7 +31,7 @@
 ```
 Pick a path -> learn a layer -> take the layer test
    PASS -> next layer unlocks
-   FAIL -> weak spots saved -> ask the AI mentor -> review -> retry
+   FAIL -> weak spots saved -> ask the mentor -> review -> retry
 ```
 
 Around that loop sit coding challenges, labs, capstones (a repo review plus a timed defense), Build Teams, a library, and a community (blogs, chat).
@@ -45,7 +45,7 @@ One Express 5 process (HTTP + WebSocket + queue worker), MongoDB, Redis. Backend
 | Choice | Why |
 |---|---|
 | MongoDB native driver, no Mongoose | Document-shaped data (layers, attempts, weak spots). Queries stay close to the data |
-| Groq `openai/gpt-oss-120b` for the mentor | Free tier, and a solo pre-revenue project is cost-bound. `MODEL` lives in `modules/ai-agent/services/streamService.js`. Groq retires models, so a 404 means check `/models` first |
+| Groq `openai/gpt-oss-120b` for the mentor | Free tier, and a solo pre-revenue project is cost-bound. `MODEL` lives in `modules/mentor/services/streamService.js`. Groq retires models, so a 404 means check `/models` first |
 | BullMQ + Redis | Notification jobs survive restarts and retry |
 | Zustand | Small stores (auth, roadmap, agent, notifications, profile, theme). No Redux boilerplate |
 | Zod at the route boundary | Used through a `validate` middleware on newer routes. Old community routes are not backfilled |
@@ -64,7 +64,7 @@ routes/  controllers/  services/  schemas/ (Zod)  lib/ (pure logic)  index.js
 
 `index.js` is the module's only public entry point. `app.js` mounts routers from it. Other modules should import only what it exports. A few deep imports still exist (teams to capstone, account to billing, chat to profile). Treat them as cleanup, not as a pattern.
 
-**23 modules:** account, ai-agent, analytics, auth, billing, blogs, capstone, chat, coding-challenges, contact, exams, library, mastery, notifications, onboarding, profile, readiness, recruiter, roadmap, search, teams, users, voice-review.
+**23 modules:** account, mentor, analytics, auth, billing, blogs, capstone, chat, coding-challenges, contact, exams, library, mastery, notifications, onboarding, profile, readiness, recruiter, roadmap, search, teams, users, voice-review.
 
 **Outside `modules/`:**
 
@@ -84,7 +84,7 @@ routes/  controllers/  services/  schemas/ (Zod)  lib/ (pure logic)  index.js
 | Auth | `modules/auth` | 15-minute access token. Refresh token valid for **30 idle days**, rotating, in an httpOnly cookie, renewed before expiry. Google and GitHub OAuth, password reset, magic-link sign-in. Redis login throttling with an `express-rate-limit` fallback |
 | Roadmap | `modules/roadmap`, `/api/roadmaps` | Tracks and layers seeded into MongoDB. Progress is server-side and auto-tracked (open, finish, test pass), never manual ticks |
 | Exams | `modules/exams`, `/api/exams` | Generate, submit, teach-back, history, weak spots, per-attempt integrity flags. Layer order is enforced on generate |
-| Mentor | `modules/ai-agent`, `/api/ai-agent` | Sessions, SSE streaming, tool loop, 20-turn window, 30 messages a day |
+| Mentor | `modules/mentor`, `/api/mentor` | Sessions, SSE streaming, tool loop, 20-turn window, 30 messages a day |
 | Mastery | `modules/mastery` | Per-topic status and next action |
 | Challenges (Arena) | `modules/coding-challenges` | Catalog, `isolated-vm` grading, JS and TypeScript, proposals with admin review, XP-priced hints, daily submission cap |
 | Capstone | `modules/capstone` | Repo review (repo must belong to the learner's GitHub login), timed defense, certificates, admin overrides. AI review is sized to the Groq token limit (`lib/tokenBudget.js`) |
@@ -108,7 +108,7 @@ routes/  controllers/  services/  schemas/ (Zod)  lib/ (pure logic)  index.js
 |---|---|
 | Learning | `roadmap`, `learn` (step-by-step lessons with a live code panel), `foundations`, `labs`, `coding-challenges`, `mastery`, `coding-libs` |
 | Proof | `capstone`, `teams` (`/team`, public `/evidence/:publicId`), `recruiter` |
-| AI | `ai-agent`, `voice-exam`, `voice-review` (unfinished shell) |
+| AI | `mentor`, `voice-exam`, `voice-review` (unfinished shell) |
 | People | `profile` (profile, settings, notifications, blog editor, public profile), `chat`, `connections` (followers), `blogs` |
 | Money | `billing` |
 

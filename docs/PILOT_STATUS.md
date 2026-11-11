@@ -18,7 +18,7 @@ The technical prep for the pilot is mostly done. What's left is mostly yours: co
 | Labs | `/labs`, `/labs/:room` | none yet | Partial | 1 lab (closures) with real grading in the worker. `product/LAB_SYSTEM.md` |
 | Foundations | `/labs/foundations` | none | Live | Free guest lessons, 3 written (command line, how computers work, version control) |
 | Coding challenges | `/coding-challenges` | `coding-challenges` | Partial | 205 challenges, JS/TS. Sandbox-breaking ones rewritten 2026-11-04, not yet seeded (item 15). Judge0 runner reverted |
-| AI mentor | `/ai-agent` | `ai-agent` | Live | 30 messages/day for all; Pro is not higher in code. Groq free tier rate-limits |
+| Mentor | `/mentor` | `mentor` | Live | 30 messages/day for all; Pro is not higher in code. Groq free tier rate-limits |
 | Teach-back (text, dictation) | inside mentor and tests | `exams` | Partial | Few rubrics. Not calibrated against humans |
 | Mastery | `/progress` | `mastery` | Live | Detail view is a Pro gate, inert |
 | XP | profile, arena | `services/xpService.js` | Live | One ledger. `product/XP_SYSTEM.md` |
@@ -58,7 +58,7 @@ Events come from `backend/services/eventService.js`. Use them to find where user
 | Sign up | `/get-started` | `signup` |
 | Pick a path | `/roadmaps` | `path_selected` |
 | Study a layer | `/learn/:track/:layer` (lessons, library, posts for the layer) | none |
-| Ask the mentor | `/ai-agent` | `mentor_message` |
+| Ask the mentor | `/mentor` | `mentor_message` |
 | Take the layer test | `/roadmaps/exam/:layerId` | `exam_started`, `exam_submitted` |
 | Pass (80+) | next layer unlocks, XP awarded once per layer | none |
 | Fail | weak topics recorded, 30-min cooldown, mentor suggests review, retry (3 per day) | none |

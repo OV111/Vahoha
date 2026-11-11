@@ -1,5 +1,5 @@
 import { Lightbulb, Lock, Eye } from "lucide-react";
-import MarkdownMessage from "@/features/ai-agent/components/MarkdownMessage";
+import MarkdownMessage from "@/features/mentor/components/MarkdownMessage";
 
 const RUNGS = ["Nudge", "Hint", "Near answer"];
 

@@ -72,7 +72,7 @@ export const userSearchLimiter = limiter({ windowMs: MINUTE, limit: 90, offInTes
 // Exams: generate builds a question set and submit grades one, so a person needs a
 // minute or more per exam; these only stop retry loops.
 export const examGenerateLimiter = limiter({ windowMs: MINUTE, limit: 10, perUser: true, offInTests: true, message: "You're starting exams too fast. Wait a moment and try again." });
-export const examSubmitLimiter = limiter({ windowMs: MINUTE, limit: 20, perUser: true, offInTests: true, message: "You're submitting too fast. Wait a moment and try again." });
+export const examSubmitLimiter = limiter({ windowMs: MINUTE, limit: 40, perUser: true, offInTests: true, message: "You're submitting too fast. Wait a moment and try again." });
 
 // Project Map create/edit/share/delete. The editor saves on change, so the ceiling is
 // generous; the scan and question routes have their own AI limits.

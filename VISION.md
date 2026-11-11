@@ -32,17 +32,17 @@ Today they solve it by grinding LeetCode (tests algorithms, not the job), collec
 
 ## 3. Solution
 
-Vahoha turns a roadmap into a gate, not a map. Every layer is locked until you pass a server-graded exam on it; failing surfaces your specific weak spots instead of a generic score. A per-user AI mentor sits underneath the whole loop — it knows your active path, your exam history, and your weak spots, and answers Socratically (guides you to the answer, doesn't hand it over) instead of acting like a generic chatbot with no memory of your journey.
+Vahoha turns a roadmap into a gate, not a map. Every layer is locked until you pass a server-graded exam on it; failing surfaces your specific weak spots instead of a generic score. A per-user mentor sits underneath the whole loop — it knows your active path, your exam history, and your weak spots, and answers Socratically (guides you to the answer, doesn't hand it over) instead of acting like a generic chatbot with no memory of your journey.
 
 The mechanism, end to end:
 
 ```
 Pick a path → study a layer (curated posts/library) → take the layer exam
    → PASS → next layer unlocks
-   → FAIL → weak spots recorded → ask the AI mentor → targeted review → retry
+   → FAIL → weak spots recorded → ask the mentor → targeted review → retry
 ```
 
-The AI mentor is not a bolt-on chat widget — it has live tools into your actual progress, exam history, and weak spots, so its answers are grounded in what you specifically struggled with, not a canned response to your question text alone.
+The mentor is not a bolt-on chat widget — it has live tools into your actual progress, exam history, and weak spots, so its answers are grounded in what you specifically struggled with, not a canned response to your question text alone.
 
 ### The loop we are growing toward
 
@@ -58,7 +58,7 @@ Much of this already exists: exams, Coding Challenges, Capstone repository revie
 ### The learner journey, in short
 
 1. **Roadmap**: pick a track and see what to learn.
-2. **AI mentor**: guides you, knowing where you are and where you are weak.
+2. **Mentor**: guides you, knowing where you are and where you are weak.
 3. **Coding challenges**: small problems that build skill.
 4. **Exams**: gate each layer and feed mastery.
 5. **Capstone**: a bigger project, with repository review and a technical defense.
@@ -107,7 +107,7 @@ Freemium SaaS, expanding later into a two-sided marketplace (developers prove sk
 | Tier | Price | For | Includes |
 |---|---|---|---|
 | Free | $0 | Anyone starting out | Community, first roadmap layers, basic progress |
-| Pro | $15/month | Developers actively learning | AI mentor, full roadmap, certificates |
+| Pro | $15/month | Developers actively learning | Mentor, full roadmap, certificates |
 | Teams | $60/seat/month (3-seat minimum) | Companies onboarding developers | Progress tracking, reports, bulk certs |
 | Employer Access *(future)* | $159/month | Hiring managers/recruiters | Search verified profiles + progression data |
 | Featured Company *(future)* | $599/month | Actively hiring companies | Above + visibility to developers on-platform |
@@ -122,7 +122,7 @@ The employer-facing tiers are Phase 13+ and explicitly gated on reaching 500+ ve
 
 TODO: no sized TAM/SAM/SOM exists yet for this document — do you want me to build one from public data (e.g. number of self-taught/bootcamp developers per year, freeCodeCamp/roadmap.sh user counts as reference points), or is there a number you already have in mind?
 
-**First niche to win:** one path, fully proven, before anything else. The plan is to validate the entire loop — roadmap, exam engine, AI mentor — on **one path only**, with real users. TODO: confirm which: the outreach kit targets Backend, the learning-system pilot is MERN layers 1-3 (`docs/product/LEARNING_SYSTEM.md`), and the only complete written exam bank is Frontend. Until then the Backend Developer path is the working assumption, before seeding the other authored categories (178 tracks across 16 categories: Full Stack, Backend, AI/ML, DevOps, Mobile, GameDev, QA, Data Science, Database, Cloud, Cybersecurity, Blockchain, Web3, Quantum, Languages). No path is listed as coming soon any more: Frontend Developer, Data Structures & Algorithms, System Design and AI Agents Engineer were all authored on 2026-10-16 (the one that best matches the mid-level promise). Narrow first, wide once the mechanism is proven; thin tracks may be hidden rather than widened.
+**First niche to win:** one path, fully proven, before anything else. The plan is to validate the entire loop — roadmap, exam engine, mentor — on **one path only**, with real users. TODO: confirm which: the outreach kit targets Backend, the learning-system pilot is MERN layers 1-3 (`docs/product/LEARNING_SYSTEM.md`), and the only complete written exam bank is Frontend. Until then the Backend Developer path is the working assumption, before seeding the other authored categories (178 tracks across 16 categories: Full Stack, Backend, AI/ML, DevOps, Mobile, GameDev, QA, Data Science, Database, Cloud, Cybersecurity, Blockchain, Web3, Quantum, Languages). No path is listed as coming soon any more: Frontend Developer, Data Structures & Algorithms, System Design and AI Agents Engineer were all authored on 2026-10-16 (the one that best matches the mid-level promise). Narrow first, wide once the mechanism is proven; thin tracks may be hidden rather than widened.
 
 ---
 
@@ -147,7 +147,7 @@ Note: freeCodeCamp/The Odin Project are lower threat because they are passive co
 ## 10. Traction & milestones
 
 **What exists now (as of 2026-10-11):**
-- The full learning loop is built and mounted: roadmap with server-side progress, exam engine (server-graded, answer keys server-side, shuffled and unseen-first questions, cooldown), AI mentor with tools into learner state, mastery map, teach-back (one-topic slice)
+- The full learning loop is built and mounted: roadmap with server-side progress, exam engine (server-graded, answer keys server-side, shuffled and unseen-first questions, cooldown), mentor with tools into learner state, mastery map, teach-back (one-topic slice)
 - Community platform (blogs, profiles, chat, auth); blog posts can be tagged to roadmap layers and appear in the layer drawer
 - Coding Arena with sandboxed grading and community proposals: 205 challenges, JS and TS; 25 would still fail in the production sandbox
 - Learning system: a step-by-step lesson player (2 draft MERN lessons), a first lab with real grading in a worker (`/labs`), and guest Foundations lessons; roadmap progress is recorded automatically from open, finish and test pass

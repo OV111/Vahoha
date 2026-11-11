@@ -1,0 +1,40 @@
+/* One full turn every 2.4s. Paused (not removed) when idle, so it stops where it is
+   instead of snapping back to 0deg. */
+.vh-spin__ring {
+  transform-origin: 32px 32px;
+  animation: vh-spin 2.4s linear infinite;
+  animation-play-state: paused;
+}
+.vh-spin.is-thinking .vh-spin__ring {
+  animation-play-state: running;
+}
+@keyframes vh-spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vh-spin__ring { animation: none; }
+  .vh-spin.is-thinking { animation: vh-pulse 1.6s ease-in-out infinite; }
+}
+@keyframes vh-pulse {
+  50% { opacity: 0.55; }
+}
+
+/* "Thinking…" label: readable static text by default, a light sweep only for
+   people who haven't asked for reduced motion. */
+.vh-shimmer {
+  color: rgb(255 255 255 / 0.75);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .vh-shimmer {
+    background: linear-gradient(90deg, rgb(255 255 255 / 0.6) 0%, rgb(255 255 255 / 1) 50%, rgb(255 255 255 / 0.6) 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: vh-shimmer 1.8s linear infinite;
+  }
+}
+@keyframes vh-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}

@@ -162,10 +162,10 @@ export default function TopicPage() {
                   </li>
                 ))}
                 <li>
-                  <Link to="/ai-agent" className="f-practice-link">
+                  <Link to="/mentor" className="f-practice-link">
                     <span>
                       <span className="f-practice-kind">Mentor</span>
-                      Explain {topic.title} back to the AI mentor
+                      Explain {topic.title} back to the mentor
                     </span>
                     <ArrowRight size={16} aria-hidden="true" />
                   </Link>

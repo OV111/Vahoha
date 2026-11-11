@@ -1,5 +1,5 @@
 /**
- * What the AI mentor sees of a challenge attempt.
+ * What the mentor sees of a challenge attempt.
  *
  * The rule under test: the mentor gets what the learner already saw (their
  * code, failing test names and messages) and never the hidden test bodies,

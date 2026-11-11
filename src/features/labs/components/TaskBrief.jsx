@@ -1,5 +1,5 @@
 import { Bot, CheckCircle2, Circle, User } from "lucide-react";
-import MarkdownMessage from "@/features/ai-agent/components/MarkdownMessage";
+import MarkdownMessage from "@/features/mentor/components/MarkdownMessage";
 import { TASK_TYPES } from "../taskTypes";
 
 // Left column: what to do. The type chip and a soft glow in the type's color

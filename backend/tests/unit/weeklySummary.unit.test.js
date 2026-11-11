@@ -91,7 +91,7 @@ describe('nextStepFor', () => {
   const site = 'https://vahoha.com'
 
   it('sends weak topics to the mentor and progress to the roadmap', () => {
-    expect(nextStepFor({ action: 'reinforce', title: 'JWT' }, null, site).url).toBe(`${site}/ai-agent`)
+    expect(nextStepFor({ action: 'reinforce', title: 'JWT' }, null, site).url).toBe(`${site}/mentor`)
     expect(nextStepFor({ action: 'advance' }, 'REST APIs', site)).toMatchObject({
       url: `${site}/roadmaps`,
       text: expect.stringContaining('REST APIs'),
@@ -106,7 +106,7 @@ describe('renderWeeklySummaryEmail', () => {
     firstName: '<b>Ada</b>',
     stats: [{ label: 'day streak', value: 4 }],
     layersPassed: ['HTTP & REST'],
-    nextStep: { text: 'Practice JWT', ctaLabel: 'Go', url: 'https://vahoha.com/ai-agent?a=1&b=2' },
+    nextStep: { text: 'Practice JWT', ctaLabel: 'Go', url: 'https://vahoha.com/mentor?a=1&b=2' },
     unsubscribeUrl: 'https://vahoha.com/unsubscribe?token=x',
   }
 

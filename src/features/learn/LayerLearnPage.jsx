@@ -164,7 +164,7 @@ export default function LayerLearnPage() {
                 <ShieldCheck size={16} className="text-purple-300" aria-hidden="true" /> Layer test
               </p>
               <p className="mt-1 text-sm text-neutral-500">
-                {EXAM_RULES.questionsPerExam} questions in {EXAM_RULES.timeLimitSecs / 60} minutes.{" "}
+                {EXAM_RULES.questionsPerExam} questions, {EXAM_RULES.secondsPerQuestion} seconds each.{" "}
                 {EXAM_RULES.passThreshold}% to pass and unlock the next layer.
               </p>
             </div>

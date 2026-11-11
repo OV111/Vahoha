@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Seo from "../../seo/Seo";
 import { formatTitle } from "./lib/formatTitle";
@@ -125,9 +125,26 @@ export default function ChallengeArena() {
   // Shown once per fresh pass; dismissing it doesn't discard the verdict —
   // "View solution" in the action bar brings it back without re-submitting.
   const [showSolved, setShowSolved] = useState(true);
+  // Review signals sent with a submission. Never part of the verdict, and a
+  // ref because counting must not re-render the Arena.
+  const integrityRef = useRef({ pasteEvents: 0, largestPaste: 0, tabSwitches: 0 });
+  useEffect(() => {
+    integrityRef.current = { pasteEvents: 0, largestPaste: 0, tabSwitches: 0 };
+    const onVisibility = () => {
+      if (document.hidden) integrityRef.current.tabSwitches++;
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, [slug]);
+  const notePaste = (chars) => {
+    const seen = integrityRef.current;
+    seen.pasteEvents++;
+    seen.largestPaste = Math.max(seen.largestPaste, chars);
+  };
+
   const submit = async () => {
     setShowSolved(true);
-    await runSubmit(language);
+    await runSubmit(language, integrityRef.current);
   };
 
   // The mentor reads the saved attempt, so save first or it sees stale code.
@@ -246,6 +263,7 @@ export default function ChallengeArena() {
             key={challenge.slug}
             files={files}
             onChangeFile={handleChangeFile}
+            onPaste={notePaste}
             language={language}
             onLanguageChange={changeLanguage}
           />

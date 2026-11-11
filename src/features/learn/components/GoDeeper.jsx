@@ -1,5 +1,5 @@
 import { ChevronRight, ExternalLink } from "lucide-react";
-import MarkdownMessage from "@/features/ai-agent/components/MarkdownMessage";
+import MarkdownMessage from "@/features/mentor/components/MarkdownMessage";
 
 const LEVEL_LABELS = { 2: "How it works", 3: "Under the hood", 4: "Why this design" };
 

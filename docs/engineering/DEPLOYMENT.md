@@ -134,7 +134,7 @@ Imported exam questions arrive as `reviewed: false`. Hand-check the answer keys 
 | Situation | Check |
 |---|---|
 | Free Render plan | Sleeps after about 15 idle minutes and takes up to a minute to wake. Chat sockets drop. Move to a paid instance before a real pilot |
-| Mentor returns 404 | Groq retired the model. Check `GET https://api.groq.com/openai/v1/models` and update `MODEL` in `modules/ai-agent/services/streamService.js` |
+| Mentor returns 404 | Groq retired the model. Check `GET https://api.groq.com/openai/v1/models` and update `MODEL` in `modules/mentor/services/streamService.js` |
 | AI returns 413 | Request tokens exceed the Groq tier's per-minute limit (see [Billing](BILLING.md#ai-cost-and-the-groq-tier)) |
 | Polar webhook failing | Polar retries 10 times then disables the endpoint. A missing `POLAR_WEBHOOK_SECRET` returns 503 on purpose |
 | Emergency stop | `MAINTENANCE_MODE=true` makes every route answer 503 (`/healthz` stays up) |

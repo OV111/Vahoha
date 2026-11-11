@@ -36,7 +36,7 @@ const TopicRow = ({ topic }) => {
             ))}
           </ul>
           <Link
-            to="/ai-agent"
+            to="/mentor"
             className={`mt-2 inline-block rounded text-xs font-medium text-amber-800 hover:underline dark:text-amber-300 ${FOCUS}`}
           >
             {COPY.fixWithMentor}

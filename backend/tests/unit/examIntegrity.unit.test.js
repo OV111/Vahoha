@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { pickQuestions, sanitizeIntegrity } from '../../modules/exams/services/examEngineService.js'
+import { pickQuestions } from '../../modules/exams/services/examEngineService.js'
 
 const bank = Array.from({ length: 60 }, (_, i) => ({ id: `l1-q${i + 1}` }))
 const idsOf = (qs) => qs.map((q) => q.id)
@@ -30,21 +30,5 @@ describe('pickQuestions', () => {
     const firsts = new Set()
     for (let i = 0; i < 50; i++) firsts.add(pickQuestions(bank, new Set(), 15)[0].id)
     expect(firsts.size).toBeGreaterThan(1)
-  })
-})
-
-describe('sanitizeIntegrity', () => {
-  it('keeps valid counts', () => {
-    expect(sanitizeIntegrity({ tabSwitches: 2, pasteEvents: 1 })).toEqual({ tabSwitches: 2, pasteEvents: 1 })
-  })
-
-  it('coerces missing or malformed values to 0 instead of throwing', () => {
-    expect(sanitizeIntegrity(undefined)).toEqual({ tabSwitches: 0, pasteEvents: 0 })
-    expect(sanitizeIntegrity({ tabSwitches: -3, pasteEvents: '5' })).toEqual({ tabSwitches: 0, pasteEvents: 0 })
-    expect(sanitizeIntegrity({ tabSwitches: 1.5, pasteEvents: null })).toEqual({ tabSwitches: 0, pasteEvents: 0 })
-  })
-
-  it('caps absurd counts', () => {
-    expect(sanitizeIntegrity({ tabSwitches: 1e9, pasteEvents: 0 }).tabSwitches).toBe(1000)
   })
 })

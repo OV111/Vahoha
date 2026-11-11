@@ -28,4 +28,4 @@ Use Groq through `groq-sdk`: `openai/gpt-oss-120b` for conversations and grading
 
 ## Evidence
 
-`backend/config/groq.js`, `modules/ai-agent/services/streamService.js` (comment on retired models), `modules/capstone/lib/tokenBudget.js`, [AI](../AI.md).
+`backend/config/groq.js`, `modules/mentor/services/streamService.js` (comment on retired models), `modules/capstone/lib/tokenBudget.js`, [AI](../AI.md).

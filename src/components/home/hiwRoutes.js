@@ -11,7 +11,7 @@ export const TO = {
   voice: "/voice-review",
   test: "/roadmaps",
   exam: "/roadmaps",
-  mentor: "/ai-agent",
+  mentor: "/mentor",
   teams: "/teams",
   capstone: "/capstone",
   recruiters: FEATURES.candidates ? "/candidates" : "/my-profile",

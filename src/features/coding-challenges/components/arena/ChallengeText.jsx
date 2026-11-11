@@ -1,4 +1,4 @@
-import MarkdownMessage from "@/features/ai-agent/components/MarkdownMessage";
+import MarkdownMessage from "@/features/mentor/components/MarkdownMessage";
 import { challengeMarkdown } from "../../lib/richText";
 
 /** Challenge copy rendered as markdown: inline code chips and fenced code blocks. */

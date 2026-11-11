@@ -16,7 +16,7 @@ import searchRoutes from "./modules/search/index.js";
 import accountRoutes from "./modules/account/index.js";
 import systemMapRoutes, { commentRoutes, driftRoutes, understandingRoutes } from "./modules/system-map/index.js";
 import libraryRoutes, { adminLibraryRoutes, digestRoutes } from "./modules/library/index.js";
-import aiAgentRoutes from "./modules/ai-agent/index.js";
+import mentorRoutes from "./modules/mentor/index.js";
 import roadmapRoutes from "./modules/roadmap/index.js";
 import examRoutes from "./modules/exams/index.js";
 import analyticsRoutes from "./modules/analytics/index.js";
@@ -121,7 +121,7 @@ export function createApp(db) {
   app.use(userRoutes);
   app.use("/search", searchRoutes);
   app.use(accountRoutes);
-  app.use("/api/ai-agent", aiAgentRoutes);
+  app.use("/api/mentor", mentorRoutes);
   app.use("/api/roadmaps", roadmapRoutes);
   app.use("/api/exams", examRoutes);
   app.use("/api/challenges", codingChallengeRoutes);

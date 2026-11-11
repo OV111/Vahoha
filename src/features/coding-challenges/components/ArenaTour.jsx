@@ -31,7 +31,7 @@ const STEPS = [
     id: "mentor",
     selector: "[data-tour='arena-mentor']",
     advance: "both", // Next button, or just click Ask mentor
-    title: "Stuck? Ask the AI mentor",
+    title: "Stuck? Ask the mentor",
     body: "The mentor reads your current code and talks it through with you. Hints are in the side panel.",
   },
   {

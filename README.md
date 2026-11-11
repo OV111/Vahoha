@@ -4,7 +4,7 @@
 
 **Developer learning that won't let you fake it.**
 
-Roadmaps you have to *earn*: server-graded exams gate every layer, and an AI mentor guides you through your weak spots.
+Roadmaps you have to *earn*: server-graded exams gate every layer, and a mentor guides you through your weak spots.
 
 [vahoha.com](https://vahoha.com) · [@vahoha_](https://x.com/vahoha_)
 
@@ -21,7 +21,7 @@ Roadmaps you have to *earn*: server-graded exams gate every layer, and an AI men
 
 ## What is Vahoha?
 
-Vahoha is a learning platform for developers who want proof they actually understood what they studied. Every roadmap layer is locked until you pass a server-graded exam on it; failing records your specific weak spots, and a personal AI mentor (grounded in your real progress and exam history) helps you close them before you retry. Community posts and coding challenges sit around that core loop. Built from scratch, solo, by Vahe Ohanyan. (Formerly called DevsWebs; the repository folder still uses the old name.)
+Vahoha is a learning platform for developers who want proof they actually understood what they studied. Every roadmap layer is locked until you pass a server-graded exam on it; failing records your specific weak spots, and a personal mentor (grounded in your real progress and exam history) helps you close them before you retry. Community posts and coding challenges sit around that core loop. Built from scratch, solo, by Vahe Ohanyan. (Formerly called DevsWebs; the repository folder still uses the old name.)
 
 ---
 
@@ -48,7 +48,7 @@ Vahoha is a learning platform for developers who want proof they actually unders
 
 - **Learning roadmaps:** 15 categories of visual paths with tracks and layers. Each layer is locked until you pass its exam; progress is saved server-side
 - **Exam engine:** server-graded multiple choice, 15 questions per attempt, pass mark 80. Answer keys never leave the server, choices are shuffled per attempt, unseen questions are served first, 3 attempts per day plus a cooldown after a fail
-- **AI mentor:** per-user agent with tools into your progress, exam history and weak spots. Socratic (guides, doesn't hand over answers); streaming, sessions, 30 messages a day
+- **Mentor:** per-user agent with tools into your progress, exam history and weak spots. Socratic (guides, doesn't hand over answers); streaming, sessions, 30 messages a day
 - **Teach-back:** explain a topic in your own words and get it graded against a rubric. One slice shipped; the full voice exam is not built
 - **Mastery:** per-topic status and a "next step" derived from exams, teach-back and challenge results
 - **Dev library:** curated books, docs and guides mapped to roadmap layers
@@ -77,7 +77,7 @@ Vahoha is a learning platform for developers who want proof they actually unders
 | ✅ | Learning roadmap: server-side progress, locked layers |
 | ✅ | Dev library: curated resources linked to roadmap layers |
 | ✅ | Exam engine: server-graded layer exams, pass at 80 |
-| ✅ | AI mentor: tools into your progress, Socratic, sessions |
+| ✅ | Mentor: tools into your progress, Socratic, sessions |
 | ✅ | Mastery map and learner context |
 | ✅ | Coding challenges (Arena): sandboxed grading, proposals |
 | ✅ | Billing: Polar, sandbox-verified, not enforced |

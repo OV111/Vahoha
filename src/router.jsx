@@ -64,7 +64,7 @@ const ProposeChallenge = lazy(
 const ReviewProposals = lazy(
   () => import("./features/coding-challenges/pages/ReviewProposals"),
 );
-const AiAgent = lazy(() => import("./features/ai-agent/AiAgent"));
+const Mentor = lazy(() => import("./features/mentor/Mentor"));
 const CapstonePage = lazy(() => import("./features/capstone/CapstonePage"));
 const CertificatePage = lazy(
   () => import("./features/capstone/CertificatePage"),
@@ -174,14 +174,18 @@ export const routes = [
           { path: "coding-challenges/propose", element: <ProposeChallenge /> },
           { path: "coding-challenges/review", element: <ReviewProposals /> },
           { path: "coding-challenges/:id", element: <ChallengeArena /> },
-          // One shell for both: "new chat" is a state of AiAgent (the hero),
-          // not a separate route. /ai-agent/chat is kept as a redirect so
+          // One shell for both: "new chat" is a state of Mentor (the hero),
+          // not a separate route. /mentor/chat is kept as a redirect so
           // existing links and bookmarks don't 404.
-          { path: "ai-agent", element: <AiAgent /> },
+          // appShell: the chat fills the screen under the navbar, so MainLayout
+          // drops the footer and the full-screen minimum that would make it scroll.
+          { path: "mentor", element: <Mentor />, handle: { appShell: true } },
           {
-            path: "ai-agent/chat",
-            element: <Navigate to="/ai-agent" replace />,
+            path: "mentor/chat",
+            element: <Navigate to="/mentor" replace />,
           },
+          // Old URL from before the rename, still in sent emails and bookmarks.
+          { path: "ai-agent/*", element: <Navigate to="/mentor" replace /> },
           // /capstone shows the default track (api-dev) directly, no redirect;
           // /capstone/:trackId serves other tracks once they have a brief.
           { path: "capstone", element: <CapstonePage /> },

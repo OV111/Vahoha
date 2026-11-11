@@ -33,7 +33,7 @@ const NextStepCard = ({ nextAction }) => {
         </Link>
         {nextAction.target?.kind !== "mentor" && nextAction.title && (
           <Link
-            to="/ai-agent"
+            to="/mentor"
             className={`rounded-md border border-purple-200 bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-purple-100 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/5 ${TEXT} ${FOCUS}`}
           >
             {COPY.askMentor}

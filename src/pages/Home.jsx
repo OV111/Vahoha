@@ -47,7 +47,7 @@ const Home = () => {
         >
           Prove what you know, unlock real progress,{" "}
           <br className="hidden sm:block" />
-          guided by an AI mentor that knows your journey.
+          guided by a mentor that knows your journey.
         </p>
 
         <div

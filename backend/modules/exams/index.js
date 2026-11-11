@@ -4,3 +4,4 @@
  * because the mastery engine, recruiter, users and the mentor all read it.
  */
 export { default } from "./routes/exam.routes.js";
+export { hasLiveExam } from "./services/examEngineService.js";

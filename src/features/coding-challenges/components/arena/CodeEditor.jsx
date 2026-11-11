@@ -37,12 +37,14 @@ import { arenaTheme, arenaHighlight } from "../../lib/editorTheme";
  *    is baked into the EditorState at construction, so a stale closure would
  *    otherwise keep calling the first render's handler forever.
  */
-export default function CodeEditor({ value, onChange, readOnly = false, typescript = false }) {
+export default function CodeEditor({ value, onChange, onPaste, readOnly = false, typescript = false }) {
   const host = useRef(null);
   const view = useRef(null);
   const onChangeRef = useRef(onChange);
 
   onChangeRef.current = onChange;
+  const onPasteRef = useRef(onPaste);
+  onPasteRef.current = onPaste;
 
   useEffect(() => {
     if (!host.current) return;
@@ -65,6 +67,13 @@ export default function CodeEditor({ value, onChange, readOnly = false, typescri
         keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
         EditorState.readOnly.of(readOnly),
         EditorView.editable.of(!readOnly),
+        // Pasting stays allowed (moving your own code around is normal); its
+        // size is only reported, as a review signal.
+        EditorView.domEventHandlers({
+          paste: (event) => {
+            onPasteRef.current?.(event.clipboardData?.getData("text/plain").length ?? 0);
+          },
+        }),
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
             onChangeRef.current?.(update.state.doc.toString());

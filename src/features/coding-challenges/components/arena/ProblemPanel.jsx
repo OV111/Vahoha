@@ -6,10 +6,11 @@ import DifficultyBadge from "../DifficultyBadge";
 import SectionHead from "./SectionHead";
 import ExampleBlock from "./ExampleBlock";
 import { formatTitle } from "../../lib/formatTitle";
+import NoCopy from "@/components/integrity/NoCopy";
 
 export default function ProblemPanel({ challenge }) {
   return (
-    <div className="thin-scrollbar flex flex-col h-full overflow-y-auto gap-5 px-5 py-5">
+    <NoCopy className="thin-scrollbar flex flex-col h-full overflow-y-auto gap-5 px-5 py-5">
       {challenge.weakTopic && (
         <div
           className="flex items-center gap-1.5 self-start px-3 py-1 rounded-full"
@@ -63,6 +64,6 @@ export default function ProblemPanel({ challenge }) {
         <SectionHead>Example</SectionHead>
         <ExampleBlock code={challenge.example} />
       </div>
-    </div>
+    </NoCopy>
   );
 }

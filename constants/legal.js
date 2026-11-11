@@ -13,7 +13,7 @@ export const PRIVACY_EFFECTIVE_DATE = "November 1, 2026";
 export const PRIVACY_SUMMARY = [
   "We collect what's needed to run your account and track your learning.",
   "We never sell your data or show you ads.",
-  "Your AI mentor messages are processed by an AI provider to generate replies.",
+  "Your mentor messages are processed by an AI provider to generate replies.",
   "Deleting your account deletes your data.",
 ];
 
@@ -25,7 +25,7 @@ export const PRIVACY_SECTIONS = [
       ["Account", "Name, username, email and a hashed password. If you sign in with Google or GitHub, the ID, name and email they share with us."],
       ["Profile", "Anything you add: bio, location, profile and banner images, and social links."],
       ["Learning", "Your roadmap path and progress, test attempts and scores, the topics you missed (weak spots), mastery levels, coding challenge attempts and the code you submit, and teach-back answers."],
-      ["AI mentor", "Your conversations with the mentor and how many messages you send per day (used for usage limits)."],
+      ["Mentor", "Your conversations with the mentor and how many messages you send per day (used for usage limits)."],
       ["Capstones", "The repository link you submit, the review of your code, your defense answers and, when you pass, a certificate with your name on it."],
       ["Project maps", "The maps you draw or generate from a repository scan, the notes on their parts, your answers to the understanding check, and comments you leave on team maps."],
       ["Teams", "The teams you join, your GitHub username, the pull requests you contribute to the team repository, your defense answers and the ratings you give and receive."],
@@ -42,7 +42,7 @@ export const PRIVACY_SECTIONS = [
     items: [
       [null, "To run your account, sign you in and keep it secure, including rate limits and temporary lockouts after repeated failed sign-ins. These use your IP address in short-lived counters that expire on their own."],
       [null, "To track your progress, grade tests and show you which topics to revisit."],
-      [null, "To give the AI mentor context about your path, test history and weak spots, so its guidance fits you."],
+      [null, "To give the mentor context about your path, test history and weak spots, so its guidance fits you."],
       [null, "To show your profile and posts to other users, as you choose."],
       [null, "To publish the pages you choose to share: a project map link, a certificate's verification page, your team's evidence page, and your candidate page if you turn recruiter visibility on."],
       [null, "To reply when you contact us, and to fix bugs and improve the product."],
@@ -76,7 +76,7 @@ export const PRIVACY_SECTIONS = [
     title: "Your choices",
     items: [
       [null, "Edit your profile at any time in settings."],
-      [null, "Delete your account in settings. This permanently removes your account, profile, posts, comments, learning progress, test history, weak spots, AI mentor conversations, challenge submissions, capstones and certificates, project maps and the comments you left on team maps, your team memberships and ratings, chat messages you sent, and usage events. Your certificate links stop working, and your name is removed from team evidence pages."],
+      [null, "Delete your account in settings. This permanently removes your account, profile, posts, comments, learning progress, test history, weak spots, mentor conversations, challenge submissions, capstones and certificates, project maps and the comments you left on team maps, your team memberships and ratings, chat messages you sent, and usage events. Your certificate links stop working, and your name is removed from team evidence pages."],
       [null, "Ask for a copy of your data, or ask what we hold, by emailing us."],
     ],
   },
@@ -105,7 +105,7 @@ export const TERMS_SECTIONS = [
     id: "using",
     title: "Using Vahoha",
     items: [
-      "Vahoha is a learning platform for developers: roadmaps, tests, an AI mentor, coding challenges, labs, project maps, capstone projects and team projects.",
+      "Vahoha is a learning platform for developers: roadmaps, tests, a mentor, coding challenges, labs, project maps, capstone projects and team projects.",
       "By creating an account or using the site, you agree to these terms. If you don't agree, don't use the service.",
       "You must provide accurate account details and keep your password secure. You are responsible for activity under your account.",
     ],
@@ -133,7 +133,7 @@ export const TERMS_SECTIONS = [
     id: "ai",
     title: "AI features",
     items: [
-      "The AI mentor and AI-graded features (teach-back, capstone code reviews, project map checks) can be wrong. Treat their output as guidance, not as professional advice, and verify anything important.",
+      "The mentor and AI-graded features (teach-back, capstone code reviews, project map checks) can be wrong. Treat their output as guidance, not as professional advice, and verify anything important.",
       "Usage limits apply and depend on your plan.",
     ],
   },

@@ -3,7 +3,7 @@ import { toTopicSlug, topicSlugOf } from '../../utils/topicKey.js'
 import {
   summarizeExams,
   summarizeLearnerContext,
-} from '../../modules/ai-agent/services/learnerContextService.js'
+} from '../../modules/mentor/services/learnerContextService.js'
 // Status policy lives in the platform service, not the mentor's — the Adaptive
 // Engine owns it so every reader agrees on one answer.
 import {
@@ -12,10 +12,10 @@ import {
   deriveNextAction,
   recomputeMastery,
 } from '../../services/learnerMasteryService.js'
-import { buildSystemPrompt, challengeFocusPrompt, describeActivity } from '../../modules/ai-agent/services/streamService.js'
-import { streamSchema } from '../../modules/ai-agent/schemas/aiAgent.schemas.js'
-import { summarizeTeachingHistory } from '../../modules/ai-agent/services/teachingLogService.js'
-import { executeTool, toolDefinitions } from '../../modules/ai-agent/services/agentTools.js'
+import { buildSystemPrompt, challengeFocusPrompt, describeActivity } from '../../modules/mentor/services/streamService.js'
+import { streamSchema } from '../../modules/mentor/schemas/mentor.schemas.js'
+import { summarizeTeachingHistory } from '../../modules/mentor/services/teachingLogService.js'
+import { executeTool, toolDefinitions } from '../../modules/mentor/services/agentTools.js'
 import { getRubric } from '../../services/rubricService.js'
 
 // ─── canonical topic key ────────────────────────────────────────────────────

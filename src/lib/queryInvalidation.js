@@ -16,7 +16,7 @@ const RULES = [
   [/^\/api\/capstone\//, ["capstone", "readiness", "profile"]],
   [/^\/api\/teams\//, ["readiness", "profile"]],
   [/^\/api\/roadmaps\//, ["roadmap-progress", "journey", "readiness"]],
-  [/^\/api\/ai-agent\/stream/, ["journey"]], // a mentor message counts toward the streak
+  [/^\/api\/mentor\/stream/, ["journey"]], // a mentor message counts toward the streak
   [/^\/my-profile\/notifications/, ["notifications"]],
   [/^\/my-profile\/(settings|cv)/, ["profile"]],
   [/^\/users\/[^/]+\/follow/, ["profile"]],
