@@ -2,18 +2,7 @@ import { Download } from "lucide-react";
 import { exportConversation } from "../lib/exportConversation";
 import ContextMeter from "./ContextMeter";
 
-/**
- * Minimal chat header: the conversation title, and one working action.
- *
- * What was removed and why:
- * - "Vahoha Agent" — a constant. The app chrome already says where you are;
- *   the useful thing here is WHICH conversation you're in.
- * - The session-id badge (`slice(-6)`) — debug output, not user information.
- * - "socratic mode · 5 tools" — it was also factually wrong (there are 7 tools),
- *   and a header is the worst place to keep a hardcoded count in sync.
- * - The streaming indicator — MessageList already renders a live cursor while
- *   the answer streams, so this was a second indicator for the same state.
- */
+/** Chat header: the conversation title, the context meter and an export action. */
 export default function ChatTopBar({ title, messages = [] }) {
   // Nothing to label and nothing to export on a fresh chat, so the bar isn't
   // rendered at all — same as Claude, where the header stays empty until a
@@ -23,7 +12,7 @@ export default function ChatTopBar({ title, messages = [] }) {
   const canExport = messages.some((m) => m.role === "user" || m.role === "assistant");
 
   return (
-    <div className="flex items-center justify-between gap-2 sm:gap-4 pl-14 pr-3 py-2 md:px-5 md:py-3 shrink-0  backdrop-blur-[200px] bg-black/40">
+    <div className="flex items-center justify-between gap-2 sm:gap-4 pl-14 pr-3 py-2 md:px-5 md:py-3 shrink-0 bg-black">
       <h1
         className="text-[15px] tracking-tight truncate min-w-0"
         style={{ color: "#e5e5e5" }}

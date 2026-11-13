@@ -23,6 +23,15 @@ export const THINKING_COPY = {
   moreSteps: (count) => `+${count} more`,
   earlierSteps: (count) => `+${count} earlier`,
   stepsLabel: "Steps the mentor took",
+  composing: "Putting it together…",
+  sources: (count) => `${count} ${count === 1 ? "source" : "sources"}`,
+  sourcesLabel: "Sources used",
+  sourceOpens: (title) => `${title} (opens in a new tab)`,
+};
+
+/** Where each kind of source opens. Ids are checked server-side before they get here. */
+export const SOURCE_ROUTES = {
+  library: (id) => `/libs/${id}`,
 };
 
 const plural = (count, one, many) => `${count} ${count === 1 ? one : many}`;
@@ -32,7 +41,9 @@ const plural = (count, one, many) => `${count} ${count === 1 ? one : many}`;
  * line when the tool errored. `quiet` marks bookkeeping the learner does not need
  * to read about: shown muted and not counted as a tool used.
  *
- * f = { topic, keyword, username, count, found }
+ * f = { topic, keyword, count, found, latestScore, weakAreas, started, solved,
+ *       submissions, status, passed }. Other people's names never appear here:
+ * a profile lookup is described without saying whose.
  */
 export const TOOL_STEPS = {
   get_concept: {
@@ -57,17 +68,28 @@ export const TOOL_STEPS = {
   },
   get_exam_history: {
     running: () => "Reviewing your recent test results",
-    done: (f) => (f.count === 0 ? "No test results yet" : "Reviewed your recent test results"),
+    done: (f) =>
+      f.count === 0
+        ? "No test results yet"
+        : f.count
+          ? `Reviewed your last ${plural(f.count, "test", "tests")}${f.latestScore == null ? "" : ` (latest ${f.latestScore}%)`}`
+          : "Reviewed your recent test results",
     failed: "Couldn't read your test history, continuing without it",
   },
   get_weak_spots: {
     running: () => "Checking your weak spots",
-    done: (f) => (f.count === 0 ? "No weak spots on record" : "Checked your weak spots"),
+    done: (f) =>
+      f.count === 0 ? "No weak spots on record" : f.count ? `Found ${plural(f.count, "weak spot", "weak spots")}` : "Checked your weak spots",
     failed: "Couldn't check your weak spots, continuing without it",
   },
   get_learner_context: {
     running: (f) => (f.topic ? `Checking what you got wrong on ${f.topic}` : "Reviewing your learning progress"),
-    done: (f) => (f.topic ? `Checked what you got wrong on ${f.topic}` : "Reviewed your learning progress"),
+    done: (f) =>
+      f.topic
+        ? f.weakAreas > 0
+          ? `Found ${plural(f.weakAreas, "weak area", "weak areas")} on ${f.topic}`
+          : `Checked what you got wrong on ${f.topic}`
+        : "Reviewed your learning progress",
     failed: "Couldn't review your progress, continuing without it",
   },
   get_user_progress: {
@@ -77,17 +99,29 @@ export const TOOL_STEPS = {
   },
   get_challenge_attempt: {
     running: () => "Reading your challenge code and failing tests",
-    done: () => "Read your challenge code and failing tests",
+    done: (f) =>
+      f.started === false
+        ? "You haven't started this challenge yet"
+        : f.solved
+          ? `Read your solved challenge (${plural(f.submissions, "submission", "submissions")})`
+          : `Read your code (${plural(f.submissions, "submission", "submissions")}, not solved yet)`,
     failed: "Couldn't read your challenge attempt, continuing without it",
   },
   get_capstone_status: {
     running: () => "Checking your capstone review",
-    done: () => "Checked your capstone review",
+    done: (f) =>
+      f.count === 0
+        ? "No capstone started yet"
+        : f.passed === true
+          ? "Checked your capstone: review passed"
+          : f.passed === false
+            ? "Checked your capstone: review not passed yet"
+            : "Checked your capstone status",
     failed: "Couldn't read your capstone status, continuing without it",
   },
   get_user_profile: {
-    running: (f) => (f.username ? `Looking up ${f.username}` : "Looking up a profile"),
-    done: (f) => (f.username ? `Looked up ${f.username}` : "Looked up a profile"),
+    running: () => "Looking up a profile",
+    done: () => "Looked up a profile",
     failed: "Couldn't find that profile, continuing without it",
   },
   log_weak_spot: {

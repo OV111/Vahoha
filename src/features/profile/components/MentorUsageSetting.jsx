@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getMentorUsage } from "@/services/mentorUsageApi";
+import { getMentorUsage } from "@/services/mentorApi";
 import {
   MENTOR_USAGE_COPY as COPY,
   MENTOR_USAGE_DEFAULT_DAYS,

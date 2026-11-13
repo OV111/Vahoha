@@ -4,11 +4,9 @@ import { compactTokens, fullTokens, isCount } from "../lib/formatTokens";
 /**
  * Rendered inline in the transcript when the user runs /context.
  *
- * Every value here comes from GET /api/mentor/context, which reads the same
- * constants and collections the agent actually runs on. That's deliberate: the
- * panel this replaced hardcoded a skill level, streak and exam score that were
- * never true, so the rule now is that this component displays only what the
- * server reports — it computes nothing itself.
+ * Every value comes from GET /api/mentor/context, which reads the same constants
+ * and collections the agent actually runs on. This component displays only what
+ * the server reports and computes nothing itself, so it can't state anything untrue.
  */
 const Row = ({ label, value }) => (
   <div className="flex items-center justify-between gap-4 text-[12px] py-1">

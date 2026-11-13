@@ -129,3 +129,10 @@ export const DROPDOWN_ITEMS = [
     ],
   },
 ];
+
+// The mentor opened over another page (MentorPanel) instead of navigating away.
+export const MENTOR_PANEL_COPY = {
+  title: "Mentor",
+  openFull: "Open the full mentor page",
+  close: "Close mentor",
+};

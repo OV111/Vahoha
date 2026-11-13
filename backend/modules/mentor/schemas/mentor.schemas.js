@@ -94,7 +94,7 @@ const attachmentSchema = z.object({
  * no activity to report beyond being the chat page.
  */
 export const activitySchema = z.object({
-  surface: z.enum(["chat", "exam-results", "roadmap", "challenge", "library"]),
+  surface: z.enum(["chat", "exam-results", "roadmap", "challenge", "library", "lesson", "progress"]),
   path: z.string().trim().max(60).optional(),
   layer: z.string().trim().max(60).optional(),
   // Display spelling; the server slugifies it to join against mastery/concepts.

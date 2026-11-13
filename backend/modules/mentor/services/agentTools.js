@@ -194,7 +194,11 @@ export const toolDefinitions = [
       parameters: {
         type: "object",
         properties: {
-          topic: { type: "string", description: "The topic name to log as a weak spot" },
+          topic: {
+            type: "string",
+            description:
+              "A short topic name, at most 8 words, e.g. 'JWT signatures'. Never a sentence. At most 3 notes per reply, and a topic counts once per day.",
+          },
           path: { type: "string", description: "The roadmap path (e.g. backend)" },
           layer: { type: "string", description: "The layer id (e.g. api-dev-1)" },
         },
@@ -226,6 +230,89 @@ const clampLimit = (raw, fallback = DEFAULT_LIMIT) => {
 // A tool that hangs (a stuck query) must not hold the learner's reply hostage.
 const TOOL_TIMEOUT_MS = 15_000;
 
+// The only tools that change the learner's record. What they write can come from
+// text the model was steered by (an attached file, a post), so a reply gets a
+// small budget of them and their input must have a strict shape.
+const WRITE_TOOLS = new Set(["log_weak_spot", "log_teaching_attempt"]);
+export const MAX_WRITES_PER_TURN = 3;
+
+/** A fresh budget for one reply; streamService passes it in the tool context. */
+export const createWriteBudget = () => ({ used: 0, weakSpotSlugs: new Set() });
+
+// A weak spot's topic is shown in every later prompt, so anything that does not
+// read like a topic name is refused instead of stored: a sentence or an
+// instruction saved here would be replayed into the mentor on every message.
+const TOPIC_MAX_CHARS = 60;
+const TOPIC_MAX_WORDS = 8;
+const TOPIC_SHAPE = /^[\p{L}\p{N}][\p{L}\p{N} .,'()/+#&:-]*$/u;
+const PATH_SHAPE = /^[a-z0-9-]{1,40}$/;
+
+const topicName = (raw) => {
+  const topic = typeof raw === "string" ? raw.replace(/\s+/g, " ").trim() : "";
+  if (!topic || topic.length > TOPIC_MAX_CHARS) return null;
+  if (topic.split(" ").length > TOPIC_MAX_WORDS) return null;
+  if (/:\/\/|www\./i.test(topic) || !TOPIC_SHAPE.test(topic)) return null;
+  return topic;
+};
+
+const OBJECT_ID = /^[a-f0-9]{24}$/i;
+const MAX_SOURCES = 5;
+const MAX_SOURCE_TITLE = 120;
+
+const rowsOf = (result) => (Array.isArray(result) ? result : []);
+
+/**
+ * What the browser is allowed to know about a tool result.
+ *
+ * The model gets the full result; the learner's screen only needs a few facts to
+ * word a step ("Found 5 resources", "latest 62%"). Sending the whole thing would
+ * put other people's profile fields and the learner's own code into every
+ * response body for no reason, so each tool lists exactly what it may expose,
+ * and a tool that is not listed exposes nothing. Sources carry an id and a title
+ * only; the client builds the link.
+ */
+export const summarizeToolResult = (name, result) => {
+  if (result && typeof result === "object" && !Array.isArray(result) && typeof result.error === "string") {
+    return { error: result.error === "tool_timeout" ? "tool_timeout" : "tool_failed" };
+  }
+
+  switch (name) {
+    case "search_library": {
+      const rows = rowsOf(result);
+      return {
+        count: rows.length,
+        sources: rows
+          .filter((r) => OBJECT_ID.test(String(r?._id)) && typeof r.title === "string" && r.title)
+          .slice(0, MAX_SOURCES)
+          .map((r) => ({ kind: "library", id: String(r._id), title: r.title.slice(0, MAX_SOURCE_TITLE) })),
+      };
+    }
+    case "search_posts":
+    case "get_weak_spots":
+      return { count: rowsOf(result).length };
+    case "get_exam_history": {
+      const rows = rowsOf(result);
+      return { count: rows.length, latestScore: typeof rows[0]?.score === "number" ? rows[0].score : null };
+    }
+    case "get_concept":
+      return { found: result?.found !== false };
+    case "get_learner_context":
+      return { weakAreas: result?.teachBackBreakdown?.[0]?.weakCriteria?.length ?? null };
+    case "get_challenge_attempt":
+      return { started: Boolean(result?.started), solved: Boolean(result?.solved), submissions: result?.submissions ?? 0 };
+    case "get_capstone_status": {
+      const latest = result?.capstones?.[0];
+      return {
+        count: result?.capstones?.length ?? 0,
+        status: typeof latest?.status === "string" ? latest.status : null,
+        passed: typeof latest?.review?.passed === "boolean" ? latest.review.passed : null,
+      };
+    }
+    default:
+      return {};
+  }
+};
+
 /**
  * Run one tool. Never throws: a failing or hanging tool becomes a structured
  * error the model can read and talk around, instead of ending the whole turn.
@@ -233,6 +320,13 @@ const TOOL_TIMEOUT_MS = 15_000;
  */
 export async function executeTool(name, args, ctx = {}) {
   const safeArgs = args && typeof args === "object" && !Array.isArray(args) ? args : {};
+
+  // Counted before the tool runs and synchronously, so tools started in parallel
+  // in one round cannot all slip under the limit together.
+  if (WRITE_TOOLS.has(name) && ctx.writeBudget) {
+    if (ctx.writeBudget.used >= MAX_WRITES_PER_TURN) return { error: "write_limit" };
+    ctx.writeBudget.used += 1;
+  }
   let timer;
   const timeout = new Promise((resolve) => {
     timer = setTimeout(() => resolve({ error: "tool_timeout" }), TOOL_TIMEOUT_MS);
@@ -408,7 +502,9 @@ async function runTool(name, args, ctx) {
 
     const logged = await logTeachingAttempt(db, userId, {
       topicSlug,
-      approach: text(args.approach, 300),
+      // One short line: this note is replayed into later prompts, so it is kept
+      // to a description of an angle, not room for paragraphs of text.
+      approach: text(args.approach, 200).replace(/\s+/g, " "),
       misconceptionId: text(args.misconceptionId, 80) || null,
       statusAtTime,
       sessionId: ctx.sessionId ?? null,
@@ -420,11 +516,25 @@ async function runTool(name, args, ctx) {
 
   if (name === "log_weak_spot") {
     if (!userId) return { error: "Not authenticated" };
-    const topic = text(args.topic, 120);
-    if (!topic) return { error: "topic is required" };
-    const path = text(args.path, 60) || "unknown";
-    const layer = text(args.layer, 60) || "unknown";
-    await addWeakSpot(db, userId, { topic, path, layer, source: "agent" });
+    if (!text(args.topic, 200)) return { error: "topic is required" };
+    const topic = topicName(args.topic);
+    if (!topic) return { error: "topic must be a short topic name, like 'JWT signatures'" };
+
+    const slug = toTopicSlug(topic);
+    if (ctx.writeBudget?.weakSpotSlugs.has(slug)) return { logged: true, topic, alreadyLoggedThisTurn: true };
+    ctx.writeBudget?.weakSpotSlugs.add(slug);
+
+    const path = PATH_SHAPE.test(text(args.path, 60)) ? text(args.path, 60) : "unknown";
+    const layer = isLayerId(text(args.layer, 60)) ? text(args.layer, 60) : "unknown";
+    const saved = await addWeakSpot(db, userId, {
+      topic,
+      path,
+      layer,
+      source: "agent",
+      sessionId: ctx.sessionId ?? null,
+    });
+    // Already counted today: nothing changed, so there is nothing to recompute.
+    if (saved?.skipped) return { logged: false, topic, reason: "already noted today" };
 
     // Confusion revealed in conversation is evidence like any other, so the
     // Adaptive Engine has to see it — otherwise the topic the mentor JUST logged

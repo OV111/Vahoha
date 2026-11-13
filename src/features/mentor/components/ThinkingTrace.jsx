@@ -17,13 +17,36 @@ function StepMarker({ state }) {
   return <Check size={12} className="shrink-0 text-white/60" aria-hidden="true" />;
 }
 
-function StepRow({ step }) {
+/**
+ * One step. `showSources` lists what it used as links; they open in a new tab so
+ * the conversation stays where it is, and only appear in the expanded list.
+ */
+function StepRow({ step, showSources = false }) {
   return (
     <li className={`flex items-start gap-2 ${step.quiet ? "text-[11px] text-white/55" : "text-[12px] text-white/70"}`}>
       <span className="mt-0.75">
         <StepMarker state={step.state} />
       </span>
-      <span className="min-w-0 break-words">{step.state === "running" ? step.text : step.outcome}</span>
+      <div className="min-w-0 break-words">
+        {step.state === "running" ? step.text : step.outcome}
+        {showSources && step.sources?.length > 0 && (
+          <ul aria-label={COPY.sourcesLabel} className="mt-1 space-y-0.5">
+            {step.sources.map((source) => (
+              <li key={source.href}>
+                <a
+                  href={source.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={COPY.sourceOpens(source.title)}
+                  className="inline-block text-purple-300 underline underline-offset-2 hover:text-purple-200 focus-visible:outline-2 focus-visible:outline-purple-500 max-md:py-1.5"
+                >
+                  {source.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </li>
   );
 }
@@ -43,7 +66,7 @@ function LiveTrace({ steps }) {
 
   return (
     <div role="status" aria-live="polite" aria-atomic="true">
-      <span className="sr-only">{running[0]?.text ?? COPY.thinking}</span>
+      <span className="sr-only">{running[0]?.text ?? (steps.length > 0 ? COPY.composing : COPY.thinking)}</span>
       <div aria-hidden="true">
         <div className="flex items-center gap-2">
           <ThinkingSpinner thinking size={20} />
@@ -63,6 +86,13 @@ function LiveTrace({ steps }) {
             {running.length > shownRunning.length && (
               <MoreLine>{COPY.moreSteps(running.length - shownRunning.length)}</MoreLine>
             )}
+            {/* Every tool is done but the first word has not arrived: the model is writing. */}
+            {running.length === 0 && (
+              <li className="flex items-center gap-2 text-[12px] text-white/70">
+                <Loader2 size={12} className="shrink-0 text-white/70 motion-safe:animate-spin" aria-hidden="true" />
+                {COPY.composing}
+              </li>
+            )}
           </ul>
         )}
       </div>
@@ -76,6 +106,7 @@ function CollapsedTrace({ steps, summary }) {
   const listId = useId();
   const parts = [summary.running ? COPY.working : COPY.thought(summary.seconds)];
   if (summary.toolCount > 0) parts.push(COPY.usedTools(summary.toolCount));
+  if (summary.sourceCount > 0) parts.push(COPY.sources(summary.sourceCount));
 
   return (
     <div>
@@ -101,7 +132,7 @@ function CollapsedTrace({ steps, summary }) {
         className="mb-2 ml-1 mt-1 space-y-1.5 border-l border-white/10 pl-3"
       >
         {steps.map((step, i) => (
-          <StepRow key={i} step={step} />
+          <StepRow key={i} step={step} showSources />
         ))}
       </ul>
     </div>

@@ -3,8 +3,8 @@
  *
  * Mirrors the real chat layout — right-aligned user bubbles, full-width agent
  * blocks — so the transcript doesn't visibly jump when content lands. It also
- * signals "a conversation is arriving", which is what the old empty-state
- * ("start a conversation") failed to do.
+ * signals "a conversation is arriving", where an empty-state line would read as
+ * "this chat is empty".
  *
  * motion-safe: people who ask their OS for less motion get still placeholders.
  */

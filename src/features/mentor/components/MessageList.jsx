@@ -1,6 +1,7 @@
-import { useRef, useEffect } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import { FileText } from "lucide-react";
-import ThinkingTrace from "./ThinkingTrace";
+import useMentorStore from "@/stores/useMentorStore";
+import ThinkingTraceView from "./ThinkingTrace";
 import MarkdownMessage from "./MarkdownMessage";
 import MessageSkeleton from "./MessageSkeleton";
 import MessageActions from "./MessageActions";
@@ -10,6 +11,12 @@ import TeachBackCard from "./TeachBackCard";
 // How close to the bottom (px) still counts as "following along". If the user
 // has scrolled further up than this, we leave their scroll position alone.
 const STICK_THRESHOLD = 120;
+
+// Finished rows only re-render when their own props change, so a new tool step or
+// a toggled streaming flag does not re-parse every earlier answer.
+const ThinkingTrace = memo(ThinkingTraceView);
+// One shared array, so the memo above can recognise the "no tools yet" trace as unchanged.
+const EMPTY_CALLS = [];
 
 function AttachmentChips({ attachments, align = "left" }) {
   if (!attachments?.length) return null;
@@ -34,7 +41,7 @@ function AttachmentChips({ attachments, align = "left" }) {
  * Rendered as plain text with `whitespace-pre-wrap`, never as Markdown — the
  * user's literal input should never be reinterpreted as formatting.
  */
-function UserMessage({ msg }) {
+const UserMessage = memo(function UserMessage({ msg }) {
   return (
     <div className="flex flex-col items-end">
       <AttachmentChips attachments={msg.attachments} align="right" />
@@ -43,7 +50,7 @@ function UserMessage({ msg }) {
       </div>
     </div>
   );
-}
+});
 
 /**
  * The agent's turn: full width on the left, no bubble.
@@ -51,11 +58,30 @@ function UserMessage({ msg }) {
  * Answers contain code blocks, tables and lists — boxing them in a bubble would
  * fight the Markdown rendering, which is why no serious chat product does it.
  */
-function AssistantMessage({ content }) {
+const AssistantMessage = memo(function AssistantMessage({ content }) {
   return (
     <div className="group">
       <MarkdownMessage content={content} />
       <MessageActions content={content} />
+    </div>
+  );
+});
+
+/**
+ * The reply as it types out. It alone subscribes to the streamed text, so a token
+ * re-renders this one block instead of the whole transcript and page, and it
+ * asks the list to keep following along as the text grows.
+ */
+function StreamingAnswer({ onGrow }) {
+  const content = useMentorStore((s) => s.streamingContent);
+  useEffect(() => {
+    onGrow();
+  }, [content, onGrow]);
+
+  return (
+    <div>
+      <MarkdownMessage content={content} />
+      <span className="animate-pulse text-[14px] text-white">▊</span>
     </div>
   );
 }
@@ -79,7 +105,6 @@ function groupToolCalls(messages) {
 export default function MessageList({
   messages,
   isStreaming,
-  streamingContent,
   isLoadingSession = false,
   onAnswerFollowUp,
   // ChatTopBar floats on top of this list (absolute + backdrop-blur) instead
@@ -87,6 +112,9 @@ export default function MessageList({
   // the header with no way to scroll it into view.
   topInset = false,
 }) {
+  // Only whether any text has arrived (it flips once per reply); the text itself is
+  // StreamingAnswer's business.
+  const hasStreamText = useMentorStore((s) => s.streamingContent !== "");
   const containerRef = useRef(null);
   const prevLengthRef = useRef(messages.length);
 
@@ -99,11 +127,15 @@ export default function MessageList({
     el.scrollTo({ top: el.scrollHeight, behavior: smooth ? "smooth" : "auto" });
   };
 
-  const isNearBottom = () => {
+  // Follow the answer as it grows, but only while the user is already at the
+  // bottom — otherwise we'd fight them every time they scroll up to re-read.
+  const followIfNearBottom = useCallback(() => {
     const el = containerRef.current;
-    if (!el) return true;
-    return el.scrollHeight - el.scrollTop - el.clientHeight < STICK_THRESHOLD;
-  };
+    if (!el) return;
+    if (el.scrollHeight - el.scrollTop - el.clientHeight < STICK_THRESHOLD) {
+      el.scrollTo({ top: el.scrollHeight, behavior: "auto" });
+    }
+  }, []);
 
   // Jump to the bottom on mount without animation, so a session opened with
   // existing history starts at the newest message instead of scrolling through it.
@@ -120,21 +152,17 @@ export default function MessageList({
     scrollToBottom(true);
   }, [messages.length]);
 
-  // Follow the answer as it streams in, but only while the user is already at
-  // the bottom — otherwise we'd fight them every time they scroll up to re-read.
-  useEffect(() => {
-    if (!isStreaming || !streamingContent) return;
-    if (isNearBottom()) scrollToBottom(false);
-  }, [streamingContent, isStreaming]);
-
   // Same while the steps stream in before any answer text: the trace grows
-  // without adding a message, so the length-based effect above never fires.
+  // without adding a message, so the length-based effect above never fires. Once
+  // text arrives, StreamingAnswer does the following.
   useEffect(() => {
-    if (!isStreaming || streamingContent) return;
-    if (isNearBottom()) scrollToBottom(false);
-  }, [messages, isStreaming, streamingContent]);
+    if (!isStreaming || hasStreamText) return;
+    followIfNearBottom();
+  }, [messages, isStreaming, hasStreamText, followIfNearBottom]);
 
-  const items = groupToolCalls(messages);
+  // Stable between renders that do not change the messages (a streaming flag
+  // flipping), which is what lets the memoized rows below skip re-rendering.
+  const items = useMemo(() => groupToolCalls(messages), [messages]);
   const traceIsLast = items.at(-1)?.kind === "trace";
 
   return (
@@ -164,7 +192,7 @@ export default function MessageList({
               <ThinkingTrace
                 key={`trace-${item.key}`}
                 calls={item.calls}
-                live={current && isStreaming && !streamingContent}
+                live={current && isStreaming && !hasStreamText}
                 streaming={current && isStreaming}
               />
             );
@@ -196,17 +224,12 @@ export default function MessageList({
           return <AssistantMessage key={i} content={msg.content} />;
         })}
 
-        {isStreaming && streamingContent && (
-          <div>
-            <MarkdownMessage content={streamingContent} />
-            <span className="animate-pulse text-[14px] text-white">▊</span>
-          </div>
-        )}
+        {isStreaming && hasStreamText && <StreamingAnswer onGrow={followIfNearBottom} />}
 
         {/* Before the first token and before any tool call there is no trace yet;
             show "Thinking…" so the wait reads as progress. Once tools run, the
             trace in the list above is the live one. */}
-        {isStreaming && !streamingContent && !traceIsLast && <ThinkingTrace calls={[]} live streaming />}
+        {isStreaming && !hasStreamText && !traceIsLast && <ThinkingTrace calls={EMPTY_CALLS} live streaming />}
       </div>
     </div>
   );

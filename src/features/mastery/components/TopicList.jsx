@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Sparkles } from "lucide-react";
 import { STATUS_META, STATUS_ORDER } from "../lib/statusMeta";
 import { PROGRESS_COPY } from "../../../../constants/progress";
 import { TEXT, MUTED, BORDER, CHIP, FOCUS } from "../lib/tone";
@@ -9,7 +9,7 @@ const COPY = PROGRESS_COPY.topics;
 const formatDate = (value) =>
   value ? new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : null;
 
-const TopicRow = ({ topic }) => {
+const TopicRow = ({ topic, onAskMentor }) => {
   const misconceptions = topic.misconceptions.filter((m) => m.description);
   const date = formatDate(topic.lastEvidenceAt);
 
@@ -35,12 +35,19 @@ const TopicRow = ({ topic }) => {
               <li key={m.id}>“{m.description}”</li>
             ))}
           </ul>
-          <Link
-            to="/mentor"
-            className={`mt-2 inline-block rounded text-xs font-medium text-amber-800 hover:underline dark:text-amber-300 ${FOCUS}`}
+          <button
+            type="button"
+            onClick={() =>
+              onAskMentor({
+                origin: { surface: "progress", topic: topic.title, layer: topic.layer?.title },
+                prompt: PROGRESS_COPY.mentorPrompts.misconception(topic.title, misconceptions[0].description),
+                subtitle: topic.title,
+              })
+            }
+            className={`mt-2 inline-flex cursor-pointer items-center gap-1.5 rounded text-xs font-medium text-amber-800 hover:underline dark:text-amber-300 ${FOCUS}`}
           >
-            {COPY.fixWithMentor}
-          </Link>
+            <Sparkles size={12} aria-hidden="true" /> {COPY.fixWithMentor}
+          </button>
         </div>
       )}
     </li>
@@ -64,7 +71,7 @@ const groupByLayer = (topics) => {
  * has any. Replaces a single long list of every topic: a learner deciding what
  * to work on needs one group, not all of them at once.
  */
-const TopicList = ({ topics }) => {
+const TopicList = ({ topics, onAskMentor }) => {
   const counts = Object.fromEntries(STATUS_ORDER.map((s) => [s, topics.filter((t) => t.status === s).length]));
   const [tab, setTab] = useState(() => STATUS_ORDER.find((s) => counts[s] > 0) ?? STATUS_ORDER[0]);
   const shown = topics.filter((t) => t.status === tab);
@@ -125,7 +132,7 @@ const TopicList = ({ topics }) => {
               </h3>
               <ul className={`mt-1 divide-y border-t ${BORDER} divide-zinc-200 dark:divide-white/10`}>
                 {group.topics.map((t) => (
-                  <TopicRow key={t.slug} topic={t} />
+                  <TopicRow key={t.slug} topic={t} onAskMentor={onAskMentor} />
                 ))}
               </ul>
             </div>

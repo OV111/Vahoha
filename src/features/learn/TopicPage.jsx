@@ -8,6 +8,7 @@ import useLessonContent from "./hooks/useLessonContent";
 import LearnState from "./components/LearnState";
 import LessonPlayer from "./components/LessonPlayer";
 import { findLesson } from "./lib/curriculum";
+import { mentorOrigin } from "@/features/mentor/lib/mentorOrigin";
 
 const primaryLink =
   "inline-flex min-h-11 items-center gap-2 rounded-xl bg-purple-600 px-5 text-sm font-medium text-white transition-colors hover:bg-purple-500";
@@ -108,6 +109,7 @@ export default function TopicPage() {
         )}
         <Link
           to="/mentor"
+          state={mentorOrigin("lesson", { topic: lesson.title, path: track.id, layer: layer.id })}
           className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-purple-600/50 px-4 text-sm font-medium text-purple-300 transition-colors hover:bg-purple-600/20"
         >
           <Sparkles size={14} aria-hidden="true" /> Ask the mentor about this

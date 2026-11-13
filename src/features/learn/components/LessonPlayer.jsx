@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { mentorOrigin } from "@/features/mentor/lib/mentorOrigin";
 import { FlaskConical, ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
 import MarkdownMessage from "@/features/mentor/components/MarkdownMessage";
 import CheckQuestion from "./CheckQuestion";
@@ -149,6 +150,7 @@ function Finished({ lesson, content, score, next, testHref, layerTitle, labHref 
         )}
         <Link
           to="/mentor"
+          state={mentorOrigin("lesson", { topic: lesson.title, layer: layerTitle })}
           className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-neutral-700 px-4 text-sm text-neutral-200 hover:border-purple-500"
         >
           <Sparkles size={14} aria-hidden="true" /> Ask the mentor

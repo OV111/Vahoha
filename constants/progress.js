@@ -28,6 +28,12 @@ export const PROGRESS_COPY = Object.freeze({
 
   nextStep: "Next step",
   askMentor: "Ask the mentor about it",
+  // Pre-filled into the mentor panel's composer; the learner edits or sends it.
+  mentorPrompts: {
+    nextStep: (title) => `My next step is "${title}". Where should I start, and what should I watch out for?`,
+    misconception: (topic, belief) =>
+      `On ${topic}, the platform says I may believe: "${belief}". Help me work out what's wrong with that.`,
+  },
 
   topics: {
     heading: "Topics",

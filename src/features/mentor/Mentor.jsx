@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AlertTriangle, RefreshCw, X, GraduationCap, PanelLeft } from "lucide-react";
+import { useShallow } from "zustand/react/shallow";
 import useMentorStore from "@/stores/useMentorStore";
 import useAgentStream from "./hooks/useAgentStream";
 import SessionsSidebar from "./components/SessionsSidebar";
@@ -9,8 +10,18 @@ import MessageList from "./components/MessageList";
 import ChatInput from "./components/ChatInput";
 import AgentHero from "./components/AgentHero";
 import PromptChips from "./components/PromptChips";
-import { getAccessToken, API_BASE_URL, authHeaders, apiFetch } from "../../../constants/api";
-import { SESSIONS_PAGE_SIZE } from "../../../constants/mentor";
+import { getAccessToken } from "../../../constants/api";
+import { readMentorOrigin } from "./lib/mentorOrigin";
+import {
+  listSessions,
+  getSession,
+  createSession,
+  updateSession,
+  deleteSession,
+  deleteAllSessions,
+  getMentorContext,
+  submitTeachBack,
+} from "@/services/mentorApi";
 
 /**
  * Placeholder title shown for the second or so before the generated one arrives.
@@ -29,8 +40,12 @@ const placeholderTitle = (text) => {
  * panel): no sessions sidebar, fills its parent instead of the viewport, and
  * starts a fresh conversation tied to `challengeContext`, which is what the
  * full page receives through router state when navigated to.
+ *
+ * `origin` + `initialPrompt` do the same for any other page (MentorPanel): a
+ * fresh conversation about where the learner was, with the question pre-filled
+ * but NOT sent, so they can edit it before it spends one of their daily messages.
  */
-export default function Mentor({ embedded = false, challengeContext = null }) {
+export default function Mentor({ embedded = false, challengeContext = null, origin = null, initialPrompt = "" }) {
   // The composer draft lives here because the hero's prompt chips sit outside
   // ChatInput and need to write into it.
   const [draft, setDraft] = useState("");
@@ -63,11 +78,21 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
       setOriginContext({ surface: "challenge", path, layer, topic, challengeSlug });
       setFocusToken((n) => n + 1);
       navigate(".", { replace: true, state: {} });
+    } else if (location.state?.origin) {
+      // Any other page's "Ask the mentor" link (see lib/mentorOrigin.js).
+      const origin = readMentorOrigin(location.state.origin);
+      if (origin) setOriginContext(origin);
+      setFocusToken((n) => n + 1);
+      navigate(".", { replace: true, state: {} });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.state]);
 
 
+  // A selector, not the whole store: `streamingContent` changes on every token, and
+  // subscribing to it here would re-render this page (sidebar, composer, list)
+  // dozens of times a second while a reply streams. Only whether text exists is
+  // needed here; MessageList's StreamingAnswer reads the text itself.
   const {
     sessions: storeSessions,
     activeSessionId: storeActiveSessionId,
@@ -78,12 +103,28 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
     sessionsTotal,
     sessionsHasMore,
     isLoadingMoreSessions,
-    streamingContent,
     error,
     setActiveSession,
     setSessions,
     setError,
-  } = useMentorStore();
+  } = useMentorStore(
+    useShallow((s) => ({
+      sessions: s.sessions,
+      activeSessionId: s.activeSessionId,
+      messages: s.messages,
+      isStreaming: s.isStreaming,
+      isLoadingSession: s.isLoadingSession,
+      isLoadingSessions: s.isLoadingSessions,
+      sessionsTotal: s.sessionsTotal,
+      sessionsHasMore: s.sessionsHasMore,
+      isLoadingMoreSessions: s.isLoadingMoreSessions,
+      error: s.error,
+      setActiveSession: s.setActiveSession,
+      setSessions: s.setSessions,
+      setError: s.setError,
+    })),
+  );
+  const hasStreamText = useMentorStore((s) => s.streamingContent !== "");
 
   // Server-side title search. Kept apart from the store's list so clearing the
   // box restores the normal list instantly, with no refetch. `searchSeq` marks
@@ -100,7 +141,7 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
   // "New chat" is a state, not a page: no messages, nothing streaming, and no
   // session being loaded.
   const isEmptyChat =
-    messages.length === 0 && !isStreaming && !isLoadingSession && !streamingContent;
+    messages.length === 0 && !isStreaming && !isLoadingSession && !hasStreamText;
 
   // null (not a placeholder) when there's no conversation yet — ChatTopBar
   // renders nothing at all in that case.
@@ -132,12 +173,17 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [embedded, ctxSlug, ctxPath, ctxLayer, ctxTopic]);
 
-  const fetchSessionsPage = async (params = {}) => {
-    const qs = new URLSearchParams({ limit: String(SESSIONS_PAGE_SIZE), ...params });
-    const res = await apiFetch(`${API_BASE_URL}/api/mentor/sessions?${qs}`, { headers: authHeaders() });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json();
-  };
+  const originKey = embedded && !ctxSlug && origin ? JSON.stringify(origin) : null;
+  useEffect(() => {
+    if (!originKey) return;
+    setActiveSession(null);
+    useMentorStore.getState().setMessages([]);
+    setError(null);
+    setOriginContext(readMentorOrigin(JSON.parse(originKey)) ?? { surface: "chat" });
+    setDraft(initialPrompt);
+    setFocusToken((n) => n + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [originKey, initialPrompt]);
 
   // A page can overlap the list (a chat created or bumped meanwhile), and a
   // duplicate _id would render the same row twice.
@@ -151,11 +197,7 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
     if (embedded) return;
     const loadSessions = async () => {
       try {
-        const res = await apiFetch(`${API_BASE_URL}/api/mentor/sessions?limit=${SESSIONS_PAGE_SIZE}`, {
-          headers: authHeaders(),
-        });
-        if (!res.ok) return;
-        const data = await res.json();
+        const data = await listSessions();
         useMentorStore.getState().setSessionsPage({
           sessions: data.sessions ?? [],
           total: data.total ?? (data.sessions ?? []).length,
@@ -178,7 +220,7 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
 
     store.setLoadingMoreSessions(true);
     try {
-      const data = await fetchSessionsPage({ before });
+      const data = await listSessions({ before });
       const current = useMentorStore.getState();
       current.setSessionsPage({
         sessions: mergeById(current.sessions, data.sessions ?? []),
@@ -213,7 +255,7 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
     }));
     let next;
     try {
-      const data = await fetchSessionsPage(searchParams(q, challenge));
+      const data = await listSessions(searchParams(q, challenge));
       next = { sessions: data.sessions ?? [], hasMore: Boolean(data.hasMore) };
     } catch {
       next = { sessions: [], hasMore: false };
@@ -230,7 +272,7 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
     const seq = searchSeq.current;
     setSearch((s) => s && { ...s, loadingMore: true });
     try {
-      const data = await fetchSessionsPage({ ...searchParams(search.query, search.challenge), before });
+      const data = await listSessions({ ...searchParams(search.query, search.challenge), before });
       if (seq !== searchSeq.current) return;
       setSearch((s) => s && {
         ...s,
@@ -261,19 +303,14 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
     setOriginContext({ surface: "chat" });
 
     try {
-      const res = await apiFetch(`${API_BASE_URL}/api/mentor/sessions/${sessionId}`, {
-        headers: authHeaders(),
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const session = await res.json();
+      const session = await getSession(sessionId);
       useMentorStore.getState().setMessages(
         (session.messages ?? []).map((m) => ({ role: m.role, content: m.content }))
       );
     } catch {
-      // Previously this returned silently, leaving an empty transcript that
-      // was indistinguishable from a genuinely empty conversation.
-      // Distinct from "network" so the banner doesn't offer a Retry that would
-      // try to RE-SEND a message instead of re-loading the conversation.
+      // Surface the failure: a silent empty transcript looks like a genuinely empty
+      // conversation. Distinct from "network" so the banner doesn't offer a Retry
+      // that would try to RE-SEND a message instead of re-loading the conversation.
       setError({ type: "session_load", message: "Couldn't load this conversation." });
     } finally {
       useMentorStore.getState().setLoadingSession(false);
@@ -282,13 +319,7 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
 
   const handleNewSession = async () => {
     try {
-      const res = await apiFetch(`${API_BASE_URL}/api/mentor/sessions`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...authHeaders() },
-        body: JSON.stringify({ title: "New conversation" }),
-      });
-      if (!res.ok) return;
-      const session = await res.json();
+      const session = await createSession("New conversation");
       setSessions([session, ...useMentorStore.getState().sessions]);
       useMentorStore.getState().adjustSessionsTotal(1);
       setActiveSession(session._id);
@@ -315,21 +346,12 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
       setTeachBackContext(null);
 
       const isFollowUp = ctx.mode === "followup";
-      const url = isFollowUp
-        ? `${API_BASE_URL}/api/exams/submit-teach-back-followup`
-        : `${API_BASE_URL}/api/exams/submit-teach-back`;
       const body = isFollowUp
         ? { sessionId: ctx.sessionId, answerText: text }
         : { path: ctx.path, layer: ctx.layer, topic: ctx.topic, answerText: text };
 
       try {
-        const res = await apiFetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", ...authHeaders() },
-          body: JSON.stringify(body),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+        const data = await submitTeachBack(body, { followUp: isFollowUp });
         replaceLastTeachBack({ role: "teach_back", data });
       } catch (err) {
         replaceLastTeachBack({ role: "teach_back", error: err.message || "Couldn't grade this explanation." });
@@ -342,11 +364,7 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
     if (text.trim() === "/context") {
       appendMessage({ role: "context", loading: true });
       try {
-        const res = await apiFetch(`${API_BASE_URL}/api/mentor/context`, {
-          headers: authHeaders(),
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+        const data = await getMentorContext();
         replaceLastContext({ role: "context", data });
       } catch {
         replaceLastContext({ role: "context", error: "Couldn't load context." });
@@ -358,13 +376,7 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
 
     if (!sessionId) {
       try {
-        const res = await apiFetch(`${API_BASE_URL}/api/mentor/sessions`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", ...authHeaders() },
-          body: JSON.stringify({ title: placeholderTitle(text) }),
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const session = await res.json();
+        const session = await createSession(placeholderTitle(text));
         sessionId = session._id;
         setActiveSession(sessionId);
         setSessions([session, ...useMentorStore.getState().sessions]);
@@ -389,12 +401,7 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
     patchSearch(retitle(title));
 
     try {
-      const res = await apiFetch(`${API_BASE_URL}/api/mentor/sessions/${sessionId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", ...authHeaders() },
-        body: JSON.stringify({ title }),
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      await updateSession(sessionId, { title });
     } catch {
       setSessions(previous);
       patchSearch(retitle(previousTitle));
@@ -419,12 +426,7 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
     patchSearch(repin(pinned));
 
     try {
-      const res = await apiFetch(`${API_BASE_URL}/api/mentor/sessions/${sessionId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", ...authHeaders() },
-        body: JSON.stringify({ pinned }),
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      await updateSession(sessionId, { pinned });
     } catch {
       setSessions(previous);
       patchSearch(repin(!pinned));
@@ -447,11 +449,7 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
     }
 
     try {
-      const res = await apiFetch(`${API_BASE_URL}/api/mentor/sessions/${sessionId}`, {
-        method: "DELETE",
-        headers: authHeaders(),
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      await deleteSession(sessionId);
     } catch {
       setSessions(previous);
       setSearch(previousSearch);
@@ -482,11 +480,7 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
     }
 
     try {
-      const res = await apiFetch(`${API_BASE_URL}/api/mentor/sessions${keepPinned ? "?keepPinned=true" : ""}`, {
-        method: "DELETE",
-        headers: authHeaders(),
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      await deleteAllSessions({ keepPinned });
     } catch {
       setSessions(previous);
       setSearch(previousSearch);
@@ -633,7 +627,6 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
               messages={messages}
               isLoadingSession={isLoadingSession}
               isStreaming={isStreaming}
-              streamingContent={streamingContent}
               onAnswerFollowUp={handleAnswerFollowUp}
               topInset={Boolean(activeTitle)}
             />
@@ -662,6 +655,7 @@ export default function Mentor({ embedded = false, challengeContext = null }) {
             onValueChange={setDraft}
             focusToken={focusToken}
             spacious={isEmptyChat && !embedded}
+            stacked={embedded}
             />
             {isEmptyChat && !embedded && <PromptChips onSelectPrompt={insertPrompt} />}
 

@@ -9,13 +9,26 @@ export const getWeakSpots = async (db, userId) => {
     .toArray();
 };
 
+// The mentor may raise a topic's fail count at most once per day. A test or a
+// review is real evidence and always counts; the mentor's note can come from text
+// it was steered by (an attached file, a post), so repeating it must not be able
+// to make a topic look badly failed.
+const AGENT_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+
 export const addWeakSpot = async (
   db,
   userId,
-  { topic, path, layer, source },
+  { topic, path, layer, source, sessionId = null },
 ) => {
   const collection = db.collection("weakSpots");
   const slug = toTopicSlug(topic);
+  const fromAgent = source === "agent";
+  const now = new Date();
+  // Kept apart from failCount, so what the mentor added can be told from
+  // what tests and reviews found, and reviewed or undone later.
+  const agentMark = fromAgent
+    ? { lastAgentLogAt: now, lastAgentSessionId: sessionId ? new ObjectId(sessionId) : null }
+    : {};
 
   const existing = await collection.findOne({
     userId: new ObjectId(userId),
@@ -27,16 +40,31 @@ export const addWeakSpot = async (
   });
 
   if (existing) {
-    return collection.findOneAndUpdate(
-      { _id: existing._id },
+    // The cooldown is part of the filter, so two replies arriving together
+    // cannot both pass it: only one update can match.
+    const filter = fromAgent
+      ? {
+          _id: existing._id,
+          $or: [
+            { lastAgentLogAt: { $exists: false } },
+            { lastAgentLogAt: { $lt: new Date(now.getTime() - AGENT_COOLDOWN_MS) } },
+          ],
+        }
+      : { _id: existing._id };
+
+    const updated = await collection.findOneAndUpdate(
+      filter,
       {
-        $inc: { failCount: 1 },
+        $inc: { failCount: 1, ...(fromAgent && { agentLogCount: 1 }) },
         // Backfill the slug opportunistically, so legacy documents self-heal on
         // the next write even if the migration script never runs.
-        $set: { slug, resolvedAt: null, updatedAt: new Date() },
+        $set: { slug, resolvedAt: null, updatedAt: now, ...agentMark },
       },
       { returnDocument: "after" },
     );
+    // No match means the mentor already counted this topic today.
+    if (fromAgent && !(updated?.value ?? updated)) return { ...existing, skipped: true };
+    return updated;
   }
 
   const doc = {
@@ -49,9 +77,10 @@ export const addWeakSpot = async (
     layer,
     source,
     failCount: 1,
+    ...(fromAgent && { agentLogCount: 1, ...agentMark }),
     resolvedAt: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: now,
+    updatedAt: now,
   };
   const result = await collection.insertOne(doc);
   return { ...doc, _id: result.insertedId };

@@ -1,0 +1,14 @@
+@keyframes mentor-panel-fade { from { opacity: 0; } }
+@keyframes mentor-panel-up { from { transform: translateY(100%); } }
+@keyframes mentor-panel-left { from { transform: translateX(100%); } }
+
+.mentor-panel-backdrop { animation: mentor-panel-fade 200ms ease-out; }
+.mentor-panel { animation: mentor-panel-up 280ms cubic-bezier(0.32, 0.72, 0, 1); }
+
+@media (min-width: 768px) {
+  .mentor-panel { animation-name: mentor-panel-left; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mentor-panel, .mentor-panel-backdrop { animation: none; }
+}

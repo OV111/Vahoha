@@ -1,4 +1,6 @@
+import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
+import MentorPanel from "@/features/mentor/components/MentorPanel";
 import { AlertTriangle } from "lucide-react";
 import useMastery from "./hooks/useMastery";
 import useJourney from "./hooks/useJourney";
@@ -51,6 +53,9 @@ const ProgressPage = () => {
   const journey = useJourney();
   const readiness = useReadiness();
   const data = mastery.data;
+  // { origin, prompt, subtitle } while the mentor panel is open over this page.
+  const [mentor, setMentor] = useState(null);
+  const closeMentor = useCallback(() => setMentor(null), []);
 
   return (
     // `dark` pins this page to dark styles: MainLayout's background is always
@@ -75,10 +80,14 @@ const ProgressPage = () => {
           )}
           {mastery.error && <LoadError error={mastery.error} onRetry={mastery.reload} />}
 
-          {data && <NextStepCard nextAction={data.nextAction} />}
+          {data && <NextStepCard nextAction={data.nextAction} onAskMentor={setMentor} />}
           {data && data.summary.total === 0 && <NoTopics />}
           {data && data.summary.total > 0 &&
-            (data.detail ? <TopicList topics={data.topics} /> : <LockedTopics count={data.lockedTopicCount} />)}
+            (data.detail ? (
+              <TopicList topics={data.topics} onAskMentor={setMentor} />
+            ) : (
+              <LockedTopics count={data.lockedTopicCount} />
+            ))}
         </div>
 
         <aside className="order-first space-y-6 lg:order-2" aria-label="Your path and activity">
@@ -91,6 +100,14 @@ const ProgressPage = () => {
           {readiness.error && <LoadError error={readiness.error} onRetry={readiness.reload} />}
         </aside>
       </div>
+
+      <MentorPanel
+        open={Boolean(mentor)}
+        onClose={closeMentor}
+        origin={mentor?.origin}
+        initialPrompt={mentor?.prompt}
+        subtitle={mentor?.subtitle}
+      />
     </div>
   );
 };

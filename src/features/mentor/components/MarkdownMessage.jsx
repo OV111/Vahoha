@@ -27,7 +27,19 @@ function remarkLineBreaks() {
   return walk;
 }
 
+const MAX_ALT_CHARS = 80;
+
 const components = {
+  // Images are never loaded. The browser fetches an <img> the moment it renders,
+  // with no click, so a reply steered by injected text could append private data
+  // to an attacker's image address and leak it just by being displayed. Nothing
+  // authored here uses images, so the safe behaviour is the default for everyone.
+  img: ({ alt }) => (
+    <span className="italic text-white/50">
+      [image not shown{alt ? `: ${String(alt).slice(0, MAX_ALT_CHARS)}` : ""}]
+    </span>
+  ),
+
   // `pre` is handled by the `code` renderer below, so unwrap it to avoid
   // nesting <pre> inside <pre>.
   pre: ({ children }) => children,

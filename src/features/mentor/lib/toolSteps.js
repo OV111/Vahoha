@@ -1,4 +1,4 @@
-import { THINKING_COPY, TOOL_STEPS, TOOL_STEP_MAX_TEXT } from "../../../../constants/mentorTools";
+import { THINKING_COPY, SOURCE_ROUTES, TOOL_STEPS, TOOL_STEP_MAX_TEXT } from "../../../../constants/mentorTools";
 
 /** Model-provided text is untrusted display text: collapse whitespace and cap the length. */
 const clip = (value) => {
@@ -11,27 +11,41 @@ const clip = (value) => {
 const humanize = (slug) => clip(typeof slug === "string" ? slug.replace(/[-_]+/g, " ") : "");
 
 const countOf = (result) => {
+  if (Number.isFinite(result?.count)) return result.count;
   if (Array.isArray(result)) return result.length;
-  if (Array.isArray(result?.results)) return result.results.length;
   return null;
 };
 
+const numberOr = (value) => (Number.isFinite(value) ? value : null);
+
+/**
+ * Links for the sources a step used. The server already limits these to an id and a
+ * title, but a link is built from them, so the kind must be a known route and the
+ * id plain characters, or the source is dropped.
+ */
+const sourcesOf = (result) =>
+  (Array.isArray(result?.sources) ? result.sources : []).flatMap((s) =>
+    SOURCE_ROUTES[s?.kind] && typeof s.id === "string" && /^[\w-]+$/.test(s.id) && typeof s.title === "string"
+      ? [{ title: clip(s.title), href: SOURCE_ROUTES[s.kind](s.id) }]
+      : [],
+  );
+
+// Only what the screen needs, and never a name: `username` in the input is
+// deliberately not read, so a profile lookup cannot show whose profile it was.
 const fieldsOf = (input = {}, result) => ({
   topic: humanize(input.slug ?? input.topicSlug ?? input.topic ?? input.challengeSlug),
   keyword: clip(input.keyword),
-  username: clip(input.username),
   count: countOf(result),
   found: result?.found,
+  latestScore: numberOr(result?.latestScore),
+  weakAreas: numberOr(result?.weakAreas),
+  started: result?.started,
+  solved: result?.solved,
+  submissions: numberOr(result?.submissions),
+  status: typeof result?.status === "string" ? clip(result.status) : null,
+  passed: typeof result?.passed === "boolean" ? result.passed : null,
 });
 
-/**
- * One tool call as a line the learner can read.
- *
- * `settled` means the turn is over: a call still marked running then never
- * finished (cancelled or errored stream), and must not spin forever in an old trace.
- *
- * @returns {{ text: string, outcome: string|null, state: "running"|"done"|"failed", quiet: boolean }}
- */
 export const describeStep = (call, { settled = false } = {}) => {
   const config = TOOL_STEPS[call.name];
   const fields = fieldsOf(call.input, call.result);
@@ -49,7 +63,13 @@ export const describeStep = (call, { settled = false } = {}) => {
     return { text, outcome, state: "failed", quiet };
   }
 
-  return { text, outcome: config ? config.done(fields) : THINKING_COPY.genericDone, state: "done", quiet };
+  return {
+    text,
+    outcome: config ? config.done(fields) : THINKING_COPY.genericDone,
+    state: "done",
+    quiet,
+    sources: sourcesOf(call.result),
+  };
 };
 
 /**
@@ -66,6 +86,7 @@ export const summarizeTrace = (calls, steps) => {
   return {
     seconds: seconds >= 1 ? seconds : null,
     toolCount: steps.filter((s) => !s.quiet).length,
+    sourceCount: steps.reduce((n, s) => n + (s.sources?.length ?? 0), 0),
     running: steps.some((s) => s.state === "running"),
   };
 };

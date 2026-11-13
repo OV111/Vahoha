@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { mentorOrigin } from "@/features/mentor/lib/mentorOrigin";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import NotFound from "../../components/feedback/NotFound";
@@ -162,7 +163,11 @@ export default function TopicPage() {
                   </li>
                 ))}
                 <li>
-                  <Link to="/mentor" className="f-practice-link">
+                  <Link
+                    to="/mentor"
+                    state={mentorOrigin("lesson", { topic: topic.title, path: "foundations" })}
+                    className="f-practice-link"
+                  >
                     <span>
                       <span className="f-practice-kind">Mentor</span>
                       Explain {topic.title} back to the mentor

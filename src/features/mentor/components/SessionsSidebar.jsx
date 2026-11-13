@@ -146,7 +146,6 @@ export default function SessionsSidebar({
     searching &&
     (search?.query !== trimmed || Boolean(search?.challenge) !== challengeOnly || Boolean(search?.loading));
 
-  // Picking a chat (or starting one) on a phone should also dismiss the drawer.
   const withClose = (fn) => (...args) => {
     fn(...args);
     onMobileClose();
@@ -180,12 +179,13 @@ export default function SessionsSidebar({
           ) : (
             <button
               onClick={() => {
-                setOpen(false);
+                // From a hover preview the same button keeps it open; when kept open it collapses.
+                setOpen(!pinned);
                 setPeeking(false);
               }}
               className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors hover:bg-white/10 cursor-pointer text-white/70 hover:text-white"
-              title="Collapse"
-              aria-label="Collapse sessions"
+              title={pinned ? "Collapse" : "Keep open"}
+              aria-label={pinned ? "Collapse sessions" : "Keep sessions open"}
             >
               <PanelLeft size={16} strokeWidth={2} />
             </button>
@@ -324,6 +324,7 @@ export default function SessionsSidebar({
       <div className="absolute inset-0 bg-black/60" onClick={onMobileClose} />
       <aside
         role="dialog"
+        aria-modal="true"
         aria-label="Sessions"
         className="absolute inset-y-0 left-0 flex w-[min(20rem,85vw)] flex-col border-r border-white/10 bg-black pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]"
       >
@@ -336,25 +337,51 @@ export default function SessionsSidebar({
     </div>
   );
 
-  // ── Collapsed rail ────────────────────────────────────────────────────────
-  if (!expanded) {
+  if (!pinned) {
+    // Collapsed: a thin rail stays in the layout. Hovering it previews the panel
+    // as an OVERLAY on top of the chat, so brushing the edge never shifts the
+    // conversation sideways; only "Keep open" gives the panel layout space.
     return (
       <>
-        <aside
+        <div
           onMouseEnter={handleEnter}
           onMouseLeave={handleLeave}
-          className="w-10 shrink-0 hidden md:flex flex-col items-center border-r border-white/10"
+          onKeyDown={(e) => e.key === "Escape" && setPeeking(false)}
+          className="relative z-30 w-10 shrink-0 hidden md:flex"
         >
-          <button
-            onClick={() => setOpen(true)}
-            className="mb-4 w-7 h-7 rounded-lg flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer text-white/70 hover:text-white"
-            title="Open sessions"
-            aria-label="Open sessions"
-          >
-            <PanelLeft size={16} strokeWidth={2} />
-          </button>
-          <div className="flex-1" />
-        </aside>
+          <aside className="flex w-full flex-col items-center gap-1 border-r border-white/10 pt-4">
+            <button
+              onClick={() => setOpen(true)}
+              className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer text-white/70 hover:text-white"
+              title="Open sessions"
+              aria-label="Open sessions"
+            >
+              <PanelLeft size={16} strokeWidth={2} />
+            </button>
+            <button
+              onClick={onNewSession}
+              className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer text-white/60 hover:text-white"
+              title="New session"
+              aria-label="New session"
+            >
+              <SquarePen size={15} strokeWidth={1.75} />
+            </button>
+          </aside>
+          {expanded && (
+            <aside className="absolute inset-y-0 left-0 flex w-60 flex-col border-r border-white/10 bg-black shadow-2xl shadow-black/80">
+              {renderPanel({
+                onSelect: (...args) => {
+                  setPeeking(false);
+                  onSelectSession(...args);
+                },
+                onNew: () => {
+                  setPeeking(false);
+                  onNewSession();
+                },
+              })}
+            </aside>
+          )}
+        </div>
         {mobileDrawer}
         {confirmAllDialog}
         {usageDialog}
@@ -362,14 +389,9 @@ export default function SessionsSidebar({
     );
   }
 
-  // ── Expanded panel ────────────────────────────────────────────────────────
   return (
     <>
-      <aside
-        onMouseEnter={handleEnter}
-        onMouseLeave={handleLeave}
-        className="w-60 shrink-0 flex-col hidden md:flex border-r border-white/10"
-      >
+      <aside className="w-60 shrink-0 flex-col hidden md:flex border-r border-white/10">
         {renderPanel({ onSelect: onSelectSession, onNew: onNewSession })}
       </aside>
       {mobileDrawer}

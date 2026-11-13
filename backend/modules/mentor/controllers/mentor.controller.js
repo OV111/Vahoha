@@ -19,6 +19,7 @@ import {
 // owns them (streamService) instead of being redefined here.
 import * as streamService from "../services/streamService.js";
 import { generateTitle } from "../services/titleService.js";
+import { liveMessages, foldConversation } from "../services/summaryService.js";
 import { getUsageSummary, recordUsageEvent } from "../services/usageService.js";
 import { toolDefinitions } from "../services/agentTools.js";
 import { ATTACHMENT_LIMITS } from "../schemas/mentor.schemas.js";
@@ -236,6 +237,8 @@ export const stream = async (req, res) => {
   }
 
   const sessionMessages = session.messages ?? [];
+  // Older turns already folded into session.summary go as notes, not word for word.
+  const live = liveMessages(session);
   const challengeSlug = lockedSlug;
 
   // Auto-title on the first exchange only, and never over a name the user chose.
@@ -275,7 +278,8 @@ export const stream = async (req, res) => {
       res,
       db,
       userId,
-      sessionMessages,
+      sessionMessages: live,
+      conversationSummary: session.summary?.text ?? null,
       userMessage: message,
       attachments,
       // Lets the teaching log record which conversation an explanation happened
@@ -311,13 +315,16 @@ export const stream = async (req, res) => {
       // Persist the COMPOSED message (message + file content), not the bare text,
       // so follow-up turns like "now refactor that file" still see the content.
       // The total-size cap keeps 20 such turns inside the model's context window.
-      await appendMessages(
-        db,
-        session._id.toString(),
-        composeUserMessage(message, attachments),
-        assistantContent,
-        usage,
-      );
+      const userContent = composeUserMessage(message, attachments);
+      await appendMessages(db, session._id.toString(), userContent, assistantContent, usage);
+
+      // Not awaited: folding old turns into notes is for the NEXT message and
+      // must not hold this stream open.
+      void foldConversation(db, session, [
+        ...live,
+        { role: "user", content: userContent },
+        { role: "assistant", content: assistantContent },
+      ]);
     }
     await recordUsageEvent(db, userId, session._id.toString(), usage, tz, reservation.date);
 

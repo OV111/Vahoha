@@ -2,15 +2,7 @@ import { useEffect, useRef } from "react";
 import { Plus, ChevronRight } from "lucide-react";
 import { DROPDOWN_ITEMS } from "../../../../constants/mentor";
 
-/**
- * The "+" menu next to the composer.
- *
- * Extracted because ChatInput and MentorLanding rendered identical copies of
- * this markup — styling had to be changed in two places and had already drifted.
- *
- * Sizing follows the reference design: a wider panel, roomier rows, 18px icons
- * with a larger gap to the label, and a 2xl radius.
- */
+/** The "+" menu next to the composer. */
 export default function AgentMenu({
   open,
   onOpenChange,
@@ -25,7 +17,6 @@ export default function AgentMenu({
     const onClick = (e) => {
       if (ref.current && !ref.current.contains(e.target)) onOpenChange(false);
     };
-    // Escape to dismiss is expected of any menu — it was missing before.
     const onKey = (e) => {
       if (e.key === "Escape") onOpenChange(false);
     };

@@ -4,15 +4,21 @@ import { apiFetch } from "@/lib/session";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
+// A 16 ms timer stands in where there is no animation frame (tests, old runtimes).
+const nextFrame =
+  typeof requestAnimationFrame === "function" ? (fn) => requestAnimationFrame(fn) : (fn) => setTimeout(fn, 16);
+const cancelFrame =
+  typeof cancelAnimationFrame === "function" ? (id) => cancelAnimationFrame(id) : (id) => clearTimeout(id);
+
 export default function useAgentStream() {
   const abortRef = useRef(null);
 
   const sendMessage = useCallback(async ({ sessionId, content, token, attachments = [], activity = null }) => {
-    // Cancel any in-flight stream
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
 
+    
     const {
       appendMessage: append,
       setStreaming,
@@ -36,6 +42,17 @@ export default function useAgentStream() {
 
     // Declared out here so the abort path can keep what already arrived.
     let assistantContent = "";
+
+    // Tokens can arrive faster than the screen refreshes, and each store write
+    // re-renders the answer being typed, so they are written once per frame.
+    let pendingChunk = "";
+    let frame = null;
+    const flushChunk = () => {
+      frame = null;
+      if (!pendingChunk) return;
+      appendStreamChunk(pendingChunk);
+      pendingChunk = "";
+    };
 
     try {
       const res = await apiFetch(`${BASE_URL}/api/mentor/stream`, {
@@ -105,8 +122,9 @@ export default function useAgentStream() {
           }
 
           if (event.type === "delta") {
-            appendStreamChunk(event.content);
             assistantContent += event.content;
+            pendingChunk += event.content;
+            frame ??= nextFrame(flushChunk);
           } else if (event.type === "tool_call") {
             // The trace UI shows these as plain-language steps; the timestamps give
             // its "Thought for Ns" summary.
@@ -119,7 +137,6 @@ export default function useAgentStream() {
               startedAt: Date.now(),
             });
           } else if (event.type === "tool_result") {
-            // Find matching tool_call and mark done
             const { messages, setMessages } = useMentorStore.getState();
             const updated = messages.map((m) =>
               m.role === "tool_call" && m.id === event.id
@@ -148,7 +165,6 @@ export default function useAgentStream() {
         }
       }
 
-      // Commit completed assistant message
       if (assistantContent) {
         useMentorStore.getState().appendMessage({
           role: "assistant",
@@ -171,6 +187,10 @@ export default function useAgentStream() {
         .getState()
         .setError({ type: "network", message: err.message });
     } finally {
+      // Always, even for a replaced request: a frame that fires late would write
+      // this stream's text into the newer one's answer.
+      if (frame !== null) cancelFrame(frame);
+      pendingChunk = "";
       // A request that was replaced by a newer send must not switch off the
       // newer one's streaming state.
       if (abortRef.current === controller) {

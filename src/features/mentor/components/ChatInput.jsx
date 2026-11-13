@@ -29,7 +29,12 @@ export default function ChatInput({
   // Layout-only: the empty state shows a taller, roomier card; in a conversation
   // the composer stays compact so it doesn't eat transcript space.
   spacious = false,
+  // Narrow hosts (the mentor panel over another page): the field gets the full
+  // width with the controls on a row beneath, instead of sharing one row with
+  // five buttons and wrapping every few words.
+  stacked: stackedProp = false,
 }) {
+  const stacked = spacious || stackedProp;
   const input = value;
   const setInput = onValueChange;
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -52,7 +57,7 @@ export default function ChatInput({
     // Empty box: let rows={1} + CSS size it instead of a measured pixel value.
     if (!value) return;
     el.style.height = Math.min(el.scrollHeight, 160) + "px";
-  }, [value, spacious]);
+  }, [value, spacious, stacked]);
 
   // Parent bumps focusToken when it injects a prompt, so the caret lands at the
   // end of the inserted text ready for the user to keep typing.
@@ -141,11 +146,14 @@ export default function ChatInput({
   };
 
   return (
-    /* max-w-3xl matches the transcript column so the composer lines up with the
-       messages instead of spanning the full pane. */
+    /* Same column as the transcript (MessageList): px-4 sm:px-8 OUTSIDE a
+       max-w-3xl (48rem) column. The max-width adds the padding back on, so the
+       composer edges line up exactly with the messages at every width. */
     <div
-      className={`px-4 shrink-0 w-full mx-auto ${
-        spacious ? "max-w-2xl pb-0 pt-0" : "max-w-3xl pb-[max(1rem,env(safe-area-inset-bottom))] pt-2"
+      className={`w-full px-4 sm:px-8 shrink-0 mx-auto ${
+        spacious
+          ? "max-w-[calc(42rem+2rem)] sm:max-w-[calc(42rem+4rem)] pb-0 pt-0"
+          : "max-w-[calc(48rem+2rem)] sm:max-w-[calc(48rem+4rem)] pb-[max(1rem,env(safe-area-inset-bottom))] pt-2"
       }`}
     >
       <input
@@ -206,10 +214,10 @@ export default function ChatInput({
             items-end keeps the buttons anchored as the textarea grows. */}
         <div
           className={
-            spacious ? "flex flex-col gap-1" : "flex items-end gap-1.5"
+            stacked ? "flex flex-col gap-1" : "flex items-end gap-1.5"
           }
         >
-          {!spacious && (
+          {!stacked && (
             <AgentMenu
               open={dropdownOpen}
               onOpenChange={setDropdownOpen}
@@ -231,20 +239,24 @@ export default function ChatInput({
             className={`flex-1 min-w-0 bg-transparent outline-none resize-none leading-6 text-white placeholder:text-[#555] disabled:opacity-40 max-h-40 overflow-y-auto ${
               // Sub-16px is safe on iOS only because index.html sets maximum-scale=1.
               // Conversation row: 24px line + py-1 = 32px, same as the buttons.
-              spacious ? "text-[14px] md:text-[15px] py-0.5 pl-2 min-h-12" : "text-[14px] py-1"
+              spacious
+                ? "text-[14px] md:text-[15px] py-0.5 pl-2 min-h-12"
+                : stacked
+                  ? "text-[14px] py-1 px-1.5"
+                  : "text-[14px] py-1"
             }`}
           />
 
           <div
             className={
-              spacious
+              stacked
                 ? "flex items-center justify-between w-full"
                 : "flex items-center gap-0.5 shrink-0"
             }
           >
             {/* In the stacked layout the menu moves down here, so the controls
                 form one row beneath the message field. */}
-            {spacious && (
+            {stacked && (
               <AgentMenu
                 open={dropdownOpen}
                 onOpenChange={setDropdownOpen}
@@ -254,7 +266,7 @@ export default function ChatInput({
             )}
 
             <div
-              className={spacious ? "flex items-center gap-0.5" : "contents"}
+              className={stacked ? "flex items-center gap-0.5" : "contents"}
             >
               {/* Dictation into the same textarea — everything downstream
                   (send, teach-back grading, attachments) is unchanged, only
