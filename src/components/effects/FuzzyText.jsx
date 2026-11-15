@@ -130,12 +130,17 @@ const FuzzyText = ({
         );
       };
 
+      // The canvas can be shrunk by CSS (max-width on a phone), so screen
+      // pixels are mapped back to canvas pixels before the hit test.
+      const toCanvas = (clientX, clientY) => {
+        const rect = canvas.getBoundingClientRect();
+        const scale = rect.width ? canvas.width / rect.width : 1;
+        return [(clientX - rect.left) * scale, (clientY - rect.top) * scale];
+      };
+
       const handleMouseMove = (e) => {
         if (!enableHover) return;
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        isHovering = isInsideTextArea(x, y);
+        isHovering = isInsideTextArea(...toCanvas(e.clientX, e.clientY));
       };
 
       const handleMouseLeave = () => {
@@ -145,11 +150,8 @@ const FuzzyText = ({
       const handleTouchMove = (e) => {
         if (!enableHover) return;
         e.preventDefault();
-        const rect = canvas.getBoundingClientRect();
         const touch = e.touches[0];
-        const x = touch.clientX - rect.left;
-        const y = touch.clientY - rect.top;
-        isHovering = isInsideTextArea(x, y);
+        isHovering = isInsideTextArea(...toCanvas(touch.clientX, touch.clientY));
       };
 
       const handleTouchEnd = () => {
@@ -198,7 +200,8 @@ const FuzzyText = ({
     hoverIntensity,
   ]);
 
-  return <canvas ref={canvasRef} />;
+  // The canvas is drawn at its full pixel width; on a narrow screen it scales down instead of overflowing.
+  return <canvas ref={canvasRef} className="max-w-full h-auto" />;
 };
 
 export default FuzzyText;
