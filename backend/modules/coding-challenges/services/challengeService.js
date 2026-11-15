@@ -323,12 +323,12 @@ export const getChallengeBySlugService = async (db, slug, userId) => {
   ]);
 
   if (!challenge) {
+    // Not cached as missing: a challenge published a moment later must open at once.
+    challengeCache.delete(key);
     const err = new Error("Challenge not found");
     err.status = 404;
     throw err;
   }
-    // Not cached as missing: a challenge published a moment later must open at once.
-    challengeCache.delete(key);
 
   return { ...challenge, done: solved.has(slug) };
 };
