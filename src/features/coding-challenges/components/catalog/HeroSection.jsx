@@ -1,6 +1,5 @@
 import { motion as Motion } from "framer-motion";
 import EyebrowBadge from "./EyebrowBadge";
-import TextType from "@/components/effects/TextType";
 import StatCell from "./StatCell";
 import StatCellSkeleton from "./StatCellSkeleton";
 import DailyChallengeCard from "./DailyChallengeCard";
@@ -43,47 +42,27 @@ const buildStats = (stats) => [
 export default function HeroSection({ daily, stats, loading, challengeCount, heroRef }) {
   const statCells = buildStats(stats);
   return (
-    <div ref={heroRef} className="px-6 sm:px-10 lg:px-14 pt-10 pb-8 lg:mb-14">
+    <div ref={heroRef} className="px-6 sm:px-10 lg:px-14 pt-10 pb-8">
       <div className="flex flex-col lg:mr-10 lg:flex-row lg:items-start gap-8 lg:gap-0">
         <div className="flex-1 min-w-0">
           <Motion.div {...fadeUp(0)} className="mb-6">
             {/* A live count instead of a made-up version number: it tells the
                 visitor something true. The pulse dot reads as "live". */}
             <EyebrowBadge
-              dot
-              text={`${challengeCount > 0 ? `${challengeCount} challenges · ` : ""}tied to your roadmap · mentor-guided`}
-              color="purple"
+              items={[challengeCount > 0 && `${challengeCount} challenges`, "Tied to your roadmap", "Mentor-guided"]}
             />
           </Motion.div>
 
           <Motion.div {...fadeUp(0.08)} className="mb-4">
-            <h1 className="text-4xl min-[400px]:text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] text-white">
-              Coding
-              <TextType
-                as="span"
-                text={[
-                  " challenges",
-                  " problems",
-                  " exercises",
-                  " algorithms",
-                  " puzzles",
-                ]}
-                typingSpeed={109}
-                deletingSpeed={40}
-                pauseDuration={1700}
-                showCursor={true}
-                cursorCharacter="|"
-                className="text-purple-600"
-                style={{ minWidth: "10ch" }}
-              />
+            {/* Two lines at a moderate size, so the list starts within the first screen. */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.05] text-white">
+              Coding challenges
               <br />
-              that actually
-              <br />
-              teach and grind.
+              that <span className="text-purple-600">actually teach.</span>
             </h1>
           </Motion.div>
 
-          <Motion.p {...fadeUp(0.16)} className="text-[14px] max-w-lg mb-8 text-[#666]">
+          <Motion.p {...fadeUp(0.16)} className="text-[14px] max-w-lg mb-8 text-zinc-400">
             Not random DSA grinding. Every challenge is tied to your current
             roadmap layer. Solve them to raise your test readiness, and the AI
             agent steps in with progressive hints — never the answer.

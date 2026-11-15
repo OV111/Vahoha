@@ -76,6 +76,9 @@ export default function LeaderboardPanel({ leaderboard, loading }) {
   const scope = leaderboard?.layerOrder ? `Layer ${leaderboard.layerOrder}` : "Global";
   const period = RANGE_LABEL[leaderboard?.range] ?? "";
 
+  // An empty board ("no solves this week") only takes room from the list.
+  if (!loading && rows.length === 0) return null;
+
   return (
     <section aria-labelledby="leaderboard-title">
       <div className="mb-2 flex items-baseline justify-between gap-2">
@@ -92,10 +95,6 @@ export default function LeaderboardPanel({ leaderboard, loading }) {
 
       {loading && rows.length === 0 ? (
         <LeaderboardSkeleton />
-      ) : rows.length === 0 ? (
-        <p className="px-2 text-[12px] leading-relaxed text-[#8a8a8a]">
-          No solves {period || "yet"}. Solve a challenge to take the first spot.
-        </p>
       ) : (
         <ol className="flex flex-col gap-0.5">
           {rows.map((row, i) => (

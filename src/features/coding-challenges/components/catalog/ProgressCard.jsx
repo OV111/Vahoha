@@ -1,4 +1,4 @@
-import { ArrowRight, DollarSign, Minus } from "lucide-react";
+import { ArrowRight, Minus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const CARD = "flex flex-col items-center gap-3 py-5 px-4 border border-[#1a1a1a] bg-[#0d0d0d]";
@@ -124,7 +124,7 @@ export default function ProgressCard({ readiness, loading }) {
             : "border border-purple-600/50 text-purple-300 hover:bg-purple-600/10"
         }`}
       >
-        <DollarSign size={12} aria-hidden="true" /> Take test <ArrowRight size={13} aria-hidden="true" />
+        Take the layer test <ArrowRight size={13} aria-hidden="true" />
       </button>
     </div>
   );

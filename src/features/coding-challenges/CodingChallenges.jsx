@@ -60,7 +60,14 @@ export default function CodingChallenges() {
         heroRef={heroRef}
       />
 
-      <FilterBar filters={filters} topics={topics} tracks={tracks} shownTrack={track} />
+      <FilterBar
+        filters={filters}
+        topics={topics}
+        tracks={tracks}
+        shownTrack={track}
+        // Hidden only before the first page lands, so a refilter doesn't flash "0".
+        total={listLoading && challenges.length === 0 ? null : total}
+      />
 
       <div className="flex flex-col lg:flex-row gap-6 px-6 sm:px-10 lg:px-14 py-6">
         <ChallengeGrid

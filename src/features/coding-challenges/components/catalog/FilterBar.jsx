@@ -4,10 +4,8 @@ import FilterGroup from "./FilterGroup";
 import MoreFiltersPopover from "./MoreFiltersPopover";
 import { STATUS_OPTIONS } from "../../lib/statuses";
 
-const Divider = () => <div className="hidden sm:block w-px h-4 bg-[#1f1f1f]" />;
-
-/** Sticky toolbar: Path / Layer / Level / Status, recommended, more filters, search. */
-export default function FilterBar({ filters, topics, tracks, shownTrack }) {
+/** Sticky toolbar: search, then Path / Layer / Difficulty / Status, recommended, more filters, and the result count. */
+export default function FilterBar({ filters, topics, tracks, shownTrack, total = null }) {
   const [openDropdown, setOpenDropdown] = useState(null);
   const openMenu = (name) => setOpenDropdown(name);
   const closeMenu = () => setOpenDropdown(null);
@@ -61,9 +59,8 @@ export default function FilterBar({ filters, topics, tracks, shownTrack }) {
         onOpen={() => openMenu("path")}
         onClose={closeMenu}
       />
-      <Divider />
       <FilterGroup
-        label="LAYER"
+        label="Layer"
         options={["all", "1", "2", "3", "4+"]}
         active={activeLayer}
         onSelect={setActiveLayer}
@@ -71,9 +68,8 @@ export default function FilterBar({ filters, topics, tracks, shownTrack }) {
         onOpen={() => openMenu("layer")}
         onClose={closeMenu}
       />
-      <Divider />
       <FilterGroup
-        label="Level"
+        label="Difficulty"
         options={["all", "easy", "med", "hard"]}
         active={activeLevel}
         onSelect={setActiveLevel}
@@ -81,7 +77,6 @@ export default function FilterBar({ filters, topics, tracks, shownTrack }) {
         onOpen={() => openMenu("level")}
         onClose={closeMenu}
       />
-      <Divider />
       <FilterGroup
         label="Status"
         allLabel="Any status"
@@ -92,8 +87,9 @@ export default function FilterBar({ filters, topics, tracks, shownTrack }) {
         onOpen={() => openMenu("status")}
         onClose={closeMenu}
       />
-      <Divider />
       <button
+        type="button"
+        aria-pressed={recommended}
         onClick={() => setRecommended(!recommended)}
         className={`cursor-pointer whitespace-nowrap rounded-md border px-2.5 py-1.5 text-xs font-medium transition-all duration-200 ${
           recommended
@@ -101,9 +97,8 @@ export default function FilterBar({ filters, topics, tracks, shownTrack }) {
             : "border-[#1f1f1f] bg-[#141414] text-[#888] hover:border-purple-900/60 hover:bg-purple-950/40 hover:text-purple-300"
         }`}
       >
-        + recommended
+        Recommended
       </button>
-      <Divider />
       <MoreFiltersPopover
         topics={topics}
         selectedTopics={selectedTopics}
@@ -124,25 +119,34 @@ export default function FilterBar({ filters, topics, tracks, shownTrack }) {
         </button>
       )}
 
-      <div className="order-first flex w-full items-center gap-2 rounded-md border border-[#1f1f1f] bg-[#141414] px-3 py-2 sm:order-none sm:ml-auto sm:w-auto">
-        <Search className="h-3.5 w-3.5 shrink-0 text-[#555]" />
+      {/* First on every width, so searching and filtering read as one row. */}
+      <div className="order-first flex w-full items-center gap-2 rounded-md border border-[#1f1f1f] bg-[#141414] px-3 py-1.5 sm:w-auto">
+        <Search className="h-3.5 w-3.5 shrink-0 text-[#555]" aria-hidden="true" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search challenges..."
+          aria-label="Search challenges"
           className="min-w-0 flex-1 bg-transparent text-base sm:w-[220px] sm:flex-none sm:text-sm text-[#e5e5e5] placeholder-[#555] outline-none"
         />
         {searchQuery && (
           <button
             type="button"
             onClick={() => setSearchQuery("")}
+            aria-label="Clear search"
             className="shrink-0 text-[#555] hover:text-[#888]"
           >
             <X className="h-3.5 w-3.5" />
           </button>
         )}
       </div>
+
+      {total != null && (
+        <span className="ml-auto text-xs tabular-nums text-[#8a8a8a]" aria-live="polite">
+          {total} {total === 1 ? "challenge" : "challenges"}
+        </span>
+      )}
     </div>
   );
 }

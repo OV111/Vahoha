@@ -27,7 +27,7 @@ export default function StatCell({ value, unit, label, sub, index }) {
         </span>
         {unit && <span className="text-base">{unit}</span>}
       </p>
-      <p className="text-[9px] font-bold tracking-widest uppercase mt-1 text-[#444]">
+      <p className="text-[9px] font-bold tracking-widest uppercase mt-1 text-[#8a8a8a]">
         {label}
       </p>
       <p className="text-[11px] text-green-400">{sub}</p>
