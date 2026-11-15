@@ -10,6 +10,8 @@ import {
   streamSchema,
   usageQuerySchema,
   listSessionsQuerySchema,
+  messageFeedbackParamSchema,
+  messageFeedbackSchema,
 } from "../schemas/mentor.schemas.js";
 import {
   createSession,
@@ -21,6 +23,7 @@ import {
   deleteSessionById,
   deleteAllSessionsForUser,
   stream,
+  rateMessage,
 } from "../controllers/mentor.controller.js";
 
 const router = Router();
@@ -58,6 +61,12 @@ router.delete(
   authenticate,
   validate({ params: sessionIdParamSchema }),
   deleteSessionById,
+);
+router.put(
+  "/sessions/:id/messages/:messageId/feedback",
+  authenticate,
+  validate({ params: messageFeedbackParamSchema, body: messageFeedbackSchema }),
+  rateMessage,
 );
 router.post(
   "/stream",

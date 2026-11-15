@@ -42,6 +42,14 @@ export const deleteAllSessions = async ({ keepPinned = false } = {}) => {
   await request(`${MENTOR_URL}/sessions${keepPinned ? "?keepPinned=true" : ""}`, { method: "DELETE" });
 };
 
+/** Rate one saved mentor answer: `vote` is "up", "down" or null (clear), `reason` only with "down". */
+export const rateMessage = async (sessionId, messageId, { vote, reason = null }) => {
+  await request(`${MENTOR_URL}/sessions/${sessionId}/messages/${messageId}/feedback`, {
+    method: "PUT",
+    json: { vote, reason },
+  });
+};
+
 /** What the `/context` command shows: model, limits, tools and today's usage. */
 export const getMentorContext = async () => (await request(`${MENTOR_URL}/context`)).json();
 

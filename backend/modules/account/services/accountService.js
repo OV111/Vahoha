@@ -125,6 +125,7 @@ const USER_KEYED_COLLECTIONS = [
   "agent_sessions",
   "agent_usage",
   "agent_usage_events",
+  "agent_feedback",
   "challenge_attempts",
   "challengeResults",
   "savedLibraryResources",

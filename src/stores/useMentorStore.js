@@ -44,6 +44,10 @@ const useMentorStore = create((set) => ({
   setMessages: (messages) => set({ messages }),
   appendMessage: (message) =>
     set((state) => ({ messages: [...state.messages, message] })),
+  setMessageFeedback: (id, feedback) =>
+    set((state) => ({
+      messages: state.messages.map((m) => (m.role === "assistant" && m.id === id ? { ...m, feedback } : m)),
+    })),
   setStreaming: (isStreaming) => set({ isStreaming }),
   appendStreamChunk: (chunk) =>
     set((state) => ({ streamingContent: state.streamingContent + chunk })),

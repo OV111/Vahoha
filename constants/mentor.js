@@ -130,6 +130,20 @@ export const DROPDOWN_ITEMS = [
   },
 ];
 
+// 👍/👎 under a mentor answer. Reason ids match the API's FEEDBACK_REASONS.
+export const MESSAGE_FEEDBACK_COPY = {
+  up: "Good answer",
+  down: "Bad answer",
+  question: "What went wrong?",
+  thanks: "Thanks, this helps improve the mentor.",
+  reasons: [
+    { id: "wrong", label: "Wrong" },
+    { id: "too_long", label: "Too long" },
+    { id: "gave_away", label: "Gave away the answer" },
+    { id: "not_helpful", label: "Didn't help" },
+  ],
+};
+
 // The mentor opened over another page (MentorPanel) instead of navigating away.
 export const MENTOR_PANEL_COPY = {
   title: "Mentor",

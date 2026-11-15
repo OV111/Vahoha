@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { FEEDBACK_REASONS } from "../services/feedbackService.js";
 
 /**
  * Schemas for the /api/mentor routes.
@@ -42,6 +43,20 @@ export const listSessionsQuerySchema = z.object({
 export const deleteAllSessionsQuerySchema = z.object({
   keepPinned: z.enum(["true", "false"]).optional(),
 });
+
+// PUT /api/mentor/sessions/:id/messages/:messageId/feedback
+export const messageFeedbackParamSchema = z.object({
+  id: objectId,
+  messageId: objectId,
+});
+
+// `vote: null` clears it. A reason only makes sense with a 👎.
+export const messageFeedbackSchema = z
+  .object({
+    vote: z.enum(["up", "down"]).nullable(),
+    reason: z.enum(FEEDBACK_REASONS).nullable().optional(),
+  })
+  .refine((v) => !v.reason || v.vote === "down", { message: "A reason goes with a down vote" });
 
 // GET /api/mentor/usage?days=30 — the window is capped at the ledger's 90-day life
 export const usageQuerySchema = z.object({

@@ -203,7 +203,8 @@ const messageUsage = (usage) => ({
  * second write erased the first turn. Returns false when the chat no longer
  * exists (deleted while the answer streamed).
  */
-export const appendMessages = async (db, sessionId, userMsg, assistantMsg, usage = null) => {
+// `assistantId` names the answer so the learner can rate it (feedbackService).
+export const appendMessages = async (db, sessionId, userMsg, assistantMsg, usage = null, assistantId = null) => {
   const now = new Date();
 
   const result = await db.collection("agent_sessions").updateOne(
@@ -217,6 +218,7 @@ export const appendMessages = async (db, sessionId, userMsg, assistantMsg, usage
               role: "assistant",
               content: assistantMsg,
               at: now,
+              ...(assistantId && { id: assistantId }),
               ...(usage && { usage: messageUsage(usage) }),
             },
           ],

@@ -42,6 +42,7 @@ export default function useAgentStream() {
 
     // Declared out here so the abort path can keep what already arrived.
     let assistantContent = "";
+    let savedId = null;
 
     // Tokens can arrive faster than the screen refreshes, and each store write
     // re-renders the answer being typed, so they are written once per frame.
@@ -157,6 +158,9 @@ export default function useAgentStream() {
             // Token cost of this turn, sent just before "done". Stored only; the
             // Settings > Mentor usage page is where it is shown.
             useMentorStore.getState().setLastUsage(event.usage ?? null);
+          } else if (event.type === "saved") {
+            // The id the server saved this answer under; 👍/👎 need it.
+            savedId = event.messageId;
           } else if (event.type === "done") {
             break;
           } else if (event.type === "error") {
@@ -169,6 +173,7 @@ export default function useAgentStream() {
         useMentorStore.getState().appendMessage({
           role: "assistant",
           content: assistantContent,
+          ...(savedId && { id: savedId }),
         });
       }
     } catch (err) {

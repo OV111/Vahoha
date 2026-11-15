@@ -128,6 +128,9 @@ const connectDB = async () => {
         { userId: 1, day: 1 },
         { unique: true, partialFilterExpression: { type: "active_day" } },
       ),
+      // One rating per answer (re-voting overwrites it); reviewed newest 👎 first.
+      db.collection("agent_feedback").createIndex({ userId: 1, sessionId: 1, messageId: 1 }, { unique: true }),
+      db.collection("agent_feedback").createIndex({ vote: 1, at: -1 }),
       // One weekly email per learner per week: the claim in weeklySummaryService
       // relies on this to stop two runs from both sending.
       db.collection("weeklySummaries").createIndex({ userId: 1, weekKey: 1 }, { unique: true }),

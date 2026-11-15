@@ -305,7 +305,12 @@ export default function Mentor({ embedded = false, challengeContext = null, orig
     try {
       const session = await getSession(sessionId);
       useMentorStore.getState().setMessages(
-        (session.messages ?? []).map((m) => ({ role: m.role, content: m.content }))
+        (session.messages ?? []).map((m) => ({
+          role: m.role,
+          content: m.content,
+          ...(m.id && { id: m.id }),
+          ...(m.feedback && { feedback: m.feedback }),
+        }))
       );
     } catch {
       // Surface the failure: a silent empty transcript looks like a genuinely empty

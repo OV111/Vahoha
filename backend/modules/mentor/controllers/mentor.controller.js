@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import {
   createSession as dbCreateSession,
   listSessionsPage,
@@ -21,6 +22,7 @@ import * as streamService from "../services/streamService.js";
 import { generateTitle } from "../services/titleService.js";
 import { liveMessages, foldConversation } from "../services/summaryService.js";
 import { getUsageSummary, recordUsageEvent } from "../services/usageService.js";
+import { setMessageFeedback } from "../services/feedbackService.js";
 import { toolDefinitions } from "../services/agentTools.js";
 import { ATTACHMENT_LIMITS } from "../schemas/mentor.schemas.js";
 import { trackEvent } from "../../../services/eventService.js";
@@ -32,6 +34,21 @@ const { streamAgentResponse, composeUserMessage, MODEL } = streamService;
 // A challenge slug is interpolated into the system prompt, so anything that did
 // not come from the already-validated request body is checked before it is stored.
 const CHALLENGE_SLUG = /^[a-z0-9-]{1,80}$/;
+
+export const rateMessage = async (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const userId = req.user._id.toString();
+    const { vote, reason = null } = req.body;
+    const saved = await setMessageFeedback(db, userId, req.params.id, req.params.messageId, { vote, reason });
+    // 404 for "not yours" too, like the other session routes.
+    if (!saved) return res.status(404).json({ message: "Message not found" });
+    res.status(204).end();
+  } catch (err) {
+    console.error("rateMessage error:", err);
+    res.status(500).json({ message: "Failed to save feedback" });
+  }
+};
 
 export const createSession = async (req, res) => {
   try {
@@ -296,6 +313,7 @@ export const stream = async (req, res) => {
     answered = true;
 
     const { content: assistantContent = "", aborted = false } = result;
+    let assistantId = null;
     const usage = result.usage ?? {
       promptTokens: 0,
       completionTokens: 0,
@@ -316,7 +334,8 @@ export const stream = async (req, res) => {
       // so follow-up turns like "now refactor that file" still see the content.
       // The total-size cap keeps 20 such turns inside the model's context window.
       const userContent = composeUserMessage(message, attachments);
-      await appendMessages(db, session._id.toString(), userContent, assistantContent, usage);
+      assistantId = new ObjectId().toHexString();
+      await appendMessages(db, session._id.toString(), userContent, assistantContent, usage, assistantId);
 
       // Not awaited: folding old turns into notes is for the NEXT message and
       // must not hold this stream open.
@@ -372,6 +391,8 @@ export const stream = async (req, res) => {
     // "done" as permission to send the next message, and that next request
     // re-reads the session — so persisting first is what makes follow-up
     // turns reliably see the turn they are following up on.
+    // The saved answer's id, so the client can attach 👍/👎 to it.
+    if (assistantId) send({ type: "saved", messageId: assistantId });
     send({ type: "done" });
     if (!clientGone() && !res.writableEnded) {
       res.write("data: [DONE]\n\n");

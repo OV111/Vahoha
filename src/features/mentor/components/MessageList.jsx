@@ -58,11 +58,11 @@ const UserMessage = memo(function UserMessage({ msg }) {
  * Answers contain code blocks, tables and lists — boxing them in a bubble would
  * fight the Markdown rendering, which is why no serious chat product does it.
  */
-const AssistantMessage = memo(function AssistantMessage({ content }) {
+const AssistantMessage = memo(function AssistantMessage({ msg }) {
   return (
     <div className="group">
-      <MarkdownMessage content={content} />
-      <MessageActions content={content} />
+      <MarkdownMessage content={msg.content} />
+      <MessageActions content={msg.content} messageId={msg.id} feedback={msg.feedback} />
     </div>
   );
 });
@@ -221,7 +221,7 @@ export default function MessageList({
 
           if (msg.role === "user") return <UserMessage key={i} msg={msg} />;
 
-          return <AssistantMessage key={i} content={msg.content} />;
+          return <AssistantMessage key={i} msg={msg} />;
         })}
 
         {isStreaming && hasStreamText && <StreamingAnswer onGrow={followIfNearBottom} />}
