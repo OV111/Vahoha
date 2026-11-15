@@ -153,9 +153,23 @@ export const submitAttemptService = async (db, userId, attemptId, language, clie
     Math.round((Date.now() - new Date(attempt.startedAt).getTime()) / 1000),
   );
 
+  // `alreadySolved` above was a plain read, so two passing submissions racing
+  // can both see "not solved". The atomic save decides which one is the first
+  // solve; the solve count, the solve event and the review flags follow it.
+  const { firstSolve } = await saveChallengeResult(db, userId, {
+    challengeId: challenge.slug,
+    path: challenge.trackId,
+    layer: challenge.layerId,
+    status: passed ? "solved" : "attempted",
+    xpEarned,
+    timeTakenSecs: elapsedSecs,
+  });
+  // A passing run changes the ranking: drop the cached board so this solver sees it at once.
+  if (passed) clearLeaderboardCache();
+
   // Review flags, first solve only: that is the submission that pays XP and
   // moves the leaderboard. Never part of the verdict.
-  if (passed && !alreadySolved) {
+  if (firstSolve) {
     const integrity = sanitizeArenaIntegrity(clientIntegrity);
     const flags = integrityFlags({
       integrity,
@@ -176,24 +190,6 @@ export const submitAttemptService = async (db, userId, attemptId, language, clie
     }
   }
 
-  // `saveChallengeResult` overwrites the fields it is given, so the running
-  // total has to be carried forward — otherwise re-submitting a solved
-  // challenge would rewrite its history to "earned 0".
-  const xpOnRecord = (previous?.xpEarned ?? 0) + xpEarned;
-
-  await saveChallengeResult(db, userId, {
-    challengeId: challenge.slug,
-    path: challenge.trackId,
-    layer: challenge.layerId,
-    // A solve is permanent — a later failed experiment must not demote it.
-    status: passed || alreadySolved ? "solved" : "attempted",
-    xpEarned: xpOnRecord,
-    timeTakenSecs: elapsedSecs,
-    attempts: 1,
-  });
-  // A passing run changes the ranking: drop the cached board so this solver sees it at once.
-  if (passed) clearLeaderboardCache();
-
   // Count a solve once per user, so the public solve count means "people who
   // solved this", not "submissions that happened to pass".
   await db.collection(CHALLENGES).updateOne(
@@ -201,7 +197,7 @@ export const submitAttemptService = async (db, userId, attemptId, language, clie
     {
       $inc: {
         "stats.attempts": 1,
-        "stats.solves": passed && !alreadySolved ? 1 : 0,
+        "stats.solves": firstSolve ? 1 : 0,
       },
     },
   );
@@ -222,7 +218,7 @@ export const submitAttemptService = async (db, userId, attemptId, language, clie
   await trackEvent(db, userId, "challenge_submitted", { challengeId: challenge.slug, passed });
 
   // First solve only, same rule as the public solve count.
-  if (passed && !alreadySolved) {
+  if (firstSolve) {
     await trackEvent(db, userId, "challenge_solved", {
       challengeId: challenge.slug,
       path: challenge.trackId,
@@ -237,7 +233,8 @@ export const submitAttemptService = async (db, userId, attemptId, language, clie
     results: run.results,
     error: run.error ?? null,
     xpEarned,
-    alreadySolved,
+    // A submission that lost the race to its twin solved nothing new either.
+    alreadySolved: alreadySolved || (passed && !firstSolve),
     // The solution is the reward for passing — never sent otherwise.
     solution: passed ? challenge.solution : null,
   };

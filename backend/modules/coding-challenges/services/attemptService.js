@@ -140,21 +140,23 @@ export const saveAttemptCodeService = async (db, userId, attemptId, code) => {
 /**
  * Reveal a hint, charging its XP cost exactly once.
  *
- * The sequence is claim → charge → compensate, and there is no read-then-write
- * anywhere in it:
+ * The sequence is charge → claim → refund:
  *
- *  1. CLAIM: findOneAndUpdate filtered on `hintsRevealed: { $ne: order }`.
- *     MongoDB applies a single document update atomically, so of two
- *     simultaneous double-click requests exactly one matches; the loser gets
- *     null and returns the text for free.
- *  2. CHARGE: a second conditional update on userProgress filtered on
+ *  1. CHARGE: a conditional update on userProgress filtered on
  *     `xpTotal: { $gte: cost }`, so the balance can never go negative.
- *  3. COMPENSATE: if the charge fails (broke, or no progress doc), the claim is
- *     rolled back with $pull before throwing 402 — otherwise a poor user would
- *     burn the hint without paying.
+ *  2. CLAIM: findOneAndUpdate filtered on `hintsRevealed: { $ne: order }`.
+ *     MongoDB applies a single document update atomically, so of two
+ *     simultaneous requests exactly one matches.
+ *  3. REFUND: the loser of the claim gives its charge back and replays the
+ *     text, which the winner paid for.
+ *
+ * The order is the point. Claim-first meant a revealed hint was not yet a paid
+ * one: a parallel request saw "already revealed" and got the text for free,
+ * and the claimer then failed to charge a broke learner and rolled back. Now a
+ * hint is only ever marked revealed after its cost has been taken.
  *
  * A transaction would be the textbook fix for the two-document write, but that
- * needs a replica set; the compensating update is the pragmatic equivalent here.
+ * needs a replica set; the refund is the pragmatic equivalent here.
  */
 export const revealHintService = async (db, userId, attemptId, order) => {
   const hintOrder = Number(order);
@@ -183,31 +185,39 @@ export const revealHintService = async (db, userId, attemptId, order) => {
     (await progressCol.findOne({ userId: ownerId }, { projection: { xpTotal: 1 } }))
       ?.xpTotal ?? 0;
 
-  // 1. Claim.
-  const claimed = await db.collection(COL).findOneAndUpdate(
-    { _id, userId: ownerId, hintsRevealed: { $ne: hintOrder } },
-    {
-      $push: { hintsRevealed: hintOrder },
-      $inc: { xpSpent: cost },
-      $set: { updatedAt: new Date() },
-    },
-    { returnDocument: "after" },
-  );
+  // Already paid for: replay the text, charge nothing.
+  const replay = async (doc) => ({
+    text: hint.text,
+    cost,
+    xpSpent: doc.xpSpent,
+    xpRemaining: await readBalance(),
+    hintsRevealed: doc.hintsRevealed,
+    alreadyRevealed: true,
+  });
+  // Re-read after losing a race: the attempt may have been revealed meanwhile, or deleted.
+  const replayCurrent = async () => {
+    const current = await db.collection(COL).findOne({ _id, userId: ownerId });
+    if (!current) fail(404, "Attempt not found");
+    return current.hintsRevealed?.includes(hintOrder) ? replay(current) : null;
+  };
 
-  // Already paid for — replay the text, charge nothing.
-  if (!claimed) {
-    return {
-      text: hint.text,
-      cost,
-      xpSpent: attempt.xpSpent,
-      xpRemaining: await readBalance(),
-      hintsRevealed: attempt.hintsRevealed,
-      alreadyRevealed: true,
-    };
-  }
+  if (attempt.hintsRevealed?.includes(hintOrder)) return replay(attempt);
+
+  const claim = () =>
+    db.collection(COL).findOneAndUpdate(
+      { _id, userId: ownerId, hintsRevealed: { $ne: hintOrder } },
+      {
+        $push: { hintsRevealed: hintOrder },
+        $inc: { xpSpent: cost },
+        $set: { updatedAt: new Date() },
+      },
+      { returnDocument: "after" },
+    );
 
   // Free hints skip the ledger entirely.
   if (cost === 0) {
+    const claimed = await claim();
+    if (!claimed) return (await replayCurrent()) ?? fail(404, "Attempt not found");
     return {
       text: hint.text,
       cost,
@@ -218,7 +228,7 @@ export const revealHintService = async (db, userId, attemptId, order) => {
     };
   }
 
-  // 2. Charge.
+  // 1. Charge.
   const charged = await progressCol.findOneAndUpdate(
     { userId: ownerId, xpTotal: { $gte: cost } },
     {
@@ -227,18 +237,23 @@ export const revealHintService = async (db, userId, attemptId, order) => {
     },
     { returnDocument: "after" },
   );
-
-  // 3. Compensate.
   if (!charged) {
-    await db.collection(COL).updateOne(
-      { _id, userId: ownerId },
-      {
-        $pull: { hintsRevealed: hintOrder },
-        $inc: { xpSpent: -cost },
-        $set: { updatedAt: new Date() },
-      },
-    );
+    // A double click whose twin already paid and revealed it is not "broke".
+    const replayed = await replayCurrent();
+    if (replayed) return replayed;
     fail(402, `Not enough XP — this hint costs ${cost}`);
+  }
+
+  // 2. Claim.
+  const claimed = await claim();
+
+  // 3. Refund: another request revealed it first and paid for it.
+  if (!claimed) {
+    await progressCol.updateOne(
+      { userId: ownerId },
+      { $inc: { xpTotal: cost }, $set: { updatedAt: new Date() } },
+    );
+    return (await replayCurrent()) ?? fail(404, "Attempt not found");
   }
 
   return {

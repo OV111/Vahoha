@@ -113,6 +113,9 @@ const connectDB = async () => {
       db.collection("weakSpots").createIndex({ userId: 1, slug: 1 }),
       db.collection("examHistory").createIndex({ userId: 1, takenAt: -1 }),
       db.collection("challengeResults").createIndex({ userId: 1, solvedAt: -1 }),
+      // One result row per learner per challenge: saveChallengeResult upserts it,
+      // and two first submissions racing must not both insert one.
+      db.collection("challengeResults").createIndex({ userId: 1, challengeId: 1 }, { unique: true }),
       db.collection("teach_back_sessions").createIndex({ userId: 1, startedAt: -1 }),
       // One mastery row per learner per topic — unique so a concurrent recompute
       // upserts rather than duplicating, which would give readers two statuses

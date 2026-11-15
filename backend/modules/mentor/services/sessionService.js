@@ -379,11 +379,34 @@ export const checkDailyLimit = async (db, userId, tz = null) => {
  *   `date` is the day document that was charged, so release and the token
  *   counters hit the same one even if the turn crosses midnight.
  */
+/**
+ * Messages counted on OTHER day documents whose day has not ended yet.
+ *
+ * "Today" follows the learner's time zone, which they can change in Settings.
+ * Each zone has its own midnight, so without this every change opened a fresh
+ * day document with a fresh 30. A day document counts until its own `endsAt`,
+ * whichever zone it was created in. Documents from before `endsAt` existed are
+ * not carried.
+ */
+const carriedFromOtherDays = async (col, uid, date) => {
+  const rows = await col
+    .find({ userId: uid, date: { $ne: date }, endsAt: { $gt: new Date() } }, { projection: { count: 1 } })
+    .toArray();
+  return rows.reduce((n, r) => n + (r.count ?? 0), 0);
+};
+
 export const reserveDailyMessage = async (db, userId, tz = null) => {
   const col = db.collection("agent_usage");
   const uid = new ObjectId(userId);
   const date = startOfDay(0, tz);
-  const resetAt = startOfDay(-1, tz).toISOString();
+  const endsAt = startOfDay(-1, tz);
+  const resetAt = endsAt.toISOString();
+
+  // Read apart from the atomic update below. Racing it would take parallel
+  // requests and a time zone change at the same moment, and the burst limiter
+  // bounds that.
+  const cap = DAILY_MESSAGE_CAP - (await carriedFromOtherDays(col, uid, date));
+  if (cap <= 0) return { allowed: false, resetAt, count: DAILY_MESSAGE_CAP, date };
   const used = { $ifNull: ["$count", 0] };
 
   const attempt = () =>
@@ -392,8 +415,9 @@ export const reserveDailyMessage = async (db, userId, tz = null) => {
       [
         {
           $set: {
-            count: { $cond: [{ $lt: [used, DAILY_MESSAGE_CAP] }, { $add: [used, 1] }, used] },
+            count: { $cond: [{ $lt: [used, cap] }, { $add: [used, 1] }, used] },
             createdAt: { $ifNull: ["$createdAt", new Date()] },
+            endsAt: { $ifNull: ["$endsAt", endsAt] },
           },
         },
       ],
@@ -409,10 +433,11 @@ export const reserveDailyMessage = async (db, userId, tz = null) => {
   }
 
   const countBefore = before?.count ?? 0;
-  if (countBefore >= DAILY_MESSAGE_CAP) {
-    return { allowed: false, resetAt, count: countBefore, date };
+  const carried = DAILY_MESSAGE_CAP - cap;
+  if (countBefore >= cap) {
+    return { allowed: false, resetAt, count: countBefore + carried, date };
   }
-  return { allowed: true, resetAt, count: countBefore + 1, date };
+  return { allowed: true, resetAt, count: countBefore + carried + 1, date };
 };
 
 /**
@@ -446,15 +471,18 @@ export const addUsageTokens = async (db, userId, usage, tz = null, date = startO
   );
 };
 
-/** Messages used today, for /context. Mirrors checkDailyLimit's day boundary. */
+/** Messages used today, for /context. Counts what reserveDailyMessage counts. */
 export const getUsageToday = async (db, userId, tz = null) => {
   const today = startOfDay(0, tz);
+  const col = db.collection("agent_usage");
+  const uid = new ObjectId(userId);
 
-  const doc = await db
-    .collection("agent_usage")
-    .findOne({ userId: new ObjectId(userId), date: today });
+  const [doc, carried] = await Promise.all([
+    col.findOne({ userId: uid, date: today }),
+    carriedFromOtherDays(col, uid, today),
+  ]);
 
-  const used = doc?.count ?? 0;
+  const used = Math.min(DAILY_MESSAGE_CAP, (doc?.count ?? 0) + carried);
   return {
     used,
     cap: DAILY_MESSAGE_CAP,
