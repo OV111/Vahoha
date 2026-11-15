@@ -94,6 +94,21 @@ const connectDB = async () => {
       db.collection("teach_back_sessions").createIndex({ userId: 1, path: 1, layer: 1, startedAt: -1 }),
       // LearnerContext runs these five reads on every mentor turn, so they
       // need to be index-backed rather than collection scans.
+      // Challenge catalog: detail by slug, list filters by track/layer and by tag.
+      // Created here, not only by the seeder, so a fresh database is never unindexed.
+      db.collection("challenges").createIndex({ slug: 1 }, { unique: true }),
+      db.collection("challenges").createIndex({ status: 1, trackId: 1, layerId: 1 }),
+      db.collection("challenges").createIndex({ status: 1, tags: 1 }),
+      // Catalog search is a substring regex, so this text index was never used and
+      // only slowed writes. Already gone is fine. Async so any throw becomes a
+      // rejection allSettled can report, never a failed connect.
+      (async () => {
+        try {
+          await db.collection("challenges").dropIndex("challenge_text_search");
+        } catch (err) {
+          if (err?.codeName !== "IndexNotFound" && err?.codeName !== "NamespaceNotFound") throw err;
+        }
+      })(),
       db.collection("weakSpots").createIndex({ userId: 1, resolvedAt: 1 }),
       db.collection("weakSpots").createIndex({ userId: 1, slug: 1 }),
       db.collection("examHistory").createIndex({ userId: 1, takenAt: -1 }),

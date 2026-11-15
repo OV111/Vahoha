@@ -1,4 +1,10 @@
 import { ObjectId } from "mongodb";
+import { createTtlCache } from "../../../utils/ttlCache.js";
+
+// (track, layer number) -> layer. Same for every learner and changed only by the
+// roadmap seeder, like roadmapCache. The learner's own position (userProgress) is
+// never cached, so moving up a layer shows at once.
+const layerByOrder = createTtlCache({ name: "layer-by-order", ttlMs: 10 * 60 * 1000, maxEntries: 500 });
 
 /**
  * Where the user currently is on their roadmap, resolved to the concrete
@@ -24,10 +30,16 @@ export const resolveActiveLayer = async (db, userId) => {
 
   if (!progress?.activePath) return null;
 
-  const layer = await db.collection("roadmap_layers").findOne(
-    { trackId: progress.activePath, order: progress.currentLayer || 1 },
-    { projection: { layerId: 1, trackId: 1, categoryId: 1, order: 1, title: 1 } },
+  const order = progress.currentLayer || 1;
+  const key = `${progress.activePath}|${order}`;
+  const layer = await layerByOrder.wrap(key, () =>
+    db.collection("roadmap_layers").findOne(
+      { trackId: progress.activePath, order },
+      { projection: { layerId: 1, trackId: 1, categoryId: 1, order: 1, title: 1 } },
+    ),
   );
+  // A missing layer is not remembered, so a newly seeded one is found at once.
+  if (!layer) layerByOrder.delete(key);
 
   if (!layer) return null;
 

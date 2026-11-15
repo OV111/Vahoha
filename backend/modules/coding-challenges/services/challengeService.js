@@ -306,17 +306,26 @@ export const listTracksService = async (db, userId) => {
 };
 
 export const getChallengeBySlugService = async (db, slug, userId) => {
-  const challenge = await db
-    .collection(COL)
-    .findOne({ slug, status: "published" }, { projection: DETAIL_PROJECTION });
+  // The problem itself is the same for everyone; whether THIS learner solved it
+  // is read fresh below. clone: the caller spreads it, but nothing may mutate the shared copy.
+  const key = `detail|${slug}`;
+  const [challenge, solved] = await Promise.all([
+    challengeCache.wrap(
+      key,
+      () => db.collection(COL).findOne({ slug, status: "published" }, { projection: DETAIL_PROJECTION }),
+      { clone: true },
+    ),
+    getSolvedSlugs(db, userId, [slug]),
+  ]);
 
   if (!challenge) {
     const err = new Error("Challenge not found");
     err.status = 404;
     throw err;
   }
+    // Not cached as missing: a challenge published a moment later must open at once.
+    challengeCache.delete(key);
 
-  const solved = await getSolvedSlugs(db, userId, [slug]);
   return { ...challenge, done: solved.has(slug) };
 };
 

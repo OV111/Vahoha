@@ -51,10 +51,6 @@ async function seed() {
     col.createIndex({ slug: 1 }, { unique: true }),
     col.createIndex({ status: 1, trackId: 1, layerId: 1 }),
     col.createIndex({ status: 1, tags: 1 }),
-    col.createIndex(
-      { title: "text", summary: "text", tags: "text" },
-      { name: "challenge_text_search" },
-    ),
   ]);
 
   const ops = challenges.map((c) => ({
