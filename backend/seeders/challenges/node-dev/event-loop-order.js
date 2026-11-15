@@ -63,7 +63,7 @@ assert(r.join(',') === 't1,t2,p1,p2', 'order: ' + r);` },
     { name: "timers_ordered_by_delay_then_listing", code: `const r = eventLoopOrder([{ id: 'slow', type: 'timeout', delay: 100 }, { id: 'a', type: 'timeout', delay: 10 }, { id: 'b', type: 'timeout', delay: 10 }, { id: 'zero', type: 'timeout' }]);
 assert(r.join(',') === 'zero,a,b,slow', 'order: ' + r);` },
     { name: "zero_delay_equals_one", code: `const r = eventLoopOrder([{ id: 'one', type: 'timeout', delay: 1 }, { id: 'zero', type: 'timeout', delay: 0 }]);
-assert(r.join(',') === 'one,zero', 'setTimeout 0 is clamped to 1, so listing order decides: ' + r);` },
+assert(r.join(',') === 'one,zero', 'a 0 ms timeout is clamped to 1 ms, so listing order decides: ' + r);` },
     { name: "tick_spawned_by_promise_waits_for_all_promises", code: `const r = eventLoopOrder([
   { id: 'p1', type: 'promise', spawns: [{ id: 'tickFromP1', type: 'nextTick' }] },
   { id: 'p2', type: 'promise' },

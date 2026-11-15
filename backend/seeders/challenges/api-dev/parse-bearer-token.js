@@ -72,4 +72,23 @@ module.exports = parseBearer;`,
     explanation:
       "One anchored regular expression defines the whole valid format, so anything that doesn't fit, including extra words or odd characters, is rejected.",
   },
+  // Other languages are graded on the judge from these cases; JavaScript keeps hiddenTests.
+  languages: ["js", "ts", "python", "ruby", "php"],
+  functionSpec: { name: "parseBearer", params: ["header"] },
+  hiddenCases: [
+    { name: "jwt_shape", args: ["Bearer aaa.bbb.ccc"], expected: "aaa.bbb.ccc" },
+    { name: "lowercase_scheme", args: ["bearer tok"], expected: "tok" },
+    { name: "uppercase_scheme", args: ["BEARER tok"], expected: "tok" },
+    { name: "extra_whitespace", args: ["  Bearer    tok  "], expected: "tok" },
+    { name: "basic_scheme", args: ["Basic abc"], expected: null },
+    { name: "scheme_only", args: ["Bearer"], expected: null },
+    { name: "scheme_and_space", args: ["Bearer "], expected: null },
+    { name: "two_tokens", args: ["Bearer a b"], expected: null },
+    { name: "angle_brackets", args: ["Bearer a<b>"], expected: null },
+    { name: "double_quote", args: ["Bearer a\"b"], expected: null },
+    { name: "not_a_string_null", args: [null], expected: null },
+    { name: "not_a_string_number", args: [5], expected: null },
+    { name: "padding_allowed", args: ["Bearer abc=="], expected: "abc==" },
+    { name: "padding_only_at_the_end", args: ["Bearer a=b"], expected: null },
+  ],
 };

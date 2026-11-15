@@ -213,6 +213,18 @@ export const gradeCaseReport = (report, cases) => {
     const ms = Number.isFinite(entry.ms) ? entry.ms : 0;
     const failed = (message) => ({ name: testCase.name, passed: false, ms, message });
 
+    // A case with `throws` expects an error instead of a value: `true` for any
+    // error, a string for one whose message is that text. Every harness reports
+    // an error as "<ErrorClass>: <message>", so the message is the end of it.
+    if (testCase.throws !== undefined) {
+      if (entry.ok === true) return failed(`Expected an error, but it returned ${shown(String(entry.value))}`);
+      if (entry.ok !== false || typeof entry.error !== "string") return failed("The function did not return.");
+      if (typeof testCase.throws === "string" && !entry.error.endsWith(`: ${testCase.throws}`)) {
+        return failed(`Expected the error message "${testCase.throws}", got ${shown(entry.error)}`);
+      }
+      return { name: testCase.name, passed: true, ms };
+    }
+
     if (entry.ok !== true) {
       return failed(typeof entry.error === "string" ? shown(entry.error) : "The function did not return.");
     }

@@ -4,6 +4,8 @@ import { escapeRegex } from "../../../utils/regex.js";
 import { createTtlCache } from "../../../utils/ttlCache.js";
 import { getTracks } from "../../../services/roadmapCache.js";
 import { currentStreak } from "../../../services/learningActivity.js";
+import { isJudgeLanguage } from "../../../../constants/challengeLanguages.js";
+import { describeJudge } from "./judge0Client.js";
 
 /**
  * Challenge read layer.
@@ -22,6 +24,15 @@ const COL = "challenges";
 // their own track first) is never cached: it is read or computed fresh per request.
 // A minute of staleness only delays a new challenge or a solve count.
 const challengeCache = createTtlCache({ name: "challenges", ttlMs: 60_000, maxEntries: 300 });
+
+// Without a judge server only JavaScript and TypeScript can be graded, so a
+// challenge that offers them stops offering the other languages instead of
+// failing on submit. One written for a judge language alone keeps it and says
+// "temporarily unavailable" when submitted.
+const offeredNow = (challenge) => {
+  if (!challenge?.languages?.includes("js") || describeJudge().available) return challenge;
+  return { ...challenge, languages: challenge.languages.filter((l) => !isJudgeLanguage(l)) };
+};
 
 const MS_PER_DAY = 86_400_000;
 const MAX_KEY_LENGTH = 300;
@@ -254,7 +265,7 @@ export const listChallengesService = async (db, query = {}, userId) => {
   const decorated = items.map((item) => {
     const done = me.solved.has(item.slug);
     return {
-      ...item,
+      ...offeredNow(item),
       done,
       inProgress: !done && me.started.has(item.slug),
       // "Recommended" has to mean something a user can act on, so it is
@@ -330,7 +341,7 @@ export const getChallengeBySlugService = async (db, slug, userId) => {
     throw err;
   }
 
-  return { ...challenge, done: solved.has(slug) };
+  return { ...offeredNow(challenge), done: solved.has(slug) };
 };
 
 /**
@@ -443,7 +454,7 @@ export const getDailyChallengeService = async (db, now = Date.now()) => {
     ttlMs: (daysSinceEpoch + 1) * MS_PER_DAY - now,
   });
   if (!challenge) challengeCache.delete(key); // nothing is published yet: ask again next time
-  return challenge;
+  return offeredNow(challenge);
 };
 
 const loadDailyChallenge = async (db, daysSinceEpoch) => {

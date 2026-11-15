@@ -1,5 +1,5 @@
 import { Star, CheckCircle2, Code2, Zap } from "lucide-react";
-import { languagesOf } from "../../../../../constants/challengeLanguages";
+import { jsTermsFor, languagesOf } from "../../../../../constants/challengeLanguages";
 import { C } from "../../lib/arenaTheme";
 import ChallengeText from "./ChallengeText";
 import Badge from "../Badge";
@@ -9,7 +9,9 @@ import ExampleBlock from "./ExampleBlock";
 import { formatTitle } from "../../lib/formatTitle";
 import NoCopy from "@/components/integrity/NoCopy";
 
-export default function ProblemPanel({ challenge }) {
+export default function ProblemPanel({ challenge, language }) {
+  const terms = jsTermsFor(challenge, language);
+  const languageLabel = languagesOf(challenge).find((l) => l.id === language)?.label;
   return (
     <NoCopy className="thin-scrollbar flex flex-col h-full overflow-y-auto gap-5 px-5 py-5">
       {challenge.weakTopic && (
@@ -55,6 +57,18 @@ export default function ProblemPanel({ challenge }) {
         >
           <ChallengeText text={challenge.task} className="text-[14px] leading-7 text-[#d0d0d0]" />
         </div>
+        {terms && (
+          <p className="mt-2 text-[12px] leading-relaxed" style={{ color: C.muted }}>
+            Written in JavaScript terms. In {languageLabel} your function is{" "}
+            <code style={{ color: C.text }}>{terms.functionName}</code>
+            {terms.nothing && (
+              <>
+                , <code>null</code> means <code style={{ color: C.text }}>{terms.nothing}</code>
+              </>
+            )}
+            , and &ldquo;throw an Error&rdquo; means {terms.fail}.
+          </p>
+        )}
       </div>
 
       <div>

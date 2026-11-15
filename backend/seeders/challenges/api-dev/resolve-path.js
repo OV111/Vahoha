@@ -88,4 +88,23 @@ module.exports = resolvePath;`,
     explanation:
       "Build one full path string, then walk its segments with a stack: '..' pops, '.' and empty pieces are skipped. Popping an empty stack is a no-op, which stops it climbing above root.",
   },
+  // Other languages are graded on the judge from these cases; JavaScript keeps hiddenTests.
+  languages: ["js", "ts", "python", "ruby", "php", "java", "cpp", "go"],
+  functionSpec: { name: "resolvePath", params: [{name: "cwd", type: "string"}, {name: "target", type: "string"}, {name: "home", type: "string"}], returns: "string" },
+  hiddenCases: [
+    { name: "dot_is_a_no_op", args: ["/home/a","b/./c","/home/user"], expected: "/home/a/b/c" },
+    { name: "two_levels_up", args: ["/home/a/b","../../x","/home/user"], expected: "/home/x" },
+    { name: "one_level_up", args: ["/home/a","..","/home/user"], expected: "/home" },
+    { name: "cannot_escape_root", args: ["/a","../../../..","/home/user"], expected: "/" },
+    { name: "root_parent_is_root", args: ["/","..","/home/user"], expected: "/" },
+    { name: "absolute_target_normalised", args: ["/home/a","/etc/./nginx/../hosts","/home/user"], expected: "/etc/hosts" },
+    { name: "bare_tilde", args: ["/x","~","/home/user"], expected: "/home/user" },
+    { name: "tilde_slash", args: ["/x","~/docs","/home/user"], expected: "/home/user/docs" },
+    { name: "custom_home", args: ["/x","~","/root"], expected: "/root" },
+    { name: "tilde_inside_name_is_literal", args: ["/x","a~b","/home/user"], expected: "/x/a~b" },
+    { name: "repeated_and_trailing_slashes", args: ["/a","b//c/","/home/user"], expected: "/a/b/c" },
+    { name: "empty_target_is_cwd", args: ["/home/a","","/home/user"], expected: "/home/a" },
+    { name: "dot_target_is_cwd", args: ["/home/a",".","/home/user"], expected: "/home/a" },
+    { name: "traversal_attempt", args: ["/srv/app/uploads","../../../etc/passwd","/home/user"], expected: "/etc/passwd" },
+  ],
 };

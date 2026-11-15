@@ -278,7 +278,7 @@ export default function ChallengeArena() {
       >
         <div data-pane="problem" data-tour="arena-problem" className="relative h-full overflow-hidden flex flex-col" style={{ borderRight: `1px solid ${C.border}` }}>
           <div {...problemPane.handleProps} className="arena-resize-handle edge-right" />
-          <ProblemPanel challenge={challenge} />
+          <ProblemPanel challenge={challenge} language={language} />
         </div>
 
         <div data-pane="code" data-tour="arena-code" className="h-full overflow-hidden flex flex-col" style={{ borderRight: `1px solid ${C.border}` }}>

@@ -1,0 +1,8 @@
+# HTTPS in front of Judge0. Caddy gets and renews the certificate itself.
+{$JUDGE0_DOMAIN} {
+	# Submissions carry the learner's code; nothing legitimate is bigger.
+	request_body {
+		max_size 1MB
+	}
+	reverse_proxy server:2358
+}

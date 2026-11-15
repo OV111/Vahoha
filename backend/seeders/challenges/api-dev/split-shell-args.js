@@ -109,4 +109,23 @@ module.exports = splitArgs;`,
     explanation:
       "A small state machine: the quote variable decides how each character is treated, and inToken records whether an argument has started, so an empty quote pair still counts.",
   },
+  // Other languages are graded on the judge from these cases; JavaScript keeps hiddenTests.
+  languages: ["js", "ts", "python", "ruby", "php", "java", "cpp", "go"],
+  functionSpec: { name: "splitArgs", params: [{name: "cmd", type: "string"}], returns: "string[]" },
+  hiddenCases: [
+    { name: "extra_whitespace", args: ["  ls   -la  /tmp "], expected: ["ls","-la","/tmp"] },
+    { name: "both_quote_kinds", args: ["echo \"a b\" 'c d'"], expected: ["echo","a b","c d"] },
+    { name: "adjacent_pieces_join", args: ["a\"b c\"d"], expected: ["ab cd"] },
+    { name: "empty_quotes_are_an_argument", args: ["echo \"\""], expected: ["echo",""] },
+    { name: "backslash_escapes_space", args: ["cp my\\ file x"], expected: ["cp","my file","x"] },
+    { name: "escaped_quote_in_double_quotes", args: ["echo \"say \\\"hi\\\"\""], expected: ["echo","say \"hi\""] },
+    { name: "other_quote_kind_is_literal", args: ["echo \"it's\" 'say \"x\"'"], expected: ["echo","it's","say \"x\""] },
+    { name: "backslash_literal_in_single_quotes", args: ["echo 'a\\b'"], expected: ["echo","a\\b"] },
+    { name: "escaped_backslash_in_double_quotes", args: ["echo \"a\\\\b\""], expected: ["echo","a\\b"] },
+    { name: "unclosed_double_quote", args: ["echo \"oops"], throws: true },
+    { name: "unclosed_single_quote", args: ["echo 'oops"], throws: true },
+    { name: "empty_input", args: [""], expected: [] },
+    { name: "only_spaces", args: ["   "], expected: [] },
+    { name: "tabs_separate", args: ["a\tb"], expected: ["a","b"] },
+  ],
 };

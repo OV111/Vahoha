@@ -86,4 +86,22 @@ module.exports = octalToSymbolic;`,
     explanation:
       "Each octal digit is three bits. Testing each bit gives r, w and x, and the three digits join into one 9-character string.",
   },
+  // Other languages are graded on the judge from these cases; JavaScript keeps hiddenTests.
+  languages: ["js", "ts", "python", "ruby", "php"],
+  functionSpec: { name: "octalToSymbolic", params: ["mode"] },
+  hiddenCases: [
+    { name: "common_755", args: ["755"], expected: "rwxr-xr-x" },
+    { name: "number_input", args: [644], expected: "rw-r--r--" },
+    { name: "owner_only", args: ["600"], expected: "rw-------" },
+    { name: "everything", args: [777], expected: "rwxrwxrwx" },
+    { name: "nothing", args: ["000"], expected: "---------" },
+    { name: "mixed_bits", args: [421], expected: "r---w---x" },
+    { name: "mixed_bits_2", args: ["753"], expected: "rwxr-x-wx" },
+    { name: "digits_8_and_9", args: [789], expected: null },
+    { name: "letters", args: ["75a"], expected: null },
+    { name: "too_short", args: [75], expected: null },
+    { name: "too_long", args: ["7555"], expected: null },
+    { name: "missing", args: [null], expected: null },
+    { name: "empty", args: [""], expected: null },
+  ],
 };

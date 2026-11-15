@@ -103,6 +103,30 @@ export const JUDGE_LANGUAGES = [
 export const isJudgeLanguage = (value) =>
   JUDGE_LANGUAGES.some((l) => l.id === value);
 
+// Older challenges describe the task in JavaScript terms ("return null",
+// "throw an Error"). When one of them is solved in another language, the Arena
+// says what those words mean there. `nothing` is left out for the typed
+// languages, whose challenges never return null.
+const JS_TERMS = {
+  python: { nothing: "None", fail: "raise an exception" },
+  ruby: { nothing: "nil", fail: "raise an error" },
+  php: { nothing: "null", fail: "throw an exception" },
+  java: { fail: "throw an exception" },
+  cpp: { fail: "throw an exception" },
+  go: { fail: "panic" },
+};
+
+/**
+ * What a learner needs to read a JavaScript-worded task in another language,
+ * or null when the task is already written for it.
+ * @returns {{ functionName: string, nothing?: string, fail: string } | null}
+ */
+export const jsTermsFor = (challenge, language) => {
+  const judge = JUDGE_LANGUAGES.find((l) => l.id === language);
+  if (!judge || !challenge?.functionSpec?.name || !challenge.languages?.includes("js")) return null;
+  return { functionName: judge.functionName(challenge.functionSpec.name), ...JS_TERMS[language] };
+};
+
 export const isTypedLanguage = (value) =>
   JUDGE_LANGUAGES.some((l) => l.id === value && l.typed);
 

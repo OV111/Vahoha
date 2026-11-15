@@ -63,9 +63,9 @@ export const fallbackAllowed = (env = process.env) =>
 if (!ivm) {
   console.warn(
     `runner: ${ivmUnavailableReason}; ` +
-      (fallbackAllowed()
-        ? "using the child-process fallback (NOT a security boundary)."
-        : "server-side submissions are DISABLED in production until the sandbox is available."),
+    (fallbackAllowed()
+      ? "using the child-process fallback (NOT a security boundary)."
+      : "server-side submissions are DISABLED in production until the sandbox is available."),
   );
 }
 
@@ -176,13 +176,13 @@ const buildProgram = (userCode, exportName, hiddenTests) => `
   const __tests = ${JSON.stringify(hiddenTests.map((t) => t.name))};
   const __bodies = [
     ${hiddenTests
-      // A test whose code ends in a trailing "//" comment would otherwise
-      // swallow the closing brace below into that comment, since it's
-      // appended on the same line with no newline in between — this newline
-      // is what makes that a syntax error in the test author's own code
-      // instead of a silently broken script.
-      .map((t) => `async () => {\n${t.code}\n}`)
-      .join(", ")}
+    // A test whose code ends in a trailing "//" comment would otherwise
+    // swallow the closing brace below into that comment, since it's
+    // appended on the same line with no newline in between — this newline
+    // is what makes that a syntax error in the test author's own code
+    // instead of a silently broken script.
+    .map((t) => `async () => {\n${t.code}\n}`)
+    .join(", ")}
   ];
 
   for (let i = 0; i < __bodies.length; i++) {
