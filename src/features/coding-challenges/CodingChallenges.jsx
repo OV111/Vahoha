@@ -78,6 +78,7 @@ export default function CodingChallenges() {
           loadingMore={loadingMore}
           error={listError}
           onLoadMore={loadMore}
+          onRetry={() => loadChallenges(filters.apiQuery)}
           // In "All paths", cards outside the learner's own path say which
           // path they're from. Picking one path makes that label redundant.
           trackLabelFor={(c) =>

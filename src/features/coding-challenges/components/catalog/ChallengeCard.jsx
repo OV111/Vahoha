@@ -1,4 +1,5 @@
-import { Check, Clock, Map as MapIcon, Users, Zap } from "lucide-react";
+import { Check, Clock, Code2, Map as MapIcon, Users, Zap } from "lucide-react";
+import { CHALLENGE_LANGUAGES, languagesOf, shortLabel } from "../../../../../constants/challengeLanguages";
 import Badge from "../Badge";
 import DifficultyBadge from "../DifficultyBadge";
 import { formatTitle } from "../../lib/formatTitle";
@@ -6,7 +7,13 @@ import { formatTitle } from "../../lib/formatTitle";
 // Below this a solver count reads as "nobody does this one", so it is left out.
 const MIN_SOLVES_SHOWN = 5;
 
+// Most challenges take the default JavaScript + TypeScript pair; naming it on
+// every card says nothing. Only a different set (Python, Go...) earns a badge.
+const isDefaultLanguages = (languages) =>
+  languages.length === CHALLENGE_LANGUAGES.length && CHALLENGE_LANGUAGES.every((l) => languages.includes(l));
+
 export default function ChallengeCard({ c, trackLabel = null }) {
+  const languages = languagesOf(c);
   const solves = c.stats?.solves ?? 0;
   return (
     <div className="relative overflow-hidden rounded-4xl p-4 h-full flex flex-col gap-2.5 border border-[#1a1a1a] bg-[#0d0d0d] transition duration-200 hover:border-purple-600/50 hover:-translate-y-0.5 motion-reduce:transition-colors motion-reduce:hover:translate-y-0">
@@ -39,6 +46,14 @@ export default function ChallengeCard({ c, trackLabel = null }) {
         {trackLabel && (
           <Badge tone="blue" icon={MapIcon} className="max-w-[160px] truncate">
             {trackLabel}
+          </Badge>
+        )}
+        {/* One language is named in full; several are shown as initials so
+            the row stays on one line. */}
+        {!isDefaultLanguages(languages) && (
+          <Badge icon={Code2} mono>
+            <span className="sr-only">Languages: </span>
+            {languages.length === 1 ? languages[0].label : languages.map(shortLabel).join(" · ")}
           </Badge>
         )}
       </div>

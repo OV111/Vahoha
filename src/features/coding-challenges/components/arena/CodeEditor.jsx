@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { EditorState } from "@codemirror/state";
+import { Compartment, EditorState } from "@codemirror/state";
 import {
   EditorView,
   keymap,
@@ -18,9 +18,24 @@ import {
   bracketMatching,
   indentOnInput,
   indentUnit,
+  StreamLanguage,
 } from "@codemirror/language";
 import { javascript } from "@codemirror/lang-javascript";
 import { arenaTheme, arenaHighlight } from "../../lib/editorTheme";
+
+// Grammars other than JavaScript are fetched when a file in that language is
+// opened, so they cost nothing to the learners who never pick them.
+const LAZY_SYNTAX = {
+  python: () => import("@codemirror/lang-python").then((m) => m.python()),
+  php: () => import("@codemirror/lang-php").then((m) => m.php()),
+  ruby: () => import("@codemirror/legacy-modes/mode/ruby").then((m) => StreamLanguage.define(m.ruby)),
+  java: () => import("@codemirror/lang-java").then((m) => m.java()),
+  cpp: () => import("@codemirror/lang-cpp").then((m) => m.cpp()),
+  go: () => import("@codemirror/lang-go").then((m) => m.go()),
+};
+
+// Each language's usual indent. Go's formatter uses tabs.
+const INDENT = { python: "    ", php: "    ", java: "    ", cpp: "    ", go: "\t" };
 
 /**
  * CodeMirror 6 editor for the arena.
@@ -37,7 +52,7 @@ import { arenaTheme, arenaHighlight } from "../../lib/editorTheme";
  *    is baked into the EditorState at construction, so a stale closure would
  *    otherwise keep calling the first render's handler forever.
  */
-export default function CodeEditor({ value, onChange, onPaste, readOnly = false, typescript = false }) {
+export default function CodeEditor({ value, onChange, onPaste, readOnly = false, language = "js" }) {
   const host = useRef(null);
   const view = useRef(null);
   const onChangeRef = useRef(onChange);
@@ -49,6 +64,9 @@ export default function CodeEditor({ value, onChange, onPaste, readOnly = false,
   useEffect(() => {
     if (!host.current) return;
 
+    const syntax = new Compartment();
+    const loadSyntax = LAZY_SYNTAX[language];
+
     const state = EditorState.create({
       doc: value ?? "",
       extensions: [
@@ -59,8 +77,8 @@ export default function CodeEditor({ value, onChange, onPaste, readOnly = false,
         history(),
         bracketMatching(),
         indentOnInput(),
-        indentUnit.of("  "),
-        javascript({ typescript }),
+        indentUnit.of(INDENT[language] ?? "  "),
+        syntax.of(loadSyntax ? [] : javascript({ typescript: language === "ts" })),
         arenaHighlight,
         arenaTheme,
         // indentWithTab last so Tab indents instead of leaving the editor.
@@ -85,12 +103,21 @@ export default function CodeEditor({ value, onChange, onPaste, readOnly = false,
     view.current = new EditorView({ state, parent: host.current });
     if (readOnly) view.current.dom.classList.add("arena-readonly");
 
+    // The editor is usable at once and gains its colours when the grammar
+    // arrives. If the fetch fails the code simply stays uncoloured.
+    const created = view.current;
+    loadSyntax?.()
+      .then((extension) => {
+        if (view.current === created) created.dispatch({ effects: syntax.reconfigure(extension) });
+      })
+      .catch(() => {});
+
     return () => {
       view.current?.destroy();
       view.current = null;
     };
     // Rebuilt only when the read-only mode flips — switching files (and so the
-    // language) remounts this component via its key, so `value` and `typescript`
+    // language) remounts this component via its key, so `value` and `language`
     // are intentionally not dependencies.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [readOnly]);

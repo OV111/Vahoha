@@ -4,6 +4,7 @@ import {
   saveAttemptCodeService,
   revealHintService,
 } from "../services/attemptService.js";
+import { explainSolutionService } from "../services/explanationService.js";
 import { makeErrorHandler } from "../../../utils/respond.js";
 
 const sendError = makeErrorHandler("challenges");
@@ -56,6 +57,18 @@ export const revealHint = async (req, res) => {
       req.params.id,
       req.params.order,
     );
+    res.json({ success: true, ...data });
+  } catch (err) {
+    sendError(err, req, res);
+  }
+};
+
+export const explainSolution = async (req, res) => {
+  try {
+    const data = await explainSolutionService(req.app.locals.db, req.user._id, req.params.id, {
+      text: req.body?.text,
+      language: req.body?.language,
+    });
     res.json({ success: true, ...data });
   } catch (err) {
     sendError(err, req, res);

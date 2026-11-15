@@ -17,7 +17,13 @@ import RightPanel from "./components/arena/RightPanel";
 import ActionBar from "./components/arena/ActionBar";
 import SolvedPanel from "./components/arena/SolvedPanel";
 import ArenaTour from "./components/ArenaTour";
-import { DEFAULT_LANGUAGE, isChallengeLanguage } from "../../../constants/challengeLanguages";
+import ArenaLoadError from "./components/arena/ArenaLoadError";
+import {
+  DEFAULT_LANGUAGE,
+  isChallengeLanguage,
+  isJudgeLanguage,
+  languagesOf,
+} from "../../../constants/challengeLanguages";
 
 const MOBILE_TABS = [
   { key: "problem", label: "Problem" },
@@ -31,8 +37,8 @@ export default function ChallengeArena() {
   const { pathname } = useLocation();
 
   const {
-    challenge, attempt, error,
-    loadChallenge, clearChallenge, startAttempt, saveDraft, revealHint, submitAttempt,
+    challenge, attempt, error, errorKind,
+    loadChallenge, clearChallenge, startAttempt, saveDraft, revealHint, submitAttempt, explainSolution,
   } = useChallengeStore();
 
   // Stage 3: the files are executed in a throwaway Web Worker, off the UI
@@ -53,16 +59,24 @@ export default function ChallengeArena() {
     return clearChallenge;
   }, [slug, loadChallenge, clearChallenge, startAttempt]);
 
-  // JavaScript or TypeScript, remembered across challenges. Storage can throw
+  // The preferred language, remembered across challenges. Storage can throw
   // (private mode), so it is only ever a convenience.
-  const [language, setLanguage] = useState(() => {
+  const [preferred, setLanguage] = useState(() => {
     try {
       const saved = localStorage.getItem("arena:language");
-      return isChallengeLanguage(saved) ? saved : DEFAULT_LANGUAGE;
+      return isChallengeLanguage(saved) || isJudgeLanguage(saved) ? saved : DEFAULT_LANGUAGE;
     } catch {
       return DEFAULT_LANGUAGE;
     }
   });
+
+  // Each challenge has its own set of languages. A preference this challenge
+  // does not offer falls back to its first one, without being forgotten.
+  const languages = useMemo(() => languagesOf(challenge), [challenge]);
+  const language = languages.some((l) => l.id === preferred) ? preferred : (languages[0]?.id ?? DEFAULT_LANGUAGE);
+  // "Run tests" runs the JavaScript tests in the browser, which cannot run
+  // another language. Those are checked by submitting.
+  const canRunInBrowser = !isJudgeLanguage(language);
 
   const { files, updateFile, saveNow } = useArenaFiles({ challenge, attempt, saveDraft, language });
   const { submit: runSubmit, submitting, verdict, setVerdict } = useArenaSubmit(submitAttempt);
@@ -144,6 +158,9 @@ export default function ChallengeArena() {
 
   const submit = async () => {
     setShowSolved(true);
+    // The server grades the saved draft, and autosave waits 1.5s after the last
+    // keystroke. Without this, pasting and submitting at once grades the old code.
+    await saveNow();
     await runSubmit(language, integrityRef.current);
   };
 
@@ -201,9 +218,15 @@ export default function ChallengeArena() {
             or missing challenge always sets `error`, so "not found" can't
             flash up before the request even begins. */}
         {error ? (
-          <p className="text-[12px]" style={{ color: C.rose }}>
-            Couldn&apos;t load this challenge — {error}
-          </p>
+          <ArenaLoadError
+            kind={errorKind}
+            detail={error}
+            onRetry={() => {
+              loadChallenge(slug);
+              startAttempt(slug);
+            }}
+            onBack={() => navigate("/coding-challenges")}
+          />
         ) : (
           <LoadingSuspense fill />
         )}
@@ -265,6 +288,7 @@ export default function ChallengeArena() {
             onChangeFile={handleChangeFile}
             onPaste={notePaste}
             language={language}
+            languages={languages}
             onLanguageChange={changeLanguage}
           />
         </div>
@@ -287,13 +311,18 @@ export default function ChallengeArena() {
       </div>
 
       {showSolved && (
-        <SolvedPanel verdict={verdict} onDismiss={() => setShowSolved(false)} />
+        <SolvedPanel
+          verdict={verdict}
+          explanation={attempt?.explanation ?? null}
+          onExplain={(text) => explainSolution(text, language)}
+          onDismiss={() => setShowSolved(false)}
+        />
       )}
 
       <ActionBar
-        testResults={verdict?.results?.length ? verdict.results : results}
+        testResults={verdict?.results?.length ? verdict.results : canRunInBrowser ? results : []}
         running={running}
-        onRun={() => { setVerdict(null); run(files); }}
+        onRun={canRunInBrowser ? () => { setVerdict(null); run(files); } : null}
         onSubmit={submit}
         submitting={submitting}
         lastRunAt={verdict ? "graded" : results.length ? "just now" : null}

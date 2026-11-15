@@ -1,5 +1,6 @@
 import { submitAttemptService } from "../services/submissionService.js";
 import { describeRunner } from "../services/runnerService.js";
+import { describeJudge } from "../services/judge0Client.js";
 import { makeErrorHandler } from "../../../utils/respond.js";
 
 const sendError = makeErrorHandler("challenges");
@@ -24,5 +25,5 @@ export const submit = async (req, res) => {
  * the hardened isolate is in use or the weaker child-process fallback.
  */
 export const runnerStatus = (_req, res) => {
-  res.json({ success: true, ...describeRunner() });
+  res.json({ success: true, ...describeRunner(), judge: describeJudge() });
 };

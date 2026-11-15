@@ -57,7 +57,12 @@ export default function ActionBar({ testResults, onRun, running, onSubmit, submi
           <Sparkles size={11} />
           Ask mentor
         </button>
-        <button
+        {!onRun && (
+          <span className="text-[11px] max-sm:hidden" style={{ color: C.muted, fontFamily: FONT_MONO }}>
+            This language is tested when you submit
+          </span>
+        )}
+        {onRun && <button
           data-tour="arena-run"
           onClick={onRun}
           disabled={running}
@@ -71,7 +76,7 @@ export default function ActionBar({ testResults, onRun, running, onSubmit, submi
         >
           <RotateCcw size={11} />
           Run tests
-        </button>
+        </button>}
         <button
           data-tour="arena-submit"
           onClick={onSubmit}

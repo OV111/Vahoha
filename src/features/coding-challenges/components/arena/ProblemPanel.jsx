@@ -1,4 +1,5 @@
-import { Star, CheckCircle2, Zap } from "lucide-react";
+import { Star, CheckCircle2, Code2, Zap } from "lucide-react";
+import { languagesOf } from "../../../../../constants/challengeLanguages";
 import { C } from "../../lib/arenaTheme";
 import ChallengeText from "./ChallengeText";
 import Badge from "../Badge";
@@ -35,6 +36,14 @@ export default function ProblemPanel({ challenge }) {
           <Badge key={t} mono>{t}</Badge>
         ))}
       </div>
+
+      <p className="flex flex-wrap items-center gap-1.5 text-[12px]" style={{ color: C.muted }}>
+        <Code2 size={12} aria-hidden="true" />
+        Solve it in
+        {languagesOf(challenge).map((l) => (
+          <Badge key={l.id} tone="blue">{l.label}</Badge>
+        ))}
+      </p>
 
       <ChallengeText text={challenge.description} className="text-[14px] leading-7 text-[#b4b4b4]" />
 

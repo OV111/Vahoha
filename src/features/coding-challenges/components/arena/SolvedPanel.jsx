@@ -3,6 +3,7 @@ import { CheckCircle2, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { C, FONT_MONO } from "../../lib/arenaTheme";
 import SectionHead from "./SectionHead";
+import ExplainSolution from "./ExplainSolution";
 
 /**
  * The payoff for a passing submit. Without this, a solve was indistinguishable
@@ -12,8 +13,12 @@ import SectionHead from "./SectionHead";
  * Dismissible rather than a hard redirect: staying on the page to keep reading
  * your own passing code, or the explanation, is a reasonable thing to want.
  */
-export default function SolvedPanel({ verdict, onDismiss }) {
+export default function SolvedPanel({ verdict, explanation, onExplain, onDismiss }) {
   const navigate = useNavigate();
+  // The reference solution waits until the learner has explained their own
+  // code, or chosen not to: shown first, it would be what they explain.
+  const [skipped, setSkipped] = useState(false);
+  const revealed = skipped || Boolean(explanation) || !onExplain;
   // Re-triggers the entrance animation on a fresh solve without remounting
   // the whole overlay tree.
   const [visible, setVisible] = useState(false);
@@ -30,7 +35,7 @@ export default function SolvedPanel({ verdict, onDismiss }) {
       style={{ background: "rgba(10,10,12,0.85)", backdropFilter: "blur(2px)" }}
     >
       <div
-        className="w-full max-w-lg overflow-hidden rounded-md transition-all duration-200"
+        className="w-full max-w-2xl overflow-hidden rounded-md transition-all duration-200"
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
@@ -64,7 +69,7 @@ export default function SolvedPanel({ verdict, onDismiss }) {
           </button>
         </div>
 
-        <div className="flex flex-col gap-4 px-5 py-5 max-h-[60vh] overflow-y-auto">
+        <div className="flex flex-col gap-4 px-5 py-5 max-h-[70vh] overflow-y-auto">
           <div className="flex items-center gap-4">
             <div className="flex flex-col">
               <span className="text-[10px] uppercase tracking-widest" style={{ color: C.faint, fontFamily: FONT_MONO }}>
@@ -92,7 +97,16 @@ export default function SolvedPanel({ verdict, onDismiss }) {
             )}
           </div>
 
-          {verdict.solution?.explanation && (
+          {onExplain && (
+            <ExplainSolution
+              explanation={explanation}
+              onExplain={onExplain}
+              onSkip={() => setSkipped(true)}
+              skipped={skipped}
+            />
+          )}
+
+          {revealed && verdict.solution?.explanation && (
             <div>
               <SectionHead>Why it works</SectionHead>
               <p className="text-[13px] leading-relaxed" style={{ color: "#8a8a9a" }}>
@@ -101,7 +115,7 @@ export default function SolvedPanel({ verdict, onDismiss }) {
             </div>
           )}
 
-          {verdict.solution?.code && (
+          {revealed && verdict.solution?.code && (
             <div>
               <SectionHead>Reference solution</SectionHead>
               <pre

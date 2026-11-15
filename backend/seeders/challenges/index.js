@@ -8,6 +8,13 @@
  * doubles as the index of everything that exists.
  */
 
+import pyWordFrequencies from "./python/word-frequencies.js";
+import rbChunkBySize from "./ruby/chunk-by-size.js";
+import phpRunLengthEncode from "./php/run-length-encode.js";
+import javaMaxSubarraySum from "./java/max-subarray-sum.js";
+import cppLongestCommonPrefix from "./cpp/longest-common-prefix.js";
+import goMergeIntervals from "./go/merge-intervals.js";
+
 import asyncErrorWrapper from "./api-dev/async-error-wrapper.js";
 import streamingFileUpload from "./api-dev/streaming-file-upload.js";
 import lruResponseCache from "./api-dev/lru-response-cache.js";
@@ -432,4 +439,10 @@ export const challenges = [
   nextSemverVersion,
   planCiPipeline,
   lintDockerfile,
+  pyWordFrequencies,
+  rbChunkBySize,
+  phpRunLengthEncode,
+  javaMaxSubarraySum,
+  cppLongestCommonPrefix,
+  goMergeIntervals,
 ];

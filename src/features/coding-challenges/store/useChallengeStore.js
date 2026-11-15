@@ -13,13 +13,23 @@ import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
  */
 
 const request = async (path, options = {}) => {
-  const res = await apiFetch(`${API_BASE_URL}/api/challenges${path}`, {
-    ...options,
-    headers: {
-      ...(options.body ? { "Content-Type": "application/json" } : {}),
-      ...authHeaders(),
-    },
-  });
+  let res;
+  try {
+    res = await apiFetch(`${API_BASE_URL}/api/challenges${path}`, {
+      ...options,
+      headers: {
+        ...(options.body ? { "Content-Type": "application/json" } : {}),
+        ...authHeaders(),
+      },
+    });
+  } catch (cause) {
+    if (cause.name === "AbortError") throw cause;
+    // No answer at all: the server is down or the connection dropped. The
+    // browser's own text ("Failed to fetch") tells a learner nothing.
+    const err = new Error("We can't reach the server. Check your connection and try again.");
+    err.network = true;
+    throw err;
+  }
   const body = await res.json().catch(() => ({}));
   if (!res.ok) {
     const err = new Error(body.message || `Request failed (${res.status})`);
@@ -63,6 +73,8 @@ const useChallengeStore = create((set, get) => ({
 
   loading: false,
   error: null,
+  // Why the open challenge failed to load: "network", "notFound" or "other".
+  errorKind: null,
 
   /** Everything on the catalog page except the list. Loaded once. */
   loadMeta: async () => {
@@ -143,12 +155,13 @@ const useChallengeStore = create((set, get) => ({
     // Avoid a refetch flash when navigating back to a challenge already open.
     if (get().challenge?.slug === slug) return;
 
-    set({ loading: true, error: null, challenge: null });
+    set({ loading: true, error: null, errorKind: null, challenge: null });
     try {
       const { data } = await request(`/${slug}`);
       set({ challenge: data, loading: false });
     } catch (err) {
-      set({ error: err.message, loading: false });
+      const errorKind = err.network ? "network" : err.status === 404 ? "notFound" : "other";
+      set({ error: err.message, errorKind, loading: false });
     }
   },
 
@@ -190,6 +203,22 @@ const useChallengeStore = create((set, get) => ({
   },
 
   /** Buy and reveal a hint. Charges XP server-side; idempotent on replay. */
+  /**
+   * Have the AI score the learner's explanation of their passing code. Throws
+   * with a readable message, which the explain box shows; on success the
+   * graded explanation is kept on the attempt so the Arena shows it again.
+   */
+  explainSolution: async (text, language) => {
+    const { attempt } = get();
+    if (!attempt) return null;
+    const { explanation } = await request(`/attempts/${attempt._id}/explanation`, {
+      method: "POST",
+      body: JSON.stringify({ text, language }),
+    });
+    set((state) => ({ attempt: state.attempt ? { ...state.attempt, explanation } : state.attempt }));
+    return explanation;
+  },
+
   revealHint: async (order) => {
     const { attempt } = get();
     if (!attempt) return null;

@@ -1,0 +1,3 @@
+def chunk_by_size(items, size)
+  items.each_slice(size).to_a
+end

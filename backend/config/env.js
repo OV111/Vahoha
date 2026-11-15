@@ -18,7 +18,7 @@ import process from "node:process";
 /**
  * @typedef {object} EnvSpec
  * @property {string} name
- * @property {"core"|"auth"|"ai"|"email"|"uploads"|"billing"|"redis"|"monitoring"|"flags"|"local"} group
+ * @property {"core"|"auth"|"ai"|"email"|"uploads"|"billing"|"redis"|"monitoring"|"runner"|"flags"|"local"} group
  * @property {"required"|"production"|"optional"} requirement  "production" = required only when NODE_ENV=production
  * @property {"string"|"secret"|"url"|"mongo"|"flag"|"flag1"|"int"|"email"|"list"} kind
  * @property {string} description
@@ -416,6 +416,26 @@ export const ENV_SPECS = [
       const entries = value.split(",").map((e) => e.trim()).filter(Boolean);
       return entries.map(originProblem).find(Boolean) ?? null;
     },
+  },
+
+  // ── runner ──────────────────────────────────────────────────────────────
+  {
+    name: "JUDGE0_URL",
+    group: "runner",
+    requirement: "optional",
+    kind: "url",
+    description: "Base URL of the Judge0 server that runs submissions in languages other than JavaScript and TypeScript.",
+    example: "https://judge0.example.com",
+    effect: "only JavaScript and TypeScript challenges can be submitted",
+  },
+  {
+    name: "JUDGE0_AUTH_TOKEN",
+    group: "runner",
+    requirement: "optional",
+    kind: "secret",
+    description: "Token sent to Judge0 as X-Auth-Token. Set it when your own Judge0 server requires one.",
+    example: "your-judge0-token",
+    effect: "requests to Judge0 carry no token",
   },
 
   // ── local ───────────────────────────────────────────────────────────────

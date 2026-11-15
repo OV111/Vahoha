@@ -38,6 +38,7 @@ const LIST_PROJECTION = {
   tags: 1,
   estimatedMins: 1,
   xp: 1,
+  languages: 1,
   "stats.solves": 1,
 };
 
@@ -51,6 +52,9 @@ const DETAIL_PROJECTION = {
   example: 1,
   starterFiles: 1,
   testFile: 1,
+  // Names the function for the other languages' starters. The cases that
+  // grade it (hiddenCases) are answers and stay out, like hiddenTests.
+  functionSpec: 1,
   // hints are returned as metadata only — the text is paid for per-hint in
   // stage 2, so it must not ship with the challenge body.
   "hints.order": 1,

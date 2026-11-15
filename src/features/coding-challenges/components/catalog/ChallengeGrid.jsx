@@ -14,6 +14,7 @@ export default function ChallengeGrid({
   loadingMore,
   error,
   onLoadMore,
+  onRetry,
   trackLabelFor,
   onBrowseAll,
 }) {
@@ -38,9 +39,19 @@ export default function ChallengeGrid({
         aria-busy={loading}
       >
         {error && (
-          <p className="col-span-full text-[12px] text-red-400">
-            Couldn&apos;t load challenges — {error}
-          </p>
+          <div role="alert" className="col-span-full flex flex-col items-start gap-2 rounded-xl border border-[#2a1a1a] bg-[#140d0d] px-4 py-3">
+            <p className="text-[13px] font-medium text-[#e5e5e5]">The challenges didn&apos;t load</p>
+            <p className="text-[12px] text-[#999]">{error}</p>
+            {onRetry && (
+              <button
+                type="button"
+                onClick={onRetry}
+                className="cursor-pointer rounded bg-purple-600 px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-purple-500"
+              >
+                Try again
+              </button>
+            )}
+          </div>
         )}
         {!error && !loading && challenges.length === 0 && (
           <div className="col-span-full flex flex-col items-start gap-2 py-6">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Code2 } from "lucide-react";
 import { C, FONT_MONO } from "../../lib/arenaTheme";
 import CodeEditor from "./CodeEditor";
 import { CHALLENGE_LANGUAGES } from "../../../../../constants/challengeLanguages";
@@ -7,11 +8,18 @@ const FILE_META = {
   js: { dot: C.amber, label: "JavaScript · UTF-8" },
   ts: { dot: "#5b9dff", label: "TypeScript · types are removed, not checked" },
   test: { dot: C.purple, label: "Jest Test · UTF-8" },
+  python: { dot: "#4b8bbe", label: "Python · graded when you submit" },
+  ruby: { dot: "#cc342d", label: "Ruby · graded when you submit" },
+  php: { dot: "#8892be", label: "PHP · graded when you submit" },
+  java: { dot: "#e76f00", label: "Java · graded when you submit" },
+  cpp: { dot: "#659ad2", label: "C++ · standard library included · graded when you submit" },
+  go: { dot: "#00add8", label: "Go · package main is added · graded when you submit" },
 };
 
-export default function CodePanel({ files, onChangeFile, onPaste, language = "js", onLanguageChange }) {
+export default function CodePanel({ files, onChangeFile, onPaste, language = "js", languages = CHALLENGE_LANGUAGES, onLanguageChange }) {
   const [active, setActive] = useState(0);
-  const file = files[active];
+  // Switching language can leave fewer files than the selected tab's index.
+  const file = files[active] ?? files[0];
 
   if (!file) return <div className="h-full" style={{ background: C.bg }} />;
 
@@ -24,7 +32,7 @@ export default function CodePanel({ files, onChangeFile, onPaste, language = "js
         <div className="flex min-w-0 overflow-x-auto">
           {files.map((f, i) => {
             const meta = FILE_META[f.lang] || FILE_META.js;
-            const isActive = active === i;
+            const isActive = f === file;
             return (
               <button
                 key={f.name}
@@ -47,28 +55,32 @@ export default function CodePanel({ files, onChangeFile, onPaste, language = "js
           <span className="text-[11px] whitespace-nowrap max-lg:hidden" style={{ color: C.faint, fontFamily: FONT_MONO }}>
             {(FILE_META[file.lang] || FILE_META.js).label}
           </span>
-          {onLanguageChange && (
-            <div role="group" aria-label="Language" className="flex rounded-md overflow-hidden border" style={{ borderColor: C.border }}>
-              {CHALLENGE_LANGUAGES.map((l) => {
-                const on = l.id === language;
-                return (
-                  <button
-                    key={l.id}
-                    type="button"
-                    aria-pressed={on}
-                    onClick={() => onLanguageChange(l.id)}
-                    className="px-2.5 py-1 text-[11px] font-medium cursor-pointer transition-colors"
-                    style={{
-                      fontFamily: FONT_MONO,
-                      color: on ? C.text : C.muted,
-                      background: on ? "rgba(168, 85, 247, 0.18)" : "transparent",
-                    }}
-                  >
-                    {l.id === "ts" ? "TS" : "JS"}
-                  </button>
-                );
-              })}
-            </div>
+          {/* Full names in a menu: with up to five languages, initials in a row
+              of buttons did not say what could be chosen. A challenge with
+              one language shows it as plain text, since there is no choice. */}
+          {onLanguageChange && languages.length > 1 && (
+            <label className="flex items-center gap-1.5 text-[11px]" style={{ color: C.muted, fontFamily: FONT_MONO }}>
+              <Code2 size={12} aria-hidden="true" />
+              <span className="max-sm:sr-only">Language</span>
+              <select
+                value={language}
+                onChange={(e) => onLanguageChange(e.target.value)}
+                className="cursor-pointer rounded-md border px-2 py-1 text-[11px] font-medium outline-none focus-visible:border-purple-500"
+                style={{ borderColor: C.border, background: C.bg, color: C.text, fontFamily: FONT_MONO }}
+              >
+                {languages.map((l) => (
+                  <option key={l.id} value={l.id}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          {languages.length === 1 && (
+            <span className="flex items-center gap-1.5 text-[11px] font-medium" style={{ color: C.text, fontFamily: FONT_MONO }}>
+              <Code2 size={12} aria-hidden="true" />
+              {languages[0].label} only
+            </span>
           )}
         </div>
       </div>
@@ -78,7 +90,7 @@ export default function CodePanel({ files, onChangeFile, onPaste, language = "js
           key={file.name}
           value={file.code}
           readOnly={file.lang === "test"}
-          typescript={file.lang === "ts"}
+          language={file.lang}
           onChange={(code) => onChangeFile?.(file.name, code)}
           onPaste={onPaste}
         />

@@ -72,6 +72,11 @@ services:
         sync: false
       - key: REDIS_ENABLED
         value: "true"
+      # ── code runner (Judge0, for non-JavaScript challenges) ───
+      - key: JUDGE0_URL             # your own Judge0 server; unset = only JavaScript and TypeScript can be submitted
+        sync: false
+      - key: JUDGE0_AUTH_TOKEN      # only if that server requires a token
+        sync: false
       # ── monitoring ────────────────────────────────────────────
       - key: SENTRY_DSN             # vahoha-api project; unset = nothing sent to Sentry
         sync: false

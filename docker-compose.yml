@@ -1,0 +1,24 @@
+# Local services for Vahoha. Start with: docker compose up -d
+#
+# MongoDB is not here: development uses Atlas (MONGO_URI in backend/.env).
+# The API and the frontend run on the host with `npm run server` and `npm run dev`.
+
+name: vahoha
+
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # Bound to localhost only, so nothing else on the network can reach it.
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  redis-data:

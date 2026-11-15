@@ -4,7 +4,9 @@ import { GroqBusyError } from "./groqGate.js";
 // Same model family as the exam seeder / AI agent. Grading is scoped to the
 // rubric's own criteria/levels so the model is checking against a list, not
 // judging freely — see rubricService.js for the schema this depends on.
-const MODEL = "openai/gpt-oss-120b";
+// Exported, with askGroq and stripFences, for the coding-challenge explanation
+// grader, which scores a written explanation the same way.
+export const MODEL = "openai/gpt-oss-120b";
 
 const SYSTEM_PROMPT = `You are a strict technical evaluator grading a developer's spoken/written explanation of a concept against a fixed rubric.
 
@@ -48,7 +50,7 @@ Return JSON in exactly this shape:
 };
 
 // Busy is the gate's answer, not a fault: nothing has been saved yet, so the learner just retries.
-const askGroq = async (params, priority) => {
+export const askGroq = async (params, priority) => {
   try {
     return await groqChat(params, { priority });
   } catch (err) {
@@ -59,7 +61,7 @@ const askGroq = async (params, priority) => {
   }
 };
 
-const stripFences = (raw) =>
+export const stripFences = (raw) =>
   raw
     .replace(/^```json\s*/i, "")
     .replace(/^```\s*/i, "")

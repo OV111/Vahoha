@@ -1,0 +1,19 @@
+import "sort"
+
+func mergeIntervals(intervals [][]int) [][]int {
+	sorted := append([][]int{}, intervals...)
+	sort.Slice(sorted, func(i, j int) bool { return sorted[i][0] < sorted[j][0] })
+
+	merged := [][]int{}
+	for _, interval := range sorted {
+		last := len(merged) - 1
+		if last >= 0 && interval[0] <= merged[last][1] {
+			if interval[1] > merged[last][1] {
+				merged[last][1] = interval[1]
+			}
+		} else {
+			merged = append(merged, []int{interval[0], interval[1]})
+		}
+	}
+	return merged
+}

@@ -5,7 +5,15 @@
 // attempt is user-written, and the export name is spliced into the harness as an
 // identifier.
 
-import { exportNameOf, isChallengeLanguage, mainFileName, DEFAULT_LANGUAGE } from "../../../../constants/challengeLanguages.js";
+import {
+  exportNameOf,
+  isChallengeLanguage,
+  isJudgeLanguage,
+  languagesOf,
+  mainFileName,
+  specSupports,
+  DEFAULT_LANGUAGE,
+} from "../../../../constants/challengeLanguages.js";
 import { stripTypes } from "./typescript.js";
 
 const fail = (status, message) => {
@@ -17,11 +25,19 @@ const fail = (status, message) => {
 /**
  * @param {{ starterFiles?: {name:string}[] }} challenge
  * @param {{ name:string, code:string }[]} attemptCode the saved draft files
- * @param {string} [language] "js" (default) or "ts"
- * @returns {{ code: string, exportName: string, fileName: string, language: string }}
+ * @param {string} [language] "js" (default), "ts", or a judge language such as "python"
+ * @returns {{ code: string, exportName: string, fileName: string, language: string, onJudge: boolean }}
  */
 export const pickSubmissionSource = (challenge, attemptCode, language = DEFAULT_LANGUAGE) => {
-  if (!isChallengeLanguage(language)) fail(400, "Unknown language.");
+  const onJudge = isJudgeLanguage(language);
+  if (!onJudge && !isChallengeLanguage(language)) fail(400, "Unknown language.");
+  // Each challenge says which languages it can be solved in. A judge language
+  // also needs the tests as data (JavaScript tests cannot grade it), and a
+  // typed one needs the parameter types to call the function.
+  const offered = languagesOf(challenge).some((l) => l.id === language);
+  if (!offered || (onJudge && !(specSupports(language, challenge.functionSpec) && challenge.hiddenCases?.length))) {
+    fail(400, "This challenge cannot be solved in that language.");
+  }
 
   const jsName = challenge.starterFiles?.[0]?.name ?? "";
   const fileName = mainFileName(jsName, language);
@@ -34,5 +50,5 @@ export const pickSubmissionSource = (challenge, attemptCode, language = DEFAULT_
     if (stripped.error) fail(400, `TypeScript syntax error: ${stripped.error}`);
     code = stripped.code;
   }
-  return { code, exportName: exportNameOf(jsName), fileName, language };
+  return { code, exportName: exportNameOf(jsName), fileName, language, onJudge };
 };

@@ -1,0 +1,12 @@
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& words) {
+        string prefix = words[0];
+        for (const string& word : words) {
+            size_t i = 0;
+            while (i < prefix.size() && i < word.size() && prefix[i] == word[i]) i++;
+            prefix = prefix.substr(0, i);
+        }
+        return prefix;
+    }
+};

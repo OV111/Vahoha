@@ -69,9 +69,10 @@ export const revokeCapstoneXp = async (db, rawUserId, attemptId) => {
 
 /**
  * Award XP once per (user, kind, source).
- * @param {"exam"|"challenge"|"capstone"|"team_defense"} kind
+ * @param {"exam"|"challenge"|"challenge_explain"|"capstone"|"team_defense"} kind
  * @param {string} sourceId  "<path>:<layer>" for an exam, the challenge slug, the
- *   track id for a capstone, the team id for a team defense
+ *   track id for a capstone, the team id for a team defense, the challenge slug for
+ *   a challenge explanation bonus
  * @returns {Promise<{ awarded: boolean, amount: number }>} awarded=false when it was already given
  */
 export const awardXp = async (db, rawUserId, { kind, sourceId, amount, meta = {} }) => {

@@ -1,5 +1,8 @@
 import { ObjectId } from "mongodb";
 import { runHiddenTests, describeRunner } from "./runnerService.js";
+import { runCaseTests } from "./judgeRunnerService.js";
+import { describeJudge } from "./judge0Client.js";
+import { judgeStarter } from "../../../../constants/challengeLanguages.js";
 import { consumeSubmission, limitMessage } from "./submissionQuotaService.js";
 import { getUserPlan } from "../../billing/index.js";
 import { saveChallengeResult } from "../../../services/challengeResultService.js";
@@ -78,12 +81,17 @@ export const submitAttemptService = async (db, userId, attemptId, language, clie
   // Export name is derived from the file name: asyncHandler.js -> asyncHandler.
   const picked = pickSubmissionSource(challenge, attempt.code, language);
   const exportName = picked.exportName;
+  // JavaScript and TypeScript are graded by the JavaScript tests in the local
+  // sandbox. Every other language is graded by the data cases on the judge.
+  const tests = (picked.onJudge ? challenge.hiddenCases : challenge.hiddenTests) ?? [];
 
   // Check the runner BEFORE spending quota: if submissions are disabled (no
   // sandbox in production) the learner must not lose one of today's tries.
-  if (!describeRunner().available) {
+  if (!(picked.onJudge ? describeJudge().available : describeRunner().available)) {
     const err = new Error(
-      "Code submissions are temporarily unavailable. You can still run the tests in your browser.",
+      picked.onJudge
+        ? "This language is temporarily unavailable. You can still submit in JavaScript or TypeScript."
+        : "Code submissions are temporarily unavailable. You can still run the tests in your browser.",
     );
     err.status = 503;
     throw err;
@@ -97,19 +105,17 @@ export const submitAttemptService = async (db, userId, attemptId, language, clie
     throw err;
   }
 
-  const run = await runHiddenTests(
-    picked.code,
-    exportName,
-    challenge.hiddenTests,
-  );
+  const run = picked.onJudge
+    ? await runCaseTests(picked.language, picked.code, challenge.functionSpec, tests)
+    : await runHiddenTests(picked.code, exportName, tests);
 
-  const total = challenge.hiddenTests?.length ?? 0;
+  const total = tests.length;
   if (!Array.isArray(run.results)) run.results = [];
   const passedCount = run.results.filter((r) => r?.passed === true).length;
   // The sandbox runs the learner's code, so its report is untrusted: it must
   // name exactly the hidden tests, in order, before any of it counts.
   const passed =
-    !run.fatal && total > 0 && passedCount === total && matchesHiddenTests(run.results, challenge.hiddenTests);
+    !run.fatal && total > 0 && passedCount === total && matchesHiddenTests(run.results, tests);
 
   // Was this already solved on a previous submission?
   const previous = await db.collection("challengeResults").findOne({
@@ -171,9 +177,12 @@ export const submitAttemptService = async (db, userId, attemptId, language, clie
   // moves the leaderboard. Never part of the verdict.
   if (firstSolve) {
     const integrity = sanitizeArenaIntegrity(clientIntegrity);
+    const starterLength = picked.onJudge
+      ? judgeStarter(picked.language, challenge.functionSpec).length
+      : (challenge.starterFiles?.[0]?.code?.length ?? 0);
     const flags = integrityFlags({
       integrity,
-      addedChars: Math.max(0, picked.code.length - (challenge.starterFiles?.[0]?.code?.length ?? 0)),
+      addedChars: Math.max(0, picked.code.length - starterLength),
       elapsedSecs,
     });
     if (flags.length) {

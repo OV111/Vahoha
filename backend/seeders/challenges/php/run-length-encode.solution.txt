@@ -1,0 +1,16 @@
+<?php
+
+function runLengthEncode($text) {
+    $result = "";
+    $count = 1;
+    $length = strlen($text);
+    for ($i = 0; $i < $length; $i++) {
+        if ($i + 1 < $length && $text[$i + 1] === $text[$i]) {
+            $count++;
+        } else {
+            $result .= $text[$i] . $count;
+            $count = 1;
+        }
+    }
+    return $result;
+}

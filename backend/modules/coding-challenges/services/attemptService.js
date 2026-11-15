@@ -14,12 +14,15 @@
  */
 
 import { ObjectId } from "mongodb";
+import { CHALLENGE_LANGUAGES, JUDGE_LANGUAGES } from "../../../../constants/challengeLanguages.js";
 
 const COL = "challenge_attempts";
 const CHALLENGES = "challenges";
 const PROGRESS = "userProgress";
 
-export const SAFE_FILE_NAME = /^[A-Za-z_$][\w$]{0,63}\.js$/;
+// A draft file is "<identifier>.<extension of a supported language>".
+const EXTENSIONS = [...CHALLENGE_LANGUAGES, ...JUDGE_LANGUAGES].map((l) => l.ext).join("|");
+export const SAFE_FILE_NAME = new RegExp(`^[A-Za-z_$][\\w$]{0,63}\\.(${EXTENSIONS})$`);
 
 // One attempt per (user, challenge) — the unique index is what makes the
 // create/resume path safe under a double POST, not the findOne before it.
@@ -118,8 +121,7 @@ export const saveAttemptCodeService = async (db, userId, attemptId, code) => {
     ) {
       fail(400, "each file needs a string name and string code");
     }
-    // Starter files are always `<identifier>.js`. Anything else is not a file
-    // the editor can produce, and a name is later used as a JS identifier.
+    // Anything else is not a file the editor can produce.
     if (!SAFE_FILE_NAME.test(file.name)) fail(400, "Invalid file name");
     return { name: file.name, code: file.code };
   });
