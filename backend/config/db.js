@@ -128,6 +128,9 @@ const connectDB = async () => {
       // The sidebar pages a learner's chats newest-first (and title search sorts the same way).
       db.collection("agent_sessions").createIndex({ userId: 1, updatedAt: -1 }),
       db.collection("agent_usage_events").createIndex({ userId: 1, at: -1 }),
+      // One rating per answer (re-voting overwrites it); reviewed newest 👎 first.
+      db.collection("agent_feedback").createIndex({ userId: 1, sessionId: 1, messageId: 1 }, { unique: true }),
+      db.collection("agent_feedback").createIndex({ vote: 1, at: -1 }),
       db.collection("agent_usage_events").createIndex({ at: 1 }, { expireAfterSeconds: 90 * 24 * 60 * 60 }),
       // The daily counters are read as "this user since <date>".
       db.collection("agent_usage").createIndex({ userId: 1, date: -1 }),
@@ -146,9 +149,6 @@ const connectDB = async () => {
         { userId: 1, day: 1 },
         { unique: true, partialFilterExpression: { type: "active_day" } },
       ),
-      // One rating per answer (re-voting overwrites it); reviewed newest 👎 first.
-      db.collection("agent_feedback").createIndex({ userId: 1, sessionId: 1, messageId: 1 }, { unique: true }),
-      db.collection("agent_feedback").createIndex({ vote: 1, at: -1 }),
       // One weekly email per learner per week: the claim in weeklySummaryService
       // relies on this to stop two runs from both sending.
       db.collection("weeklySummaries").createIndex({ userId: 1, weekKey: 1 }, { unique: true }),
