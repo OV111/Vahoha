@@ -27,20 +27,21 @@ export const DropdownPanel = ({ open, id, className = "", children }) => (
   </div>
 );
 
-// One entry point for guests: /get-started opens on signup and has its own
-// "log in instead" toggle, so a separate Log in link only splits attention.
+// One entry point for guests. New visitors sign up from the home page hero, so
+// the navbar serves returning users and opens straight on the login form
+// (/get-started still has its own "sign up instead" toggle).
 // `fullWidth` makes it a thumb-sized button for the mobile menu.
 export const GuestActions = ({ fullWidth = false, className = "" }) => (
   <div className={`flex items-center gap-3 ${className}`}>
     <Link
-      to="/get-started"
+      to="/get-started?mode=login"
       className={`text-sm font-medium text-gray-100 transition hover:text-purple-500 ${
         fullWidth
           ? "flex min-h-11 flex-1 items-center justify-center rounded-md border border-white/20 text-center text-base"
           : "py-1.5"
       }`}
     >
-      Get Started
+      Log in
     </Link>
   </div>
 );

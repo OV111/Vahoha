@@ -12,7 +12,7 @@ import useAuthStore from "./stores/useAuthStore";
 
 // Build-time HTML is what a guest sees, so render it as a resolved guest.
 // Left at the default (isLoading: true), the navbar would ship without its
-// links and "Get Started", and pop them in after the app boots.
+// links and "Log in", and pop them in after the app boots.
 useAuthStore.setState({ isLoading: false, auth: false });
 
 const handler = createStaticHandler(routes);

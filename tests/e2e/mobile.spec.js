@@ -43,8 +43,8 @@ test.describe('Mobile - Navbar', () => {
     await expect(page).toHaveURL(/\/roadmaps/);
   });
 
-  test('Get Started link is visible in mobile nav', async ({ page }) => {
-    await expect(page.getByRole('link', { name: /get started/i })).toBeVisible();
+  test('Log in link is visible in mobile nav', async ({ page }) => {
+    await expect(page.getByRole('link', { name: /^log in$/i })).toBeVisible();
   });
 });
 
