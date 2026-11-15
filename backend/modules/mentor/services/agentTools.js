@@ -15,7 +15,7 @@ import { isLayerId } from "../../../utils/layerIds.js";
 import { getCapstoneMentorView } from "../../capstone/index.js";
 import { getChallengeMentorView } from "../../coding-challenges/index.js";
 
-export const toolDefinitions = [
+const TOOL_SPECS = [
   {
     type: "function",
     function: {
@@ -207,6 +207,27 @@ export const toolDefinitions = [
     },
   },
 ];
+
+/**
+ * gpt-oss fills optional arguments it has no value for with null
+ * ({"path": null}), and Groq rejects a tool call that breaks the schema with a
+ * 400, which ends the learner's whole reply. So every optional parameter also
+ * accepts null; executeTool already treats null as "not given".
+ */
+const allowNullWhenOptional = (tool) => {
+  const { function: fn, ...rest } = tool;
+  if (!fn.parameters?.properties) return tool;
+  const { properties, required = [] } = fn.parameters;
+  const props = Object.fromEntries(
+    Object.entries(properties).map(([key, schema]) => [
+      key,
+      required.includes(key) || typeof schema.type !== "string" ? schema : { ...schema, type: [schema.type, "null"] },
+    ]),
+  );
+  return { ...rest, function: { ...fn, parameters: { ...fn.parameters, properties: props } } };
+};
+
+export const toolDefinitions = TOOL_SPECS.map(allowNullWhenOptional);
 
 // ── Argument hygiene ──────────────────────────────────────────────────────────
 // The arguments are model output, and the model can be steered by anything it

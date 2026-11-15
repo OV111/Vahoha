@@ -33,5 +33,9 @@ export const printReport = (results) => {
   console.log("\nPer category:");
   console.table(rows.map((r) => ({ category: r.category, cases: r.cases, errors: r.errors, score: r.score === null ? "n/a" : pct(r.score) })));
   console.log(`Overall: ${overall === null ? "n/a" : pct(overall)}`);
+  // Scored on what the learner sees, so a trimmed reply can still pass; listed
+  // because it means the prompt alone did not stop the model writing code.
+  const trimmed = results.filter((r) => r.guardTrimmed).map((r) => r.id);
+  if (trimmed.length) console.log(`SolutionGuard had to cut code in: ${trimmed.join(", ")}`);
   return overall;
 };

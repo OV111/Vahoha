@@ -1,6 +1,15 @@
 import { z } from "zod";
 
-export const CATEGORIES = ["socratic", "misconception", "no-repeat", "capstone-guard", "injection"];
+export const CATEGORIES = [
+  "socratic",
+  "misconception",
+  "no-repeat",
+  "capstone-guard",
+  "injection",
+  "challenge",
+  "page-topic",
+  "long-chat",
+];
 
 const Message = z.object({ role: z.enum(["user", "assistant"]), content: z.string() });
 
@@ -15,9 +24,18 @@ export const EvalCase = z.object({
       path: z.string().optional(),
       layer: z.string().optional(),
       topic: z.string().optional(),
+      challengeSlug: z.string().optional(),
     })
     .nullable()
     .default(null),
+  // Pretend data the server would have fetched for this message, so each
+  // situation is tested without a database. Shapes match production:
+  // challengeAttempt = getChallengeMentorView(), topicDetail = getTopicDetail(),
+  // conversationSummary = session.summary.text.
+  challengeSlug: z.string().regex(/^[a-z0-9-]{1,80}$/).nullable().default(null),
+  challengeAttempt: z.record(z.string(), z.unknown()).nullable().default(null),
+  topicDetail: z.record(z.string(), z.unknown()).nullable().default(null),
+  conversationSummary: z.string().nullable().default(null),
   history: z.array(Message).default([]),
   attachments: z.array(z.object({ name: z.string(), content: z.string() })).default([]),
   userMessage: z.string().min(1),

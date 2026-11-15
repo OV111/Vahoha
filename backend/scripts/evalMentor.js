@@ -31,9 +31,9 @@ const arg = (name) => process.argv.find((a) => a.startsWith(`--${name}=`))?.spli
 
 const runCase = async (c) => {
   try {
-    const reply = await runMentor(c);
+    const { reply, guardTrimmed } = await runMentor(c);
     const verdict = await judge(c, reply);
-    return { id: c.id, category: c.category, reply, ...verdict };
+    return { id: c.id, category: c.category, reply, guardTrimmed, ...verdict };
   } catch (err) {
     return { id: c.id, category: c.category, error: err.message };
   }
