@@ -8,9 +8,11 @@ export const labelClass = "block text-sm font-medium text-[#30313d] dark:text-zi
 export const errorClass = "text-red-500 dark:text-red-400 text-xs mt-1";
 // Invisible 44px tap area on mobile; the visible control stays compact.
 export const tapArea = "max-md:after:absolute max-md:after:-inset-y-1 max-md:after:inset-x-0";
-// Icon-only buttons need a 44px hit area even though the glyph stays 16px.
+// Spans the input's own height (inset-y-0) so the icon sits on its centre line;
+// a fixed h-11 on a 40px input pushed it 2px low and past the bottom border.
+// The invisible ::after keeps a 44px hit area on mobile.
 export const eyeBtnClass =
-  "absolute right-0 top-0 flex h-11 w-11 items-center justify-center text-[#a3acb9] dark:text-zinc-500 hover:text-[#697386] dark:hover:text-zinc-400 cursor-pointer transition-colors";
+  "absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-md text-[#a3acb9] dark:text-zinc-500 hover:text-[#697386] dark:hover:text-zinc-400 focus-visible:outline-none focus-visible:text-fuchsia-500 cursor-pointer transition-colors max-md:after:absolute max-md:after:-inset-y-0.5 max-md:after:inset-x-0";
 
 export const inputClass = (hasError, extra = "") =>
   `${inputBase} ${extra} ${hasError ? inputError : inputNormal}`;

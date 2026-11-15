@@ -39,7 +39,8 @@ const PasswordField = ({ id, label, labelAside, error, registration, ...inputPro
           aria-label={`${visible ? "Hide" : "Show"} ${fieldName}`}
           className={eyeBtnClass}
         >
-          {visible ? <Eye size={16} /> : <EyeOff size={16} />}
+          {/* The icon shows what a click does, matching the aria-label. */}
+          {visible ? <EyeOff size={16} /> : <Eye size={16} />}
         </button>
       </div>
       {error && <p className={errorClass}>{error.message}</p>}
