@@ -1,7 +1,18 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { SITE } from "../../../constants/site";
 
 const linkClass = "text-purple-400 hover:text-purple-300";
+
+// In-app links like /terms#billing render the page without the browser scrolling
+// to the anchor (it only does that on a full page load), so do it here.
+const ScrollToHash = () => {
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (hash) document.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView();
+  }, [hash]);
+  return null;
+};
 
 /**
  * Layout shared by the Privacy Policy and the Terms of Service: a table of
@@ -16,6 +27,7 @@ const linkClass = "text-purple-400 hover:text-purple-300";
  */
 const LegalPage = ({ title, effectiveDate, sections, intro, contactLead, crossLink }) => (
   <div className="mx-auto grid max-w-5xl gap-12 px-4 py-12 sm:px-6 sm:py-20 lg:grid-cols-[200px_1fr]">
+    <ScrollToHash />
     <nav aria-label="On this page" className="hidden lg:block">
       <div className="sticky top-[calc(var(--navbar-h,56px)+32px)] flex flex-col gap-2">
         <p className="mb-1 text-xs font-medium text-neutral-500">On this page</p>

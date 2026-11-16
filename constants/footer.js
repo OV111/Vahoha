@@ -5,26 +5,18 @@ import { CATEGORY_OPTIONS, categoryHref } from "./categories";
 
 // Footer link columns and social icons (rendered by src/layouts/Footer.jsx).
 
-// Guests see the same features as members: a protected page sends them to
-// /get-started, which works as a sign-up funnel. Only account pages (progress,
-// billing) are member-only; guests get Foundations and Pricing in their place.
-const PRODUCT_LINKS_SHARED = [
+// Everyone sees the same links. Access is decided where the link lands: a guest
+// on a protected page goes to /get-started, a free user on a Pro page goes to
+// /pricing (RequirePro), and the server checks the plan on every request.
+export const PRODUCT_LINKS = [
   { title: "Roadmaps", to: "/roadmaps" },
   { title: "Challenges", to: "/coding-challenges" },
   { title: "Labs", to: "/labs" },
+  { title: "Dev Library", to: "/libs" },
   { title: "Build Team", to: "/team" },
   { title: "Capstone", to: "/capstone" },
   { title: "Project Map", to: "/project-map" },
-];
-export const PRODUCT_LINKS_GUEST = [
-  ...PRODUCT_LINKS_SHARED,
   { title: "Pricing", to: "/pricing" },
-];
-export const PRODUCT_LINKS_AUTH = [
-  ...PRODUCT_LINKS_SHARED,
-  { title: "My Progress", to: "/progress" },
-  { title: "Pricing", to: "/pricing" },
-  { title: "Billing", to: "/billing" },
 ];
 export const AI_LINKS = [
   { title: "Foundations", to: "/labs/foundations" },
@@ -37,6 +29,7 @@ export const COMPANY_LINKS = [
   { title: "Contact", to: "/contact" },
   { title: "Privacy Policy", to: "/privacy" },
   { title: "Terms of Service", to: "/terms" },
+  { title: "Refund Policy", to: "/terms#billing" },
 ];
 export const CATEGORY_LINKS = CATEGORY_OPTIONS.map((category) => ({
   title: category.title,

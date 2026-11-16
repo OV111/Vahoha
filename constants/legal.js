@@ -98,7 +98,7 @@ export const PRIVACY_SECTIONS = [
 ];
 
 // Terms items are plain strings.
-export const TERMS_EFFECTIVE_DATE = "November 1, 2026";
+export const TERMS_EFFECTIVE_DATE = "November 16, 2026";
 
 export const TERMS_SECTIONS = [
   {
@@ -143,7 +143,8 @@ export const TERMS_SECTIONS = [
     items: [
       "Some features require a paid plan. Payments are handled by our payment provider, Polar, which acts as merchant of record.",
       "Subscriptions renew until cancelled. You can cancel at any time and keep access until the end of the paid period.",
-      "Refunds are handled according to the payment provider's policy. Contact us if you have a billing problem.",
+      "Refunds: if you're not happy, ask within 14 days of your first payment and we'll refund it in full. After that, cancelling stops the next renewal but we don't refund the current period. Payments are refunded to the original card through Polar.",
+      "To ask for a refund or report a billing problem, use the contact page or email us.",
     ],
   },
   {

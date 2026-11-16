@@ -1,13 +1,11 @@
 import { NavLink, useLocation } from "react-router-dom";
-import useAuthStore from "../stores/useAuthStore";
 import Wordmark from "@/components/ui/Wordmark";
 import {
   AI_LINKS,
   CATEGORY_LINKS,
   COMPANY_LINKS,
   FOOTER_SOCIAL_LINKS,
-  PRODUCT_LINKS_AUTH,
-  PRODUCT_LINKS_GUEST,
+  PRODUCT_LINKS,
 } from "../../constants/footer";
 
 // Small, medium-weight headings (Stripe/Vercel/Linear style): the links are
@@ -78,15 +76,7 @@ const LinkColumn = ({
   );
 };
 
-const AiColumn = ({ links }) => (
-  <div className="hidden sm:block">
-    <LinkColumn title="In the AI era" links={links} />
-  </div>
-);
-
 const Footer = () => {
-  const { auth } = useAuthStore();
-
   return (
     <footer className="relative z-1 mt-16">
       <div className="px-5 pt-12 sm:px-8 sm:pt-16 lg:px-12">
@@ -126,16 +116,13 @@ const Footer = () => {
             mobileLimit={6}
             className="col-span-2 sm:col-span-1"
           />
-          <AiColumn links={AI_LINKS} />
-          <LinkColumn
-            title="Product"
-            links={auth ? PRODUCT_LINKS_AUTH : PRODUCT_LINKS_GUEST}
-          />
+          <LinkColumn title="In the AI era" links={AI_LINKS} />
+          <LinkColumn title="Product" links={PRODUCT_LINKS} />
           <LinkColumn title="Company" links={COMPANY_LINKS} />
         </div>
 
         <div className="mx-auto mt-8 max-w-7xl border-t border-white/10 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-center text-sm text-[#A1A0AB] sm:mt-12">
-          © {new Date().getFullYear()} Vahoha. All rights reserved.
+          <p>© {new Date().getFullYear()} Vahoha. All rights reserved.</p>
         </div>
       </div>
     </footer>
