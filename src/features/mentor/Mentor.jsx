@@ -591,7 +591,10 @@ export default function Mentor({ embedded = false, challengeContext = null, orig
             <AlertTriangle size={15} className="shrink-0 mt-0.5" />
             <span className="flex-1">
               {error.type === "rate_limit"
-                ? `Daily limit reached (30 messages/day).${error.resetAt ? ` Resets at ${new Date(error.resetAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}.` : ""}`
+                ? !error.cap
+                  // No cap in the body means the per-minute burst limiter answered, not the daily one.
+                  ? "Too many messages at once. Wait a minute and try again."
+                  : `Daily limit reached${error.plan === "pro" ? "" : ` (${error.cap} messages/day)`}.${error.resetAt ? ` Resets at ${new Date(error.resetAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}.` : ""}${error.plan === "pro" ? "" : " Pro has no daily limit."}`
                 : error.type === "session_load" || error.type === "paused"
                   ? error.message
                   : "Connection error. Your message was not sent."}

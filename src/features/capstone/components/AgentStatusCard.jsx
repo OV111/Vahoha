@@ -197,7 +197,7 @@ export default function AgentStatusCard({ status, busy }) {
             <div className="flex gap-1.5">
               <dt className="text-neutral-500">Attempt</dt>
               <dd className="font-mono text-neutral-200">
-                {attempt.attemptNumber} of {status.maxAttempts}
+                {attempt.attemptNumber}{status.maxAttempts != null && ` of ${status.maxAttempts}`}
               </dd>
             </div>
             {commit && (

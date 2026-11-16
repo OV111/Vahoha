@@ -18,7 +18,9 @@ import { formatDateTime } from "./format";
 export const heroCopy = (status, busy) => {
   const { attempt, eligibility, certificate, track, review } = status;
   const s = attempt?.status;
-  const attemptsLeft = status.maxAttempts - (status.attemptsUsed ?? 0);
+  // maxAttempts is null when the plan has no cap.
+  const capped = status.maxAttempts != null;
+  const attemptsLeft = capped ? status.maxAttempts - (status.attemptsUsed ?? 0) : null;
 
   if (!eligibility?.complete) {
     // Not the list of missing layers: the server sends internal ids
@@ -108,7 +110,7 @@ export const heroCopy = (status, busy) => {
       tone: retry ? "danger" : "default",
       lead: retry ? "Sent back." : "Your capstone",
       highlight: retry ? "Try again." : "is ready.",
-      body: `${retry ? "Read the review below, then start a new attempt — you get a fresh twist." : "Starting assigns your brief and a unique twist. Create your repository after you press start."} Attempt ${status.attemptsUsed + 1} of ${status.maxAttempts}.`,
+      body: `${retry ? "Read the review below, then start a new attempt — you get a fresh twist." : "Starting assigns your brief and a unique twist. Create your repository after you press start."} Attempt ${status.attemptsUsed + 1}${capped ? ` of ${status.maxAttempts}` : ""}.`,
       cta: {
         kind: "action",
         label: retry ? "Start a new attempt" : "Start the capstone",
@@ -122,7 +124,7 @@ export const heroCopy = (status, busy) => {
       tone: "danger",
       lead: "Sent back.",
       highlight: "Learn, then retry.",
-      body: `Your next attempt opens ${formatDateTime(status.retryAt)} with a new twist — ${attemptsLeft} left. Use the review feedback until then.`,
+      body: `Your next attempt opens ${formatDateTime(status.retryAt)} with a new twist${capped ? ` — ${attemptsLeft} left` : ""}. Use the review feedback until then.`,
       cta: review
         ? { kind: "scroll", label: "Read the review", target: "review" }
         : null,
@@ -133,7 +135,9 @@ export const heroCopy = (status, busy) => {
     tone: "danger",
     lead: "No attempts",
     highlight: "left.",
-    body: `All ${status.maxAttempts} attempts have been used. The review feedback below is yours to keep.`,
+    body: status.moreWithPro
+      ? "Your free attempt has been used. Pro has unlimited attempts, and the review feedback below is yours to keep."
+      : `All ${status.maxAttempts} attempts have been used. The review feedback below is yours to keep.`,
     cta: review
       ? { kind: "scroll", label: "Read the review", target: "review" }
       : null,

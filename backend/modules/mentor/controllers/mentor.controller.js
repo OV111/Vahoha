@@ -14,7 +14,7 @@ import {
   deleteSession,
   deleteAllSessions,
   MAX_TURNS,
-  DAILY_MESSAGE_CAP,
+  dailyMessageCapFor,
 } from "../services/sessionService.js";
 // Namespace import so the context-window figures come from the one place that
 // owns them (streamService) instead of being redefined here.
@@ -28,6 +28,7 @@ import { ATTACHMENT_LIMITS } from "../schemas/mentor.schemas.js";
 import { trackEvent } from "../../../services/eventService.js";
 import { hasLiveDefense } from "../../capstone/index.js";
 import { hasLiveExam } from "../../exams/index.js";
+import { getUserPlan } from "../../billing/index.js";
 
 const { streamAgentResponse, composeUserMessage, MODEL } = streamService;
 
@@ -148,15 +149,16 @@ export const getContext = async (req, res) => {
     const db = req.app.locals.db;
     const userId = req.user._id.toString();
 
-    const tz = await getUserTimezone(db, userId);
-    const usage = await getUsageToday(db, userId, tz);
+    const [tz, plan] = await Promise.all([getUserTimezone(db, userId), getUserPlan(db, userId)]);
+    const dailyCap = dailyMessageCapFor(plan);
+    const usage = await getUsageToday(db, userId, tz, dailyCap);
 
     res.json({
       model: MODEL,
       tools: toolDefinitions.map((t) => t.function.name),
       limits: {
         maxTurns: MAX_TURNS,
-        dailyMessageCap: DAILY_MESSAGE_CAP,
+        dailyMessageCap: dailyCap,
         maxAttachments: ATTACHMENT_LIMITS.MAX_FILES,
         maxAttachmentChars: ATTACHMENT_LIMITS.MAX_TOTAL_CHARS,
         contextWindowTokens: streamService.CONTEXT_WINDOW_TOKENS ?? null,
@@ -176,8 +178,8 @@ export const getUsage = async (req, res) => {
   try {
     const db = req.app.locals.db;
     const userId = req.user._id.toString();
-    const tz = await getUserTimezone(db, userId);
-    res.json(await getUsageSummary(db, userId, req.query.days, tz));
+    const [tz, plan] = await Promise.all([getUserTimezone(db, userId), getUserPlan(db, userId)]);
+    res.json(await getUsageSummary(db, userId, req.query.days, tz, dailyMessageCapFor(plan)));
   } catch (err) {
     console.error("getUsage error:", err);
     res.status(500).json({ message: "Failed to load usage" });
@@ -212,10 +214,13 @@ export const stream = async (req, res) => {
   // Take today's message BEFORE calling the model. Check-then-count let parallel
   // requests all read "29" and all proceed; the reservation is one atomic update.
   // `tz` is the learner's own time zone, so "today" and the reset time are theirs.
-  const tz = await getUserTimezone(db, userId);
-  const reservation = await reserveDailyMessage(db, userId, tz);
+  const [tz, plan] = await Promise.all([getUserTimezone(db, userId), getUserPlan(db, userId)]);
+  const dailyCap = dailyMessageCapFor(plan);
+  const reservation = await reserveDailyMessage(db, userId, tz, dailyCap);
   if (!reservation.allowed) {
-    return res.status(429).json({ message: "Daily message limit reached.", resetAt: reservation.resetAt });
+    return res
+      .status(429)
+      .json({ message: "Daily message limit reached.", resetAt: reservation.resetAt, cap: dailyCap, plan });
   }
   const refund = () =>
     releaseDailyMessage(db, userId, tz, reservation.date).catch((err) =>

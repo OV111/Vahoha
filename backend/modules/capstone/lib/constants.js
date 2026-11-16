@@ -17,6 +17,11 @@ export const FINAL_STATUSES = Object.freeze(["passed", "failed"]);
 // Failed attempts a learner may use per track before the capstone locks.
 export const MAX_ATTEMPTS = 3;
 
+// The same cap by plan once BILLING_ENFORCED is on; until then everyone keeps
+// MAX_ATTEMPTS. null means no cap: the cooldown alone spaces out Pro retries so
+// the AI review can't be spammed.
+export const MAX_ATTEMPTS_BY_PLAN = Object.freeze({ free: 1, pro: null });
+
 // Wait after a failed attempt before the next one can start.
 export const COOLDOWN_HOURS = 72;
 export const COOLDOWN_MS = COOLDOWN_HOURS * 60 * 60 * 1000;

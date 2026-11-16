@@ -11,10 +11,11 @@ import { OPEN_STATUSES, MAX_ATTEMPTS } from "./constants.js";
 /**
  * @param {Array<{status:string, cooldownUntil?:Date|null, attemptNumber:number}>} attempts
  * @param {Date} now
+ * @param {number|null} maxAttempts  failed attempts allowed; null = no cap
  * @returns {{ canStart: boolean, reason: null|"open_attempt"|"already_passed"|"max_attempts"|"cooldown",
  *             retryAt: Date|null, failedCount: number }}
  */
-export const evaluateStart = (attempts, now = new Date()) => {
+export const evaluateStart = (attempts, now = new Date(), maxAttempts = MAX_ATTEMPTS) => {
   const failed = attempts.filter((a) => a.status === "failed");
   const result = (reason, retryAt = null) => ({
     canStart: reason === null,
@@ -25,7 +26,7 @@ export const evaluateStart = (attempts, now = new Date()) => {
 
   if (attempts.some((a) => OPEN_STATUSES.includes(a.status))) return result("open_attempt");
   if (attempts.some((a) => a.status === "passed")) return result("already_passed");
-  if (failed.length >= MAX_ATTEMPTS) return result("max_attempts");
+  if (maxAttempts !== null && failed.length >= maxAttempts) return result("max_attempts");
 
   const latestFail = failed.reduce(
     (latest, a) => (!latest || a.attemptNumber > latest.attemptNumber ? a : latest),

@@ -12,7 +12,8 @@ import { ObjectId } from "mongodb";
 import { trackEvent } from "../../../services/eventService.js";
 import { isPathComplete } from "../lib/pathCompletion.js";
 import { evaluateStart } from "../lib/startRules.js";
-import { MAX_ATTEMPTS, OPEN_STATUSES } from "../lib/constants.js";
+import { MAX_ATTEMPTS, MAX_ATTEMPTS_BY_PLAN, OPEN_STATUSES } from "../lib/constants.js";
+import { getUserPlan, isBillingEnforced } from "../../billing/index.js";
 import {
   pickTwist,
   toPublicAttempt,
@@ -36,18 +37,27 @@ import { ensureCertificate, toPublicCertificate } from "./certificateService.js"
 import { buildTimeline } from "../lib/timeline.js";
 import { getTracks } from "../../../services/roadmapCache.js";
 
+/** `moreWithPro` lets the UI say an upgrade lifts the cap, only when one would. */
+const attemptLimitFor = async (db, userId) => {
+  if (!isBillingEnforced()) return { maxAttempts: MAX_ATTEMPTS, moreWithPro: false };
+  const plan = await getUserPlan(db, userId);
+  const maxAttempts = plan in MAX_ATTEMPTS_BY_PLAN ? MAX_ATTEMPTS_BY_PLAN[plan] : MAX_ATTEMPTS_BY_PLAN.free;
+  return { maxAttempts, moreWithPro: plan !== "pro" };
+};
+
 export const getStatusService = async (db, userId, trackId) => {
   await ensureIndexes(db);
 
-  const [brief, eligibility, attempts, track] = await Promise.all([
+  const [brief, eligibility, attempts, track, limit] = await Promise.all([
     getLatestBrief(db, trackId),
     isPathComplete(db, userId, trackId),
     getAttempts(db, userId, trackId),
     db.collection("roadmap_tracks").findOne({ trackId }, { projection: { _id: 0, title: 1, categoryId: 1 } }),
+    attemptLimitFor(db, userId),
   ]);
 
   const current = attempts[0] ?? null;
-  const gate = evaluateStart(attempts);
+  const gate = evaluateStart(attempts, new Date(), limit.maxAttempts);
   const reason = !brief ? "no_brief" : !eligibility.complete ? "not_eligible" : gate.reason;
 
   // Everything for the current attempt in one parallel round: the brief it
@@ -98,7 +108,8 @@ export const getStatusService = async (db, userId, trackId) => {
       certificate: cert,
     }),
     attemptsUsed: gate.failedCount,
-    maxAttempts: MAX_ATTEMPTS,
+    maxAttempts: limit.maxAttempts,
+    moreWithPro: limit.moreWithPro,
     canStart: reason === null,
     reason,
     retryAt: gate.retryAt,
@@ -121,8 +132,8 @@ export const startAttemptService = async (db, userId, trackId) => {
     });
   }
 
-  const attempts = await getAttempts(db, userId, trackId);
-  const gate = evaluateStart(attempts);
+  const [attempts, limit] = await Promise.all([getAttempts(db, userId, trackId), attemptLimitFor(db, userId)]);
+  const gate = evaluateStart(attempts, new Date(), limit.maxAttempts);
 
   if (gate.reason === "open_attempt") {
     const open = attempts.find((a) => OPEN_STATUSES.includes(a.status));
@@ -130,7 +141,11 @@ export const startAttemptService = async (db, userId, trackId) => {
     return { attempt: toPublicAttempt(open, openBrief), brief: toPublicBrief(openBrief), resumed: true };
   }
   if (gate.reason === "already_passed") fail(409, "You have already passed this capstone");
-  if (gate.reason === "max_attempts") fail(403, `All ${MAX_ATTEMPTS} attempts have been used`);
+  if (gate.reason === "max_attempts") {
+    fail(403, limit.moreWithPro
+      ? "Your free attempt on this capstone has been used. Pro has unlimited attempts."
+      : `All ${limit.maxAttempts} attempts have been used`);
+  }
   if (gate.reason === "cooldown") {
     fail(429, "Cooldown after a failed attempt is still running", { retryAt: gate.retryAt });
   }

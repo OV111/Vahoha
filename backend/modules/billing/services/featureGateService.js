@@ -15,6 +15,9 @@ import { getEntitlement } from "./subscriptionService.js";
 
 const PLAN_RANK = { free: 0, pro: 1 };
 
+/** For limits that keep their pilot value until gates are switched on. */
+export const isBillingEnforced = (config = getBillingConfig()) => config.enforced;
+
 export const getUserPlan = async (db, userId, now = new Date()) => {
   const { plan } = await getEntitlement(db, userId, now);
   return plan;

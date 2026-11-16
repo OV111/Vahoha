@@ -48,7 +48,7 @@ export const recordUsageEvent = async (db, userId, sessionId, usage, tz = null, 
  * (today included): today's meter, a zero-filled daily series, totals, and the
  * busiest chats.
  */
-export const getUsageSummary = async (db, userId, days = 30, tz = null) => {
+export const getUsageSummary = async (db, userId, days = 30, tz = null, dailyCap = DAILY_MESSAGE_CAP) => {
   const uid = new ObjectId(userId);
   const start = startOfDay(days - 1, tz);
 
@@ -105,8 +105,8 @@ export const getUsageSummary = async (db, userId, days = 30, tz = null) => {
     today: {
       messages: {
         used: today.messages,
-        cap: DAILY_MESSAGE_CAP,
-        remaining: Math.max(0, DAILY_MESSAGE_CAP - today.messages),
+        cap: dailyCap,
+        remaining: Math.max(0, dailyCap - today.messages),
       },
       tokens: {
         prompt: today.promptTokens,

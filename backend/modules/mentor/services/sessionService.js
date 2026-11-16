@@ -4,7 +4,11 @@ import { escapeRegex } from "../../../utils/regex.js";
 // Exported so /context can report the real caps instead of hardcoding them in
 // the UI — the old context panel drifted into fiction exactly that way.
 export const MAX_TURNS = 20;
-export const DAILY_MESSAGE_CAP = 30;
+// Pro is sold as "unlimited"; 300 is the fair-use ceiling that keeps one looping
+// client from burning the shared Groq quota.
+export const DAILY_MESSAGE_CAPS = Object.freeze({ free: 30, pro: 300 });
+export const DAILY_MESSAGE_CAP = DAILY_MESSAGE_CAPS.free;
+export const dailyMessageCapFor = (plan) => DAILY_MESSAGE_CAPS[plan] ?? DAILY_MESSAGE_CAP;
 
 // ── Sessions ──────────────────────────────────────────────────
 
@@ -395,7 +399,7 @@ const carriedFromOtherDays = async (col, uid, date) => {
   return rows.reduce((n, r) => n + (r.count ?? 0), 0);
 };
 
-export const reserveDailyMessage = async (db, userId, tz = null) => {
+export const reserveDailyMessage = async (db, userId, tz = null, dailyCap = DAILY_MESSAGE_CAP) => {
   const col = db.collection("agent_usage");
   const uid = new ObjectId(userId);
   const date = startOfDay(0, tz);
@@ -405,8 +409,8 @@ export const reserveDailyMessage = async (db, userId, tz = null) => {
   // Read apart from the atomic update below. Racing it would take parallel
   // requests and a time zone change at the same moment, and the burst limiter
   // bounds that.
-  const cap = DAILY_MESSAGE_CAP - (await carriedFromOtherDays(col, uid, date));
-  if (cap <= 0) return { allowed: false, resetAt, count: DAILY_MESSAGE_CAP, date };
+  const cap = dailyCap - (await carriedFromOtherDays(col, uid, date));
+  if (cap <= 0) return { allowed: false, resetAt, count: dailyCap, date };
   const used = { $ifNull: ["$count", 0] };
 
   const attempt = () =>
@@ -433,7 +437,7 @@ export const reserveDailyMessage = async (db, userId, tz = null) => {
   }
 
   const countBefore = before?.count ?? 0;
-  const carried = DAILY_MESSAGE_CAP - cap;
+  const carried = dailyCap - cap;
   if (countBefore >= cap) {
     return { allowed: false, resetAt, count: countBefore + carried, date };
   }
@@ -472,7 +476,7 @@ export const addUsageTokens = async (db, userId, usage, tz = null, date = startO
 };
 
 /** Messages used today, for /context. Counts what reserveDailyMessage counts. */
-export const getUsageToday = async (db, userId, tz = null) => {
+export const getUsageToday = async (db, userId, tz = null, dailyCap = DAILY_MESSAGE_CAP) => {
   const today = startOfDay(0, tz);
   const col = db.collection("agent_usage");
   const uid = new ObjectId(userId);
@@ -482,11 +486,11 @@ export const getUsageToday = async (db, userId, tz = null) => {
     carriedFromOtherDays(col, uid, today),
   ]);
 
-  const used = Math.min(DAILY_MESSAGE_CAP, (doc?.count ?? 0) + carried);
+  const used = Math.min(dailyCap, (doc?.count ?? 0) + carried);
   return {
     used,
-    cap: DAILY_MESSAGE_CAP,
-    remaining: Math.max(0, DAILY_MESSAGE_CAP - used),
+    cap: dailyCap,
+    remaining: Math.max(0, dailyCap - used),
     tokens: {
       prompt: doc?.promptTokens ?? 0,
       completion: doc?.completionTokens ?? 0,

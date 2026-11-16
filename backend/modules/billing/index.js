@@ -13,6 +13,6 @@
 import billingRoutes from "./routes/billing.routes.js";
 
 export { handleBillingWebhook } from "./controllers/billing.controller.js";
-export { canAccess, getUserPlan } from "./services/featureGateService.js";
+export { canAccess, getUserPlan, isBillingEnforced } from "./services/featureGateService.js";
 
 export default billingRoutes;

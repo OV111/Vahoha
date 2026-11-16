@@ -79,7 +79,7 @@ export default function useAgentStream() {
 
       if (res.status === 429) {
         const data = await res.json().catch(() => ({}));
-        setError({ type: "rate_limit", resetAt: data.resetAt ?? null });
+        setError({ type: "rate_limit", resetAt: data.resetAt ?? null, cap: data.cap ?? null, plan: data.plan ?? null });
         setStreaming(false);
         return;
       }

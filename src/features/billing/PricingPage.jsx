@@ -54,7 +54,7 @@ const PricingPage = () => {
           Simple, transparent pricing
         </h1>
         <p className="text-base text-[#A1A0AB] md:text-sm">
-          Start free. Upgrade when you want the full roadmap.
+          Every roadmap is free. Upgrade for unlimited mentoring and a certificate you can show.
         </p>
       </header>
 
