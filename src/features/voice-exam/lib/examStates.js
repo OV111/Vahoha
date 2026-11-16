@@ -52,6 +52,7 @@ export const FOLLOWUP_LIMIT_SEC = 90;
  * @property {boolean} passed
  * @property {ConceptResult[]} concepts
  * @property {string|null} retryAvailableAt  ISO date, null if passed
+ * @property {{prompt: string, text: string}[]} [transcript]  every question and answer that was graded
  *
  * @typedef {Object} AttemptView
  * @property {string} id
@@ -69,4 +70,7 @@ export const FOLLOWUP_LIMIT_SEC = 90;
  * @property {string[]} reasons         why not eligible, human readable
  * @property {string|null} cooldownUntil
  * @property {{used:number, limit:number}} quota
+ * @property {string|null} layerTitle
+ * @property {string[]} topics          the areas one question is picked from
+ * @property {boolean} verified         already passed a voice exam on this layer
  */

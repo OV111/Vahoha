@@ -30,6 +30,7 @@ import teamsRoutes from "./modules/teams/index.js";
 import recruiterRoutes from "./modules/recruiter/index.js";
 import readinessRoutes from "./modules/readiness/index.js";
 import onboardingRoutes from "./modules/onboarding/index.js";
+import voiceExamRoutes from "./modules/voice-exam/index.js";
 import { notFound } from "./middleware/notFound.js";
 import { globalIpLimiter } from "./middleware/rateLimits.js";
 
@@ -138,6 +139,7 @@ export function createApp(db) {
   app.use("/api/recruiter", recruiterRoutes);
   app.use("/api/readiness", readinessRoutes);
   app.use("/api/onboarding", onboardingRoutes);
+  app.use("/api/voice-exam", voiceExamRoutes);
   app.use("/api/admin", analyticsRoutes);
 
   // Catches 5xx errors from routes that have no module error handler of their own.

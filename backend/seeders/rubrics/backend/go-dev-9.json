@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "go-dev-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Profiling",
+      "question": "Explain how you would find out why a Go service is slow or using too much memory.",
+      "followUps": {
+        "pprof CPU & Memory Profiles": "How does the CPU profiler work out where time is spent, and how would you read the result?",
+        "Escape Analysis & Heap Allocations": "What makes a variable escape to the heap, and why does that cost performance?"
+      }
+    },
+    {
+      "title": "Structured Logging",
+      "question": "Explain how a Go service should log, so the logs are useful without hurting performance.",
+      "followUps": {
+        "log/slog (Go 1.21+)": "What does slog give you over fmt.Println-style logs?",
+        "Log Levels & Sampling": "Why can heavy DEBUG logging in production hurt, and how does sampling help?"
+      }
+    },
+    {
+      "title": "Metrics & Tracing",
+      "question": "Explain how you would measure a Go service's latency and follow one request across several services.",
+      "followUps": {
+        "Prometheus Metrics in Go": "Why use a histogram for request latency, and what happens with badly chosen buckets?",
+        "OpenTelemetry Tracing": "What breaks in a trace if the trace context isn't passed on to outgoing calls?"
+      }
+    },
+    {
+      "title": "Performance Optimization",
+      "question": "Explain how you would make a hot code path faster and prove the service meets its targets under load.",
+      "followUps": {
+        "sync.Pool for Allocation Reuse": "Why must an object taken from sync.Pool be reset before use?",
+        "Load Testing with k6": "Why look at p95 and p99 latency in a load test, not only the average?"
+      }
+    }
+  ]
+}

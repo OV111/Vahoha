@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "go-dev-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Database Connectivity",
+      "question": "Explain how a Go service connects to PostgreSQL, and what you need to tune.",
+      "followUps": {
+        "database/sql Connection Pool": "What can go wrong if you leave the maximum number of open connections unlimited?",
+        "pgx vs database/sql": "What does pgx give you that the generic database/sql interface doesn't?"
+      }
+    },
+    {
+      "title": "Query Generation",
+      "question": "Explain how you write SQL queries from Go so they are both safe and type-checked.",
+      "followUps": {
+        "sqlc Type-Safe Queries": "With sqlc, why does renaming a column become a compile error instead of a crash in production?",
+        "SQL Injection & Parameterized Queries": "Why is fmt.Sprintf with user input dangerous in SQL, and what do $1 placeholders change?"
+      }
+    },
+    {
+      "title": "Transactions & Migrations",
+      "question": "Explain how you keep related writes consistent, and how the database schema changes safely over time.",
+      "followUps": {
+        "Transactions & Rollback": "What happens if a transaction is never committed or rolled back, and how does defer help?",
+        "Schema Migrations with golang-migrate": "Why use versioned up and down migration files instead of changing the schema by hand?"
+      }
+    },
+    {
+      "title": "Repository Pattern",
+      "question": "Explain how you would keep database code separate from your handlers, and what to watch for when loading related data.",
+      "followUps": {
+        "Repository Interface Design": "How does a repository interface make handlers easy to unit test?",
+        "N+1 Query Problem": "Loading 100 orders and then each order's customer in a loop is slow. Why, and how do you fix it?"
+      }
+    }
+  ]
+}

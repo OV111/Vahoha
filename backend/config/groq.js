@@ -21,3 +21,14 @@ export const getGroqClient = () => {
   client = new Groq({ apiKey, ...GROQ_OPTIONS });
   return client;
 };
+
+let voiceClient = null;
+
+// Speech-to-text gets its own key when one is set, so voice exams can't use up the mentor's quota.
+export const getGroqVoiceClient = () => {
+  if (voiceClient) return voiceClient;
+  const apiKey = process.env.GROQ_VOICE_API_KEY;
+  if (!apiKey) return getGroqClient();
+  voiceClient = new Groq({ apiKey, ...GROQ_OPTIONS });
+  return voiceClient;
+};

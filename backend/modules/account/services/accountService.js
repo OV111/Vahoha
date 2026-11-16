@@ -150,6 +150,8 @@ const USER_KEYED_COLLECTIONS = [
   "xpAwards",
   "recruiter_settings",
   "weeklySummaries",
+  // Voice exam transcripts and results (the audio itself is never stored).
+  "voice_exam_attempts",
 ];
 
 /**

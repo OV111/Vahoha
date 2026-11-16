@@ -13,8 +13,14 @@ const EntryCard = ({ layerId, pathId = "backend", eligibility }) => {
   return (
     <div className="rounded-xl bg-white dark:bg-neutral-800/60 px-5 py-4">
       <div className="flex items-center gap-2 mb-1">
-        {locked ? <Lock size={16} className="text-neutral-400" /> : <Mic size={16} className="text-[#1a1f36] dark:text-white" />}
-        <h3 className="text-[15px] font-semibold text-[#1a1f36] dark:text-white">Voice exam</h3>
+        {locked ? (
+          <Lock size={16} className="text-neutral-400" />
+        ) : (
+          <Mic size={16} className="text-[#1a1f36] dark:text-white" />
+        )}
+        <h3 className="text-[15px] font-semibold text-[#1a1f36] dark:text-white">
+          Voice exam
+        </h3>
       </div>
       <p className="text-[13.5px] text-[#697386] dark:text-zinc-400 mb-3">
         Explain this layer out loud and get a verified result.
@@ -22,7 +28,8 @@ const EntryCard = ({ layerId, pathId = "backend", eligibility }) => {
 
       {eligibility && (
         <p className="text-[12.5px] text-[#697386] dark:text-zinc-400 mb-3">
-          {eligibility.quota.used} of {eligibility.quota.limit} graded exams used this month
+          {eligibility.quota.used} of {eligibility.quota.limit} voice exams used
+          today
         </p>
       )}
 

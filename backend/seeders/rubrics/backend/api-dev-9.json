@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "api-dev-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Message Queue Fundamentals",
+      "question": "Explain why an API would send work to a queue instead of doing it during the request, and how that is set up.",
+      "followUps": {
+        "Why Queues — Decoupling, Retries & Backpressure": "Sending a welcome email makes sign-up slow. How does a queue fix that?",
+        "BullMQ — Queues, Jobs & Workers": "What are the producer, the queue and the worker in BullMQ, and why run workers separately?"
+      }
+    },
+    {
+      "title": "Reliability Patterns",
+      "question": "Explain how you make background jobs survive failures without doing harm.",
+      "followUps": {
+        "Retries, Exponential Backoff & Dead-Letter Queues": "Why wait longer between each retry, and where does a job go when it keeps failing?",
+        "Job Idempotency": "A job that charges a card runs twice after a retry. How do you make that safe?"
+      }
+    },
+    {
+      "title": "Webhooks",
+      "question": "Explain how webhooks work, both when your API sends them and when it receives them.",
+      "followUps": {
+        "Sending Webhooks — Delivery Guarantees & Retries": "The receiver is down when you send a webhook. What should your system do?",
+        "Receiving Webhooks — HMAC Signature Verification": "How does an HMAC signature prove a webhook really came from the sender?"
+      }
+    },
+    {
+      "title": "Scheduled & Delayed Jobs",
+      "question": "Explain how you would run jobs later or on a schedule, and keep an eye on your queues.",
+      "followUps": {
+        "Delayed Jobs & Cron Scheduling with BullMQ": "Why is setInterval a bad scheduler when your API runs as several processes?",
+        "Monitoring Queues — BullBoard": "Which queue numbers would warn you that workers are falling behind?"
+      }
+    }
+  ]
+}

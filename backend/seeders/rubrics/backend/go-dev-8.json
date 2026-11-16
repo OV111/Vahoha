@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "go-dev-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Testing Patterns",
+      "question": "Explain how you would test a Go HTTP service, from small functions to full handlers.",
+      "followUps": {
+        "Table-Driven Tests": "What does a table-driven test look like, and why does t.Run help when one case fails?",
+        "httptest for Handler Testing": "How does httptest.NewRecorder let you test a handler without starting a real server?"
+      }
+    },
+    {
+      "title": "Test Isolation",
+      "question": "Explain how you keep Go tests fast and reliable, including tests of concurrent code.",
+      "followUps": {
+        "Interface Mocking": "Why are Go's small, implicit interfaces easy to mock?",
+        "The Race Detector": "Why might a race condition pass tests many times, and how does go test -race catch it?"
+      }
+    },
+    {
+      "title": "Benchmarking",
+      "question": "Explain how you would measure whether a change made Go code faster.",
+      "followUps": {
+        "Writing Benchmarks": "Why must a benchmark use the result of the code it measures?",
+        "Benchmark Comparison with benchstat": "A benchmark got 5% faster. How does benchstat tell you whether that is real or noise?"
+      }
+    },
+    {
+      "title": "Integration Testing",
+      "question": "Explain how you test that your Go code really works with the database, and how you judge test coverage.",
+      "followUps": {
+        "Testing with a Real Database": "What do tests against a real PostgreSQL in a container catch that mocks can't?",
+        "Test Coverage & go tool cover": "Your coverage is 100%. Why might important behavior still be untested?"
+      }
+    }
+  ]
+}

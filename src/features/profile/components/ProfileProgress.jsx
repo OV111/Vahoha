@@ -320,6 +320,19 @@ export function ExamRow({ exam }) {
   );
 }
 
+/** A layer verified by voice exam: { layer, layerTitle, verifiedAt }. */
+export function VerifiedRow({ item }) {
+  return (
+    <li className="flex items-center justify-between gap-4 rounded-xl border border-white/[0.08] bg-neutral-950 px-3 py-2.5 sm:px-4 sm:py-3">
+      <div className="min-w-0">
+        <p className="truncate text-sm font-medium text-neutral-100">{item.layerTitle ?? item.layer}</p>
+        <p className="mt-0.5 text-xs text-neutral-500">Explained out loud · {shortDate(item.verifiedAt)}</p>
+      </div>
+      <Chip tone="green">Verified</Chip>
+    </li>
+  );
+}
+
 /* ── coding challenges ──────────────────────────────────── */
 
 // The API's difficulty values are "easy" | "med" | "hard".

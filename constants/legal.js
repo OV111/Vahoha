@@ -8,7 +8,7 @@
 // "delete your account" promise. Keep the terms in step with the policy.
 
 // Privacy items are [label, text]; label may be null.
-export const PRIVACY_EFFECTIVE_DATE = "November 1, 2026";
+export const PRIVACY_EFFECTIVE_DATE = "November 16, 2026";
 
 export const PRIVACY_SUMMARY = [
   "We collect what's needed to run your account and track your learning.",
@@ -25,6 +25,7 @@ export const PRIVACY_SECTIONS = [
       ["Account", "Name, username, email and a hashed password. If you sign in with Google or GitHub, the ID, name and email they share with us."],
       ["Profile", "Anything you add: bio, location, profile and banner images, and social links."],
       ["Learning", "Your roadmap path and progress, test attempts and scores, the topics you missed (weak spots), mastery levels, coding challenge attempts and the code you submit, and teach-back answers."],
+      ["Voice exams", "If you take one: your consent, the text of your spoken or typed answers, and your result. The recording itself is sent to our speech-to-text provider and deleted right after it is turned into text. We never store it."],
       ["Mentor", "Your conversations with the mentor and how many messages you send per day (used for usage limits)."],
       ["Capstones", "The repository link you submit, the review of your code, your defense answers and, when you pass, a certificate with your name on it."],
       ["Project maps", "The maps you draw or generate from a repository scan, the notes on their parts, your answers to the understanding check, and comments you leave on team maps."],
@@ -53,7 +54,7 @@ export const PRIVACY_SECTIONS = [
     title: "Services we rely on",
     items: [
       ["MongoDB Atlas", "Database where your data is stored."],
-      ["Groq", "Runs the AI models. Your mentor messages and the learning context sent with them, teach-back answers, capstone code under review, and project map understanding-check answers are sent to Groq to generate a response."],
+      ["Groq", "Runs the AI models. Your mentor messages and the learning context sent with them, teach-back answers, capstone code under review, and project map understanding-check answers are sent to Groq to generate a response. For voice exams, your recording is sent to Groq to be turned into text, and the text is sent to grade it."],
       ["GitHub", "Optional sign-in. When you submit a capstone, scan a repository for a project map or sync a team repository, we read that public repository and its pull requests from GitHub."],
       ["Polar", "Handles payments as merchant of record, including tax. It processes your payment details, not us."],
       ["Cloudinary", "Stores and serves the images, voice notes and files you upload."],
@@ -76,7 +77,7 @@ export const PRIVACY_SECTIONS = [
     title: "Your choices",
     items: [
       [null, "Edit your profile at any time in settings."],
-      [null, "Delete your account in settings. This permanently removes your account, profile, posts, comments, learning progress, test history, weak spots, mentor conversations, challenge submissions, capstones and certificates, project maps and the comments you left on team maps, your team memberships and ratings, chat messages you sent, and usage events. Your certificate links stop working, and your name is removed from team evidence pages."],
+      [null, "Delete your account in settings. This permanently removes your account, profile, posts, comments, learning progress, test history, weak spots, mentor conversations, challenge submissions, voice exam answers and results, capstones and certificates, project maps and the comments you left on team maps, your team memberships and ratings, chat messages you sent, and usage events. Your certificate links stop working, and your name is removed from team evidence pages."],
       [null, "Ask for a copy of your data, or ask what we hold, by emailing us."],
     ],
   },

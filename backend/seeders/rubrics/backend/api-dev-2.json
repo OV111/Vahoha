@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "api-dev-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Linux File System & Navigation",
+      "question": "Explain how you find your way around a Linux server's files, and how you would dig through a large log file.",
+      "followUps": {
+        "File System Hierarchy & Permissions": "Your API can't read its config file. How do Linux permissions decide who can read it, and how do you fix it safely?",
+        "Pipes, Redirection & Text Processing": "How would you count the 500 errors in a log file with one shell command, and what do the pipes do?"
+      }
+    },
+    {
+      "title": "Process & Environment Management",
+      "question": "Explain how your API runs as a process on a server, and how it gets its configuration.",
+      "followUps": {
+        "Processes, PIDs & Signals": "What should your server do when it receives SIGTERM during a deploy, and what happens if it ignores it?",
+        "Environment Variables & .env Patterns": "Why do secrets go in environment variables, and what goes wrong if a .env file is committed?"
+      }
+    },
+    {
+      "title": "SSH & Remote Access",
+      "question": "Explain how you log in to a remote server securely and keep long tasks running there.",
+      "followUps": {
+        "SSH Key Pairs & Remote Login": "Which key stays on your machine and which goes on the server, and why is that safer than a password?",
+        "tmux & Persistent Terminal Sessions": "Your SSH connection drops during a migration. How does tmux keep it running?"
+      }
+    },
+    {
+      "title": "Shell Scripting",
+      "question": "Explain how you would automate a repeated server task, like a nightly database backup.",
+      "followUps": {
+        "Bash Variables, Conditionals & Loops": "How does a bash script know a command failed, and how do you stop it from carrying on silently?",
+        "cron & Scheduled Jobs": "How do you tell cron to run a job every day at 3am, and how would you notice if it stopped running?"
+      }
+    }
+  ]
+}

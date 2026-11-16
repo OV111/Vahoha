@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "go-dev-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Goroutines & the Scheduler",
+      "question": "Explain how Go runs thousands of goroutines on a few OS threads, and how goroutines can go wrong.",
+      "followUps": {
+        "The Go Runtime Scheduler (GMP)": "What are G, M and P in the Go scheduler, and why are goroutines cheaper than threads?",
+        "Goroutine Leaks": "How can a goroutine leak, and how would you notice it in a running service?"
+      }
+    },
+    {
+      "title": "Channels",
+      "question": "Explain how goroutines talk to each other with channels, and the rules for using them safely.",
+      "followUps": {
+        "Buffered vs Unbuffered Channels": "When does a send block on an unbuffered channel compared with a buffered one?",
+        "Channel Direction & Closing": "Who should close a channel, and what happens if you close it twice?"
+      }
+    },
+    {
+      "title": "Synchronization Primitives",
+      "question": "Explain how you protect shared data and wait for goroutines to finish in Go.",
+      "followUps": {
+        "sync.Mutex & Race Conditions": "What is a data race, and how does the -race flag help you find one?",
+        "sync.WaitGroup": "Why must wg.Add be called before starting the goroutine, not inside it?"
+      }
+    },
+    {
+      "title": "Context & Cancellation",
+      "question": "Explain how a Go service stops work that is no longer needed, like when a client disconnects.",
+      "followUps": {
+        "context.Context Propagation": "Why pass the request's context to every database and HTTP call?",
+        "select & Timeouts": "How would you use select to give up on a slow operation after two seconds?"
+      }
+    }
+  ]
+}

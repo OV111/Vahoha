@@ -1,6 +1,9 @@
 import { useEffect, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, Code2, Play, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Code2, Mic, Play, ShieldCheck } from "lucide-react";
+import useAuthStore from "@/stores/useAuthStore";
+import { hasVoiceExam } from "@/features/voice-exam/lib/pilotLayers";
+import { useVerifiedLayers } from "@/features/voice-exam/hooks/useVerifiedLayers";
 import useLearnLayer from "./hooks/useLearnLayer";
 import LearnState from "./components/LearnState";
 import LayerPath from "./components/LayerPath";
@@ -102,6 +105,8 @@ export default function LayerLearnPage() {
   // Read once per layer; finishing a lesson navigates away and back, which re-reads it.
   const finished = useMemo(() => finishedLessons(trackId, layerId), [trackId, layerId]);
   usePrefetchNext(trackId, layerId, lessons.find((l) => !finished.has(l.slug))?.slug);
+  const { auth } = useAuthStore();
+  const verifiedLayers = useVerifiedLayers(Boolean(auth));
 
   if (status !== "ready") return <LearnState status={status} />;
 
@@ -175,6 +180,29 @@ export default function LayerLearnPage() {
               Take the test <ArrowRight size={14} aria-hidden="true" />
             </Link>
           </div>
+          {hasVoiceExam(layer.id) && (
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-neutral-800 pt-5">
+              <div>
+                <p className="flex items-center gap-2 text-[17px] text-neutral-100">
+                  <Mic size={16} className="text-emerald-300" aria-hidden="true" /> Voice exam
+                  {verifiedLayers.has(layer.id) && (
+                    <span className="rounded-full border border-emerald-800/50 bg-emerald-900/30 px-2 py-0.5 text-xs text-emerald-300">
+                      Verified
+                    </span>
+                  )}
+                </p>
+                <p className="mt-1 text-sm text-neutral-500">
+                  Optional, after the test. Explain part of this layer out loud to get it verified.
+                </p>
+              </div>
+              <Link
+                to={`/voice-exam/${layer.id}?path=${track.domain.id}`}
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-emerald-500/50 px-5 text-sm font-medium text-emerald-200 transition-colors hover:bg-emerald-600/20"
+              >
+                Start voice exam <ArrowRight size={14} aria-hidden="true" />
+              </Link>
+            </div>
+          )}
         </section>
       ),
     },

@@ -38,6 +38,8 @@ services:
       # ── AI ────────────────────────────────────────────────────
       - key: GROQ_API_KEY
         sync: false
+      - key: GROQ_VOICE_API_KEY     # optional; voice exam speech-to-text, falls back to GROQ_API_KEY
+        sync: false
       - key: GITHUB_TOKEN           # capstone repo checks; fine-grained token, public repos read-only
         sync: false
       - key: GEMINI_API_KEY         # optional, only if Gemini features are used

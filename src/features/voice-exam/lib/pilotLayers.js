@@ -1,6 +1,8 @@
-// Layers that have a published voice-exam rubric. Only these show the "Voice exam"
-// button, so learners never land on a layer with no content.
-// TODO: replace with an eligibility/published-rubric check from the backend (Stage 1).
-const PILOT_LAYER_IDS = new Set(["api-dev-6"]);
+// Paths whose layers have a published voice-exam rubric (backend/seeders/rubrics/).
+// Only these show the "Voice exam" row, so learners never land on a layer with no content.
+// Add a path here after its rubric files are reviewed and seeded.
+const VOICE_EXAM_PATHS = ["api-dev", "go-dev"];
 
-export const hasVoiceExam = (layerId) => PILOT_LAYER_IDS.has(layerId);
+const LAYER_ID = /^(.+)-\d+$/;
+
+export const hasVoiceExam = (layerId) => VOICE_EXAM_PATHS.includes(layerId?.match(LAYER_ID)?.[1]);

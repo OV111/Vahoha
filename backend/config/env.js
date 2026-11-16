@@ -148,6 +148,15 @@ export const ENV_SPECS = [
     effect: "every AI feature fails when it is first used",
   },
   {
+    name: "GROQ_VOICE_API_KEY",
+    group: "ai",
+    requirement: "optional",
+    kind: "secret",
+    description: "Separate Groq key for voice exam speech-to-text (Whisper), so voice can't use up the mentor's quota.",
+    example: "gsk_your-voice-key",
+    effect: "speech-to-text uses GROQ_API_KEY and shares its quota",
+  },
+  {
     name: "GEMINI_API_KEY",
     group: "ai",
     requirement: "optional",

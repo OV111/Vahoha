@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "api-dev-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Node.js Runtime Internals",
+      "question": "Explain how Node.js serves many requests at once on a single thread, and how async errors move through your code.",
+      "followUps": {
+        "The Event Loop & Non-blocking I/O": "What happens to every other request when one handler runs a heavy synchronous loop?",
+        "Promises, async/await & Error Propagation": "Where does an error thrown inside an async function end up, and what happens if nobody catches it?"
+      }
+    },
+    {
+      "title": "Node.js Module System",
+      "question": "Explain how code is split into modules in Node.js, and what Node gives you without installing anything.",
+      "followUps": {
+        "ESM vs CommonJS — Module Resolution": "What is the difference between require and import, and why do they clash in the same project?",
+        "Built-in Modules — fs, path, http, stream": "Why would you stream a large file instead of reading it all with fs.readFile?"
+      }
+    },
+    {
+      "title": "npm & Dependency Management",
+      "question": "Explain how a Node project manages its dependencies and common tasks.",
+      "followUps": {
+        "package.json, Semantic Versioning & Lock Files": "What does ^1.4.0 allow npm to install, and why does the lock file need to be committed?",
+        "npm Scripts & Workspaces": "Why run tools through npm scripts instead of installing them globally?"
+      }
+    },
+    {
+      "title": "Debugging Node.js",
+      "question": "Explain how you would track down a bug, or a server whose memory keeps growing, in a Node.js API.",
+      "followUps": {
+        "Node.js Inspector & VS Code Debugger": "What can a breakpoint show you that console.log can't, especially in async code?",
+        "Memory Profiling & Heap Snapshots": "How would heap snapshots help you find what is leaking memory?"
+      }
+    }
+  ]
+}

@@ -29,6 +29,8 @@ export const EVENT_TYPES = Object.freeze([
   "challenge_solved",
   "team_defense_passed",
   "team_evidence_issued",
+  "voice_exam_started",
+  "voice_exam_submitted",
   "weekly_summary_sent",
   "email_unsubscribed",
 ]);

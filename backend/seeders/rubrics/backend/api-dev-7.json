@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "api-dev-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Redis Data Structures",
+      "question": "Explain how you would use Redis in an API, and how you pick the right data structure for the job.",
+      "followUps": {
+        "Strings, Hashes & TTL Expiry": "When would you store data in a hash instead of a string, and what happens if cached keys never get a TTL?",
+        "Sorted Sets for Rate Limiting & Leaderboards": "How would a sorted set help you build a leaderboard or a sliding-window rate limiter?"
+      }
+    },
+    {
+      "title": "HTTP Caching",
+      "question": "Explain how HTTP caching works between your API, a CDN and the browser, and how you control it.",
+      "followUps": {
+        "Cache-Control Directives & CDN Interaction": "What is the difference between no-cache and no-store, and which one should a response with private user data use?",
+        "ETag & Conditional Requests": "How does an ETag let a client avoid downloading the same response again?"
+      }
+    },
+    {
+      "title": "Application-Level Caching",
+      "question": "Explain how you would add a cache in front of your database, and what makes it hard to get right.",
+      "followUps": {
+        "Cache-Aside Pattern & Invalidation": "Walk through a cache-aside read. What must happen to the cached copy when the data in the database changes?",
+        "N+1 Query Problem & the DataLoader Pattern": "Fetching 100 books and their authors runs 101 queries. Why, and how do you get it down to 2?"
+      }
+    },
+    {
+      "title": "Response Optimization",
+      "question": "Explain how you would make large API responses faster and cheaper to send.",
+      "followUps": {
+        "gzip & Brotli Compression": "How does the server know a client can accept a compressed response?",
+        "Pagination — Offset vs Cursor": "Why does offset pagination get slower on deep pages, and how does cursor pagination avoid that?"
+      }
+    }
+  ]
+}

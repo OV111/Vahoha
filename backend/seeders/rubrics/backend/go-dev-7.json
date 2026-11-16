@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "go-dev-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Authentication",
+      "question": "Explain how token-based authentication works in a Go API, from login to a protected request.",
+      "followUps": {
+        "JWT Structure & Validation": "What are the three parts of a JWT, and why must the server check the signature and algorithm on every request?",
+        "Storing Tokens & Refresh Patterns": "Why pair a short-lived access token with a refresh token, and why is an HttpOnly cookie safer than localStorage?"
+      }
+    },
+    {
+      "title": "Middleware",
+      "question": "Explain how middleware wraps handlers in a Go API, and how you protect it from abuse.",
+      "followUps": {
+        "Middleware Execution Order": "Why must recovery middleware be the outermost layer?",
+        "Rate Limiting": "How does a token bucket allow short bursts while still capping the average rate?"
+      }
+    },
+    {
+      "title": "Input Validation",
+      "question": "Explain how your API should check incoming data and report errors back to clients.",
+      "followUps": {
+        "Validation with go-playground/validator": "How do validate struct tags work, and why check input before any business logic?",
+        "Structured Error Responses": "What belongs in a JSON error response, and what must never be leaked in it?"
+      }
+    },
+    {
+      "title": "CORS & Security Headers",
+      "question": "Explain how you control which websites can call your API, and how you keep its secrets safe.",
+      "followUps": {
+        "CORS Configuration": "Why can't you use a wildcard origin when the browser sends cookies or auth headers?",
+        "Secrets Management": "A secret was committed and then deleted in the next commit. Why is it still exposed, and what should you do?"
+      }
+    }
+  ]
+}

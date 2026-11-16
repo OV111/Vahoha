@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "api-dev-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Relational Databases",
+      "question": "Explain how you would design and query tables for users and their orders in a relational database.",
+      "followUps": {
+        "SQL — JOINs, Transactions & EXPLAIN": "Why must a money transfer run inside a transaction, and what does EXPLAIN tell you about a slow query?",
+        "Schema Design — Normalization & Foreign Keys": "What goes wrong when the same fact is stored in two tables, and how do foreign keys protect you?"
+      }
+    },
+    {
+      "title": "Connecting Databases to Node.js",
+      "question": "Explain how your Node.js API should connect to and query a SQL database safely and efficiently.",
+      "followUps": {
+        "Connection Pooling with node-postgres (pg)": "Why reuse a pool of connections instead of opening one per request?",
+        "Parameterized Queries & SQL Injection Prevention": "Why does a parameterized query stop SQL injection when building the SQL string yourself doesn't?"
+      }
+    },
+    {
+      "title": "NoSQL with MongoDB",
+      "question": "Explain how you would model and query blog posts and their comments in MongoDB.",
+      "followUps": {
+        "Document Model — Embedding vs Referencing": "When would you embed comments inside the post, and when store them separately?",
+        "Indexes & the Aggregation Pipeline": "Why should $match come early in an aggregation pipeline?"
+      }
+    },
+    {
+      "title": "Indexing Strategies",
+      "question": "Explain how indexes make queries fast, and how you choose which ones to create.",
+      "followUps": {
+        "B-tree Indexes & Composite Index Column Order": "Why is an index on (status, created_at) different from one on (created_at, status)?",
+        "Partial & Covering Indexes": "What is a covering index, and why can it answer a query without reading the table?"
+      }
+    }
+  ]
+}

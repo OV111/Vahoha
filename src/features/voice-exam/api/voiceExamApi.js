@@ -1,103 +1,79 @@
-import {
-  EXAM_STATES,
-  EXPLANATION_LIMIT_SEC,
-  FOLLOWUP_LIMIT_SEC,
-} from "../lib/examStates";
+import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
 
-// MOCK implementation. Same function signatures the real API layer will have
-// so swapping to
-// fetch() later changes only this file. Every function resolves to an
-// AttemptView or Eligibility from lib/examStates.js.
+// Every function resolves to an AttemptView or Eligibility from lib/examStates.js.
+const BASE = `${API_BASE_URL}/api/voice-exam`;
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const TOTAL_QUESTIONS = 3;
+async function request(path, { method = "GET", body } = {}, fallback) {
+  // FormData sets its own multipart Content-Type with the boundary.
+  const isForm = body instanceof FormData;
+  let res;
+  try {
+    res = await apiFetch(`${BASE}${path}`, {
+      method,
+      headers: {
+        ...authHeaders(),
+        ...(body && !isForm ? { "Content-Type": "application/json" } : {}),
+      },
+      credentials: "include",
+      ...(body ? { body: isForm ? body : JSON.stringify(body) } : {}),
+    });
+  } catch {
+    // No status: the request never reached the server, so the same answer can be resent.
+    throw new Error("Couldn't reach the server. Check your connection.");
+  }
+  const json = await res.json().catch(() => null);
+  if (!res.ok || !json?.success)
+    throw Object.assign(new Error(json?.message ?? fallback), {
+      status: res.status,
+    });
+  return json.data;
+}
 
-const CORE_PROMPT =
-  "Explain how authentication works in an API, from a user logging in to a protected request being accepted. Cover how passwords and tokens are handled.";
-const FOLLOW_UPS = [
-  "Why is a JWT's payload not a safe place for secrets?",
-  "What problem does a refresh token solve, and how does rotation help?",
-];
+/** The signed-in user's verified layers: [{ layer, verifiedAt }]. */
+export const fetchVerifiedLayers = () =>
+  request("/verified", {}, "Couldn't load your verified layers.");
 
-const MOCK_RESULT = {
-  passed: false,
-  concepts: [
-    { label: "Password hashing", status: "solid", quote: "we hash it with bcrypt and a random salt" },
-    { label: "JWT structure and signing", status: "shallow", quote: "the token has a signature" },
-    { label: "Refresh token rotation", status: "missing" },
-  ],
-  retryAvailableAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+export const getEligibility = (layerId) =>
+  request(
+    `/layers/${encodeURIComponent(layerId)}/eligibility`,
+    {},
+    "Couldn't check if you can take this exam.",
+  );
+
+// Only PreExam starts an exam, and only after its consent box is ticked.
+export const startAttempt = ({ layerId, path }) =>
+  request(
+    "/attempts",
+    { method: "POST", body: { layerId, path, consent: true } },
+    "Couldn't start the exam.",
+  );
+
+// Safari records mp4; the server checks the real format from the bytes anyway.
+const extensionOf = (type = "") =>
+  type.includes("mp4") ? "mp4" : type.includes("ogg") ? "ogg" : "webm";
+
+// `turn` is { text } or { audio: Blob }, plus `turnKey`: the same key on a retry of the same answer.
+export const submitTurn = (attemptId, { text, audio, turnKey }) => {
+  if (audio) {
+    const form = new FormData();
+    form.append("turnKey", turnKey);
+    form.append("audio", audio, `answer.${extensionOf(audio.type)}`);
+    return request(
+      `/attempts/${attemptId}/audio-turns`,
+      { method: "POST", body: form },
+      "Couldn't send your recording. Try again.",
+    );
+  }
+  return request(
+    `/attempts/${attemptId}/turns`,
+    { method: "POST", body: { text, turnKey } },
+    "Couldn't send your answer. Try again.",
+  );
 };
 
-let current = null; // the single in-memory attempt
-
-const deadlineIn = (sec) => Date.now() + sec * 1000;
-
-export async function getEligibility(/* layerId */) {
-  await delay(300);
-  return {
-    eligible: true,
-    reasons: [],
-    cooldownUntil: null,
-    quota: { used: 1, limit: 3 },
-  };
-}
-
-export async function startAttempt({ layerId, mode }) {
-  await delay(400);
-  current = {
-    id: crypto.randomUUID(),
-    layerId,
-    mode,
-    state: EXAM_STATES.AWAITING_EXPLANATION,
-    deadlineAt: deadlineIn(15 * 60),
-    segmentLimitSec: EXPLANATION_LIMIT_SEC,
-    currentPrompt: { text: CORE_PROMPT, kind: "prompt", n: 1, total: TOTAL_QUESTIONS },
-    result: null,
-    turnsDone: 0,
-  };
-  return toView(current);
-}
-
-// `turn` is { text } for typed answers or { audio: Blob } for recordings.
-export async function submitTurn(attemptId, turn) {
-  if (!current || current.id !== attemptId) throw new Error("Attempt not found");
-  if (!turn?.text && !turn?.audio) throw new Error("Empty turn");
-
-  await delay(1500); // stands in for transcribing + analyzing
-  current.turnsDone += 1;
-
-  if (current.turnsDone >= TOTAL_QUESTIONS) {
-    await delay(1200); // stands in for grading
-    current = { ...current, state: EXAM_STATES.COMPLETED, currentPrompt: null, result: MOCK_RESULT };
-    return toView(current);
-  }
-
-  current = {
-    ...current,
-    state: EXAM_STATES.AWAITING_ANSWER,
-    segmentLimitSec: FOLLOWUP_LIMIT_SEC,
-    currentPrompt: {
-      text: FOLLOW_UPS[current.turnsDone - 1],
-      kind: "followup",
-      n: current.turnsDone + 1,
-      total: TOTAL_QUESTIONS,
-    },
-  };
-  return toView(current);
-}
-
-export async function abandonAttempt(attemptId) {
-  await delay(200);
-  if (current?.id === attemptId) {
-    current = { ...current, state: EXAM_STATES.ABANDONED, currentPrompt: null };
-  }
-  return current ? toView(current) : null;
-}
-
-// Strip mock-only bookkeeping so the UI sees exactly the AttemptView shape.
-// The deadline stays server-side; the view carries the seconds left at the
-// moment of the response, so the client never compares it to its own clock.
-function toView({ turnsDone: _turnsDone, deadlineAt, ...view }) {
-  return { ...view, secondsLeft: Math.max(0, Math.round((deadlineAt - Date.now()) / 1000)) };
-}
+export const abandonAttempt = (attemptId) =>
+  request(
+    `/attempts/${attemptId}/abandon`,
+    { method: "POST" },
+    "Couldn't end the exam.",
+  );

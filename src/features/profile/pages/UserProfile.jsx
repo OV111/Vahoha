@@ -9,7 +9,7 @@ import useProfileStore from "@/stores/useProfileStore";
 import ProfileSkeleton from "./ProfileSkeleton";
 import SOCIAL_LINKS from "../../../../constants/socialLinks";
 import { SectionHeader, ForHiringPanel } from "../components/ProfileSections";
-import { CertificateCard, EmptyState, ExamRow } from "@/features/profile/components/ProfileProgress";
+import { CertificateCard, EmptyState, ExamRow, VerifiedRow } from "@/features/profile/components/ProfileProgress";
 import ProfileBanner from "@/features/profile/components/ProfileBanner";
 import { formatLastActive, summarizeProfile } from "@/features/profile/lib/profileSummary";
 
@@ -51,6 +51,7 @@ export default function UserProfile() {
   const [progress, setProgress] = useState(null);
   const [examHistory, setExamHistory] = useState([]);
   const [certificates, setCertificates] = useState([]);
+  const [verifiedLayers, setVerifiedLayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
@@ -96,6 +97,7 @@ export default function UserProfile() {
         setProgress(response.progress ?? null);
         setExamHistory(response.examHistory ?? []);
         setCertificates(response.certificates ?? []);
+        setVerifiedLayers(response.verifiedLayers ?? []);
         setIsFollowing(Boolean(response.isFollowing));
         setIsFollower(Boolean(response.isFollower));
         if (fetchedStats.userId) {
@@ -397,6 +399,18 @@ export default function UserProfile() {
                 />
               )}
             </section>
+
+            {/* Only once there is one: an empty "verified" box would read as a gap on every profile. */}
+            {verifiedLayers.length > 0 && (
+              <section>
+                <SectionHeader title="Verified layers" right="Voice exam" />
+                <ul className="space-y-2">
+                  {verifiedLayers.map((v) => (
+                    <VerifiedRow key={v.layer} item={v} />
+                  ))}
+                </ul>
+              </section>
+            )}
 
             <section>
               <SectionHeader

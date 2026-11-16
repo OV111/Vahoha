@@ -3,6 +3,7 @@ import { notify } from "../../../queues/notify.js";
 
 import { withLayerTitles } from "../../../services/examHistoryService.js";
 import { listPublicCertificatesForUser } from "../../capstone/index.js";
+import { listVerifiedLayers } from "../../voice-exam/index.js";
 
 // What ANY logged-in viewer may see about another user's account record.
 // An explicit allow-list: the old `{ password: 0, googleId: 0, githubId: 0 }`
@@ -36,7 +37,7 @@ export const getUserProfileService = async (db, userName, currentUserId) => {
     throw { status: 404, message: "Not Found" };
   }
 
-  const [followDoc, reverseDoc, stats, progress, exams, certificates, postsCount] = await Promise.all([
+  const [followDoc, reverseDoc, stats, progress, exams, certificates, postsCount, verifiedLayers] = await Promise.all([
     follows.findOne({ followerId: currentUserId, followingId: targetUser._id }),
     follows.findOne({ followerId: targetUser._id, followingId: currentUserId }),
     userStats.findOne({ userId: targetUser._id }),
@@ -50,6 +51,7 @@ export const getUserProfileService = async (db, userName, currentUserId) => {
     listPublicCertificatesForUser(db, targetUser._id, targetUser.username),
     // Live count of published blogs (the stored postsCount was never updated).
     db.collection("blogs").countDocuments({ author: targetUser._id, status: "published" }),
+    listVerifiedLayers(db, targetUser._id).then((rows) => withLayerTitles(db, rows)),
   ]);
 
   return {
@@ -58,6 +60,7 @@ export const getUserProfileService = async (db, userName, currentUserId) => {
     progress: progress ?? null,
     examHistory: exams,
     certificates,
+    verifiedLayers,
     isFollowing: !!followDoc,
     isFollower: !!reverseDoc,
   };

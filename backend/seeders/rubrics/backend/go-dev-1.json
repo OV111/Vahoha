@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "go-dev-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "The Go Type System",
+      "question": "Explain how Go copies values when you pass them around, and what that means for structs and slices.",
+      "followUps": {
+        "Value vs Pointer Semantics": "A function changes a struct field, but the caller doesn't see the change. Why, and how do you fix it?",
+        "Slices vs Arrays": "What is inside a slice header, and why can append leave the original slice unchanged?"
+      }
+    },
+    {
+      "title": "Control Flow Idioms",
+      "question": "Explain how Go handles errors and cleanup, and how that differs from exceptions.",
+      "followUps": {
+        "defer, panic & recover": "When does a deferred call run, and why shouldn't panic and recover be your normal error handling?",
+        "Multiple Return Values & Error Handling": "Why do Go functions return (value, error), and what goes wrong when you ignore the error with _?"
+      }
+    },
+    {
+      "title": "The Go CLI & Packages",
+      "question": "Explain how Go code is organized into packages, and the commands you use to build and run it.",
+      "followUps": {
+        "Packages & the init Function": "How does Go decide which names a package exports, and when does init run?",
+        "The go Command Toolchain": "What do go build, go run and go test each do, and what does the -race flag add?"
+      }
+    },
+    {
+      "title": "Maps & Iteration",
+      "question": "Explain how maps and range loops behave in Go, including the cases that surprise people.",
+      "followUps": {
+        "Map Internals & Nil Maps": "Reading from a nil map works, but writing panics. Why, and how do you avoid it?",
+        "Range Loops & Loop Variable Capture": "Why doesn't changing the loop variable in a range loop change the slice?"
+      }
+    }
+  ]
+}

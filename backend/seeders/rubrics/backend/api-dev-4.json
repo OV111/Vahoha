@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "api-dev-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Express Routing & Middleware",
+      "question": "Explain how a request travels through an Express app, from arriving to getting a response.",
+      "followUps": {
+        "The Middleware Pipeline": "What happens if a middleware neither responds nor calls next()?",
+        "Router — Route Parameters & Query Strings": "When does data belong in a route parameter like /books/:id, and when in a query string?"
+      }
+    },
+    {
+      "title": "REST API Design",
+      "question": "Explain how you would design the endpoints for a books API, and how you keep bad input out.",
+      "followUps": {
+        "Resource Naming & HTTP Verbs": "Why is /books with POST better than /createBook?",
+        "Input Validation with Zod or Joi": "Why validate the request body at the route, before any business logic runs?"
+      }
+    },
+    {
+      "title": "Error Handling & Logging",
+      "question": "Explain how your API should handle errors and record what happened on each request.",
+      "followUps": {
+        "Centralized Error-Handling Middleware": "What makes Express treat a middleware as an error handler, and why have just one?",
+        "Request Logging with morgan": "Which details should an access log record so you can find the endpoint that returns 500s?"
+      }
+    },
+    {
+      "title": "API Structure & Versioning",
+      "question": "Explain how you would organize an API's code as it grows, and how you ship breaking changes.",
+      "followUps": {
+        "Controller Pattern — Separating Routes from Logic": "Why move logic out of route callbacks, and how does that help testing?",
+        "API Versioning Strategies": "How does putting /v1 in the URL let you ship a breaking change without breaking existing clients?"
+      }
+    }
+  ]
+}

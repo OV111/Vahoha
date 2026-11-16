@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "api-dev-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Testing with Jest",
+      "question": "Explain how you would test an Express API, from a single function up to a full request.",
+      "followUps": {
+        "Unit Testing — describe, it, expect & Mocks": "Why mock the database in a unit test instead of using a real one?",
+        "Integration Testing with Supertest": "What does a Supertest test catch that a unit test of the handler would miss?"
+      }
+    },
+    {
+      "title": "Test Setup & Coverage",
+      "question": "Explain how you keep a test suite reliable, and how you judge whether it tests enough.",
+      "followUps": {
+        "Test Database Setup & Teardown": "Why do tests that share a database pass alone but fail when run together, and how do you stop it?",
+        "Code Coverage & What It Doesn't Guarantee": "Your code has 100% coverage. Why can it still be badly tested?"
+      }
+    },
+    {
+      "title": "API Documentation with OpenAPI",
+      "question": "Explain how you would document an API so other developers can use it, and keep the docs accurate.",
+      "followUps": {
+        "OpenAPI 3.0 Specification — Paths, Schemas & Components": "What can tools generate from an OpenAPI spec, and why is a spec that drifts from the code worse than none?",
+        "swagger-jsdoc & Swagger UI Integration": "How does writing the docs in comments next to the routes help keep them up to date?"
+      }
+    },
+    {
+      "title": "Test Strategies",
+      "question": "Explain how you would test parts of your API that call outside services or need a logged-in user.",
+      "followUps": {
+        "Mocking External Services with Jest Spies": "Why not let tests call the real payment or email service, and what replaces it?",
+        "Testing Auth Flows — Protected Route Coverage": "Which token cases should a protected route's tests cover besides a valid token?"
+      }
+    }
+  ]
+}

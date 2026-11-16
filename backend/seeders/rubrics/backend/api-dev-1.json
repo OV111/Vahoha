@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "api-dev-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "How the Internet Works",
+      "question": "Walk through what happens on the network when a client calls https://api.example.com/books, before your code even runs.",
+      "followUps": {
+        "TCP/IP & the Packet Model": "What does the TCP three-way handshake set up, and why does it matter for connection timeouts?",
+        "DNS — Domain Resolution & TTL": "You move your API to a new IP, but some users still hit the old one. What is DNS TTL doing here?"
+      }
+    },
+    {
+      "title": "HTTP Fundamentals",
+      "question": "Explain how an HTTP request and response are built, and what HTTPS adds on top.",
+      "followUps": {
+        "HTTP Methods, Headers & Status Codes": "Why is using GET for an action that changes data a problem for caches and retries?",
+        "HTTPS & TLS Handshake": "What two things does TLS give you, and what does the handshake cost in latency?"
+      }
+    },
+    {
+      "title": "REST Architecture",
+      "question": "Explain what makes an API RESTful, and how you would test one without writing a frontend.",
+      "followUps": {
+        "REST Constraints & Statelessness": "Why does keeping session state on one server break scaling behind a load balancer?",
+        "API Clients — curl, Postman & Insomnia": "How would you send a POST with a JSON body and an auth header from the terminal?"
+      }
+    },
+    {
+      "title": "Developer Tooling Baseline",
+      "question": "An API call from the browser returns the wrong data. Explain how you would inspect what was really sent and received.",
+      "followUps": {
+        "Browser DevTools — Network Tab": "What can the Network tab show you about a request that console.log can't?",
+        "HTTP Caching Basics — Cache-Control & ETags": "How do Cache-Control and ETags stop a client from downloading the same response again?"
+      }
+    }
+  ]
+}

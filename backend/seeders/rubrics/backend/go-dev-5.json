@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "go-dev-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "net/http Internals",
+      "question": "Explain how Go's standard library serves HTTP requests, and how a server should shut down.",
+      "followUps": {
+        "Handler & HandlerFunc": "What is the http.Handler interface, and how does HandlerFunc turn a plain function into a handler?",
+        "Graceful Shutdown": "What is the difference between server.Shutdown and server.Close during a deploy?"
+      }
+    },
+    {
+      "title": "Routing",
+      "question": "Explain how requests get matched to handlers in a Go service, and where middleware fits.",
+      "followUps": {
+        "Chi Router Middleware Chain": "What happens when a Chi middleware forgets to call next.ServeHTTP?",
+        "Go 1.22 Enhanced ServeMux": "What can the Go 1.22 ServeMux do now that used to need a third-party router?"
+      }
+    },
+    {
+      "title": "Request & Response",
+      "question": "Explain how a Go service reads JSON requests and calls other HTTP services safely.",
+      "followUps": {
+        "JSON Encoding & Decoding": "What does DisallowUnknownFields do when decoding a request body, and why use it?",
+        "HTTP Client & Transport": "Why is the default http.Client dangerous for calls to slow servers?"
+      }
+    },
+    {
+      "title": "Service Structure",
+      "question": "Explain how you would wire a Go service's dependencies and configuration together.",
+      "followUps": {
+        "Dependency Injection via Constructors": "Why pass dependencies into a NewServer function instead of using globals?",
+        "Configuration & Environment Variables": "What should a service do at startup if a required environment variable is missing?"
+      }
+    }
+  ]
+}

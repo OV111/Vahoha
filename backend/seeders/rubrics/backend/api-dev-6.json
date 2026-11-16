@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "api-dev-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Password Security",
+      "question": "Explain how you would store user passwords safely in your API, and why each step matters.",
+      "followUps": {
+        "bcrypt & Adaptive Hashing": "Why is a fast hash like SHA-256 a bad choice for passwords, and what does bcrypt's cost factor do?",
+        "Salt — Why Random Salts Matter": "Two users pick the same password. What makes their stored hashes different, and what attack does that stop?"
+      }
+    },
+    {
+      "title": "JWT Authentication",
+      "question": "Walk through how JWT authentication works in an API, from login to a protected request, including how sessions end.",
+      "followUps": {
+        "JWT Structure, Signing & the 'alg:none' Pitfall": "Which part of a JWT actually provides security, and why should the server never trust the algorithm named in the token header?",
+        "Refresh Token Rotation & Token Revocation": "A refresh token gets stolen. How do rotation and a revocation list limit the damage?"
+      }
+    },
+    {
+      "title": "OAuth 2.0",
+      "question": "Explain how OAuth 2.0 lets one app access another service, and how you pick the right flow.",
+      "followUps": {
+        "OAuth 2.0 Flows — Authorization Code vs Client Credentials": "When would you use client credentials instead of the authorization code flow, and why is it unsafe in a browser app?",
+        "PKCE — Securing the Authorization Code Flow": "A mobile app can't keep a client secret. What does PKCE add so an intercepted authorization code is useless?"
+      }
+    },
+    {
+      "title": "API Hardening",
+      "question": "Explain what you would configure to protect an API that a browser frontend calls, beyond authentication.",
+      "followUps": {
+        "CORS — Cross-Origin Resource Sharing": "What does CORS protect against, and what goes wrong if you allow any origin while also allowing credentials?",
+        "helmet.js & Security Headers": "Name a security header that helmet.js sets and the attack it blocks."
+      }
+    }
+  ]
+}

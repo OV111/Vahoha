@@ -92,6 +92,10 @@ const connectDB = async () => {
       db.collection("exam_attempts").createIndex({ userId: 1, path: 1, layer: 1, startedAt: -1 }),
       db.collection("teach_back_rubrics").createIndex({ path: 1, layer: 1, topic: 1 }, { unique: true }),
       db.collection("teach_back_sessions").createIndex({ userId: 1, path: 1, layer: 1, startedAt: -1 }),
+      db.collection("voice_exam_rubrics").createIndex({ layer: 1 }, { unique: true }),
+      db.collection("voice_exam_attempts").createIndex({ userId: 1, startedAt: -1 }),
+      db.collection("voice_exam_attempts").createIndex({ startedAt: -1 }),
+      db.collection("voice_exam_attempts").createIndex({ userId: 1, layer: 1, finishedAt: -1 }),
       // LearnerContext runs these five reads on every mentor turn, so they
       // need to be index-backed rather than collection scans.
       // Challenge catalog: detail by slug, list filters by track/layer and by tag.

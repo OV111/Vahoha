@@ -5,7 +5,7 @@
 // after they finished a test.
 //
 // Keys match what the reads register in the cache:
-//   mastery, journey, readiness, profile, roadmap-progress, notifications, capstone:<track>, billing
+//   mastery, journey, readiness, profile, roadmap-progress, notifications, capstone:<track>, billing, voice-verified
 //
 // When in doubt, list the key: invalidating too much costs one extra request,
 // invalidating too little shows someone stale progress.
@@ -15,6 +15,7 @@ const RULES = [
   [/^\/api\/challenges\//, ["mastery", "journey", "readiness", "profile"]],
   [/^\/api\/capstone\//, ["capstone", "readiness", "profile"]],
   [/^\/api\/teams\//, ["readiness", "profile"]],
+  [/^\/api\/voice-exam\//, ["voice-verified", "profile"]], // a passed voice exam adds a Verified badge
   [/^\/api\/roadmaps\//, ["roadmap-progress", "journey", "readiness"]],
   [/^\/api\/mentor\/stream/, ["journey"]], // a mentor message counts toward the streak
   [/^\/my-profile\/notifications/, ["notifications"]],

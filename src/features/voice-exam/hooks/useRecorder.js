@@ -4,7 +4,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const pickMimeType = () => {
   if (typeof MediaRecorder === "undefined") return null;
   return (
-    ["audio/webm;codecs=opus", "audio/mp4"].find((t) => MediaRecorder.isTypeSupported(t)) ?? ""
+    ["audio/webm;codecs=opus", "audio/mp4"].find((t) =>
+      MediaRecorder.isTypeSupported(t),
+    ) ?? ""
   );
 };
 
@@ -23,7 +25,8 @@ export const useRecorder = ({ maxSec, onStop }) => {
   const [elapsedSec, setElapsedSec] = useState(0);
   const [error, setError] = useState(null);
 
-  const isSupported = Boolean(navigator.mediaDevices?.getUserMedia) && pickMimeType() !== null;
+  const isSupported =
+    Boolean(navigator.mediaDevices?.getUserMedia) && pickMimeType() !== null;
 
   useEffect(() => {
     onStopRef.current = onStop;
@@ -45,10 +48,14 @@ export const useRecorder = ({ maxSec, onStop }) => {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
       const mimeType = pickMimeType();
-      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+      const recorder = new MediaRecorder(
+        stream,
+        mimeType ? { mimeType } : undefined,
+      );
       chunksRef.current = [];
 
-      recorder.ondataavailable = (e) => e.data.size > 0 && chunksRef.current.push(e.data);
+      recorder.ondataavailable = (e) =>
+        e.data.size > 0 && chunksRef.current.push(e.data);
       recorder.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: recorder.mimeType });
         release();

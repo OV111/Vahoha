@@ -1,83 +1,228 @@
-import { CheckCircle2, XCircle, Clock } from "lucide-react";
+import { Link } from "react-router-dom";
+import {
+  ShieldCheck,
+  RotateCcw,
+  Clock,
+  MessageSquare,
+  ChevronDown,
+} from "lucide-react";
 
-const STATUS_LABEL = { solid: "Solid", shallow: "Shallow", missing: "Missing" };
-const STATUS_STYLE = {
-  solid: "text-green-600",
-  shallow: "text-amber-600",
-  missing: "text-red-600",
+const STATUS = {
+  solid: {
+    label: "Solid",
+    chip: "border-emerald-800/60 bg-emerald-950/40 text-emerald-300",
+    bar: "bg-emerald-400",
+  },
+  shallow: {
+    label: "Shallow",
+    chip: "border-amber-800/60 bg-amber-950/40 text-amber-300",
+    bar: "bg-amber-400",
+  },
+  missing: {
+    label: "Missing",
+    chip: "border-rose-900/60 bg-rose-950/40 text-rose-300",
+    bar: "bg-rose-400",
+  },
 };
+const ORDER = ["missing", "shallow", "solid"];
+
+const button =
+  "inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-5 text-[15px] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2";
+
+// One bar split by status: how the whole answer went, before the details.
+function Breakdown({ concepts }) {
+  const counts = ORDER.map((s) => [
+    s,
+    concepts.filter((c) => c.status === s).length,
+  ]).filter(([, n]) => n > 0);
+  return (
+    <div>
+      <div
+        className="flex h-2 gap-1 overflow-hidden rounded-full"
+        aria-hidden="true"
+      >
+        {counts.map(([s, n]) => (
+          <span
+            key={s}
+            className={`${STATUS[s].bar} rounded-full`}
+            style={{ flexGrow: n }}
+          />
+        ))}
+      </div>
+      <p className="mt-2 flex flex-wrap gap-x-4 text-sm text-neutral-400">
+        {counts.map(([s, n]) => (
+          <span key={s}>
+            {n} {STATUS[s].label.toLowerCase()}
+          </span>
+        ))}
+      </p>
+    </div>
+  );
+}
 
 /**
- * Pass or fail first. Free users see which concepts to fix (names only);
- * detailed users also see status and the quote that earned or lost credit.
+ * Pass or fail first, then each part with the words that earned or lost the credit.
+ * Free users see which parts to fix (names only); detailed users also see the quotes.
  * "Names only" still gives direction, which the mentor gate depends on.
  *
- * @param {{ result: import("../lib/examStates").ExamResult, detailed?: boolean, onClose: () => void }} props
+ * @param {{
+ *   result: import("../lib/examStates").ExamResult,
+ *   layerTitle?: string|null,
+ *   detailed?: boolean,
+ *   onClose: () => void,
+ * }} props
  */
-const ResultPanel = ({ result, detailed = false, onClose }) => {
-  const weak = result.concepts.filter((c) => c.status !== "solid");
+const ResultPanel = ({ result, layerTitle, detailed = false, onClose }) => {
+  // Weakest first: the parts to work on are what a learner looks for.
+  const concepts = [...result.concepts].sort(
+    (a, b) => ORDER.indexOf(a.status) - ORDER.indexOf(b.status),
+  );
+  const layer = layerTitle ?? "This layer";
 
   return (
-    <div className="bg-white dark:bg-neutral-800/60 dark:backdrop-blur-sm rounded-xl px-8 py-8">
-      <div className="flex items-center gap-3 mb-6">
-        {result.passed ? (
-          <CheckCircle2 size={28} className="text-green-600" />
-        ) : (
-          <XCircle size={28} className="text-red-600" />
-        )}
-        <h2 className="text-[20px] font-semibold text-[#1a1f36] dark:text-white">
-          {result.passed ? "You passed" : "Not passed yet"}
-        </h2>
-      </div>
+    <div className="space-y-5">
+      <section
+        className={`rounded-2xl border bg-neutral-950 p-5 sm:p-8 ${
+          result.passed
+            ? "border-emerald-500/60 shadow-[0_0_0_4px_rgba(16,185,129,0.10)]"
+            : "border-neutral-800"
+        }`}
+      >
+        <div className="flex items-start gap-4">
+          <span
+            className={`flex size-12 shrink-0 items-center justify-center rounded-full ${
+              result.passed
+                ? "bg-emerald-400 text-neutral-950"
+                : "border border-neutral-700 text-neutral-300"
+            }`}
+          >
+            {result.passed ? (
+              <ShieldCheck size={24} aria-hidden="true" />
+            ) : (
+              <RotateCcw size={22} aria-hidden="true" />
+            )}
+          </span>
+          <div>
+            <h2 className="text-2xl font-semibold text-neutral-50 sm:text-[28px]">
+              {result.passed ? "Verified" : "Not verified yet"}
+            </h2>
+            <p className="mt-1 text-[15px] text-neutral-400">
+              {result.passed
+                ? `${layer} now shows as Verified on your profile.`
+                : "You covered some of it. Work on the parts below and try again."}
+            </p>
+          </div>
+        </div>
 
-      {detailed ? (
-        <ul className="space-y-4 mb-6">
-          {result.concepts.map((c) => (
-            <li key={c.label}>
-              <div className="flex items-center justify-between text-[14px]">
-                <span className="text-[#1a1f36] dark:text-zinc-200">{c.label}</span>
-                <span className={STATUS_STYLE[c.status]}>{STATUS_LABEL[c.status]}</span>
+        <div className="mt-6">
+          <Breakdown concepts={concepts} />
+        </div>
+
+        <ul className="mt-6 divide-y divide-neutral-900">
+          {concepts.map((c) => (
+            <li key={c.label} className="py-4 first:pt-0 last:pb-0">
+              <div className="flex items-start justify-between gap-4">
+                <span className="text-[15px] text-neutral-100">{c.label}</span>
+                <span
+                  className={`shrink-0 rounded-full border px-2.5 py-0.5 text-xs font-medium ${STATUS[c.status].chip}`}
+                >
+                  {STATUS[c.status].label}
+                </span>
               </div>
-              {c.quote && (
-                <p className="mt-1 text-[13px] italic text-[#697386] dark:text-zinc-400">
+              {detailed && c.quote && (
+                <blockquote className="mt-2 border-l-2 border-neutral-700 pl-3 text-sm italic text-neutral-400">
                   &ldquo;{c.quote}&rdquo;
+                </blockquote>
+              )}
+              {detailed && !c.quote && (
+                <p className="mt-2 text-sm text-neutral-500">
+                  Nothing in your answers covered this.
                 </p>
               )}
             </li>
           ))}
         </ul>
-      ) : (
-        weak.length > 0 && (
-          <div className="mb-6">
-            <p className="text-[14px] text-[#1a1f36] dark:text-zinc-200 mb-2">Review these concepts:</p>
-            <ul className="list-disc pl-5 text-[14px] text-[#1a1f36] dark:text-zinc-200">
-              {weak.map((c) => (
-                <li key={c.label}>{c.label}</li>
-              ))}
-            </ul>
-          </div>
-        )
-      )}
+      </section>
 
       {!result.passed && (
-        <div className="rounded-lg bg-neutral-50 dark:bg-neutral-900/60 px-4 py-3 mb-6 text-[13.5px] text-[#1a1f36] dark:text-zinc-200">
-          <p className="mb-1">Next step: review the weak concepts with the mentor.</p>
+        <section className="rounded-2xl border border-neutral-800 bg-neutral-950 p-5 sm:p-6">
+          <h3 className="text-[15px] font-semibold text-neutral-100">
+            What to do next
+          </h3>
+          <p className="mt-1 text-sm text-neutral-400">
+            The mentor already knows which parts were weak. Ask it to walk you
+            through them.
+          </p>
           {result.retryAvailableAt && (
-            <p className="flex items-center gap-2 text-[#697386] dark:text-zinc-400">
-              <Clock size={14} />
-              You can retry after {new Date(result.retryAvailableAt).toLocaleString()}
+            <p className="mt-3 flex items-center gap-2 text-sm text-amber-300">
+              <Clock size={15} aria-hidden="true" />
+              You can retry from{" "}
+              {new Date(result.retryAvailableAt).toLocaleString(undefined, {
+                weekday: "short",
+                hour: "numeric",
+                minute: "2-digit",
+              })}
+              .
             </p>
           )}
-        </div>
+        </section>
       )}
 
-      <button
-        type="button"
-        onClick={onClose}
-        className="min-h-[44px] rounded-full bg-[#1a1f36] dark:bg-white text-white dark:text-[#1a1f36] px-6 text-sm font-medium"
-      >
-        Back to roadmap
-      </button>
+      {result.transcript?.length > 0 && (
+        <details className="group rounded-2xl border border-neutral-800 bg-neutral-950 px-5 sm:px-6">
+          <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 text-[15px] font-medium text-neutral-100 [&::-webkit-details-marker]:hidden">
+            What was graded
+            {/* The arrow points down when closed and flips up when open, so it's clear how to close it again. */}
+            <span className="flex items-center gap-2 text-sm font-normal text-neutral-400">
+              <span className="group-open:hidden">Show your answers</span>
+              <span className="hidden group-open:inline">Hide</span>
+              <ChevronDown
+                size={18}
+                className="transition-transform duration-200 group-open:rotate-180"
+                aria-hidden="true"
+              />
+            </span>
+          </summary>
+          <ol className="space-y-5 pb-6">
+            {result.transcript.map((turn, i) => (
+              <li key={i}>
+                <p className="text-sm font-medium text-neutral-300">
+                  {turn.prompt}
+                </p>
+                <p className="mt-1.5 whitespace-pre-wrap break-words text-sm leading-relaxed text-neutral-400">
+                  {turn.text}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </details>
+      )}
+
+      <div className="flex flex-col gap-3 sm:flex-row">
+        {result.passed ? (
+          <Link
+            to="/my-profile"
+            className={`${button} bg-emerald-500 text-neutral-950 hover:bg-emerald-400 focus-visible:outline-emerald-300`}
+          >
+            <ShieldCheck size={17} aria-hidden="true" /> See it on your profile
+          </Link>
+        ) : (
+          <Link
+            to="/mentor"
+            className={`${button} bg-purple-600 text-white hover:bg-purple-500 focus-visible:outline-purple-300`}
+          >
+            <MessageSquare size={17} aria-hidden="true" /> Review with the
+            mentor
+          </Link>
+        )}
+        <button
+          type="button"
+          onClick={onClose}
+          className={`${button} border border-neutral-700 text-neutral-100 hover:bg-neutral-900 focus-visible:outline-neutral-400`}
+        >
+          Back to the layer
+        </button>
+      </div>
     </div>
   );
 };

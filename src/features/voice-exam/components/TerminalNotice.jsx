@@ -1,34 +1,45 @@
+import { Clock, LogOut, AlertTriangle } from "lucide-react";
 import { EXAM_STATES } from "../lib/examStates";
 
 const COPY = {
   [EXAM_STATES.EXPIRED]: {
+    icon: Clock,
     title: "Time ran out",
-    body: "The exam deadline passed. This counts as an attempt.",
+    body: "The 15 minutes ended before the last answer arrived. This counts as one of today's tries.",
   },
   [EXAM_STATES.ABANDONED]: {
-    title: "Exam abandoned",
-    body: "You left the exam. This counts as an attempt.",
+    icon: LogOut,
+    title: "You left the exam",
+    body: "This counts as one of today's tries. You can start a new one from the layer page.",
   },
   [EXAM_STATES.FAILED_TECHNICAL]: {
+    icon: AlertTriangle,
     title: "Something went wrong on our side",
-    body: "This attempt was not counted against you. Please try again.",
+    body: "This attempt was not counted against you. Try again from the layer page.",
   },
 };
 
 /** Non-result endings. A technical failure is never counted (spec section 7). */
 const TerminalNotice = ({ state, onClose }) => {
-  const { title, body } = COPY[state] ?? COPY[EXAM_STATES.FAILED_TECHNICAL];
+  const {
+    icon: Icon,
+    title,
+    body,
+  } = COPY[state] ?? COPY[EXAM_STATES.FAILED_TECHNICAL];
 
   return (
-    <div className="bg-white dark:bg-neutral-800/60 dark:backdrop-blur-sm rounded-xl px-8 py-10">
-      <h2 className="text-[18px] font-semibold text-[#1a1f36] dark:text-white mb-2">{title}</h2>
-      <p className="text-[14px] text-[#697386] dark:text-zinc-400 mb-6">{body}</p>
+    <div className="rounded-2xl border border-neutral-800 bg-neutral-950 p-5 sm:p-8">
+      <span className="flex size-12 items-center justify-center rounded-full border border-neutral-700 text-neutral-300">
+        <Icon size={22} aria-hidden="true" />
+      </span>
+      <h2 className="mt-4 text-2xl font-semibold text-neutral-50">{title}</h2>
+      <p className="mt-2 max-w-prose text-[15px] text-neutral-400">{body}</p>
       <button
         type="button"
         onClick={onClose}
-        className="min-h-[44px] rounded-full bg-[#1a1f36] dark:bg-white text-white dark:text-[#1a1f36] px-6 text-sm font-medium"
+        className="mt-6 inline-flex min-h-12 items-center rounded-xl border border-neutral-700 px-5 text-[15px] font-semibold text-neutral-100 transition-colors hover:bg-neutral-900"
       >
-        Back to roadmap
+        Back to the layer
       </button>
     </div>
   );

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "api-dev-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Docker & Containerization",
+      "question": "Explain how you would package an API with Docker and run it locally next to its database.",
+      "followUps": {
+        "Dockerfile — Layers, Multi-stage Builds & .dockerignore": "Why copy package.json and run npm install before copying the rest of the code?",
+        "Docker Compose — Local Multi-service Development": "What does Docker Compose do for an API that needs Postgres and Redis?"
+      }
+    },
+    {
+      "title": "CI/CD with GitHub Actions",
+      "question": "Explain how you would make every pull request get checked automatically before it can be merged.",
+      "followUps": {
+        "GitHub Actions — Workflow Syntax & Triggers": "Which trigger runs a workflow on pull requests, and why isn't running only on main enough?",
+        "CI Pipeline — Lint, Test & Build Gates": "Which checks belong in a CI pipeline, and what does blocking merges on them protect?"
+      }
+    },
+    {
+      "title": "Production Observability",
+      "question": "Explain how you would know what your API is doing in production, and how it should start and stop safely.",
+      "followUps": {
+        "Structured Logging with Pino or Winston": "Why log JSON objects instead of plain text lines?",
+        "Health Check Endpoints & Graceful Shutdown": "What should happen to in-flight requests when the platform sends SIGTERM?"
+      }
+    },
+    {
+      "title": "Deployment Platforms",
+      "question": "Explain how you would deploy an API to a managed platform and find out when it breaks.",
+      "followUps": {
+        "Railway & Render — Zero-config Cloud Deployment": "What does a platform like Render handle for you that you would otherwise set up yourself?",
+        "Error Tracking with Sentry": "What does Sentry give you about an error that a user's bug report doesn't?"
+      }
+    }
+  ]
+}

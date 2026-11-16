@@ -11,12 +11,14 @@ import {
   ChevronRight,
   Lock,
   Mic,
+  ShieldCheck,
 } from "lucide-react";
 import useRoadmapStore from "@/stores/useRoadmapStore";
 import useAuthStore from "@/stores/useAuthStore";
 import LayerPosts from "./LayerPosts";
 import LayerLibrary from "./LayerLibrary";
 import { hasVoiceExam } from "@/features/voice-exam/lib/pilotLayers";
+import { useVerifiedLayers } from "@/features/voice-exam/hooks/useVerifiedLayers";
 
 const resourceTypeColor = {
   docs: "bg-blue-900/30 text-blue-400 border border-blue-800/50",
@@ -37,6 +39,7 @@ const LayerDetail = () => {
     selectedTrack,
   } = useRoadmapStore();
   const { auth } = useAuthStore();
+  const verifiedLayers = useVerifiedLayers(Boolean(auth));
 
   if (!activeLayer) return null;
 
@@ -214,6 +217,12 @@ const LayerDetail = () => {
                 <Lock size={14} className="text-neutral-600" aria-hidden="true" />
               )}
               {isDone ? "Completed" : "Pass the test to complete"}
+              {verifiedLayers.has(activeLayer.id) && (
+                <span className="ml-1 inline-flex items-center gap-1 rounded-full bg-emerald-900/30 border border-emerald-800/50 px-2 py-0.5 text-xs text-emerald-300">
+                  <ShieldCheck size={12} aria-hidden="true" />
+                  Verified
+                </span>
+              )}
             </span>
 
             <div className="flex items-center gap-2">

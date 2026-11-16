@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "go-dev-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Module System",
+      "question": "Explain how a Go project declares and pins its dependencies, and how you work on several modules at once.",
+      "followUps": {
+        "go.mod & Semantic Versioning": "What does go.mod record, and why does a v2 module need a different import path?",
+        "Workspaces (go work)": "How does go work let you edit two modules together without adding replace lines to go.mod?"
+      }
+    },
+    {
+      "title": "Code Quality Tools",
+      "question": "Explain the tools that keep Go code consistent and catch bugs before they ship.",
+      "followUps": {
+        "gofmt & goimports": "What does goimports do on top of gofmt?",
+        "go vet & Static Analysis": "Name a bug that compiles fine but go vet would catch."
+      }
+    },
+    {
+      "title": "Project Layout",
+      "question": "Explain how you would lay out a Go service's folders, and how its errors should flow to callers.",
+      "followUps": {
+        "Standard Project Structure": "What goes in cmd/ and internal/, and what does Go enforce about internal/?",
+        "Error Wrapping & Sentinel Errors": "How does wrapping an error with %w let a caller check for ErrNotFound with errors.Is?"
+      }
+    },
+    {
+      "title": "Documentation",
+      "question": "Explain how Go code is documented, and how you keep the docs from going out of date.",
+      "followUps": {
+        "godoc Comments": "How should a doc comment on an exported function start, and where does it show up?",
+        "Example Functions": "Why does an ExampleXxx function with an Output comment protect your docs from drifting?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "go-dev-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Interfaces in Go",
+      "question": "Explain how interfaces work in Go, and why they are different from interfaces in Java or C#.",
+      "followUps": {
+        "Implicit Interface Satisfaction": "A type never says it implements an interface. How does Go decide it does, and why is that useful?",
+        "Interface Values & Nil Traps": "A function returns a nil pointer as an error, yet err != nil is true. Why?"
+      }
+    },
+    {
+      "title": "Struct Composition",
+      "question": "Explain how you reuse behavior between types in Go without inheritance.",
+      "followUps": {
+        "Embedding vs Inheritance": "What happens when an embedded type and the outer struct both define the same method?",
+        "Struct Tags & Reflection": "You misspell a json struct tag. What happens, and why don't you get an error?"
+      }
+    },
+    {
+      "title": "Generics",
+      "question": "Explain how generics work in Go, and how you decide whether to use them.",
+      "followUps": {
+        "Type Parameters & Constraints": "What do the any and comparable constraints allow, and why define your own constraint?",
+        "When Not to Use Generics": "When would an interface or a little duplicated code be clearer than a generic function?"
+      }
+    },
+    {
+      "title": "Type Assertions & Switches",
+      "question": "Explain how you get the concrete type back out of an interface value safely.",
+      "followUps": {
+        "Type Assertions": "What is the difference between v := x.(T) and v, ok := x.(T)?",
+        "Type Switches": "When is a type switch the right tool, and what does it look like?"
+      }
+    }
+  ]
+}

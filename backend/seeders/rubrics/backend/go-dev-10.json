@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "go-dev-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Containerization",
+      "question": "Explain how you would build a small, secure container image for a Go service.",
+      "followUps": {
+        "Multi-Stage Docker Builds": "Why compile in one stage and copy the binary into a scratch or distroless image?",
+        "CGO & Static Binaries": "Why does CGO_ENABLED=0 matter for running in a scratch container?"
+      }
+    },
+    {
+      "title": "gRPC",
+      "question": "Explain how gRPC works between Go services, from defining the API to handling streams.",
+      "followUps": {
+        "Protocol Buffers & Code Generation": "Why should you never edit the generated .pb.go files by hand?",
+        "gRPC Streaming & Error Handling": "What kinds of streaming RPC exist, and how should a stream report an error halfway through?"
+      }
+    },
+    {
+      "title": "CI/CD",
+      "question": "Explain how you would test and ship a Go service automatically without dropping requests.",
+      "followUps": {
+        "GitHub Actions for Go": "Which checks belong in a Go CI workflow, and what does caching the module cache save?",
+        "Zero-Downtime Deploys": "Why must a new pod pass its readiness probe before the old one stops?"
+      }
+    },
+    {
+      "title": "Deployment Targets",
+      "question": "Explain how you make deployments traceable and keep production behaving like your local setup.",
+      "followUps": {
+        "Container Registries & Image Tagging": "Why tag images with the Git commit SHA instead of only latest?",
+        "Environment Parity & 12-Factor": "A bug happens only in production. Which environment differences would you check first?"
+      }
+    }
+  ]
+}
