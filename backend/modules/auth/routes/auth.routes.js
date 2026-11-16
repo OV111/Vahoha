@@ -1,5 +1,5 @@
 import { Router } from "express";
-import rateLimit from "express-rate-limit";
+import { sharedRateLimit } from "../../../middleware/sharedRateLimit.js";
 import {
   signUp,
   login,
@@ -51,7 +51,7 @@ const router = Router();
 // Two limiters, not one shared one: a shared counter meant a few "send link"
 // clicks could lock someone out of actually using the link.
 // Sending is the abusable action (it emails someone), so it is the tighter one.
-const forgotPasswordLimiter = rateLimit({
+const forgotPasswordLimiter = sharedRateLimit("auth.forgotPassword", {
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 5,
   standardHeaders: true,
@@ -60,7 +60,7 @@ const forgotPasswordLimiter = rateLimit({
 });
 // Guessing a 256-bit token is hopeless, so this only stops hammering; it leaves
 // room for someone retyping a password that failed the policy.
-const resetPasswordLimiter = rateLimit({
+const resetPasswordLimiter = sharedRateLimit("auth.resetPassword", {
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10,
   standardHeaders: true,
@@ -70,14 +70,14 @@ const resetPasswordLimiter = rateLimit({
 
 // Per IP; the per-email cooldown lives in requestLoginLink. Confirming is a
 // 256-bit token guess, so its limiter only stops hammering.
-const loginLinkRequestLimiter = rateLimit({
+const loginLinkRequestLimiter = sharedRateLimit("auth.loginLinkRequest", {
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 10,
   standardHeaders: true,
   legacyHeaders: false,
   message: { message: "Too many sign-in links requested. Try again in an hour.", code: 429 },
 });
-const loginLinkConfirmLimiter = rateLimit({
+const loginLinkConfirmLimiter = sharedRateLimit("auth.loginLinkConfirm", {
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 20,
   standardHeaders: true,

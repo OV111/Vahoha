@@ -1,6 +1,6 @@
 import process from "node:process";
 import { Router } from "express";
-import rateLimit from "express-rate-limit";
+import { sharedRateLimit } from "../../../middleware/sharedRateLimit.js";
 import { authenticate } from "../../../middleware/authenticate.js";
 import { validate } from "../../../middleware/validate.js";
 import { candidatesQuerySchema, settingsSchema, usernameParamSchema } from "../schemas/recruiter.schemas.js";
@@ -11,7 +11,7 @@ const router = Router();
 // Public and unauthenticated, so keyed per IP (trust proxy is set in app.js).
 // Generous for a recruiter opening a few links, tight enough to stop scraping
 // every username.
-const scorecardLimiter = rateLimit({
+const scorecardLimiter = sharedRateLimit("recruiter.scorecard", {
   windowMs: 60_000,
   limit: 60,
   standardHeaders: "draft-7",
@@ -21,7 +21,7 @@ const scorecardLimiter = rateLimit({
 
 // Signed-in only. The list is built from many scorecards, so it is the costly
 // call here: a tighter limit than the single public scorecard.
-const candidatesLimiter = rateLimit({
+const candidatesLimiter = sharedRateLimit("recruiter.candidates", {
   windowMs: 60_000,
   limit: 30,
   standardHeaders: "draft-7",

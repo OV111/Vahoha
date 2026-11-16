@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { makeErrorHandler } from "../../../utils/respond.js";
-import rateLimit from "express-rate-limit";
+import { sharedRateLimit } from "../../../middleware/sharedRateLimit.js";
 import { authenticate } from "../../../middleware/authenticate.js";
 import { aiBurstLimiter, refundWhenBusy } from "../../../middleware/aiRateLimit.js";
 import { validate } from "../../../middleware/validate.js";
@@ -10,7 +10,7 @@ import { createQuestions, submitAnswers } from "../controllers/understanding.con
 const router = Router();
 
 // Each new check is one model call; answers are graded once per check.
-const questionsDailyLimiter = rateLimit({
+const questionsDailyLimiter = sharedRateLimit("system-map.questionsDaily", {
   windowMs: 24 * 60 * 60 * 1000,
   limit: 10,
   standardHeaders: "draft-7",

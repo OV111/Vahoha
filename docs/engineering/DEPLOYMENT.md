@@ -138,7 +138,7 @@ Imported exam questions arrive as `reviewed: false`. Hand-check the answer keys 
 | AI returns 413 | Request tokens exceed the Groq tier's per-minute limit (see [Billing](BILLING.md#ai-cost-and-the-groq-tier)) |
 | Polar webhook failing | Polar retries 10 times then disables the endpoint. A missing `POLAR_WEBHOOK_SECRET` returns 503 on purpose |
 | Emergency stop | `MAINTENANCE_MODE=true` makes every route answer 503 (`/healthz` stays up) |
-| Scaling out | Not safe yet: WebSocket rooms and rate-limit counters are in memory. Pin to one instance |
+| Scaling out | Not safe yet: WebSocket rooms are in memory. Pin to one instance. Rate-limit counters are in Redis (memory fallback while Redis is down) |
 
 ---
 

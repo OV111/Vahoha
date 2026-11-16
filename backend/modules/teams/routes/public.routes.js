@@ -1,12 +1,12 @@
 import { Router } from "express";
-import rateLimit from "express-rate-limit";
+import { sharedRateLimit } from "../../../middleware/sharedRateLimit.js";
 import { validate } from "../../../middleware/validate.js";
 import { getPublicEvidence } from "../controllers/proof.controller.js";
 import { publicIdParamSchema } from "../schemas/teams.schemas.js";
 
 // No login: anyone with the link (a recruiter) opens a team's evidence page.
 // Keyed per IP (trust proxy is set in app.js).
-const evidenceLimiter = rateLimit({
+const evidenceLimiter = sharedRateLimit("teams.evidence", {
   windowMs: 60_000,
   limit: 60,
   standardHeaders: "draft-7",

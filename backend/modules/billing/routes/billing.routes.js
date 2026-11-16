@@ -1,5 +1,5 @@
 import { Router } from "express";
-import rateLimit from "express-rate-limit";
+import { sharedRateLimit } from "../../../middleware/sharedRateLimit.js";
 import { authenticate } from "../../../middleware/authenticate.js";
 import { validate } from "../../../middleware/validate.js";
 import { checkoutBodySchema } from "../schemas/billing.schemas.js";
@@ -15,7 +15,7 @@ const router = Router();
 // These three call Polar's API. Limit per USER (not per IP — many learners share
 // a campus or bootcamp IP) so a stuck client loop can't hammer the provider.
 // Read-only status is cheap and unlimited.
-const providerLimiter = rateLimit({
+const providerLimiter = sharedRateLimit("billing.provider", {
   windowMs: 60_000,
   limit: 10,
   standardHeaders: "draft-7",

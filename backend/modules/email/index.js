@@ -6,7 +6,7 @@
  * the only one that needs preferences and an unsubscribe link.
  */
 import { Router } from "express";
-import rateLimit from "express-rate-limit";
+import { sharedRateLimit } from "../../middleware/sharedRateLimit.js";
 import { z } from "zod";
 import { authenticate } from "../../middleware/authenticate.js";
 import { validate } from "../../middleware/validate.js";
@@ -21,7 +21,7 @@ import {
 const prefsSchema = z.object({ weeklySummary: z.boolean() }).strict();
 
 // Public route; a valid token is already unguessable, this only stops a flood.
-const unsubscribeLimiter = rateLimit({
+const unsubscribeLimiter = sharedRateLimit("email.unsubscribe", {
   windowMs: 60 * 60 * 1000,
   limit: 30,
   standardHeaders: "draft-7",

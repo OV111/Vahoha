@@ -1,5 +1,5 @@
 import { Router } from "express";
-import rateLimit from "express-rate-limit";
+import { sharedRateLimit } from "../../../middleware/sharedRateLimit.js";
 import { authenticate } from "../../../middleware/authenticate.js";
 import { validate } from "../../../middleware/validate.js";
 import { deleteAccount } from "../controllers/account.controller.js";
@@ -10,7 +10,7 @@ const router = Router();
 // The password is the only real check on this endpoint, so a stolen access
 // token must not allow unlimited guessing. Only failed attempts count
 // (skipSuccessfulRequests), so a legitimate deletion is never blocked.
-export const deleteAccountLimiter = rateLimit({
+export const deleteAccountLimiter = sharedRateLimit("account.deleteAccount", {
   windowMs: 15 * 60_000,
   limit: 5,
   skipSuccessfulRequests: true,

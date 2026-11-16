@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { makeErrorHandler } from "../../../utils/respond.js";
-import rateLimit from "express-rate-limit";
+import { sharedRateLimit } from "../../../middleware/sharedRateLimit.js";
 import { authenticate } from "../../../middleware/authenticate.js";
 import { mapWriteLimiter } from "../../../middleware/rateLimits.js";
 import { validate } from "../../../middleware/validate.js";
@@ -10,7 +10,7 @@ import { add, list, remove } from "../controllers/comments.controller.js";
 const router = Router();
 
 // Per user, so it runs after authenticate. Generous for a real discussion, tight for a script.
-const commentLimiter = rateLimit({
+const commentLimiter = sharedRateLimit("system-map.comment", {
   windowMs: 60 * 1000,
   limit: 20,
   standardHeaders: "draft-7",

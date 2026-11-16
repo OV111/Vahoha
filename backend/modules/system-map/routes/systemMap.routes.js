@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { makeErrorHandler } from "../../../utils/respond.js";
-import rateLimit from "express-rate-limit";
+import { sharedRateLimit } from "../../../middleware/sharedRateLimit.js";
 import { aiBurstLimiter } from "../../../middleware/aiRateLimit.js";
 import { mapWriteLimiter, publicMapLimiter } from "../../../middleware/rateLimits.js";
 import { authenticate } from "../../../middleware/authenticate.js";
@@ -30,7 +30,7 @@ import {
 const router = Router();
 
 // A scan costs GitHub calls and an LLM call. Per user, so it runs after authenticate.
-const scanDailyLimiter = rateLimit({
+const scanDailyLimiter = sharedRateLimit("system-map.scanDaily", {
   windowMs: 24 * 60 * 60 * 1000,
   limit: 20,
   standardHeaders: "draft-7",
