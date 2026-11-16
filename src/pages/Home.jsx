@@ -2,6 +2,7 @@ import { lazy, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import useAuthStore from "../stores/useAuthStore";
 import RiseText from "../components/home/RiseText";
+import PixelBackground from "../components/home/PixelBackground";
 import Divider from "../components/ui/Divider";
 import vahohaMark from "@/assets/brand/vahoha-mark-96.webp";
 
@@ -19,7 +20,8 @@ const Home = () => {
 
   return (
     <>
-      <section className="flex min-h-[85dvh] flex-col items-center justify-center px-4 text-center sm:px-6">
+      <section className="relative isolate flex min-h-[85dvh] flex-col items-center justify-center px-4 text-center sm:px-6">
+        <PixelBackground topOffset={150} sideDensity={3} centerDensity={2} />
         <div
           className="rt-fade mb-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1"
           style={{ "--delay": "0ms" }}
@@ -72,7 +74,11 @@ const Home = () => {
 
       <Divider />
 
-      <HowItWorks />
+      {/* Full-width wrapper so the pixels sit on the screen edges, not the max-w-6xl column. */}
+      <div className="relative isolate">
+        <PixelBackground sideDensity={3} centerDensity={1} contentWidth={1152} />
+        <HowItWorks />
+      </div>
     </>
   );
 };
