@@ -10,6 +10,16 @@ import useAuthStore from "./stores/useAuthStore";
 import useNotificationStore from "./stores/useNotificationStore";
 import useBlogInteractionsStore from "./stores/useBlogInteractionsStore";
 import useProfileStore from "./stores/useProfileStore";
+import { setPlanRequiredHandler } from "./lib/session";
+
+// The server decides; this only explains the decision. A fixed toast id, so a
+// burst of refused requests shows one toast, not a stack.
+setPlanRequiredHandler(({ message }) => {
+  toast(message ?? "This feature is part of Pro.", {
+    id: "plan-required",
+    action: { label: "See Pro", onClick: () => router.navigate("/pricing") },
+  });
+});
 
 
 const App = () => {

@@ -175,6 +175,21 @@ export const setWriteHandler = (fn) => {
   onWrite = fn;
 };
 
+// Called with { message, requiredPlan } when the server refuses a Pro-only
+// feature (403 PLAN_REQUIRED), so every screen answers it with the same upgrade
+// prompt. 429s stay with the screens: they already show the server's message inline.
+let onPlanRequired = () => {};
+export const setPlanRequiredHandler = (fn) => {
+  onPlanRequired = fn;
+};
+
+const reportPlanRequired = async (res) => {
+  if (res.status !== 403) return;
+  // clone(): the caller still reads the body itself.
+  const body = await res.clone().json().catch(() => ({}));
+  if (body.code === "PLAN_REQUIRED") onPlanRequired({ message: body.message, requiredPlan: body.requiredPlan });
+};
+
 const READ_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
 
 /**
@@ -183,10 +198,12 @@ const READ_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
  * token (callers often build headers from a token read earlier), and a 401 is
  * answered with one refresh and one retry. A write that succeeds is reported to
  * the write handler, so cached reads it changed are refreshed.
+ * A 403 PLAN_REQUIRED is also reported to the plan-required handler.
  */
 export const apiFetch = async (input, init = {}) => {
   const res = await authedFetch(input, init);
   if (res.ok && !READ_METHODS.has((init.method ?? "GET").toUpperCase())) onWrite(input?.url ?? input);
+  await reportPlanRequired(res);
   return res;
 };
 

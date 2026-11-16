@@ -5,7 +5,7 @@
 // after they finished a test.
 //
 // Keys match what the reads register in the cache:
-//   mastery, journey, readiness, profile, roadmap-progress, notifications, capstone:<track>
+//   mastery, journey, readiness, profile, roadmap-progress, notifications, capstone:<track>, billing
 //
 // When in doubt, list the key: invalidating too much costs one extra request,
 // invalidating too little shows someone stale progress.
@@ -21,6 +21,7 @@ const RULES = [
   [/^\/my-profile\/(settings|cv)/, ["profile"]],
   [/^\/users\/[^/]+\/follow/, ["profile"]],
   [/^\/auth\/(github|google)\//, ["profile"]], // connecting or disconnecting an account
+  [/^\/api\/billing\//, ["billing"]], // a sync after checkout can change the plan
 ];
 
 /** The cache keys a write to this URL affects. */
