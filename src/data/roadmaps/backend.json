@@ -1138,7 +1138,7 @@
           "children": [
             {
               "title": "CORS — Cross-Origin Resource Sharing",
-              "description": "CORS is enforced by browsers to prevent a malicious website from making authenticated requests to your API using a visitor's existing cookies or tokens. Using a wildcard origin (*) with credentials enabled is a security misconfiguration that allows any site to impersonate your users — understanding the preflight handshake prevents this.",
+              "description": "CORS is enforced by browsers to prevent a malicious website from making authenticated requests to your API using a visitor's existing cookies or tokens. Browsers refuse a wildcard origin (*) when credentials are allowed, so the real mistake is reflecting whatever Origin header the request sends while credentials are on, which lets any site act as your logged-in users. An explicit allowlist of trusted origins, plus understanding the preflight handshake, prevents this.",
               "resources": [
                 {
                   "label": "MDN — CORS",
@@ -1216,7 +1216,7 @@
           "children": [
             {
               "title": "Strings, Hashes & TTL Expiry",
-              "description": "Redis strings store single values (cache entries, counters) while hashes store field-value maps (session objects, user profiles) — using strings for structured data forces serialize/deserialize on every read. TTL-based expiry is the primary mechanism for cache invalidation; omitting TTLs on cached data creates unbounded memory growth that eventually evicts everything via Redis's LRU policy.",
+              "description": "Redis strings store single values (cache entries, counters) while hashes store field-value maps (session objects, user profiles) — using strings for structured data forces serialize/deserialize on every read. TTL-based expiry is the primary mechanism for cache invalidation; omitting TTLs on cached data creates unbounded memory growth until Redis hits maxmemory, where the default noeviction policy makes new writes fail and an LRU policy evicts keys you still need.",
               "resources": [
                 {
                   "label": "Redis Docs — Strings",
@@ -1345,7 +1345,7 @@
             },
             {
               "title": "Pagination — Offset vs Cursor",
-              "description": "Offset pagination (LIMIT 20 OFFSET 200) forces the database to scan and discard the first 200 rows on every page request, making deep pages progressively slower as a table grows. Cursor-based pagination uses a WHERE id > last_seen_id index scan, which is O(1) regardless of page depth — a critical difference that only manifests at scale.",
+              "description": "Offset pagination (LIMIT 20 OFFSET 200) forces the database to scan and discard the first 200 rows on every page request, making deep pages progressively slower as a table grows. Cursor-based pagination uses a WHERE id > last_seen_id index scan, which stays fast (an O(log n) index seek) regardless of page depth — a critical difference that only manifests at scale.",
               "resources": [
                 {
                   "label": "Use the Index, Luke — Pagination",
