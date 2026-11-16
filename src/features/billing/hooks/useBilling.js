@@ -53,6 +53,19 @@ const useBilling = ({ enabled = true } = {}) => {
     }
   }, []);
 
+  // Back from Polar restores this page from the browser's back/forward cache,
+  // frozen with `busy` still set, so the button would say "Redirecting…" forever.
+  // `persisted` is true only for that restore. Refresh too: they may have paid.
+  useEffect(() => {
+    const onPageShow = (event) => {
+      if (!event.persisted) return;
+      setBusy(null);
+      if (enabled) refresh();
+    };
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, [enabled, refresh]);
+
   const startCheckout = useCallback(() => redirectVia("checkout", createCheckout), [redirectVia]);
   const openPortal = useCallback(() => redirectVia("portal", createPortal), [redirectVia]);
 
