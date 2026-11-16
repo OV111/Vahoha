@@ -16,7 +16,7 @@ import {
   RotateCcw,
   Trophy,
 } from "lucide-react";
-import { PHASES, TO } from "./hiwRoutes";
+import { TO } from "./hiwRoutes";
 import { SoonTag } from "./hiwShared";
 
 /**
@@ -29,8 +29,8 @@ import { SoonTag } from "./hiwShared";
  *                 \                        |         \                 /
  *                  Code Library ------ Mentor        Capstone
  *
- * Line style has one meaning, and the legend says it out loud: solid is required, every
- * learner walks it; dashed is optional help. Every line in the top half has a twin in
+ * Line style has one meaning: solid is required, every learner walks it; dashed is
+ * optional help. Every line in the top half has a twin in
  * the bottom half, so keep them in pairs.
  *
  * Nodes sit on a fixed 1200x560 grid (percent positions), an SVG with the
@@ -98,11 +98,6 @@ const usePageVisible = () =>
     () => document.visibilityState === "visible",
     () => true, // server render: assume visible
   );
-
-const LEGEND = [
-  { label: "Required", dash: undefined },
-  { label: "Optional help", dash: "4 6" },
-];
 
 const PURPLE = "rgba(168,85,247,0.8)";
 const GREY = "rgba(115,115,115,0.7)";
@@ -394,24 +389,6 @@ const LineTag = memo(function LineTag({ at, icon: Icon, label, variants, active,
   );
 });
 
-// The three acts of the story, above the columns they cover. They carry the idea for
-// someone who reads nothing else on the page.
-const PhaseLabel = memo(function PhaseLabel({ label, centre, active, inView }) {
-  return (
-    <motion.span
-      className={`absolute -top-14 -translate-x-1/2 text-lg font-[450] tracking-tight whitespace-nowrap transition-colors duration-500 ${
-        active ? "text-white" : "text-neutral-500"
-      }`}
-      style={{ left: `${(centre / W) * 100}%` }}
-      initial={{ opacity: 0 }}
-      animate={inView ? { opacity: 1 } : {}}
-      transition={{ duration: 0.4 }}
-    >
-      {label}
-    </motion.span>
-  );
-});
-
 // Desktop-only. HowItWorks loads this chunk (and with it the motion library) only
 // when the viewport is lg or wider, so phones never download or run any of it.
 const HowItWorksDiagram = () => {
@@ -461,10 +438,6 @@ const HowItWorksDiagram = () => {
     // reducedMotion="user": people with "reduce motion" on get the end state.
     <MotionConfig reducedMotion="user">
       <div ref={ref} className="relative h-full w-full">
-        <PhaseLabel label={PHASES.learn} centre={(COL.root + COL.inner) / 2} active={started} inView={appeared} />
-        <PhaseLabel label={PHASES.prove} centre={COL.centre} active={practiced} inView={appeared} />
-        <PhaseLabel label={PHASES.seen} centre={(COL.outer + COL.end) / 2} active={proven} inView={appeared} />
-
         <svg
           viewBox={`0 0 ${W} ${H}`}
           preserveAspectRatio="none"
@@ -563,17 +536,6 @@ const HowItWorksDiagram = () => {
           inView={appeared}
           delay={1.5}
         />
-
-        <div className="absolute -bottom-10 left-1/2 flex -translate-x-1/2 items-center gap-6 text-xs whitespace-nowrap text-neutral-400">
-          {LEGEND.map(({ label, dash }) => (
-            <span key={label} className="flex items-center gap-2">
-              <svg width="28" height="2" aria-hidden="true">
-                <line x1="0" y1="1" x2="28" y2="1" stroke={GREY} strokeWidth="1.5" strokeDasharray={dash} />
-              </svg>
-              {label}
-            </span>
-          ))}
-        </div>
 
         <LineTag
           at={{ x: COL.centre, y: MAIN - ARM / 2 }}

@@ -79,7 +79,7 @@ const HowItWorks = () => {
       </p>
 
       {/* Desktop: branching path diagram. The box keeps its size while the chunk loads. */}
-      <div className="mx-auto mt-28 hidden aspect-[1200/560] w-full max-w-6xl lg:block">
+      <div className="mx-auto mt-16 hidden aspect-[1200/560] w-full max-w-6xl lg:block">
         {isDesktop && (
           <Suspense fallback={null}>
             <HowItWorksDiagram />
@@ -115,7 +115,7 @@ const HowItWorks = () => {
         ))}
       </div>
 
-      <div className="mt-10 flex justify-center lg:mt-32">
+      <div className="mt-10 flex justify-center lg:mt-20">
         <Link
           to="/roadmaps"
           className="flex min-h-11 items-center rounded-full bg-white px-6 py-3 text-base leading-[20px] font-medium text-black sm:text-[14px] transition hover:bg-neutral-200"
