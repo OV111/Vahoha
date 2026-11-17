@@ -2573,7 +2573,7 @@
             },
             {
               "title": "Cascading Actions & Referential Integrity",
-              "description": "ON DELETE CASCADE and ON DELETE SET NULL have very different consequences — CASCADE silently deletes child rows across the entire tree, which can be correct behavior or catastrophic data loss depending on the relationship semantics. Not specifying cascade behavior defaults to RESTRICT, which is safe but blocks deletes until application code removes children first.",
+              "description": "ON DELETE CASCADE and ON DELETE SET NULL have very different consequences — CASCADE silently deletes child rows across the entire tree, which can be correct behavior or catastrophic data loss depending on the relationship semantics. Not specifying cascade behavior defaults to NO ACTION, which, like RESTRICT, is safe but blocks deletes until application code removes children first; unlike RESTRICT, its check runs at the end of the statement and can be deferred to the end of the transaction.",
               "resources": [
                 {
                   "label": "PostgreSQL Docs — Foreign Keys",
@@ -2610,7 +2610,7 @@
             },
             {
               "title": "Zero-Downtime Schema Changes",
-              "description": "Adding a NOT NULL column with a DEFAULT takes an ACCESS EXCLUSIVE lock in older PostgreSQL versions, blocking all reads and writes for the duration of the table rewrite. On large production tables this causes visible downtime. Knowing which DDL operations acquire which lock types — and the expand/contract pattern for migrations — is essential for shipping schema changes safely.",
+              "description": "Most ALTER TABLE operations take an ACCESS EXCLUSIVE lock that blocks all reads and writes. Before PostgreSQL 11, adding a column with a DEFAULT also rewrote the whole table while holding that lock; since 11 a constant default skips the rewrite, so the lock is brief, but changing a column's type or adding a volatile default still rewrites. On large production tables a rewrite, or a brief lock stuck behind a long-running query, causes visible downtime. Knowing which DDL operations acquire which lock types — and the expand/contract pattern for migrations — is essential for shipping schema changes safely.",
               "resources": [
                 {
                   "label": "PostgreSQL Docs — Locking",
@@ -2861,7 +2861,7 @@
           "children": [
             {
               "title": "InnoDB Architecture — Buffer Pool & Redo Log",
-              "description": "InnoDB's buffer pool caches data and index pages in memory — sizing it too small means every query hits disk; too large starves the OS page cache. The redo log provides crash recovery, but setting innodb_flush_log_at_trx_commit=2 trades durability for performance in a way that loses up to one second of committed transactions on a crash. Understanding these two knobs is the foundation of MySQL performance tuning.",
+              "description": "InnoDB's buffer pool caches data and index pages in memory — sizing it too small means every query hits disk; too large starves the OS page cache. The redo log provides crash recovery, but setting innodb_flush_log_at_trx_commit=2 trades durability for performance: a MySQL crash loses nothing, but an operating system crash or power loss can lose up to about one second of committed transactions. Understanding these two knobs is the foundation of MySQL performance tuning.",
               "resources": [
                 {
                   "label": "MySQL Docs — InnoDB Architecture",
@@ -2898,7 +2898,7 @@
           "children": [
             {
               "title": "Key Behavioral Differences",
-              "description": "MySQL in its default configuration silently truncates strings that exceed column length and accepts invalid dates like '2024-02-30', while PostgreSQL rejects them with an error. Running MySQL with strict mode off on development and on in production — or migrating queries between the two engines — exposes these silent corruption behaviors in the worst possible moment.",
+              "description": "With strict mode off, MySQL silently truncates strings that exceed column length and stores invalid dates like '2024-02-30' as zero dates, while PostgreSQL always rejects them with an error. Strict mode (STRICT_TRANS_TABLES) has been on by default since MySQL 5.7, but many older servers and managed configurations still turn it off. Running MySQL with strict mode off in development and on in production — or migrating queries between the two engines — exposes these silent corruption behaviors at the worst possible moment.",
               "resources": [
                 {
                   "label": "MySQL Docs — Server SQL Modes",
@@ -2937,7 +2937,7 @@
           "children": [
             {
               "title": "my.cnf — Key Configuration Variables",
-              "description": "MySQL ships with conservative defaults designed to run on small VMs — innodb_buffer_pool_size defaults to 128MB and max_connections to 151. Running a production workload on defaults means the database is bottlenecked by configuration, not hardware. Knowing which variables to tune first (buffer pool, redo log size, query cache disable) has an immediate performance impact.",
+              "description": "MySQL ships with conservative defaults designed to run on small VMs — innodb_buffer_pool_size defaults to 128MB and max_connections to 151. Running a production workload on defaults means the database is bottlenecked by configuration, not hardware. Knowing which variables to tune first (buffer pool size, redo log capacity, max_connections) has an immediate performance impact. The old query cache, once a common tuning target, was removed in MySQL 8.0.",
               "resources": [
                 {
                   "label": "MySQL Docs — Server Configuration",
@@ -3104,7 +3104,7 @@
             },
             {
               "title": "$lookup — Joins in MongoDB",
-              "description": "$lookup performs a left outer join between two collections and is the closest MongoDB equivalent to a SQL JOIN. Unlike relational JOINs, $lookup always loads both collections' matching documents into memory and cannot leverage a compound index that spans both collections. Overusing $lookup on hot paths is a common performance anti-pattern in MongoDB applications that started as relational databases.",
+              "description": "$lookup performs a left outer join between two collections and is the closest MongoDB equivalent to a SQL JOIN. $lookup runs one lookup per input document; an index on the foreign field makes each lookup fast, but without one every lookup scans the other collection, and the joined documents are added to each result, which can hit the 16MB document limit. Overusing $lookup on hot paths is a common performance anti-pattern in MongoDB applications that started as relational databases.",
               "resources": [
                 {
                   "label": "MongoDB Docs — $lookup",
@@ -3257,7 +3257,7 @@
             },
             {
               "title": "TTL, Expiration & Eviction Policies",
-              "description": "Redis TTL is set per-key with EXPIRE or EXPIREAT and the key is deleted lazily on next access plus a background sweep. Using PERSIST instead of re-setting a TTL on cache refresh means keys accumulate forever, filling memory and triggering the eviction policy. Understanding the difference between volatile-lru (evict only keys with TTL), allkeys-lru, and noeviction (reject writes) prevents cache stampedes and OOM errors.",
+              "description": "Redis TTL is set per-key with EXPIRE or EXPIREAT and the key is deleted lazily on next access plus a background sweep. A plain SET without EX or PX on cache refresh silently removes the key's TTL, so keys accumulate forever, filling memory and triggering the eviction policy. Understanding the difference between volatile-lru (evict only keys with TTL), allkeys-lru, and noeviction (reject writes) decides what happens when memory is full and prevents out-of-memory errors.",
               "resources": [
                 {
                   "label": "Redis Docs — Key Expiration",
@@ -3370,7 +3370,7 @@
             },
             {
               "title": "Rate Limiting with Redis",
-              "description": "Redis is the standard backend for distributed rate limiting because its atomic operations (INCR + EXPIRE, or the Lua-script-based sliding window) work correctly across multiple application servers where an in-process counter would not. A fixed-window counter implemented without atomicity allows double the allowed requests at the window boundary — a well-known race condition that only Redis's single-threaded model prevents cleanly.",
+              "description": "Redis is the standard backend for distributed rate limiting because its atomic operations (INCR + EXPIRE, or the Lua-script-based sliding window) work correctly across multiple application servers where an in-process counter would not. A counter built from a separate read and write is a race condition that lets concurrent requests slip past the limit; Redis's atomic INCR prevents it. Separately, any fixed-window counter can allow up to double the limit around a window boundary — that is built into the algorithm, and a sliding window or token bucket fixes it.",
               "resources": [
                 {
                   "label": "Redis Docs — Rate Limiting Pattern",
@@ -3447,7 +3447,7 @@
             },
             {
               "title": "GIN, BRIN & Hash Indexes",
-              "description": "GIN (Generalized Inverted Index) indexes every element inside an array or JSONB document and is the only index type that makes array and full-text containment queries fast. BRIN (Block Range Index) stores min/max values per block and is tiny and fast for naturally ordered data like timestamps, but completely useless for random-access lookups. Applying B-tree to array columns or GIN to sequential timestamp ranges wastes resources and misses the speedup.",
+              "description": "GIN (Generalized Inverted Index) indexes every element inside an array or JSONB document and is the usual choice for making array, JSONB and full-text containment queries fast (GiST also supports full-text search, with smaller indexes but slower lookups). BRIN (Block Range Index) stores min/max values per block and is tiny and fast for naturally ordered data like timestamps, but completely useless for random-access lookups. Applying B-tree to array columns or GIN to sequential timestamp ranges wastes resources and misses the speedup.",
               "resources": [
                 {
                   "label": "PostgreSQL Docs — GIN Indexes",
@@ -3468,7 +3468,7 @@
           "children": [
             {
               "title": "Composite Indexes & Column Order",
-              "description": "A composite index on (a, b) supports queries on a alone and on (a, b) together, but not on b alone — the leftmost prefix rule. Reversing the column order because b has higher cardinality is a common mistake; the query planner cares about which columns appear in the WHERE clause first, not cardinality. A poorly ordered composite index is never used and wastes write overhead.",
+              "description": "A composite index on (a, b) supports queries on a alone and on (a, b) together, but not on b alone — the leftmost prefix rule. Reversing the column order because b has higher cardinality is a common mistake; what matters is which columns your queries filter on (the leftmost prefix) and putting equality-filtered columns before range-filtered ones. The order of conditions inside the WHERE clause does not matter. A poorly ordered composite index is never used and wastes write overhead.",
               "resources": [
                 {
                   "label": "Use The Index, Luke — Concatenated Indexes",
@@ -3560,7 +3560,7 @@
             },
             {
               "title": "PgBouncer & Connection Pooling",
-              "description": "PostgreSQL spawns a backend process per connection — at 500 connections the server is spending more time scheduling processes than executing queries. PgBouncer operates in transaction-pooling mode where a physical connection is only held for the duration of a single transaction and returned to the pool, allowing thousands of application connections to share tens of database connections. Not using a pooler is the most common cause of PostgreSQL connection exhaustion.",
+              "description": "PostgreSQL spawns a backend process per connection — at 500 connections the server is spending more time scheduling processes than executing queries. PgBouncer has session, transaction and statement pooling modes (session is the default); in transaction-pooling mode a physical connection is only held for the duration of a single transaction and returned to the pool, allowing thousands of application connections to share tens of database connections. Not using a pooler is the most common cause of PostgreSQL connection exhaustion.",
               "resources": [
                 {
                   "label": "PgBouncer Documentation",
@@ -3697,7 +3697,7 @@
           "children": [
             {
               "title": "CAP Theorem & Consistency Models",
-              "description": "CAP theorem states that a distributed system can guarantee at most two of Consistency, Availability, and Partition tolerance. Most database failures are network partitions — understanding that PostgreSQL synchronous replication sacrifices availability (primary blocks on replica ACK) while asynchronous replication sacrifices consistency (replica might be behind) lets you make an informed trade-off rather than accepting defaults blindly.",
+              "description": "CAP theorem says that when a network partition happens, a distributed system must choose between consistency and availability; partitions can't be ruled out, so \"pick two of three\" is an oversimplification. Understanding that PostgreSQL synchronous replication sacrifices availability (primary blocks on replica ACK) while asynchronous replication sacrifices consistency (replica might be behind) lets you make an informed trade-off rather than accepting defaults blindly.",
               "resources": [
                 {
                   "label": "Martin Kleppmann — DDIA — Consistency Models",
@@ -3811,7 +3811,7 @@
           "children": [
             {
               "title": "pg_dump, pg_basebackup & Point-in-Time Recovery",
-              "description": "pg_dump takes a logical snapshot of a database that can be restored to any PostgreSQL version, but it does not capture the state between dumps — if a database is corrupted at 2:47 PM and the last dump was at midnight, you lose nearly 15 hours of data. pg_basebackup plus continuous WAL archiving enables point-in-time recovery (PITR) to any second within the archive window, which is the only backup strategy acceptable for production databases with significant write volume.",
+              "description": "pg_dump takes a logical snapshot of a database that can be restored to the same or a newer PostgreSQL version (older versions are not guaranteed), but it does not capture the state between dumps — if a database is corrupted at 2:47 PM and the last dump was at midnight, you lose nearly 15 hours of data. pg_basebackup plus continuous WAL archiving enables point-in-time recovery (PITR) to any second within the archive window, which is the only backup strategy acceptable for production databases with significant write volume.",
               "resources": [
                 {
                   "label": "PostgreSQL Docs — pg_dump",
@@ -3887,7 +3887,7 @@
           "children": [
             {
               "title": "Encryption at Rest & in Transit",
-              "description": "SSL/TLS in transit prevents credentials and query results from being readable on the network — pg_hba.conf's hostssl forces TLS for all TCP connections. Encryption at rest protects database files on disk if storage is stolen or a cloud snapshot is misconfigured as public, but it does not protect against a compromised database user — access control and encryption are complementary, not substitutes.",
+              "description": "SSL/TLS in transit prevents credentials and query results from being readable on the network — in pg_hba.conf, hostssl lines accept only TLS connections, so TLS is enforced when no host or hostnossl line also accepts plain TCP connections. Encryption at rest protects database files on disk if storage is stolen or a cloud snapshot is misconfigured as public, but it does not protect against a compromised database user — access control and encryption are complementary, not substitutes.",
               "resources": [
                 {
                   "label": "PostgreSQL Docs — SSL",
@@ -3924,7 +3924,7 @@
           "children": [
             {
               "title": "pg_stat_* Views — Built-in Monitoring",
-              "description": "PostgreSQL ships with a statistics collector that exposes pg_stat_activity (current connections and queries), pg_stat_user_tables (sequential vs index scan counts, dead tuple counts), and pg_stat_bgwriter (checkpoint frequency). Not querying these views means you are flying blind — a table with a ballooning dead tuple count and zero autovacuum runs is invisible until queries start timing out.",
+              "description": "PostgreSQL's cumulative statistics system (kept in shared memory since PostgreSQL 15, which removed the separate statistics collector process) exposes pg_stat_activity (current connections and queries), pg_stat_user_tables (sequential vs index scan counts, dead tuple counts), and checkpoint frequency in pg_stat_checkpointer (pg_stat_bgwriter before PostgreSQL 17). Not querying these views means you are flying blind — a table with a ballooning dead tuple count and zero autovacuum runs is invisible until queries start timing out.",
               "resources": [
                 {
                   "label": "PostgreSQL Docs — Statistics Collector",
@@ -8126,7 +8126,7 @@
             },
             {
               "title": "Understanding Errors in GraphQL Responses",
-              "description": "GraphQL always returns HTTP 200 even when resolvers fail — errors live in the top-level errors array alongside a partial data object. Treating any 200 as success is the most common GraphQL client bug; you must always check the errors array to know whether the response is truly usable.",
+              "description": "When resolvers fail during execution, GraphQL usually still returns HTTP 200, with errors in the top-level errors array alongside a partial data object; only requests that fail to parse or validate typically get a 4xx status. Treating any 200 as success is the most common GraphQL client bug; you must always check the errors array to know whether the response is truly usable.",
               "resources": [
                 {
                   "label": "GraphQL.org — Errors",
@@ -8414,7 +8414,7 @@
           "children": [
             {
               "title": "Parallel Field Resolution",
-              "description": "Sibling fields in a query are resolved in parallel by default — a crucial optimization that collapses multiple independent database calls into a single round. Assuming serial execution and writing resolvers with side-effect dependencies between siblings creates race conditions that only appear under concurrent load.",
+              "description": "Sibling fields in a query can be resolved concurrently, so independent database calls overlap in time instead of running one after another (merging them into one query is what batching with DataLoader does). Assuming serial execution and writing resolvers with side-effect dependencies between siblings creates race conditions that only appear under concurrent load.",
               "resources": [
                 {
                   "label": "GraphQL.org — Execution",
@@ -8643,7 +8643,7 @@
           "children": [
             {
               "title": "Error Formatting & Masking",
-              "description": "By default Apollo Server 4 masks internal errors to prevent leaking stack traces and database details to clients. Disabling this masking in production exposes implementation internals; over-masking in development makes debugging impossible. Configuring the formatError function correctly is a security and developer-experience requirement.",
+              "description": "Apollo Server 4 hides stack traces in production but passes thrown error messages to clients by default, so internal errors can leak database details unless you mask them. Exposing internal messages in production reveals implementation details; over-masking in development makes debugging impossible. Configuring the formatError function correctly is a security and developer-experience requirement.",
               "resources": [
                 {
                   "label": "Apollo Server — Error Handling",
@@ -8773,7 +8773,7 @@
             },
             {
               "title": "Relations & Query Optimization with Prisma",
-              "description": "Prisma's include and select clauses determine which relations are JOIN-fetched versus lazy-loaded. Over-including relations fetches unnecessary data; under-including triggers extra queries. Mastering this distinction is essential because every include decision directly impacts GraphQL resolver performance.",
+              "description": "Prisma's include and select clauses decide which relations and columns are fetched; relations you leave out are not loaded at all, so a resolver that needs them must issue another query. Over-including relations fetches unnecessary data; under-including triggers extra queries. Mastering this distinction is essential because every include decision directly impacts GraphQL resolver performance.",
               "resources": [
                 {
                   "label": "Prisma — Relations",
@@ -8886,7 +8886,7 @@
             },
             {
               "title": "DataLoader vs Database JOINs",
-              "description": "DataLoader reduces N database round trips to 1 but does not eliminate them — it batches individual lookups into a WHERE id IN (...) query. For very deeply nested schemas, strategic Prisma includes that JOIN at the ORM level are more efficient than chained DataLoader calls, and combining both strategies is often optimal.",
+              "description": "DataLoader reduces N database round trips to 1 but does not eliminate them — it batches individual lookups into a WHERE id IN (...) query. For very deeply nested schemas, strategic Prisma includes (loaded with a single database JOIN when relationLoadStrategy is \"join\") can be more efficient than chained DataLoader calls, and combining both strategies is often optimal.",
               "resources": [
                 {
                   "label": "Prisma — Fluent API vs Include",
@@ -8947,7 +8947,7 @@
           "children": [
             {
               "title": "Designing Mutations & Input Types",
-              "description": "A well-designed mutation accepts a single input type and returns the modified resource — not a generic JSON blob. Using multiple scalar arguments instead of an input type makes schema evolution painful because adding fields is a breaking change; input types allow adding optional fields without breaking existing clients.",
+              "description": "A well-designed mutation accepts a single input type and returns the modified resource — not a generic JSON blob. Using a single input type keeps the mutation signature stable and lets you add optional fields in one place, while many scalar arguments make the signature long and harder to evolve and reuse.",
               "resources": [
                 {
                   "label": "Apollo Docs — Designing Mutations",
@@ -9190,7 +9190,7 @@
             },
             {
               "title": "GraphQL Shield",
-              "description": "GraphQL Shield is a permission layer that wraps resolvers with rule functions, composable with and/or/not logic. Without a dedicated permission layer, authorization rules scatter across the codebase, and a forgotten guard on a single resolver exposes sensitive data — Shield makes missing rules a compile-time error rather than a runtime incident.",
+              "description": "GraphQL Shield is a permission layer that wraps resolvers with rule functions, composable with and/or/not logic. Without a dedicated permission layer, authorization rules scatter across the codebase, and a forgotten guard on a single resolver exposes sensitive data — Shield lets you set a fallback rule such as deny, so any field without an explicit rule is blocked instead of being exposed by accident.",
               "resources": [
                 {
                   "label": "GraphQL Shield — GitHub",
@@ -9364,7 +9364,7 @@
           "children": [
             {
               "title": "Full & Partial Response Caching",
-              "description": "GraphQL bypasses conventional HTTP caching because everything is a POST to a single URL. Apollo Server's @cacheControl directive and response cache plugin implement field-level cache hints that are aggregated into per-response TTLs. Without this, every query hits the resolver and database even for perfectly cacheable public data.",
+              "description": "GraphQL usually sends POST requests to a single URL, so conventional HTTP caching does not apply unless you send queries over GET or use persisted queries. Apollo Server's @cacheControl directive and response cache plugin implement field-level cache hints that are aggregated into per-response TTLs. Without this, every query hits the resolver and database even for perfectly cacheable public data.",
               "resources": [
                 {
                   "label": "Apollo Server — Caching",
@@ -9403,7 +9403,7 @@
           "children": [
             {
               "title": "Request Timeout Enforcement",
-              "description": "A resolver that awaits a slow downstream service blocks the Node.js event loop for the entire request duration. Without request-level timeouts, a single slow query ties up server resources indefinitely — in GraphQL, where one request can span dozens of resolver calls, cumulative latency must be bounded explicitly.",
+              "description": "A resolver that awaits a slow downstream service does not block the event loop, but it keeps the request, its connections and memory open for the whole wait. Without request-level timeouts, a single slow query ties up server resources indefinitely — in GraphQL, where one request can span dozens of resolver calls, cumulative latency must be bounded explicitly.",
               "resources": [
                 {
                   "label": "The Guild — Timeout Plugin",
@@ -10089,7 +10089,7 @@
           "children": [
             {
               "title": "Protocol Buffers Schema Design",
-              "description": "Protobuf schemas are the contract between services — adding required fields or renumbering field tags breaks all existing clients silently, since protobuf skips unknown fields rather than erroring. Schema evolution rules (add optional fields only, never reuse field numbers) are what allow services to deploy independently without lockstep coordination. Ignoring these rules causes subtle data corruption that is extremely hard to debug across service boundaries.",
+              "description": "Protobuf schemas are the contract between services — renumbering or reusing a field tag breaks existing clients silently, because old clients decode the bytes into the wrong field (adding new fields is safe, because protobuf skips fields it does not know, and proto3 has no required fields). Schema evolution rules (add optional fields only, never reuse field numbers) are what allow services to deploy independently without lockstep coordination. Ignoring these rules causes subtle data corruption that is extremely hard to debug across service boundaries.",
               "resources": [
                 {
                   "label": "Protocol Buffers — Language Guide",
@@ -10408,7 +10408,7 @@
             },
             {
               "title": "Exactly-Once Processing with Idempotent Consumers",
-              "description": "True exactly-once delivery across a broker and a database requires distributed transactions, which are impractical at scale — the pragmatic alternative is at-least-once delivery with idempotent message handlers. An idempotent consumer stores a processed message ID before committing business logic; re-processing the same message produces no additional side effects. Without this, network retries and broker redeliveries produce duplicate orders, payments, and emails that erode user trust.",
+              "description": "True exactly-once delivery across a broker and a database requires distributed transactions, which are impractical at scale — the pragmatic alternative is at-least-once delivery with idempotent message handlers. An idempotent consumer records the processed message ID in the same database transaction as the business change, so re-processing the same message produces no additional side effects. Without this, network retries and broker redeliveries produce duplicate orders, payments, and emails that erode user trust.",
               "resources": [
                 {
                   "label": "Microservices.io — Idempotent Consumer",
@@ -10469,7 +10469,7 @@
           "children": [
             {
               "title": "Dockerfile and Multi-Stage Builds",
-              "description": "Each instruction in a Dockerfile adds a new layer to the image — unnecessary layers inflate image size, increase pull times, and expand attack surface. Multi-stage builds separate the build environment (with compilers and dev dependencies) from the runtime image, producing lean production images with only the binary and its runtime. A 1 GB build image shipped to production vs a 50 MB runtime image is the difference between a 3-minute cold start and a 10-second one.",
+              "description": "Each RUN, COPY and ADD instruction in a Dockerfile adds a filesystem layer to the image — unnecessary layers inflate image size, increase pull times, and expand attack surface. Multi-stage builds separate the build environment (with compilers and dev dependencies) from the runtime image, producing lean production images with only the binary and its runtime. A 1 GB build image shipped to production vs a 50 MB runtime image is the difference between a 3-minute cold start and a 10-second one.",
               "resources": [
                 {
                   "label": "Docker Docs — Multi-stage Builds",
@@ -10522,7 +10522,7 @@
             },
             {
               "title": "Volumes and Persistence",
-              "description": "Container filesystems are ephemeral — data written inside a container is lost when it stops unless it is stored in a named volume or bind mount. For stateful services like databases, using the container's writable layer for data storage means every container restart wipes the database. Named volumes managed by Docker persist independently of container lifecycle, while bind mounts expose host paths with predictable performance but create host-path coupling.",
+              "description": "Container filesystems are ephemeral — data written inside a container survives a restart but is lost when the container is removed or recreated, unless it is stored in a named volume or bind mount. For stateful services like databases, using the container's writable layer for data storage means every redeploy wipes the database. Named volumes managed by Docker persist independently of container lifecycle, while bind mounts expose host paths with predictable performance but create host-path coupling.",
               "resources": [
                 {
                   "label": "Docker Docs — Volumes",
@@ -10696,7 +10696,7 @@
           "children": [
             {
               "title": "ConfigMaps and Secrets",
-              "description": "ConfigMaps and Secrets decouple configuration from container images — the same image runs in dev, staging, and production with different environment variables or mounted files. Baking secrets into images or hardcoding them as environment variables in Dockerfiles leaks credentials into image layers and build logs. Kubernetes Secrets should be encrypted at rest and accessed via RBAC-controlled mounts, not environment variables (which appear in pod specs and logs).",
+              "description": "ConfigMaps and Secrets decouple configuration from container images — the same image runs in dev, staging, and production with different environment variables or mounted files. Baking secrets into images or hardcoding them as environment variables in Dockerfiles leaks credentials into image layers and build logs. Kubernetes Secrets should be encrypted at rest and accessed via RBAC-controlled file mounts rather than environment variables, which are easier to leak through child processes, crash dumps and debug output that prints the environment.",
               "resources": [
                 {
                   "label": "Kubernetes Docs — ConfigMaps",
@@ -10941,7 +10941,7 @@
             },
             {
               "title": "Nginx as Ingress Controller",
-              "description": "A Kubernetes Ingress controller (often Nginx) routes external HTTP/S traffic to internal services based on hostnames and path rules — without it, every service must be exposed via a LoadBalancer service, each consuming a separate cloud IP address and load balancer. Nginx Ingress handles SSL termination, path rewrites, and upstream selection; misconfigured rewrite rules silently change request paths in ways that break downstream routing and produce hard-to-debug 404s.",
+              "description": "A Kubernetes Ingress controller routes external HTTP/S traffic to internal services based on hostnames and path rules — without it, every service must be exposed via a LoadBalancer service, each consuming a separate cloud IP address and load balancer. The community ingress-nginx controller, long the most common choice, was retired in March 2026 and gets no more fixes, so new clusters should use the Gateway API or another maintained controller. Ingress controllers handle SSL termination, path rewrites, and upstream selection; misconfigured rewrite rules silently change request paths in ways that break downstream routing and produce hard-to-debug 404s.",
               "resources": [
                 {
                   "label": "Nginx Ingress Controller Docs",
@@ -11282,7 +11282,7 @@
             },
             {
               "title": "Bulkhead Pattern",
-              "description": "The bulkhead pattern isolates resources (thread pools, connection pools) for different downstream dependencies — if one service is slow and fills its thread pool, it doesn't consume threads reserved for other dependencies. Without bulkheads, a single slow upstream can exhaust the entire shared thread pool, taking down all functionality regardless of which services are healthy. Bulkheads are named after ship compartments: flooding one doesn't sink the ship.",
+              "description": "The bulkhead pattern isolates resources (thread pools, connection pools) for different downstream dependencies — if one service is slow and fills its thread pool, it doesn't consume threads reserved for other dependencies. Without bulkheads, a single slow downstream dependency can exhaust the entire shared thread pool, taking down all functionality regardless of which services are healthy. Bulkheads are named after ship compartments: flooding one doesn't sink the ship.",
               "resources": [
                 {
                   "label": "Microsoft — Bulkhead Pattern",
@@ -11342,7 +11342,7 @@
           "children": [
             {
               "title": "Grafana Dashboards and the RED Method",
-              "description": "The RED method (Rate, Errors, Duration) provides three golden signals for every microservice — together they give a complete picture of service health without requiring hundreds of custom metrics. Grafana dashboards visualizing RED metrics per service enable instant detection of which service degraded during an incident. Without standardized dashboards, engineers waste incident response time hunting for the right metric rather than diagnosing the problem.",
+              "description": "The RED method (Rate, Errors, Duration) gives three key signals for every request-driven microservice (the Google SRE golden signals are four: latency, traffic, errors and saturation) — together they give a complete picture of service health without requiring hundreds of custom metrics. Grafana dashboards visualizing RED metrics per service enable instant detection of which service degraded during an incident. Without standardized dashboards, engineers waste incident response time hunting for the right metric rather than diagnosing the problem.",
               "resources": [
                 {
                   "label": "Grafana Docs — Dashboards",
@@ -11419,7 +11419,7 @@
           "children": [
             {
               "title": "Per-Service CI Pipelines",
-              "description": "In a microservices system, each service must have an independent CI pipeline that builds, tests, and publishes only when that service's code changes — a monorepo CI that rebuilds everything on every commit negates independent deployability. Path-based triggers (GitHub Actions' paths filter, GitLab's only:changes) ensure fast feedback loops and prevent unrelated test failures from blocking deployments. Independent pipelines also provide fine-grained visibility into which service is causing a CI failure.",
+              "description": "In a microservices system, each service must have an independent CI pipeline that builds, tests, and publishes only when that service's code changes — a monorepo CI that rebuilds everything on every commit negates independent deployability. Path-based triggers (GitHub Actions' paths filter, GitLab's rules:changes) ensure fast feedback loops and prevent unrelated test failures from blocking deployments. Independent pipelines also provide fine-grained visibility into which service is causing a CI failure.",
               "resources": [
                 {
                   "label": "GitHub Actions Docs — Workflow Triggers",
@@ -11472,7 +11472,7 @@
             },
             {
               "title": "Secrets Management in GitOps",
-              "description": "GitOps requires all manifests to be in Git, but secrets cannot be committed in plaintext — tools like Sealed Secrets (encrypt-at-rest in Git) or External Secrets Operator (sync from Vault/AWS Secrets Manager) solve this. Committing unencrypted secrets to Git, even private repos, is a critical security incident waiting to happen — GitHub's secret scanning has found millions of leaked credentials in private repositories. Choosing the right secrets management strategy is mandatory before adopting GitOps.",
+              "description": "GitOps requires all manifests to be in Git, but secrets cannot be committed in plaintext — tools like Sealed Secrets (encrypt-at-rest in Git) or External Secrets Operator (sync from Vault/AWS Secrets Manager) solve this. Committing unencrypted secrets to Git, even private repos, is a critical security incident waiting to happen, because anyone with repo access, every clone and the full history keep the secret forever. Choosing the right secrets management strategy is mandatory before adopting GitOps.",
               "resources": [
                 {
                   "label": "Sealed Secrets Docs",
@@ -13756,7 +13756,7 @@
             },
             {
               "title": "Slices — Borrowing Contiguous Sequences",
-              "description": "Slices (`&[T]`, `&str`) are fat pointers — a reference plus a length — that borrow a contiguous region of memory without copying it. Returning a `String` where a `&str` would suffice, or indexing past slice bounds (a runtime panic in debug, undefined behavior behind `get_unchecked`), are the two most common slice mistakes and both have straightforward borrow-based fixes.",
+              "description": "Slices (`&[T]`, `&str`) are fat pointers — a reference plus a length — that borrow a contiguous region of memory without copying it. Returning a `String` where a `&str` would suffice, or indexing past slice bounds (a runtime panic in every build profile, or undefined behavior behind `get_unchecked`), are the two most common slice mistakes and both have straightforward borrow-based fixes.",
               "resources": [
                 {
                   "label": "The Rust Book — Slices",
@@ -13832,7 +13832,7 @@
             },
             {
               "title": "Stack Overflows & Recursive Algorithms",
-              "description": "Rust does not perform tail-call optimization by default, so deeply recursive functions will overflow the stack at runtime — a panic that is hard to diagnose without knowing the default 8 MB stack limit. Understanding when to use iterative algorithms, `stacker`, or explicit heap-allocated state machines prevents production panics on large inputs that pass unit tests with small data.",
+              "description": "Rust does not guarantee tail-call optimization, so deeply recursive functions will overflow the stack at runtime — a process abort, not a catchable panic, that is hard to diagnose without knowing the stack limits (often 8 MB for the main thread on Linux and 2 MiB for spawned threads). Understanding when to use iterative algorithms, `stacker`, or explicit heap-allocated state machines prevents production panics on large inputs that pass unit tests with small data.",
               "resources": [
                 {
                   "label": "Rust Reference — Memory Layout",
@@ -13930,7 +13930,7 @@
           "children": [
             {
               "title": "Trait Objects — dyn Trait",
-              "description": "Trait objects (`&dyn Trait`, `Box<dyn Trait>`) enable runtime polymorphism through a vtable pointer, at the cost of one level of indirection and the requirement that the trait is object-safe. Using trait objects when generics would suffice incurs unnecessary heap allocation; using generics when you need a heterogeneous collection causes `the size of X cannot be known at compile time` errors.",
+              "description": "Trait objects (`&dyn Trait`, `Box<dyn Trait>`) enable runtime polymorphism through a vtable pointer, at the cost of one level of indirection and the requirement that the trait is object-safe. Using trait objects when generics would suffice adds dynamic dispatch, and a heap allocation when boxed; using generics when you need a heterogeneous collection causes `the size of X cannot be known at compile time` errors.",
               "resources": [
                 {
                   "label": "The Rust Book — Trait Objects",
@@ -14099,7 +14099,7 @@
             },
             {
               "title": "HashMap<K, V> & HashSet<T>",
-              "description": "Rust's `HashMap` uses a cryptographically secure hasher (SipHash) by default to prevent hash-flooding DoS attacks, at a small performance cost. Switching to `FxHashMap` or `AHashMap` for hot paths where input is not attacker-controlled is a common optimization. Not understanding that `HashMap::entry` avoids a double-lookup is a frequent source of verbose, inefficient map-update code.",
+              "description": "Rust's `HashMap` uses a keyed hasher (SipHash 1-3) by default that resists hash-flooding DoS attacks, at a small performance cost. Switching to `FxHashMap` or `AHashMap` for hot paths where input is not attacker-controlled is a common optimization. Not understanding that `HashMap::entry` avoids a double-lookup is a frequent source of verbose, inefficient map-update code.",
               "resources": [
                 {
                   "label": "std::collections::HashMap",
@@ -14159,7 +14159,7 @@
           "children": [
             {
               "title": "Fn, FnMut & FnOnce Bounds",
-              "description": "Closures in Rust capture their environment and are classified by how they do so: `Fn` borrows immutably, `FnMut` borrows mutably, and `FnOnce` takes ownership and can only be called once. Passing a closure that mutates captured state to an API that requires `Fn` (e.g., `Mutex::new_fn`) produces a compiler error; not understanding the distinction leads to fighting the borrow checker instead of choosing the right capture mode.",
+              "description": "Closures in Rust capture their environment and are classified by how they do so: `Fn` borrows immutably, `FnMut` borrows mutably, and `FnOnce` takes ownership and can only be called once. Passing a closure that mutates captured state to an API that requires `Fn` (e.g., a function with an `F: Fn()` bound) produces a compiler error; not understanding the distinction leads to fighting the borrow checker instead of choosing the right capture mode.",
               "resources": [
                 {
                   "label": "The Rust Book — Closures",
@@ -14402,7 +14402,7 @@
             },
             {
               "title": "Publishing to crates.io",
-              "description": "Publishing a crate is permanent — versions cannot be deleted, only yanked (which advises against use but does not prevent it). Not understanding semantic versioning leads to breaking changes in patch releases that break dependents silently; not setting `publish = false` on internal workspace crates causes accidental public releases of private code.",
+              "description": "Publishing a crate is permanent — versions cannot be deleted, only yanked (which stops new projects from resolving that version but does not break existing lockfiles that already use it). Not understanding semantic versioning leads to breaking changes in patch releases that break dependents silently; not setting `publish = false` on internal workspace crates causes accidental public releases of private code.",
               "resources": [
                 {
                   "label": "The Cargo Book — Publishing",
@@ -14729,7 +14729,7 @@
           "children": [
             {
               "title": "Actix Web — Actor Model & App Data",
-              "description": "Actix Web uses its own actor-based runtime and registers shared state via `web::Data<T>` (an `Arc` wrapper). Unlike Axum, Actix Web is not built on Tower, so middleware is written with its own `Transform`/`Service` traits. Mixing Actix and Tokio primitives (e.g., using `tokio::sync::Mutex` inside an Actix actor) can cause runtime panics if the Actix executor does not support the Tokio runtime context.",
+              "description": "Actix Web runs on actix-rt, a set of single-threaded Tokio runtimes, and registers shared state via `web::Data<T>` (an `Arc` wrapper). Unlike Axum, Actix Web is not built on Tower, so middleware is written with its own `Transform`/`Service` traits. Because each Actix worker runs its own single-threaded runtime, handler futures do not need to be `Send`, but calling a Tokio API that needs the multi-threaded runtime, such as `tokio::task::block_in_place`, panics inside an Actix worker.",
               "resources": [
                 {
                   "label": "Actix Web — Application",
@@ -14880,7 +14880,7 @@
           "children": [
             {
               "title": "Diesel Schema & DSL",
-              "description": "Diesel generates a Rust DSL from your database schema that catches SQL errors at compile time through the type system — invalid column references and type mismatches are build failures. The `diesel_migrations` crate manages schema migrations embedded in the binary. Not running `diesel migration run` before building causes `table not found` panics at startup; not understanding `schema.rs` regeneration after migrations causes stale column definitions.",
+              "description": "Diesel generates a Rust DSL from your database schema that catches SQL errors at compile time through the type system — invalid column references and type mismatches are build failures. The `diesel_migrations` crate manages schema migrations embedded in the binary. Not running `diesel migration run` before starting the application causes `relation does not exist` errors on the first query; not understanding `schema.rs` regeneration after migrations causes stale column definitions.",
               "resources": [
                 {
                   "label": "Diesel Getting Started",
@@ -14935,7 +14935,7 @@
             },
             {
               "title": "Row Mapping & FromRow",
-              "description": "SQLx's `#[derive(FromRow)]` maps database rows to Rust structs by column name, with compile-time checking when using `query_as!`. Mismatching column names between the struct fields and the query (e.g., snake_case vs camelCase) causes `column not found` runtime errors; using `Option<T>` for nullable columns is required — mapping a nullable column to a non-Option type panics on `NULL` rows.",
+              "description": "SQLx's `#[derive(FromRow)]` maps database rows to Rust structs by column name, with compile-time checking when using `query_as!`. Mismatching column names between the struct fields and the query (e.g., snake_case vs camelCase) causes `column not found` runtime errors; using `Option<T>` for nullable columns is required — mapping a nullable column to a non-Option type returns an `UnexpectedNullError` decode error on `NULL` rows.",
               "resources": [
                 {
                   "label": "sqlx::FromRow",
@@ -15070,7 +15070,7 @@
           "children": [
             {
               "title": "Criterion.rs — Statistical Benchmarking",
-              "description": "Criterion runs each benchmark many times, applies statistical analysis to filter noise, and reports throughput with confidence intervals. Using `cargo bench` with the built-in (unstable) test harness instead gives single-shot timings that vary wildly between runs. Not understanding that Criterion compares against a saved baseline means you can accidentally regress performance and not notice until users complain.",
+              "description": "Criterion runs each benchmark many times, applies statistical analysis to filter noise, and reports throughput with confidence intervals. Using `cargo bench` with the built-in (unstable, nightly-only) test harness instead gives only a mean time per iteration with a rough deviation and no statistical comparison between runs. Not understanding that Criterion compares against a saved baseline means you can accidentally regress performance and not notice until users complain.",
               "resources": [
                 {
                   "label": "criterion.rs on docs.rs",
@@ -15315,7 +15315,7 @@
             },
             {
               "title": "Cross-Compilation & Static Binaries",
-              "description": "Rust supports cross-compilation via `--target` and the `cross` tool, which uses Docker to provide the correct linker and sysroot. Compiling with `--target x86_64-unknown-linux-musl` produces a fully static binary with no glibc dependency, enabling deployment to any Linux host and to `scratch` Docker images. Not using musl or static linking causes `not found: /lib/x86_64-linux-gnu/libc.so.6` errors when deploying to a container with a different glibc version.",
+              "description": "Rust supports cross-compilation via `--target` and the `cross` tool, which uses Docker to provide the correct linker and sysroot. Compiling with `--target x86_64-unknown-linux-musl` produces a fully static binary with no glibc dependency, enabling deployment to any Linux host and to `scratch` Docker images. Not using musl or static linking causes ``version `GLIBC_2.xx' not found`` errors when deploying to a container with a different glibc version.",
               "resources": [
                 {
                   "label": "Rust — Cross-compilation",
@@ -15452,7 +15452,7 @@
           "children": [
             {
               "title": "Stack vs Heap Allocation",
-              "description": "Primitives live on the stack while objects are heap-allocated and accessed by reference. Confusing value semantics with reference semantics leads to subtle bugs when passing objects to methods, incorrect equality checks, and unexpected mutation of shared state.",
+              "description": "Local primitive variables and references live on the stack, while objects, including their primitive fields, are heap-allocated and accessed by reference. Confusing value semantics with reference semantics leads to subtle bugs when passing objects to methods, incorrect equality checks, and unexpected mutation of shared state.",
               "resources": [
                 {
                   "label": "Oracle Java Tutorials — Data Types",
@@ -16001,7 +16001,7 @@
             },
             {
               "title": "Dependency Management & BOMs",
-              "description": "A Bill of Materials (BOM) centralizes version management so child projects inherit compatible dependency versions. Spring Boot's parent POM is a BOM; overriding its managed versions without understanding transitive dependency resolution is the most common cause of version conflicts and mysterious ClassNotFoundExceptions at startup.",
+              "description": "A Bill of Materials (BOM) centralizes version management so child projects inherit compatible dependency versions. Spring Boot's parent POM inherits its versions from the spring-boot-dependencies BOM; overriding its managed versions without understanding transitive dependency resolution is the most common cause of version conflicts and mysterious ClassNotFoundExceptions at startup.",
               "resources": [
                 {
                   "label": "Maven — Introduction to Dependency Mechanism",
@@ -16061,7 +16061,7 @@
           "children": [
             {
               "title": "Constructor vs Field Injection",
-              "description": "Constructor injection makes dependencies explicit, enables immutable beans, and works without the Spring container in tests. Field injection with @Autowired hides dependencies, makes beans harder to test in isolation, and can lead to circular dependency failures that are only detected at startup rather than compile time.",
+              "description": "Constructor injection makes dependencies explicit, enables immutable beans, and works without the Spring container in tests. Field injection with @Autowired hides dependencies, makes beans harder to test in isolation, and can hide circular dependencies that constructor injection would expose as a clear startup failure.",
               "resources": [
                 {
                   "label": "Spring Framework — Dependency Injection",
@@ -16228,7 +16228,7 @@
             },
             {
               "title": "@Valid vs @Validated & Group Sequences",
-              "description": "@Valid triggers standard Bean Validation on a method parameter; @Validated is Spring's variant that also supports validation groups and class-level cascade. Confusing the two causes validation to silently not execute on nested objects or service-layer method parameters, allowing invalid state to propagate deeper than intended.",
+              "description": "@Valid triggers standard Bean Validation on a method parameter; @Validated is Spring's variant that supports validation groups and, placed on a class, turns on method-level validation; only @Valid cascades into nested objects. Confusing the two causes validation to silently not execute on nested objects or service-layer method parameters, allowing invalid state to propagate deeper than intended.",
               "resources": [
                 {
                   "label": "Spring Framework — Validation",
@@ -16288,7 +16288,7 @@
           "children": [
             {
               "title": "DTO Pattern & Domain Separation",
-              "description": "DTOs (Data Transfer Objects) decouple the API surface from the domain model. Exposing JPA entities directly as REST responses leaks database column names, triggers lazy-loading exceptions during serialization (the N+1 problem), and makes it impossible to change the schema without breaking API clients.",
+              "description": "DTOs (Data Transfer Objects) decouple the API surface from the domain model. Exposing JPA entities directly as REST responses leaks database column names, triggers lazy-loading exceptions or N+1 queries during serialization, and makes it impossible to change the schema without breaking API clients.",
               "resources": [
                 {
                   "label": "Baeldung — DTOs in Spring",
@@ -16402,7 +16402,7 @@
           "children": [
             {
               "title": "Derived Query Methods",
-              "description": "Spring Data parses method names like findByEmailAndActiveTrue into JPQL at startup, making simple queries zero-boilerplate. However complex names become unreadable and error-prone; the parser fails silently with a wrong query rather than an error. Knowing when to switch to @Query with explicit JPQL prevents hard-to-debug data corruption.",
+              "description": "Spring Data parses method names like findByEmailAndActiveTrue into JPQL at startup, making simple queries zero-boilerplate. However complex names become unreadable and error-prone; a name that parses correctly but expresses the wrong logic runs the wrong query with no error. Knowing when to switch to @Query with explicit JPQL prevents hard-to-debug data corruption.",
               "resources": [
                 {
                   "label": "Spring Data JPA — Query Methods",
@@ -17141,7 +17141,7 @@
             },
             {
               "title": "JVM Tuning in Containers",
-              "description": "By default, the JVM uses ergonomics based on the host machine's memory, not the container's cgroup limits. Without -XX:MaxRAMPercentage or explicit heap flags, a Spring Boot container with a 512 MB limit can have the JVM try to allocate 8 GB of heap, causing the container to be OOM-killed immediately on startup.",
+              "description": "Since JDK 10 the JVM reads the container's cgroup memory limit, but by default it caps the heap at only 25% of that limit. Without -XX:MaxRAMPercentage or explicit heap flags, a Spring Boot container with a 512 MB limit gets a heap of about 128 MB, which wastes memory or causes OutOfMemoryError under load, while a heap set too close to the limit leaves no room for metaspace and thread stacks and gets the container OOM-killed.",
               "resources": [
                 {
                   "label": "Oracle — JVM in Containers",
@@ -17436,7 +17436,7 @@
           "children": [
             {
               "title": "Exceptions & the Exception Hierarchy",
-              "description": "Python exceptions form an inheritance tree rooted at BaseException. Catching Exception instead of a specific subclass swallows KeyboardInterrupt and SystemExit, preventing clean shutdowns. Raising bare strings instead of exception instances loses the stack trace. Mastering try/except/else/finally and the distinction between re-raising and chaining (raise ... from) is non-negotiable for production code.",
+              "description": "Python exceptions form an inheritance tree rooted at BaseException. Catching BaseException or using a bare except swallows KeyboardInterrupt and SystemExit, preventing clean shutdowns. Raising a string instead of an exception instance fails with a TypeError in Python 3. Mastering try/except/else/finally and the distinction between re-raising and chaining (raise ... from) is non-negotiable for production code.",
               "resources": [
                 {
                   "label": "Python Docs — Exceptions",
@@ -17823,7 +17823,7 @@
           "children": [
             {
               "title": "ASGI — The Async Server Gateway Interface",
-              "description": "ASGI is the async successor to WSGI, enabling a single server process to handle thousands of concurrent connections without threads. FastAPI is an ASGI application — running it behind a WSGI server like gunicorn (without uvicorn workers) silently disables all async behavior, serializes requests, and eliminates the performance advantage of async Python. Understanding the ASGI lifespan protocol is also required to properly initialize database connection pools on startup.",
+              "description": "ASGI is the async successor to WSGI, enabling a single server process to handle thousands of concurrent connections without threads. FastAPI is an ASGI application — running it behind a WSGI server like gunicorn (without uvicorn workers) fails on the first request with a TypeError, because a WSGI worker cannot call an ASGI app. Understanding the ASGI lifespan protocol is also required to properly initialize database connection pools on startup.",
               "resources": [
                 {
                   "label": "ASGI Specification",
@@ -17917,7 +17917,7 @@
             },
             {
               "title": "Declarative Models & Relationships",
-              "description": "SQLAlchemy's declarative base maps Python classes to database tables, with relationship() expressing foreign-key associations as Python attributes. Lazy loading — the default — executes a SELECT query for every relationship access, causing the N+1 query problem where fetching 100 posts triggers 100 additional queries to load their authors. Switching to joinedload or selectinload consolidates those into one query, often reducing response time by an order of magnitude.",
+              "description": "SQLAlchemy's declarative base maps Python classes to database tables, with relationship() expressing foreign-key associations as Python attributes. Lazy loading — the default — executes a SELECT query for every relationship access, causing the N+1 query problem where fetching 100 posts triggers 100 additional queries to load their authors. Switching to joinedload (one JOIN query) or selectinload (one extra IN query) consolidates those 100 queries into one or two, often reducing response time by an order of magnitude.",
               "resources": [
                 {
                   "label": "SQLAlchemy Docs — Relationship Loading",
@@ -17954,7 +17954,7 @@
             },
             {
               "title": "Safe Schema Migrations in Production",
-              "description": "Not all valid Alembic migrations are safe to run on a live database. Adding a NOT NULL column without a default locks the entire table during backfill on Postgres, causing downtime proportional to table size. The expand/contract pattern — add nullable column, backfill, add NOT NULL constraint, remove old column in a future deploy — keeps migrations zero-downtime. Misunderstanding this turns routine schema changes into production incidents.",
+              "description": "Not all valid Alembic migrations are safe to run on a live database. Adding a NOT NULL column without a default fails on a table that already has rows, and on Postgres a volatile default (or any default before version 11) rewrites the whole table under an exclusive lock, causing downtime proportional to table size. The expand/contract pattern — add nullable column, backfill, add NOT NULL constraint, remove old column in a future deploy — keeps migrations zero-downtime. Misunderstanding this turns routine schema changes into production incidents.",
               "resources": [
                 {
                   "label": "Strong Migrations — Safe Migrations Guide",
@@ -18129,7 +18129,7 @@
           "children": [
             {
               "title": "OAuth2 Authorization Code Flow",
-              "description": "OAuth2 is an authorization delegation protocol — it lets a user grant a third-party application limited access to their resources without sharing credentials. Confusing OAuth2 with authentication (rather than authorization) leads to building insecure 'login with GitHub' flows that trust the access token as proof of identity instead of exchanging it for a verified ID token via OpenID Connect. The PKCE extension prevents authorization code interception attacks in public clients.",
+              "description": "OAuth2 is an authorization delegation protocol — it lets a user grant a third-party application limited access to their resources without sharing credentials. Confusing OAuth2 with authentication (rather than authorization) leads to building insecure 'login with GitHub' flows that trust the access token as proof of identity instead of verifying the ID token that OpenID Connect returns alongside it. The PKCE extension prevents authorization code interception attacks in public clients.",
               "resources": [
                 {
                   "label": "OAuth2 Spec — RFC 6749",
@@ -18168,7 +18168,7 @@
           "children": [
             {
               "title": "CORS, HTTPS & Security Headers",
-              "description": "CORS headers control which origins browsers permit to make cross-origin requests to your API. Setting Access-Control-Allow-Origin: * on an authenticated API allows any website to make credentialed requests on behalf of a logged-in user. HTTPS prevents credential interception in transit; adding security headers (HSTS, X-Frame-Options, Content-Security-Policy) via middleware eliminates entire categories of browser-based attacks with minimal effort.",
+              "description": "CORS headers control which origins browsers permit to make cross-origin requests to your API. Reflecting any request Origin in Access-Control-Allow-Origin together with Access-Control-Allow-Credentials: true on an authenticated API allows any website to make credentialed requests on behalf of a logged-in user (browsers refuse credentialed requests when the origin is *). HTTPS prevents credential interception in transit; adding security headers (HSTS, X-Frame-Options, Content-Security-Policy) via middleware eliminates entire categories of browser-based attacks with minimal effort.",
               "resources": [
                 {
                   "label": "FastAPI Docs — CORS",
@@ -18336,7 +18336,7 @@
             },
             {
               "title": "Task Retries, Idempotency & Dead-Letter Queues",
-              "description": "Celery automatically retries failed tasks, but retrying a non-idempotent task — one that charges a credit card, sends an email, or creates a database record — can cause duplicate operations. Every task must be designed to be safely re-executable: use database upserts with unique keys, check for existing state before acting, or use idempotency keys passed by the caller. Tasks that exhaust their retry budget should route to a dead-letter queue for manual inspection rather than silently disappearing.",
+              "description": "Celery retries failed tasks when you configure autoretry_for or call self.retry(), but retrying a non-idempotent task — one that charges a credit card, sends an email, or creates a database record — can cause duplicate operations. Every task must be designed to be safely re-executable: use database upserts with unique keys, check for existing state before acting, or use idempotency keys passed by the caller. Tasks that exhaust their retry budget should route to a dead-letter queue for manual inspection rather than silently disappearing.",
               "resources": [
                 {
                   "label": "Celery Docs — Task Retries",
@@ -18375,7 +18375,7 @@
             },
             {
               "title": "Redis as Celery Broker & Result Backend",
-              "description": "Celery uses Redis as both a message broker (where task messages are enqueued) and an optional result backend (where return values are stored). Using the result backend for every task stores results indefinitely, consuming Redis memory proportional to task volume. Only enable result storage for tasks where the caller actually polls for results; set result_expires to a short TTL for the rest. Broker connection loss causes tasks to be lost unless Redis persistence (AOF or RDB) is enabled.",
+              "description": "Celery uses Redis as both a message broker (where task messages are enqueued) and an optional result backend (where return values are stored). Using the result backend for every task keeps each result for a full day by default, consuming Redis memory proportional to task volume. Only enable result storage for tasks where the caller actually polls for results; set result_expires to a short TTL for the rest. Broker connection loss causes tasks to be lost unless Redis persistence (AOF or RDB) is enabled.",
               "resources": [
                 {
                   "label": "Celery Docs — Redis Broker",
@@ -18702,7 +18702,7 @@
           "children": [
             {
               "title": "Gunicorn with Uvicorn Workers",
-              "description": "Uvicorn alone is a single-process ASGI server — a crash kills all in-flight requests. Gunicorn acts as a process manager: it spawns multiple uvicorn worker processes, monitors them for crashes, and restarts them. The correct production command uses UvicornWorker as the worker class. Worker count should be (2 × CPU cores) + 1 for CPU-bound workloads or higher for I/O-bound async services. Under-provisioning workers causes request queuing; over-provisioning causes memory exhaustion.",
+              "description": "Uvicorn alone is a single-process ASGI server — a crash kills all in-flight requests. Gunicorn acts as a process manager: it spawns multiple uvicorn worker processes, monitors them for crashes, and restarts them. The correct production command uses UvicornWorker as the worker class. The (2 × CPU cores) + 1 rule fits sync workers; async Uvicorn workers usually need only about one per core, since each one already handles many concurrent connections. Under-provisioning workers causes request queuing; over-provisioning causes memory exhaustion.",
               "resources": [
                 {
                   "label": "Uvicorn Docs — Deployment",
@@ -19151,7 +19151,7 @@
             },
             {
               "title": "Table Partitioning & Archival",
-              "description": "PostgreSQL declarative partitioning splits a large table into smaller child tables based on a range, list, or hash of a partition key. A time-partitioned events table, for example, puts each month's data in a separate file — queries with a date range filter only scan the relevant partitions, reducing I/O by orders of magnitude. Dropping an old partition is instantaneous compared to deleting millions of rows, making archival operations safe to run in production without table locks.",
+              "description": "PostgreSQL declarative partitioning splits a large table into smaller child tables based on a range, list, or hash of a partition key. A time-partitioned events table, for example, puts each month's data in a separate file — queries with a date range filter only scan the relevant partitions, reducing I/O by orders of magnitude. Dropping an old partition is instantaneous compared to deleting millions of rows, making archival operations safe to run in production with only a brief lock (or none with DETACH PARTITION CONCURRENTLY).",
               "resources": [
                 {
                   "label": "PostgreSQL Docs — Table Partitioning",
@@ -19288,7 +19288,7 @@
           "children": [
             {
               "title": "Multiplexing & Streams",
-              "description": "HTTP/2 sends multiple logical streams over a single TCP connection, eliminating head-of-line blocking that cripples HTTP/1.1 pipelines. gRPC relies on this for streaming RPCs; running gRPC over HTTP/1.1 is not supported and will silently break bidirectional streaming.",
+              "description": "HTTP/2 sends multiple logical streams over a single TCP connection, eliminating the application-level head-of-line blocking that cripples HTTP/1.1 pipelines (TCP-level blocking remains). gRPC relies on this for streaming RPCs; running gRPC over HTTP/1.1 is not supported and will silently break bidirectional streaming.",
               "resources": [
                 {
                   "label": "HTTP/2 Explained",
@@ -19457,7 +19457,7 @@
             },
             {
               "title": "Scalar Types & Defaults",
-              "description": "proto3 removes required fields and sets every scalar to its zero value (0 for numbers, empty string, false) when missing; this means you cannot distinguish between an explicitly set zero and an absent value without a wrapper type. Ignoring this leads to bugs where zero-valued fields are indistinguishable from unset fields in business logic.",
+              "description": "proto3 removes required fields and sets every scalar to its zero value (0 for numbers, empty string, false) when missing; this means you cannot distinguish between an explicitly set zero and an absent value without the proto3 optional keyword or a wrapper type. Ignoring this leads to bugs where zero-valued fields are indistinguishable from unset fields in business logic.",
               "resources": [
                 {
                   "label": "proto3 Scalar Types",
@@ -19494,7 +19494,7 @@
             },
             {
               "title": "Enums, Oneof & Reserved Fields",
-              "description": "Oneof fields ensure only one of several fields is set at a time, saving memory and preventing invalid states, but adding a field to an existing oneof is a breaking change in proto3. Reserving deleted field numbers and names prevents future definitions from accidentally reusing them, which would corrupt old serialized messages still in transit or storage.",
+              "description": "Oneof fields ensure only one of several fields is set at a time, saving memory and preventing invalid states, but moving an existing field into or out of a oneof is a breaking change in proto3. Reserving deleted field numbers and names prevents future definitions from accidentally reusing them, which would corrupt old serialized messages still in transit or storage.",
               "resources": [
                 {
                   "label": "proto3 — Oneof",
@@ -19837,7 +19837,7 @@
             },
             {
               "title": "Half-Close & Stream Termination",
-              "description": "A client signals it has finished sending by half-closing its side of the HTTP/2 stream; the server reads EOF and must drain its response before closing. Forgetting to call SendMsg/CloseSend appropriately leaves streams open indefinitely, leaking connections and eventually hitting per-connection stream limits.",
+              "description": "A client signals it has finished sending by half-closing its side of the HTTP/2 stream; the server reads EOF and must drain its response before closing. Forgetting to call CloseSend leaves streams open indefinitely, leaking connections and eventually hitting per-connection stream limits.",
               "resources": [
                 {
                   "label": "gRPC Protocol — Half-Close",
@@ -20277,7 +20277,7 @@
           "children": [
             {
               "title": "Implementing a Node Server",
-              "description": "A grpc-js server requires binding service implementations as plain objects with method handlers and calling server.bindAsync before start; forgetting bindAsync and using the deprecated server.bind causes the server to silently start on a random port or fail without a clear error. Enabling reflection via grpc-reflection-js aids debugging without shipping .proto files with each client.",
+              "description": "A grpc-js server requires binding service implementations as plain objects with method handlers and calling server.bindAsync to start listening; the old server.bind method is no longer implemented in grpc-js and throws an error. Enabling reflection via @grpc/reflection aids debugging without shipping .proto files with each client.",
               "resources": [
                 {
                   "label": "grpc-js Server API",
@@ -20330,7 +20330,7 @@
             },
             {
               "title": "NestJS gRPC Microservices",
-              "description": "NestJS has first-class gRPC transport support via @nestjs/microservices, allowing decorators like @GrpcMethod to map service definitions to controller methods; however, the NestJS gRPC module uses ts-proto or protoc-gen-ts generated types and its own channel configuration that differs from raw grpc-js. Conflating NestJS gRPC configuration with raw grpc-js docs leads to misconfigured channels and missing interceptors.",
+              "description": "NestJS has first-class gRPC transport support via @nestjs/microservices, allowing decorators like @GrpcMethod to map service definitions to controller methods; however, the NestJS gRPC module loads .proto files at runtime with @grpc/proto-loader (ts-proto types are optional) and its own channel configuration that differs from raw grpc-js. Conflating NestJS gRPC configuration with raw grpc-js docs leads to misconfigured channels and missing interceptors.",
               "resources": [
                 {
                   "label": "NestJS — gRPC Microservices",
@@ -20581,7 +20581,7 @@
           "children": [
             {
               "title": "Mapping Domain Errors to Status Codes",
-              "description": "The 16 gRPC status codes have precise semantics (INVALID_ARGUMENT for bad input, NOT_FOUND for missing resources, UNAVAILABLE for transient failures); using INTERNAL for all errors prevents clients from applying correct retry logic and causes over-retrying on permanent failures. Client libraries and service meshes use status codes to decide whether to retry, fail fast, or circuit-break.",
+              "description": "The 17 gRPC status codes have precise semantics (INVALID_ARGUMENT for bad input, NOT_FOUND for missing resources, UNAVAILABLE for transient failures); using INTERNAL for all errors prevents clients from applying correct retry logic and causes over-retrying on permanent failures. Client libraries and service meshes use status codes to decide whether to retry, fail fast, or circuit-break.",
               "resources": [
                 {
                   "label": "gRPC Status Codes",
@@ -20634,7 +20634,7 @@
             },
             {
               "title": "Choosing the Right Deadline Value",
-              "description": "Deadlines should be set to the 99th-percentile expected latency of the downstream service, not an arbitrary large value; setting deadlines too high defeats their purpose and leaves threads/goroutines blocked during outages. Setting them too low causes DEADLINE_EXCEEDED cascades under normal load spikes.",
+              "description": "Deadlines should be set a little above the 99th-percentile expected latency of the downstream service, not an arbitrary large value; setting deadlines too high defeats their purpose and leaves threads/goroutines blocked during outages. Setting them too low causes DEADLINE_EXCEEDED cascades under normal load spikes.",
               "resources": [
                 {
                   "label": "SRE Book — Handling Overload",
@@ -20824,7 +20824,7 @@
             },
             {
               "title": "google.api.http Annotations",
-              "description": "HTTP binding annotations specify URL patterns, HTTP methods, and how proto fields map to path parameters, query parameters, and the request body; incorrect bindings silently map the wrong proto fields to HTTP parameters, producing confusing 400 errors. Using the buf lint rule for http_annotations ensures all RPCs have valid bindings before deployment.",
+              "description": "HTTP binding annotations specify URL patterns, HTTP methods, and how proto fields map to path parameters, query parameters, and the request body; incorrect bindings silently map the wrong proto fields to HTTP parameters, producing confusing 400 errors. Testing each generated REST route against the gateway in CI ensures all RPCs have valid bindings before deployment.",
               "resources": [
                 {
                   "label": "google.api.http proto",
@@ -21014,7 +21014,7 @@
             },
             {
               "title": "Connection Pooling Strategies",
-              "description": "A single gRPC channel supports up to 100 concurrent streams by default over one TCP connection; services with very high fan-out concurrency benefit from a pool of channels to distribute streams across multiple TCP connections. Creating too few channels creates a single-connection bottleneck; creating too many wastes file descriptors and TLS session memory.",
+              "description": "Each HTTP/2 connection is capped by the server's MAX_CONCURRENT_STREAMS setting, often 100; services with very high fan-out concurrency benefit from a pool of channels to distribute streams across multiple TCP connections. Creating too few channels creates a single-connection bottleneck; creating too many wastes file descriptors and TLS session memory.",
               "resources": [
                 {
                   "label": "gRPC Performance Best Practices",
@@ -21625,7 +21625,7 @@
             },
             {
               "title": "Cluster Module & Load Distribution",
-              "description": "The cluster module forks the Node process across multiple CPU cores, multiplying throughput for I/O-bound services, but all workers share the same port via OS-level load balancing which means session state must live in Redis not in-process memory. Running a single-process Node server on an 8-core machine leaves 7 cores idle — a trivial performance improvement that cluster makes straightforward.",
+              "description": "The cluster module forks the Node process across multiple CPU cores, multiplying throughput for I/O-bound services, but all workers share the same port while the primary process distributes connections round-robin by default which means session state must live in Redis not in-process memory. Running a single-process Node server on an 8-core machine leaves 7 cores idle — a trivial performance improvement that cluster makes straightforward.",
               "resources": [
                 {
                   "label": "Node.js — Cluster docs",
@@ -21852,7 +21852,7 @@
             },
             {
               "title": "Graceful Shutdown in Fastify",
-              "description": "When a Kubernetes pod is killed or a deployment is rolled out, Node receives SIGTERM — if you do not handle it by stopping the HTTP server and draining in-flight requests, active connections are cut mid-response and in-progress database writes may be left incomplete. Fastify's fastify.close() drains the connection pool and calls onClose hooks, making it the correct way to shut down cleanly.",
+              "description": "When a Kubernetes pod is killed or a deployment is rolled out, Node receives SIGTERM — if you do not handle it by stopping the HTTP server and draining in-flight requests, active connections are cut mid-response and in-progress database writes may be left incomplete. Fastify's fastify.close() stops accepting new connections, waits for in-flight requests and calls onClose hooks, making it the correct way to shut down cleanly.",
               "resources": [
                 {
                   "label": "Fastify — Graceful Shutdown",
@@ -21966,7 +21966,7 @@
             },
             {
               "title": "Relations & the N+1 Problem",
-              "description": "Prisma's include option eager-loads relations in a single query, but naively nesting includes for deeply nested relations generates costly JOINs. The N+1 problem occurs when you fetch a list of records and then query related data for each — Prisma's select combined with nested includes avoids this, but only if you understand which access patterns your queries are executing against the database.",
+              "description": "Prisma's include option eager-loads relations in the same call, but naively nesting includes for deeply nested relations generates many costly queries. The N+1 problem occurs when you fetch a list of records and then query related data for each — Prisma's include or nested select avoids this, but only if you understand which access patterns your queries are executing against the database.",
               "resources": [
                 {
                   "label": "Prisma — Relations",
@@ -21989,7 +21989,7 @@
           "children": [
             {
               "title": "Indexes & Query Planning",
-              "description": "A missing index on a frequently filtered column causes PostgreSQL to perform a full sequential scan — on a table with millions of rows this turns a sub-millisecond query into a multi-second one that blocks concurrent writes. Using EXPLAIN ANALYZE to read query plans and adding B-tree or partial indexes where needed is not premature optimization, it is basic database hygiene.",
+              "description": "A missing index on a frequently filtered column causes PostgreSQL to perform a full sequential scan — on a table with millions of rows this turns a sub-millisecond query into a multi-second one that ties up connections and slows concurrent queries. Using EXPLAIN ANALYZE to read query plans and adding B-tree or partial indexes where needed is not premature optimization, it is basic database hygiene.",
               "resources": [
                 {
                   "label": "PostgreSQL — Indexes",
@@ -22042,7 +22042,7 @@
             },
             {
               "title": "Soft Deletes & Audit Trails",
-              "description": "Hard-deleting records with DELETE is irreversible and breaks foreign key references — soft deletes (adding a deletedAt column and filtering it in every query) keep historical data intact for auditing and recovery. Prisma middleware can enforce soft-delete filtering globally so individual queries cannot accidentally expose deleted records.",
+              "description": "Hard-deleting records with DELETE is irreversible and breaks foreign key references — soft deletes (adding a deletedAt column and filtering it in every query) keep historical data intact for auditing and recovery. Prisma Client extensions can enforce soft-delete filtering globally so individual queries cannot accidentally expose deleted records.",
               "resources": [
                 {
                   "label": "Prisma — Soft deletes middleware",
@@ -22195,7 +22195,7 @@
             },
             {
               "title": "CORS & Security Headers",
-              "description": "CORS misconfiguration with a wildcard origin ('*') combined with credentials:true is a browser security error that exposes authenticated API endpoints to cross-origin requests from any website. Helmet.js sets a suite of security headers (Content-Security-Policy, X-Frame-Options, HSTS) in a single plugin call — skipping it leaves your API open to clickjacking and MIME sniffing attacks.",
+              "description": "CORS misconfiguration that reflects any request origin combined with credentials:true is a security hole that exposes authenticated API endpoints to cross-origin requests from any website. Helmet.js sets a suite of security headers (Content-Security-Policy, X-Frame-Options, HSTS) in a single plugin call — skipping it leaves your API open to clickjacking and MIME sniffing attacks.",
               "resources": [
                 {
                   "label": "MDN — Cross-Origin Resource Sharing (CORS)",
@@ -22422,7 +22422,7 @@
             },
             {
               "title": "Structured Logging with Pino",
-              "description": "Pino outputs structured JSON logs that log aggregators (Datadog, Loki, CloudWatch) can parse, filter, and alert on — using console.log produces unstructured strings that are unsearchable in production. Pino is also the fastest Node.js logger because it delegates JSON serialization to a worker thread, adding negligible overhead even under high throughput.",
+              "description": "Pino outputs structured JSON logs that log aggregators (Datadog, Loki, CloudWatch) can parse, filter, and alert on — using console.log produces unstructured strings that are unsearchable in production. Pino is also the fastest Node.js logger because it keeps serialization minimal and runs log transports in a worker thread, adding negligible overhead even under high throughput.",
               "resources": [
                 {
                   "label": "Pino — Getting started",
@@ -22559,7 +22559,7 @@
           "children": [
             {
               "title": "Coverage with V8 & Istanbul",
-              "description": "Code coverage measures which lines, branches, and functions are exercised by tests — a 30% coverage score with no branch coverage is nearly meaningless, because untested branches are exactly where edge-case bugs hide. Vitest's built-in V8 coverage provider generates coverage reports with zero additional dependencies, and adding a minimum threshold to CI prevents coverage from silently degrading over time.",
+              "description": "Code coverage measures which lines, branches, and functions are exercised by tests — a 30% coverage score with no branch coverage is nearly meaningless, because untested branches are exactly where edge-case bugs hide. Vitest's built-in V8 coverage provider generates coverage reports with only the @vitest/coverage-v8 package added, and adding a minimum threshold to CI prevents coverage from silently degrading over time.",
               "resources": [
                 {
                   "label": "Vitest — Coverage",
@@ -22689,7 +22689,7 @@
             },
             {
               "title": "Redis Data Structures",
-              "description": "Redis is not just a key-value store — its Sorted Sets, Hashes, Lists, and HyperLogLog structures enable leaderboards, rate limiters, pub/sub messaging, and cardinality counting at memory-efficient scale. Using plain string keys for every use case means implementing sorted lists in application code with repeated HGETALL calls, where a single ZADD/ZRANGE would be both faster and atomic.",
+              "description": "Redis is not just a key-value store — its Sorted Sets, Hashes, Lists, and HyperLogLog structures enable leaderboards, rate limiters, pub/sub messaging, and cardinality counting at memory-efficient scale. Using plain string keys for every use case means implementing sorted lists in application code with repeated GET and SET calls, where a single ZADD/ZRANGE would be both faster and atomic.",
               "resources": [
                 {
                   "label": "Redis — Data types",
@@ -22765,7 +22765,7 @@
             },
             {
               "title": "Detecting & Fixing Memory Leaks",
-              "description": "Memory leaks in Node.js accumulate until the process is killed by OOM, but they are invisible in normal operation — the heap grows so slowly that it only becomes critical after days of uptime. Taking periodic heap snapshots with --heap-prof and comparing them with Chrome DevTools reveals which objects are being retained when they should have been garbage collected.",
+              "description": "Memory leaks in Node.js accumulate until the process is killed by OOM, but they are invisible in normal operation — the heap grows so slowly that it only becomes critical after days of uptime. Taking periodic heap snapshots with v8.writeHeapSnapshot() and comparing them with Chrome DevTools reveals which objects are being retained when they should have been garbage collected.",
               "resources": [
                 {
                   "label": "Node.js — Heap profiler",
@@ -22802,7 +22802,7 @@
             },
             {
               "title": "Redis Connection Management",
-              "description": "Creating a new Redis client per request creates a new TCP connection for every operation — TCP connection setup (SYN-SYN/ACK-ACK) adds 1–5ms per request, which compounds to significant overhead on high-traffic APIs. A single shared ioredis client with connection pooling configured reuses connections and handles reconnection automatically on network failures.",
+              "description": "Creating a new Redis client per request creates a new TCP connection for every operation — TCP connection setup (SYN-SYN/ACK-ACK) adds 1–5ms per request, which compounds to significant overhead on high-traffic APIs. A single shared ioredis client reuses one persistent connection and handles reconnection automatically on network failures.",
               "resources": [
                 {
                   "label": "ioredis — GitHub",
@@ -22976,7 +22976,7 @@
           "children": [
             {
               "title": "Graceful Shutdown & SIGTERM Handling",
-              "description": "When a Kubernetes pod is terminated or a deployment is rolled out, the process receives SIGTERM and has a grace period (typically 30 seconds) to finish in-flight requests before being killed — ignoring SIGTERM means requests are cut off mid-flight and BullMQ jobs are abandoned mid-execution. Fastify's fastify.close() drains connections, closes the database pool, and triggers onClose hooks in the correct order.",
+              "description": "When a Kubernetes pod is terminated or a deployment is rolled out, the process receives SIGTERM and has a grace period (typically 30 seconds) to finish in-flight requests before being killed — ignoring SIGTERM means requests are cut off mid-flight and BullMQ jobs are abandoned mid-execution. Fastify's fastify.close() stops accepting connections, waits for in-flight requests, and triggers onClose hooks where plugins close the database pool.",
               "resources": [
                 {
                   "label": "Node.js — process signal events",

@@ -4041,14 +4041,14 @@
       "title": "Working with LLM APIs",
       "order": 2,
       "techs": [
-        "OpenAI API",
+        "LLM APIs",
         "Chat",
         "Streaming"
       ],
       "description": "Learn the building blocks of LLM apps. Use chat completions, system prompts and streaming responses.",
       "topics": [
         "Chat completions & roles",
-        "System, user & assistant messages",
+        "Reasoning models & thinking settings",
         "Temperature & sampling params",
         "Streaming responses",
         "Multimodal inputs",
@@ -4094,17 +4094,17 @@
               ]
             },
             {
-              "title": "Temperature & Sampling Parameters",
-              "description": "Temperature, top-p, and max-tokens control the creativity-vs-determinism tradeoff. Setting these incorrectly causes unpredictable outputs in production or token-budget overruns that truncate responses.",
+              "title": "Sampling & Reasoning Settings",
+              "description": "Temperature, top-p and max-tokens control the creativity-vs-determinism tradeoff on classic models. Reasoning models add a thinking budget or effort setting instead, and some ignore temperature entirely. Setting these wrong causes unpredictable output, high cost or truncated responses.",
               "resources": [
                 {
-                  "label": "OpenAI — API Reference",
-                  "url": "https://platform.openai.com/docs/api-reference/chat",
+                  "label": "Anthropic — Extended thinking",
+                  "url": "https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking",
                   "type": "docs"
                 },
                 {
-                  "label": "Hugging Face — Text generation params",
-                  "url": "https://huggingface.co/docs/transformers/main_classes/text_generation",
+                  "label": "OpenAI — Reasoning models",
+                  "url": "https://platform.openai.com/docs/guides/reasoning",
                   "type": "docs"
                 }
               ]
@@ -4233,13 +4233,13 @@
       "techs": [
         "Prompting",
         "Few-shot",
-        "Structured Output"
+        "Structured Outputs"
       ],
       "description": "Get reliable results from models. Apply prompting techniques that make outputs accurate and parseable.",
       "topics": [
         "Zero-shot & few-shot prompting",
-        "Chain-of-thought reasoning",
-        "Structured outputs & JSON mode",
+        "Reasoning models vs chain-of-thought prompting",
+        "Structured outputs with JSON Schema",
         "Function/tool calling",
         "Prompt templates",
         "Reducing hallucination"
@@ -4284,8 +4284,8 @@
               ]
             },
             {
-              "title": "Chain-of-Thought Reasoning",
-              "description": "Asking the model to reason step-by-step before answering measurably improves accuracy on multi-step problems. Skipping it on logic or math tasks causes the model to jump to wrong answers confidently.",
+              "title": "Reasoning Models vs Chain-of-Thought",
+              "description": "Asking a classic model to reason step by step improves accuracy on multi-step problems. Reasoning models already think before answering, so step-by-step instructions add little and the effort setting matters more. Knowing which one you are calling decides how you prompt it.",
               "resources": [
                 {
                   "label": "Prompt Engineering Guide — CoT",
@@ -4305,8 +4305,8 @@
           "title": "Structured & Reliable Output",
           "children": [
             {
-              "title": "JSON Mode & Structured Outputs",
-              "description": "Returning free-form text when downstream code expects JSON causes silent parsing failures. JSON mode and structured output schemas force the model to emit valid, schema-conformant data every time.",
+              "title": "Structured Outputs with JSON Schema",
+              "description": "Returning free-form text when downstream code expects JSON causes silent parsing failures. Older JSON mode only promised valid JSON. Schema-based structured outputs guarantee the exact shape your code expects, and you should still validate on your side.",
               "resources": [
                 {
                   "label": "OpenAI — Structured outputs",
@@ -4422,15 +4422,15 @@
       "order": 4,
       "techs": [
         "LangChain",
-        "Chains",
-        "Memory"
+        "LCEL",
+        "LangGraph"
       ],
-      "description": "Compose LLM applications with LangChain. Build chains, manage prompts and add memory.",
+      "description": "Compose LLM applications with LangChain. Build chains, manage prompts and keep conversation state with LangGraph.",
       "topics": [
         "LangChain core concepts",
         "Models, prompts & output parsers",
         "Chains & the LCEL",
-        "Conversation memory",
+        "Conversation state with LangGraph",
         "Document loaders",
         "Callbacks & tracing"
       ],
@@ -4451,7 +4451,7 @@
           "type": "course"
         }
       ],
-      "challenge": "Build a multi-step chain that summarizes a document and answers follow-up questions with memory.",
+      "challenge": "Build a multi-step chain that summarizes a document and answers follow-up questions, keeping conversation state with LangGraph persistence.",
       "estimatedTime": "2 weeks",
       "sideLeft": [
         {
@@ -4495,8 +4495,8 @@
           "title": "Memory & State",
           "children": [
             {
-              "title": "Conversation Memory",
-              "description": "Without memory, every user message is treated as a fresh conversation. LangChain memory modules persist and inject conversation history, enabling coherent multi-turn interactions without manual history management.",
+              "title": "Conversation State with LangGraph",
+              "description": "Without saved state, every user message is treated as a fresh conversation. LangChain's old memory classes are deprecated, and conversation history now lives in LangGraph state with a checkpointer. That gives you multi-turn chat, resuming and per-user threads without manual history code.",
               "resources": [
                 {
                   "label": "LangChain — Memory",
@@ -4607,199 +4607,9 @@
       ]
     },
     {
-      "id": "ai-developer-5",
-      "title": "Retrieval-Augmented Generation",
-      "order": 5,
-      "techs": [
-        "RAG",
-        "Embeddings",
-        "Chunking"
-      ],
-      "description": "Ground LLMs in your own data. Build a RAG pipeline that retrieves relevant context before answering.",
-      "topics": [
-        "Why RAG — grounding & freshness",
-        "Document chunking strategies",
-        "Embeddings & similarity search",
-        "Building the retrieval step",
-        "Context injection & prompting",
-        "Citations & source tracking"
-      ],
-      "resources": [
-        {
-          "label": "LangChain — RAG",
-          "platform": "python.langchain.com",
-          "type": "docs"
-        },
-        {
-          "label": "Pinecone — RAG Guide",
-          "platform": "pinecone.io",
-          "type": "docs"
-        },
-        {
-          "label": "OpenAI Cookbook — RAG",
-          "platform": "cookbook.openai.com",
-          "type": "course"
-        }
-      ],
-      "challenge": "Build a RAG chatbot over a folder of PDFs that answers with citations to the source.",
-      "estimatedTime": "2–3 weeks",
-      "sideLeft": [
-        {
-          "title": "RAG Architecture",
-          "children": [
-            {
-              "title": "Why RAG — Grounding & Freshness",
-              "description": "LLMs are frozen at training time and hallucinate on domain-specific facts. RAG grounds answers in retrieved documents, making responses accurate, up-to-date, and attributable to source material.",
-              "resources": [
-                {
-                  "label": "Pinecone — What is RAG?",
-                  "url": "https://www.pinecone.io/learn/retrieval-augmented-generation/",
-                  "type": "article"
-                },
-                {
-                  "label": "LangChain — RAG tutorial",
-                  "url": "https://python.langchain.com/docs/tutorials/rag/",
-                  "type": "docs"
-                }
-              ]
-            },
-            {
-              "title": "Document Chunking Strategies",
-              "description": "How you split documents directly determines retrieval quality. Chunks too large waste context window; chunks too small lose surrounding meaning. Poor chunking is the most common cause of bad RAG answers.",
-              "resources": [
-                {
-                  "label": "LangChain — Text splitters",
-                  "url": "https://python.langchain.com/docs/concepts/text_splitters/",
-                  "type": "docs"
-                },
-                {
-                  "label": "Pinecone — Chunking strategies",
-                  "url": "https://www.pinecone.io/learn/chunking-strategies/",
-                  "type": "article"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "title": "Retrieval Pipeline",
-          "children": [
-            {
-              "title": "Similarity Search & Retrieval",
-              "description": "The retrieval step fetches the most semantically relevant chunks for a query using cosine or dot-product similarity. Returning irrelevant chunks pollutes the context and causes the model to generate confidently wrong answers.",
-              "resources": [
-                {
-                  "label": "LangChain — Retrievers",
-                  "url": "https://python.langchain.com/docs/concepts/retrievers/",
-                  "type": "docs"
-                },
-                {
-                  "label": "Pinecone — Similarity search",
-                  "url": "https://www.pinecone.io/learn/what-is-similarity-search/",
-                  "type": "article"
-                }
-              ]
-            },
-            {
-              "title": "Context Injection & Prompting",
-              "description": "Retrieved chunks must be injected into the prompt in a format the model can reason over. Injecting too many chunks exceeds the context window; injecting too few leaves critical information out of reach.",
-              "resources": [
-                {
-                  "label": "LangChain — Q&A with RAG",
-                  "url": "https://python.langchain.com/docs/tutorials/rag/",
-                  "type": "docs"
-                },
-                {
-                  "label": "OpenAI Cookbook — RAG",
-                  "url": "https://cookbook.openai.com/examples/question_answering_using_embeddings",
-                  "type": "article"
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      "sideRight": [
-        {
-          "title": "RAG Quality",
-          "children": [
-            {
-              "title": "Citations & Source Tracking",
-              "description": "Users need to verify AI answers against source documents. Without explicit source attribution in your RAG pipeline, answers are unauditable and trust erodes over time, especially in enterprise or regulated contexts.",
-              "resources": [
-                {
-                  "label": "LangChain — Citations with RAG",
-                  "url": "https://python.langchain.com/docs/how_to/qa_citations/",
-                  "type": "docs"
-                },
-                {
-                  "label": "Ragas — Faithfulness metric",
-                  "url": "https://docs.ragas.io/en/stable/concepts/metrics/faithfulness.html",
-                  "type": "docs"
-                }
-              ]
-            },
-            {
-              "title": "Advanced Retrieval Techniques",
-              "description": "Naive top-k retrieval misses relevant chunks when the query is underspecified. Techniques like query rewriting, multi-query retrieval, and re-ranking significantly improve recall for complex user questions.",
-              "resources": [
-                {
-                  "label": "LangChain — Multi-query retriever",
-                  "url": "https://python.langchain.com/docs/how_to/MultiQueryRetriever/",
-                  "type": "docs"
-                },
-                {
-                  "label": "Cohere — Reranking",
-                  "url": "https://docs.cohere.com/docs/reranking",
-                  "type": "docs"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "title": "RAG Evaluation",
-          "children": [
-            {
-              "title": "Evaluating RAG Pipelines",
-              "description": "RAG has two failure modes: retrieval failure and generation failure. Without separate evaluation of each step using metrics like context precision and answer faithfulness, you cannot tell which part of the pipeline to improve.",
-              "resources": [
-                {
-                  "label": "Ragas Docs",
-                  "url": "https://docs.ragas.io/en/stable/",
-                  "type": "docs"
-                },
-                {
-                  "label": "LangSmith — RAG evaluation",
-                  "url": "https://docs.smith.langchain.com/tutorials/Developers/rag",
-                  "type": "docs"
-                }
-              ]
-            },
-            {
-              "title": "Hybrid Search",
-              "description": "Pure semantic search misses exact keyword matches; pure keyword search misses semantic meaning. Combining both with hybrid search consistently outperforms either alone, especially for technical or named-entity queries.",
-              "resources": [
-                {
-                  "label": "Pinecone — Hybrid search",
-                  "url": "https://www.pinecone.io/learn/hybrid-search-intro/",
-                  "type": "article"
-                },
-                {
-                  "label": "LangChain — Ensemble retriever",
-                  "url": "https://python.langchain.com/docs/how_to/ensemble_retriever/",
-                  "type": "docs"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id": "ai-developer-6",
       "title": "Embeddings & Vector Stores",
-      "order": 6,
+      "order": 5,
       "techs": [
         "Embeddings",
         "Vector DBs",
@@ -4978,6 +4788,196 @@
                 {
                   "label": "pgvector — HNSW indexing",
                   "url": "https://github.com/pgvector/pgvector#hnsw",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-developer-5",
+      "title": "Retrieval-Augmented Generation",
+      "order": 6,
+      "techs": [
+        "RAG",
+        "Embeddings",
+        "Chunking"
+      ],
+      "description": "Ground LLMs in your own data. Build a RAG pipeline that retrieves relevant context before answering.",
+      "topics": [
+        "Why RAG — grounding & freshness",
+        "Document chunking strategies",
+        "Embeddings & similarity search",
+        "Building the retrieval step",
+        "Context injection & prompting",
+        "Citations & source tracking"
+      ],
+      "resources": [
+        {
+          "label": "LangChain — RAG",
+          "platform": "python.langchain.com",
+          "type": "docs"
+        },
+        {
+          "label": "Pinecone — RAG Guide",
+          "platform": "pinecone.io",
+          "type": "docs"
+        },
+        {
+          "label": "OpenAI Cookbook — RAG",
+          "platform": "cookbook.openai.com",
+          "type": "course"
+        }
+      ],
+      "challenge": "Build a RAG chatbot over a folder of PDFs that answers with citations to the source.",
+      "estimatedTime": "2–3 weeks",
+      "sideLeft": [
+        {
+          "title": "RAG Architecture",
+          "children": [
+            {
+              "title": "Why RAG — Grounding & Freshness",
+              "description": "LLMs are frozen at training time and hallucinate on domain-specific facts. RAG grounds answers in retrieved documents, making responses accurate, up-to-date, and attributable to source material.",
+              "resources": [
+                {
+                  "label": "Pinecone — What is RAG?",
+                  "url": "https://www.pinecone.io/learn/retrieval-augmented-generation/",
+                  "type": "article"
+                },
+                {
+                  "label": "LangChain — RAG tutorial",
+                  "url": "https://python.langchain.com/docs/tutorials/rag/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Document Chunking Strategies",
+              "description": "How you split documents directly determines retrieval quality. Chunks too large waste context window; chunks too small lose surrounding meaning. Poor chunking is the most common cause of bad RAG answers.",
+              "resources": [
+                {
+                  "label": "LangChain — Text splitters",
+                  "url": "https://python.langchain.com/docs/concepts/text_splitters/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Pinecone — Chunking strategies",
+                  "url": "https://www.pinecone.io/learn/chunking-strategies/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Retrieval Pipeline",
+          "children": [
+            {
+              "title": "Similarity Search & Retrieval",
+              "description": "The retrieval step fetches the most semantically relevant chunks for a query using cosine or dot-product similarity. Returning irrelevant chunks pollutes the context and causes the model to generate confidently wrong answers.",
+              "resources": [
+                {
+                  "label": "LangChain — Retrievers",
+                  "url": "https://python.langchain.com/docs/concepts/retrievers/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Pinecone — Similarity search",
+                  "url": "https://www.pinecone.io/learn/what-is-similarity-search/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Context Injection & Prompting",
+              "description": "Retrieved chunks must be injected into the prompt in a format the model can reason over. Injecting too many chunks exceeds the context window; injecting too few leaves critical information out of reach.",
+              "resources": [
+                {
+                  "label": "LangChain — Q&A with RAG",
+                  "url": "https://python.langchain.com/docs/tutorials/rag/",
+                  "type": "docs"
+                },
+                {
+                  "label": "OpenAI Cookbook — RAG",
+                  "url": "https://cookbook.openai.com/examples/question_answering_using_embeddings",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "RAG Quality",
+          "children": [
+            {
+              "title": "Citations & Source Tracking",
+              "description": "Users need to verify AI answers against source documents. Without explicit source attribution in your RAG pipeline, answers are unauditable and trust erodes over time, especially in enterprise or regulated contexts.",
+              "resources": [
+                {
+                  "label": "LangChain — Citations with RAG",
+                  "url": "https://python.langchain.com/docs/how_to/qa_citations/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Ragas — Faithfulness metric",
+                  "url": "https://docs.ragas.io/en/stable/concepts/metrics/faithfulness.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Advanced Retrieval Techniques",
+              "description": "Naive top-k retrieval misses relevant chunks when the query is underspecified. Techniques like query rewriting, multi-query retrieval, and re-ranking significantly improve recall for complex user questions.",
+              "resources": [
+                {
+                  "label": "LangChain — Multi-query retriever",
+                  "url": "https://python.langchain.com/docs/how_to/MultiQueryRetriever/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Cohere — Reranking",
+                  "url": "https://docs.cohere.com/docs/reranking",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "RAG Evaluation",
+          "children": [
+            {
+              "title": "Evaluating RAG Pipelines",
+              "description": "RAG has two failure modes: retrieval failure and generation failure. Without separate evaluation of each step using metrics like context precision and answer faithfulness, you cannot tell which part of the pipeline to improve.",
+              "resources": [
+                {
+                  "label": "Ragas Docs",
+                  "url": "https://docs.ragas.io/en/stable/",
+                  "type": "docs"
+                },
+                {
+                  "label": "LangSmith — RAG evaluation",
+                  "url": "https://docs.smith.langchain.com/tutorials/Developers/rag",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Hybrid Search",
+              "description": "Pure semantic search misses exact keyword matches; pure keyword search misses semantic meaning. Combining both with hybrid search consistently outperforms either alone, especially for technical or named-entity queries.",
+              "resources": [
+                {
+                  "label": "Pinecone — Hybrid search",
+                  "url": "https://www.pinecone.io/learn/hybrid-search-intro/",
+                  "type": "article"
+                },
+                {
+                  "label": "LangChain — Ensemble retriever",
+                  "url": "https://python.langchain.com/docs/how_to/ensemble_retriever/",
                   "type": "docs"
                 }
               ]
@@ -5738,6 +5738,202 @@
                 {
                   "label": "OpenAI — Usage dashboard",
                   "url": "https://platform.openai.com/usage",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-developer-11",
+      "title": "Shipping a Paid AI Product",
+      "order": 11,
+      "required": false,
+      "techs": [
+        "Stripe",
+        "Usage Limits",
+        "Analytics"
+      ],
+      "description": "You will take an AI feature from side project to a small product people pay for. You will price it so each user is profitable, protect it from abuse and launch it to your first users.",
+      "topics": [
+        "Scoping a niche AI product",
+        "Usage vs subscription pricing and LLM unit economics",
+        "Auth and billing with Stripe",
+        "Usage limits and abuse protection",
+        "Launching and getting first users",
+        "Retention, quality and legal basics"
+      ],
+      "resources": [
+        {
+          "label": "Stripe — Usage-based billing",
+          "platform": "docs.stripe.com",
+          "type": "docs"
+        },
+        {
+          "label": "Y Combinator Startup Library",
+          "platform": "ycombinator.com",
+          "type": "article"
+        },
+        {
+          "label": "Paul Graham — Do Things that Don't Scale",
+          "platform": "paulgraham.com",
+          "type": "article"
+        },
+        {
+          "label": "OWASP Top 10 for LLM Applications",
+          "platform": "owasp.org",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Ship a small AI tool with sign-in, a free tier with daily limits and a paid plan through Stripe Checkout. Get five real users and write a one-page report on cost per user and what they did.",
+      "estimatedTime": "3 weeks",
+      "sideLeft": [
+        {
+          "title": "Product and Pricing",
+          "children": [
+            {
+              "title": "Scoping a Niche AI Product",
+              "description": "General AI tools compete with free chat apps and lose. A narrow tool for one group with one painful job is easier to build, explain and sell. Talk to users before you write code.",
+              "resources": [
+                {
+                  "label": "Paul Graham — How to Get Startup Ideas",
+                  "url": "https://paulgraham.com/startupideas.html",
+                  "type": "article"
+                },
+                {
+                  "label": "Y Combinator Startup Library",
+                  "url": "https://www.ycombinator.com/library",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Pricing and LLM Unit Economics",
+              "description": "Every request costs you money in tokens, so a heavy user can lose you money on a flat plan. Work out cost per request, then pick subscription, usage or a mix with caps. Price on value, but check the margin.",
+              "resources": [
+                {
+                  "label": "Claude — Pricing",
+                  "url": "https://docs.claude.com/en/docs/about-claude/pricing",
+                  "type": "docs"
+                },
+                {
+                  "label": "OpenAI — API pricing",
+                  "url": "https://openai.com/api/pricing/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Auth and Billing",
+          "children": [
+            {
+              "title": "Stripe Checkout and Subscriptions",
+              "description": "Stripe handles cards, receipts and tax so you do not have to. Checkout gives you a hosted payment page in a day. Subscriptions plus metered usage cover most AI pricing models.",
+              "resources": [
+                {
+                  "label": "Stripe — Checkout",
+                  "url": "https://docs.stripe.com/payments/checkout",
+                  "type": "docs"
+                },
+                {
+                  "label": "Stripe — Usage-based billing",
+                  "url": "https://docs.stripe.com/billing/subscriptions/usage-based",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Webhooks as the Source of Truth",
+              "description": "Never trust the browser to tell you someone paid. Listen to Stripe webhooks, verify the signature and update the plan on your server. This keeps access in sync when cards fail or users cancel.",
+              "resources": [
+                {
+                  "label": "Stripe — Webhooks",
+                  "url": "https://docs.stripe.com/webhooks",
+                  "type": "docs"
+                },
+                {
+                  "label": "Stripe — Build a subscriptions integration",
+                  "url": "https://docs.stripe.com/billing/subscriptions/build-subscriptions",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Protecting the Product",
+          "children": [
+            {
+              "title": "Usage Limits and Rate Limiting",
+              "description": "A free tier without limits is an open tab on your API bill. Set per-user daily caps, rate limits and a max tokens per request. Enforce them on the server, never only in the UI.",
+              "resources": [
+                {
+                  "label": "Claude — Rate limits",
+                  "url": "https://docs.claude.com/en/api/rate-limits",
+                  "type": "docs"
+                },
+                {
+                  "label": "OWASP — Denial of Service Cheat Sheet",
+                  "url": "https://cheatsheetseries.owasp.org/cheatsheets/Denial_of_Service_Cheat_Sheet.html",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Abuse and Prompt Injection",
+              "description": "People will try fake accounts, scripted signups and prompts that turn your app into a free chatbot. Bot checks, email verification and a tight system prompt cut most of it. Log and review odd usage weekly.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Cloudflare Turnstile",
+                  "url": "https://developers.cloudflare.com/turnstile/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Launch, Growth and Legal",
+          "children": [
+            {
+              "title": "Launch and First Users",
+              "description": "Your first users come from people you reach by hand, not from ads. Post where your niche already gathers, show the tool working and reply to everyone. Then measure retention, not signups, to see if it sticks.",
+              "resources": [
+                {
+                  "label": "Paul Graham — Do Things that Don't Scale",
+                  "url": "https://paulgraham.com/ds.html",
+                  "type": "article"
+                },
+                {
+                  "label": "PostHog — Retention insights",
+                  "url": "https://posthog.com/docs/product-analytics/retention",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Terms, Privacy and Data Use",
+              "description": "Paying users need clear terms, a privacy policy and an honest answer on where their data goes. Check what your model provider does with inputs and say so. If you have EU users, GDPR applies to you.",
+              "resources": [
+                {
+                  "label": "European Commission — Data protection",
+                  "url": "https://commission.europa.eu/law/law-topic/data-protection_en",
+                  "type": "docs"
+                },
+                {
+                  "label": "Anthropic — Commercial terms",
+                  "url": "https://www.anthropic.com/legal/commercial-terms",
                   "type": "docs"
                 }
               ]
@@ -11451,6 +11647,398 @@
           ]
         }
       ]
+    },
+    {
+      "id": "llm-engineer-11",
+      "title": "How LLMs Are Built: Pretraining to Reasoning Models",
+      "order": 11,
+      "required": false,
+      "techs": [
+        "Transformers",
+        "RLHF",
+        "Reasoning Models"
+      ],
+      "description": "You will follow a model from raw text to a chat assistant: attention, pretraining, scaling and post-training with SFT, RLHF and DPO. You will also learn how reasoning models spend extra compute at answer time, why models hallucinate and what limits context length.",
+      "topics": [
+        "Self-attention, multi-head attention and the decoder block",
+        "Pretraining objective, compute and scaling laws",
+        "Post-training: SFT, RLHF, RLAIF and DPO",
+        "Reasoning models and test-time compute",
+        "Why models hallucinate",
+        "Context length, KV cache and multimodal inputs"
+      ],
+      "resources": [
+        {
+          "label": "Andrej Karpathy — Let's build GPT from scratch",
+          "platform": "YouTube",
+          "type": "video"
+        },
+        {
+          "label": "Andrej Karpathy — Deep Dive into LLMs like ChatGPT",
+          "platform": "YouTube",
+          "type": "video"
+        },
+        {
+          "label": "Attention Is All You Need",
+          "platform": "arxiv.org",
+          "type": "article"
+        },
+        {
+          "label": "Illustrating RLHF",
+          "platform": "huggingface.co",
+          "type": "article"
+        }
+      ],
+      "challenge": "Train a tiny GPT on a small text corpus, then fine-tune it with SFT and DPO on a few hundred preference pairs. Compare outputs at each stage and measure how KV caching changes generation speed.",
+      "estimatedTime": "3 weeks",
+      "sideLeft": [
+        {
+          "title": "The Transformer in Depth",
+          "children": [
+            {
+              "title": "Attention Mechanics",
+              "description": "Each token builds query, key and value vectors, and attention mixes values by how well queries match keys. Multiple heads learn different relations, and a causal mask stops tokens from seeing the future. Knowing this math explains cost, context limits and many odd model behaviors.",
+              "resources": [
+                {
+                  "label": "Attention Is All You Need (paper)",
+                  "url": "https://arxiv.org/abs/1706.03762",
+                  "type": "article"
+                },
+                {
+                  "label": "The Illustrated GPT-2",
+                  "url": "https://jalammar.github.io/illustrated-gpt2/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Building a GPT from Scratch",
+              "description": "Writing a small decoder model yourself turns abstract diagrams into code you can debug. You see embeddings, residual streams, layer norm and the output head working together. After this, papers and model cards become much easier to read.",
+              "resources": [
+                {
+                  "label": "Andrej Karpathy — Let's build GPT",
+                  "url": "https://www.youtube.com/watch?v=kCc8FmEb1nY",
+                  "type": "video"
+                },
+                {
+                  "label": "nanoGPT repository",
+                  "url": "https://github.com/karpathy/nanoGPT",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Pretraining and Scaling",
+          "children": [
+            {
+              "title": "Next-Token Pretraining",
+              "description": "A base model learns by predicting the next token over trillions of tokens of web, code and books. It ends up as a document completer, not an assistant. This explains why base models ramble and why post-training is needed.",
+              "resources": [
+                {
+                  "label": "Andrej Karpathy — Deep Dive into LLMs like ChatGPT",
+                  "url": "https://www.youtube.com/watch?v=7xTGNNLPyMI",
+                  "type": "video"
+                },
+                {
+                  "label": "Language Models are Few-Shot Learners (GPT-3)",
+                  "url": "https://arxiv.org/abs/2005.14165",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Scaling Laws",
+              "description": "Loss falls predictably as you add parameters, data and compute. Chinchilla showed many models were too big for their data. These laws drive how labs size models and why small models trained longer can win.",
+              "resources": [
+                {
+                  "label": "Scaling Laws for Neural Language Models",
+                  "url": "https://arxiv.org/abs/2001.08361",
+                  "type": "article"
+                },
+                {
+                  "label": "Training Compute-Optimal LLMs (Chinchilla)",
+                  "url": "https://arxiv.org/abs/2203.15556",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Post-Training and Reasoning",
+          "children": [
+            {
+              "title": "SFT, RLHF and DPO",
+              "description": "Supervised fine-tuning teaches the chat format, then preference training shapes tone, helpfulness and safety. RLHF uses a reward model and RL, RLAIF uses AI feedback, and DPO skips the reward model entirely. Most of what users call a model's personality comes from this stage.",
+              "resources": [
+                {
+                  "label": "Training language models to follow instructions (InstructGPT)",
+                  "url": "https://arxiv.org/abs/2203.02155",
+                  "type": "article"
+                },
+                {
+                  "label": "Direct Preference Optimization (DPO)",
+                  "url": "https://arxiv.org/abs/2305.18290",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Reasoning Models and Test-Time Compute",
+              "description": "Reasoning models are trained with reinforcement learning to think in long chains before answering. Spending more tokens at answer time can beat a bigger model on math and code. It also changes cost, latency and how you should prompt.",
+              "resources": [
+                {
+                  "label": "DeepSeek-R1: Incentivizing Reasoning via RL",
+                  "url": "https://arxiv.org/abs/2501.12948",
+                  "type": "article"
+                },
+                {
+                  "label": "Scaling LLM Test-Time Compute Optimally",
+                  "url": "https://arxiv.org/abs/2408.03314",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Limits and Extensions",
+          "children": [
+            {
+              "title": "Hallucination and Context Length",
+              "description": "Models hallucinate partly because training and benchmarks reward a confident guess over admitting uncertainty. Long contexts are limited by attention cost and KV cache memory, which grows with every token. Knowing both tells you when to retrieve, when to trim and when to trust an answer.",
+              "resources": [
+                {
+                  "label": "Why Language Models Hallucinate",
+                  "url": "https://arxiv.org/abs/2509.04664",
+                  "type": "article"
+                },
+                {
+                  "label": "Transformers — KV cache strategies",
+                  "url": "https://huggingface.co/docs/transformers/kv_cache",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Multimodal Basics",
+              "description": "Vision-language models turn images into patch embeddings and feed them to the language model like tokens. CLIP-style training aligns images and text in one space. This is the base for image input, document reading and screen agents.",
+              "resources": [
+                {
+                  "label": "CLIP: Learning Transferable Visual Models",
+                  "url": "https://arxiv.org/abs/2103.00020",
+                  "type": "article"
+                },
+                {
+                  "label": "Visual Instruction Tuning (LLaVA)",
+                  "url": "https://arxiv.org/abs/2304.08485",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "llm-engineer-12",
+      "title": "Datasets for LLMs",
+      "order": 12,
+      "required": false,
+      "techs": [
+        "HF Datasets",
+        "Synthetic Data",
+        "Dataset Cards"
+      ],
+      "description": "You will build the data that trains and tests LLMs, from sourcing and licensing to cleaning, labeling and synthetic generation. You will also format instruction and preference data, guard evals against contamination and version and document every dataset you ship.",
+      "topics": [
+        "Collecting data and checking licenses",
+        "Cleaning, deduplication and PII removal",
+        "Human labeling and synthetic data generation",
+        "Instruction and preference dataset formats",
+        "Eval datasets and contamination",
+        "Versioning, datasheets and dataset cards"
+      ],
+      "resources": [
+        {
+          "label": "Hugging Face Datasets documentation",
+          "platform": "huggingface.co",
+          "type": "docs"
+        },
+        {
+          "label": "The FineWeb Datasets (paper)",
+          "platform": "arxiv.org",
+          "type": "article"
+        },
+        {
+          "label": "Datasheets for Datasets",
+          "platform": "arxiv.org",
+          "type": "article"
+        },
+        {
+          "label": "TRL — Dataset formats",
+          "platform": "huggingface.co",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Build a 1,000-example instruction dataset from licensed sources plus synthetic data, then dedupe it, strip PII and check it for overlap with a public benchmark. Publish it to the Hugging Face Hub with a full dataset card and a tagged version.",
+      "estimatedTime": "2–3 weeks",
+      "sideLeft": [
+        {
+          "title": "Sourcing and Cleaning",
+          "children": [
+            {
+              "title": "Collecting and Licensing Data",
+              "description": "Most text comes from web crawls, code hosts and public datasets, each with its own license and terms. Many popular datasets carry wrong or missing license labels. Checking provenance early saves you from legal risk and from retraining later.",
+              "resources": [
+                {
+                  "label": "The Data Provenance Initiative",
+                  "url": "https://arxiv.org/abs/2310.16787",
+                  "type": "article"
+                },
+                {
+                  "label": "Common Crawl",
+                  "url": "https://commoncrawl.org/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Cleaning, Dedup and PII Removal",
+              "description": "Raw crawls are full of boilerplate, spam, near-duplicates and personal data. Filtering and deduplication improve model quality and reduce memorization of private text. Good cleaning often matters more than adding more data.",
+              "resources": [
+                {
+                  "label": "Deduplicating Training Data Makes LMs Better",
+                  "url": "https://arxiv.org/abs/2107.06499",
+                  "type": "article"
+                },
+                {
+                  "label": "Microsoft Presidio — PII detection",
+                  "url": "https://microsoft.github.io/presidio/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Labeling and Synthetic Data",
+          "children": [
+            {
+              "title": "Human Labeling",
+              "description": "Clear guidelines, trained annotators and agreement checks decide whether labels are useful. Small, high-quality sets often beat large noisy ones for fine-tuning and evals. Labeling tools make review and disagreement visible.",
+              "resources": [
+                {
+                  "label": "Argilla documentation",
+                  "url": "https://docs.argilla.io/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Label Studio guide",
+                  "url": "https://labelstud.io/guide/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Synthetic Data Generation",
+              "description": "Strong models can generate instructions, answers and preference pairs at low cost. Without filtering, synthetic data copies the teacher's errors and narrows diversity. Seed prompts, quality filters and the teacher model's license terms all matter.",
+              "resources": [
+                {
+                  "label": "Self-Instruct (paper)",
+                  "url": "https://arxiv.org/abs/2212.10560",
+                  "type": "article"
+                },
+                {
+                  "label": "Cosmopedia: large-scale synthetic data",
+                  "url": "https://huggingface.co/blog/cosmopedia",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Formats and Evals",
+          "children": [
+            {
+              "title": "Instruction and Preference Formats",
+              "description": "SFT data is stored as chat messages with roles, and preference data as a prompt with chosen and rejected answers. The chat template must match the model or training quietly breaks. Using standard formats lets you plug data straight into training libraries.",
+              "resources": [
+                {
+                  "label": "TRL — Dataset formats and types",
+                  "url": "https://huggingface.co/docs/trl/dataset_formats",
+                  "type": "docs"
+                },
+                {
+                  "label": "Transformers — Chat templates",
+                  "url": "https://huggingface.co/docs/transformers/chat_templating",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Eval Datasets and Contamination",
+              "description": "If benchmark questions leak into training data, scores go up without real skill. Fresh held-out sets and overlap checks show what a model actually learned. Keep your own eval set private and never train on it.",
+              "resources": [
+                {
+                  "label": "A Careful Examination of LLM Performance on Grade School Arithmetic (GSM1k)",
+                  "url": "https://arxiv.org/abs/2405.00332",
+                  "type": "article"
+                },
+                {
+                  "label": "LiveBench: a contamination-limited benchmark",
+                  "url": "https://arxiv.org/abs/2406.19314",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Versioning and Documentation",
+          "children": [
+            {
+              "title": "Datasheets and Dataset Cards",
+              "description": "A datasheet records why the data exists, how it was collected and what it should not be used for. Dataset cards put this next to the data on the Hub. Good docs let others reuse your data safely and help you debug model behavior later.",
+              "resources": [
+                {
+                  "label": "Datasheets for Datasets",
+                  "url": "https://arxiv.org/abs/1803.09010",
+                  "type": "article"
+                },
+                {
+                  "label": "Hugging Face — Dataset cards",
+                  "url": "https://huggingface.co/docs/hub/datasets-cards",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Versioning with HF Datasets",
+              "description": "Datasets change as you clean and add data, so every training run should point to an exact version. The Hub stores datasets in git with revisions, and the datasets library loads them by commit or tag. This makes results reproducible and regressions traceable.",
+              "resources": [
+                {
+                  "label": "Hugging Face Datasets documentation",
+                  "url": "https://huggingface.co/docs/datasets/index",
+                  "type": "docs"
+                },
+                {
+                  "label": "DVC — Data version control",
+                  "url": "https://dvc.org/doc",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "mlops": [
@@ -17140,7 +17728,7 @@
               ]
             },
             {
-              "title": "Personas vs Personas with Constraints",
+              "title": "Personas Plus Constraints",
               "description": "A persona without constraints can drift — the model adopts a character but still hallucinates or breaks format. Combining a role with explicit output rules produces the most reliable steering, because the persona sets tone while constraints control structure.",
               "resources": [
                 {
@@ -18748,6 +19336,202 @@
                   "label": "LangSmith — Prompt Hub",
                   "url": "https://docs.smith.langchain.com/prompt-hub",
                   "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prompt-engineer-11",
+      "title": "Context Engineering for Agents and Reasoning Models",
+      "order": 11,
+      "required": false,
+      "techs": [
+        "Reasoning Models",
+        "Context Windows",
+        "Evals"
+      ],
+      "description": "You will learn to decide what goes into a model's context, in what order, and what stays out. You will prompt reasoning models and agents with less hand-holding and prove your context choices with evals.",
+      "topics": [
+        "Prompting reasoning models: effort and thinking budgets",
+        "Ordering the context window",
+        "Long-context pitfalls: lost in the middle and context rot",
+        "Retrieval vs stuffing the context",
+        "Tool results, memory and instruction files as context",
+        "Measuring context quality with evals"
+      ],
+      "resources": [
+        {
+          "label": "Anthropic — Effective context engineering for AI agents",
+          "platform": "anthropic.com",
+          "type": "article"
+        },
+        {
+          "label": "Claude — Extended thinking",
+          "platform": "docs.claude.com",
+          "type": "docs"
+        },
+        {
+          "label": "OpenAI — Reasoning best practices",
+          "platform": "platform.openai.com",
+          "type": "docs"
+        },
+        {
+          "label": "Context Rot report",
+          "platform": "research.trychroma.com",
+          "type": "article"
+        }
+      ],
+      "challenge": "Take one agent task and build three context versions: stuffed, retrieved and trimmed. Run the same eval set on each and report quality, tokens and cost.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Prompting Reasoning Models",
+          "children": [
+            {
+              "title": "Effort and Thinking Budgets",
+              "description": "Reasoning models let you set how much they think before answering. More effort helps hard problems but costs tokens and time. Picking the right level per task is now part of writing the prompt.",
+              "resources": [
+                {
+                  "label": "Claude — Extended thinking",
+                  "url": "https://docs.claude.com/en/docs/build-with-claude/extended-thinking",
+                  "type": "docs"
+                },
+                {
+                  "label": "OpenAI — Reasoning models",
+                  "url": "https://platform.openai.com/docs/guides/reasoning",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Less Step-by-Step Hand-Holding",
+              "description": "Older prompts spelled out every reasoning step. Reasoning models often do better with a clear goal, constraints and success criteria instead. Over-scripting can make them worse, so state the what and let them plan the how.",
+              "resources": [
+                {
+                  "label": "OpenAI — Reasoning best practices",
+                  "url": "https://platform.openai.com/docs/guides/reasoning-best-practices",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude — Extended thinking tips",
+                  "url": "https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/extended-thinking-tips",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Building the Context Window",
+          "children": [
+            {
+              "title": "What Goes In and in What Order",
+              "description": "Context is a limited budget, not a dump. Stable parts like the system prompt and tools go first so they can be cached. Long documents usually go before the question, and the most important instruction should not be buried.",
+              "resources": [
+                {
+                  "label": "Anthropic — Effective context engineering for AI agents",
+                  "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Claude — Prompt caching",
+                  "url": "https://docs.claude.com/en/docs/build-with-claude/prompt-caching",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Lost in the Middle and Context Rot",
+              "description": "Models recall facts at the start and end of a long context better than in the middle. Quality also drops as context grows, even below the limit. Knowing this stops you from assuming a bigger window means better answers.",
+              "resources": [
+                {
+                  "label": "Lost in the Middle (paper)",
+                  "url": "https://arxiv.org/abs/2307.03172",
+                  "type": "article"
+                },
+                {
+                  "label": "Chroma — Context Rot",
+                  "url": "https://research.trychroma.com/context-rot",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Sources of Context",
+          "children": [
+            {
+              "title": "Retrieval vs Stuffing",
+              "description": "Putting everything in the prompt is simple but slow, costly and noisy. Retrieval keeps context small and relevant but can miss things. Good authors choose per task and often mix both with just-in-time lookups.",
+              "resources": [
+                {
+                  "label": "Anthropic — Contextual retrieval",
+                  "url": "https://www.anthropic.com/news/contextual-retrieval",
+                  "type": "article"
+                },
+                {
+                  "label": "Claude — Long context prompting tips",
+                  "url": "https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/long-context-tips",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Tool Results, Instruction Files and Skills",
+              "description": "In agents, most context comes from tool outputs, not from you. Keep tool results short and readable, and move standing rules into instruction files or skills that load only when needed. This keeps each turn focused.",
+              "resources": [
+                {
+                  "label": "Anthropic — Writing effective tools for agents",
+                  "url": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Claude — Agent Skills overview",
+                  "url": "https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Measuring Context Quality",
+          "children": [
+            {
+              "title": "Evals for Context Changes",
+              "description": "A context change that looks smart can quietly hurt quality. Build a small eval set and rerun it every time you add, remove or reorder context. Numbers settle arguments that opinions cannot.",
+              "resources": [
+                {
+                  "label": "Claude — Create strong empirical evaluations",
+                  "url": "https://docs.claude.com/en/docs/test-and-evaluate/develop-tests",
+                  "type": "docs"
+                },
+                {
+                  "label": "OpenAI — Evals guide",
+                  "url": "https://platform.openai.com/docs/guides/evals",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Tracking Tokens, Cost and Latency",
+              "description": "Context quality is not only accuracy. Track tokens per request, cache hit rate and response time next to your scores. The best context gives the same answer with fewer tokens.",
+              "resources": [
+                {
+                  "label": "Claude — Token counting",
+                  "url": "https://docs.claude.com/en/docs/build-with-claude/token-counting",
+                  "type": "docs"
+                },
+                {
+                  "label": "Hamel Husain — Your AI product needs evals",
+                  "url": "https://hamel.dev/blog/posts/evals/",
+                  "type": "article"
                 }
               ]
             }
@@ -21030,6 +21814,1928 @@
                   "label": "OWASP Top 10 for LLM Applications",
                   "url": "https://genai.owasp.org/llm-top-10/",
                   "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "coding-agents": [
+    {
+      "id": "coding-agents-1",
+      "title": "How Coding Agents Work",
+      "order": 1,
+      "techs": [
+        "Agent Loop",
+        "Tool Calls",
+        "Tokens"
+      ],
+      "description": "Look inside the loop that every coding agent runs: the model reads, calls a tool, sees the result and decides again. You will learn what the agent can touch, what each step costs and which settings change how carefully it thinks.",
+      "topics": [
+        "The agent loop: gather context, act, verify",
+        "Built-in tools: read, search, edit and shell",
+        "Permission modes and approval prompts",
+        "Choosing a model for the task",
+        "Tokens, context and cost per session",
+        "Reasoning effort and extended thinking"
+      ],
+      "resources": [
+        {
+          "label": "How Claude Code works",
+          "platform": "code.claude.com",
+          "type": "docs"
+        },
+        {
+          "label": "Building effective agents",
+          "platform": "Anthropic",
+          "type": "article"
+        },
+        {
+          "label": "Codex CLI",
+          "platform": "GitHub",
+          "type": "docs"
+        },
+        {
+          "label": "Gemini CLI",
+          "platform": "GitHub",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Run the same small bug fix with two different agents or models, log every tool call and the token cost of each run, and write a one-page comparison of where each one spent its effort.",
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "The Loop",
+          "children": [
+            {
+              "title": "Model, tools and a loop",
+              "description": "A coding agent is a model that can call tools in a loop until the task is done. Knowing this removes the magic and shows you where things go wrong: a bad read, a wrong edit or a skipped check.",
+              "resources": [
+                {
+                  "label": "How Claude Code works",
+                  "url": "https://code.claude.com/docs/en/how-claude-code-works",
+                  "type": "docs"
+                },
+                {
+                  "label": "Building effective agents",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Read, edit and shell tools",
+              "description": "Most agents share the same core tools: read files, search the code, edit files and run commands. The shell tool is the most powerful and the most dangerous, because it can do anything you can.",
+              "resources": [
+                {
+                  "label": "Claude Code overview",
+                  "url": "https://code.claude.com/docs/en/overview",
+                  "type": "docs"
+                },
+                {
+                  "label": "Codex CLI",
+                  "url": "https://github.com/openai/codex",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Control",
+          "children": [
+            {
+              "title": "Permission modes",
+              "description": "Agents can ask before every action, auto-accept edits, or run with fewer prompts inside a sandbox. Pick the mode that matches the risk of the task, not the one that feels fastest.",
+              "resources": [
+                {
+                  "label": "Claude Code permissions",
+                  "url": "https://code.claude.com/docs/en/iam",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code security",
+                  "url": "https://code.claude.com/docs/en/security",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Plan before you act",
+              "description": "Asking the agent to explore and write a plan first catches wrong assumptions before any file changes. Review the plan the way you would review a design from a teammate.",
+              "resources": [
+                {
+                  "label": "Common workflows",
+                  "url": "https://code.claude.com/docs/en/common-workflows",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code best practices",
+                  "url": "https://www.anthropic.com/engineering/claude-code-best-practices",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Models",
+          "children": [
+            {
+              "title": "Picking a model",
+              "description": "Larger models plan and debug better, smaller ones are faster and cheaper for simple edits. Many teams use a strong model for planning and a fast one for routine work.",
+              "resources": [
+                {
+                  "label": "Model configuration",
+                  "url": "https://code.claude.com/docs/en/model-config",
+                  "type": "docs"
+                },
+                {
+                  "label": "Gemini CLI",
+                  "url": "https://github.com/google-gemini/gemini-cli",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Reasoning effort",
+              "description": "Models can spend extra tokens thinking before they answer. More effort helps on hard bugs and design work but adds cost and latency to simple tasks.",
+              "resources": [
+                {
+                  "label": "Extended thinking",
+                  "url": "https://docs.claude.com/en/docs/build-with-claude/extended-thinking",
+                  "type": "docs"
+                },
+                {
+                  "label": "Model configuration",
+                  "url": "https://code.claude.com/docs/en/model-config",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Cost",
+          "children": [
+            {
+              "title": "Tokens and pricing",
+              "description": "Every file read, tool result and reply is billed as tokens. Long sessions grow expensive because the whole history is sent again on each turn.",
+              "resources": [
+                {
+                  "label": "Manage costs",
+                  "url": "https://code.claude.com/docs/en/costs",
+                  "type": "docs"
+                },
+                {
+                  "label": "Context windows",
+                  "url": "https://docs.claude.com/en/docs/build-with-claude/context-windows",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Measuring a session",
+              "description": "Track tokens, tool calls and time per task so you can compare agents with data. Without numbers, every tool looks fast in a demo.",
+              "resources": [
+                {
+                  "label": "Manage costs",
+                  "url": "https://code.claude.com/docs/en/costs",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code overview",
+                  "url": "https://code.claude.com/docs/en/overview",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coding-agents-2",
+      "title": "Project Context and Instruction Files",
+      "order": 2,
+      "techs": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "Rules Files"
+      ],
+      "description": "Give the agent the project knowledge a new teammate would need on day one. You will write instruction files that make output consistent and learn what belongs in them and what only wastes context.",
+      "topics": [
+        "Why agents need written project context",
+        "AGENTS.md and CLAUDE.md conventions",
+        "Rules files and scoped instructions",
+        "User, project and folder-level memory",
+        "What to write: commands, conventions, traps",
+        "What to leave out and how to keep files short"
+      ],
+      "resources": [
+        {
+          "label": "AGENTS.md",
+          "platform": "agents.md",
+          "type": "docs"
+        },
+        {
+          "label": "Manage Claude's memory",
+          "platform": "code.claude.com",
+          "type": "docs"
+        },
+        {
+          "label": "Cursor rules",
+          "platform": "cursor.com",
+          "type": "docs"
+        },
+        {
+          "label": "Copilot custom instructions",
+          "platform": "GitHub Docs",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Write an instruction file for a real repo, then run the same three tasks with and without it and note which mistakes it prevented and which lines had no effect.",
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Instruction Files",
+          "children": [
+            {
+              "title": "AGENTS.md as a shared format",
+              "description": "AGENTS.md is a plain Markdown file many agents read from the repo root. One file serves several tools, so the team keeps a single source of truth.",
+              "resources": [
+                {
+                  "label": "AGENTS.md",
+                  "url": "https://agents.md/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Codex CLI",
+                  "url": "https://github.com/openai/codex",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "CLAUDE.md and memory levels",
+              "description": "Instructions can live at user, project and folder level, and the agent merges them. Put personal preferences in user files and team rules in the repo.",
+              "resources": [
+                {
+                  "label": "Manage Claude's memory",
+                  "url": "https://code.claude.com/docs/en/memory",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code best practices",
+                  "url": "https://www.anthropic.com/engineering/claude-code-best-practices",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Scoped Rules",
+          "children": [
+            {
+              "title": "Rules files",
+              "description": "Some tools let you attach rules to file patterns, so frontend rules load only when frontend files are touched. Scoping keeps context small and rules relevant.",
+              "resources": [
+                {
+                  "label": "Cursor rules",
+                  "url": "https://cursor.com/docs/context/rules",
+                  "type": "docs"
+                },
+                {
+                  "label": "Manage Claude's memory",
+                  "url": "https://code.claude.com/docs/en/memory",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Copilot and other tools",
+              "description": "Each vendor reads its own file names, but the content is the same idea. Learn the pattern once and map it to whichever tool your team uses.",
+              "resources": [
+                {
+                  "label": "Copilot custom instructions",
+                  "url": "https://docs.github.com/en/copilot/how-tos/configure-custom-instructions",
+                  "type": "docs"
+                },
+                {
+                  "label": "Gemini CLI",
+                  "url": "https://github.com/google-gemini/gemini-cli",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "What to Write",
+          "children": [
+            {
+              "title": "Commands and conventions",
+              "description": "List how to build, test and lint, plus the naming and structure rules the code follows. These are the facts an agent cannot guess and gets wrong most often.",
+              "resources": [
+                {
+                  "label": "AGENTS.md",
+                  "url": "https://agents.md/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code best practices",
+                  "url": "https://www.anthropic.com/engineering/claude-code-best-practices",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Traps and decisions",
+              "description": "Note the non-obvious things: a legacy folder not to touch, a reason a library was chosen, a test that is slow. One line here can save a long wrong path.",
+              "resources": [
+                {
+                  "label": "Manage Claude's memory",
+                  "url": "https://code.claude.com/docs/en/memory",
+                  "type": "docs"
+                },
+                {
+                  "label": "Effective context engineering",
+                  "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "What to Leave Out",
+          "children": [
+            {
+              "title": "Keep it short",
+              "description": "Every line is loaded on every turn and competes for attention. Remove things the agent can read from the code itself, like file lists or obvious style.",
+              "resources": [
+                {
+                  "label": "Effective context engineering",
+                  "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Manage Claude's memory",
+                  "url": "https://code.claude.com/docs/en/memory",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "No secrets, no stale facts",
+              "description": "Instruction files are committed and read by tools, so never put keys in them. Review them like code, because outdated instructions mislead the agent with confidence.",
+              "resources": [
+                {
+                  "label": "Claude Code security",
+                  "url": "https://code.claude.com/docs/en/security",
+                  "type": "docs"
+                },
+                {
+                  "label": "AGENTS.md",
+                  "url": "https://agents.md/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coding-agents-3",
+      "title": "Context Management",
+      "order": 3,
+      "techs": [
+        "Compaction",
+        "Subagents",
+        "Prompt Caching"
+      ],
+      "description": "Keep the agent focused as tasks grow longer than its context window. You will learn how history is summarized, how to isolate side work, and how caching and budgets keep sessions fast and cheap.",
+      "topics": [
+        "Context window limits and context rot",
+        "Compaction and summarization",
+        "Clearing and starting fresh sessions",
+        "Subagents to isolate exploration",
+        "Scratchpads and notes outside the window",
+        "Token budgets and prompt caching"
+      ],
+      "resources": [
+        {
+          "label": "Effective context engineering for AI agents",
+          "platform": "Anthropic",
+          "type": "article"
+        },
+        {
+          "label": "Context windows",
+          "platform": "docs.claude.com",
+          "type": "docs"
+        },
+        {
+          "label": "Prompt caching",
+          "platform": "docs.claude.com",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Take a multi-step refactor that overflows one session, split it using a plan file, subagents for research and a fresh session per step, and compare total tokens with a single long run.",
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Limits",
+          "children": [
+            {
+              "title": "The context window",
+              "description": "The model only sees what fits in its window: instructions, history, file contents and tool results. When it fills up, quality drops before the hard limit is reached.",
+              "resources": [
+                {
+                  "label": "Context windows",
+                  "url": "https://docs.claude.com/en/docs/build-with-claude/context-windows",
+                  "type": "docs"
+                },
+                {
+                  "label": "Effective context engineering",
+                  "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Compaction",
+              "description": "Harnesses summarize old turns to free space. Summaries lose detail, so important decisions should also live in a file the agent can reread.",
+              "resources": [
+                {
+                  "label": "How Claude Code works",
+                  "url": "https://code.claude.com/docs/en/how-claude-code-works",
+                  "type": "docs"
+                },
+                {
+                  "label": "Manage costs",
+                  "url": "https://code.claude.com/docs/en/costs",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Isolation",
+          "children": [
+            {
+              "title": "Subagents for side work",
+              "description": "A subagent explores in its own context and returns only a short answer. The main session stays clean instead of filling with search results.",
+              "resources": [
+                {
+                  "label": "Subagents",
+                  "url": "https://code.claude.com/docs/en/sub-agents",
+                  "type": "docs"
+                },
+                {
+                  "label": "Effective context engineering",
+                  "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Fresh sessions",
+              "description": "Starting over with a clear goal often beats pushing a confused session further. Clear the context between unrelated tasks.",
+              "resources": [
+                {
+                  "label": "Common workflows",
+                  "url": "https://code.claude.com/docs/en/common-workflows",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code best practices",
+                  "url": "https://www.anthropic.com/engineering/claude-code-best-practices",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Memory Outside the Window",
+          "children": [
+            {
+              "title": "Plan and progress files",
+              "description": "A written plan with checkboxes lets any session pick up where the last one stopped. It also gives you a record to review.",
+              "resources": [
+                {
+                  "label": "Effective context engineering",
+                  "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Common workflows",
+                  "url": "https://code.claude.com/docs/en/common-workflows",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Scratchpads",
+              "description": "Agents can write intermediate results to temporary files instead of keeping them in the conversation. Only the useful summary comes back into context.",
+              "resources": [
+                {
+                  "label": "Building effective agents",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "How Claude Code works",
+                  "url": "https://code.claude.com/docs/en/how-claude-code-works",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Budgets",
+          "children": [
+            {
+              "title": "Prompt caching",
+              "description": "A stable prefix of instructions and files can be cached, so repeated turns cost less and respond faster. Changing the start of the prompt breaks the cache.",
+              "resources": [
+                {
+                  "label": "Prompt caching",
+                  "url": "https://docs.claude.com/en/docs/build-with-claude/prompt-caching",
+                  "type": "docs"
+                },
+                {
+                  "label": "Manage costs",
+                  "url": "https://code.claude.com/docs/en/costs",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Token budgets",
+              "description": "Large tool outputs like full logs or huge files eat the window fast. Ask for filtered output and set limits on what tools return.",
+              "resources": [
+                {
+                  "label": "Writing tools for agents",
+                  "url": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Manage costs",
+                  "url": "https://code.claude.com/docs/en/costs",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coding-agents-4",
+      "title": "Tools and MCP in the Harness",
+      "order": 4,
+      "techs": [
+        "MCP",
+        "Allowlists",
+        "Tool Permissions"
+      ],
+      "description": "Extend a coding agent with outside tools like issue trackers, databases and browsers. You will connect MCP servers, control which tools run without asking and judge whether a third-party server is safe to install.",
+      "topics": [
+        "What MCP adds to a coding agent",
+        "Local stdio and remote HTTP servers",
+        "Project and user scoped server config",
+        "Tool permissions, allowlists and denylists",
+        "Tool output size and context cost",
+        "Trusting third-party servers"
+      ],
+      "resources": [
+        {
+          "label": "Model Context Protocol documentation",
+          "platform": "modelcontextprotocol.io",
+          "type": "docs"
+        },
+        {
+          "label": "Connect Claude Code to tools via MCP",
+          "platform": "code.claude.com",
+          "type": "docs"
+        },
+        {
+          "label": "MCP servers repository",
+          "platform": "GitHub",
+          "type": "article"
+        }
+      ],
+      "challenge": "Connect two MCP servers to your agent, one local and one remote, write a permission config that allows read tools and asks for write tools, and document what each server could do if it were malicious.",
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Connecting",
+          "children": [
+            {
+              "title": "MCP in the harness",
+              "description": "The agent acts as an MCP host and each server adds tools to its toolbox. One standard lets the same server work across many agents.",
+              "resources": [
+                {
+                  "label": "Model Context Protocol",
+                  "url": "https://modelcontextprotocol.io/",
+                  "type": "docs"
+                },
+                {
+                  "label": "MCP architecture",
+                  "url": "https://modelcontextprotocol.io/docs/learn/architecture",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Server scopes",
+              "description": "Servers can be configured for one user or shared through a project file. Shared config helps teams but means every member runs that server.",
+              "resources": [
+                {
+                  "label": "Claude Code MCP",
+                  "url": "https://code.claude.com/docs/en/mcp",
+                  "type": "docs"
+                },
+                {
+                  "label": "Gemini CLI",
+                  "url": "https://github.com/google-gemini/gemini-cli",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Cost of Tools",
+          "children": [
+            {
+              "title": "Tool definitions use context",
+              "description": "Every connected tool adds its name, description and schema to the prompt. Too many servers slow the agent and confuse its choices.",
+              "resources": [
+                {
+                  "label": "Writing tools for agents",
+                  "url": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Claude Code MCP",
+                  "url": "https://code.claude.com/docs/en/mcp",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Choosing what to connect",
+              "description": "Connect a server when the agent needs live data it cannot read from the repo. A CLI the agent can call through the shell is sometimes simpler.",
+              "resources": [
+                {
+                  "label": "MCP servers - GitHub",
+                  "url": "https://github.com/modelcontextprotocol/servers",
+                  "type": "article"
+                },
+                {
+                  "label": "Building effective agents",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Permissions",
+          "children": [
+            {
+              "title": "Allowlists and denylists",
+              "description": "Permission rules decide which tools run silently, which ask first and which are blocked. Allow safe reads, gate writes and deny anything destructive.",
+              "resources": [
+                {
+                  "label": "Claude Code permissions",
+                  "url": "https://code.claude.com/docs/en/iam",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code settings",
+                  "url": "https://code.claude.com/docs/en/settings",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Least privilege tokens",
+              "description": "Give each server credentials that can do only what the task needs. A read-only database user limits damage when something goes wrong.",
+              "resources": [
+                {
+                  "label": "MCP specification",
+                  "url": "https://modelcontextprotocol.io/specification",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code security",
+                  "url": "https://code.claude.com/docs/en/security",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Trust",
+          "children": [
+            {
+              "title": "Tool poisoning",
+              "description": "A tool description or result can contain hidden instructions the model follows. Read descriptions before enabling a server and pin its version.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                },
+                {
+                  "label": "Simon Willison - Prompt injection",
+                  "url": "https://simonwillison.net/series/prompt-injection/",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "The lethal trifecta",
+              "description": "Private data, untrusted content and a way to send data out together make leaks possible. Avoid giving one session all three.",
+              "resources": [
+                {
+                  "label": "Simon Willison - Prompt injection",
+                  "url": "https://simonwillison.net/series/prompt-injection/",
+                  "type": "article"
+                },
+                {
+                  "label": "Claude Code security",
+                  "url": "https://code.claude.com/docs/en/security",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coding-agents-5",
+      "title": "Skills",
+      "order": 5,
+      "techs": [
+        "SKILL.md",
+        "Progressive Disclosure",
+        "Scripts"
+      ],
+      "description": "Package repeatable know-how into skills the agent loads only when needed. You will write skills with clear triggers, bundled scripts and references, and test that they load at the right moment.",
+      "topics": [
+        "What a skill is and why it exists",
+        "SKILL.md structure and frontmatter",
+        "Progressive disclosure: name, body, files",
+        "Writing descriptions that trigger correctly",
+        "Bundling scripts and reference files",
+        "Skills vs instruction files vs MCP"
+      ],
+      "resources": [
+        {
+          "label": "Agent Skills in Claude Code",
+          "platform": "code.claude.com",
+          "type": "docs"
+        },
+        {
+          "label": "Equipping agents for the real world with Agent Skills",
+          "platform": "Anthropic",
+          "type": "article"
+        },
+        {
+          "label": "Agent Skills specification",
+          "platform": "agentskills.io",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Write a skill for one repeated task in your project, such as adding an API endpoint, with a short SKILL.md, a helper script and a reference file, then test five prompts to confirm when it loads and when it stays out.",
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Basics",
+          "children": [
+            {
+              "title": "What a skill is",
+              "description": "A skill is a folder with instructions and optional files that teach the agent one job. It turns tribal knowledge into something any session can reuse.",
+              "resources": [
+                {
+                  "label": "Agent Skills",
+                  "url": "https://code.claude.com/docs/en/skills",
+                  "type": "docs"
+                },
+                {
+                  "label": "Agent Skills specification",
+                  "url": "https://agentskills.io/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Progressive disclosure",
+              "description": "Only the name and description sit in context by default. The body and extra files load when the task needs them, so many skills cost little.",
+              "resources": [
+                {
+                  "label": "Equipping agents with Agent Skills",
+                  "url": "https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills",
+                  "type": "article"
+                },
+                {
+                  "label": "Agent Skills",
+                  "url": "https://code.claude.com/docs/en/skills",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "When It Loads",
+          "children": [
+            {
+              "title": "Descriptions as triggers",
+              "description": "The agent decides to load a skill from its description alone. Say what it does and when to use it, with the words users actually type.",
+              "resources": [
+                {
+                  "label": "Agent Skills",
+                  "url": "https://code.claude.com/docs/en/skills",
+                  "type": "docs"
+                },
+                {
+                  "label": "Agent Skills specification",
+                  "url": "https://agentskills.io/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Skill, rule or tool",
+              "description": "Always-true facts belong in instruction files, live data belongs in MCP, and multi-step procedures fit skills. Picking the right home keeps context lean.",
+              "resources": [
+                {
+                  "label": "Equipping agents with Agent Skills",
+                  "url": "https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills",
+                  "type": "article"
+                },
+                {
+                  "label": "Manage Claude's memory",
+                  "url": "https://code.claude.com/docs/en/memory",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Writing a Good Skill",
+          "children": [
+            {
+              "title": "Short and specific",
+              "description": "Write steps the agent can follow, not an essay. Move long references into separate files the skill points to.",
+              "resources": [
+                {
+                  "label": "Agent Skills",
+                  "url": "https://code.claude.com/docs/en/skills",
+                  "type": "docs"
+                },
+                {
+                  "label": "Effective context engineering",
+                  "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Bundled scripts",
+              "description": "Deterministic work like validation or code generation is better done by a script than by the model. The skill tells the agent when to run it.",
+              "resources": [
+                {
+                  "label": "Equipping agents with Agent Skills",
+                  "url": "https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills",
+                  "type": "article"
+                },
+                {
+                  "label": "Agent Skills specification",
+                  "url": "https://agentskills.io/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Quality",
+          "children": [
+            {
+              "title": "Testing a skill",
+              "description": "Run prompts that should and should not trigger it, and check the output each time. A skill that never loads is as useless as one that always does.",
+              "resources": [
+                {
+                  "label": "Agent Skills",
+                  "url": "https://code.claude.com/docs/en/skills",
+                  "type": "docs"
+                },
+                {
+                  "label": "Demystifying evals for AI agents",
+                  "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Reviewing shared skills",
+              "description": "Skills can include scripts that run on your machine. Read any skill from outside your team before installing it.",
+              "resources": [
+                {
+                  "label": "Claude Code security",
+                  "url": "https://code.claude.com/docs/en/security",
+                  "type": "docs"
+                },
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coding-agents-6",
+      "title": "Hooks and Settings",
+      "order": 6,
+      "techs": [
+        "Hooks",
+        "settings.json",
+        "Guardrails"
+      ],
+      "description": "Make the harness enforce rules instead of hoping the model remembers them. You will configure settings at each level and write hooks that block risky actions and run lint and tests automatically.",
+      "topics": [
+        "Settings hierarchy: managed, user, project, local",
+        "Hook events: before and after tool use",
+        "Blocking dangerous commands and file paths",
+        "Auto-formatting and linting after edits",
+        "Running tests when the agent stops",
+        "Hook security and debugging"
+      ],
+      "resources": [
+        {
+          "label": "Hooks reference",
+          "platform": "code.claude.com",
+          "type": "docs"
+        },
+        {
+          "label": "Claude Code settings",
+          "platform": "code.claude.com",
+          "type": "docs"
+        },
+        {
+          "label": "Gemini CLI",
+          "platform": "GitHub",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Write three hooks for your project: one that blocks edits to .env and lock files, one that formats every edited file, and one that runs the test suite before the agent finishes, then show each one firing.",
+      "estimatedTime": "1 week",
+      "sideLeft": [
+        {
+          "title": "Settings",
+          "children": [
+            {
+              "title": "Settings hierarchy",
+              "description": "Settings merge from organization policy down to user, project and local files. Knowing which wins tells you where to put a rule so it actually applies.",
+              "resources": [
+                {
+                  "label": "Claude Code settings",
+                  "url": "https://code.claude.com/docs/en/settings",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code permissions",
+                  "url": "https://code.claude.com/docs/en/iam",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Team defaults",
+              "description": "A committed project settings file gives everyone the same permissions and hooks. Personal overrides stay in a local file that is not checked in.",
+              "resources": [
+                {
+                  "label": "Claude Code settings",
+                  "url": "https://code.claude.com/docs/en/settings",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code best practices",
+                  "url": "https://www.anthropic.com/engineering/claude-code-best-practices",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Hook Basics",
+          "children": [
+            {
+              "title": "Hook events",
+              "description": "Hooks are your scripts that run at fixed points such as before a tool call, after it, or when the agent stops. They are deterministic, unlike instructions.",
+              "resources": [
+                {
+                  "label": "Hooks reference",
+                  "url": "https://code.claude.com/docs/en/hooks",
+                  "type": "docs"
+                },
+                {
+                  "label": "Gemini CLI",
+                  "url": "https://github.com/google-gemini/gemini-cli",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Input and exit codes",
+              "description": "A hook receives the tool call as JSON and answers with an exit code or JSON. That answer can allow, block or send feedback to the model.",
+              "resources": [
+                {
+                  "label": "Hooks reference",
+                  "url": "https://code.claude.com/docs/en/hooks",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code settings",
+                  "url": "https://code.claude.com/docs/en/settings",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Guardrails",
+          "children": [
+            {
+              "title": "Blocking risky actions",
+              "description": "A pre-tool hook can stop commands like force pushes or edits to secrets. It works even when the model ignores or forgets an instruction.",
+              "resources": [
+                {
+                  "label": "Hooks reference",
+                  "url": "https://code.claude.com/docs/en/hooks",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code security",
+                  "url": "https://code.claude.com/docs/en/security",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Hooks run with your rights",
+              "description": "Hook scripts execute as you, with full access to your machine. Review hooks in shared configs as carefully as any other code.",
+              "resources": [
+                {
+                  "label": "Claude Code security",
+                  "url": "https://code.claude.com/docs/en/security",
+                  "type": "docs"
+                },
+                {
+                  "label": "Hooks reference",
+                  "url": "https://code.claude.com/docs/en/hooks",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Automated Checks",
+          "children": [
+            {
+              "title": "Format and lint on edit",
+              "description": "A post-edit hook can run the formatter and linter on changed files. The agent sees the errors at once and fixes them in the same session.",
+              "resources": [
+                {
+                  "label": "Hooks reference",
+                  "url": "https://code.claude.com/docs/en/hooks",
+                  "type": "docs"
+                },
+                {
+                  "label": "Common workflows",
+                  "url": "https://code.claude.com/docs/en/common-workflows",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Tests before done",
+              "description": "A stop hook that runs tests keeps the agent from claiming success on broken code. Keep it fast, or limit it to the affected files.",
+              "resources": [
+                {
+                  "label": "Hooks reference",
+                  "url": "https://code.claude.com/docs/en/hooks",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code best practices",
+                  "url": "https://www.anthropic.com/engineering/claude-code-best-practices",
+                  "type": "article"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coding-agents-7",
+      "title": "Subagents and Plugins",
+      "order": 7,
+      "techs": [
+        "Subagents",
+        "Plugins",
+        "Marketplaces"
+      ],
+      "description": "Split work across focused agents and package your setup so others can install it. You will define subagents with their own tools and prompts, then bundle skills, agents, hooks and MCP servers into a plugin.",
+      "topics": [
+        "When to delegate to a subagent",
+        "Defining subagents: prompt, tools, model",
+        "Parallel work and merging results",
+        "Plugin structure and manifest",
+        "Bundling skills, agents, hooks and MCP",
+        "Marketplaces, versioning and trust"
+      ],
+      "resources": [
+        {
+          "label": "Subagents",
+          "platform": "code.claude.com",
+          "type": "docs"
+        },
+        {
+          "label": "Plugins",
+          "platform": "code.claude.com",
+          "type": "docs"
+        },
+        {
+          "label": "Plugin marketplaces",
+          "platform": "code.claude.com",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Build a plugin with a code-review subagent that has read-only tools, one skill and one hook, publish it in a small marketplace repo, and install it in a second project.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Delegation",
+          "children": [
+            {
+              "title": "When to use a subagent",
+              "description": "Delegate work that is noisy, parallel or needs a different focus, like searching a large codebase or reviewing a diff. Small tasks are faster done inline.",
+              "resources": [
+                {
+                  "label": "Subagents",
+                  "url": "https://code.claude.com/docs/en/sub-agents",
+                  "type": "docs"
+                },
+                {
+                  "label": "Building effective agents",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Defining a subagent",
+              "description": "A subagent has its own system prompt, tool list and model. Limiting tools, such as read-only for a reviewer, makes its job clear and safe.",
+              "resources": [
+                {
+                  "label": "Subagents",
+                  "url": "https://code.claude.com/docs/en/sub-agents",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code settings",
+                  "url": "https://code.claude.com/docs/en/settings",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Coordination",
+          "children": [
+            {
+              "title": "Parallel agents",
+              "description": "Several agents can work at once on separate branches or worktrees. You still need to review and merge what each one produced.",
+              "resources": [
+                {
+                  "label": "Common workflows",
+                  "url": "https://code.claude.com/docs/en/common-workflows",
+                  "type": "docs"
+                },
+                {
+                  "label": "Git worktree",
+                  "url": "https://git-scm.com/docs/git-worktree",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Clear handoffs",
+              "description": "A subagent only knows what you pass it. Write the task, the constraints and the expected output format as if briefing a new teammate.",
+              "resources": [
+                {
+                  "label": "Effective context engineering",
+                  "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Subagents",
+                  "url": "https://code.claude.com/docs/en/sub-agents",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Plugins",
+          "children": [
+            {
+              "title": "What a plugin bundles",
+              "description": "A plugin packages commands, skills, subagents, hooks and MCP servers into one installable unit. Teams use it to share a whole working setup.",
+              "resources": [
+                {
+                  "label": "Plugins",
+                  "url": "https://code.claude.com/docs/en/plugins",
+                  "type": "docs"
+                },
+                {
+                  "label": "Agent Skills",
+                  "url": "https://code.claude.com/docs/en/skills",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Versioning",
+              "description": "Treat a plugin like a library with versions and a changelog. Breaking a hook or skill silently changes how every user's agent behaves.",
+              "resources": [
+                {
+                  "label": "Plugins",
+                  "url": "https://code.claude.com/docs/en/plugins",
+                  "type": "docs"
+                },
+                {
+                  "label": "Semantic Versioning",
+                  "url": "https://semver.org/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Marketplaces",
+          "children": [
+            {
+              "title": "Publishing a marketplace",
+              "description": "A marketplace is a catalog of plugins, often a Git repo, that others can add and install from. Companies run private ones for internal tooling.",
+              "resources": [
+                {
+                  "label": "Plugin marketplaces",
+                  "url": "https://code.claude.com/docs/en/plugin-marketplaces",
+                  "type": "docs"
+                },
+                {
+                  "label": "Plugins",
+                  "url": "https://code.claude.com/docs/en/plugins",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Supply chain risk",
+              "description": "Installing a plugin runs someone else's hooks and servers on your machine. Prefer known sources and read what a plugin does before enabling it.",
+              "resources": [
+                {
+                  "label": "Claude Code security",
+                  "url": "https://code.claude.com/docs/en/security",
+                  "type": "docs"
+                },
+                {
+                  "label": "SLSA supply chain framework",
+                  "url": "https://slsa.dev/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coding-agents-8",
+      "title": "Reviewing AI-Written Code",
+      "order": 8,
+      "techs": [
+        "Code Review",
+        "Tests",
+        "Security Review"
+      ],
+      "description": "Become the person who can tell when agent output is right, almost right or dangerously wrong. You will review diffs with a checklist, use tests as proof and catch the mistakes agents make most often.",
+      "topics": [
+        "Reading diffs instead of trusting summaries",
+        "Tests as verification, not decoration",
+        "Hallucinated APIs and invented packages",
+        "Security review of generated code",
+        "Scope creep and silent behavior changes",
+        "When not to trust the output"
+      ],
+      "resources": [
+        {
+          "label": "Google engineering practices: code review",
+          "platform": "Google",
+          "type": "docs"
+        },
+        {
+          "label": "OWASP Top 10",
+          "platform": "OWASP",
+          "type": "docs"
+        },
+        {
+          "label": "Claude Code best practices",
+          "platform": "Anthropic",
+          "type": "article"
+        }
+      ],
+      "challenge": "Have an agent implement a feature with tests, then review the pull request yourself with a written checklist, find at least three real issues, and add one test that would have caught each.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Diff Review",
+          "children": [
+            {
+              "title": "Read the diff, not the summary",
+              "description": "Agent summaries describe what was intended, not always what changed. Read every changed line and check that the scope matches the request.",
+              "resources": [
+                {
+                  "label": "Google code review guide",
+                  "url": "https://google.github.io/eng-practices/review/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code best practices",
+                  "url": "https://www.anthropic.com/engineering/claude-code-best-practices",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Silent changes",
+              "description": "Agents sometimes weaken a test, catch and hide an error or change unrelated code to make things pass. Look for deleted assertions and broad try/catch blocks.",
+              "resources": [
+                {
+                  "label": "Google code review guide",
+                  "url": "https://google.github.io/eng-practices/review/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Common workflows",
+                  "url": "https://code.claude.com/docs/en/common-workflows",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Verification",
+          "children": [
+            {
+              "title": "Tests as proof",
+              "description": "Write or approve tests before the code when you can, so the agent has a target it cannot redefine. Run them yourself instead of trusting a claim that they pass.",
+              "resources": [
+                {
+                  "label": "Claude Code best practices",
+                  "url": "https://www.anthropic.com/engineering/claude-code-best-practices",
+                  "type": "article"
+                },
+                {
+                  "label": "Playwright",
+                  "url": "https://playwright.dev/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Run it for real",
+              "description": "Tests can pass while the feature is broken in the app. Start the app and try the change the way a user would.",
+              "resources": [
+                {
+                  "label": "Playwright",
+                  "url": "https://playwright.dev/",
+                  "type": "docs"
+                },
+                {
+                  "label": "Common workflows",
+                  "url": "https://code.claude.com/docs/en/common-workflows",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Common Failures",
+          "children": [
+            {
+              "title": "Hallucinated APIs",
+              "description": "Models can call functions, options or endpoints that do not exist or belong to another version. Check unfamiliar calls against the official docs.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10 for LLM Applications",
+                  "url": "https://genai.owasp.org/llm-top-10/",
+                  "type": "article"
+                },
+                {
+                  "label": "Google code review guide",
+                  "url": "https://google.github.io/eng-practices/review/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Invented packages",
+              "description": "An agent may suggest a dependency name that does not exist, and attackers register such names. Verify every new package before installing it.",
+              "resources": [
+                {
+                  "label": "Dependabot",
+                  "url": "https://docs.github.com/en/code-security/dependabot",
+                  "type": "docs"
+                },
+                {
+                  "label": "SLSA supply chain framework",
+                  "url": "https://slsa.dev/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Security and Trust",
+          "children": [
+            {
+              "title": "Security review",
+              "description": "Generated code repeats common flaws like injection, missing auth checks and leaked secrets. Run static analysis and review sensitive paths by hand.",
+              "resources": [
+                {
+                  "label": "OWASP Top 10",
+                  "url": "https://owasp.org/www-project-top-ten/",
+                  "type": "docs"
+                },
+                {
+                  "label": "GitHub code scanning",
+                  "url": "https://docs.github.com/en/code-security/code-scanning",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "When not to trust it",
+              "description": "Be most careful with auth, payments, migrations, concurrency and anything you cannot test. In those areas the agent drafts and a human decides.",
+              "resources": [
+                {
+                  "label": "Claude Code security",
+                  "url": "https://code.claude.com/docs/en/security",
+                  "type": "docs"
+                },
+                {
+                  "label": "OWASP Top 10",
+                  "url": "https://owasp.org/www-project-top-ten/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coding-agents-9",
+      "title": "Agents in CI and Headless Mode",
+      "order": 9,
+      "techs": [
+        "Headless Mode",
+        "GitHub Actions",
+        "PR Bots"
+      ],
+      "description": "Run coding agents without a person at the keyboard. You will script non-interactive runs, wire an agent into CI for reviews and fixes, and set the cost, permission and secret limits that keep it safe.",
+      "topics": [
+        "Non-interactive runs and structured output",
+        "Agents in GitHub Actions",
+        "PR review and issue triage bots",
+        "Cloud coding agents that open pull requests",
+        "Cost limits, timeouts and turn caps",
+        "Secrets, permissions and untrusted input"
+      ],
+      "resources": [
+        {
+          "label": "Run Claude Code programmatically",
+          "platform": "code.claude.com",
+          "type": "docs"
+        },
+        {
+          "label": "Claude Code GitHub Actions",
+          "platform": "code.claude.com",
+          "type": "docs"
+        },
+        {
+          "label": "GitHub Actions documentation",
+          "platform": "GitHub Docs",
+          "type": "docs"
+        },
+        {
+          "label": "Copilot coding agent",
+          "platform": "GitHub Docs",
+          "type": "docs"
+        }
+      ],
+      "challenge": "Add a GitHub Actions workflow that runs an agent to review each pull request and post comments, with a turn limit, read-only permissions, a token budget and no access to secrets on forked PRs.",
+      "estimatedTime": "2 weeks",
+      "sideLeft": [
+        {
+          "title": "Headless Runs",
+          "children": [
+            {
+              "title": "Non-interactive mode",
+              "description": "Agents can take a prompt as an argument, run to completion and exit. This turns them into a command you can script and schedule.",
+              "resources": [
+                {
+                  "label": "Run Claude Code programmatically",
+                  "url": "https://code.claude.com/docs/en/headless",
+                  "type": "docs"
+                },
+                {
+                  "label": "Codex CLI",
+                  "url": "https://github.com/openai/codex",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Structured output",
+              "description": "Ask for JSON output so scripts can read results reliably. Parse and validate it instead of scraping text.",
+              "resources": [
+                {
+                  "label": "Run Claude Code programmatically",
+                  "url": "https://code.claude.com/docs/en/headless",
+                  "type": "docs"
+                },
+                {
+                  "label": "Gemini CLI",
+                  "url": "https://github.com/google-gemini/gemini-cli",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "In CI",
+          "children": [
+            {
+              "title": "GitHub Actions",
+              "description": "A workflow can run an agent on pull requests, comments or a schedule. Start with read-only jobs like review before letting it push code.",
+              "resources": [
+                {
+                  "label": "Claude Code GitHub Actions",
+                  "url": "https://code.claude.com/docs/en/github-actions",
+                  "type": "docs"
+                },
+                {
+                  "label": "GitHub Actions",
+                  "url": "https://docs.github.com/en/actions",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Cloud coding agents",
+              "description": "Hosted agents take an issue, work in a cloud sandbox and open a pull request. The pull request is where your review from the previous layer happens.",
+              "resources": [
+                {
+                  "label": "Copilot coding agent",
+                  "url": "https://docs.github.com/en/copilot/concepts/agents/coding-agent",
+                  "type": "docs"
+                },
+                {
+                  "label": "Codex",
+                  "url": "https://developers.openai.com/codex",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Limits",
+          "children": [
+            {
+              "title": "Cost and turn caps",
+              "description": "An unattended agent can loop and spend money. Set maximum turns, timeouts and a budget per run, and alert on spikes.",
+              "resources": [
+                {
+                  "label": "Manage costs",
+                  "url": "https://code.claude.com/docs/en/costs",
+                  "type": "docs"
+                },
+                {
+                  "label": "Run Claude Code programmatically",
+                  "url": "https://code.claude.com/docs/en/headless",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Allowed tools in CI",
+              "description": "Pre-approve only the tools the job needs, since nobody is there to answer a prompt. Deny network and write access a review job does not use.",
+              "resources": [
+                {
+                  "label": "Claude Code permissions",
+                  "url": "https://code.claude.com/docs/en/iam",
+                  "type": "docs"
+                },
+                {
+                  "label": "Claude Code settings",
+                  "url": "https://code.claude.com/docs/en/settings",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Safety",
+          "children": [
+            {
+              "title": "Secrets in workflows",
+              "description": "Store API keys as encrypted secrets and give the workflow token minimal permissions. Never echo secrets into logs or prompts.",
+              "resources": [
+                {
+                  "label": "GitHub Actions security guides",
+                  "url": "https://docs.github.com/en/actions/security-guides",
+                  "type": "docs"
+                },
+                {
+                  "label": "GitHub Actions",
+                  "url": "https://docs.github.com/en/actions",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Untrusted pull requests",
+              "description": "Issue text, PR descriptions and code from forks can carry prompt injection. An agent reading them must not hold secrets or write access at the same time.",
+              "resources": [
+                {
+                  "label": "Simon Willison - Prompt injection",
+                  "url": "https://simonwillison.net/series/prompt-injection/",
+                  "type": "article"
+                },
+                {
+                  "label": "GitHub Actions security guides",
+                  "url": "https://docs.github.com/en/actions/security-guides",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coding-agents-10",
+      "title": "Building Your Own Harness",
+      "order": 10,
+      "techs": [
+        "Agent SDK",
+        "Evals",
+        "Sandboxing"
+      ],
+      "description": "Put everything together by building a small coding agent of your own. You will write the tool loop, choose a context strategy, measure it with evals and run it inside a sandbox.",
+      "topics": [
+        "Agent SDKs and what they handle for you",
+        "Writing the tool loop from scratch",
+        "Designing tools the model can use well",
+        "Context strategy for long tasks",
+        "Evals: task suites, graders and regressions",
+        "Sandboxing file system and network access"
+      ],
+      "resources": [
+        {
+          "label": "Claude Agent SDK overview",
+          "platform": "code.claude.com",
+          "type": "docs"
+        },
+        {
+          "label": "OpenAI Agents SDK",
+          "platform": "OpenAI",
+          "type": "docs"
+        },
+        {
+          "label": "Writing effective tools for agents",
+          "platform": "Anthropic",
+          "type": "article"
+        },
+        {
+          "label": "Demystifying evals for AI agents",
+          "platform": "Anthropic",
+          "type": "article"
+        }
+      ],
+      "challenge": "Build a minimal coding agent with read, edit and test tools, run it in a container with no network, and score it on ten small bug-fix tasks from your own repo before and after one improvement.",
+      "estimatedTime": "3 weeks",
+      "sideLeft": [
+        {
+          "title": "The Core",
+          "children": [
+            {
+              "title": "Using an Agent SDK",
+              "description": "SDKs give you the loop, built-in tools, permissions and context handling that production agents use. Start here to ship faster and learn the patterns.",
+              "resources": [
+                {
+                  "label": "Claude Agent SDK",
+                  "url": "https://code.claude.com/docs/en/agent-sdk/overview",
+                  "type": "docs"
+                },
+                {
+                  "label": "OpenAI Agents SDK",
+                  "url": "https://openai.github.io/openai-agents-python/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "The loop from scratch",
+              "description": "Writing the loop by hand with raw tool calling shows you every decision an SDK hides. It is about fifty lines and worth building once.",
+              "resources": [
+                {
+                  "label": "OpenAI function calling",
+                  "url": "https://platform.openai.com/docs/guides/function-calling",
+                  "type": "docs"
+                },
+                {
+                  "label": "Gemini function calling",
+                  "url": "https://ai.google.dev/gemini-api/docs/function-calling",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Tools and Context",
+          "children": [
+            {
+              "title": "Designing tools",
+              "description": "Clear names, tight schemas and helpful error messages decide how well the model uses a tool. Return short, relevant results instead of raw dumps.",
+              "resources": [
+                {
+                  "label": "Writing tools for agents",
+                  "url": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Building effective agents",
+                  "url": "https://www.anthropic.com/engineering/building-effective-agents",
+                  "type": "article"
+                }
+              ]
+            },
+            {
+              "title": "Context strategy",
+              "description": "Decide what to load up front, what to fetch on demand and when to summarize. These choices matter more than the model for long tasks.",
+              "resources": [
+                {
+                  "label": "Effective context engineering",
+                  "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "Prompt caching",
+                  "url": "https://docs.claude.com/en/docs/build-with-claude/prompt-caching",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sideRight": [
+        {
+          "title": "Evals",
+          "children": [
+            {
+              "title": "Task suites and graders",
+              "description": "A set of real tasks with tests as graders tells you whether a change made the agent better. Without it, you are tuning by feel.",
+              "resources": [
+                {
+                  "label": "Demystifying evals for AI agents",
+                  "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "SWE-bench",
+                  "url": "https://www.swebench.com/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Tracking regressions",
+              "description": "Run the suite on every prompt, tool or model change and track pass rate and cost. Agents are non-deterministic, so run each task more than once.",
+              "resources": [
+                {
+                  "label": "Demystifying evals for AI agents",
+                  "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+                  "type": "article"
+                },
+                {
+                  "label": "SWE-bench",
+                  "url": "https://www.swebench.com/",
+                  "type": "docs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Sandboxing",
+          "children": [
+            {
+              "title": "Isolating the agent",
+              "description": "Run the agent in a container or sandbox that limits files and network. Then a bad command damages a throwaway environment, not your machine.",
+              "resources": [
+                {
+                  "label": "Claude Code sandboxing",
+                  "url": "https://code.claude.com/docs/en/sandboxing",
+                  "type": "docs"
+                },
+                {
+                  "label": "Docker security",
+                  "url": "https://docs.docker.com/engine/security/",
+                  "type": "docs"
+                }
+              ]
+            },
+            {
+              "title": "Dev containers",
+              "description": "A dev container gives the agent a reproducible setup with only the tools it needs. It is a simple way to run with fewer prompts safely.",
+              "resources": [
+                {
+                  "label": "Claude Code dev containers",
+                  "url": "https://code.claude.com/docs/en/devcontainer",
+                  "type": "docs"
+                },
+                {
+                  "label": "Development Containers",
+                  "url": "https://containers.dev/",
+                  "type": "docs"
                 }
               ]
             }

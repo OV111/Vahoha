@@ -264,7 +264,7 @@ export const TRACKS = {
       id: "ai-developer",
       title: "AI Developer",
       available: true,
-      techs: ["Python", "LangChain", "OpenAI API", "FastAPI"],
+      techs: ["Python", "LLM APIs", "LangChain", "FastAPI"],
     },
     {
       id: "nlp-engineer",
@@ -282,7 +282,7 @@ export const TRACKS = {
       id: "llm-engineer",
       title: "LLM Engineer",
       available: true,
-      techs: ["Python", "LangChain", "LlamaIndex", "Vector DBs"],
+      techs: ["Transformers", "RAG", "Fine-tuning", "Datasets"],
     },
     {
       id: "mlops",
@@ -304,15 +304,21 @@ export const TRACKS = {
     },
     {
       id: "prompt-engineer",
-      title: "Prompt Engineer",
+      title: "Context Engineer",
       available: true,
-      techs: ["LLMs", "LangChain", "Python", "RAG"],
+      techs: ["LLMs", "Context Engineering", "Evals", "RAG"],
     },
     {
       id: "ai-agents",
       title: "AI Agents Engineer",
       available: true,
       techs: ["LLM APIs", "Tool Use", "RAG", "Evals", "MCP"],
+    },
+    {
+      id: "coding-agents",
+      title: "AI Coding Agents Engineer",
+      available: true,
+      techs: ["Claude Code", "MCP", "Skills", "Hooks"],
     },
   ],
   devops: [
