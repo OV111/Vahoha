@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ExternalLink, Library } from "lucide-react";
-import { API_BASE_URL } from "../../../../constants/api";
+import { fetchLibraryResources } from "../../../services/libraryApi";
 
 const MAX_ITEMS = 5;
 
@@ -20,12 +20,8 @@ const LayerLibrary = ({ layerId, onNavigate }) => {
     // overwrite the list for the one now showing.
     const controller = new AbortController();
     setState({ items: [], total: 0 });
-    fetch(
-      `${API_BASE_URL}/library?layer=${encodeURIComponent(layerId)}&limit=${MAX_ITEMS}`,
-      { signal: controller.signal },
-    )
-      .then((res) => (res.ok ? res.json() : { data: [] }))
-      .then((json) => setState({ items: json.data ?? [], total: json.pagination?.total ?? 0 }))
+    fetchLibraryResources({ layer: layerId, limit: MAX_ITEMS }, controller.signal)
+      .then(({ resources, pagination }) => setState({ items: resources ?? [], total: pagination?.total ?? 0 }))
       .catch(() => {}); // optional section: failures (and aborts) just show nothing
     return () => controller.abort();
   }, [layerId]);

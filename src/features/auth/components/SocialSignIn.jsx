@@ -6,8 +6,8 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import useAuthStore from "../../../stores/useAuthStore";
 import { tapArea } from "../authStyles";
+import { googleAuth, GITHUB_AUTH_URL } from "../../../services/authApi";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const buttonBase = `relative flex min-h-10 w-full cursor-pointer items-center justify-center gap-2.5 rounded-md border py-2 px-4 text-sm font-medium transition ${tapArea}`;
 
@@ -22,23 +22,13 @@ const SocialSignIn = () => {
 
   const handleGoogleLogin = async (credentialResponse) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/google/auth`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ tokenId: credentialResponse.credential }),
-      });
-      const result = await res.json();
-      if (res.ok) {
-        toast.success("Google login successful");
-        login(result.accessToken);
-        navigate("/");
-      } else {
-        toast.error(result.message || "Google auth failed");
-      }
+      const result = await googleAuth(credentialResponse.credential);
+      toast.success("Google login successful");
+      login(result.accessToken);
+      navigate("/");
     } catch (err) {
-      console.error(err);
-      toast.error("Google auth failed");
+      if (!err.status) console.error(err);
+      toast.error(err.message || "Google auth failed");
     }
   };
 
@@ -60,7 +50,7 @@ const SocialSignIn = () => {
       <button
         type="button"
         onClick={() => {
-          window.location.href = `${API_BASE_URL}/auth/github`;
+          window.location.href = GITHUB_AUTH_URL;
         }}
         className={`${buttonBase} border-[#30363d] bg-[#24292e] text-white hover:bg-[#2f363d] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700`}
       >

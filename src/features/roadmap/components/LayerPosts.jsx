@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FileText } from "lucide-react";
-import { API_BASE_URL } from "../../../../constants/api";
+import { fetchBlogs } from "../../../services/blogsApi";
 
 const MAX_POSTS = 5;
 
@@ -18,12 +18,8 @@ const LayerPosts = ({ layerId, onNavigate }) => {
     // overwrite the list for the one now showing.
     const controller = new AbortController();
     setPosts([]);
-    fetch(
-      `${API_BASE_URL}/blogs?layer=${encodeURIComponent(layerId)}&limit=${MAX_POSTS}`,
-      { signal: controller.signal },
-    )
-      .then((res) => (res.ok ? res.json() : { data: [] }))
-      .then((json) => setPosts(json.data ?? []))
+    fetchBlogs(1, MAX_POSTS, { layer: layerId }, { signal: controller.signal })
+      .then(({ blogs }) => setPosts(blogs ?? []))
       .catch(() => {}); // optional section: failures (and aborts) just show nothing
     return () => controller.abort();
   }, [layerId]);

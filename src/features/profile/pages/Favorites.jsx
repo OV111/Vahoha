@@ -9,7 +9,7 @@ import { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import useThemeStore from "@/stores/useThemeStore";
 const Favorites = () => {
-  const { theme } = useThemeStore();
+  const theme = useThemeStore((s) => s.theme);
   const isDarkMode = theme === "dark";
   const [blogs, setBlogs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

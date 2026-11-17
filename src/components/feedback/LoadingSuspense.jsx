@@ -9,7 +9,7 @@ import useThemeStore from "@/stores/useThemeStore";
  * shrinks the circle for small panels and popovers.
  */
 const LoadingSuspense = ({ fill = false, size = 44 }) => {
-  const { theme } = useThemeStore();
+  const theme = useThemeStore((s) => s.theme);
   const isDark = theme !== "light";
 
   return (

@@ -1,23 +1,12 @@
 import { create } from "zustand";
-import { API_BASE_URL, getAccessToken, authHeaders, apiFetch } from "../../constants/api";
+import { getAccessToken } from "../../constants/api";
 import posthog, { isPostHogConfigured } from "../lib/posthog";
 import { queryCache } from "../lib/queryCache";
+import { fetchMyProfile } from "../services/profileApi";
+import { fetchUserBlogs } from "../services/blogsApi";
 
 const PROFILE_KEY = "profile";
 const PROFILE_STALE_MS = 60_000;
-
-// Throws on anything but a good answer, so a failure is never cached as a profile.
-const requestProfile = async () => {
-  const response = await apiFetch(`${API_BASE_URL}/my-profile`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...authHeaders(),
-    },
-  });
-  if (response.status === 401) throw Object.assign(new Error("unauthorized"), { unauthorized: true });
-  if (!response.ok) throw new Error(`Profile request failed (${response.status})`);
-  return response.json();
-};
 
 const useProfileStore = create((set, get) => ({
   user: null,
@@ -37,7 +26,7 @@ const useProfileStore = create((set, get) => ({
     // With a profile already showing, refresh behind it: no full-page spinner.
     if (!hasProfile) set({ isLoading: true });
     try {
-      const data = await queryCache.load(PROFILE_KEY, requestProfile, { staleMs: PROFILE_STALE_MS, force });
+      const data = await queryCache.load(PROFILE_KEY, fetchMyProfile, { staleMs: PROFILE_STALE_MS, force });
       const user = data.userWithoutPassword;
       const previousUser = get().user;
       set({
@@ -62,13 +51,7 @@ const useProfileStore = create((set, get) => ({
     if (!userId) return;
     set({ isBlogsLoading: true });
     try {
-      const response = await apiFetch(`${API_BASE_URL}/blogs/user/${userId}`);
-      if (!response.ok) {
-        set({ isBlogsLoading: false });
-        return;
-      }
-      const data = await response.json();
-      set({ blogs: data.data ?? [], isBlogsLoading: false });
+      set({ blogs: await fetchUserBlogs(userId), isBlogsLoading: false });
     } catch (err) {
       console.error("fetchUserBlogs failed:", err);
       set({ isBlogsLoading: false });

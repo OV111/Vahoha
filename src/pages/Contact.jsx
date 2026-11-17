@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion as Motion } from "motion/react";
 import { Mail, Send, Github, Instagram, CheckCircle2, ChevronDown } from "lucide-react";
 import XLogo from "../components/ui/XLogo";
-import { API_BASE_URL } from "../../constants/api";
+import { sendContactMessage } from "../services/contactApi";
 import { SITE } from "../../constants/site";
 import { CONTACT_TOPICS, CONTACT_LIMITS } from "../../constants/contact";
 
@@ -48,20 +48,14 @@ const Contact = () => {
     setError({ field: null, message: "" });
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/contact`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        setError({ field: body.field ?? null, message: body.message ?? "Something went wrong." });
-        setStatus("error");
-        return;
-      }
+      await sendContactMessage(form);
       setStatus("sent");
-    } catch {
-      setError({ field: null, message: "Network error. Check your connection and try again." });
+    } catch (err) {
+      setError(
+        err.status
+          ? { field: err.field, message: err.message }
+          : { field: null, message: "Network error. Check your connection and try again." },
+      );
       setStatus("error");
     }
   };

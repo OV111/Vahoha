@@ -98,7 +98,7 @@ const withScheme = (value) =>
 const Settings = () => {
   const { user, stats, isLoading, fetchProfile, updateStats, updateUser } =
     useProfileStore();
-  const { theme } = useThemeStore();
+  const theme = useThemeStore((s) => s.theme);
   const isDarkMode = theme === "dark";
   const skeletonProps = {
     borderRadius: 8,

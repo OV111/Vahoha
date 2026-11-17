@@ -6,13 +6,14 @@ export const fetchBlogs = async (page = 1, limit = 10, params = {}, { signal } =
   const url = new URL(`${API_BASE_URL}/blogs`);
   url.searchParams.set("page", String(page));
   url.searchParams.set("limit", String(limit));
-  const { filter, sort, difficulty, readTime, category, q } = params;
+  const { filter, sort, difficulty, readTime, category, layer, q } = params;
   if (filter && filter !== "All" && filter !== "Latest")
     url.searchParams.set("filter", filter);
   if (sort && sort !== "Newest") url.searchParams.set("sort", sort);
   if (difficulty) url.searchParams.set("difficulty", difficulty);
   if (readTime) url.searchParams.set("readTime", readTime);
   if (category) url.searchParams.set("category", category);
+  if (layer) url.searchParams.set("layer", layer);
   if (q) url.searchParams.set("q", q);
   const res = await apiFetch(url.toString(), { signal });
   if (!res.ok) throw new Error("Failed to fetch blogs");
@@ -84,3 +85,47 @@ export const deleteBlog = async (id) => {
   if (!data.success) throw new Error(data.message || "Failed to delete blog");
   return data;
 };
+
+export const createBlog = async (formData) => {
+  const res = await apiFetch(`${API_BASE_URL}/blogs`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: formData,
+  });
+  if (!res.ok) throw new Error("Failed to create blog");
+  return res.json();
+};
+
+export const fetchBlogById = async (id) => {
+  const res = await apiFetch(`${API_BASE_URL}/blogs/id/${id}`, { headers: authHeaders() });
+  const data = await res.json();
+  if (!data.success) throw new Error("Blog not found");
+  return data.data;
+};
+
+// Public read of a blog or a legacy post; throws with the HTTP status so callers can show "not found".
+export const fetchPublicPost = async (type, id, { signal } = {}) => {
+  const path = type === "blog" ? `blogs/id/${id}` : `posts/${id}`;
+  const res = await fetch(`${API_BASE_URL}/${path}`, { signal });
+  if (!res.ok) {
+    const err = new Error("Failed to fetch post");
+    err.status = res.status;
+    throw err;
+  }
+  const json = await res.json();
+  return json.data ?? json;
+};
+
+const postBlogAction = async (id, action) => {
+  const res = await apiFetch(`${API_BASE_URL}/blogs/${id}/${action}`, {
+    method: "POST",
+    headers: authHeaders(),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(`Failed to ${action} blog`);
+  return data;
+};
+
+export const toggleBlogLike = (id) => postBlogAction(id, "like");
+
+export const toggleBlogFavourite = (id) => postBlogAction(id, "favourite");

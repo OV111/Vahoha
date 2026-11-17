@@ -12,11 +12,8 @@ import {
   DIFFICULTIES,
   RECOMMENDED_TAGS,
 } from "../../../../constants/addBlog.js";
-import { authHeaders, apiFetch } from "../../../../constants/api.js";
-import { updateBlog } from "../../../services/blogsApi.js";
+import { fetchBlogById, updateBlog } from "../../../services/blogsApi.js";
 import LayerPicker from "@/features/blogs/components/LayerPicker";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const EMPTY = {
   title: "",
@@ -57,12 +54,7 @@ export default function EditBlog() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await apiFetch(`${API_BASE_URL}/blogs/id/${id}`, {
-          headers: authHeaders(),
-        });
-        const data = await res.json();
-        if (!data.success) throw new Error("Not found");
-        const b = data.data;
+        const b = await fetchBlogById(id);
         setFields({
           title: b.title ?? "",
           description: b.description ?? "",

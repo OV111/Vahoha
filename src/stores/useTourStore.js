@@ -1,54 +1,35 @@
 import { create } from "zustand";
-import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
 import useAuthStore from "./useAuthStore";
+import { fetchSeenTours, markTourSeen } from "../services/tourApi";
 
-/**
- * Which first-visit tours the signed-in user already finished or skipped.
- * The server owns it (users.toursSeen), so it follows the account: a new
- * account always gets the tours, on any browser or device.
- *
- * `seen` is null until the first load answers. Callers must treat null as
- * "unknown, show nothing": showing a tour to someone who may already have
- * seen it is worse than showing it a moment late.
- */
+const INITIAL_STATE = { seen: null, status: "idle" };
+
+// Tours the user finished or skipped, stored on the account (users.toursSeen).
+// `seen` is null until loaded: callers show no tour while it is unknown.
 const useTourStore = create((set, get) => ({
-  seen: null,
-  status: "idle", // idle | loading | loaded | error
+  ...INITIAL_STATE,
 
   load: async () => {
-    if (get().status === "loading" || get().status === "loaded") return;
+    const { status } = get();
+    if (status === "loading" || status === "loaded") return;
     set({ status: "loading" });
     try {
-      const res = await apiFetch(`${API_BASE_URL}/api/onboarding`, { headers: authHeaders() });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const { seen } = await res.json();
-      set({ seen, status: "loaded" });
+      set({ seen: await fetchSeenTours(), status: "loaded" });
     } catch {
-      // `seen` stays null, so no tour shows; the next mount tries again.
       set({ status: "error" });
     }
   },
 
-  // Optimistic: the tour closes immediately, and the save happens behind it.
-  // If the save fails the tour simply shows again next visit; that is a
-  // better failure than blocking the UI on a network call.
-  markSeen: async (tourId) => {
+  // Optimistic: the tour closes now; if the save fails it simply shows again next visit.
+  markSeen: (tourId) => {
     set((s) => ({ seen: [...new Set([...(s.seen ?? []), tourId])] }));
-    try {
-      await apiFetch(`${API_BASE_URL}/api/onboarding/${tourId}/seen`, {
-        method: "PUT",
-        headers: authHeaders(),
-      });
-    } catch {
-      // Non-fatal, see above.
-    }
+    markTourSeen(tourId).catch(() => {});
   },
 
-  reset: () => set({ seen: null, status: "idle" }),
+  reset: () => set(INITIAL_STATE),
 }));
 
-// The list belongs to whoever is signed in. Without this, one user's finished
-// tours would hide the tours from the next account in the same tab.
+// The list belongs to the signed-in user; drop it when the user changes.
 useAuthStore.subscribe((state, prev) => {
   if (state.auth !== prev.auth || state.session !== prev.session) {
     useTourStore.getState().reset();

@@ -10,10 +10,9 @@ import {
   DIFFICULTIES,
   RECOMMENDED_TAGS,
 } from "../../../../constants/addBlog.js";
-import { authHeaders, apiFetch } from "../../../../constants/api.js";
+import { createBlog } from "../../../services/blogsApi.js";
 import LayerPicker from "@/features/blogs/components/LayerPicker";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const AUTOSAVE_KEY = "blog-draft-autosave";
 
 const INITIAL_FIELDS = {
@@ -202,13 +201,7 @@ export default function AddBlog() {
       formData.append("status", status);
       if (fields.cover) formData.append("cover", fields.cover);
 
-      const res = await apiFetch(`${API_BASE_URL}/blogs`, {
-        method: "POST",
-        headers: authHeaders(),
-        body: formData,
-      });
-
-      if (!res.ok) throw new Error("Failed");
+      await createBlog(formData);
       localStorage.removeItem(AUTOSAVE_KEY);
       toast.success(status === "draft" ? "Draft saved" : "Blog published!");
       if (status === "published") reset();

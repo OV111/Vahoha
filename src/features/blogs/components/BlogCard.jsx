@@ -6,7 +6,7 @@ import CommentPopover from "./CommentPopover";
 import { toast } from "sonner";
 import useAuthStore from "@/stores/useAuthStore";
 import useBlogInteractionsStore from "@/stores/useBlogInteractionsStore";
-import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
+import { toggleBlogFavourite, toggleBlogLike } from "../../../services/blogsApi";
 
 import fs1React    from "../assets/covers/fullstack-react.webp";
 import buildingApi from "../assets/covers/building-rest-api.webp";
@@ -122,12 +122,7 @@ const BlogCard = ({ card }) => {
     setLikesCount((prev) => (wasLiked ? prev - 1 : prev + 1));
     setLikeLoading(true);
     try {
-      const res = await apiFetch(`${API_BASE_URL}/blogs/${post.rawId}/like`, {
-        method: "POST",
-        headers: authHeaders(),
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error();
+      const data = await toggleBlogLike(post.rawId);
       setLikesCount(data.likesCount);
     } catch {
       toggleLiked(post.rawId);
@@ -143,12 +138,7 @@ const BlogCard = ({ card }) => {
     toggleSaved(post.rawId);
     setSaveLoading(true);
     try {
-      const res = await apiFetch(`${API_BASE_URL}/blogs/${post.rawId}/favourite`, {
-        method: "POST",
-        headers: authHeaders(),
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error();
+      await toggleBlogFavourite(post.rawId);
     } catch {
       toggleSaved(post.rawId);
       toast.error("Failed to save post");

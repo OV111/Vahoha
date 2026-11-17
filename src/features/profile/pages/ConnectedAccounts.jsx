@@ -7,9 +7,9 @@ import XLogo from "@/components/ui/XLogo";
 import { toast } from "sonner";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { getAccessToken, apiFetch } from "../../../../constants/api";
+import { saveSettings } from "../../../services/profileApi";
+import { disconnectGitHub as requestGitHubDisconnect, GITHUB_LINK_URL } from "../../../services/authApi";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const SOCIAL_FIELDS = [
   {
@@ -41,7 +41,7 @@ const SOCIAL_FIELDS = [
 const ConnectedAccounts = () => {
   const { user, stats, isLoading, fetchProfile, updateStats } =
     useProfileStore();
-  const { theme } = useThemeStore();
+  const theme = useThemeStore((s) => s.theme);
   const isDarkMode = theme === "dark";
 
   const [links, setLinks] = useState({
@@ -72,51 +72,30 @@ const ConnectedAccounts = () => {
   const saveLinks = async () => {
     setSaving(true);
     try {
-      const token = getAccessToken();
       const formData = new FormData();
       Object.entries(links).forEach(([k, v]) => formData.append(k, v));
-      const res = await apiFetch(`${API_BASE_URL}/my-profile/settings`, {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-      const data = await res.json();
-      if (res.ok) {
-        updateStats(data.stats);
-        toast.success("Links saved");
-      } else {
-        toast.error(data.message || "Failed to save");
-      }
-    } catch {
-      toast.error("Something went wrong");
+      const data = await saveSettings(formData);
+      updateStats(data.stats);
+      toast.success("Links saved");
+    } catch (err) {
+      toast.error(err.message || "Failed to save");
     } finally {
       setSaving(false);
     }
   };
 
   const connectGitHub = () => {
-    // Identity for this redirect is proven server-side via the httpOnly
-    // refresh cookie (sent automatically on this same-site navigation),
-    // not a token in the URL — see githubLinkRedirect in backend/modules/auth/controllers/auth.controller.js.
-    window.location.href = `${API_BASE_URL}/auth/github/link`;
+    window.location.href = GITHUB_LINK_URL;
   };
 
   const disconnectGitHub = async () => {
     setDisconnecting(true);
     try {
-      const token = getAccessToken();
-      const res = await apiFetch(`${API_BASE_URL}/auth/github/disconnect`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        await fetchProfile({ force: true });
-        toast.success("GitHub disconnected");
-      } else {
-        toast.error("Failed to disconnect");
-      }
+      await requestGitHubDisconnect();
+      await fetchProfile({ force: true });
+      toast.success("GitHub disconnected");
     } catch {
-      toast.error("Something went wrong");
+      toast.error("Failed to disconnect");
     } finally {
       setDisconnecting(false);
     }

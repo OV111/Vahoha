@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { GraduationCap, Mic, MicOff, Sparkles } from "lucide-react";
-import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
+import { submitTeachBack, submitTeachBackFollowUp } from "../../../services/roadmapApi";
 import { useSpeechDictation } from "../../mentor/lib/useSpeechDictation";
 import TeachBackCard from "../../mentor/components/TeachBackCard";
 
@@ -88,21 +88,11 @@ const InlineTeachBack = ({ path, layer, topic }) => {
     setSubmitting(true);
 
     const isFollowUp = followUpMode && result?.data?.followUp;
-    const url = isFollowUp
-      ? `${API_BASE_URL}/api/exams/submit-teach-back-followup`
-      : `${API_BASE_URL}/api/exams/submit-teach-back`;
-    const body = isFollowUp
-      ? { sessionId: result.data.sessionId, answerText: draft }
-      : { path, layer, topic, answerText: draft };
 
     try {
-      const res = await apiFetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...authHeaders() },
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+      const data = isFollowUp
+        ? await submitTeachBackFollowUp(result.data.sessionId, draft)
+        : await submitTeachBack(path, layer, topic, draft);
       // A follow-up grades only the targeted criterion — carry sessionId
       // forward so a second follow-up round (if ever added) still has it.
       setResult({ data: { ...data, sessionId: data.sessionId ?? result?.data?.sessionId } });

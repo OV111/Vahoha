@@ -1,16 +1,10 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Elms+Sans:ital,wght@0,100..900;1,100..900&display=swap'); */
-
-@plugin 'tailwindcss-animate';
-@plugin '@tailwindcss/typography';
-/* @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap'); */
-/* @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap'); */
-/* @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap'); */
-/* DM Sans is self-hosted via @fontsource-variable (imported in main.jsx) */
-
 @import "tailwindcss";
 
-/* Tailwind auto-scans the whole repo; only src and index.html hold real classes,
-   so class names in docs, tests, backend and vendored skill files must not emit CSS. */
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Only src and index.html hold real classes; scanning the rest emits junk CSS. */
 @source not "../backend";
 @source not "../docs";
 @source not "../tests";
@@ -22,175 +16,93 @@
 @source not "../README.md";
 @source not "../VISION.md";
 
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-.thin-scrollbar { scrollbar-width: thin; scrollbar-color: #2a2a2a transparent; }
-.thin-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-.thin-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.thin-scrollbar::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
-.thin-scrollbar::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
-
-/* Same black as the navbar and MainLayout, so iOS overscroll and the area
-   behind the status bar (viewport-fit=cover) never flash white. */
-html {
-    background-color: #000;
-    -webkit-text-size-adjust: 100%;
-}
-
-body {
-    font-family: "DM Sans Variable", "DM Sans", system-ui, sans-serif;
-    background-color: #000;
-}
-
-@custom-variant dark (&:where(.dark, .dark *));
-
 @theme inline {
-    --color-gray-1000: var(--ds-gray-1000);
-    --color-background-100: var(--ds-background-100);
-    --radius-sm: calc(var(--radius) - 4px);
-    --radius-md: calc(var(--radius) - 2px);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) + 4px);
-    --radius-2xl: calc(var(--radius) + 8px);
-    --radius-3xl: calc(var(--radius) + 12px);
-    --radius-4xl: calc(var(--radius) + 16px);
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --color-card: var(--card);
-    --color-card-foreground: var(--card-foreground);
-    --color-popover: var(--popover);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-primary: var(--primary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-secondary: var(--secondary);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-muted: var(--muted);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-accent: var(--accent);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-destructive: var(--destructive);
-    --color-border: var(--border);
-    --color-input: var(--input);
-    --color-ring: var(--ring);
-    --color-chart-1: var(--chart-1);
-    --color-chart-2: var(--chart-2);
-    --color-chart-3: var(--chart-3);
-    --color-chart-4: var(--chart-4);
-    --color-chart-5: var(--chart-5);
-    --color-sidebar: var(--sidebar);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
 
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 }
 
 :root {
-    --ds-gray-100: hsla(0, 0%, 95%, 1);
-    --ds-gray-200: hsla(0, 0%, 92%, 1);
-    --ds-gray-500: hsla(0, 0%, 79%, 1);
-    --ds-gray-600: hsla(0, 0%, 66%, 1);
-    --ds-gray-700: hsla(0, 0%, 56%, 1);
-    --ds-gray-1000: hsla(0, 0%, 9%, 1);
-    --ds-background-100: hsla(0, 0%, 100%, 1);
-    --radius: 0.625rem;
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.141 0.005 285.823);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.141 0.005 285.823);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.141 0.005 285.823);
-    --primary: oklch(0.21 0.006 285.885);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.967 0.001 286.375);
-    --secondary-foreground: oklch(0.21 0.006 285.885);
-    --muted: oklch(0.967 0.001 286.375);
-    /* fix: was 0.552 — too low contrast on white (≈3.3:1); 0.42 reaches ≈5.2:1 (WCAG AA) */
-    --muted-foreground: oklch(0.42 0.016 285.938);
-    --accent: oklch(0.967 0.001 286.375);
-    --accent-foreground: oklch(0.21 0.006 285.885);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.92 0.004 286.32);
-    --input: oklch(0.92 0.004 286.32);
-    --ring: oklch(0.705 0.015 286.067);
-    --chart-1: oklch(0.646 0.222 41.116);
-    --chart-2: oklch(0.6 0.118 184.704);
-    --chart-3: oklch(0.398 0.07 227.392);
-    --chart-4: oklch(0.828 0.189 84.429);
-    --chart-5: oklch(0.769 0.188 70.08);
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.141 0.005 285.823);
-    --sidebar-primary: oklch(0.21 0.006 285.885);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.967 0.001 286.375);
-    --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
-    --sidebar-border: oklch(0.92 0.004 286.32);
-    --sidebar-ring: oklch(0.705 0.015 286.067);
-
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.141 0.005 285.823);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.141 0.005 285.823);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.141 0.005 285.823);
+  --primary: oklch(0.21 0.006 285.885);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --muted: oklch(0.967 0.001 286.375);
+  --muted-foreground: oklch(0.42 0.016 285.938);
+  --accent: oklch(0.967 0.001 286.375);
+  --accent-foreground: oklch(0.21 0.006 285.885);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.92 0.004 286.32);
+  --input: oklch(0.92 0.004 286.32);
+  --ring: oklch(0.705 0.015 286.067);
 }
 
 .dark {
-    --ds-gray-100: hsla(0, 0%, 10%, 1);
-    --ds-gray-200: hsla(0, 0%, 12%, 1);
-    --ds-gray-500: hsla(0, 0%, 27%, 1);
-    --ds-gray-600: hsla(0, 0%, 53%, 1);
-    --ds-gray-700: hsla(0, 0%, 56%, 1);
-    --ds-gray-1000: hsla(0, 0%, 93%, 1);
-    --ds-background-100: hsla(0, 0%, 4%, 1);
-    --background: oklch(0.141 0.005 285.823);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.21 0.006 285.885);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.21 0.006 285.885);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.92 0.004 286.32);
-    --primary-foreground: oklch(0.21 0.006 285.885);
-    --secondary: oklch(0.274 0.006 286.033);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.274 0.006 286.033);
-    --muted-foreground: oklch(0.705 0.015 286.067);
-    --accent: oklch(0.274 0.006 286.033);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.552 0.016 285.938);
-    --chart-1: oklch(0.488 0.243 264.376);
-    --chart-2: oklch(0.696 0.17 162.48);
-    --chart-3: oklch(0.769 0.188 70.08);
-    --chart-4: oklch(0.627 0.265 303.9);
-    --chart-5: oklch(0.645 0.246 16.439);
-    --sidebar: oklch(0.21 0.006 285.885);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.274 0.006 286.033);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.552 0.016 285.938);
-
+  --background: oklch(0.141 0.005 285.823);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.21 0.006 285.885);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.21 0.006 285.885);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.92 0.004 286.32);
+  --primary-foreground: oklch(0.21 0.006 285.885);
+  --secondary: oklch(0.274 0.006 286.033);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.274 0.006 286.033);
+  --muted-foreground: oklch(0.705 0.015 286.067);
+  --accent: oklch(0.274 0.006 286.033);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.552 0.016 285.938);
 }
 
-@keyframes blink {
-  from { opacity: 1; }
-  to { opacity: 0; }
+/* Black matches the navbar so iOS overscroll and the status-bar area never flash white. */
+html {
+  background-color: #000;
+  -webkit-text-size-adjust: 100%;
 }
 
-@keyframes gradient-shift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+body {
+  font-family: "DM Sans Variable", "DM Sans", system-ui, sans-serif;
+  background-color: #000;
 }
 
-/* Fix browser autofill background override */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0px 1000px white inset;
+  -webkit-box-shadow: 0 0 0 1000px white inset;
   -webkit-text-fill-color: #1e293b;
   transition: background-color 5000s ease-in-out 0s;
 }
@@ -198,43 +110,73 @@ input:-webkit-autofill:focus {
 .dark input:-webkit-autofill,
 .dark input:-webkit-autofill:hover,
 .dark input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0px 1000px rgb(24 24 27) inset;
+  -webkit-box-shadow: 0 0 0 1000px rgb(24 24 27) inset;
   -webkit-text-fill-color: white;
-  transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Navbar dropdown icons: each plays one short motion while its row is hovered
-   or focused. The row sets [data-motion-host]; the icon wrapper carries
-   [data-motion="name"]. Skipped for people who ask for reduced motion. */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #2a2a2a transparent;
+}
+.thin-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 3px;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #3a3a3a;
+}
+
+@keyframes blink {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Navbar dropdown icons: the row sets [data-motion-host], the icon sets [data-motion="name"]. */
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes nav-wiggle { 0%,100% { transform: rotate(0) } 25% { transform: rotate(-14deg) } 75% { transform: rotate(14deg) } }
-  @keyframes nav-ring { 0%,100% { transform: rotate(0) } 15% { transform: rotate(18deg) } 35% { transform: rotate(-16deg) } 55% { transform: rotate(10deg) } 75% { transform: rotate(-6deg) } }
-  @keyframes nav-hop { 0%,100% { transform: translateY(0) } 40% { transform: translateY(-4px) } 70% { transform: translateY(1px) } }
-  @keyframes nav-launch { 0% { transform: translate(0,0) } 45% { transform: translate(4px,-4px) } 55% { transform: translate(-3px,3px) } 100% { transform: translate(0,0) } }
-  @keyframes nav-pulse { 0%,100% { transform: scale(1) } 50% { transform: scale(1.25) } }
+  @keyframes nav-wiggle { 0%, 100% { transform: rotate(0) } 25% { transform: rotate(-14deg) } 75% { transform: rotate(14deg) } }
+  @keyframes nav-ring { 0%, 100% { transform: rotate(0) } 15% { transform: rotate(18deg) } 35% { transform: rotate(-16deg) } 55% { transform: rotate(10deg) } 75% { transform: rotate(-6deg) } }
+  @keyframes nav-hop { 0%, 100% { transform: translateY(0) } 40% { transform: translateY(-4px) } 70% { transform: translateY(1px) } }
+  @keyframes nav-launch { 0%, 100% { transform: translate(0, 0) } 45% { transform: translate(4px, -4px) } 55% { transform: translate(-3px, 3px) } }
+  @keyframes nav-pulse { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.25) } }
   @keyframes nav-spin { to { transform: rotate(180deg) } }
-  @keyframes nav-sway { 0%,100% { transform: translateX(0) } 30% { transform: translateX(-3px) } 70% { transform: translateX(3px) } }
-  @keyframes nav-rise { 0% { transform: translate(0,0) } 50% { transform: translate(2px,-3px) } 100% { transform: translate(0,0) } }
-  @keyframes nav-drop { 0%,100% { transform: translateY(0) } 40% { transform: translateY(3px) } }
-  @keyframes nav-slide { 0%,100% { transform: translateX(0) } 50% { transform: translateX(4px) } }
+  @keyframes nav-sway { 0%, 100% { transform: translateX(0) } 30% { transform: translateX(-3px) } 70% { transform: translateX(3px) } }
+  @keyframes nav-rise { 0%, 100% { transform: translate(0, 0) } 50% { transform: translate(2px, -3px) } }
+  @keyframes nav-drop { 0%, 100% { transform: translateY(0) } 40% { transform: translateY(3px) } }
+  @keyframes nav-slide { 0%, 100% { transform: translateX(0) } 50% { transform: translateX(4px) } }
+  @keyframes nav-code-open { 0%, 100% { transform: translateX(0) } 45% { transform: translateX(-2.5px) } }
+  @keyframes nav-code-close { 0%, 100% { transform: translateX(0) } 45% { transform: translateX(2.5px) } }
+  @keyframes nav-code-slash { 0%, 100% { transform: rotate(0) } 45% { transform: rotate(12deg) } }
 
-  /* </> : the brackets spread apart and snap back while the slash tilts. */
-  @keyframes nav-code-open { 0%,100% { transform: translateX(0) } 45% { transform: translateX(-2.5px) } }
-  @keyframes nav-code-close { 0%,100% { transform: translateX(0) } 45% { transform: translateX(2.5px) } }
-  @keyframes nav-code-slash { 0%,100% { transform: rotate(0) } 45% { transform: rotate(12deg) } }
-  [data-motion-host]:is(:hover, :focus-visible) [data-motion="code"] path { transform-box: fill-box; transform-origin: center; }
-  [data-motion-host]:is(:hover, :focus-visible) [data-motion="code"] path:nth-child(1) { animation: nav-code-close .6s ease-in-out; }
-  [data-motion-host]:is(:hover, :focus-visible) [data-motion="code"] path:nth-child(2) { animation: nav-code-open .6s ease-in-out; }
-  [data-motion-host]:is(:hover, :focus-visible) [data-motion="code"] path:nth-child(3) { animation: nav-code-slash .6s ease-in-out; }
+  [data-motion-host]:is(:hover, :focus-visible) {
+    [data-motion="wiggle"] { animation: nav-wiggle 0.5s ease-in-out; }
+    [data-motion="ring"] { animation: nav-ring 0.7s ease-in-out; transform-origin: 50% 10%; }
+    [data-motion="hop"] { animation: nav-hop 0.5s ease-out; }
+    [data-motion="launch"] { animation: nav-launch 0.6s ease-in-out; }
+    [data-motion="pulse"] { animation: nav-pulse 0.5s ease-in-out; }
+    [data-motion="spin"] { animation: nav-spin 0.6s ease-in-out; }
+    [data-motion="sway"] { animation: nav-sway 0.55s ease-in-out; }
+    [data-motion="rise"] { animation: nav-rise 0.5s ease-in-out; }
+    [data-motion="drop"] { animation: nav-drop 0.45s ease-in-out; }
+    [data-motion="slide"] { animation: nav-slide 0.45s ease-in-out; }
 
-  [data-motion-host]:is(:hover, :focus-visible) [data-motion="wiggle"] { animation: nav-wiggle .5s ease-in-out; }
-  [data-motion-host]:is(:hover, :focus-visible) [data-motion="ring"] { animation: nav-ring .7s ease-in-out; transform-origin: 50% 10%; }
-  [data-motion-host]:is(:hover, :focus-visible) [data-motion="hop"] { animation: nav-hop .5s ease-out; }
-  [data-motion-host]:is(:hover, :focus-visible) [data-motion="launch"] { animation: nav-launch .6s ease-in-out; }
-  [data-motion-host]:is(:hover, :focus-visible) [data-motion="pulse"] { animation: nav-pulse .5s ease-in-out; }
-  [data-motion-host]:is(:hover, :focus-visible) [data-motion="spin"] { animation: nav-spin .6s ease-in-out; }
-  [data-motion-host]:is(:hover, :focus-visible) [data-motion="sway"] { animation: nav-sway .55s ease-in-out; }
-  [data-motion-host]:is(:hover, :focus-visible) [data-motion="rise"] { animation: nav-rise .5s ease-in-out; }
-  [data-motion-host]:is(:hover, :focus-visible) [data-motion="drop"] { animation: nav-drop .45s ease-in-out; }
-  [data-motion-host]:is(:hover, :focus-visible) [data-motion="slide"] { animation: nav-slide .45s ease-in-out; }
+    [data-motion="code"] path { transform-box: fill-box; transform-origin: center; }
+    [data-motion="code"] path:nth-child(1) { animation: nav-code-close 0.6s ease-in-out; }
+    [data-motion="code"] path:nth-child(2) { animation: nav-code-open 0.6s ease-in-out; }
+    [data-motion="code"] path:nth-child(3) { animation: nav-code-slash 0.6s ease-in-out; }
+  }
 }

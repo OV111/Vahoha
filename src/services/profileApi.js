@@ -1,5 +1,13 @@
 import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
 
+// Throws on anything but a good answer, so a failure is never cached as a profile.
+export const fetchMyProfile = async () => {
+  const res = await apiFetch(`${API_BASE_URL}/my-profile`, { headers: authHeaders() });
+  if (res.status === 401) throw Object.assign(new Error("unauthorized"), { unauthorized: true });
+  if (!res.ok) throw new Error(`Profile request failed (${res.status})`);
+  return res.json();
+};
+
 export const updateLastActive = async (userId) => {
   if (!userId) return;
   const now = new Date().toISOString();

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import useAuthStore from "@/stores/useAuthStore";
 import useBlogInteractionsStore from "@/stores/useBlogInteractionsStore";
-import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
+import { toggleBlogFavourite, toggleBlogLike } from "../../../services/blogsApi";
 import posthog, { isPostHogConfigured } from "@/lib/posthog";
 
 /**
@@ -22,16 +22,6 @@ export default function useBlogActions({ rawId, isDefault, initialLikes }) {
   const liked = likedIds.has(rawId);
   const saved = savedIds.has(rawId);
 
-  const post = async (path) => {
-    const res = await apiFetch(`${API_BASE_URL}/blogs/${rawId}/${path}`, {
-      method: "POST",
-      headers: authHeaders(),
-    });
-    const data = await res.json();
-    if (!data.success) throw new Error();
-    return data;
-  };
-
   const toggleLike = async () => {
     if (!canInteract || likeBusy) return;
     const wasLiked = liked;
@@ -39,7 +29,7 @@ export default function useBlogActions({ rawId, isDefault, initialLikes }) {
     setLikesCount((n) => (wasLiked ? n - 1 : n + 1));
     setLikeBusy(true);
     try {
-      const data = await post("like");
+      const data = await toggleBlogLike(rawId);
       setLikesCount(data.likesCount);
       if (!wasLiked && isPostHogConfigured) {
         posthog.capture("blog_liked", { blog_id: rawId });
@@ -59,7 +49,7 @@ export default function useBlogActions({ rawId, isDefault, initialLikes }) {
     toggleSaved(rawId);
     setSaveBusy(true);
     try {
-      await post("favourite");
+      await toggleBlogFavourite(rawId);
       if (!wasSaved && isPostHogConfigured) {
         posthog.capture("blog_saved", { blog_id: rawId });
       }

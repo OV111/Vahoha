@@ -10,8 +10,8 @@ import TextField from "../features/auth/components/TextField";
 import PasswordField from "../features/auth/components/PasswordField";
 import SocialSignIn from "../features/auth/components/SocialSignIn";
 import { tapArea } from "../features/auth/authStyles";
+import { logIn, signUp } from "../services/authApi";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const nameRules = (label) => ({
   required: `${label} is required.`,
@@ -59,35 +59,25 @@ const GetStarted = () => {
     setAuthUiMessage("");
     setIsLoading(true);
 
-    const url = `${API_BASE_URL}/${isSignedUp ? "get-started" : "login"}`;
-    const payload = isSignedUp
-      ? { ...data, username: generateUsername(data.firstName, data.lastName) }
-      : data;
-
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(payload),
-      });
-      const result = await response.json();
-
-      if (response.ok) {
-        toast.success(result.message, { duration: 900 });
-        login(result.accessToken);
-        reset();
-        // A new account starts at the roadmap, where the first tour is.
-        navigate(isSignedUp ? "/roadmaps" : "/");
-      } else if (response.status === 429) {
-        showError(result.message || "Too many attempts. Please try again later.");
-      } else {
-        showError(result.message || "Request failed");
-      }
+      const result = isSignedUp
+        ? await signUp({ ...data, username: generateUsername(data.firstName, data.lastName) })
+        : await logIn(data);
+      toast.success(result.message, { duration: 900 });
+      login(result.accessToken);
+      reset();
+      // A new account starts at the roadmap, where the first tour is.
+      navigate(isSignedUp ? "/roadmaps" : "/");
     } catch (err) {
-      console.error(err);
-      setAuthUiMessage("Server is unavailable. Please try again later.");
-      toast.error("Server is unavailable. Please try again later!", { duration: 2500 });
+      if (err.status === 429) {
+        showError(err.message || "Too many attempts. Please try again later.");
+      } else if (err.status) {
+        showError(err.message || "Request failed");
+      } else {
+        console.error(err);
+        setAuthUiMessage("Server is unavailable. Please try again later.");
+        toast.error("Server is unavailable. Please try again later!", { duration: 2500 });
+      }
     }
 
     setIsLoading(false);

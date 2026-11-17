@@ -231,7 +231,7 @@ const LayerDetail = () => {
                   onClick={() => {
                     closePanel();
                     navigate(
-                      `/voice-exam/${activeLayer.id}?path=${selectedCategory?.id ?? "backend"}`,
+                      `/voice-exam/${activeLayer.id}?path=${selectedCategory?.id ?? "backend"}&track=${selectedTrack?.id ?? ""}`,
                     );
                   }}
                   className="flex min-h-11 items-center gap-2 text-sm font-medium px-4 py-2 rounded-xl border border-purple-600/50 text-purple-300 hover:bg-purple-600/20 transition-colors duration-200"

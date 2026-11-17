@@ -7,9 +7,9 @@ import {
   Clock, ChevronRight, CheckCircle2, XCircle,
   RotateCcw, ArrowLeft, Loader2, AlertTriangle, Timer, ListChecks, Eye, ShieldAlert,
 } from "lucide-react";
-import { API_BASE_URL, authHeaders, apiFetch } from "../../../constants/api";
 import { EXAM_RULES } from "../../../constants/exam";
 import useRoadmapStore from "../../stores/useRoadmapStore";
+import { answerExamQuestion, generateExam, reportExamLeave } from "../../services/roadmapApi";
 import InlineTeachBack from "./components/InlineTeachBack";
 import useCountdown from "@/hooks/useCountdown";
 import NoCopy from "@/components/integrity/NoCopy";
@@ -325,31 +325,18 @@ function ExamRunner() {
     setNumber(1);
 
     try {
-      const res = await apiFetch(`${API_BASE_URL}/api/exams/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...authHeaders() },
-        body: JSON.stringify({ path, layer: layerId }),
-      });
-      const data = await res.json();
-
-      if (res.status === 429) {
-        setErrorMsg(data.message ?? "Cooldown active. Please wait.");
-        setLoadState("cooldown");
-        return;
-      }
-      if (!res.ok) {
-        setErrorMsg(data.message ?? "Failed to load test.");
-        setLoadState("error");
-        return;
-      }
-
-      const { question: first, ...meta } = data;
+      const { question: first, ...meta } = await generateExam(path, layerId);
       setExamData(meta);
       setQuestion(first);
       setLoadState("ready");
-    } catch {
-      setErrorMsg("Network error — please try again.");
-      setLoadState("error");
+    } catch (err) {
+      if (err.status === 429) {
+        setErrorMsg(err.message || "Cooldown active. Please wait.");
+        setLoadState("cooldown");
+      } else {
+        setErrorMsg(err.status ? err.message || "Failed to load test." : "Network error — please try again.");
+        setLoadState("error");
+      }
     }
   }, [layerId, path]);
 
@@ -378,18 +365,11 @@ function ExamRunner() {
     const onVisibility = async () => {
       if (!document.hidden) return;
       try {
-        const res = await apiFetch(`${API_BASE_URL}/api/exams/leave`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", ...authHeaders() },
-          body: JSON.stringify({ attemptId }),
-          keepalive: true, // the tab is in the background; the request must still go out
-        });
-        if (!res.ok) return;
-        const data = await res.json();
+        const data = await reportExamLeave(attemptId);
         if (data.voided) setResult({ voided: true });
         else setLeaveWarning(true);
       } catch {
-        /* offline: the server-side question timer still applies */
+        // Offline or rejected: the server-side question timer still applies.
       }
     };
     document.addEventListener("visibilitychange", onVisibility);
@@ -403,17 +383,7 @@ function ExamRunner() {
     setSubmitting(true);
     setSubmitError("");
     try {
-      const res = await apiFetch(`${API_BASE_URL}/api/exams/answer`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...authHeaders() },
-        body: JSON.stringify({ attemptId, questionId: question.id, choice }),
-      });
-      const data = await res.json();
-      // Stay on the question on failure so the learner can retry sending it.
-      if (!res.ok) {
-        setSubmitError(data.message ?? "Failed to send your answer.");
-        return;
-      }
+      const data = await answerExamQuestion(attemptId, question.id, choice);
       if (data.done) {
         if (data.result.passed) setLayerStatus(layerId, "done");
         setResult(data.result);
@@ -422,8 +392,11 @@ function ExamRunner() {
       setQuestion(data.question);
       setNumber(data.number);
       setSelected(null);
-    } catch {
-      setSubmitError("Network error while sending your answer. Please retry.");
+    } catch (err) {
+      // Stay on the question so the learner can retry sending it.
+      setSubmitError(
+        err.status ? err.message || "Failed to send your answer." : "Network error while sending your answer. Please retry.",
+      );
     } finally {
       sendingRef.current = false;
       setSubmitting(false);

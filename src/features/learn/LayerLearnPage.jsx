@@ -196,7 +196,7 @@ export default function LayerLearnPage() {
                 </p>
               </div>
               <Link
-                to={`/voice-exam/${layer.id}?path=${track.domain.id}`}
+                to={`/voice-exam/${layer.id}?path=${track.domain.id}&track=${track.id}`}
                 className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-emerald-500/50 px-5 text-sm font-medium text-emerald-200 transition-colors hover:bg-emerald-600/20"
               >
                 Start voice exam <ArrowRight size={14} aria-hidden="true" />

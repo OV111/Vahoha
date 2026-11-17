@@ -1,19 +1,14 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Mic, Square, RotateCcw, AlertTriangle } from "lucide-react";
-import useVoiceReviewStore from "@/stores/useVoiceReviewStore";
 import posthog, { isPostHogConfigured } from "@/lib/posthog";
-
-// Voice AI Progress Review — frontend capture only, for now.
-// Uses the browser's built-in Web Speech API (free, client-side) per the
-// free-tier decision. Nothing here is sent to the backend yet — voiceReviewService.js
-// and the /api/voice-review routes are still unimplemented stubs.
 
 const getSpeechRecognition = () =>
   window.SpeechRecognition || window.webkitSpeechRecognition || null;
 
 const VoiceReviewPage = () => {
-  const { isRecording, transcript, error, setRecording, setTranscript, setError, reset } =
-    useVoiceReviewStore();
+  const [isRecording, setRecording] = useState(false);
+  const [transcript, setTranscript] = useState("");
+  const [error, setError] = useState(null);
 
   const recognitionRef = useRef(null);
   const SpeechRecognitionImpl = getSpeechRecognition();
@@ -63,18 +58,20 @@ const VoiceReviewPage = () => {
     recognition.start();
     setRecording(true);
     if (isPostHogConfigured) posthog.capture("voice_review_started");
-  }, [SpeechRecognitionImpl, isSupported, transcript, setError, setRecording, setTranscript]);
+  }, [SpeechRecognitionImpl, isSupported, transcript]);
 
   const handleStop = useCallback(() => {
     recognitionRef.current?.stop();
     setRecording(false);
     if (isPostHogConfigured) posthog.capture("voice_review_stopped");
-  }, [setRecording]);
+  }, []);
 
   const handleReset = useCallback(() => {
     recognitionRef.current?.stop();
-    reset();
-  }, [reset]);
+    setRecording(false);
+    setTranscript("");
+    setError(null);
+  }, []);
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-12">

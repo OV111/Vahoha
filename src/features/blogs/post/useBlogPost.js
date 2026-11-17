@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { API_BASE_URL } from "../../../../constants/api";
+import { fetchPublicPost } from "../../../services/blogsApi";
 import { decodePostId } from "./postModel.js";
 
 /**
@@ -21,25 +21,17 @@ export default function useBlogPost(id) {
     }
 
     const controller = new AbortController();
-    const endpoint =
-      decoded.type === "blog"
-        ? `${API_BASE_URL}/blogs/id/${decoded.rawId}`
-        : `${API_BASE_URL}/posts/${decoded.rawId}`;
 
-    (async () => {
-      try {
-        const res = await fetch(endpoint, { signal: controller.signal });
-        if (res.status === 404) {
-          throw new Error("This post doesn't exist or was removed.");
-        }
-        if (!res.ok) throw new Error("Couldn't load this post. Please try again.");
-        const json = await res.json();
-        setState({ post: json.data ?? json, loading: false, error: null });
-      } catch (err) {
+    fetchPublicPost(decoded.type, decoded.rawId, { signal: controller.signal })
+      .then((post) => setState({ post, loading: false, error: null }))
+      .catch((err) => {
         if (err.name === "AbortError") return;
-        setState({ post: null, loading: false, error: err.message });
-      }
-    })();
+        const error =
+          err.status === 404
+            ? "This post doesn't exist or was removed."
+            : "Couldn't load this post. Please try again.";
+        setState({ post: null, loading: false, error });
+      });
 
     return () => controller.abort();
   }, [id, attempt]);
