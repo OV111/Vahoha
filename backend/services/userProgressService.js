@@ -14,6 +14,7 @@ export const createUserProgress = async (db, userId, data = {}) => {
     currentLayer: data.currentLayer || 1,
     completedLayers: data.completedLayers || [],
     skillLevel: data.skillLevel || "beginner",
+    ...(data.setup ? { setup: data.setup } : {}),
     xpTotal: 0,
     streak: 0,
     lastActiveAt: new Date(),

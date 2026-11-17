@@ -1,137 +1,60 @@
 import { create } from "zustand";
-import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
 import useAuthStore from "./useAuthStore";
 import { queryCache } from "../lib/queryCache";
-
-// /roadmaps is public, so every server call below is guarded here — the one
-// place all callers pass through — rather than only hiding buttons in the UI.
-// Guests get a read-only preview: every layer locked, nothing persisted.
-const isGuest = () => !useAuthStore.getState().auth;
+import { fetchRoadmapProgress, saveRoadmapProgress, startRoadmapPath } from "../services/roadmapApi";
 
 const PROGRESS_KEY = "roadmap-progress";
+const PROGRESS_STALE_MS = 30_000;
 
-// Throws on a failed request, so a failure is never cached as "no progress".
-const requestProgress = async () => {
-  const res = await apiFetch(`${API_BASE_URL}/api/roadmaps/progress`, {
-    headers: authHeaders(),
-  });
-  if (!res.ok) throw new Error(`Progress request failed (${res.status})`);
-  const { progress } = await res.json();
-  return progress;
+const TRACK_STATE = {
+  selectedTrack: null,
+  activeLayer: null,
+  isPanelOpen: false,
+  layerProgress: {},
+  progressLoaded: false,
 };
 
-// Reused for 30 s, so going back to a roadmap does not ask again. Starting a
-// path or saving progress marks it out of date (lib/queryInvalidation.js).
-const fetchProgress = async () => {
+const INITIAL_STATE = { selectedCategory: null, ...TRACK_STATE };
+
+// /roadmaps is public, so guests are blocked here rather than only in the UI.
+const isGuest = () => !useAuthStore.getState().auth;
+
+const fetchLayerProgress = async () => {
   try {
-    return await queryCache.load(PROGRESS_KEY, requestProgress, { staleMs: 30_000 });
+    const progress = await queryCache.load(PROGRESS_KEY, fetchRoadmapProgress, { staleMs: PROGRESS_STALE_MS });
+    return progress?.layerProgress ?? {};
   } catch {
-    return null;
+    return {};
   }
 };
 
-const persistProgress = async (layerProgress, activePath) => {
+const startPath = async (activePath, setup) => {
   try {
-    await apiFetch(`${API_BASE_URL}/api/roadmaps/progress`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...authHeaders() },
-      body: JSON.stringify({ layerProgress, activePath }),
-    });
-  } catch {
-    // non-fatal — progress will re-sync on next load
-  }
-};
-
-// Returns whether the save actually succeeded. setTrack's background call
-// ignores this (that one's genuinely fire-and-forget — the track-select flow
-// shouldn't block/error on it), but submitOnboarding needs it: a user who
-// just answered 5 questions and hit "Start path" deserves to know if that
-// was silently dropped.
-const startPath = async (pathId, skillLevel) => {
-  try {
-    const body = { activePath: pathId };
-    if (skillLevel) body.skillLevel = skillLevel;
-    const res = await apiFetch(`${API_BASE_URL}/api/roadmaps/start`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...authHeaders() },
-      body: JSON.stringify(body),
-    });
-    return res.ok;
+    await startRoadmapPath(activePath, setup);
+    return true;
   } catch {
     return false;
   }
 };
 
 const useRoadmapStore = create((set, get) => ({
-  selectedCategory: null,
-  selectedTrack: null,
-  activeLayer: null,
-  isPanelOpen: false,
-  layerProgress: {},
-  progressLoaded: false,
+  ...INITIAL_STATE,
 
-  setCategory: (category) =>
-    set({
-      selectedCategory: category,
-      selectedTrack: null,
-      activeLayer: null,
-      isPanelOpen: false,
-      layerProgress: {},
-      progressLoaded: false,
-    }),
+  setCategory: (category) => set({ ...TRACK_STATE, selectedCategory: category }),
 
   setTrack: async (track) => {
-    set({
-      selectedTrack: track,
-      activeLayer: null,
-      isPanelOpen: false,
-      layerProgress: {},
-      progressLoaded: false,
-    });
-
-    if (isGuest()) {
-      set({ progressLoaded: true });
-      return;
-    }
+    set({ ...TRACK_STATE, selectedTrack: track });
+    if (isGuest()) return set({ progressLoaded: true });
 
     await startPath(track.id);
-
-    const progress = await fetchProgress();
-    set({
-      layerProgress: progress?.layerProgress ?? {},
-      progressLoaded: true,
-    });
+    set({ layerProgress: await fetchLayerProgress(), progressLoaded: true });
   },
 
-  // Back to the catalog: drop the track and its progress view.
-  clearTrack: () =>
-    set({
-      selectedTrack: null,
-      activeLayer: null,
-      isPanelOpen: false,
-      layerProgress: {},
-      progressLoaded: false,
-    }),
-
-  loadProgress: async () => {
-    if (isGuest()) return set({ layerProgress: {}, progressLoaded: true });
-    const progress = await fetchProgress();
-    set({
-      layerProgress: progress?.layerProgress ?? {},
-      progressLoaded: true,
-    });
-  },
-
-  // Only skillLevel has a real consumer right now (learnerContextService.js
-  // feeds it into the mentor's system prompt) — the onboarding wizard's other
-  // answers (goal, background, weeklyTime, about) aren't sent anywhere yet
-  // because nothing downstream reads them. Re-sends activePath too since
-  // startPath is an upsert either way — cheaper than adding a second route
-  // for one extra field.
-  submitOnboarding: async (answers) => {
+  // The answers are saved on the learner's progress and read by the mentor.
+  submitOnboarding: async ({ skillLevel, goal, background, weeklyTime, about }) => {
     const track = get().selectedTrack;
     if (!track || isGuest()) return false;
-    return startPath(track.id, answers.skillLevel);
+    return startPath(track.id, { skillLevel, goal, background, weeklyTime, about });
   },
 
   setActiveLayer: (layer) => set({ activeLayer: layer, isPanelOpen: true }),
@@ -140,27 +63,16 @@ const useRoadmapStore = create((set, get) => ({
 
   setLayerStatus: (layerId, status) => {
     if (isGuest()) return;
-    set((state) => {
-      const updated = { ...state.layerProgress, [layerId]: status };
-      persistProgress(updated, state.selectedTrack?.id);
-      return { layerProgress: updated };
-    });
+    const { layerProgress, selectedTrack } = get();
+    const updated = { ...layerProgress, [layerId]: status };
+    set({ layerProgress: updated });
+    saveRoadmapProgress(updated, selectedTrack?.id).catch(() => {});
   },
 
-  reset: () =>
-    set({
-      selectedCategory: null,
-      selectedTrack: null,
-      activeLayer: null,
-      isPanelOpen: false,
-      layerProgress: {},
-      progressLoaded: false,
-    }),
+  reset: () => set(INITIAL_STATE),
 }));
 
-// Progress belongs to whoever is signed in. Without this, a guest's locked
-// preview survives login (and one user's progress survives a logout + another
-// login in the same tab), since nothing else clears this store.
+// Progress belongs to the signed-in user; drop it when the user changes.
 useAuthStore.subscribe((state, prev) => {
   if (state.auth !== prev.auth || state.session !== prev.session) {
     useRoadmapStore.getState().reset();

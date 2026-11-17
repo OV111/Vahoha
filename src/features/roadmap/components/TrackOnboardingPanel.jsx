@@ -23,6 +23,7 @@ import {
   Zap,
   Loader2,
 } from "lucide-react";
+import { ABOUT_MAX } from "../../../../constants/pathSetup.js";
 
 const FREE_TEXT_STEP = {
   id: "about",
@@ -263,7 +264,7 @@ export default function TrackOnboardingPanel({ track, onClose, onStart, submitti
                   value={freeText}
                   onChange={(e) => setFreeText(e.target.value)}
                   placeholder={FREE_TEXT_STEP.placeholder}
-                  maxLength={400}
+                  maxLength={ABOUT_MAX}
                   rows={6}
                   className="w-full resize-none rounded-xl px-4 py-3.5 text-[13px] text-white leading-relaxed placeholder:text-neutral-700 outline-none transition-all duration-150"
                   style={{
@@ -276,7 +277,7 @@ export default function TrackOnboardingPanel({ track, onClose, onStart, submitti
                   className="text-right text-[11px] mt-1.5"
                   style={{ color: freeText.length > 350 ? "#a855f7" : "#444" }}
                 >
-                  {freeText.length} / 400
+                  {freeText.length} / {ABOUT_MAX}
                 </p>
               </div>
             ) : (

@@ -47,8 +47,6 @@ export default function RoadmapPage() {
     );
   }, [domainParam, setCategory, setSearchParams]);
 
-  // Only `skillLevel` is actually persisted right now — see submitOnboarding
-  // in useRoadmapStore.js for why the other 4 answers aren't sent yet.
   const handleStart = async (answers) => {
     setSaving(true);
     const ok = await submitOnboarding(answers);
