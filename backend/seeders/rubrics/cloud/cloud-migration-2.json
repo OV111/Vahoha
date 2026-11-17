@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-migration-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Discovery Tooling",
+      "question": "Explain how you would build an accurate inventory of servers before a migration.",
+      "followUps": {
+        "AWS Application Discovery Service": "Why is automated discovery safer than trusting the existing CMDB records?",
+        "Azure Migrate Discovery and Assessment": "What goes wrong when you pick cloud instance sizes from on-premises spec sheets?"
+      }
+    },
+    {
+      "title": "Dependency Mapping",
+      "question": "Walk through how you would figure out which applications depend on each other and which are ready to move.",
+      "followUps": {
+        "Application Dependency Visualization": "What happens at cutover if two tightly coupled applications land in different waves?",
+        "Migration Readiness Assessment Scoring": "Why is it a mistake to start a program with the hardest, most visible applications?"
+      }
+    },
+    {
+      "title": "Portfolio Analysis",
+      "question": "Explain how you would decide which applications are worth migrating and how you would measure them first.",
+      "followUps": {
+        "Application Portfolio Rationalization": "Why does deciding which apps to retire first make the whole migration faster and cheaper?",
+        "Performance Baseline Collection": "Why do you need several weeks of performance data rather than a single day?"
+      }
+    },
+    {
+      "title": "Assessment Reporting",
+      "question": "Explain how deep discovery tools help turn raw inventory into a migration plan.",
+      "followUps": {
+        "Movere for Deep Discovery": "How can software inventory data uncover license savings and license compliance risks?",
+        "RISC Networks Cloud Readiness": "How can grouping applications by their network traffic speed up wave planning?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "graphql-dev-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "HTTP & the Request Cycle",
+      "question": "Explain what happens on the network when a client sends a GraphQL request to a Node.js server.",
+      "followUps": {
+        "HTTP Methods & Status Codes": "Why can a GraphQL response come back with status 200 even though part of the request failed?",
+        "Node.js Event Loop & Module System": "What happens to other requests when one resolver runs heavy synchronous code in Node.js?"
+      }
+    },
+    {
+      "title": "REST vs GraphQL Trade-offs",
+      "question": "Walk through the problems with REST that GraphQL was built to solve, and when you would still pick REST.",
+      "followUps": {
+        "Over-fetching & Under-fetching": "How does a fixed REST response shape cause both over-fetching and under-fetching for different clients?",
+        "When REST Still Wins": "Why is HTTP caching easier with REST than with GraphQL?"
+      }
+    },
+    {
+      "title": "Environment & Project Setup",
+      "question": "Explain how you would set up a new GraphQL project so it stays safe and easy to grow.",
+      "followUps": {
+        "Environment Variables & Config": "Why should the same build run in development, staging and production with only config changing?",
+        "npm Scripts & Project Structure": "What goes wrong when schema, business logic and database calls all live in the same file?"
+      }
+    },
+    {
+      "title": "Why GraphQL Exists",
+      "question": "Explain why GraphQL exists and what makes it different from calling REST endpoints.",
+      "followUps": {
+        "The GraphQL Specification": "Why does it help to know that GraphQL is a specification rather than a library?",
+        "Declarative Data Fetching": "What do you lose if each GraphQL resolver just wraps one REST endpoint one-to-one?"
+      }
+    }
+  ]
+}

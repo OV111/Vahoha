@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "multi-cloud-architect-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Terraform Multi-Provider Patterns",
+      "question": "Explain how you would structure Terraform code that manages resources on several clouds and accounts.",
+      "followUps": {
+        "Provider Aliases and Multi-Account Configuration": "Why are provider aliases important when one configuration spans several accounts or subscriptions?",
+        "Cloud-Agnostic Module Design": "What makes a Terraform module truly cloud-agnostic, and what happens when it leaks provider details?"
+      }
+    },
+    {
+      "title": "State Management at Scale",
+      "question": "Walk through how you would manage Terraform state for a large team working across several clouds.",
+      "followUps": {
+        "Remote State Backends Across Clouds": "Why does a shared remote backend need state locking, and what breaks without it?",
+        "Workspace Strategy for Environment Isolation": "How can a poor workspace strategy hurt plan speed and blast radius?"
+      }
+    },
+    {
+      "title": "CI/CD for Multi-Cloud IaC",
+      "question": "Explain how infrastructure changes should flow from a pull request to production in a multi-cloud setup.",
+      "followUps": {
+        "Atlantis for Pull Request Automation": "How does running a plan on every pull request help reviewers catch dangerous changes before merge?",
+        "OIDC Authentication from CI to Cloud Providers": "Why is OIDC federation from CI safer than storing cloud keys as pipeline secrets?"
+      }
+    },
+    {
+      "title": "Policy and Compliance in IaC",
+      "question": "Explain how you would enforce security and cost rules on Terraform changes before they are applied.",
+      "followUps": {
+        "Sentinel and OPA for Terraform Policy Enforcement": "When would you choose OPA with Conftest over Sentinel for policy checks in a multi-cloud pipeline?",
+        "Infracost for Cost Estimation in Pull Requests": "How does showing a cost estimate on a pull request change engineer behavior, and what are its limits?"
+      }
+    }
+  ]
+}

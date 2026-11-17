@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-native-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Container Architecture",
+      "question": "Explain what a container really is under the hood and how you would write a good image for one.",
+      "followUps": {
+        "Containers vs Virtual Machines": "Why does sharing the host kernel make containers lighter than VMs, and what security risk does that bring?",
+        "Dockerfile Best Practices and Layer Caching": "Why does the order of instructions in a Dockerfile change how fast your rebuilds are?"
+      }
+    },
+    {
+      "title": "Multi-Stage Builds",
+      "question": "Walk through how you would build a small, safe production image for a compiled app.",
+      "followUps": {
+        "Why Multi-Stage Builds Matter": "Why does a smaller final image usually mean fewer vulnerabilities, not just faster pulls?",
+        "Container Image Security Scanning": "Why should you keep scanning images that already passed a scan when they were built?"
+      }
+    },
+    {
+      "title": "Docker Compose for Local Development",
+      "question": "Explain how you would set up a reproducible local environment with several services and how they talk to each other.",
+      "followUps": {
+        "Defining Multi-Service Stacks with Compose": "How does keeping the whole stack in one Compose file help a new team member get started?",
+        "Docker Networking Modes": "When would you pick host networking over a bridge network, and what do you give up?"
+      }
+    },
+    {
+      "title": "Container Registry and Image Management",
+      "question": "Explain how you would store, version and ship images, and how you handle data that must outlive a container.",
+      "followUps": {
+        "Pushing and Tagging Images in a Registry": "Why is relying on the latest tag in production risky, and what tagging scheme would you use instead?",
+        "Docker Volumes and Data Persistence": "What happens to data written inside a container when it is removed, and why prefer named volumes over bind mounts in production?"
+      }
+    }
+  ]
+}

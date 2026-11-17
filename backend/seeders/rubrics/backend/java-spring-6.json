@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "java-spring-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "JPA & Hibernate Internals",
+      "question": "Explain how JPA and Hibernate track and load your entities.",
+      "followUps": {
+        "The Persistence Context & Entity Lifecycle": "Why can a change to an entity reach the database without any save call, and when does it not?",
+        "Lazy vs Eager Fetching": "What causes LazyInitializationException, and how do you avoid it without making everything eager?"
+      }
+    },
+    {
+      "title": "Spring Data Repositories",
+      "question": "Explain how Spring Data repositories build queries and how you keep them fast.",
+      "followUps": {
+        "Derived Query Methods": "When do you stop using a derived query method name and write @Query instead?",
+        "Projections & Avoiding N+1": "What is the N+1 problem, and how would you spot and fix it in a Spring Data app?"
+      }
+    },
+    {
+      "title": "@Transactional Deep Dive",
+      "question": "Walk through how @Transactional works in Spring and where it can surprise you.",
+      "followUps": {
+        "Transaction Propagation & Isolation": "When would you use REQUIRES_NEW, and what risk does it bring if the outer transaction fails?",
+        "Self-Invocation & Proxy Limitations": "Why does calling a @Transactional method from another method in the same class skip the transaction?"
+      }
+    },
+    {
+      "title": "Schema Migration with Flyway",
+      "question": "Explain how you manage database schema changes in a Spring Boot project.",
+      "followUps": {
+        "Versioned & Repeatable Migrations": "How does Flyway know which migrations have already run, and why does that matter across environments?",
+        "Flyway & Spring Boot Integration": "Which ddl-auto setting should you use with Flyway, and what happens if you pick the wrong one?"
+      }
+    }
+  ]
+}

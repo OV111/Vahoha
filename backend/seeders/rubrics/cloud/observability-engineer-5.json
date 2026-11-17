@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "observability-engineer-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Loki Architecture",
+      "question": "Explain how Loki stores and indexes logs and how it scales.",
+      "followUps": {
+        "Chunk Storage and Label Index": "Why does indexing only labels make Loki cheap, and how does that shape which values you use as labels?",
+        "Loki Microservices and Scalability": "Why does the Ingester need special care when you scale Loki, and what protects its data from loss?"
+      }
+    },
+    {
+      "title": "Promtail Collection",
+      "question": "Walk through how logs get collected and shaped before they reach Loki.",
+      "followUps": {
+        "Scrape Configs and Pipeline Stages": "Why is it useful to parse and label logs at ingestion time instead of at query time?",
+        "Kubernetes Log Collection Patterns": "Why is dropping noisy logs at the collector better than filtering them later in Loki?"
+      }
+    },
+    {
+      "title": "LogQL Query Language",
+      "question": "Explain how you query logs in Loki and how you keep those queries fast.",
+      "followUps": {
+        "Log Stream Selectors and Filters": "Why does the stream selector matter more for query speed than the line filters that come after it?",
+        "Metric Queries from Log Data": "When would you build a metric or alert straight from log data instead of using Prometheus?"
+      }
+    },
+    {
+      "title": "Cardinality and Cost Management",
+      "question": "Explain how you keep a Loki deployment healthy and affordable as log volume grows.",
+      "followUps": {
+        "Label Cardinality Best Practices": "What happens to Loki when someone uses a request ID or user ID as a label?",
+        "Log Volume Analysis with Grafana": "How would you find out which teams produce the most logs, and why is reducing logs at the source the better fix?"
+      }
+    }
+  ]
+}

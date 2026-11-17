@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "security-dev-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Core Security Principles",
+      "question": "Explain how you decide what a system needs to protect, and who you are protecting it from.",
+      "followUps": {
+        "CIA Triad": "What do confidentiality, integrity and availability each mean? Give an attack that breaks each one.",
+        "Threat Landscape & Attack Vectors": "How does a supply chain attack get into a system that has no bugs of its own?"
+      }
+    },
+    {
+      "title": "Networking Fundamentals for Security",
+      "question": "Explain where attacks can happen as traffic moves across a network, and how you limit the damage.",
+      "followUps": {
+        "TCP/IP & DNS Security": "How can DNS be abused to redirect users or sneak data out of a network?",
+        "Firewalls, VPNs & Segmentation": "Why does splitting a network into segments limit the damage when one server is compromised?"
+      }
+    },
+    {
+      "title": "OWASP Resources",
+      "question": "Explain how you would build security into a web application from the start instead of adding it at the end.",
+      "followUps": {
+        "OWASP Top 10 Overview": "What is the OWASP Top 10, and how would you use it on a real project?",
+        "Security Mindset & Secure Design": "What do defense in depth, least privilege and fail-safe defaults mean in practice?"
+      }
+    },
+    {
+      "title": "Practical Tools",
+      "question": "Explain how you would check your own network and services the way an attacker would see them.",
+      "followUps": {
+        "Wireshark for Traffic Analysis": "What could you spot in a Wireshark capture that shows your app is leaking data?",
+        "Nmap for Network Scanning": "What does an Nmap scan tell you, and why scan your own servers regularly?"
+      }
+    }
+  ]
+}

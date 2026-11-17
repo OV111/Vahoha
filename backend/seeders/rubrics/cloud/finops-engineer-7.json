@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "finops-engineer-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Defining Unit Cost Metrics",
+      "question": "Explain how you would pick a unit cost metric that means something to the business.",
+      "followUps": {
+        "Cost Per Customer, Per API Call, Per Order": "How does knowing the cost per API call change the design choices an engineer makes?",
+        "Cost Per Environment and Per Feature": "What would it tell you if a staging environment cost more than production, and what would you do?"
+      }
+    },
+    {
+      "title": "FOCUS Specification",
+      "question": "Walk through how you would combine billing data from several clouds with business data.",
+      "followUps": {
+        "FOCUS: FinOps Open Cost and Usage Specification": "What does a vendor-neutral billing schema save you when you report across several clouds?",
+        "Connecting Cost Data to Business Metrics": "Why is joining billing data with business numbers like orders or users so hard?"
+      }
+    },
+    {
+      "title": "FinOps Dashboard Design",
+      "question": "Explain how you would design dashboards that help people act on cloud costs.",
+      "followUps": {
+        "KPIs for FinOps Dashboards": "Why should engineers and executives see different FinOps dashboards?",
+        "Looker Studio and Data Studio for Cost Reporting": "What are the benefits and limits of building cost dashboards in a free reporting tool on top of billing exports?"
+      }
+    },
+    {
+      "title": "Industry Benchmarking",
+      "question": "Explain how you would judge whether your cloud costs are good or bad compared to others.",
+      "followUps": {
+        "Cloud Cost Benchmarking Against Peers": "What are the pitfalls of comparing your unit costs with other companies?",
+        "Automated Unit Cost Pipelines with dbt": "Why bring testing and version control to the code that calculates unit costs?"
+      }
+    }
+  ]
+}

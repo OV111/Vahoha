@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-native-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Kubernetes RBAC",
+      "question": "Explain how you would control who can do what in a Kubernetes cluster.",
+      "followUps": {
+        "Designing Role-Based Access Control for Clusters": "When should you use a ClusterRole instead of a Role, and how does permission sprawl creep in?",
+        "Pod Security Standards and Admission": "How would you move a namespace to the Restricted profile without breaking running workloads?"
+      }
+    },
+    {
+      "title": "OPA Gatekeeper",
+      "question": "Explain how you would enforce rules on what can be deployed to a cluster.",
+      "followUps": {
+        "ConstraintTemplates and Constraints": "Why split a policy into a reusable template and a separate constraint that activates it?",
+        "Kyverno as an Alternative Policy Engine": "Why might a team pick Kyverno over Gatekeeper, and what can it do beyond blocking resources?"
+      }
+    },
+    {
+      "title": "Runtime Security with Falco",
+      "question": "Explain how you would detect attacks on running containers and make sure only trusted images run.",
+      "followUps": {
+        "Falco Rules and Threat Detection": "What kind of attack can Falco catch that image scanning and admission controls miss?",
+        "Supply Chain Security with Sigstore and Cosign": "How does keyless signing with Cosign remove the risk of a stolen signing key?"
+      }
+    },
+    {
+      "title": "Image Security and Vulnerability Management",
+      "question": "Explain how you would reduce known vulnerabilities in the images you ship.",
+      "followUps": {
+        "Integrating Trivy into CI for Image Scanning": "How would you set up a scanner so it actually blocks vulnerable images instead of just reporting them?",
+        "Distroless and Minimal Base Images": "Why does removing the shell and package manager from an image make an attacker's job harder?"
+      }
+    }
+  ]
+}

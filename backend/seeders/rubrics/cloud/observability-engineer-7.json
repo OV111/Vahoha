@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "observability-engineer-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "SLI and SLO Design",
+      "question": "Walk through how you would define reliability targets for a user-facing service.",
+      "followUps": {
+        "Choosing Meaningful SLIs": "Why can a metric like CPU usage look healthy while users are having a bad time?",
+        "SLO Target Setting": "What goes wrong when an SLO target is set too high or too low, and who should agree on it?"
+      }
+    },
+    {
+      "title": "Error Budget Policy",
+      "question": "Explain what an error budget is and how teams use it to make decisions.",
+      "followUps": {
+        "Error Budget Calculation": "How do you turn an SLO into an error budget, and how should a team react when it burns too fast?",
+        "Multi-Window Burn Rate Alerts": "Why does a single threshold on budget burn miss problems, and how do multiple windows fix that?"
+      }
+    },
+    {
+      "title": "SLO as Code with Sloth",
+      "question": "Explain how you can manage SLOs as code and show them to the people who care about them.",
+      "followUps": {
+        "Sloth SLO Definitions": "What does a tool like Sloth generate for you from a short SLO file, and why keep that file in Git?",
+        "SLO Dashboards in Grafana": "What should an SLO dashboard show so that both engineers and non-technical people can use it?"
+      }
+    },
+    {
+      "title": "SLO Culture and Process",
+      "question": "Explain how SLOs become part of how an organization works, not just numbers on a screen.",
+      "followUps": {
+        "SLO Review Cadence": "What should happen in a regular SLO review, and why does it matter for planning?",
+        "User Journey SLOs": "Why would you define an SLO for a whole user journey like checkout instead of single endpoints, and what makes it harder?"
+      }
+    }
+  ]
+}

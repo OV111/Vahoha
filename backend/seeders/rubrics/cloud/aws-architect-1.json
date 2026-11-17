@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "aws-architect-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Cloud Computing Models",
+      "question": "Explain how the cloud service models differ and how AWS spreads its infrastructure around the world.",
+      "followUps": {
+        "IaaS, PaaS, and SaaS Explained": "How does your share of operational work change as you move from IaaS to PaaS to SaaS, and when would you pick each?",
+        "AWS Global Infrastructure": "Why would you spread a workload across several Availability Zones, and when would you go further and use more than one Region?"
+      }
+    },
+    {
+      "title": "IAM Core Concepts",
+      "question": "Explain how AWS decides who can do what in an account, and who is responsible for securing which parts.",
+      "followUps": {
+        "Users, Groups, Roles, and Policies": "When would you give a workload an IAM role instead of creating an IAM user with access keys, and why?",
+        "Shared Responsibility Model": "If you run a database on EC2, which security tasks are still yours that AWS does not handle for you?"
+      }
+    },
+    {
+      "title": "Core Services: EC2 and S3",
+      "question": "Walk through how you would choose compute and object storage for a new application on AWS.",
+      "followUps": {
+        "EC2 Instance Types and Pricing": "How would you decide between a general-purpose, compute-optimized, or memory-optimized instance for a workload?",
+        "S3 Buckets and Storage Classes": "How would you pick an S3 storage class for data whose access drops off over time?"
+      }
+    },
+    {
+      "title": "AWS CLI and Well-Architected",
+      "question": "Explain how you would work with AWS day to day and how you would judge whether an architecture is good.",
+      "followUps": {
+        "AWS CLI and Console Basics": "Why is the CLI more useful than the console when you need repeatable work or need to debug a broken deployment?",
+        "AWS Well-Architected Framework": "How would you use the Well-Architected pillars to spot risks in a design before it goes to production?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-native-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Persistent Volumes and Claims",
+      "question": "Explain how an application on Kubernetes gets durable storage.",
+      "followUps": {
+        "PV, PVC, and Storage Class Lifecycle": "Why does the reclaim policy matter when someone deletes a PVC?",
+        "CSI Drivers for Cloud-Native Storage": "Why does the access mode a CSI driver supports matter when you pick storage for a database versus a shared file workload?"
+      }
+    },
+    {
+      "title": "StatefulSets",
+      "question": "Explain how you would run a workload that needs a stable identity and its own data, and how you protect that data.",
+      "followUps": {
+        "Why StatefulSets Exist and When to Use Them": "What do StatefulSets guarantee that Deployments do not, and what does that cost you?",
+        "Volume Snapshots and Backup Strategies": "Why can a raw volume snapshot of a running database fail to restore cleanly?"
+      }
+    },
+    {
+      "title": "Running Databases on Kubernetes",
+      "question": "Explain how you would run a production database on Kubernetes.",
+      "followUps": {
+        "Operators for Database Management": "What does a database operator do for you that a hand-written StatefulSet does not?",
+        "Storage Performance Benchmarking on Kubernetes": "Why should you benchmark storage before choosing a storage class for a database?"
+      }
+    },
+    {
+      "title": "Longhorn and Cloud-Native Storage Platforms",
+      "question": "Explain how you would provide storage for a cluster that does not run on a cloud provider.",
+      "followUps": {
+        "Longhorn for Distributed Block Storage": "How does Longhorn keep a volume available when a node goes down?",
+        "Rook-Ceph for Software-Defined Storage": "What does Rook-Ceph let you avoid buying or running for on-premise storage?"
+      }
+    }
+  ]
+}

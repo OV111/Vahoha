@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "node-dev-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "The Event Loop In Depth",
+      "question": "Walk through what really happens inside the Node.js event loop when your server handles a request.",
+      "followUps": {
+        "libuv & the Thread Pool": "What kinds of work go to the libuv thread pool, and what happens when that pool is saturated?",
+        "process.nextTick vs setImmediate": "Why can recursive process.nextTick calls make a server look frozen?"
+      }
+    },
+    {
+      "title": "Core Modules",
+      "question": "Explain how you use Node.js core modules for files and events without hurting server performance.",
+      "followUps": {
+        "The fs Module & Async I/O": "Why is calling fs.readFileSync inside a request handler a problem under load?",
+        "EventEmitter Pattern": "How can forgetting to remove EventEmitter listeners cause a slow memory leak?"
+      }
+    },
+    {
+      "title": "Module Systems",
+      "question": "Explain how a Node.js app finds its modules and its configuration.",
+      "followUps": {
+        "CommonJS Module Resolution": "How does require find a package, and how can that go wrong in a monorepo?",
+        "Environment Variables & Config": "Why should a service validate its environment variables at startup?"
+      }
+    },
+    {
+      "title": "V8 Engine Internals",
+      "question": "Explain how the V8 engine affects the speed and memory behavior of a Node.js service.",
+      "followUps": {
+        "V8 JIT Compilation & Hidden Classes": "Why does adding object properties in a different order slow down a hot code path?",
+        "Garbage Collection & Memory": "How do garbage collection pauses show up in your latency numbers, and how do you keep them short?"
+      }
+    }
+  ]
+}

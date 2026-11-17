@@ -9,6 +9,61 @@
       "followUps": {
         "Why Queues — Decoupling, Retries & Backpressure": "Sending a welcome email makes sign-up slow. How does a queue fix that?",
         "BullMQ — Queues, Jobs & Workers": "What are the producer, the queue and the worker in BullMQ, and why run workers separately?"
+      },
+      "criteria": {
+        "Why Queues — Decoupling, Retries & Backpressure": {
+          "id": "queue-decoupling",
+          "evidence": [
+            {
+              "id": "respond-fast",
+              "text": "The API puts a job on a queue and responds right away instead of waiting for the slow task."
+            },
+            {
+              "id": "background-worker",
+              "text": "A separate worker does the slow work in the background."
+            },
+            {
+              "id": "absorbs-failure",
+              "text": "If the email service is slow or down, jobs wait and retry instead of failing the sign-up."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (queue, async, background job) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "faster-email",
+              "text": "Says the queue makes the email itself send faster."
+            }
+          ]
+        },
+        "BullMQ — Queues, Jobs & Workers": {
+          "id": "bullmq-roles",
+          "evidence": [
+            {
+              "id": "producer",
+              "text": "The producer, such as the API, adds jobs."
+            },
+            {
+              "id": "queue-store",
+              "text": "The queue holds waiting jobs, in Redis for BullMQ."
+            },
+            {
+              "id": "separate-workers",
+              "text": "Workers process jobs in their own processes, so they can be scaled or restarted without touching the API."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (BullMQ, producer, worker) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "worker-in-api",
+              "text": "Says the worker has to run inside the API process."
+            }
+          ]
+        }
       }
     },
     {
@@ -17,6 +72,57 @@
       "followUps": {
         "Retries, Exponential Backoff & Dead-Letter Queues": "Why wait longer between each retry, and where does a job go when it keeps failing?",
         "Job Idempotency": "A job that charges a card runs twice after a retry. How do you make that safe?"
+      },
+      "criteria": {
+        "Retries, Exponential Backoff & Dead-Letter Queues": {
+          "id": "retry-backoff",
+          "evidence": [
+            {
+              "id": "backoff",
+              "text": "Each retry waits longer than the last (exponential backoff, often with jitter) so a struggling service isn't hammered."
+            },
+            {
+              "id": "dead-letter",
+              "text": "After the last retry the job goes to a failed or dead-letter queue, where it can be inspected and replayed."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (retries, backoff, DLQ) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "retry-forever",
+              "text": "Says jobs should be retried immediately and forever until they succeed."
+            }
+          ]
+        },
+        "Job Idempotency": {
+          "id": "job-idempotency",
+          "evidence": [
+            {
+              "id": "double-effect",
+              "text": "A retried job can repeat a side effect, such as charging the card twice."
+            },
+            {
+              "id": "idempotency-key",
+              "text": "An idempotency key or unique job id lets the payment provider or your database recognise a repeat."
+            },
+            {
+              "id": "check-first",
+              "text": "Before acting, the job checks whether the work was already done and skips it if so."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (idempotent, idempotency key) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "disable-retries",
+              "text": "Says the fix is to turn retries off."
+            }
+          ]
+        }
       }
     },
     {
@@ -25,6 +131,61 @@
       "followUps": {
         "Sending Webhooks — Delivery Guarantees & Retries": "The receiver is down when you send a webhook. What should your system do?",
         "Receiving Webhooks — HMAC Signature Verification": "How does an HMAC signature prove a webhook really came from the sender?"
+      },
+      "criteria": {
+        "Sending Webhooks — Delivery Guarantees & Retries": {
+          "id": "webhook-delivery",
+          "evidence": [
+            {
+              "id": "queue-retry",
+              "text": "Deliveries are queued and retried with backoff when the receiver is down."
+            },
+            {
+              "id": "record",
+              "text": "Each attempt and its result is stored, so failures can be seen and replayed."
+            },
+            {
+              "id": "give-up-visibly",
+              "text": "After repeated failures the delivery is marked failed and someone is alerted, instead of silently dropping it."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (webhook, retry) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "receiver-fetches",
+              "text": "Says the receiver will fetch missed events on its own."
+            }
+          ]
+        },
+        "Receiving Webhooks — HMAC Signature Verification": {
+          "id": "webhook-hmac",
+          "evidence": [
+            {
+              "id": "shared-secret",
+              "text": "The sender and the receiver share a secret."
+            },
+            {
+              "id": "sign-body",
+              "text": "The sender computes an HMAC of the raw body with that secret and sends it in a header."
+            },
+            {
+              "id": "recompute",
+              "text": "The receiver recomputes it from the raw body and compares; a match proves who sent it and that it wasn't changed."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (HMAC, signature) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "hmac-encrypts",
+              "text": "Says the HMAC encrypts the payload so nobody else can read it."
+            }
+          ]
+        }
       }
     },
     {
@@ -33,7 +194,64 @@
       "followUps": {
         "Delayed Jobs & Cron Scheduling with BullMQ": "Why is setInterval a bad scheduler when your API runs as several processes?",
         "Monitoring Queues — BullBoard": "Which queue numbers would warn you that workers are falling behind?"
+      },
+      "criteria": {
+        "Delayed Jobs & Cron Scheduling with BullMQ": {
+          "id": "distributed-scheduling",
+          "evidence": [
+            {
+              "id": "each-process",
+              "text": "Every process runs its own setInterval, so with N instances the job runs N times."
+            },
+            {
+              "id": "lost-on-restart",
+              "text": "Timers live in memory and are lost when a process restarts or redeploys."
+            },
+            {
+              "id": "single-owner",
+              "text": "A queue or scheduler with a single owner, like BullMQ repeatable jobs or a lock, runs it exactly once."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (setInterval, cron, repeatable jobs) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "only-precision",
+              "text": "Says setInterval is only a problem because it isn't exact to the millisecond."
+            }
+          ]
+        },
+        "Monitoring Queues — BullBoard": {
+          "id": "queue-monitoring",
+          "evidence": [
+            {
+              "id": "waiting-grows",
+              "text": "A growing number of waiting jobs means workers can't keep up."
+            },
+            {
+              "id": "failures",
+              "text": "Rising failed jobs or retries mean jobs are breaking."
+            },
+            {
+              "id": "delay",
+              "text": "The age of the oldest waiting job, or processing time, shows the delay users actually feel."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (BullBoard, queue metrics) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "completed-enough",
+              "text": "Says the completed count alone shows the queue is healthy."
+            }
+          ]
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": false
 }

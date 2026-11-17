@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "java-spring-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "The JVM Execution Model",
+      "question": "Walk through what happens between writing a Java source file and the JVM running it.",
+      "followUps": {
+        "Bytecode & the Class Loader": "Why can a class compile fine but still fail at runtime with NoClassDefFoundError?",
+        "JDK vs JRE vs JVM": "Why should a production container image usually not ship the full JDK?"
+      }
+    },
+    {
+      "title": "Primitive Types & Memory",
+      "question": "Explain how Java stores primitives and objects in memory, and how that affects equality.",
+      "followUps": {
+        "Stack vs Heap Allocation": "What happens to the caller's object when a method changes a field on an object passed to it?",
+        "Autoboxing & Integer Cache": "Why can comparing two Integer values with == work in a test but fail in production?"
+      }
+    },
+    {
+      "title": "Compilation & Toolchain",
+      "question": "Explain how the Java toolchain turns code into a build artifact and how you pick a Java version.",
+      "followUps": {
+        "javac Compilation Pipeline": "Why does a tool like Lombok work at compile time and not at runtime?",
+        "Java Versions & LTS Releases": "What risks do you take by running a Spring Boot service on a Java version that is out of support?"
+      }
+    },
+    {
+      "title": "String & I/O Foundations",
+      "question": "Explain how Java handles strings and errors, and what mistakes you see most in backend code.",
+      "followUps": {
+        "String Immutability & String Pool": "Why is building a large string with + inside a loop a problem, and what do you use instead?",
+        "Checked vs Unchecked Exceptions": "Why is catching Exception and only logging it dangerous in a backend service?"
+      }
+    }
+  ]
+}

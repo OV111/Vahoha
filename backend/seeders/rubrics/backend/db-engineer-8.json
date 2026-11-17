@@ -1,0 +1,264 @@
+{
+  "path": "backend",
+  "layer": "db-engineer-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "How Indexes Work Internally",
+      "question": "Explain how a database index works internally and why it speeds up queries.",
+      "followUps": {
+        "B-Tree Index Structure": "Why does a B-tree being sorted help with range queries and ORDER BY, not just exact matches?",
+        "GIN, BRIN & Hash Indexes": "When would you use GIN or BRIN instead of a B-tree, and when is BRIN a poor choice?"
+      },
+      "criteria": {
+        "B-Tree Index Structure": {
+          "id": "btree-sorted",
+          "evidence": [
+            {
+              "id": "sorted",
+              "text": "A B-tree keeps keys in sorted order."
+            },
+            {
+              "id": "range",
+              "text": "So a range query finds the start and reads forward, instead of scanning everything."
+            },
+            {
+              "id": "order-by",
+              "text": "Sorted order also lets ORDER BY read rows already sorted, skipping a sort step."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (B-tree) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "hash-like",
+              "text": "Says a B-tree only helps exact-match lookups."
+            }
+          ]
+        },
+        "GIN, BRIN & Hash Indexes": {
+          "id": "gin-brin",
+          "evidence": [
+            {
+              "id": "gin",
+              "text": "GIN indexes each element inside arrays, JSONB or text, for containment and full-text searches."
+            },
+            {
+              "id": "brin",
+              "text": "BRIN stores min/max per block range, tiny and great for huge naturally ordered data like time-series."
+            },
+            {
+              "id": "brin-bad",
+              "text": "BRIN is poor when values are scattered randomly across the table."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (GIN, BRIN) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "btree-everything",
+              "text": "Says a B-tree is best for every kind of query."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Composite & Partial Indexes",
+      "question": "Walk through how you would design indexes for queries that filter on more than one column.",
+      "followUps": {
+        "Composite Indexes & Column Order": "You have an index on (a, b). Which queries can use it, and how do you choose the column order?",
+        "Partial Indexes": "When does a partial index beat a full index, and what does it save?"
+      },
+      "criteria": {
+        "Composite Indexes & Column Order": {
+          "id": "leftmost-prefix",
+          "evidence": [
+            {
+              "id": "prefix",
+              "text": "An index on (a, b) helps queries on a, or on a and b, but not on b alone."
+            },
+            {
+              "id": "equality-first",
+              "text": "Put columns filtered by equality before columns used for ranges."
+            },
+            {
+              "id": "by-query",
+              "text": "Choose the order by the queries you run, not by cardinality alone."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (composite index) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "any-order",
+              "text": "Says column order doesn't matter."
+            }
+          ]
+        },
+        "Partial Indexes": {
+          "id": "partial-index",
+          "evidence": [
+            {
+              "id": "subset",
+              "text": "A partial index only covers rows matching a condition."
+            },
+            {
+              "id": "when",
+              "text": "It wins when queries always target a small subset, like pending rows."
+            },
+            {
+              "id": "saves",
+              "text": "It's smaller, faster to search and cheaper to maintain on writes."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (partial index) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "partial-everything",
+              "text": "Says a partial index can serve queries outside its condition."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "EXPLAIN ANALYZE & Query Planning",
+      "question": "Explain how you figure out why a query is slow.",
+      "followUps": {
+        "Reading EXPLAIN ANALYZE Output": "In EXPLAIN ANALYZE output, what does a big gap between estimated and actual rows tell you?",
+        "Seq Scan vs Index Scan vs Index-Only Scan": "Why might the planner ignore your index and scan the whole table, and when is an index-only scan possible?"
+      },
+      "criteria": {
+        "Reading EXPLAIN ANALYZE Output": {
+          "id": "estimate-gap",
+          "evidence": [
+            {
+              "id": "estimate-actual",
+              "text": "EXPLAIN ANALYZE shows the planner's estimated rows next to the real ones."
+            },
+            {
+              "id": "stale-stats",
+              "text": "A big gap means the planner's statistics are wrong or stale."
+            },
+            {
+              "id": "fix",
+              "text": "So the plan is probably bad; run ANALYZE or improve statistics."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (EXPLAIN ANALYZE) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "gap-normal",
+              "text": "Says the estimated and actual row counts don't matter."
+            }
+          ]
+        },
+        "Seq Scan vs Index Scan vs Index-Only Scan": {
+          "id": "scan-choice",
+          "evidence": [
+            {
+              "id": "large-fraction",
+              "text": "If a query returns a large share of the table, reading it sequentially is cheaper than many index lookups."
+            },
+            {
+              "id": "planner-choice",
+              "text": "So the planner may ignore the index on purpose."
+            },
+            {
+              "id": "index-only",
+              "text": "An index-only scan works when the index holds every needed column and the pages are marked all-visible."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (seq scan, index scan) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "index-always",
+              "text": "Says the planner always uses an index when one exists."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Connection Pooling & N+1",
+      "question": "Walk through common ways an application wastes database round trips and connections.",
+      "followUps": {
+        "The N+1 Query Problem": "How do you spot an N+1 query problem in ORM code, and how do you fix it?",
+        "PgBouncer & Connection Pooling": "How does PgBouncer let many app connections share a few database connections, and why does that matter for PostgreSQL?"
+      },
+      "criteria": {
+        "The N+1 Query Problem": {
+          "id": "n-plus-one-orm",
+          "evidence": [
+            {
+              "id": "spot",
+              "text": "You see one query for the list and then one query per item, e.g. in query logs or as many repeated similar queries."
+            },
+            {
+              "id": "cause",
+              "text": "ORMs cause it by lazily loading a relation inside a loop."
+            },
+            {
+              "id": "fix",
+              "text": "Fix it with eager loading, a join, or one IN query for all ids."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (N+1, ORM) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "more-conns",
+              "text": "Says adding connections fixes N+1."
+            }
+          ]
+        },
+        "PgBouncer & Connection Pooling": {
+          "id": "pgbouncer",
+          "evidence": [
+            {
+              "id": "process-per-conn",
+              "text": "PostgreSQL starts a process per connection, so thousands of connections waste memory and CPU."
+            },
+            {
+              "id": "shared",
+              "text": "PgBouncer lets many client connections share a few real ones."
+            },
+            {
+              "id": "transaction-mode",
+              "text": "In transaction mode a real connection is held only during a transaction."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (PgBouncer, connection pooling) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "pgbouncer-cache",
+              "text": "Says PgBouncer caches query results."
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "criteriaReviewed": false
+}

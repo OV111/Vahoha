@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "systems-dev-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Manual Memory Management",
+      "question": "Explain how memory is allocated and freed in C, and the bugs that come with doing it by hand.",
+      "followUps": {
+        "malloc, free & the Heap Allocator": "Why can writing one byte past a malloc'd buffer crash the program much later, somewhere else?",
+        "Pointer Arithmetic & Array Decay": "What happens to an array's size when you pass it to a function in C?"
+      }
+    },
+    {
+      "title": "C Strings & Structs",
+      "question": "Explain how C stores strings and structs in memory, and the mistakes this leads to.",
+      "followUps": {
+        "Null-Terminated Strings & Buffer Overflows": "Why is strcpy dangerous, and what should you use instead?",
+        "Struct Padding & Alignment": "Why can sizeof a struct be bigger than the sum of its fields?"
+      }
+    },
+    {
+      "title": "Debugging with gdb & Valgrind",
+      "question": "Explain how you would find a crash or a memory bug in a C program.",
+      "followUps": {
+        "GDB Fundamentals": "What can GDB show you at a crash that printf debugging can't?",
+        "Valgrind Memcheck": "Which kinds of memory bugs does Valgrind report?"
+      }
+    },
+    {
+      "title": "The C Standard Library",
+      "question": "Explain how C programs should handle errors from the standard library, and one way its functions get misused by attackers.",
+      "followUps": {
+        "File I/O & errno": "How does a POSIX call report an error, and what goes wrong if you don't check it?",
+        "Format String Vulnerabilities": "Why is printf(user_input) dangerous, and what is the safe version?"
+      }
+    }
+  ]
+}

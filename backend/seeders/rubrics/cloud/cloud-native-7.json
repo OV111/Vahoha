@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-native-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "GitOps Principles",
+      "question": "Explain what GitOps is and why teams adopt it.",
+      "followUps": {
+        "The Four GitOps Principles Explained": "Why is pull-based deployment safer than a CI system pushing to the cluster?",
+        "Kustomize for Environment-Specific Overlays": "How do Kustomize overlays avoid duplicating manifests across environments without using templates?"
+      }
+    },
+    {
+      "title": "ArgoCD",
+      "question": "Explain how ArgoCD deploys and keeps applications in sync, and how you would roll out changes gradually.",
+      "followUps": {
+        "ArgoCD Applications and the App-of-Apps Pattern": "How does the app-of-apps pattern help you rebuild a cluster from Git after a disaster?",
+        "Progressive Delivery with Argo Rollouts": "How does Argo Rollouts decide whether to promote or roll back a new version without a human watching?"
+      }
+    },
+    {
+      "title": "Flux GitOps Toolkit",
+      "question": "Explain how Flux works and how you would handle secrets in a GitOps setup.",
+      "followUps": {
+        "Flux Source Controller and Kustomization": "Why would you use dependsOn and health checks in a Flux Kustomization?",
+        "Secrets Management with Sealed Secrets and External Secrets Operator": "How do you choose between Sealed Secrets and External Secrets Operator?"
+      }
+    },
+    {
+      "title": "CI/CD Pipeline Integration",
+      "question": "Walk through how code goes from a commit to running in a cluster in a GitOps pipeline.",
+      "followUps": {
+        "Separating CI from CD in a GitOps Workflow": "Why should the CI system never hold cluster credentials, and how do you roll back in this model?",
+        "Policy as Code with Conftest for GitOps Pipelines": "Why check manifests against policy in the pull request instead of only at admission time?"
+      }
+    }
+  ]
+}

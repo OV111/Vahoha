@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "systems-dev-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Compilation & Binary Internals",
+      "question": "Explain what happens between writing a C source file and having a running program, and where its data lives in memory.",
+      "followUps": {
+        "The Compilation Pipeline": "What are the steps from source code to executable, and which step produces an \"undefined reference\" error?",
+        "Stack vs Heap Memory Layout": "Why is returning a pointer to a local variable a bug, and where should that data live instead?"
+      }
+    },
+    {
+      "title": "Binary & Bitwise Thinking",
+      "question": "Explain how numbers are stored as bits, and how a program becomes an executable the OS can load.",
+      "followUps": {
+        "Binary, Hex & Two's Complement": "How is -1 stored in two's complement, and what happens when a signed integer overflows?",
+        "Linkers, Loaders & Executables": "What does the linker do, and what does the loader do when you start the program?"
+      }
+    },
+    {
+      "title": "CPU Execution Model",
+      "question": "Explain how a CPU runs your code, and what a pointer really is at that level.",
+      "followUps": {
+        "How the CPU Executes Code": "What is a CPU pipeline, and why does a hard-to-predict branch slow it down?",
+        "Pointers & Addresses": "If p points to an int, what address does p + 1 point to, and why?"
+      }
+    },
+    {
+      "title": "Toolchain Essentials",
+      "question": "Explain what a compiler produces before linking, and why C compilers can do surprising things to your code.",
+      "followUps": {
+        "Object Files & Symbol Tables": "What goes in the .text, .data and .bss sections of an object file?",
+        "Undefined Behavior in C": "How can the optimizer delete a null check in a program with undefined behavior?"
+      }
+    }
+  ]
+}

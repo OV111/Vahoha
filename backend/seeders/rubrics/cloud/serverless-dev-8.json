@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "serverless-dev-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Identity and Authentication",
+      "question": "Explain how users sign in to a serverless app and how your API checks who they are.",
+      "followUps": {
+        "Amazon Cognito User Pools": "What is the difference between a Cognito ID token and an access token, and which one should your API check?",
+        "JWT Validation in Lambda Authorizers": "Why should a Lambda authorizer cache the JWKS keys, and what must it still verify on every token?"
+      }
+    },
+    {
+      "title": "Secrets and Key Management",
+      "question": "Explain how you protect secrets and sensitive configuration used by Lambda functions.",
+      "followUps": {
+        "Secrets Manager Automatic Rotation": "Why does automatic rotation shrink the risk of leaked database credentials, and how does it avoid downtime?",
+        "Environment Variable Encryption": "What extra protection does a customer-managed KMS key give you for environment variables?"
+      }
+    },
+    {
+      "title": "API Protection with WAF",
+      "question": "Explain how you protect a public serverless API from common attacks.",
+      "followUps": {
+        "AWS WAF on API Gateway": "Why is a WAF rate limit especially important for an API backed by pay-per-call functions?",
+        "OWASP Serverless Top 10": "Why can an SQS message or S3 object name be an injection risk, even though it is not a form field?"
+      }
+    },
+    {
+      "title": "Network and VPC Security",
+      "question": "Walk through when and how a Lambda function should use a VPC.",
+      "followUps": {
+        "Lambda VPC Configuration": "When does a function really need to run in a VPC, and what does it cost you to put it there?",
+        "VPC Endpoints for Private AWS Service Access": "How do VPC endpoints change the path and cost of calls from a VPC function to S3 or DynamoDB?"
+      }
+    }
+  ]
+}

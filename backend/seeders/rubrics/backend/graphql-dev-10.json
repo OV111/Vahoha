@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "graphql-dev-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Testing GraphQL APIs",
+      "question": "Explain how you would test a GraphQL API with confidence.",
+      "followUps": {
+        "Integration Testing with executeOperation": "What does executeOperation test that unit tests of single resolvers miss?",
+        "Schema Testing & Mocking": "Why can't schema mocks replace real integration tests?"
+      }
+    },
+    {
+      "title": "Apollo Federation",
+      "question": "Explain how Apollo Federation combines several services into one graph.",
+      "followUps": {
+        "Federation Concepts — Subgraphs & Gateway": "What problems appear when it is unclear which subgraph owns a shared type?",
+        "@key Directive & Entity Resolution": "What happens to federated fields when a reference resolver returns null for a valid key?"
+      }
+    },
+    {
+      "title": "CI & Schema Checks",
+      "question": "Walk through how you would catch breaking schema changes before they reach production.",
+      "followUps": {
+        "Apollo Schema Checks in CI": "How does a schema check know which clients a change will break?",
+        "Contract Testing for Federated Subgraphs": "How can a subgraph pass its own tests but still break the composed graph?"
+      }
+    },
+    {
+      "title": "Deployment & Observability",
+      "question": "Explain how you would package and run a GraphQL server so it is safe and reliable in production.",
+      "followUps": {
+        "Dockerizing a GraphQL Server": "What should stay out of a production Docker image, and why?",
+        "Health Checks & Readiness Probes": "Why is an open HTTP port not enough to call the server ready?"
+      }
+    }
+  ]
+}

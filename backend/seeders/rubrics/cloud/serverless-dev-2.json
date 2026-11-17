@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "serverless-dev-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "REST API vs HTTP API",
+      "question": "Explain how you decide between the two API Gateway products for a new API.",
+      "followUps": {
+        "Choosing the Right API Gateway Product": "Which features would force you to pick REST API over the cheaper HTTP API?",
+        "Lambda Proxy Integration and Event Structure": "What happens to the client when your function returns a response in the wrong shape, and how do you catch that early?"
+      }
+    },
+    {
+      "title": "Authentication and Authorization",
+      "question": "Walk through the options for authenticating requests before they reach your Lambda backend.",
+      "followUps": {
+        "Lambda Authorizers for Custom Auth Logic": "How does authorizer caching save latency and cost, and what risk does a long cache TTL bring?",
+        "JWT Authorizers in HTTP API": "Why would you choose the built-in JWT authorizer over writing your own Lambda authorizer?"
+      }
+    },
+    {
+      "title": "CORS and Client Integration",
+      "question": "Explain what can go wrong when a browser app calls your API, and how the API should reject bad input.",
+      "followUps": {
+        "Configuring CORS Correctly in API Gateway": "Why do CORS errors show up in the browser even when your Lambda works fine, and where must the headers come from?",
+        "Request Validation and Error Responses": "What do you gain by validating requests at API Gateway instead of inside the function?"
+      }
+    },
+    {
+      "title": "Throttling and API Management",
+      "question": "Explain how you protect an API from heavy clients and how you trace what happened to a request.",
+      "followUps": {
+        "Usage Plans, API Keys, and Rate Limiting": "How can one buggy client hurt every other consumer of your API, and how do usage plans prevent it?",
+        "Access Logging and Execution Tracing": "What is the difference between access logs and execution logs, and which would you keep on in production?"
+      }
+    }
+  ]
+}

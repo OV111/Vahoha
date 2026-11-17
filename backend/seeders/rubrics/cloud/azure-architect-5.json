@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "azure-architect-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Azure Blob and Storage Fundamentals",
+      "question": "Explain how you would store large amounts of unstructured data in Azure and keep it durable and affordable.",
+      "followUps": {
+        "Blob Storage Tiers and Lifecycle Management": "How would you design a lifecycle policy for data that is read often at first and rarely later, and what is the catch with Archive?",
+        "Storage Account Redundancy Options": "How do you choose between LRS, ZRS, GRS and GZRS for production data?"
+      }
+    },
+    {
+      "title": "Azure SQL Database",
+      "question": "Explain how you would set up Azure SQL Database for cost and for high availability.",
+      "followUps": {
+        "Elastic Pools and Serverless Tier": "When does an elastic pool save money compared to sizing each database for its own peak?",
+        "Zone-Redundant and Geo-Redundant SQL": "How do zone redundancy and auto-failover groups differ in what failures they protect against?"
+      }
+    },
+    {
+      "title": "Azure Cosmos DB",
+      "question": "Explain how Cosmos DB behaves when data is spread across many regions.",
+      "followUps": {
+        "Cosmos DB Consistency Levels": "Why is Session consistency a good default, and what would make you pick Strong or Eventual instead?",
+        "Cosmos DB Multi-Region Writes": "What new problem do multi-region writes create, and how does Cosmos DB resolve it?"
+      }
+    },
+    {
+      "title": "Caching and Performance",
+      "question": "Explain how you would speed up and run relational data workloads with managed services on Azure.",
+      "followUps": {
+        "Azure Cache for Redis Patterns": "Walk through the cache-aside pattern, and how do you pick a TTL?",
+        "Azure Database for PostgreSQL and MySQL": "Why would you pick PostgreSQL Flexible Server over running PostgreSQL yourself on a VM?"
+      }
+    }
+  ]
+}

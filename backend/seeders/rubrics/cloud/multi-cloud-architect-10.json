@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "multi-cloud-architect-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Policy as Code at Enterprise Scale",
+      "question": "Explain how you would enforce the same rules on infrastructure across every cloud in a large company.",
+      "followUps": {
+        "OPA for Cross-Cloud Policy Enforcement": "Where in the delivery path can the same OPA policy be checked, and why is one policy library valuable?",
+        "Cloud Custodian for Multi-Cloud Automated Remediation": "Why would you run Cloud Custodian in audit mode before turning on automatic remediation?"
+      }
+    },
+    {
+      "title": "Cloud Security Posture Management",
+      "question": "Walk through how you would get a single view of security risk and compliance across all your clouds.",
+      "followUps": {
+        "CSPM Tools for Unified Security Visibility": "What does a CSPM tool add on top of each cloud native security service?",
+        "Compliance Framework Mapping to Multi-Cloud Controls": "Why must compliance controls be mapped to specific services on every cloud before an audit?"
+      }
+    },
+    {
+      "title": "IaC Governance at Enterprise Scale",
+      "question": "Explain how you would govern Terraform usage and new environments across a large multi-cloud organization.",
+      "followUps": {
+        "Spacelift for Multi-Cloud Terraform Governance": "Why does continuous drift detection matter when many teams can change cloud resources?",
+        "Multi-Cloud Landing Zone Reference Architectures": "Why should a landing zone be versioned and run like a product, and what happens if it is not?"
+      }
+    },
+    {
+      "title": "Operational Excellence at Scale",
+      "question": "Explain how you would keep day-to-day cloud operations reliable as the number of teams and accounts grows.",
+      "followUps": {
+        "Terraform Enterprise for Team-Scale IaC Workflows": "What problems does a private module registry with remote runs solve for hundreds of engineers?",
+        "Multi-Cloud Incident Management and Runbooks": "Why should multi-cloud incident runbooks start from symptoms instead of from the provider?"
+      }
+    }
+  ]
+}

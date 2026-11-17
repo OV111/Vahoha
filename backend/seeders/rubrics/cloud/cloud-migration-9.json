@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-migration-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Performance Optimization",
+      "question": "Explain how you would tune the performance and size of workloads after they migrate.",
+      "followUps": {
+        "Right-Sizing Based on CloudWatch Metrics": "Why is right-sizing after migration more accurate than sizing before it?",
+        "Post-Migration Performance Benchmarking": "Why can an app behave differently under peak load in the cloud than it did on-premises?"
+      }
+    },
+    {
+      "title": "Well-Architected Review",
+      "question": "Walk through how you would review and improve a workload once the migration is done.",
+      "followUps": {
+        "Post-Migration Well-Architected Review": "What kinds of risks does an architecture review often find in lift-and-shift workloads?",
+        "Implementing Cloud-Native Patterns Post-Migration": "How would you decide which cloud-native improvements to make first after a migration?"
+      }
+    },
+    {
+      "title": "Cost Optimization Tools",
+      "question": "Explain how you would bring cloud costs under control after migration.",
+      "followUps": {
+        "Reserved Instances and Savings Plan Purchases": "Why wait for real usage data before buying commitments, and why might Savings Plans be safer than Reserved Instances?",
+        "Tagging Cleanup and Cost Allocation": "Why is the end of a migration a good moment to fix tagging and cost allocation?"
+      }
+    },
+    {
+      "title": "Observability Post-Migration",
+      "question": "Explain what observability you need on migrated workloads and why.",
+      "followUps": {
+        "Application Performance Monitoring Setup": "What does distributed tracing show you that server-level metrics cannot?",
+        "Infrastructure Drift Detection": "What is configuration drift, and how would you stop it from building up after migration?"
+      }
+    }
+  ]
+}

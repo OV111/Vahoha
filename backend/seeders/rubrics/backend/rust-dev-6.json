@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "rust-dev-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Async Foundations",
+      "question": "Explain how async code actually runs in Rust.",
+      "followUps": {
+        "Futures & the Async/Await Model": "Why does calling an async function without awaiting or spawning it do nothing?",
+        "The Tokio Runtime": "What happens to other tasks when one task makes a blocking call on a Tokio worker thread?"
+      }
+    },
+    {
+      "title": "Async Concurrency",
+      "question": "Explain how you run several async operations at once in Tokio and pass data between them.",
+      "followUps": {
+        "tokio::spawn, join! & select!": "What is the difference between spawning tasks and using join, in terms of parallelism?",
+        "Async Channels — mpsc & broadcast": "What happens to a slow receiver on a broadcast channel when the buffer fills up?"
+      }
+    },
+    {
+      "title": "Blocking & CPU Work",
+      "question": "Explain how you handle blocking and CPU-heavy work inside an async Rust service.",
+      "followUps": {
+        "tokio::task::spawn_blocking": "When should you move work into spawn_blocking, and what symptom tells you that you forgot?",
+        "Send Bounds in Async Code": "Why do you get a future is not Send error, and how do you usually fix it?"
+      }
+    },
+    {
+      "title": "Streams & Backpressure",
+      "question": "Explain how you process ongoing async data and stop work that takes too long.",
+      "followUps": {
+        "tokio_stream & the Stream Trait": "What happens to a producer when nobody polls a stream on a bounded channel?",
+        "Async Timeouts & Cancellation": "What happens to an in-flight database transaction when its future gets dropped by a timeout?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "java-spring-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Spring MVC Request Handling",
+      "question": "Walk through what happens to an HTTP request from the moment it reaches a Spring MVC app until a response goes back.",
+      "followUps": {
+        "DispatcherServlet & Handler Mapping": "How would you debug a 404 on an endpoint you are sure exists in a controller?",
+        "Request & Response Bodies with Jackson": "Why might a field come back null or a request fail with 400 when Jackson maps JSON to your class?"
+      }
+    },
+    {
+      "title": "Bean Validation",
+      "question": "Explain how you validate incoming data in a Spring application.",
+      "followUps": {
+        "JSR-303/380 Constraint Annotations": "Why declare validation rules on the DTO instead of checking fields in the service layer?",
+        "@Valid vs @Validated & Group Sequences": "When does validation silently not run on a nested object or a service method, and how do you fix it?"
+      }
+    },
+    {
+      "title": "REST API Design in Spring",
+      "question": "Explain how you design REST responses and errors in a Spring API.",
+      "followUps": {
+        "HTTP Status Codes & ResponseEntity": "Why is returning 200 OK for every response, including errors, a bad idea?",
+        "Global Exception Handling with @ControllerAdvice": "What does a global exception handler give you that try/catch in each controller does not?"
+      }
+    },
+    {
+      "title": "API Documentation & DTOs",
+      "question": "Explain how you shape and document the public surface of a Spring API.",
+      "followUps": {
+        "DTO Pattern & Domain Separation": "What problems show up when you return JPA entities directly from a REST controller?",
+        "OpenAPI & springdoc-openapi": "Besides human-readable docs, what can a team do with a generated OpenAPI spec?"
+      }
+    }
+  ]
+}

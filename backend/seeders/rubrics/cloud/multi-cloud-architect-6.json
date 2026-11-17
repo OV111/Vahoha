@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "multi-cloud-architect-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Open Table Formats for Portability",
+      "question": "Explain how open table formats help keep data usable from more than one cloud.",
+      "followUps": {
+        "Apache Iceberg as a Cloud-Agnostic Table Format": "How does Iceberg let different query engines on different clouds read the same tables without copying data?",
+        "Delta Lake Format and Cross-Cloud Query": "What does Delta Sharing let you do across cloud boundaries, and why does that save money?"
+      }
+    },
+    {
+      "title": "Cross-Cloud Replication",
+      "question": "Walk through how you would move or replicate data between clouds safely.",
+      "followUps": {
+        "Rclone for Cross-Cloud Object Storage Transfer": "Why does server-side copy matter for large transfers between object stores?",
+        "Data Residency and Compliance in Multi-Cloud Storage": "How can a replication job quietly break data residency rules, and how would you stop it?"
+      }
+    },
+    {
+      "title": "Multi-Cloud Database Patterns",
+      "question": "Explain the options for running a relational database that spans more than one cloud.",
+      "followUps": {
+        "CockroachDB for Distributed Multi-Cloud SQL": "What does a distributed SQL database like CockroachDB give you for writes on two clouds, and what does it cost in latency?",
+        "YugabyteDB for PostgreSQL Compatibility Across Clouds": "Why might a PostgreSQL team pick YugabyteDB for multi-cloud resilience instead of replicating a single-cloud database?"
+      }
+    },
+    {
+      "title": "Data Pipeline Portability",
+      "question": "Explain how you would build data pipelines that are not tied to one cloud.",
+      "followUps": {
+        "Apache Airflow for Cloud-Agnostic Orchestration": "What makes an Airflow DAG portable across clouds, and where does cloud-specific code still creep in?",
+        "dbt for Cloud-Agnostic Transformation Logic": "Why does putting business logic in dbt models make it easier to change or add a data warehouse?"
+      }
+    }
+  ]
+}

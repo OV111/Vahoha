@@ -1,0 +1,399 @@
+{
+  "path": "backend",
+  "layer": "db-engineer-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Core SQL Query Mechanics",
+      "question": "Explain how SQL combines and summarizes rows from one or more tables.",
+      "followUps": {
+        "JOINs — How They Actually Work": "Your report is missing customers who have no orders. Which join mistake causes that, and how do you fix it?",
+        "Aggregate Functions & GROUP BY": "Why must every non-aggregated column in the SELECT appear in GROUP BY, and what is HAVING for?",
+        "Self Joins & Cross Joins": "Give a real use for a self join and one for a cross join, and say how an accidental cross join happens.",
+        "String & Date/Time Functions": "Why does grouping events by day give different results with timestamp and timestamptz?"
+      },
+      "criteria": {
+        "JOINs — How They Actually Work": {
+          "id": "join-types",
+          "evidence": [
+            {
+              "id": "inner-drops",
+              "text": "An INNER JOIN keeps only rows that match on both sides, so customers with no orders disappear."
+            },
+            {
+              "id": "left-keeps",
+              "text": "A LEFT JOIN keeps every row from the left table and fills the missing side with NULLs."
+            },
+            {
+              "id": "where-trap",
+              "text": "Filtering the right table in WHERE after a LEFT JOIN turns it back into an inner join; the filter belongs in the ON clause."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (INNER JOIN, LEFT JOIN) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "left-equals-inner",
+              "text": "Says INNER and LEFT JOIN return the same rows."
+            }
+          ]
+        },
+        "Aggregate Functions & GROUP BY": {
+          "id": "group-by",
+          "evidence": [
+            {
+              "id": "collapse",
+              "text": "GROUP BY collapses rows into one row per group."
+            },
+            {
+              "id": "non-aggregated",
+              "text": "Every selected column that isn't aggregated must be in GROUP BY, otherwise its value per group is undefined (an error, or an arbitrary value)."
+            },
+            {
+              "id": "having",
+              "text": "HAVING filters groups after aggregation, while WHERE filters rows before it."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (GROUP BY, HAVING, COUNT) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "having-is-where",
+              "text": "Says HAVING and WHERE do the same thing."
+            }
+          ]
+        },
+        "Self Joins & Cross Joins": {
+          "id": "self-cross-joins",
+          "evidence": [
+            {
+              "id": "self-join",
+              "text": "A self join joins a table to itself with two aliases, for example employees to their managers."
+            },
+            {
+              "id": "cross-join",
+              "text": "A cross join pairs every row with every row on purpose, for example building a calendar or size-by-colour grid."
+            },
+            {
+              "id": "accidental",
+              "text": "Forgetting the join condition produces an accidental cross join that multiplies rows."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (self join, cross join) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "self-join-copy",
+              "text": "Says a self join needs a copy of the table."
+            }
+          ]
+        },
+        "String & Date/Time Functions": {
+          "id": "date-string-functions",
+          "evidence": [
+            {
+              "id": "in-sql",
+              "text": "Text and date work like trimming, truncating to a day or adding intervals can be done in SQL, so filtering and grouping stay in the database."
+            },
+            {
+              "id": "tz-difference",
+              "text": "timestamptz is stored as an absolute moment and shown in the session time zone, while timestamp has no time zone."
+            },
+            {
+              "id": "day-boundary",
+              "text": "So grouping by day can put events on different days depending on the type and the session time zone."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (timestamp, timestamptz, date_trunc) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "timezones-ignored",
+              "text": "Says timestamp and timestamptz always give the same day."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Advanced SQL Constructs",
+      "question": "Walk through the tools SQL gives you for breaking a complex query into smaller parts.",
+      "followUps": {
+        "CTEs & Subqueries": "Why could moving a subquery into a CTE make a query slower on older PostgreSQL versions?",
+        "Window Functions": "How is a window function different from GROUP BY, and what goes wrong if PARTITION BY is set up badly?",
+        "Subquery Types — Scalar, Row, Table, Correlated": "Why can a correlated subquery be slow, and what would you rewrite it as?",
+        "Ranking & Offset Window Functions": "You need the top 3 products per category and two products tie. How do ROW_NUMBER, RANK and DENSE_RANK behave differently?"
+      },
+      "criteria": {
+        "CTEs & Subqueries": {
+          "id": "ctes",
+          "evidence": [
+            {
+              "id": "named-subquery",
+              "text": "A CTE (WITH) names a subquery so a complex query reads as steps."
+            },
+            {
+              "id": "fence",
+              "text": "In PostgreSQL before 12 a CTE was always computed on its own, so filters from outside couldn't be pushed into it."
+            },
+            {
+              "id": "slower",
+              "text": "That could make it scan far more rows than the same subquery written inline."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (CTE, WITH, subquery) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "cte-faster",
+              "text": "Says a CTE is always faster than a subquery because its result is cached."
+            }
+          ]
+        },
+        "Window Functions": {
+          "id": "window-functions",
+          "evidence": [
+            {
+              "id": "no-collapse",
+              "text": "A window function computes over related rows but keeps every row, unlike GROUP BY which collapses them."
+            },
+            {
+              "id": "partition",
+              "text": "PARTITION BY sets which rows each calculation looks at, and ORDER BY inside OVER sets their order."
+            },
+            {
+              "id": "wrong-partition",
+              "text": "With a wrong or missing PARTITION BY, running totals or ranks are computed over the wrong set, like the whole table instead of per category."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (OVER, PARTITION BY) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "window-groups",
+              "text": "Says a window function reduces the result to one row per group."
+            }
+          ]
+        },
+        "Subquery Types — Scalar, Row, Table, Correlated": {
+          "id": "subquery-types",
+          "evidence": [
+            {
+              "id": "types",
+              "text": "A scalar subquery returns one value, a table subquery acts like a temporary table, and a correlated one refers to the outer query."
+            },
+            {
+              "id": "per-row",
+              "text": "A correlated subquery runs once per outer row, which gets slow on large tables."
+            },
+            {
+              "id": "rewrite",
+              "text": "It can usually be rewritten as a join or a grouped subquery that runs once."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (correlated subquery, scalar subquery) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "runs-once",
+              "text": "Says a correlated subquery runs only once for the whole query."
+            }
+          ]
+        },
+        "Ranking & Offset Window Functions": {
+          "id": "ranking-functions",
+          "evidence": [
+            {
+              "id": "row-number",
+              "text": "ROW_NUMBER gives every row a unique number, so of two tied products only one makes the top 3."
+            },
+            {
+              "id": "rank-gaps",
+              "text": "RANK gives ties the same number and then skips numbers."
+            },
+            {
+              "id": "dense-rank",
+              "text": "DENSE_RANK gives ties the same number without gaps, so more than 3 rows can be in the top 3."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (ROW_NUMBER, RANK, DENSE_RANK) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "all-same",
+              "text": "Says ROW_NUMBER, RANK and DENSE_RANK behave the same with ties."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Writing Correct SQL",
+      "question": "Explain the most common ways a SQL query returns wrong results without any error.",
+      "followUps": {
+        "NULL Handling & Three-Valued Logic": "Why does WHERE status != 'done' skip rows where status is NULL?",
+        "Set Operations — UNION, INTERSECT, EXCEPT": "When would you pick UNION ALL over UNION, and what does the choice cost?",
+        "COALESCE & NULLIF": "How would you safely divide two columns when the bottom value can be zero?"
+      },
+      "criteria": {
+        "NULL Handling & Three-Valued Logic": {
+          "id": "null-logic",
+          "evidence": [
+            {
+              "id": "unknown",
+              "text": "Comparing with NULL gives UNKNOWN, not true or false."
+            },
+            {
+              "id": "filtered-out",
+              "text": "WHERE keeps only rows where the condition is true, so rows with a NULL status are dropped by status != 'done'."
+            },
+            {
+              "id": "is-null",
+              "text": "You must add IS NULL (or use IS DISTINCT FROM / COALESCE) to include them."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (NULL, IS NULL) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "null-equals-empty",
+              "text": "Says NULL is the same as an empty string or zero."
+            }
+          ]
+        },
+        "Set Operations — UNION, INTERSECT, EXCEPT": {
+          "id": "union-all",
+          "evidence": [
+            {
+              "id": "dedupe",
+              "text": "UNION removes duplicate rows; UNION ALL keeps every row."
+            },
+            {
+              "id": "cost",
+              "text": "Removing duplicates needs a sort or hash over the whole result, which is slow on big sets."
+            },
+            {
+              "id": "choose",
+              "text": "Use UNION ALL when duplicates can't happen or should be kept."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (UNION, UNION ALL) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "union-faster",
+              "text": "Says UNION is faster than UNION ALL."
+            }
+          ]
+        },
+        "COALESCE & NULLIF": {
+          "id": "coalesce-nullif",
+          "evidence": [
+            {
+              "id": "nullif-zero",
+              "text": "NULLIF(y, 0) turns a zero into NULL, so x / NULLIF(y, 0) gives NULL instead of a division error."
+            },
+            {
+              "id": "coalesce-default",
+              "text": "COALESCE then can replace that NULL with a default, like 0."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (COALESCE, NULLIF) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "coalesce-errors",
+              "text": "Says COALESCE prevents division by zero on its own."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Practice & Mastery",
+      "question": "Walk through how you would write a multi-step change to the database safely and keep the logic inside SQL.",
+      "followUps": {
+        "Transactions & Savepoints in SQL": "What happens if your code opens a transaction and never commits, and when would you use a savepoint?",
+        "CASE Expressions & Conditional Logic": "Why is it better to add a derived column with CASE in SQL than to compute it in application code?"
+      },
+      "criteria": {
+        "Transactions & Savepoints in SQL": {
+          "id": "tx-savepoints",
+          "evidence": [
+            {
+              "id": "all-or-nothing",
+              "text": "A transaction makes several writes commit together or roll back together."
+            },
+            {
+              "id": "open-tx-locks",
+              "text": "A transaction left open keeps its locks, blocking other queries until the connection ends."
+            },
+            {
+              "id": "savepoint",
+              "text": "A savepoint lets you roll back part of a transaction without losing the rest."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (BEGIN, COMMIT, SAVEPOINT) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "autocommit-anyway",
+              "text": "Says an open transaction commits by itself after a while."
+            }
+          ]
+        },
+        "CASE Expressions & Conditional Logic": {
+          "id": "case-expressions",
+          "evidence": [
+            {
+              "id": "if-else",
+              "text": "CASE is SQL's if/else, so a derived column can be computed inside the query."
+            },
+            {
+              "id": "less-data",
+              "text": "Doing it in the database avoids pulling every row into the application just to compute a value."
+            },
+            {
+              "id": "reuse",
+              "text": "The derived value can then be used for grouping, filtering or pivoting in the same query."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (CASE WHEN) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "case-slow",
+              "text": "Says CASE runs slower than doing the same in application code."
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "criteriaReviewed": false
+}

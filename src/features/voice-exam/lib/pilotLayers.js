@@ -1,7 +1,7 @@
 // Paths whose layers have a published voice-exam rubric (backend/seeders/rubrics/).
 // Only these show the "Voice exam" row, so learners never land on a layer with no content.
 // Add a path here after its rubric files are reviewed and seeded.
-const VOICE_EXAM_PATHS = ["api-dev", "go-dev"];
+const VOICE_EXAM_PATHS = ["api-dev", "go-dev", "db-engineer", "security-dev", "systems-dev", "graphql-dev", "microservices", "rust-dev", "java-spring", "py", "python-backend", "grpc-dev", "node-dev"];
 
 const LAYER_ID = /^(.+)-\d+$/;
 

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "py-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Python Async & the Event Loop",
+      "question": "Explain how asyncio runs many requests at once on a single thread.",
+      "followUps": {
+        "asyncio — The Event Loop Model": "What happens to every other request when one coroutine makes a blocking call?",
+        "Coroutines, Tasks & Concurrency Primitives": "Why can a task from create_task silently stop if you do not keep a reference to it?"
+      }
+    },
+    {
+      "title": "Celery Task Queue",
+      "question": "Explain how you move slow work out of the request cycle with a task queue and keep it reliable.",
+      "followUps": {
+        "Celery Workers & Task Routing": "What happens to your web server under load if slow work runs inside the route handler?",
+        "Task Retries, Idempotency & Dead-Letter Queues": "Why must a retried task be idempotent, and what should happen to tasks that keep failing?"
+      }
+    },
+    {
+      "title": "Redis as a Data Structure Store",
+      "question": "Explain how you use Redis in a backend beyond simple caching.",
+      "followUps": {
+        "Redis Data Types & Expiry": "What goes wrong over time if you store keys in Redis without a TTL?",
+        "Redis as Celery Broker & Result Backend": "Why should you not store results for every Celery task, and what happens to queued tasks if Redis loses data?"
+      }
+    },
+    {
+      "title": "Background Jobs & Scheduling",
+      "question": "Explain how you schedule recurring jobs and choose where background work should run.",
+      "followUps": {
+        "Celery Beat — Periodic Tasks": "What goes wrong if two Celery Beat instances run at the same time?",
+        "FastAPI BackgroundTasks vs Celery": "When is FastAPI BackgroundTasks enough, and when do you need Celery instead?"
+      }
+    }
+  ]
+}

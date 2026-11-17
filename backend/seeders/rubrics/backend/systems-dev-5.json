@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "systems-dev-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Processes & the Kernel Boundary",
+      "question": "Explain how a program asks the operating system to do things, and how new processes are created on Linux.",
+      "followUps": {
+        "System Calls & the Kernel/User Boundary": "Why is a system call more expensive than a normal function call?",
+        "Processes, fork & exec": "What do fork and exec each do, and what is a zombie process?"
+      }
+    },
+    {
+      "title": "File Descriptors & I/O",
+      "question": "Explain how a Linux process refers to open files and sockets, and how the kernel can interrupt it.",
+      "followUps": {
+        "File Descriptors & the Open File Table": "What is a file descriptor, and what happens if a server leaks them?",
+        "Signals & Async-Signal Safety": "Why is calling printf or malloc inside a signal handler unsafe?"
+      }
+    },
+    {
+      "title": "Virtual Memory & Paging",
+      "question": "Explain how each process gets its own memory, and how processes share data with each other.",
+      "followUps": {
+        "Virtual Memory & Page Tables": "What really happens in the hardware when a program segfaults?",
+        "IPC — Pipes, Shared Memory & Message Queues": "Why is shared memory the fastest way to share data, and what extra work does it need?"
+      }
+    },
+    {
+      "title": "POSIX Threading Model",
+      "question": "Explain how threads work on Linux, and how the kernel decides which one runs.",
+      "followUps": {
+        "Pthreads & Thread Lifecycle": "What happens if you create a thread and never join or detach it?",
+        "Scheduling — Preemption & Priority": "How can a high-priority real-time thread starve the rest of the system?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "java-spring-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Inheritance & Polymorphism",
+      "question": "Explain how inheritance and polymorphism work in Java and when they help or hurt a design.",
+      "followUps": {
+        "Dynamic Dispatch & Method Resolution": "If a variable is declared as a parent type but holds a subclass, which method runs and why?",
+        "Interfaces vs Abstract Classes": "How do you decide between an interface and an abstract class for a new abstraction in a Spring app?"
+      }
+    },
+    {
+      "title": "equals, hashCode & Object Identity",
+      "question": "Explain how Java decides whether two objects are equal, and why it matters for collections.",
+      "followUps": {
+        "The equals/hashCode Contract": "What goes wrong if you override equals but not hashCode on a HashMap key?",
+        "Records & Immutable Value Objects": "Why are records a good fit for DTOs, and when would a record be the wrong choice?"
+      }
+    },
+    {
+      "title": "Design Patterns in Java",
+      "question": "Walk through a few classic design patterns you use in Java and where Spring uses them.",
+      "followUps": {
+        "Strategy & Template Method": "How would you explain the difference between Strategy and Template Method with an example?",
+        "Builder & Factory Patterns": "When would you reach for a Builder instead of a constructor, and how does a Factory help testing?"
+      }
+    },
+    {
+      "title": "Exception Handling Best Practices",
+      "question": "Explain how you design and handle exceptions in a Java service.",
+      "followUps": {
+        "Custom Exception Hierarchies": "Why does Spring translate persistence errors into its own DataAccessException types?",
+        "Try-with-Resources & AutoCloseable": "What problem does try-with-resources solve, and what happens under load without it?"
+      }
+    }
+  ]
+}

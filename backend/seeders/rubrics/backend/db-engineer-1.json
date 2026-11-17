@@ -1,0 +1,264 @@
+{
+  "path": "backend",
+  "layer": "db-engineer-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "The Relational Model",
+      "question": "Explain the relational model in your own words and how it keeps data correct.",
+      "followUps": {
+        "Tables, Keys & Relationships": "What goes wrong when a table has no real primary key, or when foreign keys are only checked in application code?",
+        "Data Types & Schema Contracts": "Why is storing a date in a text column a bad idea, even if every value looks right today?"
+      },
+      "criteria": {
+        "Tables, Keys & Relationships": {
+          "id": "db-relational-keys",
+          "evidence": [
+            {
+              "id": "pk-unique",
+              "text": "Each row has a primary key that uniquely identifies it, so the same thing can't be stored twice."
+            },
+            {
+              "id": "fk-enforced",
+              "text": "A foreign key makes the database itself reject a row that points at something that doesn't exist."
+            },
+            {
+              "id": "app-checks-fail",
+              "text": "Checks done only in application code can be bypassed by other code or by two requests at once, leaving orphan or duplicate rows."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (primary key, foreign key) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "fk-convention",
+              "text": "Says a foreign key is only a naming convention that the database doesn't enforce."
+            }
+          ]
+        },
+        "Data Types & Schema Contracts": {
+          "id": "db-column-types",
+          "evidence": [
+            {
+              "id": "rejects-bad",
+              "text": "The database rejects values that don't fit a column's type, so invalid data can't get in."
+            },
+            {
+              "id": "text-dates",
+              "text": "Dates stored as text accept invalid or inconsistently formatted values and sort as strings, not as dates."
+            },
+            {
+              "id": "casting-index",
+              "text": "Queries then have to convert every value, which is slower and stops indexes from being used."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (VARCHAR, INT, data types) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "types-only-space",
+              "text": "Says data types only matter for saving storage space."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "ACID & Transactions",
+      "question": "Walk through what a transaction is and what promises a database makes about it.",
+      "followUps": {
+        "ACID Properties Explained": "Two users buy the last ticket at the same moment. Which ACID property decides what happens, and how?",
+        "SQL vs NoSQL — When Each Fits": "How would you decide between a relational and a document database for a new project?"
+      },
+      "criteria": {
+        "ACID Properties Explained": {
+          "id": "acid",
+          "evidence": [
+            {
+              "id": "atomicity",
+              "text": "All the steps of a transaction happen, or none do, so a half-done change never stays."
+            },
+            {
+              "id": "isolation",
+              "text": "Transactions running at the same time don't see each other's unfinished work, which decides who gets the last ticket."
+            },
+            {
+              "id": "durability",
+              "text": "Once a transaction is committed, the change survives a crash."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (ACID, atomicity, isolation) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "atomic-thread",
+              "text": "Says atomicity means running on one thread, or that isolation gives each user their own copy of the database."
+            }
+          ]
+        },
+        "SQL vs NoSQL — When Each Fits": {
+          "id": "sql-vs-document",
+          "evidence": [
+            {
+              "id": "relational-fit",
+              "text": "Relational databases enforce a schema, relationships and transactions, which fits connected data where correctness matters."
+            },
+            {
+              "id": "document-fit",
+              "text": "Document databases store self-contained, flexible records, which fits data read as a whole or with a changing shape, and they spread across machines easily."
+            },
+            {
+              "id": "decide-by-access",
+              "text": "The choice depends on how connected the data is and how it will be queried, trading off joins and consistency."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (SQL, NoSQL, MongoDB) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "nosql-always-faster",
+              "text": "Says NoSQL is always faster, or that SQL databases can't scale."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Client/Server Architecture",
+      "question": "Explain what happens between your application sending a query and getting rows back.",
+      "followUps": {
+        "How Databases Execute Queries": "A query is slow. How does knowing the parse, plan and execute stages help you find where the time goes?",
+        "Connection Management": "Why does opening a new database connection for every query break an app under load, and what fixes it?"
+      },
+      "criteria": {
+        "How Databases Execute Queries": {
+          "id": "query-lifecycle",
+          "evidence": [
+            {
+              "id": "stages",
+              "text": "A query is parsed, then planned (the planner picks how to fetch the rows), then executed."
+            },
+            {
+              "id": "find-stage",
+              "text": "Knowing the stages tells you whether time goes into a bad plan, the execution itself, or the network."
+            },
+            {
+              "id": "explain",
+              "text": "EXPLAIN shows the plan the planner chose, so you can see where a slow query spends its time."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (parser, planner, EXPLAIN) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "network-always",
+              "text": "Says a slow query is always a network problem."
+            }
+          ]
+        },
+        "Connection Management": {
+          "id": "db-connections",
+          "evidence": [
+            {
+              "id": "expensive",
+              "text": "Each connection costs the server memory and a process or socket, so there is a hard limit on how many it can hold."
+            },
+            {
+              "id": "exhaustion",
+              "text": "Opening one per query under load uses up that limit, so new queries fail or wait."
+            },
+            {
+              "id": "pooling",
+              "text": "A connection pool (in the app or PgBouncer/ProxySQL) reuses a small set of connections."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (connection, pool, PgBouncer) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "free-connections",
+              "text": "Says connections are free and the database can accept any number of them."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Getting Started Practically",
+      "question": "Walk through how you would set up a local database and start working with it.",
+      "followUps": {
+        "Installing & Connecting to PostgreSQL": "You can't connect to a fresh PostgreSQL server. How does pg_hba.conf help you tell an auth problem from a network problem?",
+        "MySQL Workbench & Basic Administration": "What do you lose if you only ever work through a GUI tool like MySQL Workbench?"
+      },
+      "criteria": {
+        "Installing & Connecting to PostgreSQL": {
+          "id": "pg-hba",
+          "evidence": [
+            {
+              "id": "auth-rules",
+              "text": "pg_hba.conf decides which hosts, users and databases may connect and how they must authenticate."
+            },
+            {
+              "id": "auth-vs-network",
+              "text": "An error naming pg_hba or authentication means the server was reached but rejected you; a timeout or refused connection is a network or listen problem."
+            },
+            {
+              "id": "fix",
+              "text": "You fix an auth rejection by adding or correcting a pg_hba.conf line and reloading, not by changing the network."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (psql, pg_hba.conf) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "hba-firewall",
+              "text": "Says pg_hba.conf is the network firewall that opens the port."
+            }
+          ]
+        },
+        "MySQL Workbench & Basic Administration": {
+          "id": "gui-vs-sql",
+          "evidence": [
+            {
+              "id": "hidden-sql",
+              "text": "A GUI writes the SQL for you, so you don't learn what actually runs."
+            },
+            {
+              "id": "terminal-only",
+              "text": "On a server where only a terminal is available, you can't work without knowing the SQL."
+            },
+            {
+              "id": "use-as-lens",
+              "text": "Use the GUI to visualise and inspect, and know the SQL underneath."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (MySQL Workbench, GUI) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "gui-same-skill",
+              "text": "Says using a GUI teaches you the same as writing SQL yourself."
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "criteriaReviewed": false
+}

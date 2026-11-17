@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "py-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Docker for Python Apps",
+      "question": "Explain how you package a Python web app with Docker for both local work and production.",
+      "followUps": {
+        "Writing Efficient Dockerfiles": "How does the order of steps in a Dockerfile affect build time when you change code?",
+        "Docker Compose for Local Development": "What does Docker Compose give a team, and why do healthchecks matter when containers start?"
+      }
+    },
+    {
+      "title": "Gunicorn & Production Serving",
+      "question": "Explain how you run a Python ASGI app in production so it stays up and shuts down cleanly.",
+      "followUps": {
+        "Gunicorn with Uvicorn Workers": "Why put Gunicorn in front of Uvicorn workers, and how do you choose the worker count?",
+        "Graceful Shutdown & Signal Handling": "What happens to in-flight requests when a container stops, and how do the timeouts need to line up?"
+      }
+    },
+    {
+      "title": "Nginx as Reverse Proxy",
+      "question": "Explain what a reverse proxy does in front of a Python app server and why you use one.",
+      "followUps": {
+        "Nginx Reverse Proxy Configuration": "How do slow clients hurt an app server that has no proxy in front of it?",
+        "TLS Termination & Let's Encrypt": "What breaks in your app if the proxy does not pass X-Forwarded-Proto?"
+      }
+    },
+    {
+      "title": "CI/CD & Container Registries",
+      "question": "Explain how code goes from a pull request to a production deploy in a container-based setup.",
+      "followUps": {
+        "GitHub Actions for FastAPI": "What should a CI pipeline for a FastAPI service check, and why build the Docker image in CI?",
+        "Environment Parity & Image Promotion": "Why build one image and promote it through environments instead of building one per environment?"
+      }
+    }
+  ]
+}

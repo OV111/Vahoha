@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "gcp-architect-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Encryption & Secret Management",
+      "question": "Explain how you would handle encryption keys and application secrets on GCP.",
+      "followUps": {
+        "Cloud KMS Key Rings & Customer-Managed Keys": "What extra control do customer-managed encryption keys give you over the default encryption?",
+        "Secret Manager Versions & Rotation": "Why is pulling secrets from Secret Manager at runtime safer than storing them in environment files or code?"
+      }
+    },
+    {
+      "title": "VPC Service Controls & Org Policy",
+      "question": "Explain how you would stop data from leaving your GCP environment and prevent risky configurations org-wide.",
+      "followUps": {
+        "VPC Service Controls Access Perimeters": "How can VPC Service Controls block data theft even when the attacker has valid IAM permissions?",
+        "Organization Policy Constraints": "Why is a preventive organization policy more effective than detecting a misconfiguration after it happens?"
+      }
+    },
+    {
+      "title": "Threat Detection & Compliance",
+      "question": "Walk through how you would find and respond to security threats and compliance gaps on GCP.",
+      "followUps": {
+        "Security Command Center Findings": "How would you turn Security Command Center findings into actual remediation work for your teams?",
+        "Security in GCP Skills Boost Course": "What hands-on security scenarios would you want to practice before designing for a regulated customer?"
+      }
+    },
+    {
+      "title": "Supply Chain Security",
+      "question": "Explain how you would secure the path from source code to running containers and keep an audit trail.",
+      "followUps": {
+        "Binary Authorization & Artifact Registry": "How do Artifact Registry scanning and Binary Authorization work together to stop a bad image from running?",
+        "Access Transparency & Cloud Audit Logs": "Why should you set up audit log sinks before an incident rather than after?"
+      }
+    }
+  ]
+}

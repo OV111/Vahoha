@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "gcp-architect-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "GCP Landing Zone & Cloud Foundation Toolkit",
+      "question": "Explain how you would set up the foundation of a new enterprise GCP environment.",
+      "followUps": {
+        "Landing Zone with Cloud Foundation Toolkit": "What does starting from Cloud Foundation Toolkit modules save you compared with building a landing zone from scratch?",
+        "Google Cloud Architecture Framework": "How would you use the Architecture Framework during a design review?"
+      }
+    },
+    {
+      "title": "Anthos for Multi-Cluster & Hybrid",
+      "question": "Explain how you would keep many Kubernetes clusters consistent and connected across clouds and data centers.",
+      "followUps": {
+        "Anthos Config Management & Policy Controller": "What problems appear in a large cluster fleet without central config management and policy enforcement?",
+        "Anthos Service Mesh for Multi-Cluster Traffic": "What does a managed service mesh give you for traffic between clusters in different regions?"
+      }
+    },
+    {
+      "title": "Enterprise IAM & Multi-Region Patterns",
+      "question": "Walk through how you would handle identity across projects and design for running in several regions.",
+      "followUps": {
+        "Cross-Project Service Account Delegation": "Why is service account impersonation better than sharing service account keys across projects?",
+        "Multi-Region Architecture Patterns on GCP": "What trade-offs between consistency, latency and cost do you face in an active-active multi-region design?"
+      }
+    },
+    {
+      "title": "Exam Prep & Advanced Study",
+      "question": "Explain how you would prepare to design GCP architectures at a professional level.",
+      "followUps": {
+        "Professional Cloud Architect Certification": "What does the Professional Cloud Architect exam expect beyond knowing how each service works?",
+        "Google Cloud Architecture Center Case Studies": "How would you adapt a published reference architecture to a client whose needs differ from it?"
+      }
+    }
+  ]
+}

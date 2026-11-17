@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "aws-architect-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "CloudFormation Templates",
+      "question": "Explain how a CloudFormation template describes infrastructure and how one template can serve many environments.",
+      "followUps": {
+        "Template Anatomy and Intrinsic Functions": "How do intrinsic functions like Ref and Fn::GetAtt let one template work across environments, and how do circular dependencies happen?",
+        "Nested Stacks and Cross-Stack References": "When would you use nested stacks instead of cross-stack references, and what makes cross-stack exports hard to change later?"
+      }
+    },
+    {
+      "title": "Change Management",
+      "question": "Walk through how you would change live infrastructure safely with CloudFormation.",
+      "followUps": {
+        "Change Sets and Rollback Triggers": "What could a change set warn you about before an update, and what do rollback triggers add on top?",
+        "Drift Detection and Remediation": "Why is drift dangerous for the next stack update, and how would you handle it?"
+      }
+    },
+    {
+      "title": "AWS CDK",
+      "question": "Explain what the AWS CDK adds on top of plain CloudFormation templates.",
+      "followUps": {
+        "CDK Constructs and Apps": "What is the difference between L1, L2, and L3 constructs, and when would you drop down to L1?",
+        "CDK Pipelines for CI/CD": "What does it mean that a CDK pipeline is self-mutating, and why is that useful?"
+      }
+    },
+    {
+      "title": "StackSets and Multi-Account Deployments",
+      "question": "Explain how you would roll out the same infrastructure to many accounts and keep templates correct.",
+      "followUps": {
+        "CloudFormation StackSets": "How would you use StackSets to give every new account a security baseline, and what do failure tolerance settings control?",
+        "cfn-lint and Template Validation": "What kinds of problems does cfn-lint catch, and what does cfn-guard check that cfn-lint does not?"
+      }
+    }
+  ]
+}

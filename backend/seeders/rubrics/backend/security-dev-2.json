@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "security-dev-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "OWASP Top 10 Deep Dive",
+      "question": "Explain the most common ways web applications get broken into, and how you prevent them.",
+      "followUps": {
+        "Injection Attacks (SQLi, XSS, Command)": "What do SQL injection, XSS and command injection have in common, and what is the core fix?",
+        "Broken Access Control": "A user changes /orders/123 to /orders/124 and sees someone else's order. What is missing on the server?"
+      }
+    },
+    {
+      "title": "HTTP Security Headers",
+      "question": "Explain how HTTP response headers can make a browser defend your users.",
+      "followUps": {
+        "Content Security Policy (CSP)": "How does a Content Security Policy make an XSS bug harder to exploit?",
+        "HSTS, X-Frame-Options & CORS": "Which attack does HSTS stop, and which does X-Frame-Options stop?"
+      }
+    },
+    {
+      "title": "Burp Suite Essentials",
+      "question": "Explain how you would test your own API by tampering with its requests.",
+      "followUps": {
+        "Intercepting & Modifying Requests": "Why intercept and change requests in a proxy instead of trusting what the frontend sends?",
+        "Active Scanning & Repeater": "When would you use Repeater instead of the automated scanner?"
+      }
+    },
+    {
+      "title": "Vulnerability Research",
+      "question": "Explain how you keep track of known vulnerabilities in the software you depend on, and how you practise finding them.",
+      "followUps": {
+        "CVE & NVD Databases": "What is the difference between a CVE id and its CVSS score in the NVD?",
+        "OWASP WebGoat – Hands-on Practice": "Why practise attacks on a deliberately insecure app like WebGoat?"
+      }
+    }
+  ]
+}

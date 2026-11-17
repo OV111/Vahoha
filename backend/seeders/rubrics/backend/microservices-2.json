@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "microservices-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Domain-Driven Design Core",
+      "question": "Explain how domain-driven design helps you keep each service's model clean and consistent.",
+      "followUps": {
+        "Bounded Contexts": "Why does forcing one shared Order model across Sales and Fulfillment cause problems?",
+        "Aggregates and Consistency Boundaries": "Why should a single transaction not span more than one aggregate?"
+      }
+    },
+    {
+      "title": "Service Contracts",
+      "question": "Explain how services can change their APIs and data independently without breaking each other.",
+      "followUps": {
+        "API Versioning and Backward Compatibility": "Why does a breaking API change turn a release into a system-wide event without a versioning strategy?",
+        "Database-Per-Service Pattern": "How do you answer a query that needs data from two services when each owns its own database?"
+      }
+    },
+    {
+      "title": "Context Mapping",
+      "question": "Explain how teams describe and protect the relationships between different parts of a domain.",
+      "followUps": {
+        "Context Map and Integration Patterns": "When would you put an anti-corruption layer in front of an upstream system, and what does it protect you from?",
+        "Ubiquitous Language": "What kind of bugs appear when the names in the code drift away from the words the business uses?"
+      }
+    },
+    {
+      "title": "Design Validation",
+      "question": "Walk through how you would check that your service boundaries match the real business.",
+      "followUps": {
+        "Event Storming for Service Boundaries": "How does an event storming session help you find service boundaries?",
+        "Decomposition by Subdomain": "How does the difference between core and generic subdomains change where you spend engineering effort?"
+      }
+    }
+  ]
+}

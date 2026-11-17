@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "finops-engineer-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Tagging Taxonomy Design",
+      "question": "Explain how you would design tags so cloud costs can be traced back to owners.",
+      "followUps": {
+        "Designing a Cost Allocation Tag Schema": "Why is it worth agreeing on a tag schema before you start enforcing it?",
+        "Tag Normalization and Hierarchy": "What breaks in cost reports when teams spell the same tag value differently, and how would you fix it?"
+      }
+    },
+    {
+      "title": "Tag Policy Enforcement",
+      "question": "Walk through how you would enforce tagging rules across many AWS accounts or Azure subscriptions.",
+      "followUps": {
+        "AWS Tag Policies via Organizations": "Why set tag rules at the organization level instead of in each account?",
+        "Azure Policy for Required Tags": "What is the trade-off of denying resource creation when a required tag is missing?"
+      }
+    },
+    {
+      "title": "GCP Label Enforcement",
+      "question": "Explain how you would make sure GCP resources carry the labels you need for cost reports.",
+      "followUps": {
+        "GCP Organization Policy for Labels": "Why do labels matter so much when you need cost detail below the project level in GCP?",
+        "Tag Coverage Monitoring and Reporting": "How would you use a tag coverage metric to drive teams toward compliance?"
+      }
+    },
+    {
+      "title": "Shared Cost Allocation Strategies",
+      "question": "Walk through how you would handle costs that no single team clearly owns.",
+      "followUps": {
+        "Proportional Shared Cost Distribution": "What is a weakness of splitting shared costs by each team's direct spend?",
+        "Automated Tagging Remediation": "What risk comes with automatically applying default tags to untagged resources?"
+      }
+    }
+  ]
+}

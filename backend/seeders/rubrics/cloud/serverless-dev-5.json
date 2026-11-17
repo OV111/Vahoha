@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "serverless-dev-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "SQS Queue Design",
+      "question": "Explain how you choose and set up an SQS queue for a Lambda consumer.",
+      "followUps": {
+        "Standard vs FIFO Queues — When to Use Each": "What do you give up by choosing a FIFO queue, and when is that price worth paying?",
+        "Dead-Letter Queues and Failure Handling": "How does a dead-letter queue stop a poison message from hurting the rest of the queue?"
+      }
+    },
+    {
+      "title": "SNS Fan-Out Patterns",
+      "question": "Explain how SNS lets one event reach many consumers.",
+      "followUps": {
+        "SNS to Multiple SQS Queues": "Why does putting an SQS queue between SNS and each consumer make the system more resilient?",
+        "SNS Message Filtering": "What does a subscription filter policy save you compared with filtering inside each function?"
+      }
+    },
+    {
+      "title": "EventBridge for Event Routing",
+      "question": "Walk through how EventBridge routes events and runs scheduled work.",
+      "followUps": {
+        "EventBridge Custom Buses and Event Patterns": "How does an EventBridge rule let you add a new consumer without touching the publisher?",
+        "EventBridge Scheduler for Time-Based Invocations": "Why would you use EventBridge Scheduler for a one-time reminder instead of building your own timer?"
+      }
+    },
+    {
+      "title": "Idempotency in Event Processing",
+      "question": "Explain how you keep event processing correct when messages can arrive more than once or fail partway.",
+      "followUps": {
+        "Idempotency Keys and Deduplication": "How would you make a payment handler safe when the same message is delivered twice?",
+        "Partial Batch Failure Reporting": "What happens to the good messages in a batch when one fails, and how do partial batch responses fix that?"
+      }
+    }
+  ]
+}

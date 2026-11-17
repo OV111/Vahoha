@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "graphql-dev-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Resolver Internals",
+      "question": "Explain how a resolver works and what it receives when GraphQL calls it.",
+      "followUps": {
+        "The Four Resolver Arguments (parent, args, context, info)": "What is each of the four resolver arguments for, and what do you lose by ignoring parent?",
+        "Default Resolvers & Trivial Fields": "What happens when a field has no resolver defined?"
+      }
+    },
+    {
+      "title": "Resolver Execution Model",
+      "question": "Walk through how GraphQL executes the resolvers of a query and handles failures.",
+      "followUps": {
+        "Parallel Field Resolution": "What bug can appear when two sibling resolvers depend on each other's side effects?",
+        "Resolver Errors & Partial Data": "How does a client know a field is null because of an error rather than a real empty value?"
+      }
+    },
+    {
+      "title": "Context in Depth",
+      "question": "Explain how per-request data and resources reach every resolver.",
+      "followUps": {
+        "Building & Sharing Context": "What can go wrong if the context object holds state shared between requests?",
+        "Context vs Module-level Singletons": "Why create the database client once but build the context fresh for each request?"
+      }
+    },
+    {
+      "title": "Resolving Nested & Related Data",
+      "question": "Explain how GraphQL resolves nested data like a user with their posts.",
+      "followUps": {
+        "Resolver Chaining for Nested Types": "When does a nested type's resolver actually run?",
+        "The N+1 Problem Preview": "How does a list resolver with a nested field end up making one query per item?"
+      }
+    }
+  ]
+}

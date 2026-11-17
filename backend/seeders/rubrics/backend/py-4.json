@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "py-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "SQLAlchemy ORM",
+      "question": "Explain how SQLAlchemy maps your models to the database and tracks changes during a request.",
+      "followUps": {
+        "The SQLAlchemy Session & Unit of Work": "Why must each request get its own session, and what goes wrong if requests share one?",
+        "Declarative Models & Relationships": "What is the N+1 query problem with lazy loading, and how do you fix it?"
+      }
+    },
+    {
+      "title": "Database Migrations with Alembic",
+      "question": "Explain how you change a production database schema safely over time.",
+      "followUps": {
+        "Alembic Migration Workflow": "Why should you not run create_all against a production database?",
+        "Safe Schema Migrations in Production": "How does the expand and contract pattern keep a schema change from causing downtime?"
+      }
+    },
+    {
+      "title": "PostgreSQL Fundamentals",
+      "question": "Explain how PostgreSQL decides how to run a query and how it keeps concurrent transactions apart.",
+      "followUps": {
+        "Indexes & Query Planning": "How would you use EXPLAIN ANALYZE to find out why a query got slow as the table grew?",
+        "Transactions & Isolation Levels": "What anomaly can happen under READ COMMITTED, and what do you pay for a stricter isolation level?"
+      }
+    },
+    {
+      "title": "Connection Pooling",
+      "question": "Explain how a Python service manages its database connections under load.",
+      "followUps": {
+        "SQLAlchemy Connection Pool": "What happens if you set the pool size too low, and what happens if you set it too high?",
+        "Async SQLAlchemy with asyncpg": "What happens to a FastAPI service if an async route uses a synchronous SQLAlchemy session?"
+      }
+    }
+  ]
+}

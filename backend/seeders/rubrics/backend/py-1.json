@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "py-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Python Runtime & Environment",
+      "question": "Walk me through what happens from the moment you type python app.py until your code is running, including how Python finds the right packages.",
+      "followUps": {
+        "The Python Interpreter & Execution Model": "Why does Python write .pyc files, and why does that not make Python as fast as a compiled language?",
+        "Virtual Environments & pip": "What actually changes when you activate a virtual environment, and what goes wrong if you skip it?"
+      }
+    },
+    {
+      "title": "Core Language Fundamentals",
+      "question": "Explain how you pick the right built-in data structure and how Python decides which variable a name refers to.",
+      "followUps": {
+        "Data Structures & Comprehensions": "Why can checking membership in a list become a performance bug that a set would avoid?",
+        "Functions, Scope & Closures": "What goes wrong when a function uses a mutable default argument, and how do you avoid it?"
+      }
+    },
+    {
+      "title": "Tooling Best Practices",
+      "question": "Explain how you keep a Python project's dependencies and interpreter version reproducible across machines.",
+      "followUps": {
+        "Dependency Pinning & requirements.txt": "What can break if you deploy six months later from an unpinned requirements file?",
+        "Python Version Management with pyenv": "What problem does pyenv solve that a virtual environment alone does not?"
+      }
+    },
+    {
+      "title": "Error Handling & Debugging",
+      "question": "Explain how you handle errors and track down bugs in Python code that runs in production.",
+      "followUps": {
+        "Exceptions & the Exception Hierarchy": "Why is a bare except clause dangerous, and what does raise from add when you re-raise?",
+        "The pdb Debugger & Logging": "When would you reach for pdb instead of logging, and why is print debugging not enough?"
+      }
+    }
+  ]
+}

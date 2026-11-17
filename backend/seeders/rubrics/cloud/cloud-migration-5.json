@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-migration-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Database Migration Tools",
+      "question": "Explain how database migration tools move schema and data from one database to another.",
+      "followUps": {
+        "AWS Database Migration Service Architecture": "How does a full load followed by change data capture keep downtime short?",
+        "AWS Schema Conversion Tool (SCT)": "Why is stored procedure conversion often where heterogeneous migrations go over budget?"
+      }
+    },
+    {
+      "title": "Minimal Downtime Strategies",
+      "question": "Walk through how you would migrate a large database with as little downtime as possible.",
+      "followUps": {
+        "Change Data Capture (CDC) Replication": "Why does replication lag matter so much as you approach the cutover?",
+        "Post-Migration Data Validation": "Why should you prove data integrity before cutover instead of assuming it?"
+      }
+    },
+    {
+      "title": "Target Database Platforms",
+      "question": "Explain how you would choose the managed database a workload should move to.",
+      "followUps": {
+        "Amazon Aurora as Migration Target": "What makes Aurora a strong target for many relational databases, and when would it not fit?",
+        "Azure Database Migration Service": "Why is SQL Managed Instance often an easier target for SQL Server than Azure SQL Database?"
+      }
+    },
+    {
+      "title": "Heterogeneous Migration",
+      "question": "Walk through the challenges of moving to a different database engine.",
+      "followUps": {
+        "Oracle to PostgreSQL Migration Path": "Why does most of the effort in an Oracle to PostgreSQL move land on the procedural code?",
+        "SQL Server to Amazon RDS Migration": "How does the choice of target engine change the amount of application work in a SQL Server migration?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "java-spring-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Spring Security Architecture",
+      "question": "Walk through how Spring Security processes a request before it reaches your controller.",
+      "followUps": {
+        "SecurityFilterChain & Filter Order": "How can a wrong filter order leave an endpoint open even though it looks protected?",
+        "Authentication vs Authorization": "Why is it risky to rely on defaults for endpoints you did not write rules for, like actuator paths?"
+      }
+    },
+    {
+      "title": "JWT-Based Stateless Auth",
+      "question": "Explain how stateless authentication with JWTs works in a Spring service.",
+      "followUps": {
+        "JWT Structure & Signature Verification": "What happens if a service accepts a JWT without checking its signature, and why does key choice matter with many services?",
+        "Token Expiry, Refresh & Revocation": "If a JWT cannot be revoked, how do you limit the damage when one is stolen?"
+      }
+    },
+    {
+      "title": "OAuth2 & Resource Servers",
+      "question": "Explain how OAuth2 fits into a Spring system and how you enforce access rules beyond URLs.",
+      "followUps": {
+        "OAuth2 Grant Types": "Why is Client Credentials the wrong grant for a user-facing app?",
+        "Method Security & @PreAuthorize": "What does @PreAuthorize protect that URL-based rules miss?"
+      }
+    },
+    {
+      "title": "Password Security & CSRF",
+      "question": "Explain how you protect user passwords and browser sessions in a Spring app.",
+      "followUps": {
+        "Password Encoding with BCrypt": "Why is a slow hash like BCrypt better for passwords than a fast hash like SHA-256?",
+        "CSRF Protection in REST APIs": "When should a REST API disable CSRF protection, and when must it keep it?"
+      }
+    }
+  ]
+}

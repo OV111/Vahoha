@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "multi-cloud-architect-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Cloud-to-Cloud Connectivity",
+      "question": "Explain how you would connect private networks on two different cloud providers.",
+      "followUps": {
+        "VPN Tunnels Between AWS and Azure": "Why do VPN tunnels between clouds often fail to come up, and what does running BGP over them give you?",
+        "SD-WAN for Multi-Cloud Network Abstraction": "What problem does an SD-WAN layer solve across clouds, and what do you give up by adding it?"
+      }
+    },
+    {
+      "title": "Private Interconnect Options",
+      "question": "Walk through how traffic and name lookups should work between clouds when you want to avoid the public internet.",
+      "followUps": {
+        "Azure ExpressRoute and AWS Direct Connect Pairing": "Why would a regulated workload pay for dedicated circuits that meet at a shared colocation facility instead of using a VPN?",
+        "Multi-Cloud DNS Resolution Strategies": "How would you let services on one cloud resolve private hostnames on another, and what breaks if you skip this?"
+      }
+    },
+    {
+      "title": "Security Across Cloud Perimeters",
+      "question": "Explain how you keep network security consistent when each cloud uses its own firewall model.",
+      "followUps": {
+        "Network Security Policy Consistency": "How can different default behaviors in each cloud network security model create gaps, and how would you close them?",
+        "BGP Route Filtering and Security": "What can go wrong when BGP routes are exchanged between clouds without filters?"
+      }
+    },
+    {
+      "title": "Traffic Management and Egress",
+      "question": "Explain how you would control the cost and routing of traffic that crosses cloud boundaries.",
+      "followUps": {
+        "Minimizing Cross-Cloud Egress Costs": "How would you redesign a chatty application to cut the data transfer bill between clouds?",
+        "GCP Network Connectivity Center": "What role can GCP Network Connectivity Center play when GCP is one of three connected environments?"
+      }
+    }
+  ]
+}

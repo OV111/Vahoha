@@ -9,6 +9,61 @@
       "followUps": {
         "The Middleware Pipeline": "What happens if a middleware neither responds nor calls next()?",
         "Router — Route Parameters & Query Strings": "When does data belong in a route parameter like /books/:id, and when in a query string?"
+      },
+      "criteria": {
+        "The Middleware Pipeline": {
+          "id": "express-middleware",
+          "evidence": [
+            {
+              "id": "ordered-chain",
+              "text": "Each request passes through the middleware functions in the order they were registered."
+            },
+            {
+              "id": "respond-or-next",
+              "text": "Each middleware must either send a response or call next() to pass the request on."
+            },
+            {
+              "id": "hangs",
+              "text": "If it does neither, the request hangs until the client times out."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (middleware, next()) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "next-automatic",
+              "text": "Says Express moves to the next middleware automatically when a function returns."
+            }
+          ]
+        },
+        "Router — Route Parameters & Query Strings": {
+          "id": "params-vs-query",
+          "evidence": [
+            {
+              "id": "param-identity",
+              "text": "Route parameters identify a specific resource, like the id in /books/:id."
+            },
+            {
+              "id": "query-options",
+              "text": "Query strings carry optional filters, sorting or paging, like ?page=2&author=x."
+            },
+            {
+              "id": "why",
+              "text": "Optional filters in the path make brittle URLs, while identity in the query string hides what the resource is."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (route params, query string) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "interchangeable",
+              "text": "Says route parameters and query strings are interchangeable."
+            }
+          ]
+        }
       }
     },
     {
@@ -17,6 +72,62 @@
       "followUps": {
         "Resource Naming & HTTP Verbs": "Why is /books with POST better than /createBook?",
         "Input Validation with Zod or Joi": "Why validate the request body at the route, before any business logic runs?"
+      },
+      "criteria": {
+        "Resource Naming & HTTP Verbs": {
+          "id": "rest-naming",
+          "evidence": [
+            {
+              "id": "nouns",
+              "text": "URLs name resources with nouns, usually plural: /books, /books/:id."
+            },
+            {
+              "id": "verb-in-method",
+              "text": "The action comes from the HTTP method (POST creates, GET reads, PUT/PATCH updates, DELETE removes), not from the URL."
+            },
+            {
+              "id": "predictable",
+              "text": "That keeps the API predictable and consistent, and plays well with caching and tooling."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (REST, nouns, verbs) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "url-per-action",
+              "text": "Says each action should get its own URL, like /createBook."
+            }
+          ]
+        },
+        "Input Validation with Zod or Joi": {
+          "id": "input-validation",
+          "evidence": [
+            {
+              "id": "at-boundary",
+              "text": "Request input is checked against a schema at the route, before any business logic runs."
+            },
+            {
+              "id": "reject-early",
+              "text": "Bad input is rejected with a clear 400 error instead of failing deeper with a 500 or corrupting data."
+            },
+            {
+              "id": "untrusted",
+              "text": "Client input can't be trusted, and validating it also blocks injection and type errors."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (Zod, Joi, validation) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "frontend-enough",
+              "text": "Says validating in the frontend is enough, so the server doesn't need to check."
+            }
+          ]
+        }
       }
     },
     {
@@ -25,6 +136,61 @@
       "followUps": {
         "Centralized Error-Handling Middleware": "What makes Express treat a middleware as an error handler, and why have just one?",
         "Request Logging with morgan": "Which details should an access log record so you can find the endpoint that returns 500s?"
+      },
+      "criteria": {
+        "Centralized Error-Handling Middleware": {
+          "id": "error-middleware",
+          "evidence": [
+            {
+              "id": "four-args",
+              "text": "Express treats middleware with four arguments (err, req, res, next) as an error handler."
+            },
+            {
+              "id": "reached",
+              "text": "Errors reach it through next(err) or thrown/rejected errors, and it is registered after the routes."
+            },
+            {
+              "id": "one-shape",
+              "text": "One central handler gives every error the same response shape and status codes, and logs it in one place."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (error middleware, next(err)) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "before-routes",
+              "text": "Says the error handler should be registered before the routes."
+            }
+          ]
+        },
+        "Request Logging with morgan": {
+          "id": "access-logs",
+          "evidence": [
+            {
+              "id": "fields",
+              "text": "Each request's method, path, status code and response time is logged."
+            },
+            {
+              "id": "find-failing",
+              "text": "Then you can filter or count 500s per endpoint and see which one is failing or slow."
+            },
+            {
+              "id": "correlate",
+              "text": "A request id or timestamp ties the access log line to other logs about the same request."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (morgan, logging) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "message-enough",
+              "text": "Says logging the error message alone is enough to find the failing endpoint."
+            }
+          ]
+        }
       }
     },
     {
@@ -33,7 +199,64 @@
       "followUps": {
         "Controller Pattern — Separating Routes from Logic": "Why move logic out of route callbacks, and how does that help testing?",
         "API Versioning Strategies": "How does putting /v1 in the URL let you ship a breaking change without breaking existing clients?"
+      },
+      "criteria": {
+        "Controller Pattern — Separating Routes from Logic": {
+          "id": "controller-pattern",
+          "evidence": [
+            {
+              "id": "separate",
+              "text": "Routes only map URLs to functions; the logic lives in controllers or services."
+            },
+            {
+              "id": "testable",
+              "text": "Logic separated from HTTP can be unit-tested directly, without starting a server."
+            },
+            {
+              "id": "readable",
+              "text": "Route files stay short and easy to scan."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (controllers, MVC) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "for-speed",
+              "text": "Says the pattern exists mainly to make the API run faster."
+            }
+          ]
+        },
+        "API Versioning Strategies": {
+          "id": "api-versioning",
+          "evidence": [
+            {
+              "id": "side-by-side",
+              "text": "/v1 and /v2 run side by side, so existing clients keep using v1 unchanged."
+            },
+            {
+              "id": "breaking-in-new",
+              "text": "Breaking changes go only into the new version, and clients move over when they are ready."
+            },
+            {
+              "id": "retire",
+              "text": "The old version is deprecated with notice and removed later."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (versioning, /v1) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "version-every-change",
+              "text": "Says the version must be bumped for every change, including non-breaking ones."
+            }
+          ]
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": false
 }

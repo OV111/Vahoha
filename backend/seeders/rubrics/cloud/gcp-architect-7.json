@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "gcp-architect-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Cloud Run & Cloud Functions",
+      "question": "Explain how you would choose between running containers and running functions on serverless GCP.",
+      "followUps": {
+        "Cloud Run Containers & Scale-to-Zero": "What is the trade-off of setting minimum instances on a Cloud Run service?",
+        "Cloud Functions Gen2 & Eventarc Triggers": "What does Eventarc give you compared with wiring event sources to handlers yourself?"
+      }
+    },
+    {
+      "title": "Async Processing & Scheduling",
+      "question": "Walk through how you would handle background work and scheduled jobs without running servers.",
+      "followUps": {
+        "Cloud Tasks for Reliable Async Queuing": "Why would you push work into Cloud Tasks instead of calling a slow service directly from your API?",
+        "Cloud Scheduler for Cron-Triggered Workflows": "How does OIDC authentication let a scheduled job prove who it is to the service it calls?"
+      }
+    },
+    {
+      "title": "Firebase & Identity Platform",
+      "question": "Explain how you would build the data and login layer for a mobile or web app using Firebase and Identity Platform.",
+      "followUps": {
+        "Firebase Firestore for Mobile & Web Backends": "Why do you need to plan your Firestore data model and indexes early?",
+        "Identity Platform for Authentication": "What does multi-tenancy in Identity Platform give a B2B SaaS product?"
+      }
+    },
+    {
+      "title": "Serverless Architecture Patterns",
+      "question": "Explain how you would design batch jobs and multi-step processes using serverless tools.",
+      "followUps": {
+        "Cloud Run Jobs for Batch Processing": "When is a Cloud Run Job a better fit than a Cloud Run service or a VM?",
+        "Workflows for Multi-Step Orchestration": "When would you use Workflows instead of writing the orchestration logic in your own code?"
+      }
+    }
+  ]
+}

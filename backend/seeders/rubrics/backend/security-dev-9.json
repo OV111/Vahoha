@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "security-dev-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Dynamic Application Security Testing",
+      "question": "Explain how you would test a running application and its containers for vulnerabilities automatically.",
+      "followUps": {
+        "DAST Tools & CI Integration": "What can testing a running app find that reading its source code can't?",
+        "Snyk for Dependency & Container Scanning": "Why scan container images and not only your package dependencies?"
+      }
+    },
+    {
+      "title": "DevSecOps Practices",
+      "question": "Explain how you would build security into the development process instead of checking it at the end.",
+      "followUps": {
+        "Shifting Security Left": "What does shifting security left mean, and why is it cheaper?",
+        "Security Gates in CI/CD Pipelines": "How should a pipeline decide whether to fail a build on a vulnerability finding?"
+      }
+    },
+    {
+      "title": "Infrastructure as Code Security",
+      "question": "Explain how you would keep cloud infrastructure and containers secure when they are defined in code.",
+      "followUps": {
+        "IaC Scanning (Terraform, CloudFormation)": "What kind of mistake would a tool like Checkov catch in a Terraform file?",
+        "Container & Kubernetes Security": "Why is running a container as root risky, and what can Kubernetes enforce to stop it?"
+      }
+    },
+    {
+      "title": "Security Monitoring & Logging",
+      "question": "Explain how you would notice an attack that is happening in production.",
+      "followUps": {
+        "Centralized Security Logging": "Why collect security logs from every service in one place?",
+        "Alerting & Anomaly Detection": "Name an anomaly worth alerting on, and explain why catching it early matters."
+      }
+    }
+  ]
+}

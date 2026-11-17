@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "grpc-dev-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Go gRPC Setup",
+      "question": "Walk through how you set up code generation for a gRPC service in Go.",
+      "followUps": {
+        "protoc-gen-go & protoc-gen-go-grpc": "Why does Go need two separate plugins to generate gRPC code, and why should you pin their versions?",
+        "Module Path & go_package Option": "What goes wrong when the go_package option does not match your module path?"
+      }
+    },
+    {
+      "title": "Implementing Go Servers",
+      "question": "Explain how you start and stop a gRPC server in Go safely.",
+      "followUps": {
+        "RegisterXxxServer & net.Listen": "What happens if you forget to register one of your services before calling Serve?",
+        "Graceful Stop vs Force Stop": "Why should a deploy use GracefulStop with a timeout instead of Stop?"
+      }
+    },
+    {
+      "title": "Go Client Patterns",
+      "question": "Explain how a Go service should create gRPC clients and pass request context through calls.",
+      "followUps": {
+        "Connection Reuse & grpc.Dial": "Why should a Go service create one client connection at startup and share it?",
+        "Context, Deadlines & Cancellation": "What happens downstream if a handler does not pass its incoming context to a gRPC call?"
+      }
+    },
+    {
+      "title": "Go Concurrency & gRPC",
+      "question": "Explain how concurrency and error handling work in a Go gRPC service under heavy load.",
+      "followUps": {
+        "Goroutines Per Stream": "Why can unbounded concurrent streams become a problem, and how would you limit them?",
+        "Error Wrapping with status.Error": "What does the client see if a Go handler returns a plain fmt.Errorf error?"
+      }
+    }
+  ]
+}

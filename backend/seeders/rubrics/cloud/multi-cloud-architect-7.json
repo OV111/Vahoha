@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "multi-cloud-architect-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Vendor-Neutral Instrumentation",
+      "question": "Explain how you would instrument applications so their telemetry works no matter which cloud or vendor you use.",
+      "followUps": {
+        "OpenTelemetry as the Multi-Cloud Observability Standard": "What is the cost of instrumenting code directly with a vendor SDK instead of OpenTelemetry?",
+        "OTel Collector Deployment for Multi-Cloud": "Why would you route per-cloud Collectors through a central gateway instead of sending data straight to the backend?"
+      }
+    },
+    {
+      "title": "Centralized Metrics at Scale",
+      "question": "Walk through how you would give engineers one place to query metrics from every cloud.",
+      "followUps": {
+        "Thanos for Long-Term Multi-Cloud Prometheus": "How does Thanos give long-term retention and a global view on top of several Prometheus servers?",
+        "Grafana Mimir for Scalable Multi-Tenant Metrics": "When would you choose Grafana Mimir over Thanos for a large multi-cloud setup?"
+      }
+    },
+    {
+      "title": "Unified Logging Across Clouds",
+      "question": "Explain how you would bring logs from all your clouds together for debugging and security.",
+      "followUps": {
+        "Centralizing Logs from AWS, Azure, and GCP": "Why does applying a common log schema at export time matter for cross-cloud investigations?",
+        "Grafana Loki for Multi-Cloud Log Aggregation": "Why is Loki cheaper to run than a full-text search engine, and what do you give up for that?"
+      }
+    },
+    {
+      "title": "Cross-Cloud SLOs",
+      "question": "Explain how you would measure the reliability of a service that runs across more than one cloud.",
+      "followUps": {
+        "Defining SLOs for Multi-Cloud Services": "Why should a multi-cloud SLO be measured from the user side rather than per cloud?",
+        "Synthetic Monitoring Across Cloud Regions": "How do you keep synthetic monitors from paging on one-off network blips while still pinpointing the bad region?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-migration-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Rehost Migration Tools",
+      "question": "Explain how rehost tools move servers to the cloud with very little downtime.",
+      "followUps": {
+        "AWS Application Migration Service (MGN)": "How does continuous block-level replication shrink the cutover window?",
+        "Azure Migrate Server Migration": "Why does agentless replication of VMware servers help speed up a migration timeline?"
+      }
+    },
+    {
+      "title": "Cutover Planning",
+      "question": "Walk through how you would plan a cutover so it is safe to try and safe to undo.",
+      "followUps": {
+        "Test Migration Strategy": "Why run more than one test migration per server before the real cutover?",
+        "Rollback Planning for Failed Cutovers": "How would you decide when to roll back, and what must stay in place to make that possible?"
+      }
+    },
+    {
+      "title": "Post-Cutover Validation",
+      "question": "Explain how you would confirm a migration worked and when it is safe to remove the old servers.",
+      "followUps": {
+        "Post-Migration Validation Testing": "What should a validation test suite check right after cutover, and why automate it?",
+        "Source Server Decommission Checklist": "Why is shutting down source servers too early such an expensive mistake?"
+      }
+    },
+    {
+      "title": "VMware Migration",
+      "question": "Explain your options for moving VMware workloads that are hard to migrate with standard tools.",
+      "followUps": {
+        "VMware Cloud on AWS": "When would you choose VMware Cloud on AWS, and why is it often only a temporary home?",
+        "VM Import/Export for Custom Images": "When would you use VM Import instead of a continuous replication tool?"
+      }
+    }
+  ]
+}

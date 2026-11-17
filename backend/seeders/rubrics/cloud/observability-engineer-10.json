@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "observability-engineer-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Long-Term Metric Storage",
+      "question": "Explain the options for keeping Prometheus metrics for a long time and querying them across clusters.",
+      "followUps": {
+        "Thanos for Global View and Long-Term Storage": "How does Thanos give you a global view and long retention while keeping Prometheus in place?",
+        "Grafana Mimir for Scalable Prometheus": "When would you choose Mimir over Thanos, and which parts of it still need careful scaling?"
+      }
+    },
+    {
+      "title": "Multi-Tenancy",
+      "question": "Explain how you would let many teams share one observability platform safely.",
+      "followUps": {
+        "Tenant Isolation in Mimir and Loki": "How do Mimir and Loki keep one tenant's data apart from another's, and why do you need per-tenant limits?",
+        "Grafana Organizations and Datasource Isolation": "How do Grafana Organizations help you onboard a new team without exposing other teams' data?"
+      }
+    },
+    {
+      "title": "Observability as Code",
+      "question": "Explain how you would manage an observability platform itself as code.",
+      "followUps": {
+        "Terraform for Platform Infrastructure": "What do you gain by defining the platform's storage, datasources and routing in Terraform?",
+        "Jsonnet and Mixtool for Alert and Dashboard Management": "How do monitoring mixins save time, and what does a good pipeline for them look like?"
+      }
+    },
+    {
+      "title": "Platform Operations and Cost",
+      "question": "Explain how you keep the observability platform reliable and its costs under control.",
+      "followUps": {
+        "Alertmanager High Availability": "Why does Alertmanager need to run highly available, and how should Prometheus be set up to talk to it?",
+        "Observability Cost Management": "Where does observability spend usually grow out of control, and how would you bring it down?"
+      }
+    }
+  ]
+}

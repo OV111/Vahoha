@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "microservices-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Kubernetes Core Concepts",
+      "question": "Explain how Kubernetes keeps your service running and lets other services find it.",
+      "followUps": {
+        "Pods, Deployments, and ReplicaSets": "What do you lose if you run bare pods instead of using a Deployment?",
+        "Services and DNS-Based Discovery": "Why do services call each other through a Kubernetes Service instead of pod IPs?"
+      }
+    },
+    {
+      "title": "Configuration and Secrets",
+      "question": "Explain how you give pods their configuration and the compute they need.",
+      "followUps": {
+        "ConfigMaps and Secrets": "Why should secrets not be baked into images or Dockerfiles?",
+        "Resource Requests and Limits": "What goes wrong on a shared node when pods have no resource requests or limits?"
+      }
+    },
+    {
+      "title": "Scaling and Updates",
+      "question": "Walk through how Kubernetes ships a new version safely and handles traffic spikes.",
+      "followUps": {
+        "Rolling Updates and Rollbacks": "How can a rolling update send traffic to pods that are not ready yet?",
+        "Horizontal Pod Autoscaler": "What happens to autoscaling when the metrics source the HPA depends on goes down?"
+      }
+    },
+    {
+      "title": "Helm Packaging",
+      "question": "Explain how you package a service for several environments and how Kubernetes knows a pod is healthy.",
+      "followUps": {
+        "Helm Charts and Templating": "What problem does a Helm values file solve when you deploy to several environments?",
+        "Liveness vs Readiness Probes": "What goes wrong when a liveness probe starts checking before the app has finished starting?"
+      }
+    }
+  ]
+}

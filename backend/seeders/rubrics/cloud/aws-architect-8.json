@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "aws-architect-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Route 53 and DNS",
+      "question": "Explain how DNS can steer users and help you fail over between regions.",
+      "followUps": {
+        "Route 53 Routing Policies": "Why can DNS failover never be faster than the record TTL, and how does that affect your RTO?",
+        "Route 53 Health Checks": "How would you tune health checks so failover is fast but does not trigger on a short network blip?"
+      }
+    },
+    {
+      "title": "CloudFront and Global Accelerator",
+      "question": "Explain how you would make an application fast for users around the world.",
+      "followUps": {
+        "CloudFront Distributions and Caching": "How do cache behaviors decide what CloudFront caches, and what happens if you forward too many headers to the origin?",
+        "AWS Global Accelerator": "When would you choose Global Accelerator over CloudFront, and why do its static IPs matter?"
+      }
+    },
+    {
+      "title": "Disaster Recovery Strategies",
+      "question": "Walk through how you would pick a disaster recovery plan for a system.",
+      "followUps": {
+        "RTO, RPO, and DR Patterns": "How do RTO and RPO drive the choice between backup and restore, pilot light, warm standby, and active/active?",
+        "AWS Backup and Cross-Region Replication": "Why would you lock a backup vault and copy backups to another region?"
+      }
+    },
+    {
+      "title": "Chaos Engineering",
+      "question": "Explain how you would prove that a system really survives failures.",
+      "followUps": {
+        "AWS Fault Injection Simulator": "Why run fault injection experiments at all, and what safety controls would you set before running one in production?",
+        "Resilience Testing Best Practices": "Why should you write down the success criteria of a game day before you run it?"
+      }
+    }
+  ]
+}

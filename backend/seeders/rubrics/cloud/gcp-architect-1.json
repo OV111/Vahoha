@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "gcp-architect-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Resource Hierarchy & IAM",
+      "question": "Explain how GCP organizes resources and how access control works across that structure.",
+      "followUps": {
+        "GCP Resource Hierarchy": "Why can a single IAM grant at the folder level cause a security problem far beyond what the person granting it intended?",
+        "IAM Roles, Members & Policy Binding": "How does the scope where you bind a role change the damage a leaked credential can do?"
+      }
+    },
+    {
+      "title": "Compute Engine & Storage Basics",
+      "question": "Walk through how you would pick and set up basic compute and object storage for a new workload on GCP.",
+      "followUps": {
+        "Compute Engine VM Instances": "How would you decide which machine family to use for a VM, and what goes wrong if you guess too big?",
+        "Cloud Storage Buckets & Object Lifecycle": "Why do lifecycle rules and storage classes matter for the cost of data that nobody reads anymore?"
+      }
+    },
+    {
+      "title": "CLI & Billing",
+      "question": "Explain how you work with GCP from the command line and how you keep spending under control from the start.",
+      "followUps": {
+        "gcloud CLI & Cloud Shell": "Why is it worth managing gcloud configurations when you work across several projects?",
+        "GCP Pricing & Billing Accounts": "Which billing controls would you turn on first in a new account, and what surprise does each one prevent?"
+      }
+    },
+    {
+      "title": "Certification & Learning Paths",
+      "question": "Explain how you would build solid GCP skills and where you would look for proven architecture guidance.",
+      "followUps": {
+        "Associate Cloud Engineer Path": "What practical skills does the Associate Cloud Engineer path build that reading docs alone does not?",
+        "Google Cloud Architecture Center": "How does a reference architecture help you beyond knowing what a single service does?"
+      }
+    }
+  ]
+}

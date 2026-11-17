@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-native-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Internal Developer Platform Concepts",
+      "question": "Explain what an internal developer platform is and how you would know if it is working.",
+      "followUps": {
+        "Platform Engineering: Paved Roads and Golden Paths": "Why is developer adoption a better measure of a platform than its feature count?",
+        "Backstage Developer Portal Architecture": "How does a software catalog help answer who owns a service, and how do templates turn a golden path into reality?"
+      }
+    },
+    {
+      "title": "CNCF Ecosystem and Project Selection",
+      "question": "Explain how you would choose cloud native tools and judge how mature your setup is.",
+      "followUps": {
+        "Navigating the CNCF Landscape": "Why start with graduated projects, and when would you consider an incubating one?",
+        "Cloud Native Maturity Model Assessment": "What does a maturity assessment give a platform team when talking to leadership?"
+      }
+    },
+    {
+      "title": "Multi-Cluster Management",
+      "question": "Explain how you would create and manage many clusters across clouds and regions.",
+      "followUps": {
+        "Cluster API for Declarative Cluster Lifecycle": "How does Cluster API make a Kubernetes upgrade across many clusters a configuration change?",
+        "Fleet Management with ArgoCD Multi-Cluster and Flux": "Why should you decide how to split workloads across clusters early, before the fleet grows?"
+      }
+    },
+    {
+      "title": "Platform Observability and Cost Management",
+      "question": "Explain how a platform team tracks the cost and reliability of the platform itself.",
+      "followUps": {
+        "OpenCost for Kubernetes Cost Allocation": "How does per-team cost visibility change how teams use resources?",
+        "SLO-Based Reliability Engineering for Platforms": "How should a platform team react when its error budget is burning fast?"
+      }
+    }
+  ]
+}

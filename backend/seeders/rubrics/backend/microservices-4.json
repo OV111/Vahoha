@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "microservices-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Message Brokers",
+      "question": "Explain how message brokers move data between services and what guarantees they give you.",
+      "followUps": {
+        "RabbitMQ vs Kafka Architecture": "When does Kafka fit better than RabbitMQ, and when is it overkill?",
+        "Delivery Guarantees and Ordering": "Why must a consumer be idempotent under at-least-once delivery?"
+      }
+    },
+    {
+      "title": "Event-Driven Patterns",
+      "question": "Explain how event-driven services work and how you handle events that go wrong.",
+      "followUps": {
+        "Event-Driven Architecture": "How can an event schema become a hidden coupling point between producer and consumers?",
+        "Dead-Letter Queues and Poison Messages": "What happens to a consumer when a poison message arrives and there is no dead-letter queue?"
+      }
+    },
+    {
+      "title": "Kafka Deep Dive",
+      "question": "Walk through how Kafka scales consumption and keeps producers and consumers compatible.",
+      "followUps": {
+        "Kafka Topics, Partitions, and Consumer Groups": "How does the partition count limit how many consumers in a group can work in parallel?",
+        "Schema Registry and Avro": "What failure does a schema registry prevent when a producer changes a field type?"
+      }
+    },
+    {
+      "title": "Pub/Sub Patterns",
+      "question": "Explain the different ways a message can be delivered to consumers and how you avoid duplicate side effects.",
+      "followUps": {
+        "Pub/Sub vs Work Queues": "What goes wrong if you use pub/sub where you needed a work queue?",
+        "Exactly-Once Processing with Idempotent Consumers": "How does an idempotent consumer make at-least-once delivery behave like exactly-once processing?"
+      }
+    }
+  ]
+}

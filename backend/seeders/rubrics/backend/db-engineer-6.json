@@ -1,0 +1,254 @@
+{
+  "path": "backend",
+  "layer": "db-engineer-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "The Document Model",
+      "question": "Explain how MongoDB's document model differs from tables and rows.",
+      "followUps": {
+        "BSON, Documents & Collections": "What breaks if you store dates and IDs as plain strings in MongoDB?",
+        "Embedding vs Referencing": "How do you decide whether to embed related data or reference it from another collection?"
+      },
+      "criteria": {
+        "BSON, Documents & Collections": {
+          "id": "bson-types",
+          "evidence": [
+            {
+              "id": "native-types",
+              "text": "BSON has real types like Date, ObjectId and Decimal128 that JSON lacks."
+            },
+            {
+              "id": "string-dates",
+              "text": "Dates stored as strings sort and compare as text, so date range queries break."
+            },
+            {
+              "id": "string-ids",
+              "text": "IDs stored as strings don't match ObjectId references and lookups fail."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (BSON, ObjectId) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "strings-equivalent",
+              "text": "Says strings work exactly like native dates and ObjectIds."
+            }
+          ]
+        },
+        "Embedding vs Referencing": {
+          "id": "embed-vs-reference",
+          "evidence": [
+            {
+              "id": "embed",
+              "text": "Embed data that is read together with the parent and stays bounded."
+            },
+            {
+              "id": "reference",
+              "text": "Reference data that grows without limit, is shared, or is updated on its own."
+            },
+            {
+              "id": "limit",
+              "text": "Unbounded embedded arrays hit the 16MB document limit and slow everything."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (embedding, referencing) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "always-embed",
+              "text": "Says data should always be embedded in MongoDB."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "The Aggregation Pipeline",
+      "question": "Walk through how the aggregation pipeline processes data and how you keep it fast.",
+      "followUps": {
+        "Aggregation Pipeline Stages": "Why does the order of stages matter so much for performance?",
+        "$lookup — Joins in MongoDB": "When does $lookup become a performance problem, and what would you do instead?"
+      },
+      "criteria": {
+        "Aggregation Pipeline Stages": {
+          "id": "pipeline-order",
+          "evidence": [
+            {
+              "id": "in-order",
+              "text": "Stages run in sequence, each working on the previous stage's output."
+            },
+            {
+              "id": "match-first",
+              "text": "$match (and $sort) early can use indexes and shrink the data before expensive stages."
+            },
+            {
+              "id": "late-match",
+              "text": "Filtering after $group means the whole collection is grouped first."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms ($match, $group) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "order-free",
+              "text": "Says MongoDB reorders all stages so order never matters."
+            }
+          ]
+        },
+        "$lookup — Joins in MongoDB": {
+          "id": "lookup",
+          "evidence": [
+            {
+              "id": "join",
+              "text": "$lookup joins documents from another collection for each input document."
+            },
+            {
+              "id": "index",
+              "text": "Without an index on the joined field, every lookup scans the other collection."
+            },
+            {
+              "id": "alternative",
+              "text": "If you join constantly, embed or duplicate the needed fields instead."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms ($lookup) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "lookup-free",
+              "text": "Says $lookup is as cheap as an embedded read."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Indexes & Schema Patterns in MongoDB",
+      "question": "Explain how you design indexes and documents for a MongoDB collection that grows large.",
+      "followUps": {
+        "MongoDB Indexes — Types & Tradeoffs": "What happens to index size and write speed when you index a large array field?",
+        "Schema Design Patterns (Bucket, Outlier)": "Pick the Bucket or Outlier pattern and describe the problem it solves."
+      },
+      "criteria": {
+        "MongoDB Indexes — Types & Tradeoffs": {
+          "id": "multikey",
+          "evidence": [
+            {
+              "id": "one-entry-each",
+              "text": "Indexing an array creates one index entry per element."
+            },
+            {
+              "id": "bloat",
+              "text": "Large arrays make the index huge."
+            },
+            {
+              "id": "slow-writes",
+              "text": "Every write has to update all those entries, so writes slow down."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (multikey index) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "one-entry",
+              "text": "Says an array field gets a single index entry per document."
+            }
+          ]
+        },
+        "Schema Design Patterns (Bucket, Outlier)": {
+          "id": "schema-patterns",
+          "evidence": [
+            {
+              "id": "problem",
+              "text": "Names the problem: unbounded growth, like one document per reading, or a few huge outliers."
+            },
+            {
+              "id": "solution",
+              "text": "Bucket groups many readings per document (e.g. per hour); Outlier moves the overflow of rare huge documents elsewhere."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (Bucket, Outlier) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "patterns-cosmetic",
+              "text": "Says these patterns only change naming."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "MongoDB Atlas & Operations",
+      "question": "Walk through what you need to know to run MongoDB safely in production on Atlas.",
+      "followUps": {
+        "Atlas Search & Vector Search": "A user saves a document and searches for it right away but can't find it. Why can that happen with Atlas Search?",
+        "Write Concern & Read Preference": "How do write concern and read preference affect whether data can be lost or read stale?"
+      },
+      "criteria": {
+        "Atlas Search & Vector Search": {
+          "id": "atlas-search-lag",
+          "evidence": [
+            {
+              "id": "separate-index",
+              "text": "Atlas Search keeps its own Lucene index, updated asynchronously."
+            },
+            {
+              "id": "not-instant",
+              "text": "So a just-saved document can be missing from search results for a short time."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (Atlas Search, Lucene) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "transactional",
+              "text": "Says the search index updates in the same transaction as the write."
+            }
+          ]
+        },
+        "Write Concern & Read Preference": {
+          "id": "write-read-concern",
+          "evidence": [
+            {
+              "id": "write-concern",
+              "text": "Write concern sets how many members must confirm a write; w:majority survives a primary failure, w:1 or w:0 can lose writes."
+            },
+            {
+              "id": "read-preference",
+              "text": "Read preference chooses which members serve reads."
+            },
+            {
+              "id": "stale",
+              "text": "Reading from secondaries can return stale data because they lag behind."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (write concern, read preference) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "secondaries-current",
+              "text": "Says secondaries are always fully up to date."
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "criteriaReviewed": false
+}

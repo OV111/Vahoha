@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "security-dev-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "HTTPS & Transport Security",
+      "question": "Explain how you make sure traffic to your API can't be read or changed, and who is allowed to call it from a browser.",
+      "followUps": {
+        "Enforcing HTTPS End-to-End": "What does HSTS add on top of redirecting HTTP to HTTPS?",
+        "CORS Configuration": "Why is allowing any origin together with credentials dangerous, and what should you allow instead?"
+      }
+    },
+    {
+      "title": "Rate Limiting & DoS Protection",
+      "question": "Explain how you keep an API available when someone floods it with requests.",
+      "followUps": {
+        "API Rate Limiting": "Why does a login endpoint need a tighter rate limit than other endpoints?",
+        "DDoS Mitigation": "Why can't a single server's rate limiter stop a large DDoS, and what does a CDN do about it?"
+      }
+    },
+    {
+      "title": "API Security Best Practices",
+      "question": "Explain the security risks that are specific to APIs, and how you handle incoming data.",
+      "followUps": {
+        "OWASP API Security Top 10": "What is mass assignment, and how would you prevent it?",
+        "Input Sanitization at API Boundaries": "Why validate the schema of every payload at the API edge, even from your own frontend?"
+      }
+    },
+    {
+      "title": "Web Application Firewalls & Proxies",
+      "question": "Explain what you can put in front of your services to filter and control traffic, and its limits.",
+      "followUps": {
+        "WAF Deployment & Rules": "Why is a WAF not a replacement for fixing the bugs in your code?",
+        "API Gateway Security": "What happens to all the gateway's protections if a service can also be reached directly?"
+      }
+    }
+  ]
+}

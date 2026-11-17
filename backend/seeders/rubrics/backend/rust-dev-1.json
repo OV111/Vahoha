@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "rust-dev-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "The Rust Toolchain",
+      "question": "Walk through how a Rust program goes from source code to a running binary, and which tools you use along the way.",
+      "followUps": {
+        "rustc & the Compilation Model": "Why does Rust catch whole classes of bugs at compile time that other languages only find at runtime?",
+        "Cargo — The Build System & Package Manager": "What goes wrong if you ship a dev-profile build to production, and why?"
+      }
+    },
+    {
+      "title": "Rust Syntax Foundations",
+      "question": "Explain how Rust treats variables, values and expressions differently from most mainstream languages.",
+      "followUps": {
+        "Variables, Mutability & Shadowing": "How is shadowing different from mutation, and when would you pick one over the other?",
+        "Types, Expressions & Control Flow": "What happens on integer overflow in debug builds versus release builds, and why does that matter?"
+      }
+    },
+    {
+      "title": "Reading Compiler Errors",
+      "question": "Explain how you work through a confusing Rust compiler error.",
+      "followUps": {
+        "Structured Compiler Diagnostics": "Why should you read the help and note lines of a diagnostic and not just the first line?",
+        "Rust Playground — Rapid Prototyping": "When would you move a failing snippet into the Rust Playground instead of debugging it in your project?"
+      }
+    },
+    {
+      "title": "The Rust Ecosystem",
+      "question": "Explain how you pick third-party crates and keep code quality high in a Rust project.",
+      "followUps": {
+        "crates.io & docs.rs": "What signals do you check before you add a new crate as a dependency?",
+        "Clippy & rustfmt": "Why run Clippy and rustfmt in CI from the start of a project instead of later?"
+      }
+    }
+  ]
+}

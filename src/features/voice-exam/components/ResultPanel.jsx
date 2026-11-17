@@ -23,8 +23,14 @@ const STATUS = {
     chip: "border-rose-900/60 bg-rose-950/40 text-rose-300",
     bar: "bg-rose-400",
   },
+  // A stated misconception: a different gap from leaving something out.
+  incorrect: {
+    label: "Incorrect",
+    chip: "border-rose-700/70 bg-rose-950/70 text-rose-200",
+    bar: "bg-rose-600",
+  },
 };
-const ORDER = ["missing", "shallow", "solid"];
+const ORDER = ["incorrect", "missing", "shallow", "solid"];
 
 const button =
   "inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-5 text-[15px] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2";
@@ -69,15 +75,36 @@ function Breakdown({ concepts }) {
  *   result: import("../lib/examStates").ExamResult,
  *   layerTitle?: string|null,
  *   detailed?: boolean,
+ *   practice?: boolean,   already verified before this run, so a fail changes nothing
  *   onClose: () => void,
  * }} props
  */
-const ResultPanel = ({ result, layerTitle, detailed = false, onClose }) => {
+const ResultPanel = ({
+  result,
+  layerTitle,
+  detailed = false,
+  practice = false,
+  onClose,
+}) => {
   // Weakest first: the parts to work on are what a learner looks for.
   const concepts = [...result.concepts].sort(
     (a, b) => ORDER.indexOf(a.status) - ORDER.indexOf(b.status),
   );
   const layer = layerTitle ?? "This layer";
+  // Older results have no `spoken`; they were all graded the same way.
+  const typed = result.spoken === false;
+  const title = practice
+    ? result.passed
+      ? "Practice passed"
+      : "Practice run"
+    : result.passed
+      ? "Verified"
+      : "Not verified yet";
+  const summary = practice
+    ? `${layer} stays Verified either way. This run didn't count.`
+    : result.passed
+      ? `${layer} now shows as Verified on your profile${typed ? ", marked as typed" : ""}.`
+      : "You covered some of it. Work on the parts below and try again.";
 
   return (
     <div className="space-y-5">
@@ -104,13 +131,14 @@ const ResultPanel = ({ result, layerTitle, detailed = false, onClose }) => {
           </span>
           <div>
             <h2 className="text-2xl font-semibold text-neutral-50 sm:text-[28px]">
-              {result.passed ? "Verified" : "Not verified yet"}
+              {title}
             </h2>
-            <p className="mt-1 text-[15px] text-neutral-400">
-              {result.passed
-                ? `${layer} now shows as Verified on your profile.`
-                : "You covered some of it. Work on the parts below and try again."}
-            </p>
+            <p className="mt-1 text-[15px] text-neutral-400">{summary}</p>
+            {typed && result.passed && !practice && (
+              <p className="mt-2 text-sm text-neutral-500">
+                Answer out loud next time to get the spoken badge.
+              </p>
+            )}
           </div>
         </div>
 
@@ -129,22 +157,44 @@ const ResultPanel = ({ result, layerTitle, detailed = false, onClose }) => {
                   {STATUS[c.status].label}
                 </span>
               </div>
-              {detailed && c.quote && (
+              {detailed && c.misconception && (
+                <div className="mt-2 text-sm">
+                  <p className="text-rose-300">This part was wrong:</p>
+                  <blockquote className="mt-1 border-l-2 border-rose-800 pl-3 italic text-neutral-400">
+                    &ldquo;{c.misconception.quote}&rdquo;
+                  </blockquote>
+                </div>
+              )}
+              {detailed && c.quote && !c.misconception && (
                 <blockquote className="mt-2 border-l-2 border-neutral-700 pl-3 text-sm italic text-neutral-400">
                   &ldquo;{c.quote}&rdquo;
                 </blockquote>
               )}
-              {detailed && !c.quote && (
-                <p className="mt-2 text-sm text-neutral-500">
-                  Nothing in your answers covered this.
-                </p>
+              {detailed &&
+                !c.quote &&
+                !c.misconception &&
+                !c.missed?.length && (
+                  <p className="mt-2 text-sm text-neutral-500">
+                    Nothing in your answers covered this.
+                  </p>
+                )}
+              {/* Copied from the rubric, never written by the AI, so it can't state something untrue. */}
+              {detailed && c.status !== "solid" && c.missed?.length > 0 && (
+                <div className="mt-2 text-sm">
+                  <p className="text-neutral-300">Still to show:</p>
+                  <ul className="mt-1 list-disc space-y-1 pl-5 text-neutral-400">
+                    {c.missed.map((m) => (
+                      <li key={m}>{m}</li>
+                    ))}
+                  </ul>
+                </div>
               )}
             </li>
           ))}
         </ul>
       </section>
 
-      {!result.passed && (
+      {!result.passed && !practice && (
         <section className="rounded-2xl border border-neutral-800 bg-neutral-950 p-5 sm:p-6">
           <h3 className="text-[15px] font-semibold text-neutral-100">
             What to do next

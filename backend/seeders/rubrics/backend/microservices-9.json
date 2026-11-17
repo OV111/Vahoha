@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "microservices-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Observability Pillars",
+      "question": "Explain how you see what is happening inside a system made of many services.",
+      "followUps": {
+        "Distributed Tracing with OpenTelemetry": "How does a trace ID help you find which service made a request slow?",
+        "Metrics with Prometheus": "How do metrics let you catch a problem before users report it?"
+      }
+    },
+    {
+      "title": "Resilience Patterns",
+      "question": "Explain how a service protects itself when the services it depends on are slow or failing.",
+      "followUps": {
+        "Circuit Breaker Pattern": "Walk through the closed, open and half-open states of a circuit breaker.",
+        "Bulkhead Pattern": "How do bulkheads stop one slow dependency from taking down unrelated features?"
+      }
+    },
+    {
+      "title": "Logging and Alerting",
+      "question": "Explain how you collect logs and decide when to wake someone up.",
+      "followUps": {
+        "Centralized Logging with ELK/Loki": "Why is reading logs on individual pods a poor way to debug in Kubernetes?",
+        "SLOs, SLAs, and Alerting": "Why is alerting on SLO burn rate better than alerting on CPU usage?"
+      }
+    },
+    {
+      "title": "Grafana Visualization",
+      "question": "Explain how you build dashboards and health checks that help during an incident.",
+      "followUps": {
+        "Grafana Dashboards and the RED Method": "What do rate, errors and duration each tell you about a service's health?",
+        "Health Checks and Graceful Degradation": "What does graceful degradation look like when a dependency is down?"
+      }
+    }
+  ]
+}

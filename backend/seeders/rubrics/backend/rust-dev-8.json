@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "rust-dev-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "SQLx",
+      "question": "Explain how SQLx lets a Rust service talk to PostgreSQL safely and efficiently.",
+      "followUps": {
+        "Compile-Time Query Verification": "How does the query macro check SQL at compile time, and how do you keep CI builds working without a database?",
+        "Connection Pooling with PgPool": "What goes wrong under load if you open a new connection for every request?"
+      }
+    },
+    {
+      "title": "Diesel ORM",
+      "question": "Explain how Diesel works and how you keep multi-step writes consistent.",
+      "followUps": {
+        "Diesel Schema & DSL": "What happens when your schema.rs file no longer matches the real database?",
+        "Transactions & Error Recovery": "What can go wrong if you run several related writes without a transaction?"
+      }
+    },
+    {
+      "title": "Database Migrations",
+      "question": "Explain how you evolve a database schema and map rows into Rust types.",
+      "followUps": {
+        "SQLx Migrations": "Why does SQLx store checksums of applied migrations, and what problem does that catch?",
+        "Row Mapping & FromRow": "How should you map a nullable column into a Rust struct, and what happens if you don't?"
+      }
+    },
+    {
+      "title": "Database Performance",
+      "question": "Explain how you find and fix slow database access in a Rust service.",
+      "followUps": {
+        "N+1 Queries & Batch Loading": "What is the N+1 query problem, and how would you rewrite such a loop?",
+        "PostgreSQL EXPLAIN ANALYZE": "What does EXPLAIN ANALYZE tell you that a quick local timing does not?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "node-dev-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Redis & Caching",
+      "question": "Explain how you would use Redis to make a Node.js API faster.",
+      "followUps": {
+        "Cache-Aside Pattern with Redis": "What goes wrong with cache-aside if you have no TTL or invalidation plan?",
+        "Redis Data Structures": "Pick one Redis data structure beyond plain strings and explain a problem it solves well."
+      }
+    },
+    {
+      "title": "Background Jobs with BullMQ",
+      "question": "Walk through how you move slow work out of the request path with a job queue.",
+      "followUps": {
+        "Job Queues & Workers": "Why should an endpoint enqueue a 30-second task instead of doing it before responding?",
+        "Job Retries & Dead-Letter Queues": "Why should failed jobs end up in a dead-letter queue instead of being dropped?"
+      }
+    },
+    {
+      "title": "Performance Profiling",
+      "question": "Explain how you find out why a Node.js service is slow or using too much memory.",
+      "followUps": {
+        "Profiling with --prof & Clinic.js": "How would you use a profiler or flame graph to find what is eating CPU time?",
+        "Detecting & Fixing Memory Leaks": "How would you track down a memory leak that only shows up after days of uptime?"
+      }
+    },
+    {
+      "title": "Resource Pooling",
+      "question": "Explain how you manage connections to databases and caches under heavy load.",
+      "followUps": {
+        "Database Connection Pool Tuning": "What happens when a database pool is too large, and what happens when it is too small?",
+        "Redis Connection Management": "Why should a service share one Redis client instead of creating one per request?"
+      }
+    }
+  ]
+}

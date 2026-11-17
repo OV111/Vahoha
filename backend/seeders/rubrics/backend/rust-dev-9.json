@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "rust-dev-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Testing in Rust",
+      "question": "Explain how you structure tests for a Rust crate.",
+      "followUps": {
+        "Unit & Integration Tests": "What can unit tests see that integration tests cannot, and why does that split matter?",
+        "Property-Based Testing with proptest": "What kind of bugs does property-based testing find that example tests miss?"
+      }
+    },
+    {
+      "title": "Benchmarking",
+      "question": "Explain how you measure and investigate performance in Rust code.",
+      "followUps": {
+        "Criterion.rs — Statistical Benchmarking": "Why does Criterion run a benchmark many times and compare against a baseline?",
+        "Profiling with cargo-flamegraph": "What does a flame graph tell you that a benchmark number does not?"
+      }
+    },
+    {
+      "title": "Unsafe Rust",
+      "question": "Explain what unsafe Rust is and when you would need it.",
+      "followUps": {
+        "The unsafe Keyword & Invariants": "What does the unsafe keyword actually unlock, and what does it not turn off?",
+        "FFI — Calling C from Rust": "Why is every call into a C library unsafe, and what mistakes cause undefined behavior there?"
+      }
+    },
+    {
+      "title": "Miri & Sanitizers",
+      "question": "Explain how you check unsafe or FFI-heavy Rust code for hidden memory bugs.",
+      "followUps": {
+        "Miri — Undefined Behavior Detector": "What kind of bugs does Miri find that normal tests do not?",
+        "AddressSanitizer & ThreadSanitizer": "When would you add sanitizers to CI in addition to Miri?"
+      }
+    }
+  ]
+}

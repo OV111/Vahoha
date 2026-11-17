@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "observability-engineer-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "The Three Pillars",
+      "question": "Explain the different kinds of telemetry a system produces and how observability differs from classic monitoring.",
+      "followUps": {
+        "Metrics, Logs, and Traces": "Why is it a mistake to try to get every insight from just one signal type, like only logs?",
+        "Observability vs. Monitoring": "What does it mean to debug an unknown unknown, and why do fixed dashboards struggle with it?"
+      }
+    },
+    {
+      "title": "Monitoring Methodologies",
+      "question": "Walk through how you would decide what to measure first for a service and for the machines it runs on.",
+      "followUps": {
+        "RED Method": "How does using the same three request signals on every service help you find where latency enters a call chain?",
+        "USE Method": "Why is saturation of a resource like a disk or CPU dangerous even before users see errors?"
+      }
+    },
+    {
+      "title": "Black-Box and White-Box Monitoring",
+      "question": "Explain how monitoring from outside a system differs from monitoring from inside it, and why you would want both.",
+      "followUps": {
+        "Black-Box Monitoring": "What kind of problem would a synthetic probe catch that your internal health checks would miss?",
+        "White-Box Monitoring": "Why does internal instrumentation help you explain why something is slow and not just that it is slow?"
+      }
+    },
+    {
+      "title": "Incident Response Metrics",
+      "question": "Explain how teams measure their incident response and how observability changes those numbers.",
+      "followUps": {
+        "MTTD – Mean Time to Detect": "What makes the time to detect a problem long in some setups, and how would you shorten it without flooding people with alerts?",
+        "MTTR – Mean Time to Resolve": "How does having metrics, logs and traces linked together shorten the time it takes to restore service?"
+      }
+    }
+  ]
+}

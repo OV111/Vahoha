@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "systems-dev-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Advanced Debugging",
+      "question": "Explain how you would track down a bug that corrupts memory or only shows up now and then.",
+      "followUps": {
+        "GDB — Breakpoints, Watchpoints & Core Dumps": "How does a watchpoint find the exact line that corrupts a variable?",
+        "Reverse Debugging with rr": "Why does recording a run with rr help with bugs that are hard to reproduce?"
+      }
+    },
+    {
+      "title": "Sanitizers",
+      "question": "Explain how compiler sanitizers find bugs that normal tests miss.",
+      "followUps": {
+        "AddressSanitizer (ASan)": "Which memory bugs does AddressSanitizer catch?",
+        "UBSan & ThreadSanitizer": "What does UBSan detect, and what does ThreadSanitizer detect?"
+      }
+    },
+    {
+      "title": "Fuzzing",
+      "question": "Explain how fuzzing finds bugs, and why it still matters for safe languages like Rust.",
+      "followUps": {
+        "Coverage-Guided Fuzzing with libFuzzer": "How does coverage feedback help a fuzzer find new inputs?",
+        "Rust Fuzzing with cargo-fuzz": "If Rust prevents most memory bugs, what kinds of bugs does fuzzing still find?"
+      }
+    },
+    {
+      "title": "Build Systems & CI",
+      "question": "Explain how you would build native code reliably and test it automatically on every change.",
+      "followUps": {
+        "CMake — Modern Target-Based Builds": "What do PUBLIC and PRIVATE mean in target_link_libraries?",
+        "CI for Native Code — Sanitizer & Fuzz Pipelines": "Which builds and test runs belong in a CI pipeline for native code?"
+      }
+    }
+  ]
+}

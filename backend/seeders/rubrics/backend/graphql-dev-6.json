@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "graphql-dev-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Prisma ORM",
+      "question": "Explain how Prisma fits into a GraphQL server and how it affects query performance.",
+      "followUps": {
+        "Prisma Schema & Client Generation": "What goes wrong if you change the Prisma schema but forget to regenerate the client?",
+        "Relations & Query Optimization with Prisma": "How do include and select change the database work behind a resolver?"
+      }
+    },
+    {
+      "title": "The N+1 Problem",
+      "question": "Explain the N+1 problem in GraphQL and how you would solve it.",
+      "followUps": {
+        "Why N+1 Happens in GraphQL": "Why does GraphQL's per-field resolution make N+1 so easy to hit?",
+        "DataLoader — Batching & Per-request Caching": "Why must you create a new DataLoader for every request?"
+      }
+    },
+    {
+      "title": "Database Migrations & Transactions",
+      "question": "Explain how you manage database schema changes and keep multi-step writes consistent.",
+      "followUps": {
+        "Prisma Migrate": "What happens if someone changes the production database by hand instead of through a migration?",
+        "Transactions Across Resolvers": "How would you make two writes in one mutation either both succeed or both fail?"
+      }
+    },
+    {
+      "title": "DataLoader Patterns",
+      "question": "Walk through how you would design DataLoader batching for a real schema.",
+      "followUps": {
+        "Keyed Batching Functions": "What breaks if a batch function returns results in a different order than the keys?",
+        "DataLoader vs Database JOINs": "When would a database join be a better choice than DataLoader?"
+      }
+    }
+  ]
+}

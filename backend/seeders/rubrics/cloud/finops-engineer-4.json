@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "finops-engineer-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "AWS Commitment Instruments",
+      "question": "Explain how you would use AWS commitment discounts to lower compute costs.",
+      "followUps": {
+        "AWS Savings Plans: Compute vs Instance": "Why might you pick the more flexible savings plan even though it gives a smaller discount?",
+        "Reserved Instances: Convertible vs Standard": "When would you accept a lower discount in exchange for being able to exchange a reservation later?"
+      }
+    },
+    {
+      "title": "Azure and GCP Commitments",
+      "question": "Walk through the discount options on Azure and GCP and how they differ from AWS.",
+      "followUps": {
+        "Azure Reserved VM Instances and Hybrid Benefit": "How does bringing existing Windows Server or SQL Server licenses change your Azure savings?",
+        "GCP Committed Use Discounts": "How do automatic usage discounts on GCP affect how much you should commit to?"
+      }
+    },
+    {
+      "title": "Spot and Preemptible Strategies",
+      "question": "Explain how you would use spare capacity pricing safely and measure whether your commitments pay off.",
+      "followUps": {
+        "AWS Spot Instance Architecture Patterns": "What must an application do to run safely on instances that can be taken away at short notice?",
+        "Commitment Coverage and Utilization Tracking": "Why can high coverage with low utilization still lose money, and how do you balance the two?"
+      }
+    },
+    {
+      "title": "Commitment Modeling and Tooling",
+      "question": "Walk through how you would decide how much to commit to and what happens if plans change.",
+      "followUps": {
+        "Commitment Purchase Modeling": "How would you use past usage data to choose a safe commitment level?",
+        "RI Marketplace and Flexibility Options": "What exit options do you have if a reservation stops fitting your workloads, and what are their limits?"
+      }
+    }
+  ]
+}

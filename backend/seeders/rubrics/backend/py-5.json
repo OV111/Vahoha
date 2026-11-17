@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "py-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "JWT Authentication",
+      "question": "Explain how token-based authentication with JWTs works in an API, from login to each request.",
+      "followUps": {
+        "JWT Structure & Signature Verification": "What could an attacker do if your API skips signature checks or accepts the none algorithm?",
+        "Access Tokens vs Refresh Tokens": "Why split credentials into short-lived access tokens and refresh tokens, and where should the refresh token live?"
+      }
+    },
+    {
+      "title": "OAuth2 & FastAPI Security",
+      "question": "Explain how you handle third-party login and store user passwords safely.",
+      "followUps": {
+        "OAuth2 Authorization Code Flow": "Why is an OAuth2 access token not proof of who the user is, and what does OpenID Connect add?",
+        "Password Hashing with bcrypt/Argon2": "Why is a fast hash like SHA-256 a bad choice for passwords?"
+      }
+    },
+    {
+      "title": "API Security Hardening",
+      "question": "Explain how you harden a public API against common web attacks and abuse.",
+      "followUps": {
+        "CORS, HTTPS & Security Headers": "What CORS setting would let a malicious site act for a logged-in user, and how do you avoid it?",
+        "Rate Limiting & Input Sanitization": "What can a single abusive client do to your service without rate limiting?"
+      }
+    },
+    {
+      "title": "Role-Based Access Control",
+      "question": "Explain how you control who can do what in an API and how you protect the secrets the service needs.",
+      "followUps": {
+        "RBAC with FastAPI Dependencies": "Why put role checks in a reusable dependency instead of inline checks, and what is the catch with roles stored in a JWT?",
+        "Secrets Management & Environment Security": "Why does rotating a secret not fix a leak once it has been committed to git?"
+      }
+    }
+  ]
+}

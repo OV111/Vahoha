@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "gcp-architect-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "BigQuery Architecture & Optimization",
+      "question": "Explain how you would design BigQuery tables and pricing so queries stay fast and affordable.",
+      "followUps": {
+        "BigQuery Partitioning & Clustering": "How do partitioning and clustering each cut the amount of data a query scans?",
+        "BigQuery Cost Optimization": "How would you decide between on-demand pricing and reserved slot capacity for a team?"
+      }
+    },
+    {
+      "title": "Streaming Data with Pub/Sub",
+      "question": "Walk through how events flow from producers into an analytics pipeline using Pub/Sub and Dataflow.",
+      "followUps": {
+        "Pub/Sub Topics, Subscriptions & Delivery": "What does at-least-once delivery mean for your consumers, and how do you deal with it?",
+        "Dataflow Streaming & Batch Pipelines": "Why is it useful that the same Beam pipeline can run in both batch and streaming mode?"
+      }
+    },
+    {
+      "title": "Orchestration & Visualization",
+      "question": "Explain how you would schedule multi-step data workflows and show the results to business users.",
+      "followUps": {
+        "Cloud Composer for Pipeline Orchestration": "Why is Airflow on Cloud Composer more reliable than cron for long pipelines with dependencies?",
+        "Looker Studio Dashboards": "How can a well-built dashboard actually lower your BigQuery bill?"
+      }
+    },
+    {
+      "title": "Data Security & Governance",
+      "question": "Explain how you would control who sees sensitive data in your analytics platform and keep data trustworthy.",
+      "followUps": {
+        "BigQuery IAM & Column-Level Security": "How would you let analysts query a table while hiding PII columns from them?",
+        "Dataplex for Data Mesh Governance": "How do data quality scores and lineage help when a pipeline produces wrong numbers?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "edge-engineer-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Workers Runtime Model",
+      "question": "Explain how the Workers runtime runs your code and handles a single request.",
+      "followUps": {
+        "V8 Isolates vs Containers": "Why do V8 isolates start so much faster than containers, and what do you give up in exchange?",
+        "Fetch Event Lifecycle": "What does waitUntil do, and what silent failure happens if you forget to use it for background work?"
+      }
+    },
+    {
+      "title": "Wrangler CLI",
+      "question": "Walk through how you develop, configure and ship a Worker with Wrangler.",
+      "followUps": {
+        "Local Development with Miniflare": "Why is a fast local loop with Miniflare worth setting up before you start building features?",
+        "Secrets and Environment Variables": "How do you decide whether a value should be a plain variable or a secret, and what is the risk of getting it wrong?"
+      }
+    },
+    {
+      "title": "Workers Patterns",
+      "question": "Explain common ways Workers are used to shape traffic and split work between services.",
+      "followUps": {
+        "Request Routing and URL Rewrites": "Why might you move routing and URL rewrites into a Worker instead of keeping them in Nginx or a load balancer?",
+        "Service Bindings Between Workers": "What do service bindings give you compared with calling another Worker over public HTTP?"
+      }
+    },
+    {
+      "title": "TypeScript and Testing",
+      "question": "Explain how you keep Workers code correct before it reaches production.",
+      "followUps": {
+        "TypeScript for Workers": "What kinds of bugs does TypeScript catch in a Worker that would otherwise show up only at runtime?",
+        "Unit Testing Workers with Vitest": "Why is testing inside the real Workers runtime better than testing against Node.js mocks?"
+      }
+    }
+  ]
+}

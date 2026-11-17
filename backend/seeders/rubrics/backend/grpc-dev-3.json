@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "grpc-dev-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Stubs & Channels",
+      "question": "Explain how a gRPC client connects to a server and how it makes calls through generated code.",
+      "followUps": {
+        "What a Channel Is": "Why is creating a new channel for every request a bad idea under load?",
+        "Stubs: Blocking vs Async vs Future": "When would a blocking stub hurt you, and what would you use instead?"
+      }
+    },
+    {
+      "title": "Unary RPC Lifecycle",
+      "question": "Walk through what happens on the wire during a single unary gRPC call, including how errors come back.",
+      "followUps": {
+        "Request-Response Flow": "How is a gRPC message framed inside HTTP/2, and why does that matter when you read a packet capture?",
+        "Status Codes & Basic Error Flow": "Why can a client not rely on the HTTP status code to know whether a gRPC call failed?"
+      }
+    },
+    {
+      "title": "Server Implementation",
+      "question": "Explain how you build and run a gRPC server from a generated service definition.",
+      "followUps": {
+        "Implementing a Service Interface": "What does the gRPC server do for you once you register your service implementation?",
+        "Server Reflection": "What does server reflection give you, and when might you turn it off?"
+      }
+    },
+    {
+      "title": "Developer Tooling",
+      "question": "Explain how you test and debug a gRPC API by hand without writing client code.",
+      "followUps": {
+        "grpcurl for Manual Testing": "How would you use grpcurl to check a service during an incident?",
+        "Postman & Kreya for gRPC": "When does a GUI tool like Postman or Kreya help a team more than a command line tool?"
+      }
+    }
+  ]
+}

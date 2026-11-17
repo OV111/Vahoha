@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "observability-engineer-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Tracing Concepts",
+      "question": "Explain how distributed tracing follows a single request across many services.",
+      "followUps": {
+        "Spans, Traces, and Context Propagation": "How does trace context travel from one service to the next, and what happens when teams use different header formats?",
+        "Sampling Strategies": "What is the trade-off between head-based and tail-based sampling when you care about rare failures?"
+      }
+    },
+    {
+      "title": "OpenTelemetry SDK Instrumentation",
+      "question": "Walk through how you would add tracing to a large set of services using OpenTelemetry.",
+      "followUps": {
+        "Auto-Instrumentation": "Why is auto-instrumentation a good first step, and what does it leave out?",
+        "Manual Span Creation and Attributes": "Why would you add your own spans and business attributes on top of what auto-instrumentation gives you?"
+      }
+    },
+    {
+      "title": "Trace Storage Backends",
+      "question": "Explain the main options for storing traces and what trade-offs they make.",
+      "followUps": {
+        "Jaeger Architecture": "Why does it matter that the parts of a Jaeger deployment scale independently when you size it for production?",
+        "Grafana Tempo for Cost-Effective Storage": "How does Tempo keep trace storage cheap, and what do you give up compared to an indexed backend?"
+      }
+    },
+    {
+      "title": "Trace Analysis and Correlation",
+      "question": "Explain how you turn trace data into answers about performance problems.",
+      "followUps": {
+        "Flame Graphs and Latency Attribution": "Why can a view that combines many traces reveal a problem like an N+1 query that a single trace hides?",
+        "Correlating Traces with Logs and Metrics": "How do trace IDs in logs and exemplars in histograms let you jump between signals during an investigation?"
+      }
+    }
+  ]
+}

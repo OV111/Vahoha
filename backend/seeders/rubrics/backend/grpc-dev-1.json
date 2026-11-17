@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "grpc-dev-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Why RPC Exists",
+      "question": "Explain why teams use RPC between services, and what changes when a function call goes over the network.",
+      "followUps": {
+        "Remote Procedure Calls vs REST": "What goes wrong when engineers treat a remote call exactly like a local function call?",
+        "Binary Serialization Basics": "Why does Protobuf send field numbers instead of field names on the wire, and what does that buy you?"
+      }
+    },
+    {
+      "title": "HTTP/2 Under the Hood",
+      "question": "Walk through what HTTP/2 gives gRPC that HTTP/1.1 could not.",
+      "followUps": {
+        "Multiplexing & Streams": "How does running many streams over one TCP connection change performance compared with HTTP/1.1?",
+        "HPACK Header Compression": "Why does header compression matter for services that send the same metadata on every call?"
+      }
+    },
+    {
+      "title": "The gRPC Ecosystem",
+      "question": "Explain how a .proto file turns into working client and server code, and when gRPC is the right choice.",
+      "followUps": {
+        "protoc & Plugin Architecture": "What breaks when the version of your code generator plugin does not match the gRPC runtime library?",
+        "gRPC vs REST Trade-offs": "Why might gRPC be a poor choice for a public API that outside developers call?"
+      }
+    },
+    {
+      "title": "Installing the Toolchain",
+      "question": "Walk through how you would set up a reliable gRPC toolchain for a team that works in several languages.",
+      "followUps": {
+        "Buf as a Modern Alternative": "What problems does Buf solve that calling protoc by hand does not?",
+        "Protobuf Language Support Matrix": "What risk do you take when you use a community gRPC plugin instead of an official one?"
+      }
+    }
+  ]
+}

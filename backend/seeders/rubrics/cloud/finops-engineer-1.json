@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "finops-engineer-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "FinOps Framework Core Concepts",
+      "question": "Explain what FinOps is and how an organization grows its practice over time.",
+      "followUps": {
+        "Crawl-Walk-Run Maturity Model": "Why should a team build basic cost visibility before it tries to automate optimization?",
+        "FinOps Personas and Team Structure": "What goes wrong when no single role owns the outcome of cloud spend decisions?"
+      }
+    },
+    {
+      "title": "Cloud Billing Models",
+      "question": "Walk through the main ways cloud providers charge for compute and how that changes budgeting.",
+      "followUps": {
+        "On-Demand vs Reserved vs Spot Pricing": "How would you decide which pricing model fits a given workload?",
+        "Variable Cost Model vs Fixed Cost": "Why does a classic fixed annual budget fit poorly with cloud spend?"
+      }
+    },
+    {
+      "title": "Unit Economics Foundations",
+      "question": "Explain why FinOps teams express cloud cost in terms of business outcomes.",
+      "followUps": {
+        "Cost Per Transaction and Business Metrics": "How does a cost per order or per user change the way engineers think about their spend?",
+        "Cloud Provider Billing Concepts": "Why is it hard to build one report that combines bills from AWS, Azure, and GCP?"
+      }
+    },
+    {
+      "title": "FinOps Certification and Community",
+      "question": "Explain how a FinOps practitioner keeps learning and stays connected to the wider field.",
+      "followUps": {
+        "FinOps Certified Practitioner (FOCP)": "What practical value does a shared FinOps vocabulary bring when you work with other teams?",
+        "FinOps Foundation Slack and SIGs": "Why would you join a FinOps community group instead of only reading published guides?"
+      }
+    }
+  ]
+}

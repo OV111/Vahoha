@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "gcp-architect-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Terraform Google Provider",
+      "question": "Explain how you would set up Terraform to manage GCP safely for a team.",
+      "followUps": {
+        "Google Provider Resources & Authentication": "Why should a CI pipeline authenticate Terraform without a downloaded service account key?",
+        "Remote State in Cloud Storage": "What goes wrong when state is kept locally or shared between environments, and how does remote state fix it?"
+      }
+    },
+    {
+      "title": "Module Design & Cloud Build CI/CD",
+      "question": "Walk through how you would structure reusable Terraform code and deploy it through a pipeline.",
+      "followUps": {
+        "Terraform Modules for GCP Patterns": "Why should you pin module versions instead of always using the latest?",
+        "Cloud Build for Terraform CI/CD Pipelines": "How would you design a pipeline so reviewers see the planned changes before anything is applied?"
+      }
+    },
+    {
+      "title": "Policy Enforcement & Governance",
+      "question": "Explain how you would enforce rules on infrastructure changes and catch changes made outside Terraform.",
+      "followUps": {
+        "Config Validator & OPA Policy Constraints": "What is the benefit of checking a Terraform plan against policy before any resource is created?",
+        "Drift Detection & Reconciliation": "When you detect drift, how do you decide whether to import the change or revert it?"
+      }
+    },
+    {
+      "title": "Testing & Best Practices",
+      "question": "Explain how you would test Terraform modules and organize code for many environments.",
+      "followUps": {
+        "Terratest for Infrastructure Testing": "Why does a shared module library need real integration tests that deploy and destroy infrastructure?",
+        "Terraform Workspace vs Root Module Strategy": "Why do separate root modules usually work better than workspaces for long-lived prod and staging?"
+      }
+    }
+  ]
+}

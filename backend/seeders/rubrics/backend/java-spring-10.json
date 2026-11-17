@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "java-spring-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Containerizing Spring Boot",
+      "question": "Explain how you package a Spring Boot app into a container image that runs well in production.",
+      "followUps": {
+        "Layered Docker Images": "Why does a layered image make builds and deploys faster?",
+        "JVM Tuning in Containers": "How do you size the JVM heap inside a container, and what happens if you get it wrong?"
+      }
+    },
+    {
+      "title": "Spring Boot Actuator",
+      "question": "Explain how you expose health and metrics from a Spring Boot app to the platform that runs it.",
+      "followUps": {
+        "Health Indicators & Liveness/Readiness Probes": "Why should liveness and readiness probes check different things?",
+        "Metrics with Micrometer & Prometheus": "What kind of problems can metrics help you catch before users report them?"
+      }
+    },
+    {
+      "title": "Externalized Configuration & Secrets",
+      "question": "Explain how you handle configuration and secrets for a Spring Boot app in different environments.",
+      "followUps": {
+        "12-Factor Config & Environment Variables": "Why is baking config or secrets into a container image a bad idea?",
+        "Secret Management with Vault or Kubernetes Secrets": "Why is committing a secret to Git dangerous even if you delete it in the next commit?"
+      }
+    },
+    {
+      "title": "CI/CD for Spring Applications",
+      "question": "Walk through how you would take a Spring Boot change from a push to production safely.",
+      "followUps": {
+        "GitHub Actions Pipeline": "What steps would your CI pipeline run on every push, and which ones only on merge to main?",
+        "Graceful Shutdown & Zero-Downtime Deployments": "What happens to in-flight requests during a rolling deploy without graceful shutdown?"
+      }
+    }
+  ]
+}

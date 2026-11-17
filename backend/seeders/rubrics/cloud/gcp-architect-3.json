@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "gcp-architect-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Cluster Modes & Node Management",
+      "question": "Explain how you would decide how GKE clusters and their nodes are run and scaled.",
+      "followUps": {
+        "GKE Standard vs Autopilot": "When would you pick GKE Standard over Autopilot, and what do you give up either way?",
+        "Node Pools & Node Auto-Provisioning": "Why would you need more than one node pool, and what does Node Auto-Provisioning add?"
+      }
+    },
+    {
+      "title": "Workload Identity & Security",
+      "question": "Walk through how you would secure workloads running on GKE, from identity to the images they run.",
+      "followUps": {
+        "Workload Identity Federation for Pods": "Why is Workload Identity safer than mounting a service account key file into a pod?",
+        "Binary Authorization for Image Signing": "What kind of attack does Binary Authorization stop that image scanning alone does not?"
+      }
+    },
+    {
+      "title": "Config Connector & GitOps",
+      "question": "Explain how you would manage GCP infrastructure and cluster configuration through Git with GKE.",
+      "followUps": {
+        "GKE Config Connector": "What does Config Connector give a Kubernetes-heavy team compared with keeping infrastructure in a separate tool?",
+        "Architecting with GKE Course": "Which GKE topics from a structured course would you expect to matter most in a real production cluster?"
+      }
+    },
+    {
+      "title": "Monitoring & Upgrades",
+      "question": "Explain how you would keep a production GKE cluster observable and up to date without hurting users.",
+      "followUps": {
+        "GKE Logging & Monitoring Integration": "How would you turn GKE metrics and logs into alerts that catch a problem before users notice it?",
+        "Node Pool Upgrades & Maintenance Windows": "How do surge settings and maintenance windows reduce the risk of a node upgrade breaking your SLA?"
+      }
+    }
+  ]
+}

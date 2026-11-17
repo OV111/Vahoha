@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-migration-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Decomposition Patterns",
+      "question": "Explain how you would break a monolith into services without a risky big-bang rewrite.",
+      "followUps": {
+        "Strangler Fig Pattern": "How does a routing facade let you move features out of a monolith one at a time?",
+        "Domain-Driven Design for Microservice Boundaries": "What is a distributed monolith, and how do good service boundaries help you avoid one?"
+      }
+    },
+    {
+      "title": "Event-Driven Architecture",
+      "question": "Explain how event-driven patterns and data ownership change when you split a system into services.",
+      "followUps": {
+        "Event Sourcing and CQRS Patterns": "What can you do with an event log that you cannot easily do with records updated in place?",
+        "Database Per Service Pattern": "What problem does giving each service its own database solve, and what does it cost you?"
+      }
+    },
+    {
+      "title": "Serverless Refactoring",
+      "question": "Walk through how you would modernize a monolith in small, low-risk steps.",
+      "followUps": {
+        "Extracting Functions with AWS Lambda": "What kind of work is a good first candidate to move out of a monolith into Lambda, and why?",
+        "Feature Flags for Incremental Migration": "How do feature flags let you release new service code safely and roll it back fast?"
+      }
+    },
+    {
+      "title": "Modernization Assessment",
+      "question": "Explain how you would decide which modernization approach fits a given application.",
+      "followUps": {
+        "AWS Modernization Pathfinder": "Why should a modernization plan be based on constraints rather than developer preference?",
+        "Vfunction for Automated Decomposition": "Why is decomposition based on real traffic useful when nobody fully knows the codebase?"
+      }
+    }
+  ]
+}

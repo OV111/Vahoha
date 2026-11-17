@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "systems-dev-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Ownership & Borrowing",
+      "question": "Explain how Rust stays memory-safe without a garbage collector.",
+      "followUps": {
+        "Rust Ownership Model": "What happens to a variable after its value is moved, and which bug does that prevent?",
+        "Borrowing & Lifetimes": "Why can't you have a mutable reference while other references to the same value exist?"
+      }
+    },
+    {
+      "title": "Traits & Error Handling",
+      "question": "Explain how Rust shares behavior between types, and how it handles errors without exceptions.",
+      "followUps": {
+        "Traits & Generic Bounds": "What is the difference between a generic bounded by a trait and a dyn Trait object?",
+        "Error Handling with Result & the ? Operator": "What does the ? operator do, and why is unwrap risky in production code?"
+      }
+    },
+    {
+      "title": "Rust Memory Safety Guarantees",
+      "question": "Explain how Rust can be both safe and fast, and when you have to step outside its guarantees.",
+      "followUps": {
+        "Zero-Cost Abstractions": "Why does an iterator chain compile to code as fast as a hand-written loop?",
+        "unsafe Rust & When to Use It": "What does an unsafe block let you do, and what becomes your job inside it?"
+      }
+    },
+    {
+      "title": "Cargo & the Ecosystem",
+      "question": "Explain how you build and share Rust code, and how Rust works with existing C libraries.",
+      "followUps": {
+        "Cargo — Build System & Package Manager": "What are Cargo feature flags for?",
+        "C Interop via FFI": "Why do Rust's safety guarantees stop at an FFI call into C?"
+      }
+    }
+  ]
+}

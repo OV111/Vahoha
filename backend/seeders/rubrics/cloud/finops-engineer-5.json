@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "finops-engineer-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Cloud Native Recommendation Engines",
+      "question": "Explain how cloud providers help you find resources that are bigger than they need to be.",
+      "followUps": {
+        "AWS Compute Optimizer": "Why should you not apply every right-sizing recommendation the same day you see it?",
+        "Azure Advisor Cost Recommendations": "How would you track whether teams actually act on cost recommendations?"
+      }
+    },
+    {
+      "title": "GCP Recommender API",
+      "question": "Walk through how you would find and remove idle or forgotten resources in GCP and beyond.",
+      "followUps": {
+        "GCP Recommender for VM Sizing": "Why is it useful to pull recommendations through an API instead of reading them in a console?",
+        "Identifying and Deleting Orphaned Resources": "What could go wrong when a script deletes resources that look unused, and how would you guard against it?"
+      }
+    },
+    {
+      "title": "Automated Waste Remediation",
+      "question": "Explain how you would automate waste cleanup across your cloud accounts.",
+      "followUps": {
+        "Lambda-Based Automated Cleanup": "Why use scheduled serverless functions for cleanup instead of running a dedicated service?",
+        "Cloud Custodian for Policy-Driven Cleanup": "Why would you run a cleanup policy in dry-run mode before letting it delete anything?"
+      }
+    },
+    {
+      "title": "Waste Tracking and Metrics",
+      "question": "Explain how you would measure waste and show that your cleanup work pays off.",
+      "followUps": {
+        "FinOps Open Cost and Usage Specification (FOCUS)": "What problem does a shared billing data schema solve when you track waste across several clouds?",
+        "Waste Reduction KPIs and Dashboards": "Which waste metrics would you put in front of engineering teams, and why those?"
+      }
+    }
+  ]
+}

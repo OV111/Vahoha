@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "node-dev-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Fastify Fundamentals",
+      "question": "Walk through how Fastify handles a request from the moment it arrives until the response is sent.",
+      "followUps": {
+        "Request Lifecycle & Hooks": "What goes wrong if you put an auth check in the wrong lifecycle hook?",
+        "Schema-Based Validation & Serialization": "Why do response schemas make Fastify faster, not just safer?"
+      }
+    },
+    {
+      "title": "Plugin Architecture",
+      "question": "Explain how Fastify plugins organize and share code across an application.",
+      "followUps": {
+        "Plugin Encapsulation with fastify-plugin": "Why might a decorator registered in one plugin be missing in another, and how do you fix it?",
+        "Decorators for Dependency Injection": "How do decorators make route handlers easier to unit test?"
+      }
+    },
+    {
+      "title": "REST API Design",
+      "question": "Explain how you design a clean REST API that clients can rely on.",
+      "followUps": {
+        "RESTful Resource Modeling": "Why should URLs name resources instead of actions, and what does that give you?",
+        "HTTP Status Codes & Error Responses": "What breaks when an API returns status 200 for every error?"
+      }
+    },
+    {
+      "title": "Project Structure",
+      "question": "Explain how you structure a Fastify project so it stays healthy as it grows and runs in production.",
+      "followUps": {
+        "Scalable Fastify Project Layout": "How would you split a growing Fastify app into folders, and what problem does that solve?",
+        "Graceful Shutdown in Fastify": "What happens to in-flight requests during a deploy if the app ignores SIGTERM?"
+      }
+    }
+  ]
+}

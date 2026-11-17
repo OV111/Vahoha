@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "observability-engineer-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Datadog APM",
+      "question": "Explain what Datadog APM gives a team beyond basic tracing.",
+      "followUps": {
+        "APM Tracing and Service Catalog": "How do a service map and a service catalog help a team that owns many services?",
+        "Continuous Profiler": "Why can a profiler running in production find problems that a load test would miss?"
+      }
+    },
+    {
+      "title": "Infrastructure and Log Management",
+      "question": "Explain how Datadog collects infrastructure data and logs, and how it ties them together.",
+      "followUps": {
+        "Datadog Agent and Infrastructure Metrics": "How would you spot a single unhealthy host in a large fleet using Datadog Agent data?",
+        "Datadog Log Management and Pipelines": "Why is linking log lines to traces so valuable during an incident?"
+      }
+    },
+    {
+      "title": "Datadog Monitors and Alerting",
+      "question": "Explain how you would design alerting in Datadog so it is both accurate and quiet.",
+      "followUps": {
+        "Monitor Types and Composite Alerts": "How does a composite monitor help you cut false positives?",
+        "Anomaly and Forecast Monitors": "When is an anomaly or forecast monitor a better choice than a fixed threshold?"
+      }
+    },
+    {
+      "title": "Synthetic Monitoring",
+      "question": "Explain how synthetic tests and configuration as code help you run Datadog at scale.",
+      "followUps": {
+        "API and Browser Tests": "What do browser tests cover that API tests cannot, and why run them even with no real traffic?",
+        "Datadog as Code with Terraform": "What problems does managing Datadog monitors and dashboards through Terraform prevent?"
+      }
+    }
+  ]
+}

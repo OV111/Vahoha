@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "azure-architect-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Cloud Adoption Framework",
+      "question": "Explain how an organization should plan and prepare before moving workloads to Azure at scale.",
+      "followUps": {
+        "CAF Phases and Strategy": "What goes wrong when a company skips the strategy work and just migrates VMs one by one?",
+        "Enterprise-Scale Landing Zone Design": "Why should landing zones be in place before the first workloads migrate?"
+      }
+    },
+    {
+      "title": "Management Group Hierarchy and Policies",
+      "question": "Explain how you would enforce governance across many subscriptions in an enterprise.",
+      "followUps": {
+        "Policy-Driven Governance at Scale": "How do policies assigned at management group scope reach new subscriptions, and what do DeployIfNotExists policies add?",
+        "Azure Blueprints and Resource Locks": "How do resource locks protect shared infrastructure, and what are their limits?"
+      }
+    },
+    {
+      "title": "Azure Lighthouse and Multi-Tenant Management",
+      "question": "Explain how a central team can manage resources and costs across many subscriptions or tenants.",
+      "followUps": {
+        "Azure Lighthouse for Managed Services": "How does Azure Lighthouse let a provider manage customer resources without guest accounts in each tenant?",
+        "Cost Management at Enterprise Scale": "How would you charge shared platform costs back to the teams that use them and catch overspending early?"
+      }
+    },
+    {
+      "title": "Azure Well-Architected Framework",
+      "question": "Explain how you would review an architecture to make sure it balances all major quality concerns.",
+      "followUps": {
+        "WAF Five Pillars Applied to Azure": "Give an example of a trade-off between two Well-Architected pillars and how you would discuss it with stakeholders.",
+        "AZ-305 Designing Azure Infrastructure Solutions": "What design areas does the AZ-305 exam expect an architect to reason about?"
+      }
+    }
+  ]
+}

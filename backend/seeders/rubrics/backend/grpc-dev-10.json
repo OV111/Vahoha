@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "grpc-dev-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Schema Management at Scale",
+      "question": "Explain how a large organization should share and version its .proto files across many teams.",
+      "followUps": {
+        "Buf Schema Registry (BSR)": "What do teams lose when they share .proto files by copy-paste or git submodules?",
+        "Versioning gRPC APIs": "Why version a gRPC API with a new package like v2 instead of changing v1?"
+      }
+    },
+    {
+      "title": "Channel Tuning & Keep-Alive",
+      "question": "Explain how you tune gRPC connections for long-lived, high-traffic services.",
+      "followUps": {
+        "Keep-Alive Pings": "Why add gRPC keep-alive pings, and how can bad settings cause the very failures they aim to prevent?",
+        "Connection Pooling Strategies": "When would you use more than one channel to the same backend, and what does it cost?"
+      }
+    },
+    {
+      "title": "Load Balancing gRPC",
+      "question": "Explain why load balancing gRPC is harder than load balancing plain HTTP/1.1 traffic, and how you solve it.",
+      "followUps": {
+        "L7 vs L4 Load Balancing": "Why does a plain L4 load balancer send all of one client's calls to the same backend?",
+        "Client-Side Load Balancing with Resolvers": "What happens with client-side load balancing when replicas scale down and the address list is stale?"
+      }
+    },
+    {
+      "title": "Deploying gRPC on Kubernetes",
+      "question": "Walk through how you would deploy and monitor gRPC services on Kubernetes.",
+      "followUps": {
+        "Kubernetes Service & HTTP/2": "Why does a standard ClusterIP Service cause hot pods with gRPC, and how do you fix it?",
+        "OpenTelemetry & Production Observability": "Which signals would you collect with OpenTelemetry to find the service causing a latency spike?"
+      }
+    }
+  ]
+}

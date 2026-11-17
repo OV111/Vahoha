@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "azure-architect-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "AKS Advanced Networking",
+      "question": "Explain how networking works for pods in AKS and how traffic gets into the cluster.",
+      "followUps": {
+        "Azure CNI and Cilium Networking": "What is the trade-off between giving pods real VNet IPs and using an overlay network?",
+        "AKS Ingress with Application Gateway Ingress Controller": "Why would you use Application Gateway as the ingress for AKS, and what does it add over a basic ingress controller?"
+      }
+    },
+    {
+      "title": "AKS Security",
+      "question": "Explain how you would secure workloads running on AKS.",
+      "followUps": {
+        "Workload Identity for Pod-Level Permissions": "How does Workload Identity give each pod its own Azure permissions without storing secrets?",
+        "Azure Policy for Kubernetes": "Why is blocking a bad deployment at admission time better than finding it after it runs?"
+      }
+    },
+    {
+      "title": "KEDA and Advanced Autoscaling",
+      "question": "Explain how you would scale AKS workloads and nodes beyond basic CPU-based autoscaling.",
+      "followUps": {
+        "KEDA Event-Driven Autoscaling": "How does KEDA let a queue-processing workload scale to zero, and why can the HPA not do that alone?",
+        "Node Auto-Provisioner (Karpenter on AKS)": "How does Node Auto-Provisioner choose node sizes, and why can that save money compared to fixed node pools?"
+      }
+    },
+    {
+      "title": "GitOps on AKS",
+      "question": "Walk through how you would deploy and keep AKS clusters up to date in a controlled way.",
+      "followUps": {
+        "Flux GitOps with AKS Extension": "How does GitOps with Flux change who or what applies changes to the cluster?",
+        "AKS Node Pool Upgrades and Maintenance Windows": "How do max-surge and maintenance windows help you upgrade nodes without hurting production?"
+      }
+    }
+  ]
+}

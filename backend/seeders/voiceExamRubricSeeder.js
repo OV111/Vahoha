@@ -16,6 +16,7 @@ import process from "process";
 import { readFile, readdir } from "fs/promises";
 import { dirname, join, basename } from "path";
 import { fileURLToPath } from "url";
+import { buildRubric, findLayer } from "../modules/voice-exam/lib/rubricBuild.js";
 
 dotenv.config({ path: "./backend/.env.local" });
 dotenv.config({ path: "./backend/.env" });
@@ -23,32 +24,6 @@ dotenv.config({ path: "./backend/.env" });
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const RUBRIC_DIR = join(__dirname, "rubrics");
 const ROADMAP_DIR = join(__dirname, "..", "..", "src", "data", "roadmaps");
-
-const findLayer = (roadmap, layerId) => {
-  for (const layers of Object.values(roadmap)) {
-    const hit = Array.isArray(layers) && layers.find((l) => l.id === layerId);
-    if (hit) return hit;
-  }
-  return null;
-};
-
-// Throws on any mismatch: a follow-up for a renamed subtopic would silently never be asked.
-const buildRubric = (file, layer) => {
-  const sections = [...(layer.sideLeft ?? []), ...(layer.sideRight ?? [])];
-  const groups = file.groups.map((g) => {
-    const section = sections.find((s) => s.title === g.title);
-    if (!section) throw new Error(`${file.layer}: no subtopic group "${g.title}" in the roadmap`);
-    const subtopics = section.children.map((c) => {
-      const followUp = g.followUps?.[c.title];
-      if (!followUp) throw new Error(`${file.layer}: no follow-up for "${c.title}"`);
-      return { title: c.title, description: c.description, followUp };
-    });
-    const extra = Object.keys(g.followUps ?? {}).filter((t) => !section.children.some((c) => c.title === t));
-    if (extra.length) throw new Error(`${file.layer}: follow-ups for unknown subtopics: ${extra.join(", ")}`);
-    return { title: g.title, question: g.question, subtopics };
-  });
-  return { path: file.path, layer: file.layer, groups };
-};
 
 const seed = async () => {
   if (!process.env.MONGO_URI) throw new Error("MONGO_URI env var is required");
@@ -78,7 +53,9 @@ const seed = async () => {
         { $set: { ...rubric, reviewed: true, updatedAt: new Date() }, $setOnInsert: { createdAt: new Date() } },
         { upsert: true },
       );
-      console.log(`  ✓ ${layerId}: ${rubric.groups.length} groups`);
+      const hasCriteria = file.groups.some((g) => g.criteria);
+      const note = !hasCriteria ? "" : file.criteriaReviewed ? ", criteria live" : ", criteria in draft (not live)";
+      console.log(`  ✓ ${layerId}: ${rubric.groups.length} groups${note}`);
     }
   }
 

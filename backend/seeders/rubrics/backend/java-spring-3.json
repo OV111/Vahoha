@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "java-spring-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Collections Framework Internals",
+      "question": "Explain how the core Java collections work inside and how you pick one.",
+      "followUps": {
+        "HashMap Internals & Buckets": "What happens to HashMap performance when many keys return the same hashCode?",
+        "List Implementations: ArrayList vs LinkedList": "Why is LinkedList often slower than ArrayList in real workloads, even for inserts?"
+      }
+    },
+    {
+      "title": "Generics & Type Safety",
+      "question": "Explain how generics give type safety in Java and where their limits are.",
+      "followUps": {
+        "Type Erasure": "Why can a framework not see the element type of a List<String> at runtime, and how does it work around that?",
+        "Wildcards & Bounded Types": "How do you decide between ? extends T and ? super T in a method signature?"
+      }
+    },
+    {
+      "title": "Stream API & Functional Interfaces",
+      "question": "Walk through how a Java stream pipeline runs and how Optional fits into null handling.",
+      "followUps": {
+        "Lazy Evaluation in Streams": "Why might a side effect inside a map call never run, or run fewer times than you expect?",
+        "Optional & Null Safety": "What are the wrong ways to use Optional, and why do they bring back the null problem?"
+      }
+    },
+    {
+      "title": "Lambdas & Functional Programming",
+      "question": "Explain how lambdas and functional interfaces change the way you write Java code.",
+      "followUps": {
+        "Functional Interfaces & Method References": "What makes an interface functional, and how do you pick between Function, Predicate, Supplier and Consumer?",
+        "Collectors & Grouping": "What happens when Collectors.toMap meets a duplicate key, and how do you handle it?"
+      }
+    }
+  ]
+}

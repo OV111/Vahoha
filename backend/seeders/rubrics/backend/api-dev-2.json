@@ -9,6 +9,61 @@
       "followUps": {
         "File System Hierarchy & Permissions": "Your API can't read its config file. How do Linux permissions decide who can read it, and how do you fix it safely?",
         "Pipes, Redirection & Text Processing": "How would you count the 500 errors in a log file with one shell command, and what do the pipes do?"
+      },
+      "criteria": {
+        "File System Hierarchy & Permissions": {
+          "id": "linux-permissions",
+          "evidence": [
+            {
+              "id": "owner-group-other",
+              "text": "Each file has an owner, a group and everyone else, each with their own read, write and execute rights."
+            },
+            {
+              "id": "process-user",
+              "text": "The API can read the file only if the user it runs as has read permission through one of those."
+            },
+            {
+              "id": "safe-fix",
+              "text": "The fix is to give the service's user or group read access (chown/chmod), not to open it to everyone or run as root."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (chmod, chown, permissions) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "chmod-777",
+              "text": "Suggests chmod 777 or running the API as root as the fix."
+            }
+          ]
+        },
+        "Pipes, Redirection & Text Processing": {
+          "id": "shell-pipes",
+          "evidence": [
+            {
+              "id": "pipe",
+              "text": "A pipe sends one command's output straight into the next command's input."
+            },
+            {
+              "id": "filter-count",
+              "text": "You filter the matching lines (for example with grep) and count them (for example with wc -l) in one chained command."
+            },
+            {
+              "id": "redirect",
+              "text": "Redirection sends output or errors to a file (>, >>, 2>) instead of the screen."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (pipe, grep, wc) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "pipe-temp-file",
+              "text": "Says a pipe writes the output to a file on disk that the next command then opens."
+            }
+          ]
+        }
       }
     },
     {
@@ -17,6 +72,60 @@
       "followUps": {
         "Processes, PIDs & Signals": "What should your server do when it receives SIGTERM during a deploy, and what happens if it ignores it?",
         "Environment Variables & .env Patterns": "Why do secrets go in environment variables, and what goes wrong if a .env file is committed?"
+      },
+      "criteria": {
+        "Processes, PIDs & Signals": {
+          "id": "process-signals",
+          "evidence": [
+            {
+              "id": "process-pid",
+              "text": "The server runs as an OS process with a PID that the system or platform can send signals to."
+            },
+            {
+              "id": "graceful",
+              "text": "On SIGTERM it should stop accepting new requests, let in-flight ones finish, close connections and then exit."
+            },
+            {
+              "id": "ignored",
+              "text": "If it ignores SIGTERM it gets killed forcefully after a timeout, dropping requests that were still in progress."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (PID, SIGTERM, signals) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "sigterm-unhandleable",
+              "text": "Says SIGTERM kills the process instantly and can't be handled."
+            }
+          ]
+        },
+        "Environment Variables & .env Patterns": {
+          "id": "env-vars",
+          "evidence": [
+            {
+              "id": "injected",
+              "text": "Configuration and secrets are passed to the process from outside, not written into the code."
+            },
+            {
+              "id": "per-environment",
+              "text": "The same code runs with different values in development, staging and production."
+            },
+            {
+              "id": "committed-leak",
+              "text": "A committed .env file puts the secrets into git history for anyone with repo access, so they have to be rotated."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (environment variables, .env) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "delete-fixes-leak",
+              "text": "Says deleting the .env file in a later commit makes the leaked secrets safe again."
+            }
+          ]
+        }
       }
     },
     {
@@ -25,6 +134,61 @@
       "followUps": {
         "SSH Key Pairs & Remote Login": "Which key stays on your machine and which goes on the server, and why is that safer than a password?",
         "tmux & Persistent Terminal Sessions": "Your SSH connection drops during a migration. How does tmux keep it running?"
+      },
+      "criteria": {
+        "SSH Key Pairs & Remote Login": {
+          "id": "ssh-keys",
+          "evidence": [
+            {
+              "id": "private-stays",
+              "text": "The private key stays on your machine; only the public key goes on the server."
+            },
+            {
+              "id": "proof-not-secret",
+              "text": "Logging in proves you hold the private key without sending it, so there is no password to guess or steal."
+            },
+            {
+              "id": "no-sharing",
+              "text": "Private keys are never copied to servers or shared, and password login can be turned off."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (SSH, public key, private key) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "private-on-server",
+              "text": "Says the private key is the one placed on the server."
+            }
+          ]
+        },
+        "tmux & Persistent Terminal Sessions": {
+          "id": "tmux-sessions",
+          "evidence": [
+            {
+              "id": "dies-with-ssh",
+              "text": "A process started in a plain SSH session is killed when the connection drops."
+            },
+            {
+              "id": "server-side-session",
+              "text": "tmux keeps the session and its processes running on the server, independent of your connection."
+            },
+            {
+              "id": "reattach",
+              "text": "You reconnect later and reattach to the same session to find the task still running."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (tmux, session) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "tmux-reconnects-ssh",
+              "text": "Says tmux keeps the SSH connection itself alive or reconnects it."
+            }
+          ]
+        }
       }
     },
     {
@@ -33,7 +197,63 @@
       "followUps": {
         "Bash Variables, Conditionals & Loops": "How does a bash script know a command failed, and how do you stop it from carrying on silently?",
         "cron & Scheduled Jobs": "How do you tell cron to run a job every day at 3am, and how would you notice if it stopped running?"
+      },
+      "criteria": {
+        "Bash Variables, Conditionals & Loops": {
+          "id": "bash-errors",
+          "evidence": [
+            {
+              "id": "exit-code",
+              "text": "Every command returns an exit code: 0 means success, anything else means failure."
+            },
+            {
+              "id": "check-or-stop",
+              "text": "The script checks it ($?, if, ||) or uses set -e so it stops at the first failure."
+            },
+            {
+              "id": "strict-mode",
+              "text": "Options like set -o pipefail and set -u also catch failures inside pipes and unset variables."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (bash, set -e, exit code) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "output-means-error",
+              "text": "Says a command failed only if it printed an error message."
+            }
+          ]
+        },
+        "cron & Scheduled Jobs": {
+          "id": "cron-jobs",
+          "evidence": [
+            {
+              "id": "schedule",
+              "text": "A cron line has minute, hour, day of month, month and weekday fields; 0 3 * * * runs every day at 3am."
+            },
+            {
+              "id": "silent-by-default",
+              "text": "cron gives no feedback by default, so a job that stops working goes unnoticed."
+            },
+            {
+              "id": "monitor",
+              "text": "You notice failures by logging output, alerting on errors, or a check that the job actually ran (a heartbeat)."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (cron, crontab) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "cron-retries",
+              "text": "Says cron retries a failed job automatically."
+            }
+          ]
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": false
 }

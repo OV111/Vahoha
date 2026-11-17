@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "serverless-dev-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Understanding Cold Starts",
+      "question": "Explain what a cold start is and how you decide whether it is worth optimizing.",
+      "followUps": {
+        "Measuring Cold Start Duration and Impact": "How would you measure how often cold starts happen and how long they take before you optimize anything?",
+        "Package Size Optimization": "Why does a smaller deployment package start faster, and how would you shrink a Node.js function?"
+      }
+    },
+    {
+      "title": "Provisioned Concurrency and SnapStart",
+      "question": "Explain the AWS features that reduce or remove cold start latency, and what they cost you.",
+      "followUps": {
+        "Provisioned Concurrency for Latency-Sensitive APIs": "When is provisioned concurrency worth paying for idle environments, and when is it a waste?",
+        "Lambda SnapStart for Java Functions": "What can go wrong with SnapStart if your init code stores time-sensitive state or unique values?"
+      }
+    },
+    {
+      "title": "Memory and CPU Tuning",
+      "question": "Walk through how you would pick the memory setting for a function and share code between functions.",
+      "followUps": {
+        "Lambda Power Tuning for Optimal Memory": "Why can raising memory make a function both faster and cheaper?",
+        "Lambda Layers for Shared Dependencies": "What do Lambda Layers help with, and what do they not fix?"
+      }
+    },
+    {
+      "title": "Concurrency and Throttling",
+      "question": "Explain how Lambda concurrency limits work and what happens when you hit them.",
+      "followUps": {
+        "Reserved vs Unreserved Concurrency": "How does reserved concurrency protect a critical function, and what limit does it put on that function?",
+        "Handling Throttling and Backpressure": "How should a synchronous caller react to a throttled Lambda, and how is that different for async invocations?"
+      }
+    }
+  ]
+}

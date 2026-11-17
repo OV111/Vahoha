@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "systems-dev-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "The Socket API",
+      "question": "Explain how a program opens a TCP connection or accepts one, and what TCP does underneath.",
+      "followUps": {
+        "Berkeley Sockets — socket, bind, connect": "Which calls does a server make to accept connections, and which does a client make?",
+        "TCP — Three-Way Handshake & Flow Control": "What is the difference between flow control and congestion control in TCP?"
+      }
+    },
+    {
+      "title": "Non-Blocking I/O",
+      "question": "Explain how one thread can serve thousands of network connections.",
+      "followUps": {
+        "Blocking vs Non-Blocking Sockets": "What does a non-blocking recv return when no data is ready, and what should the program do then?",
+        "I/O Multiplexing — epoll": "What does edge-triggered epoll require you to do when a socket becomes readable?"
+      }
+    },
+    {
+      "title": "Protocol Design",
+      "question": "Explain how you would design the messages two programs send each other over the network.",
+      "followUps": {
+        "Protocol Framing & Message Boundaries": "One send of 100 bytes arrives as two reads of 60 and 40 bytes. Why, and how does framing fix it?",
+        "UDP & Unreliable Datagrams": "If your app needs ordered, reliable messages over UDP, what do you have to build yourself?"
+      }
+    },
+    {
+      "title": "Server Architecture",
+      "question": "Explain how you would structure a high-performance network server, and what you would tune in the kernel.",
+      "followUps": {
+        "Event-Driven Server Design": "Why can an event-driven server handle more connections than a thread-per-connection server?",
+        "Socket Options & Tuning": "What do SO_SNDBUF and SO_RCVBUF control, and what happens if they are too small?"
+      }
+    }
+  ]
+}

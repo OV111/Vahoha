@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "serverless-dev-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "SAM Template Fundamentals",
+      "question": "Explain what AWS SAM adds on top of CloudFormation and how you structure a SAM template.",
+      "followUps": {
+        "SAM Resource Types and Transforms": "Why does it help to know what a SAM resource expands into when a deployment fails?",
+        "Globals Section and Cross-Function Configuration": "What problem does the Globals section solve in a template with many functions?"
+      }
+    },
+    {
+      "title": "Local Development with SAM CLI",
+      "question": "Walk through how you test serverless code on your own machine before deploying it.",
+      "followUps": {
+        "sam local invoke and Event Payloads": "How do event files help you reproduce a production failure locally with sam local invoke?",
+        "LocalStack for Full Offline Development": "When would you reach for LocalStack, and where can a local emulator differ from real AWS?"
+      }
+    },
+    {
+      "title": "SAM Policy Templates",
+      "question": "Explain how SAM helps you give functions the right permissions without writing raw IAM.",
+      "followUps": {
+        "Built-in Policy Templates for Common Patterns": "Why is a policy template like DynamoDBCrudPolicy safer than writing your own inline IAM policy?",
+        "SAM Connectors for Automatic Permissions": "How does a SAM connector decide which permissions to grant, and why is that better than picking a policy template yourself?"
+      }
+    },
+    {
+      "title": "SAM Pipelines and CI/CD",
+      "question": "Explain how you would set up deployments of a SAM application across environments.",
+      "followUps": {
+        "sam pipeline init for Multi-Stage Deployments": "Why is OIDC federation in a generated pipeline better than storing long-lived access keys in CI?",
+        "Deploying to Multiple Environments with SAM": "How does samconfig.toml let one template deploy safely to both dev and prod?"
+      }
+    }
+  ]
+}

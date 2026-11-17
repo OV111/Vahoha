@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "edge-engineer-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Vercel Edge Functions",
+      "question": "Explain how edge code runs on Vercel and how it differs from its other function types.",
+      "followUps": {
+        "Edge vs Serverless Functions on Vercel": "How do you decide between a Vercel Edge Function and a Serverless Function for a given task?",
+        "Next.js Middleware at the Edge": "Why must Next.js Middleware stay lightweight, and what kind of work should you keep out of it?"
+      }
+    },
+    {
+      "title": "Netlify Edge Functions",
+      "question": "Explain how Netlify Edge Functions run and what they are good for.",
+      "followUps": {
+        "Deno Runtime on Netlify Edge": "What surprises might you hit when you port Node-style code to the Deno runtime?",
+        "Geolocation and Personalisation": "What goes wrong if you personalise a response by country but forget to include the country in the cache key?"
+      }
+    },
+    {
+      "title": "A/B Testing at the Edge",
+      "question": "Walk through how you would run an experiment at the edge instead of in the browser.",
+      "followUps": {
+        "Cookie-Based Traffic Splitting": "Why must variant assignment stay consistent across requests, and how does a signed cookie help?",
+        "Feature Flags at the Edge": "Why does reading flags from an edge-native store beat calling a flag API from the origin on every request?"
+      }
+    },
+    {
+      "title": "Edge Authentication Patterns",
+      "question": "Explain how you handle authentication in front of your origin at the edge.",
+      "followUps": {
+        "JWT Validation at the Edge": "Why does validating JWTs at the edge protect the origin, and why can you not use Node.js crypto there?",
+        "OAuth Redirects at the Edge": "How would an edge function handle an OAuth callback, and why does that help in a multi-region setup?"
+      }
+    }
+  ]
+}

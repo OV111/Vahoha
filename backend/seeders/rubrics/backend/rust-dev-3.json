@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "rust-dev-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Traits & Generics",
+      "question": "Explain how Rust lets you write shared behavior and reusable code across many types.",
+      "followUps": {
+        "Defining & Implementing Traits": "What is the orphan rule, and how do you work around it when you need a foreign trait on a foreign type?",
+        "Generics & Monomorphization": "What does monomorphization give you, and what does it cost?"
+      }
+    },
+    {
+      "title": "Dynamic Dispatch",
+      "question": "Explain how Rust handles runtime polymorphism and which standard traits make types feel idiomatic.",
+      "followUps": {
+        "Trait Objects — dyn Trait": "When would you choose a trait object over a generic, and what do you pay for it?",
+        "Common Standard-Library Traits": "Why is implementing From for your error types better than writing map_err everywhere?"
+      }
+    },
+    {
+      "title": "Error Handling",
+      "question": "Walk through how a Rust program reports and propagates errors.",
+      "followUps": {
+        "Result<T, E> & the ? Operator": "Why is unwrap in production code risky, and what does the question mark operator do instead?",
+        "Custom Error Types with thiserror": "When would you use thiserror in a library and anyhow in an application?"
+      }
+    },
+    {
+      "title": "Pattern Matching",
+      "question": "Explain how you model data and branch on it using Rust enums and pattern matching.",
+      "followUps": {
+        "match, if let & while let": "Why can a wildcard arm in a match hide bugs when an enum grows?",
+        "Enums as Algebraic Data Types": "Why is an enum with data safer than a struct with a kind field for modeling state?"
+      }
+    }
+  ]
+}

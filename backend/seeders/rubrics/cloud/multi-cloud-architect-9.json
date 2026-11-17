@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "multi-cloud-architect-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Multi-Cloud DR Architecture Patterns",
+      "question": "Explain the main ways to design disaster recovery across two cloud providers.",
+      "followUps": {
+        "Active-Active vs Active-Passive Across Clouds": "What are the trade-offs between active-active and active-passive DR across clouds?",
+        "DNS-Based Traffic Failover Between Clouds": "Why does DNS TTL matter for cross-cloud failover, and what does keeping it low cost you?"
+      }
+    },
+    {
+      "title": "Kubernetes DR with Velero",
+      "question": "Walk through how you would back up and recover Kubernetes workloads so they survive losing a whole cloud.",
+      "followUps": {
+        "Velero for Cross-Cloud Kubernetes Backup and Restore": "Why store Velero backups in more than one cloud, and what does Velero restore that IaC alone cannot?",
+        "Chaos Engineering for Multi-Cloud Resilience": "How would you prove with chaos experiments that failover to the other cloud really works?"
+      }
+    },
+    {
+      "title": "RPO and RTO for Multi-Cloud",
+      "question": "Explain how you would set and meet recovery point and recovery time targets across clouds.",
+      "followUps": {
+        "Data Synchronization Strategies for Low RPO": "What is the trade-off between synchronous and asynchronous replication between clouds?",
+        "Automated DR Runbooks with AWS Systems Manager": "How do automated DR runbooks shorten recovery time, and what makes cross-cloud runbooks risky?"
+      }
+    },
+    {
+      "title": "DR Testing and Validation",
+      "question": "Explain how you would keep confidence that a multi-cloud DR plan still works over time.",
+      "followUps": {
+        "Conducting Quarterly Multi-Cloud DR Drills": "What should a DR drill measure, and how do you use the results from one drill to the next?",
+        "Service Level Agreements for Multi-Cloud DR": "Why should the RTO and RPO you promise customers come from drill results instead of design targets?"
+      }
+    }
+  ]
+}

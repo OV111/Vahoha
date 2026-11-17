@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "gcp-architect-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "SLOs & Error Budgets",
+      "question": "Explain how you would define and track reliability targets for a service on GCP.",
+      "followUps": {
+        "Defining SLOs and Error Budgets in Cloud Monitoring": "How does an error budget help a team decide between shipping features and fixing reliability?",
+        "Uptime Checks & Synthetic Monitors": "What can an outside uptime check or synthetic monitor catch that internal metrics miss?"
+      }
+    },
+    {
+      "title": "Cloud Logging & Metrics",
+      "question": "Walk through how you would manage logs and turn them into useful alerts.",
+      "followUps": {
+        "Cloud Logging: Log Sinks, Exclusions & Retention": "Why would you configure log sinks at the organization level instead of per project?",
+        "Log-Based Metrics & Alerting Policies": "When would you build a log-based metric instead of changing the code to emit a metric?"
+      }
+    },
+    {
+      "title": "Distributed Tracing & Dashboards",
+      "question": "Explain how you would find where latency comes from in a system of many services.",
+      "followUps": {
+        "Cloud Trace for Distributed Latency Analysis": "Why can a trace show a latency problem that an average latency chart hides?",
+        "Cloud Monitoring Dashboards & MQL": "Why is it worth keeping dashboard definitions in Git next to the application code?"
+      }
+    },
+    {
+      "title": "SRE Practice & Incident Management",
+      "question": "Explain how your team would build its operational skills and track down errors and slow code in production.",
+      "followUps": {
+        "GCP Monitoring & Logging Course": "Which observability skills would you want a team to practice before its first production launch on GCP?",
+        "Error Reporting & Cloud Profiler": "How do Error Reporting and Cloud Profiler answer different questions about a production app?"
+      }
+    }
+  ]
+}

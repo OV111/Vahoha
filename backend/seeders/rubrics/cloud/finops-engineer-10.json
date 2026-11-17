@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "finops-engineer-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Run-Phase FinOps Capabilities",
+      "question": "Explain what a mature FinOps practice looks like and how an organization supports it.",
+      "followUps": {
+        "FinOps Run Phase KPIs and Capabilities": "What does an organization need in place before it can operate FinOps at the most mature level?",
+        "Cloud Center of Excellence (CCoE) Establishment": "How does a cross-functional cloud team keep cost advice from being overridden by delivery pressure?"
+      }
+    },
+    {
+      "title": "Executive Reporting Frameworks",
+      "question": "Walk through how you would report cloud spend to company leadership.",
+      "followUps": {
+        "Cloud Cost Executive Dashboard Design": "Why do raw dollar totals make a poor executive metric, and what would you show instead?",
+        "Quarterly Business Reviews for Cloud Spend": "What makes a regular cloud spend review with engineering, finance, and product leaders effective?"
+      }
+    },
+    {
+      "title": "Cloud Forecasting and Financial Planning",
+      "question": "Explain how you would forecast cloud spend and fit it into financial planning.",
+      "followUps": {
+        "Cloud Cost Forecasting Methodologies": "Why can a purely statistical model not forecast cloud spend well on its own?",
+        "FOCUS Specification Adoption for Normalization": "What long-term benefit do you get from one standard billing schema across all your cost sources?"
+      }
+    },
+    {
+      "title": "Cloud Economics and TCO",
+      "question": "Explain how you would compare the full cost of cloud with other options and keep costs low over time.",
+      "followUps": {
+        "Total Cost of Ownership Analysis": "Which costs do people often forget when they compare cloud with running their own data center?",
+        "Continuous Optimization Culture": "How would you make engineers care about cost without relying only on top-down rules?"
+      }
+    }
+  ]
+}

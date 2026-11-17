@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "aws-architect-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Cost Visibility and Analysis",
+      "question": "Explain how you would find out where your AWS money goes and catch surprises early.",
+      "followUps": {
+        "AWS Cost Explorer and Budgets": "Why are cost allocation tags needed before Cost Explorer can tell you which team spent what?",
+        "Cost Anomaly Detection": "How does Cost Anomaly Detection catch a cost spike sooner than a monthly bill review?"
+      }
+    },
+    {
+      "title": "Commitment Instruments",
+      "question": "Explain how you would use long-term commitments to lower compute cost without overcommitting.",
+      "followUps": {
+        "Savings Plans Strategy": "Why would you cover only part of your baseline usage with Savings Plans instead of all of it?",
+        "Reserved Instances and Convertible RIs": "What do you give up with a Convertible Reserved Instance, and when is that worth it?"
+      }
+    },
+    {
+      "title": "Resource Right-Sizing",
+      "question": "Explain how you would make sure resources are the right size for what they actually do.",
+      "followUps": {
+        "AWS Compute Optimizer": "How would you decide whether to trust a Compute Optimizer recommendation for a seasonal workload?",
+        "S3 Intelligent Tiering": "When is S3 Intelligent-Tiering a better choice than writing your own lifecycle rules, and when is it not worth it?"
+      }
+    },
+    {
+      "title": "Performance Optimization",
+      "question": "Explain how you would improve performance and find quick wins across an AWS environment.",
+      "followUps": {
+        "ElastiCache for Caching": "How can bad TTL or invalidation choices make a cache serve wrong data, and how do you avoid it?",
+        "AWS Trusted Advisor": "What kinds of problems does Trusted Advisor flag, and how would you act on them automatically?"
+      }
+    }
+  ]
+}

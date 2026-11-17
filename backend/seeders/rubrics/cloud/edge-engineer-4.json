@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "edge-engineer-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "WebAssembly Fundamentals",
+      "question": "Explain what WebAssembly is and why it is useful for server-side and edge code.",
+      "followUps": {
+        "WASM Binary Format and Memory Model": "How does linear memory work in WASM, and what can go wrong when you pass data between JavaScript and a module?",
+        "WASM Component Model and WASI": "What problem do WASI and the Component Model try to solve, and how mature is their support at the edge today?"
+      }
+    },
+    {
+      "title": "Rust to WASM Toolchain",
+      "question": "Walk through how you turn Rust code into something a Worker can call.",
+      "followUps": {
+        "Compiling Rust with wasm-pack": "What does wasm-pack do for you that you would otherwise have to do by hand?",
+        "wasm-bindgen for JS Interop": "Why do you need wasm-bindgen to pass a string from JavaScript into a Rust function?"
+      }
+    },
+    {
+      "title": "AssemblyScript",
+      "question": "Explain how you decide whether rewriting a hot path in WASM is worth it.",
+      "followUps": {
+        "AssemblyScript for TypeScript Developers": "Why might AssemblyScript suit a TypeScript team better than Rust, and what limits does it have?",
+        "WASM Performance Benchmarking": "Which workloads usually get faster in WASM, and how would you benchmark fairly before committing to a rewrite?"
+      }
+    },
+    {
+      "title": "WASM in Production",
+      "question": "Explain what you need to think about when running WASM modules in production Workers.",
+      "followUps": {
+        "WASM Module Instantiation and Caching": "Why should you set up a WASM module once per isolate instead of on every request?",
+        "Secure WASM Sandboxing": "Where is the trust boundary between a WASM module and the Worker that hosts it?"
+      }
+    }
+  ]
+}

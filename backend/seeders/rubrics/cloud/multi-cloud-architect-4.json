@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "multi-cloud-architect-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Federated Identity Architecture",
+      "question": "Explain how you would give people a single identity that works across AWS, Azure and GCP.",
+      "followUps": {
+        "SAML and OIDC Federation Across Clouds": "How do you map identity provider groups to cloud roles, and why would you pick OIDC over SAML for some cases?",
+        "GCP Workforce Identity Federation": "What problem does GCP Workforce Identity Federation solve compared to creating separate GCP user accounts?"
+      }
+    },
+    {
+      "title": "Secrets Management",
+      "question": "Walk through how you would handle secrets and security audit data across several clouds.",
+      "followUps": {
+        "HashiCorp Vault as Multi-Cloud Secrets Plane": "Why are dynamic, short-lived secrets from Vault safer than long-lived keys stored with the application?",
+        "Cross-Cloud Audit Logging and SIEM Integration": "Why can an attack that moves across clouds stay hidden when each cloud keeps its own audit logs?"
+      }
+    },
+    {
+      "title": "Zero Trust in Multi-Cloud",
+      "question": "Explain what zero trust means when services on different clouds need to talk to each other.",
+      "followUps": {
+        "Workload Identity and Service-to-Service Auth": "How does workload identity with something like SPIFFE replace shared API keys or IP allowlists?",
+        "Multi-Cloud IAM Governance with Brainwave or Saviynt": "Why do manual access reviews stop working as a multi-cloud estate grows, and what does a governance tool add?"
+      }
+    },
+    {
+      "title": "RBAC Consistency Across Clouds",
+      "question": "Explain how you would keep access control consistent when every cloud has different roles and permissions.",
+      "followUps": {
+        "Designing Cloud-Agnostic Permission Tiers": "Why is it tempting to grant broad built-in roles on each cloud, and how do permission tiers fix that?",
+        "Privileged Access Management Across Clouds": "How does just-in-time privileged access reduce risk, and why centralize those requests across clouds?"
+      }
+    }
+  ]
+}

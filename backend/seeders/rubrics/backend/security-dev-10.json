@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "security-dev-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "SIEM & Incident Detection",
+      "question": "Explain how a team detects a security incident and what it does in the first hours.",
+      "followUps": {
+        "SIEM Architecture & Use Cases": "What does a SIEM do with logs from many systems that no single log can show?",
+        "Incident Response Playbooks": "Why write a playbook before an incident instead of deciding during one?"
+      }
+    },
+    {
+      "title": "Forensics & Recovery",
+      "question": "Explain how you find out what happened after a breach, and how you get the business running again.",
+      "followUps": {
+        "Digital Forensics Fundamentals": "Why must evidence be preserved before you clean up a compromised server?",
+        "Business Continuity & Disaster Recovery": "What do RTO and RPO mean, and how do they shape your backup plan?"
+      }
+    },
+    {
+      "title": "Regulatory Compliance",
+      "question": "Explain what data protection rules and security frameworks require from a company that handles user data.",
+      "followUps": {
+        "GDPR Data Protection Requirements": "What must a company do under GDPR when it discovers a data breach, and how fast?",
+        "ISO 27001 & SOC 2 Frameworks": "What do ISO 27001 and SOC 2 prove to customers?"
+      }
+    },
+    {
+      "title": "PCI DSS & HIPAA",
+      "question": "Explain the extra rules that apply when you handle card payments or health data.",
+      "followUps": {
+        "PCI DSS for Payment Card Security": "Why do many companies use a payment provider so card data never touches their servers?",
+        "HIPAA Security Rule for Healthcare Data": "Name a technical safeguard HIPAA requires for health data."
+      }
+    }
+  ]
+}

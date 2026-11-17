@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "grpc-dev-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Interceptors",
+      "question": "Explain how interceptors work in gRPC and what you would use them for.",
+      "followUps": {
+        "Unary vs Stream Interceptors": "Why might an auth check silently skip all streaming RPCs?",
+        "Chaining Multiple Interceptors": "What happens when one interceptor in a chain forgets to call the next handler, and why does order matter?"
+      }
+    },
+    {
+      "title": "Metadata & Headers",
+      "question": "Explain how gRPC carries extra information alongside the request and response messages.",
+      "followUps": {
+        "Sending & Receiving Metadata": "When should data go in metadata instead of in the request message?",
+        "Binary vs ASCII Metadata Values": "Why must binary metadata use a key that ends in -bin?"
+      }
+    },
+    {
+      "title": "Authentication Patterns",
+      "question": "Walk through how you would authenticate callers of a gRPC service.",
+      "followUps": {
+        "JWT Bearer Tokens via Metadata": "Which status code should a server return for an expired token, and why does the choice matter to the client?",
+        "TLS & Mutual TLS (mTLS)": "What does mutual TLS protect against that a trusted network perimeter does not?"
+      }
+    },
+    {
+      "title": "Observability via Interceptors",
+      "question": "Explain how you make a gRPC system observable without cluttering every handler.",
+      "followUps": {
+        "Structured Logging in Interceptors": "Why is an interceptor a better place for request logs than the handlers themselves?",
+        "Distributed Tracing with OpenTelemetry": "What do you lose when trace context is not passed from one service to the next?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "edge-engineer-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "CDN Architecture",
+      "question": "Explain how a CDN gets content close to users and decides what it can serve from cache.",
+      "followUps": {
+        "Points of Presence and Anycast": "How does anycast send a user to a nearby PoP, and what can make a region see a worse cache hit ratio than others?",
+        "HTTP Caching Headers": "How do Cache-Control, ETag and Vary work together, and what goes wrong when one of them is set badly?"
+      }
+    },
+    {
+      "title": "Latency Fundamentals",
+      "question": "Walk through where the time goes before a user sees the first byte of a page.",
+      "followUps": {
+        "DNS Resolution and TTLs": "Why can DNS lookups become a hidden latency cost, and how do TTLs and resource hints help?",
+        "TTFB and Core Web Vitals Baseline": "Why would you measure TTFB per region before you ship an edge change?"
+      }
+    },
+    {
+      "title": "Edge vs Cloud Trade-offs",
+      "question": "Explain how you decide whether a piece of work belongs at the edge or in a central cloud region.",
+      "followUps": {
+        "When to Push Compute to the Edge": "Which kinds of work fit well at the edge, and why do CPU-heavy or database-heavy tasks often go badly there?",
+        "Cloudflare Network Overview": "How does a request travel through Cloudflare from the PoP to a Worker, and why does that picture matter during an outage?"
+      }
+    },
+    {
+      "title": "Measurement and Tooling",
+      "question": "Walk through how you would measure whether an edge change actually made things faster for users.",
+      "followUps": {
+        "Real User Monitoring (RUM)": "What does real user monitoring show you that synthetic lab tests cannot?",
+        "Cloudflare Speed Test and Analytics": "How would you use Cloudflare analytics to judge whether one specific feature improved load time?"
+      }
+    }
+  ]
+}

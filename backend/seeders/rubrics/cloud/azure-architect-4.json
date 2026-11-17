@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "azure-architect-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Azure Virtual Machine Scale Sets",
+      "question": "Explain how you would run and scale web workloads on Azure without managing each server by hand.",
+      "followUps": {
+        "VMSS Autoscaling and Flexible Orchestration": "How would you set autoscale rules for a scale set so it handles spikes without wasting money when idle?",
+        "Azure App Service and Deployment Slots": "How do deployment slots give you a zero-downtime release, and how do you roll back?"
+      }
+    },
+    {
+      "title": "Azure Kubernetes Service",
+      "question": "Walk through how an AKS cluster is put together and how images get into it safely.",
+      "followUps": {
+        "AKS Cluster Architecture and Node Pools": "Why must system node pools run on reliable VMs while user node pools can use spot instances?",
+        "Azure Container Registry and Image Security": "How would you make sure images in your registry are scanned and still available during a regional outage?"
+      }
+    },
+    {
+      "title": "Azure Functions and Serverless Compute",
+      "question": "Explain how serverless functions run on Azure and how you handle work that spans many steps.",
+      "followUps": {
+        "Consumption vs Premium Plans": "How do cold starts affect a latency-sensitive API, and how does the hosting plan change that?",
+        "Durable Functions for Stateful Workflows": "How does a Durable Functions orchestrator survive a restart halfway through a long workflow?"
+      }
+    },
+    {
+      "title": "Compute Selection Framework",
+      "question": "Walk through how you would choose a compute service for a new workload on Azure.",
+      "followUps": {
+        "Choosing the Right Azure Compute Service": "What questions about a workload would you ask before choosing between VMs, containers and Functions?",
+        "Azure Container Instances for On-Demand Workloads": "When would Azure Container Instances be a better fit than an AKS cluster, and when would it be worse?"
+      }
+    }
+  ]
+}

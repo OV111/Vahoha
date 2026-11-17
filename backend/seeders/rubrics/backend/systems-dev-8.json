@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "systems-dev-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "CPU & Memory Hierarchy",
+      "question": "Explain why the same algorithm can run at very different speeds depending on how its data is laid out and ordered.",
+      "followUps": {
+        "CPU Caches & Data Locality": "Why can looping over an array of small values be much faster than following a linked list?",
+        "Branch Prediction & Pipelines": "Why can sorting data first make a loop with an if statement run faster?"
+      }
+    },
+    {
+      "title": "Profiling Tools",
+      "question": "Explain how you would find out where a native program spends its time.",
+      "followUps": {
+        "perf & Hardware Performance Counters": "What kinds of events can perf count with hardware counters?",
+        "Flamegraphs": "How do you read a flamegraph, and what does a wide bar mean?"
+      }
+    },
+    {
+      "title": "Benchmarking & Measurement",
+      "question": "Explain how you would measure a performance change so you can trust the result.",
+      "followUps": {
+        "Benchmarking Methodology": "Which sources of noise can make benchmark results misleading, and how do you reduce them?",
+        "Allocation & Memory Bandwidth": "Why can allocating in a hot loop slow a program down even when the CPU is not busy?"
+      }
+    },
+    {
+      "title": "SIMD & Low-Level Optimization",
+      "question": "Explain how compilers and CPU instructions can make number-crunching code much faster.",
+      "followUps": {
+        "SIMD — Single Instruction Multiple Data": "What does SIMD do, and what must your data look like for the compiler to use it?",
+        "Compiler Optimizations & Flags": "What does -O3 or link-time optimization add over -O2, and what can it cost?"
+      }
+    }
+  ]
+}

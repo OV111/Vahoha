@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "graphql-dev-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Core SDL Constructs",
+      "question": "Explain the main building blocks you use to describe types in a GraphQL schema.",
+      "followUps": {
+        "Object Types, Interfaces & Unions": "When would you use an interface instead of a union?",
+        "Input Types": "Why can't you reuse an object type as a mutation argument?"
+      }
+    },
+    {
+      "title": "Schema Evolution",
+      "question": "Explain how a GraphQL schema can change over time without breaking existing clients.",
+      "followUps": {
+        "Versionless API Design & Deprecation": "How would you safely rename a field that many clients already use?",
+        "Schema-first vs Code-first": "What are the trade-offs between schema-first and code-first for a team?"
+      }
+    },
+    {
+      "title": "Pagination Patterns",
+      "question": "Walk through how you would design pagination for a large list in a GraphQL API.",
+      "followUps": {
+        "Cursor-based Pagination (Relay Connections)": "Why does offset pagination give duplicates or skipped items when data changes between pages?",
+        "Nullability in Pagination": "How does one failing edge affect the whole response if every level of a connection is non-null?"
+      }
+    },
+    {
+      "title": "Custom Scalars & Enums",
+      "question": "Explain how custom scalars and enums help keep bad data out of a GraphQL API.",
+      "followUps": {
+        "Custom Scalars (Date, JSON, UUID)": "What does a custom Date scalar give you that a plain String does not?",
+        "Enums — Type Safety vs Flexibility": "Why can adding a new enum value break existing clients?"
+      }
+    }
+  ]
+}

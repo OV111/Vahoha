@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "azure-architect-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Bicep Language Fundamentals",
+      "question": "Explain how you would write reusable infrastructure code for Azure with Bicep.",
+      "followUps": {
+        "Bicep Syntax, Resources, and Modules": "Why would you split a large Bicep template into modules, and how do you decide what a module should contain?",
+        "Parameter Files and Environment Configurations": "How do you keep one template working for dev, staging and production without putting secrets in source control?"
+      }
+    },
+    {
+      "title": "Deployment Scopes and StackSets",
+      "question": "Explain how infrastructure deployments work at levels above a single resource group.",
+      "followUps": {
+        "Subscription and Management Group Deployments": "What kinds of resources need a subscription or management group scoped deployment, and why?",
+        "Azure Deployment Stacks": "How do deployment stacks differ from a normal deployment when someone changes or deletes a resource by hand?"
+      }
+    },
+    {
+      "title": "CI/CD Integration for IaC",
+      "question": "Walk through how a pipeline should deploy infrastructure changes to Azure safely.",
+      "followUps": {
+        "GitHub Actions with OIDC for Azure": "How does OIDC federation let a GitHub workflow deploy to Azure without a stored secret?",
+        "Azure DevOps Pipelines for Bicep": "How would you structure a multi-stage pipeline so production changes get reviewed before they apply?"
+      }
+    },
+    {
+      "title": "IaC Best Practices",
+      "question": "Explain the practices that keep infrastructure as code safe and maintainable over time.",
+      "followUps": {
+        "Azure What-If and Preflight Validation": "Why is a what-if diff more useful to a reviewer than the template diff itself?",
+        "Terraform on Azure as an Alternative": "When would you choose Terraform over Bicep for Azure, and what does the state file give you?"
+      }
+    }
+  ]
+}

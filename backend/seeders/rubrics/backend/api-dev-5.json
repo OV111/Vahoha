@@ -9,6 +9,57 @@
       "followUps": {
         "SQL — JOINs, Transactions & EXPLAIN": "Why must a money transfer run inside a transaction, and what does EXPLAIN tell you about a slow query?",
         "Schema Design — Normalization & Foreign Keys": "What goes wrong when the same fact is stored in two tables, and how do foreign keys protect you?"
+      },
+      "criteria": {
+        "SQL — JOINs, Transactions & EXPLAIN": {
+          "id": "sql-tx-explain",
+          "evidence": [
+            {
+              "id": "atomic-transfer",
+              "text": "A transfer is several writes that must all succeed or all roll back, so money never disappears or doubles."
+            },
+            {
+              "id": "explain-plan",
+              "text": "EXPLAIN shows the query plan: whether it uses an index or scans the whole table, and the estimated cost."
+            },
+            {
+              "id": "join-condition",
+              "text": "JOINs combine related tables on a condition; a missing condition returns every combination of rows."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (JOIN, transaction, EXPLAIN) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "explain-fixes",
+              "text": "Says EXPLAIN makes a slow query faster or fixes it."
+            }
+          ]
+        },
+        "Schema Design — Normalization & Foreign Keys": {
+          "id": "normalization-fks",
+          "evidence": [
+            {
+              "id": "one-place",
+              "text": "Each fact is stored in one place, so it can't be updated in one table and left stale in another."
+            },
+            {
+              "id": "fk-integrity",
+              "text": "A foreign key makes the database reject rows that point at a parent that doesn't exist, so no orphans pile up."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (normalization, foreign key) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "fk-for-speed",
+              "text": "Says foreign keys exist mainly to make queries faster."
+            }
+          ]
+        }
       }
     },
     {
@@ -17,6 +68,61 @@
       "followUps": {
         "Connection Pooling with node-postgres (pg)": "Why reuse a pool of connections instead of opening one per request?",
         "Parameterized Queries & SQL Injection Prevention": "Why does a parameterized query stop SQL injection when building the SQL string yourself doesn't?"
+      },
+      "criteria": {
+        "Connection Pooling with node-postgres (pg)": {
+          "id": "connection-pool",
+          "evidence": [
+            {
+              "id": "connect-cost",
+              "text": "Opening a database connection is slow (network handshake and authentication), so doing it on every request adds latency and load."
+            },
+            {
+              "id": "reuse",
+              "text": "A pool keeps a set of open connections that requests borrow and give back."
+            },
+            {
+              "id": "size",
+              "text": "The pool size is a limit: too small and requests queue, too large and the database is overloaded."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (connection pool, pg) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "unlimited-parallel",
+              "text": "Says one pooled connection can run unlimited queries in parallel."
+            }
+          ]
+        },
+        "Parameterized Queries & SQL Injection Prevention": {
+          "id": "sql-params",
+          "evidence": [
+            {
+              "id": "separate",
+              "text": "A parameterized query sends the SQL text and the values separately."
+            },
+            {
+              "id": "data-only",
+              "text": "The database treats the values only as data, so input can never change the structure of the query."
+            },
+            {
+              "id": "interpolation-risk",
+              "text": "Building the string yourself lets input like a quote end the string and add its own SQL."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (parameterized query, SQL injection) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "strip-quotes",
+              "text": "Says removing quotes from user input is a full fix."
+            }
+          ]
+        }
       }
     },
     {
@@ -25,6 +131,61 @@
       "followUps": {
         "Document Model — Embedding vs Referencing": "When would you embed comments inside the post, and when store them separately?",
         "Indexes & the Aggregation Pipeline": "Why should $match come early in an aggregation pipeline?"
+      },
+      "criteria": {
+        "Document Model — Embedding vs Referencing": {
+          "id": "mongo-embedding",
+          "evidence": [
+            {
+              "id": "embed-when",
+              "text": "Embed when the data is always read with the parent and stays bounded in size."
+            },
+            {
+              "id": "reference-when",
+              "text": "Reference it when it grows without limit, is shared, or is queried and updated on its own."
+            },
+            {
+              "id": "tradeoff",
+              "text": "Embedding gives one read but big or duplicated documents; referencing needs extra queries or $lookup."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (embed, reference, document) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "no-relations",
+              "text": "Says MongoDB can't relate documents at all, so data must always be embedded."
+            }
+          ]
+        },
+        "Indexes & the Aggregation Pipeline": {
+          "id": "agg-match-early",
+          "evidence": [
+            {
+              "id": "ordered-stages",
+              "text": "An aggregation pipeline passes documents through its stages in order."
+            },
+            {
+              "id": "index-early",
+              "text": "A $match at the start can use an index and cuts the number of documents straight away."
+            },
+            {
+              "id": "later-scans",
+              "text": "Placed after reshaping stages, $match can't use the index, so every document flows through the earlier stages."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms ($match, aggregation pipeline) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "order-irrelevant",
+              "text": "Says stage order never matters because MongoDB reorders everything."
+            }
+          ]
+        }
       }
     },
     {
@@ -33,7 +194,63 @@
       "followUps": {
         "B-tree Indexes & Composite Index Column Order": "Why is an index on (status, created_at) different from one on (created_at, status)?",
         "Partial & Covering Indexes": "What is a covering index, and why can it answer a query without reading the table?"
+      },
+      "criteria": {
+        "B-tree Indexes & Composite Index Column Order": {
+          "id": "composite-index-order",
+          "evidence": [
+            {
+              "id": "sorted-by-first",
+              "text": "A composite index is sorted by its first column, then by the next column within that."
+            },
+            {
+              "id": "leading-column",
+              "text": "It helps queries that filter on the leading column; a query on only the second column can't use it well."
+            },
+            {
+              "id": "match-queries",
+              "text": "So columns are ordered to match how you query, usually equality filters first."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (composite index, B-tree) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "order-irrelevant",
+              "text": "Says column order in a composite index makes no difference."
+            }
+          ]
+        },
+        "Partial & Covering Indexes": {
+          "id": "covering-index",
+          "evidence": [
+            {
+              "id": "all-columns",
+              "text": "A covering index contains every column the query needs."
+            },
+            {
+              "id": "no-table-read",
+              "text": "So the database answers from the index alone without reading the table rows."
+            },
+            {
+              "id": "partial",
+              "text": "A partial index only includes rows that match a condition, which keeps it small and fast."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (covering index, partial index) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "index-every-column",
+              "text": "Says a covering index means indexing every column of the table."
+            }
+          ]
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": false
 }

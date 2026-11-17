@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "node-dev-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Prisma ORM",
+      "question": "Explain how Prisma connects your TypeScript code to a PostgreSQL database.",
+      "followUps": {
+        "Prisma Schema & Client Generation": "What goes wrong if you change the Prisma schema but forget to regenerate the client?",
+        "Connection Pooling with Prisma": "Why is creating a new PrismaClient on every request dangerous, especially in serverless?"
+      }
+    },
+    {
+      "title": "Migrations & Relations",
+      "question": "Walk through how you change a database schema safely and load related data efficiently with Prisma.",
+      "followUps": {
+        "Prisma Migrate & Database Migrations": "Why should you avoid prisma db push in production?",
+        "Relations & the N+1 Problem": "What is the N+1 problem, and how would you spot and fix it in Prisma code?"
+      }
+    },
+    {
+      "title": "PostgreSQL Fundamentals",
+      "question": "Explain how PostgreSQL keeps queries fast and data correct.",
+      "followUps": {
+        "Indexes & Query Planning": "How would you find out why a query on a large table is slow?",
+        "Transactions & ACID Guarantees": "Walk through a multi-step operation that needs a transaction, and what happens without one."
+      }
+    },
+    {
+      "title": "Data Modeling",
+      "question": "Explain how you design a database schema for a real production app.",
+      "followUps": {
+        "Database Normalization": "When would you choose to denormalize part of a schema, and what do you give up?",
+        "Soft Deletes & Audit Trails": "What are the trade-offs of soft deletes compared with hard deletes?"
+      }
+    }
+  ]
+}

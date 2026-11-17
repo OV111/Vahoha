@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "security-dev-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Threat Modeling",
+      "question": "Explain how you would find the security threats in a system before it is built.",
+      "followUps": {
+        "STRIDE Framework": "What do the letters in STRIDE stand for? Give one example threat for any two of them.",
+        "Data Flow Diagrams & Trust Boundaries": "What is a trust boundary, and why do most threats show up where data crosses one?"
+      }
+    },
+    {
+      "title": "Penetration Testing Methodology",
+      "question": "Explain how a professional penetration test is run, from start to finish.",
+      "followUps": {
+        "Pen Test Phases (Recon, Exploit, Report)": "Walk through the phases of a pen test. Why is the report as important as the exploits?",
+        "Scope, Rules of Engagement & Legal": "Why must a pen test have written scope and permission before it starts?"
+      }
+    },
+    {
+      "title": "Metasploit & Exploitation Tools",
+      "question": "Explain how security teams use attack tools to check their own systems.",
+      "followUps": {
+        "Metasploit Framework": "What does Metasploit automate, and why does that make patching known bugs urgent?",
+        "OWASP ZAP for Automated Scanning": "What kinds of problems can OWASP ZAP find in a running web app?"
+      }
+    },
+    {
+      "title": "Bug Bounty & Vulnerability Disclosure",
+      "question": "Explain how outside researchers can report security bugs to a company safely.",
+      "followUps": {
+        "Responsible Disclosure Programs": "Why give a vendor time to fix a bug before it is made public?",
+        "Bug Bounty Platforms": "What do platforms like HackerOne provide for both companies and researchers?"
+      }
+    }
+  ]
+}

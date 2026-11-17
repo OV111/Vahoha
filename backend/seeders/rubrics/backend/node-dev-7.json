@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "node-dev-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Input Validation",
+      "question": "Explain how you validate untrusted input at the edge of a Node.js API.",
+      "followUps": {
+        "Zod Schema Validation": "Why is a schema library like Zod better than hand-written if checks for request validation?",
+        "Zod + TypeScript Type Inference": "What problem does z.infer solve compared with writing a separate interface?"
+      }
+    },
+    {
+      "title": "Error Handling Architecture",
+      "question": "Walk through how errors flow from deep in your code to a clean HTTP response.",
+      "followUps": {
+        "Centralized Error Handler": "What problems show up when each route formats its own errors?",
+        "Custom Error Classes": "How do custom error classes help a global error handler pick the right status code?"
+      }
+    },
+    {
+      "title": "Layered Architecture",
+      "question": "Explain how you split a Node.js backend into layers and why.",
+      "followUps": {
+        "Route → Service → Repository Pattern": "What does a repository layer let you do in tests that you could not do with queries in route handlers?",
+        "Dependency Injection Patterns": "How does dependency injection make a payment service easier to test?"
+      }
+    },
+    {
+      "title": "Configuration Management",
+      "question": "Explain how you manage configuration and logging for a production Node.js service.",
+      "followUps": {
+        "Validated Config with env-schema": "Why is failing at startup better than failing on the first request when config is wrong?",
+        "Structured Logging with Pino": "Why are structured JSON logs more useful in production than console.log strings?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "security-dev-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Input Validation & Output Encoding",
+      "question": "Explain how you stop untrusted input from causing harm as it moves through your code.",
+      "followUps": {
+        "Input Validation Strategies": "Why validate with an allowlist on the server instead of a blocklist, or only in the browser?",
+        "Parameterized Queries & ORM Safety": "How can an app that uses an ORM still be open to SQL injection?"
+      }
+    },
+    {
+      "title": "Static Analysis (SAST)",
+      "question": "Explain how automated tools can find security problems in your code and dependencies before release.",
+      "followUps": {
+        "SAST Tools & Integration": "Name a kind of bug a static analysis tool can catch before the code ever runs.",
+        "Dependency Scanning": "Why do you need to scan dependencies you didn't write, and what do you do with a finding?"
+      }
+    },
+    {
+      "title": "Secure Code Review",
+      "question": "Explain what you look for when reviewing code for security, and how errors should be handled.",
+      "followUps": {
+        "Security-Focused Code Review": "What does a security review look for that a normal code review often misses?",
+        "Error Handling & Information Disclosure": "Why is showing a stack trace to the user dangerous, and what should happen instead?"
+      }
+    },
+    {
+      "title": "Deserialization & File Upload Security",
+      "question": "Explain the risks of accepting files and serialized objects from users, and how you handle them safely.",
+      "followUps": {
+        "Insecure Deserialization": "How can deserializing untrusted data lead to code running on your server?",
+        "Secure File Upload Handling": "Which checks should a file upload go through, and why store uploads outside the web root?"
+      }
+    }
+  ]
+}

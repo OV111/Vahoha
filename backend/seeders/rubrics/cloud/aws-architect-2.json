@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "aws-architect-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "VPC Design Fundamentals",
+      "question": "Walk through how you would lay out the network for a new VPC.",
+      "followUps": {
+        "CIDR Blocks and Subnet Planning": "Why is picking the VPC CIDR range such a hard decision to undo, and what goes wrong if it is too small?",
+        "Public vs Private Subnets": "Why do you put databases in private subnets, and how do they still reach the internet for updates?"
+      }
+    },
+    {
+      "title": "Internet and NAT Gateways",
+      "question": "Explain how resources in a VPC talk to the internet, both inbound and outbound.",
+      "followUps": {
+        "Internet Gateways": "What does a subnet need in its route table to be public, and what happens if that route is missing?",
+        "NAT Gateways and NAT Instances": "What do you trade off when choosing NAT Gateways over NAT instances, and why use one NAT Gateway per AZ?"
+      }
+    },
+    {
+      "title": "Security Groups and NACLs",
+      "question": "Explain how traffic is filtered and routed inside a VPC.",
+      "followUps": {
+        "Security Groups vs Network ACLs": "Why can a network ACL break return traffic when a security group with the same rules would not?",
+        "Route Tables and Routing Rules": "When two routes in a route table match a destination, which one wins and why does that matter for VPN setups?"
+      }
+    },
+    {
+      "title": "VPC Connectivity Options",
+      "question": "Explain how you would connect VPCs to each other and to AWS services privately.",
+      "followUps": {
+        "VPC Peering": "Why does VPC peering stop working well as you add more VPCs, and what limits it?",
+        "VPC Endpoints": "How can VPC endpoints cut your NAT Gateway bill, and when would you pick a gateway endpoint over an interface endpoint?"
+      }
+    }
+  ]
+}

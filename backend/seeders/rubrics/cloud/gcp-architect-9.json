@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "gcp-architect-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Billing Export & Cost Analysis",
+      "question": "Explain how you would find out where money is going across a GCP organization.",
+      "followUps": {
+        "Billing Export to BigQuery": "Why is querying the billing export in BigQuery more powerful than the built-in cost reports?",
+        "Cost Breakdown by Label & Project": "What happens to cost reporting when resources are missing labels, and how would you fix it?"
+      }
+    },
+    {
+      "title": "Committed Use & Sustained Use Discounts",
+      "question": "Explain how GCP discounts work and how you would use them without overcommitting.",
+      "followUps": {
+        "Committed Use Discounts for Compute": "What data would you look at before buying a committed use discount, and why?",
+        "Sustained Use Discounts & Preemptible VMs": "What kind of workload fits Spot VMs, and how do you design it to survive being interrupted?"
+      }
+    },
+    {
+      "title": "Recommender API & Right-Sizing",
+      "question": "Walk through how you would find wasted or oversized resources across many projects.",
+      "followUps": {
+        "Recommender API for Right-Sizing": "How would you make sure right-sizing recommendations actually get acted on by teams?",
+        "Cloud Asset Inventory for Resource Auditing": "What kind of waste could you find with an organization-wide asset query that is hard to spot project by project?"
+      }
+    },
+    {
+      "title": "Budget Controls & Spend Governance",
+      "question": "Explain how you would stop runaway cloud spending before it becomes a big bill.",
+      "followUps": {
+        "Budget Alerts & Programmatic Spend Controls": "What are the risks of automatically disabling billing on a project when its budget is exceeded?",
+        "GCP Cost Management Best Practices": "Why should a team remove waste before investing in architecture changes to save money?"
+      }
+    }
+  ]
+}

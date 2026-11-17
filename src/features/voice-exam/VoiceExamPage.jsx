@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { AlertTriangle, Mic } from "lucide-react";
 import { useVoiceExam } from "./hooks/useVoiceExam";
 import {
@@ -33,9 +33,11 @@ const VoiceExamPage = () => {
     sending,
   } = useVoiceExam(layerId);
 
-  // Back to the layer page this exam belongs to (layer ids are "<track>-<n>").
-  const goBack = () =>
-    navigate(`/learn/${layerId.replace(/-\d+$/, "")}/${layerId}`);
+  // Back to the layer page this exam belongs to. The link passes the track, because
+  // a layer id doesn't always start with it (python-backend's layers are py-1…py-8).
+  const [searchParams] = useSearchParams();
+  const track = searchParams.get("track") || layerId.replace(/-\d+$/, "");
+  const goBack = () => navigate(`/learn/${track}/${layerId}`);
 
   const renderBody = () => {
     if (!attempt) {
@@ -79,6 +81,7 @@ const VoiceExamPage = () => {
           result={attempt.result}
           layerTitle={eligibility?.layerTitle}
           detailed
+          practice={attempt.mode === "practice"}
           onClose={goBack}
         />
       );

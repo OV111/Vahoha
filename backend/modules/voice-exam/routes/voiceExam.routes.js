@@ -4,7 +4,7 @@ import { aiBurstLimiter } from "../../../middleware/aiRateLimit.js";
 import { validate } from "../../../middleware/validate.js";
 import { makeErrorHandler } from "../../../utils/respond.js";
 import { attemptParamSchema, layerParamSchema, startBodySchema, turnBodySchema } from "../schemas/voiceExam.schemas.js";
-import { abandon, audioTurn, eligibility, start, turn, verified } from "../controllers/voiceExam.controller.js";
+import { abandon, audioTurn, eligibility, live, start, turn, verified } from "../controllers/voiceExam.controller.js";
 
 const router = Router();
 
@@ -13,6 +13,9 @@ router.get("/verified", authenticate, verified);
 
 // GET /api/voice-exam/layers/:layerId/eligibility
 router.get("/layers/:layerId/eligibility", authenticate, validate({ params: layerParamSchema }), eligibility);
+
+// GET /api/voice-exam/layers/:layerId/attempt: the open exam on this layer, or null
+router.get("/layers/:layerId/attempt", authenticate, validate({ params: layerParamSchema }), live);
 
 // POST /api/voice-exam/attempts: { layerId, path }. The daily cap is checked inside, per attempt.
 router.post("/attempts", authenticate, aiBurstLimiter, validate({ body: startBodySchema }), start);

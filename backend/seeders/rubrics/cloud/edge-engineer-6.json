@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "edge-engineer-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "WAF and Rule Management",
+      "question": "Explain how a web application firewall at the edge protects an application.",
+      "followUps": {
+        "WAF Managed Rule Sets": "How do you enable managed rule sets without blocking legitimate traffic?",
+        "Custom WAF Rules with Firewall Rules Engine": "When do you need custom WAF rules, and why keep them in Terraform?"
+      }
+    },
+    {
+      "title": "DDoS and Bot Protection",
+      "question": "Explain how an edge network defends against floods of bad traffic.",
+      "followUps": {
+        "DDoS Protection Layers 3, 4, and 7": "How does defending against a Layer 7 HTTP flood differ from absorbing a Layer 3 or 4 volumetric attack?",
+        "Bot Management and Challenge Actions": "Why can turning on aggressive bot blocking without studying bot scores first break legitimate clients?"
+      }
+    },
+    {
+      "title": "Rate Limiting",
+      "question": "Walk through how you would limit abusive API traffic at the edge.",
+      "followUps": {
+        "Edge Rate Limiting Strategies": "How do you choose a rate limit key and threshold so you stop attackers but not users behind a shared NAT?",
+        "mTLS for API Security": "Why is mTLS a stronger choice than API keys for machine-to-machine clients?"
+      }
+    },
+    {
+      "title": "Zero Trust with Cloudflare Access",
+      "question": "Explain how you would give staff access to internal apps without a VPN.",
+      "followUps": {
+        "Cloudflare Access Policies": "How does Cloudflare Access check identity, and why can the origin then stay off the public internet?",
+        "Cloudflare Tunnel for Private Origins": "Why does an outbound-only tunnel shrink the attack surface of a private origin?"
+      }
+    }
+  ]
+}

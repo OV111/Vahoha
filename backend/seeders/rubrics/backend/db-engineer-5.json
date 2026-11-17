@@ -1,0 +1,259 @@
+{
+  "path": "backend",
+  "layer": "db-engineer-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "InnoDB & Storage Engine Internals",
+      "question": "Explain how InnoDB stores data and keeps it safe after a crash.",
+      "followUps": {
+        "InnoDB Architecture — Buffer Pool & Redo Log": "How do the buffer pool size and the redo log flush setting trade speed for safety?",
+        "Transaction Isolation Levels in MySQL": "Why can range queries cause surprise deadlocks under REPEATABLE READ in InnoDB?"
+      },
+      "criteria": {
+        "InnoDB Architecture — Buffer Pool & Redo Log": {
+          "id": "innodb-buffer-redo",
+          "evidence": [
+            {
+              "id": "buffer-pool",
+              "text": "The buffer pool caches pages in memory; too small and queries hit disk."
+            },
+            {
+              "id": "redo-log",
+              "text": "The redo log records changes so committed work can be recovered after a crash."
+            },
+            {
+              "id": "flush-tradeoff",
+              "text": "Flushing the log on every commit is safest; flushing less often is faster but can lose recent commits on an OS crash or power loss."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (buffer pool, redo log) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "buffer-durable",
+              "text": "Says the buffer pool is what makes data survive a crash."
+            }
+          ]
+        },
+        "Transaction Isolation Levels in MySQL": {
+          "id": "innodb-gap-locks",
+          "evidence": [
+            {
+              "id": "repeatable-read",
+              "text": "MySQL's default isolation is REPEATABLE READ."
+            },
+            {
+              "id": "gap-locks",
+              "text": "InnoDB locks the gaps between index records in range queries to prevent phantom rows."
+            },
+            {
+              "id": "deadlocks",
+              "text": "Two transactions locking overlapping ranges can block each other and deadlock, even with simple-looking SQL."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (REPEATABLE READ, gap lock) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "row-locks-only",
+              "text": "Says InnoDB only ever locks the exact rows returned."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "MySQL vs PostgreSQL Differences",
+      "question": "Walk through the differences between MySQL and PostgreSQL that matter when you move between them.",
+      "followUps": {
+        "Key Behavioral Differences": "Why is it dangerous when a database accepts a bad value instead of raising an error?",
+        "Deadlocks & How to Detect Them": "How does a deadlock happen, and what should the application do when InnoDB picks it as the victim?"
+      },
+      "criteria": {
+        "Key Behavioral Differences": {
+          "id": "silent-bad-values",
+          "evidence": [
+            {
+              "id": "accepts",
+              "text": "With strict mode off, MySQL can silently truncate strings or store invalid dates instead of failing."
+            },
+            {
+              "id": "hidden-corruption",
+              "text": "Bad data gets in without anyone noticing and is found much later."
+            },
+            {
+              "id": "fail-fast",
+              "text": "An error at write time makes the bug visible immediately, which PostgreSQL and strict mode do."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (strict mode, truncation) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "truncation-harmless",
+              "text": "Says silently truncating values is harmless."
+            }
+          ]
+        },
+        "Deadlocks & How to Detect Them": {
+          "id": "deadlocks",
+          "evidence": [
+            {
+              "id": "cycle",
+              "text": "A deadlock is two transactions each waiting for a lock the other holds."
+            },
+            {
+              "id": "victim",
+              "text": "InnoDB detects it and rolls back one of them."
+            },
+            {
+              "id": "retry",
+              "text": "The application must catch that error and retry the transaction, and keep a consistent lock order to make it rarer."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (deadlock, lock) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "deadlock-hangs",
+              "text": "Says a deadlock leaves both transactions waiting forever."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "MySQL Configuration & Tuning",
+      "question": "Explain how you would tune a MySQL server and find the queries that slow it down.",
+      "followUps": {
+        "my.cnf — Key Configuration Variables": "Which configuration settings would you check first on a new production MySQL server, and why?",
+        "Slow Query Log & Performance Schema": "How would you use the slow query log and Performance Schema without slowing production down?"
+      },
+      "criteria": {
+        "my.cnf — Key Configuration Variables": {
+          "id": "mysql-config",
+          "evidence": [
+            {
+              "id": "small-defaults",
+              "text": "The defaults are sized for a tiny machine."
+            },
+            {
+              "id": "buffer-pool",
+              "text": "innodb_buffer_pool_size should be raised to fit the working set in memory."
+            },
+            {
+              "id": "others",
+              "text": "Other first checks: max_connections and redo log size."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (my.cnf, innodb_buffer_pool_size) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "defaults-fine",
+              "text": "Says production can run on default settings."
+            }
+          ]
+        },
+        "Slow Query Log & Performance Schema": {
+          "id": "slow-query-log",
+          "evidence": [
+            {
+              "id": "slow-log",
+              "text": "The slow query log records queries slower than a threshold, showing which to fix first."
+            },
+            {
+              "id": "perf-schema",
+              "text": "Performance Schema gives detailed timings for waits and statements."
+            },
+            {
+              "id": "overhead",
+              "text": "Enable only the instruments you need, because turning everything on adds overhead."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (slow query log, Performance Schema) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "log-every-query",
+              "text": "Says you should log every query at full detail in production."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Stored Procedures & Events",
+      "question": "Walk through when it makes sense to run logic or scheduled jobs inside MySQL itself.",
+      "followUps": {
+        "MySQL Stored Procedures": "What problems appear when important business logic lives in stored procedures?",
+        "MySQL Event Scheduler": "What happens when a scheduled event fails, and how would you make sure someone notices?"
+      },
+      "criteria": {
+        "MySQL Stored Procedures": {
+          "id": "mysql-procs",
+          "evidence": [
+            {
+              "id": "shadow-code",
+              "text": "Logic in procedures lives outside the app's code and often outside version control."
+            },
+            {
+              "id": "hard-debug",
+              "text": "They are hard to test and debug."
+            },
+            {
+              "id": "drift",
+              "text": "They drift from the application and become a hidden second codebase."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (stored procedure) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "procs-faster-always",
+              "text": "Says business logic should always live in stored procedures for speed."
+            }
+          ]
+        },
+        "MySQL Event Scheduler": {
+          "id": "mysql-events",
+          "evidence": [
+            {
+              "id": "silent-fail",
+              "text": "A failed scheduled event has no retry and no visible log by default, so it fails silently."
+            },
+            {
+              "id": "monitor",
+              "text": "You make it noticeable by logging errors, writing a status row, or alerting when the job didn't run."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (event scheduler) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "events-retry",
+              "text": "Says the event scheduler retries failed events."
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "criteriaReviewed": false
+}

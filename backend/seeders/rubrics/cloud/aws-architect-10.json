@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "aws-architect-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Landing Zones and Control Tower",
+      "question": "Explain how a large company would set up and govern many AWS accounts.",
+      "followUps": {
+        "AWS Control Tower": "What is the difference between preventive and detective guardrails in Control Tower, and how is each enforced?",
+        "AWS Service Catalog": "How does Service Catalog let developers launch resources without giving them broad IAM rights?"
+      }
+    },
+    {
+      "title": "Transit Gateway and Hybrid Networks",
+      "question": "Explain how you would connect many VPCs and an on-premises data center into one network.",
+      "followUps": {
+        "AWS Transit Gateway": "Why does Transit Gateway scale better than VPC peering, and how do its route tables keep environments apart?",
+        "AWS Direct Connect": "How would you design Direct Connect so a single link or location failure does not cut you off from AWS?"
+      }
+    },
+    {
+      "title": "Well-Architected at Scale",
+      "question": "Explain how you would keep many production workloads aligned with good architecture practice over time.",
+      "followUps": {
+        "Well-Architected Tool and Reviews": "How would you run a Well-Architected review, and why repeat it on workloads that already passed?",
+        "AWS Outposts and Hybrid Architecture": "When would a company choose Outposts instead of running the workload in a nearby AWS Region?"
+      }
+    },
+    {
+      "title": "Professional Certification Preparation",
+      "question": "Explain how a senior architect reasons about and records big design decisions.",
+      "followUps": {
+        "AWS Solutions Architect Professional Exam": "How would you approach a professional exam scenario where every answer works but only one fits the constraints best?",
+        "Architecture Decision Records": "Why should an ADR record the options you rejected and not just the one you picked?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "azure-architect-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Microsoft Entra ID Core Concepts",
+      "question": "Explain how identities and permissions are organized in Microsoft Entra ID and Azure.",
+      "followUps": {
+        "Tenants, Users, and Groups": "Why should you assign roles to groups rather than to individual users?",
+        "Role-Based Access Control (RBAC)": "How do RBAC scopes and inheritance work, and when would you write a custom role?"
+      }
+    },
+    {
+      "title": "Conditional Access and MFA",
+      "question": "Explain how Azure decides whether a sign-in should be allowed, challenged or blocked.",
+      "followUps": {
+        "Conditional Access Policies": "How does a conditional access policy protect you when an attacker already has a user's password?",
+        "Privileged Identity Management (PIM)": "Why is just-in-time admin access safer than giving admins permanent elevated roles?"
+      }
+    },
+    {
+      "title": "App Registrations and Service Principals",
+      "question": "Explain how applications and services prove their identity to Azure and to each other.",
+      "followUps": {
+        "App Registrations and OAuth 2.0": "Which OAuth 2.0 flow would you use for a background service versus a web app with users, and what misconfigurations cause trouble?",
+        "Managed Identities for Azure Resources": "Why are managed identities safer than storing a connection string or secret in app settings?"
+      }
+    },
+    {
+      "title": "B2B and External Identities",
+      "question": "Explain how you would give people outside your organization access, and how Azure spots risky sign-ins.",
+      "followUps": {
+        "Entra External ID and B2B Collaboration": "Why is it better to let partners sign in with their own organization's identity than to create accounts with passwords for them?",
+        "Entra ID Protection and Risk Policies": "How do risk-based policies help when a user's credentials have already leaked?"
+      }
+    }
+  ]
+}

@@ -9,6 +9,60 @@
       "followUps": {
         "TCP/IP & the Packet Model": "What does the TCP three-way handshake set up, and why does it matter for connection timeouts?",
         "DNS — Domain Resolution & TTL": "You move your API to a new IP, but some users still hit the old one. What is DNS TTL doing here?"
+      },
+      "criteria": {
+        "TCP/IP & the Packet Model": {
+          "id": "tcp-connection",
+          "evidence": [
+            {
+              "id": "handshake",
+              "text": "A connection is set up before any data is sent: the two sides exchange a few messages (the handshake) and agree on starting sequence numbers."
+            },
+            {
+              "id": "reliability",
+              "text": "TCP delivers bytes reliably and in order: lost packets are re-sent and reassembled in the right order."
+            },
+            {
+              "id": "cost",
+              "text": "Setting up the connection costs a round trip, which is why slow or unreachable servers show up as connect timeouts and why reusing connections (keep-alive) helps."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (TCP, IP, the handshake, SYN/ACK) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "udp-like",
+              "text": "Says TCP sends packets with no connection and no delivery guarantee."
+            }
+          ]
+        },
+        "DNS — Domain Resolution & TTL": {
+          "id": "dns-ttl",
+          "evidence": [
+            {
+              "id": "resolve",
+              "text": "The hostname is first turned into an IP address by asking DNS resolvers before the connection is made."
+            },
+            {
+              "id": "cache",
+              "text": "DNS answers are cached by resolvers and clients for the record's TTL."
+            },
+            {
+              "id": "stale",
+              "text": "Until the TTL runs out, clients keep using the cached old IP, so a moved server is still hit at its old address."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (DNS, TTL, resolver) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "ttl-is-latency",
+              "text": "Describes TTL as response time or network latency."
+            }
+          ]
+        }
       }
     },
     {
@@ -17,6 +71,60 @@
       "followUps": {
         "HTTP Methods, Headers & Status Codes": "Why is using GET for an action that changes data a problem for caches and retries?",
         "HTTPS & TLS Handshake": "What two things does TLS give you, and what does the handshake cost in latency?"
+      },
+      "criteria": {
+        "HTTP Methods, Headers & Status Codes": {
+          "id": "http-semantics",
+          "evidence": [
+            {
+              "id": "structure",
+              "text": "A request has a method, a path, headers and an optional body; a response has a status code, headers and a body."
+            },
+            {
+              "id": "safe-methods",
+              "text": "Read methods like GET must not change data, because caches, proxies, crawlers or clients may store, repeat or retry them."
+            },
+            {
+              "id": "status-meaning",
+              "text": "The status code tells the client what happened (success, client error, server error), so a failure must not be returned as 200."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (GET, POST, headers, status codes) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "get-post-same",
+              "text": "Says GET and POST are interchangeable, or that the only difference is where parameters are visible."
+            }
+          ]
+        },
+        "HTTPS & TLS Handshake": {
+          "id": "tls",
+          "evidence": [
+            {
+              "id": "encryption",
+              "text": "TLS encrypts the traffic so others on the network can't read or alter it."
+            },
+            {
+              "id": "authentication",
+              "text": "The server proves its identity with a certificate signed by an authority the client trusts."
+            },
+            {
+              "id": "handshake-cost",
+              "text": "The handshake adds round trips before the first request; reusing connections or session resumption reduces that cost."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (HTTPS, TLS, certificate, secure) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "cert-is-key",
+              "text": "Says the certificate itself encrypts the data, or that TLS adds no latency."
+            }
+          ]
+        }
       }
     },
     {
@@ -25,6 +133,60 @@
       "followUps": {
         "REST Constraints & Statelessness": "Why does keeping session state on one server break scaling behind a load balancer?",
         "API Clients — curl, Postman & Insomnia": "How would you send a POST with a JSON body and an auth header from the terminal?"
+      },
+      "criteria": {
+        "REST Constraints & Statelessness": {
+          "id": "rest-stateless",
+          "evidence": [
+            {
+              "id": "self-contained",
+              "text": "Each request carries everything the server needs (such as the auth token), so the server keeps no session between requests."
+            },
+            {
+              "id": "scaling",
+              "text": "Because no single server holds a client's session, any instance behind a load balancer can serve any request, so servers can be added or removed freely."
+            },
+            {
+              "id": "resources",
+              "text": "Resources are identified by URLs and handled with standard HTTP methods."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (REST, stateless, resources) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "stateless-no-data",
+              "text": "Says stateless means the API stores no data at all, for example no database."
+            }
+          ]
+        },
+        "API Clients — curl, Postman & Insomnia": {
+          "id": "api-clients",
+          "evidence": [
+            {
+              "id": "send-directly",
+              "text": "Requests can be sent straight from the terminal or a tool like curl or Postman, without writing a frontend."
+            },
+            {
+              "id": "set-parts",
+              "text": "You set the method, headers (such as Content-Type and Authorization) and a JSON body yourself."
+            },
+            {
+              "id": "see-raw",
+              "text": "You see the raw status, headers and body, so you can tell whether a bug is in the client or the server."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (curl, Postman, Insomnia) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "curl-get-only",
+              "text": "Says curl can only send GET requests."
+            }
+          ]
+        }
       }
     },
     {
@@ -33,7 +195,58 @@
       "followUps": {
         "Browser DevTools — Network Tab": "What can the Network tab show you about a request that console.log can't?",
         "HTTP Caching Basics — Cache-Control & ETags": "How do Cache-Control and ETags stop a client from downloading the same response again?"
+      },
+      "criteria": {
+        "Browser DevTools — Network Tab": {
+          "id": "devtools-network",
+          "evidence": [
+            {
+              "id": "real-request",
+              "text": "The Network tab shows the request exactly as the browser sent it: URL, method, headers and payload."
+            },
+            {
+              "id": "real-response",
+              "text": "It shows what came back: status code, response headers, body and timing."
+            },
+            {
+              "id": "beyond-logging",
+              "text": "It shows things code logging can't, such as headers the browser added, preflight/CORS requests, cached responses and timing."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (DevTools, Network tab) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "shows-server-code",
+              "text": "Says the Network tab shows what happened inside the server's code."
+            }
+          ]
+        },
+        "HTTP Caching Basics — Cache-Control & ETags": {
+          "id": "http-cache-basics",
+          "evidence": [
+            {
+              "id": "max-age",
+              "text": "Cache-Control tells the client or CDN how long it may reuse a stored response without asking the server again."
+            },
+            {
+              "id": "etag-304",
+              "text": "With an ETag the client sends it back (If-None-Match); if nothing changed the server answers 304 with no body, so nothing is downloaded again."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (Cache-Control, ETag) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "no-cache-never-stored",
+              "text": "Says no-cache means the response is never stored."
+            }
+          ]
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": false
 }

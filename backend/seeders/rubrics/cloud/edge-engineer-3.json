@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "edge-engineer-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "KV and Consistency",
+      "question": "Explain how Workers KV stores data and what that means for how you use it.",
+      "followUps": {
+        "KV Eventual Consistency Model": "What can go wrong if you use KV for a counter that many requests update, and why?",
+        "KV Key Design Patterns": "How would you design KV keys and TTLs for data you cache from a slower origin database?"
+      }
+    },
+    {
+      "title": "Durable Objects",
+      "question": "Explain what Durable Objects are and when you would reach for one.",
+      "followUps": {
+        "Strongly Consistent Stateful Coordination": "Why does a Durable Object give you strong consistency, and what latency cost comes with that?",
+        "WebSocket Hibernation in Durable Objects": "What problem does WebSocket hibernation solve for a Durable Object that holds many idle connections?"
+      }
+    },
+    {
+      "title": "R2 Object Storage",
+      "question": "Walk through how you would store and serve large files with R2.",
+      "followUps": {
+        "R2 vs S3: Zero Egress Pricing": "When does zero egress make R2 cheaper than S3, and when might the difference matter less?",
+        "Binding R2 to Workers": "What do you gain by accessing R2 through a Worker binding instead of the HTTP API with tokens?"
+      }
+    },
+    {
+      "title": "D1 SQLite at the Edge",
+      "question": "Explain how D1 fits into an edge application that needs relational data.",
+      "followUps": {
+        "D1 Architecture and Querying": "Where does a D1 database actually live, and how does that affect query latency for users far from it?",
+        "D1 Migrations and Schema Management": "Why should D1 schema changes run as versioned migrations in CI instead of by hand?"
+      }
+    }
+  ]
+}

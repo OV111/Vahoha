@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "serverless-dev-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "DynamoDB Design Patterns",
+      "question": "Explain how you design a DynamoDB table for a serverless application.",
+      "followUps": {
+        "Single-Table Design Principles": "Why does single-table design start from access patterns, and what does it save a Lambda function per request?",
+        "Global Secondary Indexes for Alternative Access Patterns": "What does a global secondary index cost you, and why should you plan your indexes before launch?"
+      }
+    },
+    {
+      "title": "S3 as a Serverless Data Store",
+      "question": "Walk through how S3 fits into a serverless app for both storing files and starting work.",
+      "followUps": {
+        "Presigned URLs for Secure Direct Uploads": "Why should clients upload large files straight to S3 instead of sending them through your function?",
+        "S3 Event Notifications and Trigger Patterns": "Why must a function triggered by S3 events be idempotent?"
+      }
+    },
+    {
+      "title": "Connection Management in Lambda",
+      "question": "Explain how a Lambda function should manage connections to databases and other services.",
+      "followUps": {
+        "Reusing Connections Across Invocations": "What changes for performance when you create clients outside the handler instead of inside it?",
+        "RDS Proxy for Database Connections": "Why can Lambda scaling break a relational database, and how does RDS Proxy help?"
+      }
+    },
+    {
+      "title": "Secrets and Configuration Management",
+      "question": "Explain how you would store configuration and secrets for Lambda functions, and how you would speed up hot reads.",
+      "followUps": {
+        "SSM Parameter Store vs Secrets Manager": "How do you decide whether a value belongs in Parameter Store or in Secrets Manager?",
+        "DynamoDB DAX for Read-Heavy Workloads": "When is DAX worth adding in front of DynamoDB, and what kinds of reads does it not help?"
+      }
+    }
+  ]
+}

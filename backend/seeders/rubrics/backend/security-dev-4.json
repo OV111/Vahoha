@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "security-dev-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Role-Based Access Control",
+      "question": "Explain how you would decide what each user is allowed to do in an application.",
+      "followUps": {
+        "RBAC Design & Enforcement": "Why must permission checks run on the server, even when the UI already hides the button?",
+        "Principle of Least Privilege": "How does giving a service only the permissions it needs limit the damage of a breach?"
+      }
+    },
+    {
+      "title": "Attribute-Based Access Control",
+      "question": "Explain how you handle permission rules that roles alone can't express, like \"only the owner, during business hours\".",
+      "followUps": {
+        "ABAC & Policy-Based Authorization": "Give a rule that needs attributes instead of roles, and how it would be checked.",
+        "Open Policy Agent (OPA)": "What do you gain by moving authorization rules out of the application code into OPA?"
+      }
+    },
+    {
+      "title": "OWASP Authorization Guidance",
+      "question": "Explain the ways users reach data or actions they shouldn't, and how you stop each one.",
+      "followUps": {
+        "Insecure Direct Object References (IDOR)": "What is an IDOR, and what check fixes it?",
+        "Vertical vs. Horizontal Privilege Escalation": "What is the difference between vertical and horizontal privilege escalation? Give an example of each."
+      }
+    },
+    {
+      "title": "API Authorization Patterns",
+      "question": "Explain how you limit what a token can do in an API, and how the database can back that up.",
+      "followUps": {
+        "OAuth Scopes & Resource Servers": "A token has only a read scope. What must the API check before it allows a write?",
+        "Row-Level & Column-Level Security": "How does row-level security protect data even when a bug skips the check in the app code?"
+      }
+    }
+  ]
+}

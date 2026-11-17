@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "microservices-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "CI Pipeline Design",
+      "question": "Explain how you design build pipelines for a system made of many independently deployed services.",
+      "followUps": {
+        "Per-Service CI Pipelines": "Why should a change to one service not trigger builds and tests for every other service?",
+        "Container Registries and Image Tagging": "Why is tagging images as latest a problem when you need to roll back?"
+      }
+    },
+    {
+      "title": "GitOps Principles",
+      "question": "Explain how GitOps manages what runs in a cluster and how it deals with secrets.",
+      "followUps": {
+        "GitOps with ArgoCD": "What problems come from changing a cluster with manual kubectl commands instead of Git commits?",
+        "Secrets Management in GitOps": "How can you keep secrets in a GitOps workflow without committing them in plain text?"
+      }
+    },
+    {
+      "title": "Progressive Delivery",
+      "question": "Walk through ways to release a new version to production while limiting the damage if it is bad.",
+      "followUps": {
+        "Blue-Green Deployments": "What does a blue-green deployment cost, and what makes it tricky for stateful services?",
+        "Canary Analysis and Automated Rollback": "How does automated canary analysis decide whether to continue a rollout or roll back?"
+      }
+    },
+    {
+      "title": "Release Strategies",
+      "question": "Explain how a release moves through environments and how you undo a bad one.",
+      "followUps": {
+        "Environment Promotion and Release Gates": "Why should you promote the same image through environments instead of rebuilding it for each one?",
+        "Rollback Strategies": "Why can rolling back the code still leave the system broken after a database migration?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "security-dev-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "JWT Authentication",
+      "question": "Explain how JWT authentication works, and the mistakes that make it insecure.",
+      "followUps": {
+        "JWT Structure & Signing": "What does the signature of a JWT protect, and what does it not protect?",
+        "JWT Security Pitfalls": "What is an algorithm confusion attack, and how does fixing the allowed algorithm on the server stop it?"
+      }
+    },
+    {
+      "title": "Password Security",
+      "question": "Explain how you protect user accounts even when passwords leak.",
+      "followUps": {
+        "bcrypt & Password Hashing": "Why is bcrypt's slowness a feature, and why are MD5 or SHA-256 unsafe for passwords?",
+        "Multi-Factor Authentication (MFA)": "Why does a second factor protect an account even after its password leaks?"
+      }
+    },
+    {
+      "title": "OAuth 2.0 & OpenID Connect",
+      "question": "Explain how \"Sign in with Google\" works, and the difference between logging in and granting access.",
+      "followUps": {
+        "OAuth 2.0 Flows": "Why is the implicit flow unsafe for single-page apps, and what should they use instead?",
+        "OpenID Connect & Identity Tokens": "What is the difference between an ID token and an access token?"
+      }
+    },
+    {
+      "title": "Session Management",
+      "question": "Explain how you keep a user's login session safe, and how you end it properly.",
+      "followUps": {
+        "Secure Session Handling": "Why must you issue a new session ID after login, and what do HttpOnly and Secure cookies protect against?",
+        "Token Revocation & Logout": "A JWT is stolen. Why is it still valid after logout, and how can you revoke it?"
+      }
+    }
+  ]
+}

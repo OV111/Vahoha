@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "python-backend-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Observability Stack",
+      "question": "Explain how you measure a service's health with metrics and turn those metrics into useful alerts.",
+      "followUps": {
+        "Prometheus Metrics & Instrumentation": "What are the four golden signals, and what can you not catch without metrics?",
+        "PromQL & Alerting Rules": "Why do you need rate() on a counter, and what goes wrong with alerts you never test?"
+      }
+    },
+    {
+      "title": "OpenTelemetry & Tracing",
+      "question": "Explain how you follow a single request through your system using traces and logs.",
+      "followUps": {
+        "Traces, Spans & Context Propagation": "What happens to a trace when an outgoing HTTP call does not propagate the context?",
+        "Structured Logging & Log Correlation": "Why add the trace ID to every log line?"
+      }
+    },
+    {
+      "title": "PostgreSQL at Scale",
+      "question": "Explain how you scale a PostgreSQL database as reads and data volume grow.",
+      "followUps": {
+        "Read Replicas & Connection Routing": "How do you route queries when you add read replicas, and what problem comes from replicas applying changes asynchronously?",
+        "Table Partitioning & Archival": "Why is dropping an old partition better than deleting millions of old rows?"
+      }
+    },
+    {
+      "title": "Production Reliability",
+      "question": "Explain how you keep a production service reliable and decide when reliability work comes first.",
+      "followUps": {
+        "Health Checks, Readiness & Liveness Probes": "What is the difference between a liveness and a readiness probe, and why should /health check real dependencies?",
+        "SLOs, Error Budgets & Incident Response": "What is an error budget, and what should a team do when it runs out?"
+      }
+    }
+  ]
+}

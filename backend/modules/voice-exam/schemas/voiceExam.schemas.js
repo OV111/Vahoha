@@ -24,3 +24,18 @@ export const turnBodySchema = z.object({
 
 // Multipart fields of a recorded answer (the file itself is read by the controller).
 export const audioFieldsSchema = z.object({ turnKey });
+
+// What the per-criterion judge must return. Anything else is retried once, then refused:
+// a grade we can't parse is never guessed at.
+export const judgementSchema = z.object({
+  rationale: z.string().max(1200),
+  points: z.array(
+    z.object({
+      id: z.string(),
+      met: z.boolean(),
+      quote: z.string().max(400).nullish(),
+    }),
+  ),
+  misconception: z.object({ id: z.string(), quote: z.string().max(400) }).nullish(),
+  confidence: z.enum(["high", "low"]),
+});

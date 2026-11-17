@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-migration-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Network Foundation",
+      "question": "Walk through how you would design the cloud network that migrated workloads will land in.",
+      "followUps": {
+        "Hub-and-Spoke Network Design for Migration": "Why put shared services like DNS and directory services in a central hub network?",
+        "Hybrid DNS and Connectivity Setup": "Why can one DNS mistake break a whole wave at cutover, and how would you test for it?"
+      }
+    },
+    {
+      "title": "Identity and Security Baseline",
+      "question": "Explain how identity and security controls should be set up before the first workload moves.",
+      "followUps": {
+        "Active Directory Integration": "Why is Active Directory connectivity a common cause of rollbacks in the first wave?",
+        "Security Baseline Guardrails": "Why is it better for the platform to enforce security rules than to rely on each team?"
+      }
+    },
+    {
+      "title": "Landing Zone Accelerators",
+      "question": "Explain the value of using a prebuilt accelerator to set up a landing zone.",
+      "followUps": {
+        "AWS Landing Zone Accelerator (LZA)": "What does an accelerator save you compared to building a multi-account setup by hand?",
+        "Azure Landing Zone Bicep Accelerator": "What happens to compliance when migrated workloads land in ungoverned subscriptions?"
+      }
+    },
+    {
+      "title": "Centralized Logging",
+      "question": "Walk through how logging and monitoring should be in place before workloads go live.",
+      "followUps": {
+        "Centralized Audit and Compliance Logging": "Why should audit logs live in a separate account that even admins cannot delete from?",
+        "Monitoring Baseline for Migrated Workloads": "What metrics does default cloud monitoring miss on a VM, and why do they matter right after migration?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "microservices-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "API Gateway",
+      "question": "Explain the role of an API gateway in front of a set of services.",
+      "followUps": {
+        "API Gateway Responsibilities": "What cross-cutting work moves into the gateway, and what goes wrong when each service does it alone?",
+        "Rate Limiting and Circuit Breaking at the Edge": "How do rate limiting and circuit breaking at the edge stop one bad client or service from hurting everyone?"
+      }
+    },
+    {
+      "title": "Service Mesh",
+      "question": "Explain what a service mesh does and how it secures traffic between services.",
+      "followUps": {
+        "Istio and the Sidecar Proxy Model": "What does the sidecar proxy model give you, and what does it cost?",
+        "Mutual TLS (mTLS) Between Services": "How can a misconfigured mTLS policy quietly allow plaintext traffic between services?"
+      }
+    },
+    {
+      "title": "Traffic Management",
+      "question": "Walk through how you route outside traffic into a cluster and test a new version with real users.",
+      "followUps": {
+        "Canary Releases and Traffic Splitting": "How does splitting traffic by weight make a release less risky than an all-or-nothing deploy?",
+        "Nginx as Ingress Controller": "Why use an ingress controller instead of a separate load balancer for every service?"
+      }
+    },
+    {
+      "title": "Gateway Patterns",
+      "question": "Explain how a gateway can shape responses for different kinds of clients.",
+      "followUps": {
+        "Backend for Frontend (BFF) Pattern": "Why might a mobile app need its own backend for frontend instead of a shared generic gateway?",
+        "GraphQL as an API Gateway Layer": "How can a single GraphQL query at the gateway turn into hundreds of downstream calls, and how do you prevent it?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,264 @@
+{
+  "path": "backend",
+  "layer": "db-engineer-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Redis Data Structures",
+      "question": "Explain how you choose the right Redis data structure and manage memory over time.",
+      "followUps": {
+        "Strings, Hashes & Sorted Sets": "Why is a Hash often better than a JSON string for storing a user session in Redis?",
+        "TTL, Expiration & Eviction Policies": "What happens when cache keys never expire, and how do eviction policies change Redis behavior when memory runs out?"
+      },
+      "criteria": {
+        "Strings, Hashes & Sorted Sets": {
+          "id": "redis-hash-session",
+          "evidence": [
+            {
+              "id": "whole-blob",
+              "text": "A JSON string must be read, parsed, changed and written back whole for every small update."
+            },
+            {
+              "id": "hash-fields",
+              "text": "A hash stores fields separately, so one field can be read or changed directly."
+            },
+            {
+              "id": "memory",
+              "text": "Small hashes are also stored compactly."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (Hash, HSET) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "hash-slower",
+              "text": "Says a JSON string is always better than a hash."
+            }
+          ]
+        },
+        "TTL, Expiration & Eviction Policies": {
+          "id": "redis-ttl-eviction",
+          "evidence": [
+            {
+              "id": "no-expiry",
+              "text": "Keys without a TTL never expire, so memory keeps growing."
+            },
+            {
+              "id": "set-drops-ttl",
+              "text": "A plain SET on refresh removes the old TTL."
+            },
+            {
+              "id": "eviction",
+              "text": "At maxmemory, noeviction makes writes fail, and LRU policies remove keys (all keys or only those with a TTL)."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (TTL, EXPIRE, maxmemory) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "auto-expire",
+              "text": "Says Redis deletes old keys by itself without TTLs."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Caching Patterns",
+      "question": "Walk through the main ways to keep a cache and a database in step.",
+      "followUps": {
+        "Cache-Aside, Write-Through & Write-Behind": "Compare cache-aside, write-through and write-behind, and name the main risk of each.",
+        "Cache Invalidation Strategies": "What are the trade-offs between TTL expiry and deleting cache keys on every write?"
+      },
+      "criteria": {
+        "Cache-Aside, Write-Through & Write-Behind": {
+          "id": "cache-patterns",
+          "evidence": [
+            {
+              "id": "cache-aside",
+              "text": "Cache-aside reads the cache and fills it on a miss; risk: stale data and a stampede of misses."
+            },
+            {
+              "id": "write-through",
+              "text": "Write-through writes cache and database together; risk: slower writes."
+            },
+            {
+              "id": "write-behind",
+              "text": "Write-behind writes the cache first and the database later; risk: losing writes if the cache fails."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (cache-aside, write-through, write-behind) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "all-same",
+              "text": "Says the three patterns behave the same."
+            }
+          ]
+        },
+        "Cache Invalidation Strategies": {
+          "id": "invalidation",
+          "evidence": [
+            {
+              "id": "ttl",
+              "text": "TTL is simple but serves stale data until it expires."
+            },
+            {
+              "id": "delete-on-write",
+              "text": "Deleting keys on write is fresher, but every write path must know which keys to delete."
+            },
+            {
+              "id": "tradeoff",
+              "text": "So it's a trade-off between staleness and complexity/coupling."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (invalidation, TTL) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "ttl-fresh",
+              "text": "Says TTL expiry never serves stale data."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Pub/Sub & Streams",
+      "question": "Explain how Redis can be used to pass messages between services.",
+      "followUps": {
+        "Pub/Sub — Real-Time Messaging": "What happens to a Pub/Sub message when no subscriber is connected, and when is that a problem?",
+        "Redis Streams — Durable Message Queues": "In a consumer group, why must each consumer acknowledge messages, and what happens if it doesn't?"
+      },
+      "criteria": {
+        "Pub/Sub — Real-Time Messaging": {
+          "id": "pubsub-loss",
+          "evidence": [
+            {
+              "id": "at-most-once",
+              "text": "Pub/Sub only delivers to subscribers connected at that moment."
+            },
+            {
+              "id": "lost",
+              "text": "With no subscriber connected, the message is lost forever."
+            },
+            {
+              "id": "streams-instead",
+              "text": "When messages must not be lost, use Streams or a real queue."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (Pub/Sub, PUBLISH) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "pubsub-stored",
+              "text": "Says Pub/Sub stores messages until someone reads them."
+            }
+          ]
+        },
+        "Redis Streams — Durable Message Queues": {
+          "id": "streams-ack",
+          "evidence": [
+            {
+              "id": "one-consumer",
+              "text": "In a consumer group each message goes to one consumer."
+            },
+            {
+              "id": "pending",
+              "text": "It stays in the pending list until that consumer acknowledges it (XACK)."
+            },
+            {
+              "id": "no-ack",
+              "text": "Without acks the pending list grows and messages get re-delivered or stuck."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (Streams, XACK) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "auto-ack",
+              "text": "Says messages are acknowledged automatically when read."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Redis Persistence & Production",
+      "question": "Walk through what you need to think about when running Redis in production.",
+      "followUps": {
+        "RDB Snapshots vs AOF Persistence": "How do RDB snapshots and AOF differ in how much data you can lose after a crash?",
+        "Rate Limiting with Redis": "Why is Redis a good place to keep rate-limit counters when you run many app servers?"
+      },
+      "criteria": {
+        "RDB Snapshots vs AOF Persistence": {
+          "id": "rdb-aof",
+          "evidence": [
+            {
+              "id": "rdb",
+              "text": "RDB saves snapshots periodically, so a crash loses everything since the last snapshot."
+            },
+            {
+              "id": "aof",
+              "text": "AOF logs every write; with fsync every second you lose about a second at most."
+            },
+            {
+              "id": "tradeoff",
+              "text": "AOF is more durable but bigger and slower; many setups use both."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (RDB, AOF) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "rdb-durable",
+              "text": "Says RDB never loses data."
+            }
+          ]
+        },
+        "Rate Limiting with Redis": {
+          "id": "redis-rate-limit",
+          "evidence": [
+            {
+              "id": "shared",
+              "text": "All app servers see the same counter in Redis, unlike in-process counters."
+            },
+            {
+              "id": "atomic",
+              "text": "Atomic operations (INCR with expiry, or a Lua script) avoid races between servers."
+            },
+            {
+              "id": "expiry",
+              "text": "Keys expire, so windows reset without cleanup."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (rate limiting, INCR) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "local-enough",
+              "text": "Says an in-memory counter in each server enforces a global limit."
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "criteriaReviewed": false
+}

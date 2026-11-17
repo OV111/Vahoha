@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "grpc-dev-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Node.js gRPC Setup",
+      "question": "Walk through how you set up a gRPC project in Node.js today.",
+      "followUps": {
+        "@grpc/grpc-js vs grpc (legacy)": "Why should a new project use @grpc/grpc-js instead of the old grpc package?",
+        "Dynamic vs Static Code Generation": "What do you lose by loading .proto files at runtime instead of generating code ahead of time?"
+      }
+    },
+    {
+      "title": "TypeScript Types from Proto",
+      "question": "Explain how you get reliable TypeScript types out of your .proto files.",
+      "followUps": {
+        "ts-proto vs protoc-gen-ts": "How would you choose between ts-proto and protoc-gen-ts for a TypeScript project?",
+        "Handling Long / Int64 in Node.js": "Why are 64-bit integer fields tricky in JavaScript, and how do you handle them safely?"
+      }
+    },
+    {
+      "title": "Node gRPC Server & Client",
+      "question": "Explain how you build a gRPC server and client in Node.js that fit a modern async codebase.",
+      "followUps": {
+        "Implementing a Node Server": "What must happen before a grpc-js server accepts requests, and what goes wrong if you skip it?",
+        "Promisifying Node gRPC Clients": "Why is it risky to mix callbacks and promises when calling gRPC from Node.js?"
+      }
+    },
+    {
+      "title": "Interoperability",
+      "question": "Explain how gRPC services written in different languages and frameworks work together.",
+      "followUps": {
+        "Cross-Language Service Communication": "What kinds of subtle differences can show up when a TypeScript client calls a Go server?",
+        "NestJS gRPC Microservices": "How does NestJS gRPC setup differ from using grpc-js directly?"
+      }
+    }
+  ]
+}

@@ -40,6 +40,14 @@ export const getEligibility = (layerId) =>
     "Couldn't check if you can take this exam.",
   );
 
+/** The exam still open on this layer (after a reload), or null. */
+export const getLiveAttempt = (layerId) =>
+  request(
+    `/layers/${encodeURIComponent(layerId)}/attempt`,
+    {},
+    "Couldn't check for an open exam.",
+  );
+
 // Only PreExam starts an exam, and only after its consent box is ticked.
 export const startAttempt = ({ layerId, path }) =>
   request(

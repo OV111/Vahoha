@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "graphql-dev-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Mutations in Depth",
+      "question": "Explain how you would design a mutation that is safe to evolve and safe to retry.",
+      "followUps": {
+        "Designing Mutations & Input Types": "Why use a single input type argument instead of many scalar arguments?",
+        "Idempotency & Validation": "How would you stop a retried createOrder mutation from charging a user twice?"
+      }
+    },
+    {
+      "title": "Real-time Subscriptions",
+      "question": "Explain how GraphQL subscriptions deliver real-time updates in production.",
+      "followUps": {
+        "Subscriptions over WebSockets (graphql-ws)": "What changes in your deployment when you add WebSocket subscriptions?",
+        "PubSub & Event-driven Architecture": "Why does in-memory PubSub fail once you run more than one server instance?"
+      }
+    },
+    {
+      "title": "Subscription Architecture",
+      "question": "Walk through the architecture choices you make when building subscriptions.",
+      "followUps": {
+        "WebSocket vs Server-Sent Events": "When would Server-Sent Events be a better fit than WebSockets?",
+        "Subscription Authorization": "Why is checking auth only at connection time not enough for subscriptions?"
+      }
+    },
+    {
+      "title": "File Uploads & Optimistic Responses",
+      "question": "Explain how you would handle file uploads and fast UI feedback for mutations.",
+      "followUps": {
+        "File Uploads in GraphQL": "Why might you return a pre-signed upload URL instead of sending the file through GraphQL?",
+        "Optimistic UI & Error States": "What should the client do when an optimistic mutation fails on the server?"
+      }
+    }
+  ]
+}

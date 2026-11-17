@@ -45,8 +45,10 @@ export const FOLLOWUP_LIMIT_SEC = 90;
  *
  * @typedef {Object} ConceptResult
  * @property {string} label
- * @property {"solid"|"shallow"|"missing"} status
+ * @property {"solid"|"shallow"|"missing"|"incorrect"} status   incorrect = a stated misconception
  * @property {string} [quote]  verbatim words from the learner that earned the credit
+ * @property {string[]} [missed]  evidence points not shown, in the rubric's own words
+ * @property {{id: string, text: string, quote: string}|null} [misconception]
  *
  * @typedef {Object} ExamResult
  * @property {boolean} passed

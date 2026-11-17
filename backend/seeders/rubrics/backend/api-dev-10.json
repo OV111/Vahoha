@@ -9,6 +9,62 @@
       "followUps": {
         "Dockerfile — Layers, Multi-stage Builds & .dockerignore": "Why copy package.json and run npm install before copying the rest of the code?",
         "Docker Compose — Local Multi-service Development": "What does Docker Compose do for an API that needs Postgres and Redis?"
+      },
+      "criteria": {
+        "Dockerfile — Layers, Multi-stage Builds & .dockerignore": {
+          "id": "docker-layer-cache",
+          "evidence": [
+            {
+              "id": "cached-layers",
+              "text": "Each Dockerfile step makes a cached layer that Docker reuses if its inputs didn't change."
+            },
+            {
+              "id": "install-first",
+              "text": "Copying package.json and installing first means code changes don't re-run the slow install."
+            },
+            {
+              "id": "small-image",
+              "text": "Multi-stage builds and .dockerignore keep build tools and local node_modules out of the final image."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (Dockerfile, layers) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "order-cosmetic",
+              "text": "Says the order of Dockerfile steps only affects readability."
+            }
+          ]
+        },
+        "Docker Compose — Local Multi-service Development": {
+          "id": "docker-compose",
+          "evidence": [
+            {
+              "id": "one-file",
+              "text": "One file defines the API, Postgres and Redis containers and starts them all with one command."
+            },
+            {
+              "id": "networking",
+              "text": "The services reach each other by name on a shared network, with their env vars and ports set."
+            },
+            {
+              "id": "same-setup",
+              "text": "Everyone gets the same versions and setup, closer to production."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (Docker Compose) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "single-container",
+              "text": "Says Compose merges all the services into one container."
+            }
+          ]
+        }
       }
     },
     {
@@ -17,6 +73,62 @@
       "followUps": {
         "GitHub Actions — Workflow Syntax & Triggers": "Which trigger runs a workflow on pull requests, and why isn't running only on main enough?",
         "CI Pipeline — Lint, Test & Build Gates": "Which checks belong in a CI pipeline, and what does blocking merges on them protect?"
+      },
+      "criteria": {
+        "GitHub Actions — Workflow Syntax & Triggers": {
+          "id": "gha-triggers",
+          "evidence": [
+            {
+              "id": "pr-trigger",
+              "text": "The pull_request trigger runs the workflow on every pull request."
+            },
+            {
+              "id": "before-merge",
+              "text": "Running only on main finds problems after they are merged; running on PRs catches them before."
+            },
+            {
+              "id": "visible-on-pr",
+              "text": "The result shows on the pull request, so failures are seen before merging."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (GitHub Actions, pull_request) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "main-is-enough",
+              "text": "Says running on main is enough because reviewers check pull requests."
+            }
+          ]
+        },
+        "CI Pipeline — Lint, Test & Build Gates": {
+          "id": "ci-gates",
+          "evidence": [
+            {
+              "id": "checks",
+              "text": "CI runs lint, tests and a build, such as the Docker image, on every pull request."
+            },
+            {
+              "id": "block-merge",
+              "text": "Merging is blocked until those checks pass."
+            },
+            {
+              "id": "green-main",
+              "text": "So main always works and can be deployed, and any new failure is clearly new."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (CI, lint, tests) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "deploy-only",
+              "text": "Says CI is only for deploying, not for checking code."
+            }
+          ]
+        }
       }
     },
     {
@@ -25,6 +137,57 @@
       "followUps": {
         "Structured Logging with Pino or Winston": "Why log JSON objects instead of plain text lines?",
         "Health Check Endpoints & Graceful Shutdown": "What should happen to in-flight requests when the platform sends SIGTERM?"
+      },
+      "criteria": {
+        "Structured Logging with Pino or Winston": {
+          "id": "structured-logs",
+          "evidence": [
+            {
+              "id": "json-fields",
+              "text": "Each log line is a JSON object with fixed fields, like level, time, requestId, userId and message."
+            },
+            {
+              "id": "queryable",
+              "text": "Log tools can filter and count by those fields, for example all errors for one user in the last hour."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (Pino, Winston, JSON logs) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "prettier-only",
+              "text": "Says JSON logs are mainly about making logs nicer to read."
+            }
+          ]
+        },
+        "Health Check Endpoints & Graceful Shutdown": {
+          "id": "graceful-shutdown",
+          "evidence": [
+            {
+              "id": "stop-new",
+              "text": "On SIGTERM the server stops accepting new connections and starts failing its health check."
+            },
+            {
+              "id": "finish-inflight",
+              "text": "In-flight requests are allowed to finish, with a time limit."
+            },
+            {
+              "id": "close-resources",
+              "text": "Database pools and other resources are closed, then the process exits."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (SIGTERM, graceful shutdown, health check) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "auto-moved",
+              "text": "Says in-flight requests are moved to another instance automatically."
+            }
+          ]
+        }
       }
     },
     {
@@ -33,7 +196,64 @@
       "followUps": {
         "Railway & Render — Zero-config Cloud Deployment": "What does a platform like Render handle for you that you would otherwise set up yourself?",
         "Error Tracking with Sentry": "What does Sentry give you about an error that a user's bug report doesn't?"
+      },
+      "criteria": {
+        "Railway & Render — Zero-config Cloud Deployment": {
+          "id": "managed-platform",
+          "evidence": [
+            {
+              "id": "build-deploy",
+              "text": "It builds and deploys straight from your repo or Dockerfile."
+            },
+            {
+              "id": "runs-infra",
+              "text": "It handles TLS certificates, restarting crashed processes, health checks, scaling and zero-downtime deploys."
+            },
+            {
+              "id": "config-network",
+              "text": "It manages environment variables, secrets and networking."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (Render, Railway, PaaS) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "fixes-code",
+              "text": "Says the platform fixes bugs and crashes in your own code."
+            }
+          ]
+        },
+        "Error Tracking with Sentry": {
+          "id": "sentry",
+          "evidence": [
+            {
+              "id": "captured",
+              "text": "Errors are captured automatically, including ones users never report."
+            },
+            {
+              "id": "context",
+              "text": "Each comes with the stack trace, request data, user, release and breadcrumbs of what happened before."
+            },
+            {
+              "id": "grouped",
+              "text": "Similar errors are grouped with counts, so you see how often it happens and who is affected."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (Sentry, error tracking) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "fixes-errors",
+              "text": "Says Sentry fixes the errors automatically."
+            }
+          ]
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": false
 }

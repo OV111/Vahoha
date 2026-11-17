@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "multi-cloud-architect-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Multi-Cluster Management",
+      "question": "Explain how you would create, upgrade and deploy to Kubernetes clusters running on several clouds.",
+      "followUps": {
+        "Cluster API for Declarative Cluster Lifecycle": "What does Cluster API give you compared to provider-specific scripts for managing cluster lifecycle?",
+        "ArgoCD ApplicationSets for Multi-Cluster Deployments": "How do ApplicationSets keep the same app version running on every cluster, and how is a new cluster added?"
+      }
+    },
+    {
+      "title": "Cross-Cluster Networking",
+      "question": "Walk through how services in one Kubernetes cluster can reach services in a cluster on another cloud.",
+      "followUps": {
+        "Cross-Cluster Service Discovery with Submariner": "What does cross-cluster service discovery give you compared to calling external load balancer addresses?",
+        "Multi-Cluster Ingress with Google Fleet": "How does a multi-cluster ingress simplify failover in an active-active setup?"
+      }
+    },
+    {
+      "title": "Kubernetes Platform Consistency",
+      "question": "Explain how you keep operations and security consistent across EKS, AKS and GKE clusters.",
+      "followUps": {
+        "Unified kubectl Context Management": "How do engineers end up running commands against the wrong cluster, and what habits prevent it?",
+        "Policy Consistency with Kyverno or OPA Gatekeeper": "Why can you not rely on each managed Kubernetes service default security settings, and how does a policy engine help?"
+      }
+    },
+    {
+      "title": "EKS vs AKS vs GKE Differences",
+      "question": "Explain the main differences you have to plan for when running workloads on EKS, AKS and GKE.",
+      "followUps": {
+        "Managed Node Groups and Autoscaling Differences": "How do the different node scaling and billing models across the three services affect your cost strategy?",
+        "Workload Identity Across Cloud Kubernetes Services": "Why do Helm charts that support all three clouds struggle with pod workload identity, and how would you handle it?"
+      }
+    }
+  ]
+}

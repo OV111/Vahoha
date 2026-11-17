@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "grpc-dev-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Bridging gRPC to the Web",
+      "question": "Explain how a browser app can call a gRPC backend.",
+      "followUps": {
+        "gRPC-Web Protocol Differences": "Why can a browser not speak native gRPC, and how does gRPC-Web work around that?",
+        "Envoy as a gRPC-Web Proxy": "What role does a proxy like Envoy play between the browser and the gRPC service?"
+      }
+    },
+    {
+      "title": "grpc-gateway for REST",
+      "question": "Explain how you can expose a gRPC service as a REST API without writing it twice.",
+      "followUps": {
+        "Generating REST APIs from Proto": "Why is generating the REST layer from the proto better than keeping a separate REST handler?",
+        "google.api.http Annotations": "What can go wrong when HTTP binding annotations map the wrong fields?"
+      }
+    },
+    {
+      "title": "Testing gRPC Services",
+      "question": "Walk through how you test the correctness and performance of a gRPC service.",
+      "followUps": {
+        "Unit Testing with In-Process Servers": "Why test with an in-process gRPC server instead of mocking the stub?",
+        "ghz for Load Testing": "Why use a gRPC-native load tester instead of a plain HTTP load tester?"
+      }
+    },
+    {
+      "title": "Integration & Contract Testing",
+      "question": "Explain how you protect clients from breaking changes and keep unit tests fast in a gRPC codebase.",
+      "followUps": {
+        "Buf Breaking Change Detection in CI": "How does breaking change detection in CI protect clients that are already deployed?",
+        "Mocking gRPC Clients in Unit Tests": "Why mock the generated client interface instead of using a real channel in unit tests?"
+      }
+    }
+  ]
+}

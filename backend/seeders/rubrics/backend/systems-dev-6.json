@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "systems-dev-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Threads & Synchronization",
+      "question": "Explain what goes wrong when threads share data, and how locks fix it and create new problems.",
+      "followUps": {
+        "Data Races & the Memory Model": "What makes two memory accesses a data race?",
+        "Mutexes, Deadlock & Priority Inversion": "How do two threads deadlock on two mutexes, and how does a fixed lock order prevent it?"
+      }
+    },
+    {
+      "title": "Atomics & Lock-Free Programming",
+      "question": "Explain how threads can share data without locks, and what makes that hard.",
+      "followUps": {
+        "Atomic Operations & Memory Ordering": "What do acquire and release ordering guarantee about other writes?",
+        "Lock-Free Data Structures": "What is the ABA problem in a compare-and-swap loop?"
+      }
+    },
+    {
+      "title": "Async & Coroutines",
+      "question": "Explain how async runtimes and coroutines run many tasks on few threads.",
+      "followUps": {
+        "Async Runtimes & the Event Loop": "Why does one blocking call inside an async task slow down other tasks?",
+        "C++ Coroutines (C++20)": "Why are stackless coroutines cheaper than threads, and what do you have to watch out for with them?"
+      }
+    },
+    {
+      "title": "Condition Variables & Barriers",
+      "question": "Explain how threads wait for each other efficiently, and how you would design a thread pool.",
+      "followUps": {
+        "Condition Variables & Spurious Wakeups": "Why must you wait on a condition variable inside a loop that re-checks the condition?",
+        "Thread Pool Design & Work Stealing": "What is false sharing, and why does it slow down a thread pool?"
+      }
+    }
+  ]
+}

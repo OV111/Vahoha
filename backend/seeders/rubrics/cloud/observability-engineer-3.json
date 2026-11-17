@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "observability-engineer-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Dashboard Design",
+      "question": "Walk through how you would design a Grafana dashboard that helps an on-call engineer during an incident.",
+      "followUps": {
+        "Panel Types and When to Use Them": "How do you pick the right panel type for a piece of data, and what goes wrong when you pick badly?",
+        "Template Variables and Drill-Down": "How do template variables and drill-down links speed up the path from a symptom to a root cause?"
+      }
+    },
+    {
+      "title": "Dashboard as Code",
+      "question": "Explain why and how teams manage dashboards as code instead of building them by hand in the UI.",
+      "followUps": {
+        "Grafonnet and Jsonnet": "Why is raw dashboard JSON hard to review, and how does generating it from Jsonnet help?",
+        "Grafana Provisioning via Config Files": "What does Grafana provisioning give you when you run Grafana in containers?"
+      }
+    },
+    {
+      "title": "Grafana Unified Alerting",
+      "question": "Explain how Grafana alerting works when your data lives in several different backends.",
+      "followUps": {
+        "Alert Rules and Evaluation Groups": "How should you choose the evaluation interval for a group of alert rules, and what happens if it is too short or too long?",
+        "Contact Points and Notification Policies": "Why does keeping contact points separate from notification policies make alert routing easier to change?"
+      }
+    },
+    {
+      "title": "Dashboard Governance",
+      "question": "Explain how an organization keeps its dashboards useful and under control as it grows.",
+      "followUps": {
+        "Dashboard Anti-Patterns": "What dashboard mistakes make a dashboard useless under incident pressure, and how would you catch them?",
+        "Grafana Folder and RBAC Organization": "How do folders and access control help prevent dashboard sprawl and protect sensitive data?"
+      }
+    }
+  ]
+}

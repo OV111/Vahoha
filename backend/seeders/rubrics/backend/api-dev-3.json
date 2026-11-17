@@ -9,6 +9,61 @@
       "followUps": {
         "The Event Loop & Non-blocking I/O": "What happens to every other request when one handler runs a heavy synchronous loop?",
         "Promises, async/await & Error Propagation": "Where does an error thrown inside an async function end up, and what happens if nobody catches it?"
+      },
+      "criteria": {
+        "The Event Loop & Non-blocking I/O": {
+          "id": "node-event-loop",
+          "evidence": [
+            {
+              "id": "single-thread",
+              "text": "JavaScript callbacks run on one main thread; I/O is handed off and its callback runs when the result is ready."
+            },
+            {
+              "id": "blocking",
+              "text": "A long synchronous computation blocks that thread, so every other request waits until it finishes."
+            },
+            {
+              "id": "offload",
+              "text": "Heavy CPU work should be split up or moved to worker threads or another process."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (event loop, non-blocking, libuv) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "thread-per-request",
+              "text": "Says Node gives each request its own thread, so a slow handler only slows its own request."
+            }
+          ]
+        },
+        "Promises, async/await & Error Propagation": {
+          "id": "async-errors",
+          "evidence": [
+            {
+              "id": "rejects",
+              "text": "An error thrown inside an async function rejects the promise that function returns."
+            },
+            {
+              "id": "caught-by",
+              "text": "It is caught by try/catch around an await, or by .catch on the promise."
+            },
+            {
+              "id": "unhandled",
+              "text": "If nothing handles it, it becomes an unhandled rejection, which crashes the process in current Node versions."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (async/await, promises, try/catch) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "try-without-await",
+              "text": "Says a try/catch catches errors from an async call even when the call isn't awaited."
+            }
+          ]
+        }
       }
     },
     {
@@ -17,6 +72,61 @@
       "followUps": {
         "ESM vs CommonJS — Module Resolution": "What is the difference between require and import, and why do they clash in the same project?",
         "Built-in Modules — fs, path, http, stream": "Why would you stream a large file instead of reading it all with fs.readFile?"
+      },
+      "criteria": {
+        "ESM vs CommonJS — Module Resolution": {
+          "id": "esm-vs-cjs",
+          "evidence": [
+            {
+              "id": "two-systems",
+              "text": "CommonJS uses require and module.exports; ESM uses import and export."
+            },
+            {
+              "id": "how-chosen",
+              "text": "Node decides which one a file uses from its extension (.mjs/.cjs) or the type field in package.json."
+            },
+            {
+              "id": "clash",
+              "text": "They don't mix freely: require isn't defined in ESM, and CommonJS can't simply require an ESM-only package."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (require, import, ESM, CommonJS) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "just-syntax",
+              "text": "Says import is only newer syntax for require and the two always work together."
+            }
+          ]
+        },
+        "Built-in Modules — fs, path, http, stream": {
+          "id": "node-streams",
+          "evidence": [
+            {
+              "id": "built-in",
+              "text": "Node ships core modules like fs, path, http and stream that need no install."
+            },
+            {
+              "id": "chunks",
+              "text": "Streaming reads the file in small chunks, so memory stays low however large the file is, and sending can start right away."
+            },
+            {
+              "id": "readfile-memory",
+              "text": "readFile loads the whole file into memory first, which is slow or fails for large files."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (fs, stream, readFile) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "readfile-streams",
+              "text": "Says readFile already streams the file in the background."
+            }
+          ]
+        }
       }
     },
     {
@@ -25,6 +135,61 @@
       "followUps": {
         "package.json, Semantic Versioning & Lock Files": "What does ^1.4.0 allow npm to install, and why does the lock file need to be committed?",
         "npm Scripts & Workspaces": "Why run tools through npm scripts instead of installing them globally?"
+      },
+      "criteria": {
+        "package.json, Semantic Versioning & Lock Files": {
+          "id": "semver-lockfile",
+          "evidence": [
+            {
+              "id": "semver",
+              "text": "Versions are major.minor.patch, and a major bump signals breaking changes."
+            },
+            {
+              "id": "caret",
+              "text": "^1.4.0 allows any 1.x version from 1.4.0 upward, but not 2.0.0."
+            },
+            {
+              "id": "lock-file",
+              "text": "The committed lock file pins the exact version of every dependency, so every machine and CI installs the same tree."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (semver, package-lock, caret) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "caret-exact",
+              "text": "Says ^1.4.0 installs exactly version 1.4.0."
+            }
+          ]
+        },
+        "npm Scripts & Workspaces": {
+          "id": "npm-scripts",
+          "evidence": [
+            {
+              "id": "local-bin",
+              "text": "npm scripts run tools from the project's own node_modules, so nothing needs a global install."
+            },
+            {
+              "id": "same-version",
+              "text": "Everyone and CI use the same tool version, the one pinned in package.json."
+            },
+            {
+              "id": "one-command",
+              "text": "One named command, like npm run test or npm run build, works the same everywhere."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (npm scripts, package.json) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "needs-global",
+              "text": "Says npm scripts only work if the tool is installed globally."
+            }
+          ]
+        }
       }
     },
     {
@@ -33,7 +198,63 @@
       "followUps": {
         "Node.js Inspector & VS Code Debugger": "What can a breakpoint show you that console.log can't, especially in async code?",
         "Memory Profiling & Heap Snapshots": "How would heap snapshots help you find what is leaking memory?"
+      },
+      "criteria": {
+        "Node.js Inspector & VS Code Debugger": {
+          "id": "node-debugger",
+          "evidence": [
+            {
+              "id": "pause-inspect",
+              "text": "A breakpoint pauses the program so you can inspect every variable and the call stack at that moment."
+            },
+            {
+              "id": "step",
+              "text": "You can step through the code, including into async callbacks, without editing and rerunning it."
+            },
+            {
+              "id": "not-preplanned",
+              "text": "console.log only shows what you decided to print in advance."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (breakpoints, inspector, debugger) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "browser-only",
+              "text": "Says breakpoints only work in browser code, not in Node."
+            }
+          ]
+        },
+        "Memory Profiling & Heap Snapshots": {
+          "id": "heap-snapshots",
+          "evidence": [
+            {
+              "id": "snapshot",
+              "text": "A heap snapshot records the objects in memory at one moment."
+            },
+            {
+              "id": "compare",
+              "text": "Comparing snapshots taken over time shows which kinds of objects keep growing."
+            },
+            {
+              "id": "retainers",
+              "text": "The retainer path shows what still references them, such as a listener, closure, cache or open connection."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (heap snapshot, memory leak) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "gc-no-leaks",
+              "text": "Says memory leaks can't happen in JavaScript because of garbage collection."
+            }
+          ]
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": false
 }

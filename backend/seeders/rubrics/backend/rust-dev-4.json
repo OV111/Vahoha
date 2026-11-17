@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "rust-dev-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Core Collections",
+      "question": "Explain how you choose and use the core collections in Rust's standard library.",
+      "followUps": {
+        "Vec<T> — Growable Arrays": "Why does pre-allocating a Vec with with_capacity help, and when does it matter?",
+        "HashMap<K, V> & HashSet<T>": "Why does the default HashMap hasher trade speed for safety, and when would you swap it?"
+      }
+    },
+    {
+      "title": "Iterators",
+      "question": "Explain how Rust iterators work and why idiomatic code leans on them.",
+      "followUps": {
+        "The Iterator Trait & Lazy Adapters": "What does it mean that iterators are lazy, and what mistake does that lead to?",
+        "IntoIterator & Custom Iterators": "What do you gain by implementing Iterator and IntoIterator for your own type?"
+      }
+    },
+    {
+      "title": "Closures",
+      "question": "Explain how closures capture their environment in Rust.",
+      "followUps": {
+        "Fn, FnMut & FnOnce Bounds": "How does the compiler decide whether a closure is Fn, FnMut or FnOnce?",
+        "move Closures & Thread Safety": "Why does a closure passed to thread::spawn usually need the move keyword?"
+      }
+    },
+    {
+      "title": "Interior Mutability",
+      "question": "Explain how Rust lets you share and mutate data when normal borrowing rules are too strict.",
+      "followUps": {
+        "Rc<T> & RefCell<T>": "What happens at runtime if you break the borrow rules through a RefCell?",
+        "Arc<T> & Mutex<T> for Shared State": "What goes wrong if you hold a std MutexGuard across an await point, and how do you avoid it?"
+      }
+    }
+  ]
+}

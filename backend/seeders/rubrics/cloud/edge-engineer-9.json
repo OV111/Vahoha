@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "edge-engineer-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "MQTT and IoT Messaging",
+      "question": "Explain how IoT devices usually send messages to the cloud.",
+      "followUps": {
+        "MQTT Protocol and QoS Levels": "How do you pick an MQTT QoS level for telemetry versus for a command that moves real hardware?",
+        "AWS IoT Core for MQTT at Scale": "How does AWS IoT Core authenticate devices, and what drives its cost for a fleet that sends many small messages?"
+      }
+    },
+    {
+      "title": "AWS Greengrass",
+      "question": "Explain how AWS Greengrass lets devices do work locally.",
+      "followUps": {
+        "Greengrass Local Compute": "Why process and filter sensor data on the device before sending it to the cloud?",
+        "Edge ML Inference with Greengrass": "Why does local ML inference matter for safety-critical devices, and how do you roll out new model versions across a fleet?"
+      }
+    },
+    {
+      "title": "Azure IoT Edge",
+      "question": "Explain how Azure IoT Edge runs and connects software on devices.",
+      "followUps": {
+        "Azure IoT Edge Modules and Routes": "How do IoT Edge modules pass messages to each other and up to IoT Hub?",
+        "Offline-First IoT Edge Design": "What should you plan for when a device may be offline for days?"
+      }
+    },
+    {
+      "title": "WebSockets at the IoT Edge",
+      "question": "Walk through how you keep edge devices and the cloud in sync over unreliable links.",
+      "followUps": {
+        "WebSocket Connections through Durable Objects": "Why can a Durable Object act as a coordination point for a group of connected devices, and what limits it?",
+        "Edge-to-Cloud Synchronisation Patterns": "Why is syncing desired and reported state more robust than replaying an ordered stream of events?"
+      }
+    }
+  ]
+}

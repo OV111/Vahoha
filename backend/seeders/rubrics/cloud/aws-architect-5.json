@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "aws-architect-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Advanced IAM",
+      "question": "Explain how you would control permissions across many teams and AWS accounts.",
+      "followUps": {
+        "Permission Boundaries and SCPs": "How does a permission boundary let you hand IAM work to a team without letting them escalate their own access?",
+        "AWS Organizations and Account Strategy": "Why do large companies split workloads across many AWS accounts instead of one big account?"
+      }
+    },
+    {
+      "title": "Encryption and Key Management",
+      "question": "Explain how encryption keys and secrets are managed for applications on AWS.",
+      "followUps": {
+        "AWS KMS Key Management": "Why can a call to use a KMS key fail with access denied even when the IAM policy allows it?",
+        "Secrets Manager and Parameter Store": "When would you store a value in Secrets Manager instead of Parameter Store, and what does rotation give you?"
+      }
+    },
+    {
+      "title": "Threat Detection and Monitoring",
+      "question": "Explain how you would detect suspicious activity and track changes in an AWS account.",
+      "followUps": {
+        "AWS GuardDuty": "What kinds of threats can GuardDuty find, and how would you act on its findings automatically?",
+        "CloudTrail and AWS Config": "During an incident, what question does CloudTrail answer and what question does AWS Config answer?"
+      }
+    },
+    {
+      "title": "Network Security",
+      "question": "Walk through how you would protect a public web app from attacks and keep track of your security posture.",
+      "followUps": {
+        "AWS WAF and Shield": "What does WAF protect against that Shield does not, and when is Shield Advanced worth paying for?",
+        "Security Hub and Compliance": "How does Security Hub help a team that gets findings from many different security tools?"
+      }
+    }
+  ]
+}

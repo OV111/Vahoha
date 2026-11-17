@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "edge-engineer-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Edge AI Fundamentals",
+      "question": "Explain how running AI models at the edge works and when it makes sense.",
+      "followUps": {
+        "Workers AI Model Catalogue": "What do you gain by calling a hosted model through a Workers AI binding instead of running your own GPUs?",
+        "Edge Inference vs Cloud Inference Trade-offs": "How would you decide whether a model should run at the edge or in a central GPU cluster?"
+      }
+    },
+    {
+      "title": "ONNX at the Edge",
+      "question": "Explain how you would bring your own trained model to the edge.",
+      "followUps": {
+        "ONNX Model Format": "Why export a model to ONNX, and what does quantisation trade away to make it smaller and faster?",
+        "Embedding Generation at the Edge": "How can embeddings power semantic caching, and what is the risk of matching two questions that are not really the same?"
+      }
+    },
+    {
+      "title": "AI Inference Patterns",
+      "question": "Walk through common patterns for serving AI features cheaply and safely at the edge.",
+      "followUps": {
+        "Caching AI Responses at the Edge": "How would you cache AI responses, and what makes choosing the TTL tricky?",
+        "Content Moderation at the Edge": "Why run content moderation at the edge instead of calling a central moderation API?"
+      }
+    },
+    {
+      "title": "Privacy and Data Residency",
+      "question": "Explain how edge inference affects privacy and where data is stored.",
+      "followUps": {
+        "Privacy Benefits of Edge Inference": "What privacy benefit does edge inference give you, and what compliance work still remains?",
+        "Cloudflare Vectorize for Semantic Search": "How does keeping embedding generation and vector search in one Worker reduce latency?"
+      }
+    }
+  ]
+}

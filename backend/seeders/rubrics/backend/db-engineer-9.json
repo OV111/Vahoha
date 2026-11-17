@@ -1,0 +1,264 @@
+{
+  "path": "backend",
+  "layer": "db-engineer-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Replication Fundamentals",
+      "question": "Explain how replication keeps copies of a database in sync.",
+      "followUps": {
+        "Streaming Replication in PostgreSQL": "What is the trade-off between synchronous and asynchronous replication, and why should you watch replication lag?",
+        "MongoDB Replica Sets": "Why should your app connect with the replica set URI instead of to a single MongoDB server?"
+      },
+      "criteria": {
+        "Streaming Replication in PostgreSQL": {
+          "id": "sync-async",
+          "evidence": [
+            {
+              "id": "sync",
+              "text": "Synchronous replication waits for a replica to confirm, so no committed data is lost, but writes are slower and stall if the replica is down."
+            },
+            {
+              "id": "async",
+              "text": "Asynchronous replication doesn't wait, so it's fast but a failover can lose recent commits."
+            },
+            {
+              "id": "lag",
+              "text": "Watching lag tells you how much data a failover would lose and how stale replica reads are."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (WAL, synchronous, asynchronous) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "async-safe",
+              "text": "Says asynchronous replication never loses data."
+            }
+          ]
+        },
+        "MongoDB Replica Sets": {
+          "id": "replica-set-uri",
+          "evidence": [
+            {
+              "id": "discovers",
+              "text": "With the replica set URI the driver knows all members and finds the current primary."
+            },
+            {
+              "id": "failover",
+              "text": "After a failover it follows the new primary and retries, instead of failing on a dead server."
+            },
+            {
+              "id": "single-server",
+              "text": "Connecting to one server breaks when that server stops being primary."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (replica set, URI) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "same-thing",
+              "text": "Says connecting to one member is the same as the replica set URI."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Sharding & Horizontal Scaling",
+      "question": "Walk through how you would split data across machines or partitions as it grows.",
+      "followUps": {
+        "Sharding Strategy — Range vs Hash": "Compare a range shard key with a hash shard key, and explain why the first choice is so hard to undo.",
+        "PostgreSQL Table Partitioning": "How does partition pruning work, and what kind of query loses its benefit?"
+      },
+      "criteria": {
+        "Sharding Strategy — Range vs Hash": {
+          "id": "shard-keys",
+          "evidence": [
+            {
+              "id": "range",
+              "text": "A range key keeps related ranges together, good for range queries, but new writes pile onto one hot shard."
+            },
+            {
+              "id": "hash",
+              "text": "A hash key spreads writes evenly, but range queries must ask every shard."
+            },
+            {
+              "id": "irreversible",
+              "text": "Changing the key means moving all the data, so the first choice is hard to undo."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (shard key, range, hash) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "easy-change",
+              "text": "Says the shard key can be changed any time at no cost."
+            }
+          ]
+        },
+        "PostgreSQL Table Partitioning": {
+          "id": "partition-pruning",
+          "evidence": [
+            {
+              "id": "split",
+              "text": "Partitioning splits one table into child tables by a key like date."
+            },
+            {
+              "id": "pruning",
+              "text": "A query that filters on the partition key only scans the matching partitions."
+            },
+            {
+              "id": "loses-benefit",
+              "text": "A query without the partition key in its filter has to scan every partition."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (partitioning, pruning) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "auto-fast",
+              "text": "Says partitioning speeds up every query."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "High Availability & Failover",
+      "question": "Explain how a database setup stays available when a server or the network fails.",
+      "followUps": {
+        "CAP Theorem & Consistency Models": "During a network split, what does a database have to choose between, and how does that map to sync and async replication?",
+        "Patroni & Automatic Failover for PostgreSQL": "How does a tool like Patroni promote a new primary, and why is split brain so dangerous?"
+      },
+      "criteria": {
+        "CAP Theorem & Consistency Models": {
+          "id": "cap",
+          "evidence": [
+            {
+              "id": "partition-choice",
+              "text": "During a network split a system must choose consistency or availability."
+            },
+            {
+              "id": "sync-c",
+              "text": "Synchronous replication chooses consistency: writes wait or fail."
+            },
+            {
+              "id": "async-a",
+              "text": "Asynchronous replication chooses availability: writes continue but replicas can diverge."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (CAP) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "pick-all-three",
+              "text": "Says a system can keep full consistency and availability during a partition."
+            }
+          ]
+        },
+        "Patroni & Automatic Failover for PostgreSQL": {
+          "id": "patroni",
+          "evidence": [
+            {
+              "id": "consensus",
+              "text": "Patroni uses a consensus store (etcd/Consul/ZooKeeper) to agree which node is primary."
+            },
+            {
+              "id": "promote",
+              "text": "When the primary fails it promotes a standby and repoints the others."
+            },
+            {
+              "id": "split-brain",
+              "text": "Split brain, two primaries accepting writes, creates conflicting data that is very hard to merge."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (Patroni, failover) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "manual-fine",
+              "text": "Says manual promotion is just as fast and safe."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Redis Cluster",
+      "question": "Walk through how you would scale reads and keep Redis available as load grows.",
+      "followUps": {
+        "Redis Sentinel vs Redis Cluster": "When would you pick Redis Cluster over Sentinel, and when is Cluster overkill?",
+        "Read Replicas & Load Balancing": "A user updates their profile but still sees old data on the next page. How can read replicas cause that, and how do you fix it?"
+      },
+      "criteria": {
+        "Redis Sentinel vs Redis Cluster": {
+          "id": "sentinel-vs-cluster",
+          "evidence": [
+            {
+              "id": "sentinel",
+              "text": "Sentinel gives failover, but all data still fits on one primary."
+            },
+            {
+              "id": "cluster",
+              "text": "Cluster shards data across nodes by hash slots, scaling memory and writes."
+            },
+            {
+              "id": "overkill",
+              "text": "Cluster is overkill when the data fits on one node, and it limits multi-key operations."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (Sentinel, Redis Cluster) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "same-thing",
+              "text": "Says Sentinel and Cluster both shard data."
+            }
+          ]
+        },
+        "Read Replicas & Load Balancing": {
+          "id": "replica-lag-reads",
+          "evidence": [
+            {
+              "id": "lag",
+              "text": "Replicas apply changes a little later than the primary."
+            },
+            {
+              "id": "stale-read",
+              "text": "A read right after a write can hit a replica that hasn't caught up."
+            },
+            {
+              "id": "fix",
+              "text": "Send reads that need fresh data (like just after your own write) to the primary, or wait for the replica."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (read replica, replication lag) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "replicas-instant",
+              "text": "Says replicas are always current."
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "criteriaReviewed": false
+}

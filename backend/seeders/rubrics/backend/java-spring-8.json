@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "java-spring-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "JUnit 5 Fundamentals",
+      "question": "Explain how JUnit 5 is structured and how you organize tests with it.",
+      "followUps": {
+        "JUnit 5 Architecture & Extension Model": "What problems show up when JUnit 4 and JUnit 5 annotations are mixed in one project?",
+        "Parameterized Tests & Lifecycle": "How can shared mutable state cause flaky tests, and how does the test lifecycle affect it?"
+      }
+    },
+    {
+      "title": "Mockito",
+      "question": "Explain how you use Mockito to test a class in isolation.",
+      "followUps": {
+        "Mocking, Stubbing & Verification": "Why can too many verify calls make a test suite brittle?",
+        "@MockBean vs @Mock in Spring": "Why can using @MockBean everywhere make a Spring test suite slow?"
+      }
+    },
+    {
+      "title": "Spring Test Slices",
+      "question": "Explain how you choose how much of the Spring context to load in a test.",
+      "followUps": {
+        "@SpringBootTest vs Test Slices": "When would you pick @WebMvcTest or @DataJpaTest over @SpringBootTest?",
+        "MockMvc for Controller Tests": "What kinds of bugs does a MockMvc test catch that calling the controller method directly misses?"
+      }
+    },
+    {
+      "title": "Integration Testing with Testcontainers",
+      "question": "Walk through how you run integration tests against real infrastructure in a Spring project.",
+      "followUps": {
+        "Disposable Database Containers": "What bugs can slip through when you test against H2 instead of the real database?",
+        "@DynamicPropertySource for Container Config": "Why do container ports need to reach Spring at runtime, and how does that help CI?"
+      }
+    }
+  ]
+}

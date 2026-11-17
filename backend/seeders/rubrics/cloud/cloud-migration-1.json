@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-migration-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Core Migration Concepts",
+      "question": "Explain how you would decide what to do with each application before a cloud migration starts.",
+      "followUps": {
+        "The 7Rs Framework Explained": "Why does a migration team need a shared way to classify every app before moving anything?",
+        "Building the Migration Business Case": "What does a business case need to show before executives will fund a migration?"
+      }
+    },
+    {
+      "title": "Risk and Stakeholder Management",
+      "question": "Walk through how you would find and manage the risks and the people side of a migration program.",
+      "followUps": {
+        "Migration Risk Assessment Matrix": "How does ranking risks by likelihood and impact help you before the first cutover?",
+        "Stakeholder Alignment Techniques": "How would you keep a key stakeholder from stalling a long migration program?"
+      }
+    },
+    {
+      "title": "Learning Resources",
+      "question": "Explain how a team can check it is ready for migration and plan the order of the work.",
+      "followUps": {
+        "AWS Cloud Adoption Framework (CAF)": "Why does a readiness framework look at people and governance, not just the technology?",
+        "Migration Wave Planning Fundamentals": "Why should simple, low-risk applications usually go in the first waves?"
+      }
+    },
+    {
+      "title": "Key Tools",
+      "question": "Walk through how you would estimate what your current workloads would cost in the cloud.",
+      "followUps": {
+        "AWS Migration Evaluator": "Why is real utilization data better than on-premises specs when you size cloud instances?",
+        "Azure Migrate Strategy Assessment": "How can an assessment show that lift-and-shift is not always the cheapest option?"
+      }
+    }
+  ]
+}

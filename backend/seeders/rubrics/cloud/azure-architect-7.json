@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "azure-architect-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Azure Monitor and Observability",
+      "question": "Explain how you would collect and use telemetry to understand what is happening in an Azure environment.",
+      "followUps": {
+        "Log Analytics Workspaces and KQL": "Why might you start with one Log Analytics workspace instead of many, and what does KQL let you do with the data?",
+        "Application Insights for APM": "How would you use Application Insights to find the slow part of a request that crosses several services?"
+      }
+    },
+    {
+      "title": "Defender for Cloud",
+      "question": "Explain how Microsoft Defender for Cloud helps you improve and protect your Azure security posture.",
+      "followUps": {
+        "Secure Score and Recommendations": "How would a team use Secure Score to decide which security fixes to do first?",
+        "Defender Plans for Workload Protection": "What kinds of threats do Defender workload plans catch that posture recommendations alone would miss?"
+      }
+    },
+    {
+      "title": "Microsoft Sentinel SIEM",
+      "question": "Walk through how a SIEM like Microsoft Sentinel turns raw logs into incidents and responses.",
+      "followUps": {
+        "Sentinel Data Connectors and Analytics Rules": "How do you decide which data sources to connect before you write detection rules?",
+        "Automation and SOAR with Playbooks": "Which kinds of incidents are safe to answer with an automated playbook, and which need a human?"
+      }
+    },
+    {
+      "title": "Azure Policy and Compliance",
+      "question": "Explain how you would enforce compliance rules and alert on problems across Azure.",
+      "followUps": {
+        "Azure Policy Definitions and Initiatives": "When would you use a deny policy instead of an audit policy, and what is the risk of each?",
+        "Azure Monitor Alerts and Action Groups": "Why should alerts focus on user-facing symptoms rather than metrics like CPU?"
+      }
+    }
+  ]
+}

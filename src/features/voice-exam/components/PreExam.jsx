@@ -35,12 +35,17 @@ const GRADES = [
   {
     label: "Shallow",
     dot: "bg-amber-400",
-    body: "You named it but didn't explain it.",
+    body: "You explained part of it, not all of it.",
   },
   {
     label: "Missing",
     dot: "bg-rose-400",
-    body: "Not mentioned, or explained wrongly.",
+    body: "Not explained, or only named.",
+  },
+  {
+    label: "Incorrect",
+    dot: "bg-rose-600",
+    body: "Explained in a way that's wrong.",
   },
 ];
 

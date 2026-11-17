@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "observability-engineer-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Collector Architecture",
+      "question": "Explain what the OpenTelemetry Collector does and how you would deploy it.",
+      "followUps": {
+        "Receivers, Processors, and Exporters": "How does putting a Collector between your apps and your backends make it easier to change backends later?",
+        "Agent vs. Gateway Deployment Patterns": "Why do many teams run both local agent Collectors and central gateway Collectors?"
+      }
+    },
+    {
+      "title": "Key Processors",
+      "question": "Explain how processors in the Collector keep a telemetry pipeline stable and clean.",
+      "followUps": {
+        "Batch and Memory Limiter Processors": "What problem does the memory limiter solve when one service suddenly sends a huge amount of telemetry?",
+        "Attribute and Resource Processors": "How would you use the Collector to remove personal data or add environment details before telemetry leaves the cluster?"
+      }
+    },
+    {
+      "title": "OTLP Protocol",
+      "question": "Explain how telemetry moves over OTLP and how one stream can feed several backends.",
+      "followUps": {
+        "OTLP/gRPC and OTLP/HTTP": "When would you choose OTLP over gRPC and when OTLP over HTTP?",
+        "Fan-Out to Multiple Backends": "How would you use fan-out to try a new observability vendor without touching your services?"
+      }
+    },
+    {
+      "title": "Kubernetes Enrichment",
+      "question": "Explain how the Collector and the OpenTelemetry Operator fit into a Kubernetes cluster.",
+      "followUps": {
+        "k8sattributes Processor": "How does the k8sattributes processor know which pod a piece of telemetry came from, and why is that useful?",
+        "Operator-Based Collector Management": "What does the OpenTelemetry Operator manage for you that raw DaemonSet manifests do not?"
+      }
+    }
+  ]
+}

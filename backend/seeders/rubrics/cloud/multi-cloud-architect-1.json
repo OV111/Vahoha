@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "multi-cloud-architect-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Understanding Multi-Cloud Drivers",
+      "question": "Explain why an organization would choose to run on more than one cloud provider, and when it should not.",
+      "followUps": {
+        "Vendor Lock-in Risk Analysis": "How would you decide which workloads carry the most lock-in risk and deserve portability work first?",
+        "Poly-Cloud vs Multi-Cloud vs Hybrid": "How do poly-cloud, multi-cloud and hybrid cloud differ, and what goes wrong when a team picks the wrong one?"
+      }
+    },
+    {
+      "title": "Cloud Provider Comparison",
+      "question": "Walk through how you would compare the major cloud providers before designing a workload that runs on several of them.",
+      "followUps": {
+        "Service Equivalency Matrix Across AWS, Azure, GCP": "Why is it risky to assume that equivalent services on AWS, Azure and GCP behave the same way?",
+        "Multi-Cloud Cost and Complexity Trade-offs": "Where do the hidden costs of multi-cloud come from, and how would you decide a workload should stay on one cloud?"
+      }
+    },
+    {
+      "title": "Strategy Frameworks",
+      "question": "Explain how you would set up a repeatable way for teams to pick a cloud provider for new work.",
+      "followUps": {
+        "Building a Multi-Cloud Decision Matrix": "What criteria would you put in a cloud decision matrix, and why does writing it down speed teams up?",
+        "Regulatory and Data Sovereignty Considerations": "How would you design data pipelines so that regulated data never leaves the regions where it is allowed to live?"
+      }
+    },
+    {
+      "title": "Organizational Readiness",
+      "question": "Explain what an engineering organization needs, beyond technology, to run multi-cloud well.",
+      "followUps": {
+        "Building Multi-Cloud Competency in Teams": "Why does multi-cloud often turn into separate single-cloud silos, and how would you prevent that?",
+        "Establishing a Cloud Center of Excellence": "What does a Cloud Center of Excellence own, and what happens to a multi-cloud estate without one?"
+      }
+    }
+  ]
+}

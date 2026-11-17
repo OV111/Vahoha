@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-migration-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Replatforming Patterns",
+      "question": "Explain what replatforming means and what you gain from it compared to a plain lift-and-shift.",
+      "followUps": {
+        "Containerizing Existing Applications for ECS": "What operational work goes away when you move an app from VMs to containers on Fargate?",
+        "Migrating to Managed Databases (RDS/Aurora)": "What on-call work disappears when you move a self-managed database to a managed service?"
+      }
+    },
+    {
+      "title": "PaaS Migration Tools",
+      "question": "Explain how platform services can host existing applications without a full rewrite.",
+      "followUps": {
+        "Azure App Service Migration Assistant": "Why is the readiness report useful even for apps you cannot migrate yet?",
+        "AWS Elastic Beanstalk for Replatforming": "When is a managed platform like Elastic Beanstalk a better fit than Kubernetes or serverless?"
+      }
+    },
+    {
+      "title": "Operational Updates",
+      "question": "Walk through what operations and testing need to change after an application is replatformed.",
+      "followUps": {
+        "Updating Operational Runbooks for Cloud": "Why do on-premises runbooks become dangerous after a migration, and what replaces them?",
+        "Replatform Testing and Validation Approach": "Why does a replatformed app need more testing than a rehosted one?"
+      }
+    },
+    {
+      "title": "License Optimization",
+      "question": "Explain how licensing affects the cost of running Microsoft workloads in the cloud.",
+      "followUps": {
+        "Windows Server License Optimization on AWS": "How would you choose between bring-your-own-license and license-included instances?",
+        "Azure Hybrid Benefit for SQL Server": "What do you lose if you forget to turn on Azure Hybrid Benefit before SQL Server goes live?"
+      }
+    }
+  ]
+}

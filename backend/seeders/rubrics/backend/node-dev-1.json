@@ -1,0 +1,152 @@
+{
+  "path": "backend",
+  "layer": "node-dev-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "JavaScript Core Mechanics",
+      "question": "Explain how JavaScript runs async code on a single thread, and how functions keep access to outside variables.",
+      "followUps": {
+        "The Event Loop & Microtask Queue": "Why might a Promise callback run before a setTimeout callback with a delay of zero?",
+        "Closures & Lexical Scope": "Why can a closure keep a large object in memory longer than you expect?"
+      },
+      "criteria": {
+        "The Event Loop & Microtask Queue": {
+          "id": "event-loop-microtasks",
+          "evidence": [
+            {
+              "id": "one-at-a-time",
+              "text": "JavaScript runs one piece of code at a time; async callbacks wait in queues until the current code finishes."
+            },
+            {
+              "id": "microtasks-first",
+              "text": "After the current code, all promise callbacks (microtasks) run before the next timer or I/O callback."
+            },
+            {
+              "id": "zero-timeout",
+              "text": "So a resolved promise's callback runs before a setTimeout with zero delay."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (event loop, microtask, macrotask) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "thread-pool",
+              "text": "Says callbacks run on several threads, or that setTimeout with zero delay always runs first."
+            }
+          ]
+        },
+        "Closures & Lexical Scope": {
+          "id": "closures-memory",
+          "evidence": [
+            {
+              "id": "captures",
+              "text": "A function keeps access to the variables of the scope where it was defined, even after that outer function has returned."
+            },
+            {
+              "id": "reference-not-copy",
+              "text": "It holds references to those variables, not copies."
+            },
+            {
+              "id": "retention",
+              "text": "So anything the closure references, like a big object, stays in memory as long as the closure is reachable, for example from a listener or timer."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (closure, lexical scope) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "closure-copies",
+              "text": "Says a closure copies the variables and frees them when the outer function returns."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "TypeScript for Backend",
+      "question": "Walk through how you use TypeScript to keep a Node.js backend type safe.",
+      "followUps": {
+        "Generics & Type Narrowing": "How does narrowing a union type help you avoid runtime errors in an API handler?",
+        "tsconfig for Node.js": "Why can a Node.js TypeScript project compile cleanly and still fail on imports at runtime?"
+      },
+      "criteria": {
+        "Generics & Type Narrowing": {
+          "id": "ts-generics-narrowing",
+          "evidence": [
+            {
+              "id": "generics",
+              "text": "Generics let one function or type work with many types while keeping the specific type, instead of falling back to any."
+            },
+            {
+              "id": "narrowing",
+              "text": "Narrowing checks a value at runtime (typeof, in, or a tag field) so TypeScript knows which member of a union it is."
+            },
+            {
+              "id": "handler-safety",
+              "text": "After narrowing you can't touch a field that only exists on another shape, which prevents runtime errors in a handler."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (generics, type narrowing, union types) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "ts-runtime-checks",
+              "text": "Says TypeScript checks types at runtime, so request input doesn't need validating."
+            }
+          ]
+        },
+        "tsconfig for Node.js": {
+          "id": "ts-node-modules",
+          "evidence": [
+            {
+              "id": "types-only",
+              "text": "The compiler checks types, not whether the emitted imports will actually load in Node."
+            },
+            {
+              "id": "mismatch",
+              "text": "If the module settings don't match how Node loads the project (CommonJS vs ESM, file extensions), it compiles but fails at runtime."
+            },
+            {
+              "id": "match-settings",
+              "text": "module and moduleResolution have to match the Node setup, for example node16 or nodenext."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (tsconfig, module, moduleResolution) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "compiles-runs",
+              "text": "Says code that compiles without errors will always run."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "ES2022+ Features",
+      "question": "Explain how modern JavaScript handles modules and async work in a Node.js project.",
+      "followUps": {
+        "ES Modules vs CommonJS": "How do you decide whether a file runs as an ES module or as CommonJS in Node.js?",
+        "Async/Await & Promise Combinators": "When would you pick Promise.allSettled over Promise.all, and what goes wrong if you pick the wrong one?"
+      }
+    },
+    {
+      "title": "Utility Types & Interfaces",
+      "question": "Explain how you shape and reuse types for DTOs and models in a TypeScript backend.",
+      "followUps": {
+        "Utility Types (Partial, Pick, Omit)": "What problem do you avoid by deriving an update type from a model instead of writing it by hand?",
+        "Interfaces vs Type Aliases": "When would you choose an interface over a type alias at a library boundary?"
+      }
+    }
+  ],
+  "criteriaReviewed": false
+}

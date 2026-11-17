@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "aws-architect-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "AWS Lambda",
+      "question": "Explain how Lambda functions get triggered and how they share code.",
+      "followUps": {
+        "Lambda Triggers and Event Sources": "How does failure handling differ between a synchronous trigger like API Gateway and an asynchronous or queue-based trigger?",
+        "Lambda Layers and Dependencies": "What do Lambda layers solve, and what do you have to do for functions to pick up a new layer version?"
+      }
+    },
+    {
+      "title": "Messaging Services",
+      "question": "Explain how queues and topics help you decouple services on AWS.",
+      "followUps": {
+        "SQS Standard and FIFO Queues": "Why must consumers of a standard SQS queue be idempotent, and when would you pay the cost of a FIFO queue?",
+        "SNS Fan-Out Pattern": "How does the SNS fan-out pattern work, and why would you use message filtering on subscriptions?"
+      }
+    },
+    {
+      "title": "API Gateway",
+      "question": "Explain how you would put an API in front of backend services with API Gateway.",
+      "followUps": {
+        "REST vs HTTP APIs": "When would you choose an HTTP API, and what features would push you to a REST API instead?",
+        "API Gateway Throttling and Caching": "How do throttling and caching protect your backend, and which endpoints should never be cached?"
+      }
+    },
+    {
+      "title": "Orchestration",
+      "question": "Explain how you would coordinate events and multi-step workflows in a serverless system.",
+      "followUps": {
+        "EventBridge Rules and Buses": "Why would you use an EventBridge bus instead of having services call each other directly?",
+        "Step Functions State Machines": "When would you use Step Functions instead of chaining Lambda functions yourself, and how do you choose Standard or Express?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-native-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Prometheus and Metrics",
+      "question": "Explain how metrics are collected and turned into alerts in a Kubernetes cluster.",
+      "followUps": {
+        "Prometheus Scraping, PromQL, and Alerting": "Why does Prometheus separate alert evaluation from alert delivery?",
+        "Prometheus Operator: ServiceMonitor and PrometheusRule": "How does a ServiceMonitor make adding a new service to monitoring easier than editing Prometheus config?"
+      }
+    },
+    {
+      "title": "Grafana Dashboards and Alerting",
+      "question": "Explain how you would build dashboards and alerts that on-call engineers can actually use.",
+      "followUps": {
+        "Building Grafana Dashboards for the RED Method": "Why is the RED method a good starting point for a service dashboard?",
+        "Grafana Alerting and On-Call Integration": "How do notification policies make sure an alert reaches the right team?"
+      }
+    },
+    {
+      "title": "OpenTelemetry",
+      "question": "Explain how you would add tracing and other telemetry to services without tying yourself to one vendor.",
+      "followUps": {
+        "OpenTelemetry SDK Instrumentation": "What breaks when context propagation is missing between two services?",
+        "OpenTelemetry Collector as a Telemetry Pipeline": "How does tail-based sampling in the Collector cut costs without losing the traces you need?"
+      }
+    },
+    {
+      "title": "Log Aggregation with Loki",
+      "question": "Explain how you would collect and search logs from all the pods in a cluster.",
+      "followUps": {
+        "Loki Architecture and LogQL": "Why is Loki cheaper to run than a full-text index, and what does that cost you when querying?",
+        "Promtail and Alloy for Log Collection": "Why should you be careful about which log fields you turn into labels?"
+      }
+    }
+  ]
+}

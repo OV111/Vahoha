@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "observability-engineer-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Prometheus Architecture",
+      "question": "Explain how Prometheus collects and stores metrics, and how it finds what to scrape.",
+      "followUps": {
+        "Data Model and Metric Types": "Why does label cardinality matter so much for Prometheus, and what goes wrong when you pick the wrong metric type?",
+        "Scrape Configs and Service Discovery": "What breaks with static scrape configs as a fleet grows, and how does service discovery fix it?"
+      }
+    },
+    {
+      "title": "Exporters and Instrumentation",
+      "question": "Walk through how metrics get exposed to Prometheus, both for standard software and for your own code.",
+      "followUps": {
+        "Node Exporter and Infrastructure Exporters": "Why would you reach for an existing exporter instead of writing your own scraper for a database or message broker?",
+        "Client Libraries for Custom Instrumentation": "What kind of signal can you only get by instrumenting your own application, and what should you watch out for with labels when you do?"
+      }
+    },
+    {
+      "title": "PromQL Query Language",
+      "question": "Explain how you would query Prometheus data to build graphs and alerts that you can trust.",
+      "followUps": {
+        "Aggregation and Functions": "What is the difference between an instant vector and a range vector, and how does mixing them up lead to wrong graphs?",
+        "Recording Rules for Pre-computation": "Why would you turn a query into a recording rule, and when does that become important?"
+      }
+    },
+    {
+      "title": "Alertmanager",
+      "question": "Explain how alerts get from Prometheus to the right people without overwhelming them.",
+      "followUps": {
+        "Routing and Inhibition": "How do routing and inhibition rules work together to stop an alert storm from hiding the root cause?",
+        "Silencing and On-Call Integration": "Why is a silence a better tool than editing alert rules during a maintenance window?"
+      }
+    }
+  ]
+}

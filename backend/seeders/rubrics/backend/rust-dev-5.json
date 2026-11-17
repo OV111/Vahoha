@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "rust-dev-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "The Module System",
+      "question": "Explain how you organize code inside a single Rust crate.",
+      "followUps": {
+        "mod, pub & use — Visibility & Paths": "Why is making everything pub a bad fix for visibility errors?",
+        "File-Based Module Layout": "How does Rust map a mod declaration to a file on disk?"
+      }
+    },
+    {
+      "title": "Cargo Workspaces",
+      "question": "Explain how you manage a Rust project that grows into several crates with optional parts.",
+      "followUps": {
+        "Workspaces — Multi-Crate Projects": "What problems does a Cargo workspace solve compared to separate crates in one repo?",
+        "Features & Conditional Compilation": "What can go wrong if you leave default features turned on for your dependencies?"
+      }
+    },
+    {
+      "title": "Essential Crates",
+      "question": "Explain which crates you reach for to handle data formats and logging in a Rust service.",
+      "followUps": {
+        "serde — Serialization & Deserialization": "When would deny_unknown_fields hurt you instead of helping you?",
+        "tracing — Structured Diagnostics": "Why is tracing a better fit than println or plain log lines for async services?"
+      }
+    },
+    {
+      "title": "Documentation & Publishing",
+      "question": "Explain how you document and release a Rust library.",
+      "followUps": {
+        "rustdoc & Doc Tests": "How do doc tests keep documentation from going stale?",
+        "Publishing to crates.io": "Why should you think twice before publishing a crate version, and what can yanking do?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "java-spring-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Event-Driven Architecture with Kafka",
+      "question": "Explain how a Spring service uses Kafka to talk to other services through events.",
+      "followUps": {
+        "Topics, Partitions & Consumer Groups": "How do partitions and consumer groups decide both message order and how far you can scale consumers?",
+        "At-Least-Once Delivery & Idempotency": "Why can a consumer see the same message twice, and how do you make that safe?"
+      }
+    },
+    {
+      "title": "Spring Cloud Config & Service Discovery",
+      "question": "Explain how microservices find each other and get their configuration in a Spring Cloud setup.",
+      "followUps": {
+        "Centralized Configuration with Spring Cloud Config": "What problem does a central config server solve when you run dozens of services?",
+        "Service Discovery with Eureka": "Why is calling another service by a hardcoded host and port a problem?"
+      }
+    },
+    {
+      "title": "Resilience Patterns",
+      "question": "Walk through how you keep one slow or failing dependency from taking down your whole system.",
+      "followUps": {
+        "Circuit Breaker with Resilience4j": "How does a circuit breaker stop a slow downstream service from exhausting your threads?",
+        "Retry & Bulkhead Patterns": "Why can retries without backoff or limits make an outage worse, and how does a bulkhead help?"
+      }
+    },
+    {
+      "title": "Distributed Tracing",
+      "question": "Explain how you debug a slow request that crosses several services.",
+      "followUps": {
+        "Trace Context & Micrometer Tracing": "How does a trace ID follow a request across services, and what does it let you see?",
+        "Structured Logging with MDC": "What does MDC add to your logs, and what can go wrong with it when work moves to another thread?"
+      }
+    }
+  ]
+}

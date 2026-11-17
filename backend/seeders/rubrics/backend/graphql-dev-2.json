@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "graphql-dev-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "The Query Language",
+      "question": "Walk through how a client writes a GraphQL query and makes it reusable.",
+      "followUps": {
+        "Fields, Arguments & Variables": "Why should production queries pass values through variables instead of writing them inline?",
+        "Fragments & Directives": "How do @skip and @include change what the server returns?"
+      }
+    },
+    {
+      "title": "The Type System",
+      "question": "Explain how the GraphQL type system describes data and how clients can discover it.",
+      "followUps": {
+        "Scalars & Nullability": "What happens to the parent object when a non-null field resolves to null?",
+        "Introspection & Tooling": "What does introspection expose, and why might you restrict it in production?"
+      }
+    },
+    {
+      "title": "Reading a GraphQL API",
+      "question": "Explain how you read and compose a GraphQL document that has several operations and fields.",
+      "followUps": {
+        "Aliases & Operation Names": "How would you fetch two different users in one query, and why name every operation?",
+        "Mutations vs Queries — Execution Order": "Why do mutation fields run one after another while query fields may run in parallel?"
+      }
+    },
+    {
+      "title": "Exploring Public APIs",
+      "question": "Walk through how you would explore an unfamiliar public GraphQL API and judge its responses.",
+      "followUps": {
+        "GraphQL Playground & GraphiQL": "What do you gain by trying queries in GraphiQL before you write any server code?",
+        "Understanding Errors in GraphQL Responses": "How should a client decide whether a GraphQL response is actually usable?"
+      }
+    }
+  ]
+}

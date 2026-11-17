@@ -1,0 +1,264 @@
+{
+  "path": "backend",
+  "layer": "db-engineer-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Normal Forms & Anomalies",
+      "question": "Explain what normalization is and why we bother with it.",
+      "followUps": {
+        "1NF Through 3NF — What They Actually Prevent": "Pick one normal form and describe the data problem it prevents.",
+        "BCNF & When to Stop Normalizing": "When would you choose to denormalize, and what risk do you take on when you do?"
+      },
+      "criteria": {
+        "1NF Through 3NF — What They Actually Prevent": {
+          "id": "normal-forms",
+          "evidence": [
+            {
+              "id": "one-fact-once",
+              "text": "Normalization stores each fact once, so it can't be updated in one place and left stale in another."
+            },
+            {
+              "id": "anomaly",
+              "text": "Names a concrete anomaly a normal form prevents, e.g. a customer's address repeated on every order and updated on only some."
+            },
+            {
+              "id": "dependency",
+              "text": "Each column should depend on the whole key and nothing but the key."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (1NF, 2NF, 3NF) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "nf-for-speed",
+              "text": "Says normalization exists to make queries faster."
+            }
+          ]
+        },
+        "BCNF & When to Stop Normalizing": {
+          "id": "denormalize",
+          "evidence": [
+            {
+              "id": "when",
+              "text": "Denormalize when a read-heavy workload pays too much for joins, and you've measured it."
+            },
+            {
+              "id": "risk",
+              "text": "The cost is duplicated data that can get out of sync, so every write must update all copies."
+            },
+            {
+              "id": "deliberate",
+              "text": "It should be a documented, deliberate trade-off."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (BCNF, denormalization) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "always-denormalize",
+              "text": "Says denormalizing has no downside."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "ER Diagrams & Constraints",
+      "question": "Walk through how you turn business requirements into a schema that protects its own data.",
+      "followUps": {
+        "Entity-Relationship Modeling": "What can go wrong if you skip the ER diagram and guess the relationships between tables?",
+        "CHECK, UNIQUE & NOT NULL Constraints": "Why put a rule in a database constraint when the application already validates it?"
+      },
+      "criteria": {
+        "Entity-Relationship Modeling": {
+          "id": "er-modeling",
+          "evidence": [
+            {
+              "id": "cardinality",
+              "text": "An ER diagram makes you decide each relationship's cardinality (one-to-many, many-to-many) before building tables."
+            },
+            {
+              "id": "wrong-guess",
+              "text": "Guessing wrong, like modelling many-to-many as one-to-many, loses or duplicates data from day one."
+            },
+            {
+              "id": "join-table",
+              "text": "Many-to-many relationships need a join table."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (ER diagram, entity, relationship) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "er-only-docs",
+              "text": "Says the ER diagram is only documentation with no effect on the schema."
+            }
+          ]
+        },
+        "CHECK, UNIQUE & NOT NULL Constraints": {
+          "id": "db-constraints",
+          "evidence": [
+            {
+              "id": "enforced",
+              "text": "Constraints are enforced by the database on every write, whoever does it."
+            },
+            {
+              "id": "bypass",
+              "text": "Application checks can be bypassed by another service, a manual fix, a script or a buggy deploy."
+            },
+            {
+              "id": "examples",
+              "text": "NOT NULL, UNIQUE and CHECK express rules like required, no duplicates, or a valid range."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (CHECK, UNIQUE, NOT NULL) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "app-enough",
+              "text": "Says validation in the application is enough."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Keys & Relationships",
+      "question": "Explain how you choose keys and link tables together.",
+      "followUps": {
+        "Surrogate vs Natural Keys": "What problem does a surrogate key solve, and what extra constraint does it still need?",
+        "Cascading Actions & Referential Integrity": "When is ON DELETE CASCADE the right choice, and when could it cause serious data loss?"
+      },
+      "criteria": {
+        "Surrogate vs Natural Keys": {
+          "id": "surrogate-keys",
+          "evidence": [
+            {
+              "id": "natural-changes",
+              "text": "Natural keys like an email can change, and then every referencing row has to change too."
+            },
+            {
+              "id": "stable",
+              "text": "A surrogate key (generated id) never changes, so references stay stable."
+            },
+            {
+              "id": "still-unique",
+              "text": "The natural value still needs its own UNIQUE constraint to stop duplicates."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (surrogate key, natural key) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "surrogate-unique",
+              "text": "Says a surrogate key alone stops duplicate records."
+            }
+          ]
+        },
+        "Cascading Actions & Referential Integrity": {
+          "id": "cascade-actions",
+          "evidence": [
+            {
+              "id": "cascade",
+              "text": "ON DELETE CASCADE deletes the child rows automatically when the parent is deleted."
+            },
+            {
+              "id": "right-when",
+              "text": "That's right when children can't exist without the parent, like order lines of an order."
+            },
+            {
+              "id": "danger",
+              "text": "On important or shared data it can silently wipe out large trees of rows."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (ON DELETE CASCADE, RESTRICT) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "cascade-always",
+              "text": "Says CASCADE should be the default for every foreign key."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Schema Migration Strategy",
+      "question": "Walk through how a team should change a database schema over time without breaking things.",
+      "followUps": {
+        "Versioned Migrations with Tools": "What goes wrong when a team runs schema SQL scripts by hand, and how do migration tools prevent it?",
+        "Zero-Downtime Schema Changes": "How would you rename or replace a column on a large, busy table without downtime?"
+      },
+      "criteria": {
+        "Versioned Migrations with Tools": {
+          "id": "versioned-migrations",
+          "evidence": [
+            {
+              "id": "drift",
+              "text": "Running scripts by hand means nobody knows what ran where, so environments drift apart."
+            },
+            {
+              "id": "versioned",
+              "text": "A migration tool records which numbered migrations ran, in order, and applies only the missing ones."
+            },
+            {
+              "id": "repeatable",
+              "text": "Every environment gets the same schema the same way, and changes are reviewed in git."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (Flyway, Liquibase, migrations) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "tool-undoes",
+              "text": "Says migration tools automatically undo any bad change."
+            }
+          ]
+        },
+        "Zero-Downtime Schema Changes": {
+          "id": "zero-downtime-schema",
+          "evidence": [
+            {
+              "id": "locks",
+              "text": "Many ALTER TABLE changes take a lock that blocks reads and writes on a busy table."
+            },
+            {
+              "id": "expand-contract",
+              "text": "Add the new column, write to both, backfill in batches, switch reads, then drop the old one."
+            },
+            {
+              "id": "small-steps",
+              "text": "Each step is small and backwards compatible, so the app keeps running throughout."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (ALTER TABLE, expand/contract) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "rename-safe",
+              "text": "Says renaming a column in place is always safe on a busy table."
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "criteriaReviewed": false
+}

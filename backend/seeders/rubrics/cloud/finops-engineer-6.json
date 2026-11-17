@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "finops-engineer-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "AWS Budget Controls",
+      "question": "Walk through how you would stop surprise spending in AWS before it gets out of hand.",
+      "followUps": {
+        "AWS Budgets Actions": "What is the risk of letting a budget automatically restrict or stop resources?",
+        "AWS Cost Anomaly Detection": "Why set anomaly alerts on both a dollar amount and a percentage change?"
+      }
+    },
+    {
+      "title": "Azure Budget Governance",
+      "question": "Explain how budgets and alerts can trigger automatic responses on Azure and GCP.",
+      "followUps": {
+        "Azure Budget Alerts and Action Groups": "Why would you set both an actual cost alert and a forecast alert on the same budget?",
+        "GCP Budget Alerts and Programmatic Response": "What are the dangers of automatically disabling billing on a project when a budget is hit?"
+      }
+    },
+    {
+      "title": "Cost Governance Framework",
+      "question": "Explain how a company turns cost control into a clear, repeatable process.",
+      "followUps": {
+        "Cloud Cost Governance Policy Design": "Why write down who approves spend and how overruns get escalated?",
+        "Chargeback Report Automation": "What can go wrong in an automated monthly chargeback pipeline, and how would you catch it?"
+      }
+    },
+    {
+      "title": "Multi-Account Budget Hierarchy",
+      "question": "Walk through how you would set up budgets across many accounts or subscriptions.",
+      "followUps": {
+        "AWS Organizations Hierarchical Budgets": "How would you keep per-team accountability when budgets span many AWS accounts?",
+        "Azure Management Group Budget Scope": "Why is a budget at a higher Azure scope easier to maintain than one per subscription?"
+      }
+    }
+  ]
+}

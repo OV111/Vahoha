@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "rust-dev-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Ownership & Move Semantics",
+      "question": "Explain how Rust manages memory without a garbage collector.",
+      "followUps": {
+        "Ownership Rules & the Drop Model": "What happens to a value when its owner goes out of scope, and how does that help with OS handles?",
+        "Copy vs Clone": "When is calling clone the right choice, and when is it a hidden performance cost?"
+      }
+    },
+    {
+      "title": "Borrowing & References",
+      "question": "Walk through the rules Rust applies when you borrow data instead of owning it.",
+      "followUps": {
+        "Shared & Mutable References": "Why does Rust forbid a mutable reference and a shared reference at the same time, even in single-threaded code?",
+        "Slices — Borrowing Contiguous Sequences": "Why would a function take a &str instead of a String, and what does a slice actually hold?"
+      }
+    },
+    {
+      "title": "Lifetimes",
+      "question": "Explain what lifetimes are and why the compiler sometimes asks you to write them.",
+      "followUps": {
+        "Lifetime Annotations & Elision": "When can the compiler not infer a lifetime for a returned reference, and what does your annotation tell it?",
+        "Lifetime Bounds in Structs": "What does a lifetime parameter on a struct guarantee, and what design cost can it bring?"
+      }
+    },
+    {
+      "title": "Stack & Heap in Rust",
+      "question": "Explain how you decide where data lives in a Rust program and what can go wrong with deep call stacks.",
+      "followUps": {
+        "Box<T> — Heap Allocation": "Why does a recursive type like a linked list need Box to compile?",
+        "Stack Overflows & Recursive Algorithms": "Why can a recursive function pass all tests and still crash in production, and how would you fix it?"
+      }
+    }
+  ]
+}

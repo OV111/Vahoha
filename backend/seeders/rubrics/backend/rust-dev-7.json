@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "rust-dev-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Axum Web Framework",
+      "question": "Walk through how an Axum service turns an HTTP request into a call to your handler.",
+      "followUps": {
+        "Routing & Handlers": "Why is a wrong handler signature in Axum a compile error and not a runtime failure?",
+        "Extractors — Path, Query & Json": "Why must the body extractor come last in an Axum handler?"
+      }
+    },
+    {
+      "title": "Middleware & Tower",
+      "question": "Explain how you add cross-cutting behavior and shared state to an Axum app.",
+      "followUps": {
+        "Tower Layers & Middleware": "Why does the order of middleware layers matter, for example with tracing and auth?",
+        "Application State & Shared Data": "What bounds does Axum state need, and how do you share mutable data through it?"
+      }
+    },
+    {
+      "title": "Actix Web",
+      "question": "Explain how Actix Web differs from Axum and how you return errors from web handlers.",
+      "followUps": {
+        "Actix Web — Actor Model & App Data": "How does Actix Web share state and write middleware differently from Axum?",
+        "Error Handling in Web Handlers": "Why should you map internal errors to a single app error type instead of returning plain strings?"
+      }
+    },
+    {
+      "title": "API Design in Rust",
+      "question": "Explain how you define and document the contract of a Rust JSON API.",
+      "followUps": {
+        "Typed JSON Request & Response Bodies": "What do you lose when you parse requests into serde_json::Value instead of typed structs?",
+        "OpenAPI Documentation with utoipa": "Why is generating the OpenAPI spec from code better than writing it by hand?"
+      }
+    }
+  ]
+}

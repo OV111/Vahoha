@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "java-spring-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Maven Build Lifecycle",
+      "question": "Walk through how Maven builds a project and manages its dependencies.",
+      "followUps": {
+        "Phases, Goals & Plugin Binding": "Why do integration tests not run when you call mvn package, and which command runs them?",
+        "Dependency Management & BOMs": "What is a BOM for, and what can go wrong when you override a version Spring Boot manages?"
+      }
+    },
+    {
+      "title": "Spring IoC Container",
+      "question": "Explain how the Spring IoC container creates and manages your objects.",
+      "followUps": {
+        "Inversion of Control & the ApplicationContext": "What goes wrong when you create a collaborator with new inside a Spring bean?",
+        "Bean Scopes": "What happens when you inject a prototype bean into a singleton, and how do you fix it?"
+      }
+    },
+    {
+      "title": "Dependency Injection Styles",
+      "question": "Explain how Spring wires dependencies into your beans and how Spring Boot decides what to configure for you.",
+      "followUps": {
+        "Constructor vs Field Injection": "Why do many teams prefer constructor injection over field injection?",
+        "Spring Boot Auto-Configuration": "How does Spring Boot decide whether to create an auto-configured bean or back off for yours?"
+      }
+    },
+    {
+      "title": "Spring Profiles & Configuration",
+      "question": "Explain how you keep configuration separate from code in a Spring Boot app.",
+      "followUps": {
+        "Environment-Specific Profiles": "Why should the same build artifact move through dev, staging and prod without changes?",
+        "@ConfigurationProperties vs @Value": "When would you choose @ConfigurationProperties over @Value, and what do you gain?"
+      }
+    }
+  ]
+}

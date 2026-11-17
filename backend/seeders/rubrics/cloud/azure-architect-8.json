@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "azure-architect-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Availability Architecture",
+      "question": "Explain how you would design an Azure workload to stay up when parts of the platform fail.",
+      "followUps": {
+        "Availability Zones vs Availability Sets": "What failure does an availability zone protect you from that an availability set does not?",
+        "RTO and RPO Design for Azure Workloads": "How do RTO and RPO targets change the HA and DR design you would choose for a workload?"
+      }
+    },
+    {
+      "title": "Azure Traffic Manager and Front Door",
+      "question": "Explain how you would route users to the right region in a global application.",
+      "followUps": {
+        "Traffic Manager Routing Methods": "Why does DNS caching affect how fast Traffic Manager can fail over, and how does that touch your RTO?",
+        "Azure Front Door for Global HTTP Traffic": "How does Front Door make a global HTTP app faster and safer than pointing users straight at a regional backend?"
+      }
+    },
+    {
+      "title": "Azure Site Recovery",
+      "question": "Walk through how you would recover workloads and data after a regional outage or a ransomware attack.",
+      "followUps": {
+        "VM Replication and Failover": "Why should you run test failovers with Site Recovery, and what can they reveal?",
+        "Azure Backup and Recovery Vaults": "How do soft delete and immutable vaults protect backups, and why must you test restores?"
+      }
+    },
+    {
+      "title": "Chaos Engineering on Azure",
+      "question": "Explain how you would prove that a system is actually as reliable as its design claims.",
+      "followUps": {
+        "Azure Chaos Studio": "How would you plan a safe chaos experiment, and what kind of hidden weakness might it reveal?",
+        "Well-Architected Reliability Pillar": "What does a reliability review against the Well-Architected Framework look for in a real workload?"
+      }
+    }
+  ]
+}

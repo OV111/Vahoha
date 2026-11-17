@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "node-dev-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Unit Testing with Vitest",
+      "question": "Explain how you write fast, focused unit tests for a Node.js service.",
+      "followUps": {
+        "Vitest Fundamentals & Test Structure": "What kinds of bugs do unit tests catch that integration tests often miss?",
+        "Mocking with vi.mock & vi.spyOn": "When would you use vi.spyOn instead of calling the real dependency in a test?"
+      }
+    },
+    {
+      "title": "Integration Testing",
+      "question": "Walk through how you test a Fastify API end to end against a real database.",
+      "followUps": {
+        "API Testing with Supertest & Fastify inject()": "What kinds of bugs does an inject() integration test catch that unit tests miss?",
+        "Test Databases & Fixtures": "Why should each test suite own an isolated database instead of sharing a dev database?"
+      }
+    },
+    {
+      "title": "Coverage & CI",
+      "question": "Explain how you use coverage and CI to keep a test suite trustworthy over time.",
+      "followUps": {
+        "Coverage with V8 & Istanbul": "Why can a high line coverage number still hide untested bugs?",
+        "Testing in CI with GitHub Actions": "Why would you run your CI tests against more than one Node.js version?"
+      }
+    },
+    {
+      "title": "Test Patterns",
+      "question": "Explain how you write tests that stay readable and catch breaking API changes.",
+      "followUps": {
+        "Arrange-Act-Assert Pattern": "How does the Arrange-Act-Assert structure make a failing test easier to understand?",
+        "Contract Testing": "What kind of production breakage does contract testing prevent?"
+      }
+    }
+  ]
+}

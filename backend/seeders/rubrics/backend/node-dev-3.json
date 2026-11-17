@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "node-dev-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Streams & Backpressure",
+      "question": "Explain how streams help a Node.js service handle large amounts of data.",
+      "followUps": {
+        "Readable & Writable Streams": "Why does streaming a large file use far less memory than reading it into a Buffer?",
+        "Backpressure & pipe()": "What happens to memory if you ignore the return value of write() on a slow destination?"
+      }
+    },
+    {
+      "title": "Async Iteration",
+      "question": "Walk through how you build and consume a data pipeline in Node.js without messy event handlers.",
+      "followUps": {
+        "Async Iterators & for-await-of": "How does for-await-of make reading a stream simpler and safer than data and end events?",
+        "Transform Streams": "What makes a Transform stream pipeline hang forever, and how do you avoid it?"
+      }
+    },
+    {
+      "title": "Worker Threads",
+      "question": "Explain how you use more than one CPU core in a Node.js application.",
+      "followUps": {
+        "Worker Threads for CPU Work": "When would you move work to a worker thread instead of keeping it on the main thread?",
+        "Cluster Module & Load Distribution": "Why must session state live outside the process when you run a Node.js cluster?"
+      }
+    },
+    {
+      "title": "Error Handling in Async Code",
+      "question": "Explain how you make sure async errors in a Node.js server are caught and traceable.",
+      "followUps": {
+        "Unhandled Promise Rejections": "What happens in modern Node.js when a rejected promise has no catch, and how do you guard against it?",
+        "async_hooks & Context Propagation": "How does AsyncLocalStorage let you carry a request ID through async calls?"
+      }
+    }
+  ]
+}

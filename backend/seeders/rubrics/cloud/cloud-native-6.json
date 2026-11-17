@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-native-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Istio Architecture",
+      "question": "Explain how a service mesh like Istio sits between your services and controls their traffic.",
+      "followUps": {
+        "Control Plane (Istiod) and Data Plane (Envoy)": "Why does traffic keep flowing if istiod restarts?",
+        "VirtualService and DestinationRule": "How do VirtualService and DestinationRule split the work, and why does route order cause surprises?"
+      }
+    },
+    {
+      "title": "Mutual TLS and Security",
+      "question": "Explain how a service mesh secures calls between services.",
+      "followUps": {
+        "Automatic mTLS Between Services": "Why would you start with permissive mTLS mode before switching to strict?",
+        "AuthorizationPolicy for Fine-Grained Access Control": "What can an AuthorizationPolicy enforce that a Kubernetes NetworkPolicy cannot?"
+      }
+    },
+    {
+      "title": "Traffic Management and Resilience",
+      "question": "Explain how a mesh helps services survive failures and how you would test that.",
+      "followUps": {
+        "Circuit Breaking and Fault Injection": "How does circuit breaking stop one slow service from taking down the whole call chain?",
+        "Canary Releases and Traffic Shifting with Istio": "How would you let internal testers always hit the canary while normal users stay on stable?"
+      }
+    },
+    {
+      "title": "Observability with Kiali, Jaeger, and Grafana",
+      "question": "Explain how you would see what is happening between services in a mesh.",
+      "followUps": {
+        "Kiali Service Graph and Traffic Visualization": "What kinds of problems can a live service graph reveal that logs would hide?",
+        "Distributed Tracing with Jaeger and Zipkin": "Why must your application still forward trace headers even though the proxies create the spans?"
+      }
+    }
+  ]
+}

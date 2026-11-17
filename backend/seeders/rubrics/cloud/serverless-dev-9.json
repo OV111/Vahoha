@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "serverless-dev-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Distributed Tracing with X-Ray",
+      "question": "Explain how distributed tracing helps you find slow parts of a serverless request.",
+      "followUps": {
+        "X-Ray Active Tracing and Service Maps": "How would you use an X-Ray service map to find which downstream service causes latency spikes?",
+        "Custom X-Ray Subsegments and Annotations": "Why would you add custom subsegments and annotations instead of relying only on automatic traces?"
+      }
+    },
+    {
+      "title": "Lambda Powertools",
+      "question": "Explain what Lambda Powertools gives you for observability and why it matters.",
+      "followUps": {
+        "Structured Logging with Correlation IDs": "How do correlation IDs help you follow one request across several functions?",
+        "Metrics and Tracer Utilities": "Why does the Embedded Metric Format make custom metrics cheaper than calling PutMetricData?"
+      }
+    },
+    {
+      "title": "CloudWatch Dashboards and Alarms",
+      "question": "Walk through how you would monitor Lambda health and release new versions safely.",
+      "followUps": {
+        "Lambda Insights for Enhanced Metrics": "Which problems can enhanced metrics like memory use reveal before they cause failures?",
+        "Canary Deployments and Rollback with Aliases": "How do weighted aliases and alarms let a bad release roll back on its own?"
+      }
+    },
+    {
+      "title": "Debugging Techniques",
+      "question": "Explain how you would investigate a production problem in a serverless system.",
+      "followUps": {
+        "CloudWatch Logs Insights for Log Analysis": "What Logs Insights query would you write first during an incident, and why save queries ahead of time?",
+        "AWS Distro for OpenTelemetry with Lambda": "Why might a team choose OpenTelemetry through ADOT instead of using X-Ray directly?"
+      }
+    }
+  ]
+}

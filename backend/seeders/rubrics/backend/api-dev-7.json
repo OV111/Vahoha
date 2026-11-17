@@ -9,6 +9,61 @@
       "followUps": {
         "Strings, Hashes & TTL Expiry": "When would you store data in a hash instead of a string, and what happens if cached keys never get a TTL?",
         "Sorted Sets for Rate Limiting & Leaderboards": "How would a sorted set help you build a leaderboard or a sliding-window rate limiter?"
+      },
+      "criteria": {
+        "Strings, Hashes & TTL Expiry": {
+          "id": "redis-hash-ttl",
+          "evidence": [
+            {
+              "id": "hash-fields",
+              "text": "A hash stores the fields of one object, so one field can be read or updated without rewriting the whole value."
+            },
+            {
+              "id": "ttl-expiry",
+              "text": "A TTL makes a cached key expire on its own."
+            },
+            {
+              "id": "no-ttl",
+              "text": "Without TTLs memory grows until maxmemory, and then writes fail or the eviction policy drops keys you still need."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (Redis, hash, TTL) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "auto-cleanup",
+              "text": "Says Redis removes old keys by itself even without a TTL."
+            }
+          ]
+        },
+        "Sorted Sets for Rate Limiting & Leaderboards": {
+          "id": "redis-zset",
+          "evidence": [
+            {
+              "id": "score-order",
+              "text": "A sorted set keeps members ordered by a score, so top-N and rank lookups are fast."
+            },
+            {
+              "id": "leaderboard",
+              "text": "For a leaderboard the score is the player's points."
+            },
+            {
+              "id": "sliding-window",
+              "text": "For a sliding-window limiter the score is the request time: drop entries older than the window and count the rest."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (sorted set, ZADD) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "sorted-on-read",
+              "text": "Says a sorted set is a plain list that gets sorted when you read it."
+            }
+          ]
+        }
       }
     },
     {
@@ -17,6 +72,60 @@
       "followUps": {
         "Cache-Control Directives & CDN Interaction": "What is the difference between no-cache and no-store, and which one should a response with private user data use?",
         "ETag & Conditional Requests": "How does an ETag let a client avoid downloading the same response again?"
+      },
+      "criteria": {
+        "Cache-Control Directives & CDN Interaction": {
+          "id": "cache-control",
+          "evidence": [
+            {
+              "id": "no-store",
+              "text": "no-store means the response must not be kept anywhere."
+            },
+            {
+              "id": "no-cache",
+              "text": "no-cache means it may be stored but must be revalidated with the server before each reuse."
+            },
+            {
+              "id": "private-data",
+              "text": "Private user data should use no-store (or at least private), so shared caches and the browser don't keep it."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (no-cache, no-store, max-age) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "no-cache-never-stored",
+              "text": "Says no-cache means the response is never stored."
+            }
+          ]
+        },
+        "ETag & Conditional Requests": {
+          "id": "etag-304",
+          "evidence": [
+            {
+              "id": "version-id",
+              "text": "An ETag identifies one version of a response."
+            },
+            {
+              "id": "sent-back",
+              "text": "The client sends it back in an If-None-Match header."
+            },
+            {
+              "id": "not-modified",
+              "text": "If nothing changed, the server returns 304 Not Modified with no body and the client reuses its copy."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (ETag, 304) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "etag-is-expiry",
+              "text": "Says the ETag is the response's expiry time."
+            }
+          ]
+        }
       }
     },
     {
@@ -25,6 +134,56 @@
       "followUps": {
         "Cache-Aside Pattern & Invalidation": "Walk through a cache-aside read. What must happen to the cached copy when the data in the database changes?",
         "N+1 Query Problem & the DataLoader Pattern": "Fetching 100 books and their authors runs 101 queries. Why, and how do you get it down to 2?"
+      },
+      "criteria": {
+        "Cache-Aside Pattern & Invalidation": {
+          "id": "cache-aside",
+          "evidence": [
+            {
+              "id": "read-path",
+              "text": "Read the cache first; on a miss, read the database and write the result into the cache."
+            },
+            {
+              "id": "invalidate",
+              "text": "When the data changes, delete or update the cached copy, and/or rely on a TTL."
+            },
+            {
+              "id": "stale-risk",
+              "text": "Otherwise readers keep getting stale data that looks just as valid as fresh data."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (cache-aside, invalidation) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "db-updates-cache",
+              "text": "Says the database updates the cache automatically when the data changes."
+            }
+          ]
+        },
+        "N+1 Query Problem & the DataLoader Pattern": {
+          "id": "n-plus-one",
+          "evidence": [
+            {
+              "id": "cause",
+              "text": "One query loads the list, then one more query runs per item, so 100 books cost 101 queries."
+            },
+            {
+              "id": "batch",
+              "text": "Load all the related rows in one query instead: WHERE id IN (...), a join, or a batching loader like DataLoader."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (N+1, DataLoader) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "more-connections",
+              "text": "Says the fix is adding more database connections."
+            }
+          ]
+        }
       }
     },
     {
@@ -33,7 +192,64 @@
       "followUps": {
         "gzip & Brotli Compression": "How does the server know a client can accept a compressed response?",
         "Pagination — Offset vs Cursor": "Why does offset pagination get slower on deep pages, and how does cursor pagination avoid that?"
+      },
+      "criteria": {
+        "gzip & Brotli Compression": {
+          "id": "compression",
+          "evidence": [
+            {
+              "id": "accept-encoding",
+              "text": "The client sends Accept-Encoding, listing the formats it can decompress, such as gzip or br."
+            },
+            {
+              "id": "content-encoding",
+              "text": "The server compresses only with a listed format and says which one in Content-Encoding."
+            },
+            {
+              "id": "benefit",
+              "text": "Text like JSON shrinks a lot, so much less data is sent."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (gzip, Brotli) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "compress-always",
+              "text": "Says the server compresses every response no matter what the client accepts."
+            }
+          ]
+        },
+        "Pagination — Offset vs Cursor": {
+          "id": "pagination",
+          "evidence": [
+            {
+              "id": "offset-scan",
+              "text": "With OFFSET the database still reads and throws away all the skipped rows, so deep pages get slower and slower."
+            },
+            {
+              "id": "cursor",
+              "text": "Cursor pagination remembers the last item's key and asks for the rows after it, like WHERE id > last_id."
+            },
+            {
+              "id": "index-seek",
+              "text": "That jumps straight to the right spot through an index, so every page costs about the same."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (offset, cursor, pagination) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "bigger-response",
+              "text": "Says offset is slow on deep pages only because the response is bigger."
+            }
+          ]
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": false
 }

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "graphql-dev-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Apollo Server Architecture",
+      "question": "Explain how you would set up Apollo Server and handle cross-cutting concerns around each request.",
+      "followUps": {
+        "Apollo Server Setup & Integrations": "Why can a body parser or CORS mistake look like a schema error?",
+        "Plugins & Request Lifecycle": "Why put logging and tracing in a plugin instead of inside resolvers?"
+      }
+    },
+    {
+      "title": "TypeScript Integration",
+      "question": "Explain how you keep your TypeScript resolvers in sync with your GraphQL schema.",
+      "followUps": {
+        "GraphQL Code Generator": "What kind of bug does GraphQL Code Generator catch that plain TypeScript would miss?",
+        "Typed Resolvers with Generated Types": "What happens to type safety when you type a resolver as any?"
+      }
+    },
+    {
+      "title": "Error Formatting & Observability",
+      "question": "Explain how a GraphQL server should handle errors and give you insight into how clients use it.",
+      "followUps": {
+        "Error Formatting & Masking": "How would you stop internal error details from reaching clients without making debugging hard?",
+        "Apollo Sandbox & Schema Registry": "How does field usage data help you decide whether a field is safe to remove?"
+      }
+    },
+    {
+      "title": "Apollo Odyssey Learning Path",
+      "question": "Walk through how you would learn and organize a schema-first Apollo project from scratch.",
+      "followUps": {
+        "Odyssey — Lift-off Series": "How do the schema, resolvers and context connect in a small Apollo API?",
+        "Schema-first Workflow with SDL Files": "What tooling do you gain by keeping SDL in .graphql files instead of template strings?"
+      }
+    }
+  ]
+}

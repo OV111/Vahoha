@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-native-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Helm Chart Structure",
+      "question": "Explain how a Helm chart is put together and how it turns into Kubernetes resources.",
+      "followUps": {
+        "Chart Anatomy: Templates, Values, and Helpers": "Where does rendering happen in Helm, and how would you debug a manifest that comes out wrong?",
+        "Chart Dependencies and Subcharts": "Why would you pin chart dependencies with a lock file, and what breaks if you do not?"
+      }
+    },
+    {
+      "title": "Helm Lifecycle Management",
+      "question": "Explain how Helm manages a release over time, from install to rollback.",
+      "followUps": {
+        "Upgrades, Rollbacks, and Release History": "What does the --atomic flag protect you from during an upgrade?",
+        "Helm Hooks for Pre and Post Lifecycle Tasks": "Why might you run a database migration as a Helm hook instead of a script in CI?"
+      }
+    },
+    {
+      "title": "Helm Repositories and OCI Registries",
+      "question": "Explain how you would distribute charts and manage many releases across environments.",
+      "followUps": {
+        "Publishing Charts to OCI and Classic Repos": "What do you gain by storing charts in an OCI registry next to your images?",
+        "Helmfile for Multi-Chart Environment Management": "Why is previewing a diff before applying important when one values change touches many releases?"
+      }
+    },
+    {
+      "title": "Helm Testing and Validation",
+      "question": "Explain how you would make sure a chart works and is used correctly before it reaches production.",
+      "followUps": {
+        "Testing Helm Charts with helm test and Chart Testing": "What does helm test check that readiness probes do not?",
+        "Helm Schema Validation with values.schema.json": "What kind of mistake does a values schema catch that would otherwise deploy silently?"
+      }
+    }
+  ]
+}

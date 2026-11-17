@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "grpc-dev-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Protobuf Message Design",
+      "question": "Explain how you design Protobuf messages so they stay safe to use for years.",
+      "followUps": {
+        "Field Numbers & Wire Compatibility": "Why is changing the number of an existing field so dangerous, even in a small refactor?",
+        "Scalar Types & Defaults": "How do you tell the difference between a field set to zero and a field that was never set?"
+      }
+    },
+    {
+      "title": "Service & RPC Definitions",
+      "question": "Walk through how you define a gRPC service and its methods so the API can grow later.",
+      "followUps": {
+        "Designing RPC Method Signatures": "Why should every RPC take its own request message, even when it needs only one field today?",
+        "Enums, Oneof & Reserved Fields": "Why do you reserve the numbers and names of fields you delete?"
+      }
+    },
+    {
+      "title": "Schema Evolution",
+      "question": "Explain how a Protobuf schema can change over time while old and new clients keep working.",
+      "followUps": {
+        "Backward & Forward Compatibility": "What happens when an old client receives a message that contains a field it does not know?",
+        "Packages, Imports & Namespacing": "How do packages and imports help you avoid name collisions across many .proto files?"
+      }
+    },
+    {
+      "title": "Tooling for Protobuf",
+      "question": "Explain how tooling and shared types keep a large set of .proto files consistent.",
+      "followUps": {
+        "Buf Lint & Format": "What kinds of problems does a schema linter catch before code generation?",
+        "Well-Known Types": "Why use a Well-Known Type like Timestamp instead of inventing your own time field?"
+      }
+    }
+  ]
+}

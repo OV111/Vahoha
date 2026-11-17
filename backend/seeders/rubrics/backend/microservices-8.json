@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "microservices-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Distributed Data Patterns",
+      "question": "Explain how you keep data consistent when one business action spans several services.",
+      "followUps": {
+        "The Saga Pattern": "Why do sagas use compensating transactions instead of two-phase commit?",
+        "Choreography vs Orchestration Sagas": "What do you gain and lose by coordinating a saga with a central orchestrator instead of choreography?"
+      }
+    },
+    {
+      "title": "Event Sourcing and CQRS",
+      "question": "Explain what event sourcing and CQRS are and when they are worth the extra work.",
+      "followUps": {
+        "Event Sourcing": "Why does an event-sourced aggregate get slow to load without snapshots?",
+        "CQRS (Command Query Responsibility Segregation)": "When do read and write needs differ enough that splitting the models pays off?"
+      }
+    },
+    {
+      "title": "Consistency Patterns",
+      "question": "Explain how a service can save data and publish an event without losing one of them.",
+      "followUps": {
+        "Transactional Outbox Pattern": "What can go wrong if a service commits to its database and then publishes the event in a separate step?",
+        "Eventual Consistency and Compensating Transactions": "Why must a compensating transaction be idempotent?"
+      }
+    },
+    {
+      "title": "Data Replication",
+      "question": "Walk through the ways one service can get data that another service owns.",
+      "followUps": {
+        "Change Data Capture (CDC)": "How does change data capture spread database changes without the application publishing events?",
+        "API Composition Pattern": "What happens to latency and failure handling when one request has to call many services and join the results?"
+      }
+    }
+  ]
+}

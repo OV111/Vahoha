@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "aws-architect-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Relational Databases on AWS",
+      "question": "Explain how you would run a relational database on AWS that stays up and handles growth.",
+      "followUps": {
+        "RDS Multi-AZ and Read Replicas": "Why is a Multi-AZ standby not a replacement for a read replica, and the other way round?",
+        "Aurora Serverless and Global Databases": "When would you choose Aurora Serverless or an Aurora Global Database over a standard RDS setup?"
+      }
+    },
+    {
+      "title": "NoSQL with DynamoDB",
+      "question": "Explain how DynamoDB stores and finds data, and how other services can react to changes in it.",
+      "followUps": {
+        "DynamoDB Tables, Keys, and Indexes": "Why does a low-cardinality partition key hurt DynamoDB performance, and what does a global secondary index cost you?",
+        "DynamoDB Streams and Change Data Capture": "How would you use DynamoDB Streams to keep a search index in sync, and what happens if the consumer falls behind for more than a day?"
+      }
+    },
+    {
+      "title": "Block and File Storage",
+      "question": "Explain the difference between block storage and shared file storage on AWS and when you use each.",
+      "followUps": {
+        "EBS Volume Types and Snapshots": "Why is gp3 usually a better choice than gp2, and how do EBS snapshots fit into a backup plan?",
+        "EFS Shared File System": "When would several instances need EFS instead of their own EBS volumes?"
+      }
+    },
+    {
+      "title": "S3 Advanced Features",
+      "question": "Explain how you would protect and manage data in S3 over its whole life.",
+      "followUps": {
+        "S3 Lifecycle Policies and Versioning": "How do versioning and lifecycle rules work together, and what happens to cost if you enable versioning without a lifecycle rule?",
+        "S3 Cross-Region Replication": "When would you need Cross-Region Replication, and why might you pay for Replication Time Control?"
+      }
+    }
+  ]
+}

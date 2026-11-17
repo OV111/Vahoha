@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "python-backend-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Microservices Patterns",
+      "question": "Explain how you decide where to draw service boundaries and how services should talk to each other.",
+      "followUps": {
+        "Service Decomposition & Bounded Contexts": "What goes wrong when you split a monolith by technical layer instead of by domain?",
+        "Inter-Service Communication: Sync vs Async": "What do you gain and give up when you switch a sync HTTP call between services to an async event?"
+      }
+    },
+    {
+      "title": "gRPC & Protocol Buffers",
+      "question": "Explain how gRPC and Protocol Buffers work for service-to-service calls and how they differ from REST with JSON.",
+      "followUps": {
+        "Protocol Buffers & Code Generation": "Why is changing a field number in a proto file a breaking change?",
+        "gRPC Streaming & Error Model": "Why should a gRPC service return a real status code instead of OK with an error payload?"
+      }
+    },
+    {
+      "title": "Apache Kafka",
+      "question": "Explain how Kafka stores and delivers messages and how you use it from a Python service.",
+      "followUps": {
+        "Kafka Topics, Partitions & Consumer Groups": "How does the partition count limit consumer parallelism, and when do you commit offsets?",
+        "Kafka with Python — confluent-kafka & aiokafka": "What happens if you use a blocking Kafka client inside an async service, and what does a schema registry protect against?"
+      }
+    },
+    {
+      "title": "Resilience Patterns",
+      "question": "Explain how you keep a distributed system usable when one service fails or slows down, and how you find the cause.",
+      "followUps": {
+        "Circuit Breakers & Retries": "How does a circuit breaker stop one dead dependency from taking down the whole call chain?",
+        "Distributed Tracing with OpenTelemetry": "How does a trace connect one user request across several services?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-native-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Control Plane and Node Architecture",
+      "question": "Explain how a Kubernetes cluster decides what runs where and keeps it running.",
+      "followUps": {
+        "How the Kubernetes Control Plane Works": "What does the reconciliation loop do after a node fails, and why does that make the cluster predictable?",
+        "Pods, ReplicaSets, and Deployments": "Why does editing a pod that a Deployment owns not stick, and where would you look instead?"
+      }
+    },
+    {
+      "title": "ConfigMaps and Secrets",
+      "question": "Explain how you would handle configuration and credentials for an app on Kubernetes.",
+      "followUps": {
+        "Externalizing Configuration with ConfigMaps": "How do ConfigMaps let one image run correctly in dev, staging and production?",
+        "Managing Sensitive Data with Secrets": "Why is a default Kubernetes Secret not truly protected, and what would you add for production?"
+      }
+    },
+    {
+      "title": "Services and Networking",
+      "question": "Explain how pods find and reach each other, and how you would expose an app outside the cluster.",
+      "followUps": {
+        "Service Types: ClusterIP, NodePort, LoadBalancer": "What problem does a Service solve that pod IPs alone cannot, and what goes wrong if you pick the wrong Service type?",
+        "Namespaces and Resource Quotas": "How do resource quotas stop one team from hurting others in a shared cluster?"
+      }
+    },
+    {
+      "title": "kubectl and Day-to-Day Operations",
+      "question": "Walk through how you would investigate a misbehaving app in a cluster day to day.",
+      "followUps": {
+        "Essential kubectl Commands and Context Management": "How do you avoid running a command against the wrong cluster, and why does it matter?",
+        "Health Checks: Liveness, Readiness, and Startup Probes": "What is the difference between a readiness and a liveness probe, and when would you add a startup probe?"
+      }
+    }
+  ]
+}

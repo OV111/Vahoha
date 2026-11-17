@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "microservices-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "gRPC and Protocol Buffers",
+      "question": "Explain how gRPC and Protocol Buffers work for service-to-service calls, and how the contract evolves over time.",
+      "followUps": {
+        "Protocol Buffers Schema Design": "Why is reusing or renumbering a protobuf field tag dangerous for clients that have not redeployed?",
+        "gRPC Streaming Patterns": "When would you choose a streaming RPC over a unary one, and what new problem does streaming bring?"
+      }
+    },
+    {
+      "title": "Resilience Patterns",
+      "question": "Explain how a service should call other services so that failures do not spread.",
+      "followUps": {
+        "Timeouts, Retries, and Idempotency": "Why can retrying a failed call without an idempotency key be worse than the original failure?",
+        "Service Discovery": "What problem does service discovery solve in a container environment where IPs keep changing?"
+      }
+    },
+    {
+      "title": "REST Communication",
+      "question": "Explain how you choose an API style between services and how you make sure an API change does not break its callers.",
+      "followUps": {
+        "REST vs gRPC Trade-offs": "When would you pick gRPC over REST, and when would REST be the better choice?",
+        "Contract Testing with Pact": "How does consumer-driven contract testing catch a breaking change before deployment?"
+      }
+    },
+    {
+      "title": "Connection Management",
+      "question": "Explain how services keep calls to each other fast and keep APIs compatible across many deploys.",
+      "followUps": {
+        "Connection Pooling and Keep-Alive": "What goes wrong when a connection pool is sized too small, and what goes wrong when it is too large?",
+        "Backward-Compatible API Evolution": "How do you safely remove a field from an API that other teams still call?"
+      }
+    }
+  ]
+}

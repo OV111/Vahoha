@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "observability-engineer-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Kubernetes Metrics Collection",
+      "question": "Walk through how you collect metrics from a Kubernetes cluster.",
+      "followUps": {
+        "kube-state-metrics and cAdvisor": "What does kube-state-metrics tell you that cAdvisor does not, and why does CPU throttling matter?",
+        "kube-prometheus-stack Helm Chart": "Why should you still review and customize the defaults of the kube-prometheus-stack chart?"
+      }
+    },
+    {
+      "title": "Prometheus Operator CRDs",
+      "question": "Explain how the Prometheus Operator lets teams manage their own monitoring in Kubernetes.",
+      "followUps": {
+        "ServiceMonitor and PodMonitor": "How do ServiceMonitors remove the bottleneck of a central Prometheus config?",
+        "PrometheusRule for Alert Management": "Why is it helpful to ship alert rules as PrometheusRule objects alongside the app they watch?"
+      }
+    },
+    {
+      "title": "Cluster Health and Capacity",
+      "question": "Explain how you would watch the overall health and capacity of a Kubernetes cluster.",
+      "followUps": {
+        "Control Plane Monitoring": "What symptoms show up when the control plane struggles, and why watch it before node metrics?",
+        "Capacity Planning Dashboards": "How would you use requests and real usage together to plan capacity and spot waste?"
+      }
+    },
+    {
+      "title": "Kubernetes Events and Logs",
+      "question": "Explain how you capture Kubernetes events and logs reliably as a cluster grows.",
+      "followUps": {
+        "Kubernetes Event Tracking": "Why do Kubernetes events often go missing in post-incident reviews, and how would you keep them?",
+        "Pod Log Collection at Scale": "How can one noisy pod cause log loss for other pods, and how do you protect against it?"
+      }
+    }
+  ]
+}

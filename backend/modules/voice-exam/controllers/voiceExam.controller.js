@@ -3,7 +3,7 @@ import busboy from "busboy";
 import { dbOf, respond } from "../../../utils/respond.js";
 import { ValidationError } from "../../../utils/httpErrors.js";
 import { audioFieldsSchema } from "../schemas/voiceExam.schemas.js";
-import { abandonAttempt, getEligibility, listVerifiedLayers, startAttempt, submitTurn } from "../services/voiceExamService.js";
+import { abandonAttempt, getEligibility, getLiveAttempt, listVerifiedLayers, startAttempt, submitTurn } from "../services/voiceExamService.js";
 
 const uid = (req) => req.user._id.toString();
 
@@ -45,6 +45,7 @@ const readAudio = (req) =>
 
 export const verified = respond((req) => listVerifiedLayers(dbOf(req), uid(req)));
 export const eligibility = respond((req) => getEligibility(dbOf(req), uid(req), req.params.layerId));
+export const live = respond((req) => getLiveAttempt(dbOf(req), uid(req), req.params.layerId));
 export const start = respond(
   (req) => startAttempt(dbOf(req), uid(req), { layer: req.body.layerId, path: req.body.path }),
   { status: 201 },

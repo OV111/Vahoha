@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "finops-engineer-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Kubernetes Cost Allocation Fundamentals",
+      "question": "Explain why tracking cost per team in a shared Kubernetes cluster is difficult.",
+      "followUps": {
+        "Why Kubernetes Cost Allocation is Hard": "Why are cloud billing tags not enough to tell what each pod or namespace costs?",
+        "Node Efficiency and Bin Packing Metrics": "What does low node efficiency tell you about where your cluster money is going?"
+      }
+    },
+    {
+      "title": "OpenCost and Kubecost",
+      "question": "Walk through the tools you could use to see Kubernetes costs and how they work.",
+      "followUps": {
+        "OpenCost: Open Source Kubernetes Cost Monitoring": "Why does it matter that the method for splitting Kubernetes costs is open and auditable?",
+        "Kubecost for Enterprise Kubernetes FinOps": "Why should a Kubernetes cost tool account for discounts and commitments from the cloud bill?"
+      }
+    },
+    {
+      "title": "Karpenter and Spot Optimization",
+      "question": "Explain how you would lower the compute cost of a Kubernetes cluster.",
+      "followUps": {
+        "Karpenter for Dynamic Node Provisioning": "How does provisioning nodes on demand save money compared to fixed node groups?",
+        "Spot Instance Usage in Kubernetes": "Which workloads would you keep off spot nodes, and how would you protect the rest from interruptions?"
+      }
+    },
+    {
+      "title": "Container Chargeback",
+      "question": "Walk through how a platform team would bill other teams for a shared cluster.",
+      "followUps": {
+        "Chargeback for Platform Teams": "How would you charge teams fairly for a shared cluster without giving each team its own cluster?",
+        "Setting Resource Requests and Limits for Cost": "Why do oversized resource requests waste money even when actual usage is low?"
+      }
+    }
+  ]
+}

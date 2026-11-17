@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-native-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Ingress Controllers",
+      "question": "Explain how HTTP traffic from the internet reaches a service inside the cluster, including HTTPS.",
+      "followUps": {
+        "NGINX Ingress Controller Configuration": "How do annotations on an Ingress change the behavior of the NGINX controller, and when are global defaults better?",
+        "TLS Termination and cert-manager": "How does cert-manager prevent outages from expired certificates, and when do you need a DNS-01 challenge?"
+      }
+    },
+    {
+      "title": "CNI Plugins",
+      "question": "Explain how pods get IP addresses and find services by name inside a cluster.",
+      "followUps": {
+        "Choosing Between Calico, Cilium, and Flannel": "How would the need for network policies or deep visibility change your choice of CNI plugin?",
+        "CoreDNS Configuration and Troubleshooting": "How would you prove that a connection failure is a DNS problem and not an application bug?"
+      }
+    },
+    {
+      "title": "NetworkPolicy for Microsegmentation",
+      "question": "Explain how you would limit which pods can talk to each other in a cluster.",
+      "followUps": {
+        "Writing Effective NetworkPolicy Rules": "Why start with a default-deny policy, and why does your labeling scheme matter so much?",
+        "Visualizing and Validating NetworkPolicies": "How would you confirm that a NetworkPolicy allows exactly the traffic you intended?"
+      }
+    },
+    {
+      "title": "Gateway API – The Future of Kubernetes Ingress",
+      "question": "Explain where Kubernetes traffic routing is heading and how you would release a new version safely at the edge.",
+      "followUps": {
+        "Gateway API vs Ingress: Why It Matters": "What problem does splitting Gateway and Route resources between teams solve compared to a single Ingress?",
+        "Traffic Splitting and Canary Releases with Ingress": "What do you need besides a traffic weight to make a canary release actually safe?"
+      }
+    }
+  ]
+}

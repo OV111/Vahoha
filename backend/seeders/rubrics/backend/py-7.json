@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "py-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "pytest Fundamentals",
+      "question": "Explain how you structure a pytest test suite so tests stay short, clear and easy to extend.",
+      "followUps": {
+        "Test Discovery, Fixtures & Parametrize": "How does fixture scope affect test speed, and what risk comes with a wider scope?",
+        "Assertions & pytest Output": "Why do plain assert statements give better failure messages in pytest than unittest-style asserts?"
+      }
+    },
+    {
+      "title": "Testing FastAPI",
+      "question": "Explain how you test a FastAPI application, including the routes that touch the database.",
+      "followUps": {
+        "FastAPI TestClient & Async Tests": "Why use dependency overrides in tests instead of letting them hit the real database and auth?",
+        "Testing Database Code with SQLAlchemy": "How does rolling back a transaction after each test keep tests independent?"
+      }
+    },
+    {
+      "title": "Mocking & Test Doubles",
+      "question": "Explain how you replace external dependencies in tests and what can go wrong when you do.",
+      "followUps": {
+        "unittest.mock & MagicMock": "Why does patching the wrong import path leave the real code running in your test?",
+        "respx & httpx for HTTP Mocking": "Why mock HTTP calls instead of calling the real API, and which cases should those tests cover?"
+      }
+    },
+    {
+      "title": "Test Quality & Coverage",
+      "question": "Explain how you judge whether a test suite actually protects you, and how you balance test types.",
+      "followUps": {
+        "pytest-cov & Coverage Analysis": "Why can a high line coverage number still hide untested error paths?",
+        "Integration vs Unit Tests": "What does an integration test catch that unit tests miss, and why keep fewer of them?"
+      }
+    }
+  ]
+}

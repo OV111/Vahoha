@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "aws-architect-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "EC2 Launch Configuration",
+      "question": "Explain how you would define what an EC2 instance looks like when it launches.",
+      "followUps": {
+        "Launch Templates and AMIs": "Why would you bake software into an AMI instead of installing it with user data on every boot?",
+        "Placement Groups": "When would you use a cluster placement group versus a spread placement group, and what can go wrong with the wrong choice?"
+      }
+    },
+    {
+      "title": "Auto Scaling Groups",
+      "question": "Walk through how an Auto Scaling Group decides when to add and remove instances.",
+      "followUps": {
+        "Scaling Policies and Strategies": "Why can a badly tuned scaling policy make a fleet flap between scaling out and in, and how do you stop it?",
+        "Spot Instances in Auto Scaling": "How do you keep a service reliable when part of its fleet runs on Spot Instances that can be taken back?"
+      }
+    },
+    {
+      "title": "Elastic Load Balancing",
+      "question": "Explain how a load balancer spreads traffic across a fleet and decides which targets are healthy.",
+      "followUps": {
+        "Application Load Balancer": "What does an Application Load Balancer give you over a Layer 4 load balancer for a web app?",
+        "Target Groups and Health Checks": "How can health check settings cause new instances to be killed before they finish starting, and how do you prevent it?"
+      }
+    },
+    {
+      "title": "Savings and Cost Management",
+      "question": "Explain how you would cut compute cost and scaling delays for a steady but spiky workload.",
+      "followUps": {
+        "Reserved Instances vs Savings Plans": "How would you choose between Reserved Instances and Savings Plans for a workload that may change instance types?",
+        "Warm Pools for Faster Scaling": "What problem do Warm Pools solve, and what do stopped warm instances still cost you?"
+      }
+    }
+  ]
+}

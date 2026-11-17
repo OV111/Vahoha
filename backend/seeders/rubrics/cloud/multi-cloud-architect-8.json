@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "multi-cloud-architect-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Unified Cost Data Model",
+      "question": "Explain how you would get billing data from every cloud into a form you can compare.",
+      "followUps": {
+        "FOCUS Specification for Normalized Billing": "What problem does the FOCUS specification solve for cross-cloud cost analysis?",
+        "Billing Export Setup for AWS, Azure, and GCP": "Why does it matter that billing exports from each cloud use the same granularity and include tags?"
+      }
+    },
+    {
+      "title": "Tagging Consistency Across Providers",
+      "question": "Walk through how you would make cost allocation tags work the same way on every cloud.",
+      "followUps": {
+        "Designing a Universal Tagging Taxonomy": "How would you design one tagging scheme that fits the different naming limits of each cloud?",
+        "Enforcing Tag Compliance with Policy as Code": "How would you enforce required tags on all three clouds, and how do you get teams to care about coverage?"
+      }
+    },
+    {
+      "title": "Multi-Cloud Cost Optimization",
+      "question": "Explain how you would lower cloud spend when your workloads are spread across several providers.",
+      "followUps": {
+        "Cross-Cloud Commitment Strategy": "Why should commitment discounts be planned across all clouds together instead of one cloud at a time?",
+        "Anomaly Detection Across Cloud Spending": "Why build cost anomaly alerts on normalized billing data, and how do you get the alert to the right team?"
+      }
+    },
+    {
+      "title": "Executive Cost Reporting",
+      "question": "Explain how you would report multi-cloud costs to executives and business units.",
+      "followUps": {
+        "Building a Multi-Cloud Cost Dashboard in Looker Studio": "What should a multi-cloud executive cost dashboard show first, and what should it leave for drill-downs?",
+        "Chargeback and Showback for Multi-Cloud": "How do chargeback and showback differ, and how should egress between clouds be assigned to teams?"
+      }
+    }
+  ]
+}

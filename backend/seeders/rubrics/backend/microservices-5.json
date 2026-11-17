@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "microservices-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Docker Images",
+      "question": "Explain how you build a small, fast Docker image for a production service.",
+      "followUps": {
+        "Dockerfile and Multi-Stage Builds": "Why does a multi-stage build produce a smaller and safer production image?",
+        "Image Layers and Caching": "Why does the order of instructions in a Dockerfile affect how fast builds run?"
+      }
+    },
+    {
+      "title": "Container Networking",
+      "question": "Explain how containers talk to each other and where their data lives.",
+      "followUps": {
+        "Docker Networking Modes": "When would you pick host networking over bridge networking, and what do you give up?",
+        "Volumes and Persistence": "What happens to a database's data when it lives in the container's writable layer and the container is removed?"
+      }
+    },
+    {
+      "title": "Docker Compose",
+      "question": "Walk through how you run a multi-service stack on a developer machine and make it start reliably.",
+      "followUps": {
+        "Docker Compose for Local Stacks": "What problems does Docker Compose remove when a new developer joins the team?",
+        "Health Checks and Readiness": "Why is a container that is running not the same as a service that is ready?"
+      }
+    },
+    {
+      "title": "Image Security",
+      "question": "Explain how you make container images safer before they reach production.",
+      "followUps": {
+        "Running Containers as Non-Root": "Why is running the container process as root risky, and how do you avoid it?",
+        "Image Scanning and Base Image Selection": "How do the base image you pick and image scanning in CI reduce your exposure to known vulnerabilities?"
+      }
+    }
+  ]
+}

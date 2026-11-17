@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "azure-architect-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Azure Global Infrastructure",
+      "question": "Explain how Azure organizes its physical infrastructure and how an organization structures its accounts on top of it.",
+      "followUps": {
+        "Regions and Availability Zones": "How would you decide which region and zone setup to use for a workload with users in one country and strict data rules?",
+        "Management Groups and Subscriptions": "What goes wrong when a company has many subscriptions but no management group hierarchy above them?"
+      }
+    },
+    {
+      "title": "Azure Resource Manager",
+      "question": "Walk through how Azure Resource Manager handles a request to create or change a resource.",
+      "followUps": {
+        "ARM Model and Resource Groups": "Why does it matter that the portal, Bicep and Terraform all talk to the same ARM API, and how do you decide what belongs in one resource group?",
+        "Azure CLI and PowerShell Basics": "Why would a team script resource changes with the CLI or PowerShell instead of clicking through the portal?"
+      }
+    },
+    {
+      "title": "Core Azure Services",
+      "question": "Explain how you would pick and size the core compute and storage for a new Azure workload.",
+      "followUps": {
+        "Virtual Machines and Managed Disks": "How do you match a VM family and disk tier to a workload, and what does over-provisioning cost you?",
+        "Azure Pricing Calculator": "How would you use the pricing calculator to compare options before you build anything?"
+      }
+    },
+    {
+      "title": "Exam Preparation",
+      "question": "Explain how you would build a solid base of Azure knowledge as someone new to the platform.",
+      "followUps": {
+        "AZ-900 Microsoft Azure Fundamentals": "What does the AZ-900 exam cover, and why is it a useful first step before advanced Azure work?",
+        "Microsoft Learn Sandbox": "Why does hands-on practice in a sandbox help you learn faster than reading the docs alone?"
+      }
+    }
+  ]
+}

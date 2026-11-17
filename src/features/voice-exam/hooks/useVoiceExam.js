@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
+import { WORKING_STATES } from "../lib/examStates";
 import {
   abandonAttempt,
   getEligibility,
+  getLiveAttempt,
   startAttempt,
   submitTurn,
 } from "../api/voiceExamApi";
@@ -64,6 +66,27 @@ export const useVoiceExam = (layerId) => {
   const [state, dispatch] = useReducer(reducer, initial);
   // A ref, not state: the double-submit guard must see the latest value inside the same tick.
   const busyRef = useRef(false);
+
+  // A reload mid-exam picks the open attempt back up instead of costing a new try.
+  // If the server is still grading the last answer, look again shortly.
+  useEffect(() => {
+    let cancelled = false;
+    let timer;
+    const load = () =>
+      getLiveAttempt(layerId)
+        .then((attempt) => {
+          if (cancelled || !attempt) return;
+          dispatch({ type: "ATTEMPT_UPDATED", attempt });
+          if (WORKING_STATES.includes(attempt.state))
+            timer = setTimeout(load, 4000);
+        })
+        .catch(() => {});
+    load();
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [layerId]);
 
   useEffect(() => {
     let cancelled = false;

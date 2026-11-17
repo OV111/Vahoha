@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "microservices-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Monolith vs Microservices",
+      "question": "Explain why splitting a system into microservices can make it harder to run, and how you decide if it is worth it.",
+      "followUps": {
+        "The Distributed Systems Fallacies": "Pick one fallacy of distributed computing and describe a production failure it predicts.",
+        "When NOT to Use Microservices": "What signals tell you a team should stay with a monolith for now?"
+      }
+    },
+    {
+      "title": "Distributed System Principles",
+      "question": "Walk through the basic rules that let a service scale out and talk to other services safely.",
+      "followUps": {
+        "The Twelve-Factor App": "Why does keeping session state in memory stop a service from scaling horizontally?",
+        "Synchronous vs Asynchronous Communication": "How can a synchronous call chain turn one slow service into an outage for the whole system?"
+      }
+    },
+    {
+      "title": "Architecture Patterns",
+      "question": "Explain how you would decide where to draw the lines between services in a new system.",
+      "followUps": {
+        "Service-Oriented Architecture vs Microservices": "How does a central ESB in SOA hurt the team autonomy that microservices aim for?",
+        "Decomposition Strategies": "Why does splitting services by technical layer, like a shared database service, bring back monolith coupling?"
+      }
+    },
+    {
+      "title": "Foundational Tooling",
+      "question": "Walk through what makes a runtime and an API style a good fit for building small networked services.",
+      "followUps": {
+        "Node.js for Microservices": "What happens to a Node.js service under load when one request does heavy CPU work?",
+        "REST API Conventions": "How can a service that returns 200 for errors break its consumers' retry and caching logic?"
+      }
+    }
+  ]
+}

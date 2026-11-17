@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "systems-dev-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Go Concurrency Model",
+      "question": "Explain how Go runs concurrent work, and how goroutines should share data.",
+      "followUps": {
+        "Goroutines & the Go Scheduler": "Why can a Go program run thousands of goroutines when thousands of OS threads would be too heavy?",
+        "Channels & the CSP Model": "What does \"share memory by communicating\" mean, and what happens if you send on a closed channel?"
+      }
+    },
+    {
+      "title": "CLI Tooling in Go",
+      "question": "Explain how you would build and ship a command-line tool in Go.",
+      "followUps": {
+        "Building CLIs with cobra": "Why keep the real logic out of cobra's Run function?",
+        "Cross-Compilation & Static Binaries": "How do you build a Linux binary from a Mac, and why does CGO_ENABLED=0 matter?"
+      }
+    },
+    {
+      "title": "Go & the OS",
+      "question": "Explain how a Go program works with files, processes and long-running work it may need to stop.",
+      "followUps": {
+        "os & syscall Packages": "When would you reach for golang.org/x/sys instead of the os package?",
+        "context.Context & Cancellation": "What happens to a goroutine that ignores its context being cancelled?"
+      }
+    },
+    {
+      "title": "Go Performance & Profiling",
+      "question": "Explain how you would find a performance problem or a hidden concurrency bug in a Go tool.",
+      "followUps": {
+        "pprof — CPU & Memory Profiling": "What do CPU and heap profiles each tell you?",
+        "Go Data Race Detector": "Why run the race detector in tests and not in production?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "grpc-dev-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Streaming Fundamentals",
+      "question": "Explain the different ways a gRPC client and server can exchange messages, and how a stream ends.",
+      "followUps": {
+        "Four gRPC Communication Patterns": "Why is a unary call a poor fit for uploading a very large file?",
+        "Half-Close & Stream Termination": "What happens if a client never signals that it has finished sending on a stream?"
+      }
+    },
+    {
+      "title": "Flow Control & Backpressure",
+      "question": "Explain how gRPC stops a fast sender from overwhelming a slow receiver.",
+      "followUps": {
+        "HTTP/2 Flow Control Windows": "How do per-stream and per-connection flow control windows work together?",
+        "Initial Window Size Tuning": "Why might the default window size limit throughput on a high-latency link?"
+      }
+    },
+    {
+      "title": "When to Stream",
+      "question": "Walk through how you decide whether an API should use streaming or plain request and response calls.",
+      "followUps": {
+        "Server-Streaming Use Cases": "Why is server streaming often better than polling for frequent live updates?",
+        "Client-Streaming for Bulk Ingestion": "Why is client streaming a better fit than one large request for bulk data ingestion?"
+      }
+    },
+    {
+      "title": "Streaming Error Handling",
+      "question": "Explain how errors and cancellations work while a stream is still open.",
+      "followUps": {
+        "Errors Mid-Stream": "How should a client detect that a stream ended with an error rather than finishing normally?",
+        "Context Cancellation in Streams": "What leaks if a server streaming handler ignores client cancellation?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-migration-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Program Governance",
+      "question": "Explain how you would govern and measure a large migration program.",
+      "followUps": {
+        "Migration Program Governance Framework": "What goes wrong when nobody has clear authority over wave changes and scope?",
+        "Migration Velocity Tracking and KPIs": "How do leading indicators help you spot a slipping schedule before a wave misses its date?"
+      }
+    },
+    {
+      "title": "Cloud Center of Excellence",
+      "question": "Explain the role of a central cloud team in a large migration.",
+      "followUps": {
+        "Cloud COE Structure and Responsibilities": "Which functions should a Cloud Center of Excellence own, and why should teams not each build their own?",
+        "Wave Planning and Dependency Management": "How do you handle both technical and business constraints when sequencing waves?"
+      }
+    },
+    {
+      "title": "Operating Model Transformation",
+      "question": "Walk through how the way teams work needs to change as an organization moves to the cloud.",
+      "followUps": {
+        "Change Management for Cloud Adoption": "Why does a migration program need change management, not just technical work?",
+        "Cloud Operating Model Transformation": "What changes when you move from a project-centric to a product-centric operating model?"
+      }
+    },
+    {
+      "title": "Acceleration Programs",
+      "question": "Explain how vendor programs can support a large migration.",
+      "followUps": {
+        "AWS Migration Acceleration Program (MAP)": "Why do you pay for both cloud and on-premises during a migration, and how can MAP help with that?",
+        "Microsoft FastTrack for Azure": "Why is it better to bring in vendor architects at the start rather than after problems appear?"
+      }
+    }
+  ]
+}

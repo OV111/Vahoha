@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "rust-dev-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "WebAssembly with Rust",
+      "question": "Explain how Rust code runs inside a browser through WebAssembly.",
+      "followUps": {
+        "Compiling to WebAssembly": "Why can't Rust code compiled to WASM just call browser APIs or share objects with JavaScript directly?",
+        "wasm-bindgen — JS Interop": "What problem does wasm-bindgen solve at the boundary between Rust and JavaScript?"
+      }
+    },
+    {
+      "title": "wasm-pack & Bundling",
+      "question": "Explain how you package a Rust WASM module for web developers and keep it fast to load.",
+      "followUps": {
+        "wasm-pack — Build & Publish": "What goes wrong if you pick the wrong wasm-pack target?",
+        "WASM Binary Size Optimization": "Why are naive WASM builds large, and how would you shrink them?"
+      }
+    },
+    {
+      "title": "Production Deployment",
+      "question": "Walk through how you build and ship a Rust service as a container.",
+      "followUps": {
+        "Multi-Stage Docker Builds": "Why does a multi-stage Docker build matter so much for Rust images?",
+        "Cross-Compilation & Static Binaries": "Why would you build against musl to get a static binary, and what error does it prevent?"
+      }
+    },
+    {
+      "title": "Observability & Graceful Shutdown",
+      "question": "Explain how you keep a Rust service observable and safe to redeploy in production.",
+      "followUps": {
+        "Health Checks & Metrics with Prometheus": "What does a health endpoint let the orchestrator do that it can't do otherwise?",
+        "Graceful Shutdown with tokio signal": "Walk through what your service should do when it receives SIGTERM during a rolling deploy."
+      }
+    }
+  ]
+}

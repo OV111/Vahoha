@@ -9,6 +9,62 @@
       "followUps": {
         "bcrypt & Adaptive Hashing": "Why is a fast hash like SHA-256 a bad choice for passwords, and what does bcrypt's cost factor do?",
         "Salt — Why Random Salts Matter": "Two users pick the same password. What makes their stored hashes different, and what attack does that stop?"
+      },
+      "criteria": {
+        "bcrypt & Adaptive Hashing": {
+          "id": "bcrypt-cost",
+          "evidence": [
+            {
+              "id": "fast-is-bad",
+              "text": "A fast hash lets an attacker with stolen hashes try billions of guesses per second."
+            },
+            {
+              "id": "deliberately-slow",
+              "text": "bcrypt is deliberately slow, and its cost factor sets how slow."
+            },
+            {
+              "id": "raise-over-time",
+              "text": "The cost factor can be raised over time as hardware gets faster."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (bcrypt, hashing, SHA-256) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "encrypt-passwords",
+              "text": "Says passwords should be encrypted so they can be decrypted later."
+            }
+          ]
+        },
+        "Salt — Why Random Salts Matter": {
+          "id": "password-salt",
+          "evidence": [
+            {
+              "id": "unique-hash",
+              "text": "A random salt per password makes the same password produce different hashes."
+            },
+            {
+              "id": "defeats-precompute",
+              "text": "That defeats precomputed rainbow tables and hides which users share a password."
+            },
+            {
+              "id": "not-secret",
+              "text": "The salt isn't secret; it is stored alongside the hash, and bcrypt handles it automatically."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (salt, rainbow table) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "salt-secret-or-fixed",
+              "text": "Says the salt must be kept secret, or that one fixed salt for all users is fine."
+            }
+          ]
+        }
       }
     },
     {
@@ -17,6 +73,60 @@
       "followUps": {
         "JWT Structure, Signing & the 'alg:none' Pitfall": "Which part of a JWT actually provides security, and why should the server never trust the algorithm named in the token header?",
         "Refresh Token Rotation & Token Revocation": "A refresh token gets stolen. How do rotation and a revocation list limit the damage?"
+      },
+      "criteria": {
+        "JWT Structure, Signing & the 'alg:none' Pitfall": {
+          "id": "jwt-signature",
+          "evidence": [
+            {
+              "id": "parts",
+              "text": "A JWT has a header, a payload and a signature; header and payload are only encoded, not encrypted."
+            },
+            {
+              "id": "signature-proves",
+              "text": "Only the signature, checked with the server's key, proves the token wasn't forged or changed."
+            },
+            {
+              "id": "enforce-alg",
+              "text": "The server must enforce its own algorithm, because the attacker controls the header and could claim none or a weaker one."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (JWT, signature, alg:none) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "payload-encrypted",
+              "text": "Says the payload is encrypted, so secrets can be stored in it."
+            }
+          ]
+        },
+        "Refresh Token Rotation & Token Revocation": {
+          "id": "refresh-rotation",
+          "evidence": [
+            {
+              "id": "short-and-long",
+              "text": "Access tokens are short-lived; refresh tokens live longer and are used to get new access tokens."
+            },
+            {
+              "id": "rotation",
+              "text": "Rotation issues a new refresh token on each use and invalidates the old one, so a reused stolen token is detected."
+            },
+            {
+              "id": "revocation",
+              "text": "A revocation list, for example in Redis, lets you kill tokens at logout or after theft, before they expire."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (refresh token, rotation, revocation) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "client-delete-revokes",
+              "text": "Says deleting the token on the client revokes it."
+            }
+          ]
+        }
       }
     },
     {
@@ -25,6 +135,61 @@
       "followUps": {
         "OAuth 2.0 Flows — Authorization Code vs Client Credentials": "When would you use client credentials instead of the authorization code flow, and why is it unsafe in a browser app?",
         "PKCE — Securing the Authorization Code Flow": "A mobile app can't keep a client secret. What does PKCE add so an intercepted authorization code is useless?"
+      },
+      "criteria": {
+        "OAuth 2.0 Flows — Authorization Code vs Client Credentials": {
+          "id": "oauth-flows",
+          "evidence": [
+            {
+              "id": "auth-code",
+              "text": "The authorization code flow is for a user granting an app access, through a login and consent redirect."
+            },
+            {
+              "id": "client-credentials",
+              "text": "Client credentials is for server-to-server calls with no user involved."
+            },
+            {
+              "id": "browser-secret",
+              "text": "Client credentials needs a secret, and anything in a browser app's code can be read by any user."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (OAuth, authorization code, client credentials) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "shares-password",
+              "text": "Says OAuth works by giving the user's password to the other app."
+            }
+          ]
+        },
+        "PKCE — Securing the Authorization Code Flow": {
+          "id": "pkce",
+          "evidence": [
+            {
+              "id": "verifier-challenge",
+              "text": "The app makes a random secret (the code verifier) and sends only its hash (the challenge) with the authorization request."
+            },
+            {
+              "id": "prove-on-exchange",
+              "text": "To swap the code for tokens it must present the original verifier."
+            },
+            {
+              "id": "intercept-useless",
+              "text": "So someone who intercepts the code can't use it without the verifier."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (PKCE, code verifier) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "encrypts-code",
+              "text": "Says PKCE encrypts the authorization code."
+            }
+          ]
+        }
       }
     },
     {
@@ -33,7 +198,58 @@
       "followUps": {
         "CORS — Cross-Origin Resource Sharing": "What does CORS protect against, and what goes wrong if you allow any origin while also allowing credentials?",
         "helmet.js & Security Headers": "Name a security header that helmet.js sets and the attack it blocks."
+      },
+      "criteria": {
+        "CORS — Cross-Origin Resource Sharing": {
+          "id": "cors",
+          "evidence": [
+            {
+              "id": "browser-enforced",
+              "text": "Browsers block a page from reading responses from another origin unless the server allows that origin."
+            },
+            {
+              "id": "what-it-stops",
+              "text": "It stops other websites from using a visitor's cookies or credentials to read your API's responses."
+            },
+            {
+              "id": "reflect-danger",
+              "text": "Reflecting any origin while allowing credentials lets any site act as the logged-in user, so use an explicit allowlist."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (CORS, origin, preflight) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "blocks-all-clients",
+              "text": "Says CORS protects the API from non-browser clients like curl or other servers."
+            }
+          ]
+        },
+        "helmet.js & Security Headers": {
+          "id": "security-headers",
+          "evidence": [
+            {
+              "id": "header-and-attack",
+              "text": "Names a header and the attack it stops, e.g. X-Frame-Options or frame-ancestors against clickjacking, nosniff against MIME sniffing, HSTS against downgrade to HTTP, CSP against injected scripts."
+            },
+            {
+              "id": "browser-behaviour",
+              "text": "These headers tell the browser how to treat the response defensively."
+            }
+          ],
+          "notEnough": [
+            "Only naming the terms (helmet, security headers) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "replaces-auth",
+              "text": "Says helmet encrypts responses or replaces authentication."
+            }
+          ]
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": false
 }

@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "finops-engineer-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Shift-Left Cost Engineering",
+      "question": "Explain how you would make engineers see cost impact before their infrastructure changes ship.",
+      "followUps": {
+        "Infracost in CI/CD Pull Request Comments": "Why show a cost estimate in the pull request instead of reviewing costs after deployment?",
+        "Cost Estimation in Terraform Plans": "What are the trade-offs of requiring extra approval for changes above a cost threshold?"
+      }
+    },
+    {
+      "title": "Cloud Management Platforms",
+      "question": "Walk through how you would decide between buying a FinOps platform and building your own tools.",
+      "followUps": {
+        "Apptio Cloudability and CloudHealth Overview": "What would push you to buy a commercial cloud cost platform instead of building one?",
+        "Custom Optimization Rules and Automation": "Why do custom optimization rules often find savings that generic advisor tools miss, and how do you let teams opt out?"
+      }
+    },
+    {
+      "title": "Reporting Pipelines and Analytics",
+      "question": "Explain how you would build reliable cost reporting that reaches the right people.",
+      "followUps": {
+        "dbt and BigQuery for FinOps Reporting Pipelines": "What kind of data problems can silently corrupt cost reports, and how would you catch them?",
+        "Automated Weekly Cost Opportunity Emails": "Why might a personal weekly email work better than a shared dashboard for driving action?"
+      }
+    },
+    {
+      "title": "FinOps Automation Frameworks",
+      "question": "Explain how far you would take automation in cost optimization, and which tools you would use.",
+      "followUps": {
+        "Automated Right-Sizing Workflows": "What safeguards would you need before applying right-sizing changes automatically?",
+        "FinOps Open Source Tooling Ecosystem": "What should you weigh when choosing an open-source FinOps tool over a paid one?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "py-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Object-Oriented Python",
+      "question": "Explain how Python classes hook into the language's built-in behavior and how you decide between inheritance and composition.",
+      "followUps": {
+        "Classes, Dunder Methods & the Data Model": "What happens to your objects in a set or as dict keys if you define __eq__ but not __hash__?",
+        "Inheritance, MRO & Composition": "How can a super() call skip an initializer under multiple inheritance, and when would you prefer composition?"
+      }
+    },
+    {
+      "title": "Type Hints & Static Analysis",
+      "question": "Explain what type hints give a Python team and how you model structured data with types.",
+      "followUps": {
+        "Type Annotations & mypy": "What kind of bug does running mypy in CI catch that tests often miss?",
+        "Dataclasses & NamedTuples": "Why would you use a dataclass instead of a plain dict, and when is a NamedTuple a better fit?"
+      }
+    },
+    {
+      "title": "Advanced Language Features",
+      "question": "Explain how decorators and generators work and where you use them in backend code.",
+      "followUps": {
+        "Decorators & Descriptors": "Why does it matter that decorators run at import time rather than at call time?",
+        "Generators & Iterators": "How does a generator keep memory low when you process a dataset larger than RAM?"
+      }
+    },
+    {
+      "title": "The GIL & Concurrency Models",
+      "question": "Explain how concurrency works in CPython and how you choose a model for a given workload.",
+      "followUps": {
+        "The Global Interpreter Lock (GIL)": "Why does adding threads to CPU-bound Python code often give no speedup?",
+        "Threading vs Multiprocessing": "What risk does threading bring with shared state, and what new failure does multiprocessing bring?"
+      }
+    }
+  ]
+}

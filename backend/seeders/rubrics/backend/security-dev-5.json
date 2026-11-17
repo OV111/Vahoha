@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "security-dev-5",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Symmetric & Asymmetric Cryptography",
+      "question": "Explain the difference between symmetric and asymmetric encryption, and when you use each.",
+      "followUps": {
+        "AES Encryption": "Why is AES in ECB mode unsafe, and what does GCM mode add?",
+        "RSA & Elliptic Curve Cryptography": "What are RSA and elliptic curve keys used for, and why does key size matter?"
+      }
+    },
+    {
+      "title": "TLS & Certificate Management",
+      "question": "Explain how TLS makes sure a client is really talking to your server.",
+      "followUps": {
+        "TLS 1.3 & Certificate Validation": "What goes wrong if a client turns off certificate validation, even with TLS 1.3?",
+        "Certificate Pinning & HPKP": "What attack does certificate pinning prevent, and what is the risk of pinning badly?"
+      }
+    },
+    {
+      "title": "Hashing & Key Derivation",
+      "question": "Explain what hash functions are for, and why passwords need special handling.",
+      "followUps": {
+        "Cryptographic Hash Functions": "Why are MD5 and SHA-1 no longer safe for security uses?",
+        "PBKDF2, Argon2 & Key Derivation": "Why use Argon2 or PBKDF2 to turn a password into a key instead of a single SHA-256?"
+      }
+    },
+    {
+      "title": "Secrets Management",
+      "question": "Explain how you store and look after secrets like API keys and encryption keys over their whole life.",
+      "followUps": {
+        "Environment Variables & Secret Vaults": "What does a vault like HashiCorp Vault give you beyond environment variables?",
+        "Key Rotation & Lifecycle Management": "Why rotate keys regularly, and what must a system support to rotate them without downtime?"
+      }
+    }
+  ]
+}

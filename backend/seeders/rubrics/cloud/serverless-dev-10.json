@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "serverless-dev-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Well-Architected Serverless Review",
+      "question": "Explain how you would review a serverless architecture before going to production.",
+      "followUps": {
+        "AWS Serverless Application Lens": "Which serverless-specific risks would a Serverless Lens review help you catch before launch?",
+        "Multi-Stage Deployments with SAM and CDK": "How would you decide between SAM and CDK for a multi-environment serverless system?"
+      }
+    },
+    {
+      "title": "EventBridge Pipes",
+      "question": "Explain what EventBridge Pipes are and when they replace your own glue code.",
+      "followUps": {
+        "EventBridge Pipes for Point-to-Point Integrations": "Why is a Lambda function that only moves events from a queue to another service a cost and maintenance problem?",
+        "Filtering and Enrichment in Pipes": "Why is it better to drop unwanted events in a pipe filter than in the target function?"
+      }
+    },
+    {
+      "title": "Traffic Management and Safe Deployments",
+      "question": "Walk through how you would release changes safely and keep costs predictable as traffic grows.",
+      "followUps": {
+        "Lambda Traffic Shifting with Aliases and CodeDeploy": "How does CodeDeploy shift traffic between Lambda versions, and what triggers an automatic rollback?",
+        "Serverless Cost Modeling at Scale": "Which parts of a serverless bill usually grow fastest with traffic, and how would you find them before they surprise you?"
+      }
+    },
+    {
+      "title": "Chaos Engineering and Resilience",
+      "question": "Explain how you would build confidence that a serverless system survives failures and that its design choices stay understood.",
+      "followUps": {
+        "AWS Fault Injection Service for Serverless": "What kind of hidden weakness could a fault injection experiment reveal before a big traffic event?",
+        "Architecture Decision Records for Serverless": "Why is writing down the reason behind a choice like SQS over EventBridge useful for a team later on?"
+      }
+    }
+  ]
+}

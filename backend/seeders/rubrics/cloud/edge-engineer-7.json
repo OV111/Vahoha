@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "edge-engineer-7",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Cache Architecture",
+      "question": "Explain how you design a CDN cache so it hits often and stays correct.",
+      "followUps": {
+        "Cache Key Design": "What happens to your hit ratio and to user safety when the cache key has too many or too few parts?",
+        "Cache Purging with Cache Tags": "How do cache tags let you invalidate content precisely, and what must the origin do to support them?"
+      }
+    },
+    {
+      "title": "Image Optimisation",
+      "question": "Walk through how you would make images load faster without changing the application.",
+      "followUps": {
+        "Cloudflare Polish and WebP Conversion": "How can the edge serve a modern image format to some browsers and a legacy one to others from the same URL?",
+        "On-Demand Image Resizing": "Why is serving correctly sized images such a direct fix for slow LCP?"
+      }
+    },
+    {
+      "title": "HTTP/3 and QUIC",
+      "question": "Explain how newer transport and hint features cut page load time.",
+      "followUps": {
+        "QUIC Protocol Benefits": "How does QUIC avoid the head-of-line blocking that TCP suffers from, and who benefits most?",
+        "Resource Hints and Early Hints": "What does 103 Early Hints let the browser do while the origin is still building the page?"
+      }
+    },
+    {
+      "title": "Core Web Vitals at the Edge",
+      "question": "Explain how edge work affects Core Web Vitals.",
+      "followUps": {
+        "LCP Optimisation Strategies": "Which edge techniques improve LCP, and why does each one help?",
+        "CLS and Edge Rendered Content": "How can edge personalisation cause layout shift, and how do you prevent it?"
+      }
+    }
+  ]
+}

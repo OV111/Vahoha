@@ -1,0 +1,264 @@
+{
+  "path": "backend",
+  "layer": "db-engineer-4",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "PostgreSQL-Specific Features",
+      "question": "Explain some PostgreSQL features that go beyond plain tables and when you would use them.",
+      "followUps": {
+        "JSONB — Semi-Structured Data in Postgres": "Why would you choose jsonb over json, and when should a field be a normal column instead?",
+        "Views & Materialized Views": "When would you use a materialized view instead of a regular view, and what is the main risk?"
+      },
+      "criteria": {
+        "JSONB — Semi-Structured Data in Postgres": {
+          "id": "jsonb",
+          "evidence": [
+            {
+              "id": "binary-indexable",
+              "text": "jsonb is stored parsed in binary form, so it can be indexed (GIN) and queried without reparsing."
+            },
+            {
+              "id": "json-text",
+              "text": "json is stored as text and reparsed on every access."
+            },
+            {
+              "id": "column-instead",
+              "text": "Fields you filter, join or constrain often should be normal columns."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (json, jsonb, GIN) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "jsonb-no-schema-ever",
+              "text": "Says jsonb should replace normal columns everywhere."
+            }
+          ]
+        },
+        "Views & Materialized Views": {
+          "id": "materialized-views",
+          "evidence": [
+            {
+              "id": "view-reruns",
+              "text": "A normal view re-runs its query every time it's read."
+            },
+            {
+              "id": "materialized",
+              "text": "A materialized view stores the result, so reads are fast for expensive queries."
+            },
+            {
+              "id": "stale",
+              "text": "It must be refreshed, otherwise it silently serves stale data."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (view, materialized view) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "view-cached",
+              "text": "Says a normal view caches its result."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "PL/pgSQL & Server-Side Logic",
+      "question": "Walk through the pros and cons of putting logic inside the database server.",
+      "followUps": {
+        "Stored Procedures & Functions in PL/pgSQL": "What makes a stored function risky to maintain, and how should it handle errors?",
+        "Triggers — Power & Pitfalls": "Why can heavy use of triggers make a system hard to debug?"
+      },
+      "criteria": {
+        "Stored Procedures & Functions in PL/pgSQL": {
+          "id": "stored-functions",
+          "evidence": [
+            {
+              "id": "round-trips",
+              "text": "Logic in the database saves round trips for multi-step work."
+            },
+            {
+              "id": "hard-to-maintain",
+              "text": "Functions are harder to version, test and debug than app code, and easy to forget."
+            },
+            {
+              "id": "errors",
+              "text": "They should raise errors (or handle specific exceptions and re-raise), never swallow them silently."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (PL/pgSQL, stored procedure) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "swallow-ok",
+              "text": "Says catching and ignoring all errors in a function is safe."
+            }
+          ]
+        },
+        "Triggers — Power & Pitfalls": {
+          "id": "triggers",
+          "evidence": [
+            {
+              "id": "automatic",
+              "text": "Triggers run automatically on inserts, updates or deletes."
+            },
+            {
+              "id": "hidden",
+              "text": "Someone reading the app code can't see that a write also changes other tables."
+            },
+            {
+              "id": "debugging",
+              "text": "That hidden coupling makes bugs and performance problems hard to trace."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (trigger) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "triggers-free",
+              "text": "Says triggers have no performance or debugging cost."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Extensions & Full-Text Search",
+      "question": "Explain how PostgreSQL can handle search and specialized data without adding another system.",
+      "followUps": {
+        "PostgreSQL Extensions — PostGIS, pg_trgm": "Why is LIKE '%term%' slow, and how does pg_trgm help?",
+        "Full-Text Search with tsvector & tsquery": "Why should you store a ready-made tsvector instead of building it inside every search query?"
+      },
+      "criteria": {
+        "PostgreSQL Extensions — PostGIS, pg_trgm": {
+          "id": "pg-trgm",
+          "evidence": [
+            {
+              "id": "leading-wildcard",
+              "text": "LIKE '%term%' can't use a normal index because of the leading wildcard, so it scans every row."
+            },
+            {
+              "id": "trigrams",
+              "text": "pg_trgm splits text into three-letter pieces and indexes them (GIN/GiST)."
+            },
+            {
+              "id": "fast-fuzzy",
+              "text": "That makes substring and fuzzy searches use an index."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (LIKE, pg_trgm) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "btree-like",
+              "text": "Says a normal B-tree index speeds up LIKE '%term%'."
+            }
+          ]
+        },
+        "Full-Text Search with tsvector & tsquery": {
+          "id": "tsvector",
+          "evidence": [
+            {
+              "id": "tokens",
+              "text": "A tsvector is the text broken into normalised words, and a tsquery is the search."
+            },
+            {
+              "id": "precompute",
+              "text": "Building the tsvector inside every query reprocesses every row's text on every search."
+            },
+            {
+              "id": "stored-indexed",
+              "text": "Storing it (generated column or trigger) lets you index it with GIN and search fast."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (tsvector, tsquery) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "like-same",
+              "text": "Says full-text search is the same as LIKE."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "psql & Administration",
+      "question": "Walk through how you would look after a PostgreSQL database day to day.",
+      "followUps": {
+        "psql Meta-Commands & Productivity": "Which psql meta-commands do you rely on, and why are they faster than writing catalog queries?",
+        "VACUUM, ANALYZE & Autovacuum": "Why do dead rows build up in PostgreSQL, and what happens to query plans if ANALYZE doesn't run?"
+      },
+      "criteria": {
+        "psql Meta-Commands & Productivity": {
+          "id": "psql-meta",
+          "evidence": [
+            {
+              "id": "client-side",
+              "text": "Backslash commands are psql shortcuts, not SQL."
+            },
+            {
+              "id": "examples",
+              "text": "Names useful ones like \\d to describe a table, \\dt to list tables, \\x for expanded output, \\copy for import/export."
+            },
+            {
+              "id": "faster",
+              "text": "One short command replaces writing catalog queries by hand."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (psql, \\d) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "server-sql",
+              "text": "Says meta-commands are SQL that runs on the server."
+            }
+          ]
+        },
+        "VACUUM, ANALYZE & Autovacuum": {
+          "id": "vacuum-analyze",
+          "evidence": [
+            {
+              "id": "dead-rows",
+              "text": "Updates and deletes leave old row versions (dead tuples) because of MVCC."
+            },
+            {
+              "id": "vacuum",
+              "text": "VACUUM (and autovacuum) cleans them up; without it tables bloat and scans slow down."
+            },
+            {
+              "id": "analyze",
+              "text": "ANALYZE refreshes statistics; stale stats make the planner choose bad plans."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (VACUUM, ANALYZE, autovacuum) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "delete-frees",
+              "text": "Says DELETE frees the space immediately."
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "criteriaReviewed": false
+}

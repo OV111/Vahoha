@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "serverless-dev-1",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "The Serverless Model",
+      "question": "Explain what serverless compute is and how it changes the way you design an application.",
+      "followUps": {
+        "Function-as-a-Service vs Traditional Compute": "Which constraints of serverless functions push you toward a different design than you would use on a VM or container?",
+        "AWS Lambda Execution Model and Cold Starts": "Where should you create SDK clients and database connections in a Lambda function, and why does that placement matter?"
+      }
+    },
+    {
+      "title": "IAM and Security Basics",
+      "question": "Walk through how a Lambda function gets permission to do things in AWS and who is allowed to call it.",
+      "followUps": {
+        "Lambda Execution Roles and Least Privilege": "What could an attacker do if a function with a very broad role were compromised, and how do you scope the role instead?",
+        "Resource-Based vs Identity-Based Policies": "When an S3 bucket fails to trigger your function with AccessDenied, which policy do you check and why?"
+      }
+    },
+    {
+      "title": "Triggers and Event Sources",
+      "question": "Explain the different ways events can reach a Lambda function and how that affects error handling.",
+      "followUps": {
+        "Synchronous vs Asynchronous Invocation": "How does error handling differ when API Gateway calls your function versus when SNS calls it?",
+        "Event Source Mapping for Streams and Queues": "What goes wrong when one record in an SQS or Kinesis batch keeps failing, and how do you stop it?"
+      }
+    },
+    {
+      "title": "Observability from Day One",
+      "question": "Explain how you would know whether a new Lambda function is healthy and what it costs from the first day.",
+      "followUps": {
+        "CloudWatch Logs and Lambda Metrics": "Which built-in Lambda metrics would you put alarms on first, and what problem does each one reveal?",
+        "Lambda Pricing Model and Cost Awareness": "Why does raising a function's memory setting change its cost, and when can a busy function cost more than a server?"
+      }
+    }
+  ]
+}

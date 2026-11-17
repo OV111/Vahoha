@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "serverless-dev-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "State Machine Fundamentals",
+      "question": "Explain what a Step Functions state machine is and how you pick a workflow type.",
+      "followUps": {
+        "Standard vs Express Workflows": "How would you choose between Standard and Express workflows for a high-volume data pipeline?",
+        "Amazon States Language and Workflow Studio": "Why should you still understand the generated ASL when you build a workflow visually?"
+      }
+    },
+    {
+      "title": "Error Handling and Retries",
+      "question": "Walk through how Step Functions handles failures and concurrent work.",
+      "followUps": {
+        "Catch, Retry, and Error Matching": "Why is it better to put retry and catch logic in the workflow than inside each Lambda function?",
+        "Parallel and Map States for Concurrent Processing": "When would you use a Map state instead of a Parallel state, and why does a concurrency limit matter there?"
+      }
+    },
+    {
+      "title": "Advanced Workflow Patterns",
+      "question": "Explain some advanced workflow patterns in Step Functions that remove extra code or polling.",
+      "followUps": {
+        "Wait for Callback with Task Tokens": "How does a task token let a workflow wait days for a human approval?",
+        "SDK Integrations Without Lambda": "When can a workflow call an AWS service directly without a Lambda in between, and what does that save?"
+      }
+    },
+    {
+      "title": "Testing and Debugging Workflows",
+      "question": "Explain how you test and debug a Step Functions workflow.",
+      "followUps": {
+        "Step Functions Local and Mocked Service Integrations": "How do mocked service integrations help you test error and retry paths that are hard to trigger for real?",
+        "Execution History and X-Ray Tracing": "How would you find which step made a production execution slow or fail?"
+      }
+    }
+  ]
+}

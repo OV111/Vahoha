@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { ConflictError, ForbiddenError, NotFoundError } from "../../../utils/httpErrors.js";
-import { addWeakSpot } from "../../../services/weakSpotService.js";
+import { addWeakSpot, resolveWeakSpot } from "../../../services/weakSpotService.js";
 import { trackEvent } from "../../../services/eventService.js";
 import {
   ATTEMPT_COLLECTION,
@@ -15,8 +15,8 @@ import {
   RUBRIC_COLLECTION,
   STATES,
 } from "../lib/constants.js";
-import { decidePass, pickGroup, verifyResults } from "../lib/grading.js";
-import { gradeTurns } from "./graderService.js";
+import { decidePass, looksLikeInstruction, pickGroup } from "../lib/grading.js";
+import { finalizeConcepts, gradeExplanation, gradeFollowUp } from "./conceptGrader.js";
 import { transcribe } from "./transcribeService.js";
 
 const attempts = (db) => db.collection(ATTEMPT_COLLECTION);
@@ -46,7 +46,7 @@ export const getEligibility = async (db, userId, layer, now = new Date()) => {
     db.collection("examHistory").findOne({ userId: uid, layer, passed: true }, { projection: { _id: 1 } }),
     attempts(db).countDocuments({ userId: uid, startedAt: { $gte: startOfUtcDay(now) } }),
     attempts(db).findOne(
-      { userId: uid, layer, passed: false, finishedAt: { $gte: new Date(now - RETRY_AFTER_FAIL_MS) } },
+      { userId: uid, layer, passed: false, practice: { $ne: true }, finishedAt: { $gte: new Date(now - RETRY_AFTER_FAIL_MS) } },
       { sort: { finishedAt: -1 } },
     ),
     attempts(db).findOne({ userId: uid, layer, passed: true }, { projection: { _id: 1 } }),
@@ -87,7 +87,7 @@ const promptOf = (attempt) => {
 export const toView = (attempt, now = new Date()) => ({
   id: attempt._id.toString(),
   layerId: attempt.layer,
-  mode: "graded",
+  mode: attempt.practice ? "practice" : "graded",
   state: attempt.state,
   secondsLeft: Math.max(0, Math.round((attempt.deadlineAt - now) / 1000)),
   segmentLimitSec: attempt.state === STATES.AWAITING_ANSWER ? FOLLOWUP_LIMIT_SEC : EXPLANATION_LIMIT_SEC,
@@ -125,6 +125,8 @@ export const startAttempt = async (db, userId, { layer, path }, now = new Date()
     finishedAt: null,
     // What the learner agreed to, and when: recording and transcription for this exam.
     consentAt: now,
+    // Already verified on this layer: a fail here costs nothing but the try.
+    practice: eligibility.verified,
   };
   const { insertedId } = await attempts(db).insertOne(attempt);
   await trackEvent(db, userId, "voice_exam_started", { layer });
@@ -137,30 +139,51 @@ const loadOwn = async (db, userId, attemptId) => {
   return attempt;
 };
 
-// `concepts` is passed when the explanation alone was already graded, so it isn't graded twice.
-const finish = async (db, userId, attempt, now, concepts) => {
-  if (!concepts) {
-    const transcript = attempt.turns.map((t) => t.text).join(" ");
-    concepts = verifyResults(await gradeTurns(attempt.subtopics, attempt.turns), attempt.subtopics, transcript);
-  }
+// Attempts started before per-subtopic grading only stored the explanation's grades.
+const currentConcepts = (attempt) => attempt.concepts ?? attempt.explanationConcepts ?? [];
+
+// `explanationOnly`: no follow-ups were asked, so the explanation's grades are re-checked, not regraded.
+const finish = async (db, userId, attempt, now, { explanationOnly = false } = {}) => {
+  const { concepts, logs } = await finalizeConcepts(attempt.subtopics, currentConcepts(attempt), attempt.turns, now, {
+    regradeChecklist: !explanationOnly,
+  });
+  const gradings = [...(attempt.gradings ?? []), ...logs];
   const passed = decidePass(concepts);
+  // Typed answers can be read off another screen, so the result says how it was given.
+  const spoken = attempt.turns.every((t) => t.spoken);
   const result = {
     passed,
     concepts,
-    retryAvailableAt: passed ? null : new Date(now.getTime() + RETRY_AFTER_FAIL_MS).toISOString(),
+    spoken,
+    retryAvailableAt: passed || attempt.practice ? null : new Date(now.getTime() + RETRY_AFTER_FAIL_MS).toISOString(),
     // So the learner can see exactly what was graded.
     transcript: attempt.turns.map(({ prompt, text }) => ({ prompt, text })),
   };
 
-  if (!passed) {
-    await Promise.all(
-      concepts
-        .filter((c) => c.status !== "solid")
-        .map((c) => addWeakSpot(db, userId, { topic: c.label, path: attempt.path, layer: attempt.layer, source: "voice_exam" })),
-    );
-  }
-  await trackEvent(db, userId, "voice_exam_submitted", { layer: attempt.layer, passed });
-  return { state: STATES.COMPLETED, result, passed, finishedAt: now };
+  // Every gap is recorded, on a pass too (a passed exam can still have shallow parts), and a
+  // subtopic proven solid closes the weak spot an earlier test or exam opened for it.
+  const spot = { path: attempt.path, layer: attempt.layer, source: "voice_exam" };
+  await Promise.all(
+    concepts.map((c) =>
+      c.status === "solid" ? resolveWeakSpot(db, userId, c.label) : addWeakSpot(db, userId, { topic: c.label, ...spot }),
+    ),
+  );
+
+  const seconds = concepts.filter((c) => c.secondOpinion);
+  const disputed = seconds.filter((c) => !c.secondOpinion.agreed);
+  await trackEvent(db, userId, "voice_exam_submitted", {
+    layer: attempt.layer,
+    passed,
+    spoken,
+    practice: attempt.practice,
+    // Per-subtopic outcomes: a subtopic almost nobody passes usually means a badly written criterion.
+    concepts: concepts.map((c) => ({ id: c.criterionId ?? c.label, status: c.status })),
+    secondOpinions: seconds.length,
+    disputed: disputed.length,
+  });
+  // Kept off the learner's view: a flag for human review, never an automatic fail.
+  const flagged = attempt.turns.some((t) => looksLikeInstruction(t.text)) || disputed.length > 0;
+  return { state: STATES.COMPLETED, result, concepts, passed, spoken, flagged, gradings, finishedAt: now };
 };
 
 /**
@@ -184,7 +207,7 @@ export const submitTurn = async (db, userId, attemptId, { text, audio, turnKey }
   // Claiming the attempt by its state means a double submit can't grade the same answer twice.
   const claimed = await attempts(db).findOneAndUpdate(
     { _id: current._id, state: current.state },
-    { $set: { state: working } },
+    { $set: { state: working, claimedAt: now } },
     { returnDocument: "after" },
   );
   if (!claimed) throw new ConflictError("This answer is already being checked.");
@@ -217,19 +240,22 @@ export const submitTurn = async (db, userId, attemptId, { text, audio, turnKey }
     let update;
     if (isExplanation) {
       // Follow-ups only for what the explanation left weak, in checklist order.
-      const raw = await gradeTurns(current.subtopics, turns);
-      const concepts = verifyResults(raw, current.subtopics, text);
+      const { concepts, logs } = await gradeExplanation(current.subtopics, turn, now);
+      const gradings = [...(current.gradings ?? []), ...logs];
       const followUps = current.subtopics
         .filter((s) => concepts.find((c) => c.label === s.title)?.status !== "solid")
         .map((s) => ({ subtopic: s.title, question: s.followUp }));
+      const graded = { turns, followUps, concepts, explanationConcepts: concepts, gradings };
       update = followUps.length
-        ? { state: STATES.AWAITING_ANSWER, turns, followUps }
-        : { turns, followUps, ...(await finish(db, userId, { ...current, turns }, now, concepts)) };
+        ? { state: STATES.AWAITING_ANSWER, ...graded }
+        : { ...graded, ...(await finish(db, userId, { ...current, ...graded }, now, { explanationOnly: true })) };
     } else {
-      const followUps = current.followUps.slice(1);
-      update = followUps.length
-        ? { state: STATES.AWAITING_ANSWER, turns, followUps }
-        : { turns, followUps, ...(await finish(db, userId, { ...current, turns }, now)) };
+      const explanation = turns.find((t) => t.kind === "explanation");
+      const { concepts, logs } = await gradeFollowUp(current.subtopics, currentConcepts(current), explanation, turn, now);
+      const graded = { turns, followUps: current.followUps.slice(1), concepts, gradings: [...(current.gradings ?? []), ...logs] };
+      update = graded.followUps.length
+        ? { state: STATES.AWAITING_ANSWER, ...graded }
+        : { ...graded, ...(await finish(db, userId, { ...current, ...graded }, now)) };
     }
     await attempts(db).updateOne({ _id: current._id }, { $set: update });
     return toView({ ...current, ...update }, now);
@@ -240,15 +266,49 @@ export const submitTurn = async (db, userId, attemptId, { text, audio, turnKey }
   }
 };
 
-/** Every layer this user passed a voice exam on, with the first pass: [{ layer, verifiedAt }]. */
+// Grading takes seconds; a claim older than this means the server died mid-answer.
+const STALE_CLAIM_MS = 2 * 60_000;
+const INPUT_OF = { [STATES.ANALYZING]: STATES.AWAITING_EXPLANATION, [STATES.GRADING]: STATES.AWAITING_ANSWER };
+
+/** The exam still open on this layer, so a page reload picks it up instead of costing a try. */
+export const getLiveAttempt = async (db, userId, layer, now = new Date()) => {
+  const current = await attempts(db).findOne(
+    { userId: new ObjectId(userId), layer, state: { $in: LIVE_STATES } },
+    { sort: { startedAt: -1 } },
+  );
+  if (!current) return null;
+
+  if (current.deadlineAt.getTime() + UPLOAD_GRACE_MS <= now) {
+    await attempts(db).updateOne({ _id: current._id }, { $set: { state: STATES.EXPIRED, finishedAt: now } });
+    return null;
+  }
+  const back = INPUT_OF[current.state];
+  if (back && (!current.claimedAt || now - current.claimedAt > STALE_CLAIM_MS)) {
+    // The answer was never saved, so the question is asked again.
+    const freed = await attempts(db).findOneAndUpdate(
+      { _id: current._id, state: current.state },
+      { $set: { state: back } },
+      { returnDocument: "after" },
+    );
+    return freed ? toView(freed, now) : null;
+  }
+  return toView(current, now);
+};
+
+/** Every layer this user passed a voice exam on, with the first pass: [{ layer, verifiedAt, spoken }]. */
 export const listVerifiedLayers = async (db, userId) => {
   const passes = await attempts(db)
-    .find({ userId: new ObjectId(userId), passed: true }, { projection: { layer: 1, finishedAt: 1 } })
+    .find({ userId: new ObjectId(userId), passed: true }, { projection: { layer: 1, finishedAt: 1, spoken: 1 } })
     .sort({ finishedAt: 1 })
     .toArray();
-  const first = new Map();
-  for (const p of passes) if (!first.has(p.layer)) first.set(p.layer, p.finishedAt);
-  return [...first].map(([layer, verifiedAt]) => ({ layer, verifiedAt })).reverse();
+  // The first pass dates the badge; a later spoken pass upgrades a typed one.
+  const byLayer = new Map();
+  for (const p of passes) {
+    const seen = byLayer.get(p.layer);
+    if (!seen) byLayer.set(p.layer, { layer: p.layer, verifiedAt: p.finishedAt, spoken: p.spoken !== false });
+    else if (p.spoken !== false) seen.spoken = true;
+  }
+  return [...byLayer.values()].reverse();
 };
 
 export const abandonAttempt = async (db, userId, attemptId, now = new Date()) => {

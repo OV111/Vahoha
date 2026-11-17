@@ -1,0 +1,264 @@
+{
+  "path": "backend",
+  "layer": "db-engineer-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Backup & Recovery",
+      "question": "Explain how you would back up a production database and prove you can restore it.",
+      "followUps": {
+        "pg_dump, pg_basebackup & Point-in-Time Recovery": "Why isn't a nightly pg_dump enough for a busy production database, and what does point-in-time recovery add?",
+        "Testing Restores — The Missing Step": "Why should you test restores regularly, and what would you check after one?"
+      },
+      "criteria": {
+        "pg_dump, pg_basebackup & Point-in-Time Recovery": {
+          "id": "pitr",
+          "evidence": [
+            {
+              "id": "dump-gap",
+              "text": "A nightly dump loses everything since the last dump."
+            },
+            {
+              "id": "wal-archive",
+              "text": "Point-in-time recovery uses a base backup plus archived WAL."
+            },
+            {
+              "id": "any-moment",
+              "text": "You can restore to any moment, like just before a bad query."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (pg_dump, PITR, WAL) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "dump-enough",
+              "text": "Says a nightly dump loses no data."
+            }
+          ]
+        },
+        "Testing Restores — The Missing Step": {
+          "id": "test-restores",
+          "evidence": [
+            {
+              "id": "untested",
+              "text": "A backup you never restored may be broken or incomplete."
+            },
+            {
+              "id": "practice",
+              "text": "Regular restores prove the process and its timing before a real emergency."
+            },
+            {
+              "id": "verify",
+              "text": "After restoring, check it starts, row counts and recent data match, and the app can use it."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (restore test) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "backup-enough",
+              "text": "Says having backup files is enough."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Roles & Privileges",
+      "question": "Walk through how you would control who can see and change data in PostgreSQL.",
+      "followUps": {
+        "PostgreSQL Roles & Least Privilege": "Why is it risky for an application to connect as a superuser, and what should its role be allowed to do?",
+        "Row-Level Security (RLS)": "How does row-level security protect a multi-tenant app from a missing tenant filter in one query?"
+      },
+      "criteria": {
+        "PostgreSQL Roles & Least Privilege": {
+          "id": "least-privilege",
+          "evidence": [
+            {
+              "id": "superuser-risk",
+              "text": "A superuser app account means an injection or bad migration can drop or read anything."
+            },
+            {
+              "id": "minimal",
+              "text": "The app role should only have the privileges it needs, like SELECT/INSERT/UPDATE on its own tables."
+            },
+            {
+              "id": "separate",
+              "text": "Migrations and admin work use separate roles."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (roles, GRANT, least privilege) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "superuser-convenient",
+              "text": "Says connecting as superuser is fine if the password is strong."
+            }
+          ]
+        },
+        "Row-Level Security (RLS)": {
+          "id": "rls",
+          "evidence": [
+            {
+              "id": "policy",
+              "text": "Row-level security attaches a policy to the table that the database applies to every query."
+            },
+            {
+              "id": "missing-filter",
+              "text": "Even if one query forgets WHERE tenant_id, the database only returns that tenant's rows."
+            },
+            {
+              "id": "context",
+              "text": "The tenant comes from the session (role or setting), not from each query."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (RLS, policy) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "rls-app",
+              "text": "Says RLS is a filter the application adds to queries."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Security Hardening",
+      "question": "Explain how you would protect a database against stolen data and prove what happened after an incident.",
+      "followUps": {
+        "Encryption at Rest & in Transit": "What does encryption in transit protect against, what does encryption at rest protect against, and what does neither cover?",
+        "pgAudit — Audit Logging": "Why would you turn on audit logging, and how do you keep it from filling the disk?"
+      },
+      "criteria": {
+        "Encryption at Rest & in Transit": {
+          "id": "encryption",
+          "evidence": [
+            {
+              "id": "in-transit",
+              "text": "TLS in transit stops anyone on the network reading credentials and data."
+            },
+            {
+              "id": "at-rest",
+              "text": "Encryption at rest protects disks, snapshots and backups if they're stolen."
+            },
+            {
+              "id": "neither",
+              "text": "Neither protects against a valid but malicious or compromised account, or SQL injection."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (TLS, encryption at rest) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "covers-all",
+              "text": "Says encryption protects against every attack."
+            }
+          ]
+        },
+        "pgAudit — Audit Logging": {
+          "id": "pgaudit",
+          "evidence": [
+            {
+              "id": "why",
+              "text": "Audit logging records who ran what, for incidents and compliance."
+            },
+            {
+              "id": "scope",
+              "text": "Log only what you need (e.g. DDL and writes, or sensitive tables) instead of everything."
+            },
+            {
+              "id": "rotate",
+              "text": "Rotate and ship logs off the server so they don't fill the disk."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (pgAudit, audit log) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "log-everything",
+              "text": "Says logging every statement forever has no cost."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Monitoring & Observability",
+      "question": "Walk through how you keep an eye on a production database and change it safely.",
+      "followUps": {
+        "pg_stat_* Views — Built-in Monitoring": "Which built-in statistics views would you check first when a database gets slow, and what are you looking for?",
+        "Production Migrations — Zero-Downtime Patterns": "Walk through the expand and contract steps for changing a column on a busy table without downtime."
+      },
+      "criteria": {
+        "pg_stat_* Views — Built-in Monitoring": {
+          "id": "pg-stat-views",
+          "evidence": [
+            {
+              "id": "activity",
+              "text": "pg_stat_activity shows current queries, how long they've run and what they're waiting on."
+            },
+            {
+              "id": "tables",
+              "text": "pg_stat_user_tables shows sequential vs index scans and dead tuples."
+            },
+            {
+              "id": "statements",
+              "text": "pg_stat_statements shows which queries take the most total time."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (pg_stat_activity, pg_stat_statements) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "no-built-in",
+              "text": "Says PostgreSQL has no built-in statistics views."
+            }
+          ]
+        },
+        "Production Migrations — Zero-Downtime Patterns": {
+          "id": "expand-contract",
+          "evidence": [
+            {
+              "id": "expand",
+              "text": "Add the new column (nullable) without blocking."
+            },
+            {
+              "id": "migrate",
+              "text": "Write to both, backfill old rows in small batches, then switch reads to the new column."
+            },
+            {
+              "id": "contract",
+              "text": "Only after nothing uses the old column, drop it."
+            }
+          ],
+          "solidNeeds": 2,
+          "notEnough": [
+            "Only naming the terms (expand/contract, migration) without explaining how they work or why they matter."
+          ],
+          "misconceptions": [
+            {
+              "id": "one-step",
+              "text": "Says you can change the column in one ALTER on a busy table safely."
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "criteriaReviewed": false
+}

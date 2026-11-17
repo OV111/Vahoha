@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "finops-engineer-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "AWS Cost Visibility Tools",
+      "question": "Walk through how you would find out where your AWS money is going.",
+      "followUps": {
+        "AWS Cost Explorer Deep Dive": "How would you combine filters and groupings to track down an unexpected charge?",
+        "AWS Cost and Usage Reports (CUR)": "Why do serious FinOps teams load the detailed billing report into a query engine instead of using the console alone?"
+      }
+    },
+    {
+      "title": "GCP Billing Export and BigQuery",
+      "question": "Explain how you would analyze GCP billing data with SQL.",
+      "followUps": {
+        "GCP Billing Export to BigQuery": "What does exporting billing data to BigQuery give you that the billing console does not?",
+        "BigQuery SQL for Cost Analysis": "What makes the billing export schema tricky to query, and how do you handle it?"
+      }
+    },
+    {
+      "title": "Azure Cost Management",
+      "question": "Walk through how a large company gets a full view of its Azure spend.",
+      "followUps": {
+        "Azure Cost Management + Billing Portal": "Why can looking at one subscription at a time mislead you in a large company?",
+        "Azure Cost Exports to Storage": "What is the benefit of exporting cost data at a higher scope than a single subscription?"
+      }
+    },
+    {
+      "title": "Chargeback and Showback Models",
+      "question": "Explain how you would make teams see and own the cloud costs they create.",
+      "followUps": {
+        "Shared Cost Distribution Methodologies": "How would you split the cost of shared platform services across teams fairly?",
+        "Chargeback vs Showback Implementation": "Why do many companies start with showback before moving to chargeback?"
+      }
+    }
+  ]
+}

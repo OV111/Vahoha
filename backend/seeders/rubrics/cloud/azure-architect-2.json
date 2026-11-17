@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "azure-architect-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Virtual Network Design",
+      "question": "Walk through how you would design a virtual network for a multi-tier application.",
+      "followUps": {
+        "VNet Address Spaces and Subnets": "Why is IP address planning so hard to fix later, and what goes wrong when two VNets overlap?",
+        "Network Security Groups and ASGs": "How do application security groups make NSG rules easier to manage as a workload scales out?"
+      }
+    },
+    {
+      "title": "Load Balancing and Traffic Distribution",
+      "question": "Explain how you would choose the way traffic gets spread across your services in Azure.",
+      "followUps": {
+        "Azure Load Balancer vs Application Gateway": "When would you pick Azure Load Balancer over Application Gateway, and what do you lose or gain?",
+        "Azure DNS and Private Zones": "Why do private DNS zones matter for Private Endpoints, and what symptoms do you see when DNS is wrong?"
+      }
+    },
+    {
+      "title": "Hybrid Connectivity",
+      "question": "Explain the options for connecting an on-premises network to Azure and how you would choose between them.",
+      "followUps": {
+        "VPN Gateway Site-to-Site": "When is a site-to-site VPN good enough, and how do you remove the gateway as a single point of failure?",
+        "ExpressRoute Circuits and Peering": "Why would a company pay for ExpressRoute instead of using a VPN over the internet?"
+      }
+    },
+    {
+      "title": "Hub-and-Spoke Architecture",
+      "question": "Walk through how a hub-and-spoke network works in Azure and why teams use it.",
+      "followUps": {
+        "VNet Peering and Transitive Routing": "What does it mean that VNet peering is non-transitive, and how do two spokes talk to each other?",
+        "Azure Firewall for Centralized Egress": "Why would you send all outbound internet traffic from the spokes through one Azure Firewall in the hub?"
+      }
+    }
+  ]
+}

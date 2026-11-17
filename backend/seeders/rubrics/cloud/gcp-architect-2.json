@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "gcp-architect-2",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "VPC Design & Shared VPC",
+      "question": "Explain how you would design the network layout for a company running many projects on GCP.",
+      "followUps": {
+        "Custom-Mode VPC & Subnet Planning": "How does the global nature of a GCP VPC change the way you plan subnet IP ranges?",
+        "Shared VPC for Multi-Project Environments": "What problem does Shared VPC solve for an organization with many teams and projects?"
+      }
+    },
+    {
+      "title": "Load Balancing & Cloud Armor",
+      "question": "Walk through how traffic from the internet reaches your services on GCP and how you protect it at the edge.",
+      "followUps": {
+        "Global and Regional Load Balancing": "What goes wrong if you pick a regional or TCP load balancer when you needed the global HTTP(S) one?",
+        "Cloud Armor WAF & DDoS Protection": "Why is it better to block abusive traffic with Cloud Armor than inside your application code?"
+      }
+    },
+    {
+      "title": "Hybrid Connectivity",
+      "question": "Explain how you would connect an on-premises data center to GCP and make names resolve across both.",
+      "followUps": {
+        "Cloud VPN & Cloud Interconnect": "How would you choose between HA VPN and Interconnect for a hybrid link?",
+        "Cloud DNS Managed Zones": "What is split-horizon DNS, and why is it useful in a hybrid setup?"
+      }
+    },
+    {
+      "title": "Firewall & Network Intelligence",
+      "question": "Explain how network access control works on GCP and how you would debug traffic that is being blocked.",
+      "followUps": {
+        "VPC Firewall Rules & Firewall Policies": "What is the default behavior for traffic that no firewall rule matches, and why does that catch people out?",
+        "Network Intelligence Center": "How would Connectivity Tests help you after a deployment stops responding following a firewall change?"
+      }
+    }
+  ]
+}

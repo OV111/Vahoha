@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "systems-dev-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "RAII & Resource Safety",
+      "question": "Explain how modern C++ makes sure resources like memory and files are always released.",
+      "followUps": {
+        "RAII — Resource Acquisition Is Initialization": "Why does RAII still release a resource when an exception is thrown?",
+        "Smart Pointers — unique_ptr & shared_ptr": "When do you use unique_ptr and when shared_ptr, and what can go wrong with shared_ptr?"
+      }
+    },
+    {
+      "title": "Move Semantics",
+      "question": "Explain how C++ avoids expensive copies, and what a class that owns a resource has to define.",
+      "followUps": {
+        "Move Semantics & Rvalue References": "What does moving a vector do differently from copying it?",
+        "The Rule of Five": "Which five special member functions does the Rule of Five cover, and why do they belong together?"
+      }
+    },
+    {
+      "title": "The STL & Templates",
+      "question": "Explain how you use STL containers safely, and what templates cost you.",
+      "followUps": {
+        "STL Containers & Iterator Invalidation": "Why can push_back on a vector make your existing iterators invalid?",
+        "Templates & Compilation Cost": "Why do heavy templates make builds slower and error messages longer?"
+      }
+    },
+    {
+      "title": "Modern C++ Features",
+      "question": "Explain how C++ helps you catch mistakes at compile time, and where it can't protect you.",
+      "followUps": {
+        "const-correctness & References": "What does marking a member function const promise, and how does that help?",
+        "Undefined Behavior in C++": "Give an example of undefined behavior in C++, and explain why the program might seem to work anyway."
+      }
+    }
+  ]
+}

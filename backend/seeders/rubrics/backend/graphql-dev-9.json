@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "graphql-dev-9",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Query Analysis & Protection",
+      "question": "Explain how a GraphQL server can defend itself against expensive or malicious queries.",
+      "followUps": {
+        "Query Depth & Complexity Limiting": "How can a short, valid query take down a server, and how do limits stop it?",
+        "Persisted Queries & APQ": "How do persisted queries help with both bandwidth and security?"
+      }
+    },
+    {
+      "title": "Response Caching",
+      "question": "Explain how you would cache GraphQL responses when everything goes through one endpoint.",
+      "followUps": {
+        "Full & Partial Response Caching": "How do field-level cache hints decide how long a whole response can be cached?",
+        "Redis as a Cache Backend": "Why does an in-memory cache work poorly when you run many server instances?"
+      }
+    },
+    {
+      "title": "Rate Limiting & Timeouts",
+      "question": "Walk through how you would keep slow or abusive requests from tying up a GraphQL server.",
+      "followUps": {
+        "Request Timeout Enforcement": "Why does a GraphQL request need an overall time limit and not just limits per call?",
+        "Alias & Batch Abuse Prevention": "How can aliases let one request get around per-field limits?"
+      }
+    },
+    {
+      "title": "Monitoring & Tracing",
+      "question": "Explain how you would find out why a GraphQL query is slow in production.",
+      "followUps": {
+        "Apollo Studio Tracing": "What can field-level tracing show you that request-level timing cannot?",
+        "OpenTelemetry Integration": "What does OpenTelemetry give you beyond a GraphQL-only tracing tool?"
+      }
+    }
+  ]
+}

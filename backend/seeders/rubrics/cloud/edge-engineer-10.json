@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "edge-engineer-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Multi-CDN Strategy",
+      "question": "Explain how you would run edge infrastructure that survives a provider outage and stays manageable.",
+      "followUps": {
+        "DNS-Based CDN Failover": "How does DNS-based failover between CDNs work, and what trade-off does the TTL create?",
+        "Edge Configuration as Code with Terraform": "What is configuration drift, and how does managing edge config in Terraform help prevent it?"
+      }
+    },
+    {
+      "title": "Edge Observability",
+      "question": "Explain how you get visibility into what is happening at the edge.",
+      "followUps": {
+        "Workers Analytics Engine": "Why define a shared event schema across all Workers before you start writing telemetry?",
+        "Logpush for Edge Log Export": "Why export edge logs to the same place as your application logs?"
+      }
+    },
+    {
+      "title": "Request Coalescing and Stampede Prevention",
+      "question": "Explain how you protect the origin when many requests miss the cache at the same moment.",
+      "followUps": {
+        "Cache Stampede and Request Coalescing": "What causes a cache stampede, and how does request coalescing stop it?",
+        "Stale-While-Revalidate at the Edge": "What does stale-while-revalidate trade off, and for which content is that trade worth it?"
+      }
+    },
+    {
+      "title": "SLAs and Incident Response",
+      "question": "Walk through how you ship edge changes safely and recover when something breaks.",
+      "followUps": {
+        "Edge Incident Response Runbooks": "Why is an edge incident often more severe than an application incident, and what belongs in the runbook?",
+        "Canary Deployments for Edge Functions": "How would you run a canary for a new Worker version, and what signals tell you to roll back?"
+      }
+    }
+  ]
+}

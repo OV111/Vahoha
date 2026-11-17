@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "grpc-dev-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "gRPC Status Codes",
+      "question": "Explain how a gRPC service should report errors so clients can react correctly.",
+      "followUps": {
+        "Mapping Domain Errors to Status Codes": "Why is returning INTERNAL for every error harmful to client retry logic?",
+        "Rich Error Model with ErrorDetails": "What does the rich error model let a client do that a plain message string does not?"
+      }
+    },
+    {
+      "title": "Deadlines",
+      "question": "Explain how deadlines work in gRPC and how you pick them.",
+      "followUps": {
+        "Deadline Propagation Across Services": "What happens in a chain of services when one service does not pass the deadline downstream?",
+        "Choosing the Right Deadline Value": "What goes wrong when a deadline is set much too high or much too low?"
+      }
+    },
+    {
+      "title": "Retries & Resilience",
+      "question": "Explain how gRPC can make calls more resilient to failures and slow backends.",
+      "followUps": {
+        "gRPC Retry Policy Configuration": "Why is a declarative retry policy safer than hand-written retry loops?",
+        "Hedging for Latency Tail Reduction": "How does hedging differ from retrying, and when is it unsafe to use?"
+      }
+    },
+    {
+      "title": "Health Checking & Graceful Shutdown",
+      "question": "Walk through how a gRPC service starts up and shuts down without dropping traffic.",
+      "followUps": {
+        "gRPC Health Checking Protocol": "How do load balancers and Kubernetes use the gRPC health checking protocol?",
+        "Graceful Shutdown Sequence": "Why should a server wait after marking itself NOT_SERVING before it stops?"
+      }
+    }
+  ]
+}

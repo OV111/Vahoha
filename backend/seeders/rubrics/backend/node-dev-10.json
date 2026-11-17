@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "node-dev-10",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Observability",
+      "question": "Explain how you would know a Node.js service is healthy and find the cause when it is not.",
+      "followUps": {
+        "Distributed Tracing with OpenTelemetry": "How does distributed tracing help you debug a slow request that crosses several services?",
+        "Metrics & Health Checks": "What should a health check verify, and what happens when a service has none?"
+      }
+    },
+    {
+      "title": "Containerization",
+      "question": "Walk through how you package a Node.js app into a container for production.",
+      "followUps": {
+        "Dockerizing a Node.js App": "What does a multi-stage Dockerfile give you over a single-stage one?",
+        "Non-Root Users & Docker Security": "Why should a Node.js container run as a non-root user?"
+      }
+    },
+    {
+      "title": "CI/CD",
+      "question": "Explain how code goes from a git push to a deployable image in a CI/CD pipeline.",
+      "followUps": {
+        "GitHub Actions for Node.js": "What does a CI pipeline protect you from, and how do you keep it fast?",
+        "Container Registry & Image Tagging": "Why should you tag images with the commit SHA instead of only using latest?"
+      }
+    },
+    {
+      "title": "Production Deployment",
+      "question": "Explain what you do to make a Node.js service safe to deploy and run in production.",
+      "followUps": {
+        "Graceful Shutdown & SIGTERM Handling": "Walk through what your service should do between receiving SIGTERM and exiting.",
+        "Environment-Specific Configuration": "How do you keep development settings and credentials out of a production deployment?"
+      }
+    }
+  ]
+}

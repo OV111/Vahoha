@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "node-dev-6",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Authentication Patterns",
+      "question": "Explain how you would authenticate users in a Node.js API with tokens.",
+      "followUps": {
+        "JWT Structure & Verification": "What does verifying a JWT signature prove, and what does it not prove?",
+        "Refresh Token Rotation": "How does refresh token rotation limit the damage of a stolen refresh token?"
+      }
+    },
+    {
+      "title": "Password Security",
+      "question": "Explain how you store and check secrets like passwords and tokens safely.",
+      "followUps": {
+        "Password Hashing with bcrypt": "Why is a slow hash like bcrypt better for passwords than SHA-256?",
+        "Timing Attacks & Constant-Time Comparison": "How can comparing secret tokens with a normal equality check leak information to an attacker?"
+      }
+    },
+    {
+      "title": "Authorization & RBAC",
+      "question": "Explain how you control what each user is allowed to do in your API.",
+      "followUps": {
+        "Role-Based Access Control": "What is the trade-off between putting roles in the JWT and checking them in the database on each request?",
+        "CORS & Security Headers": "What is a dangerous CORS setup for an API that uses cookies, and what do security headers add?"
+      }
+    },
+    {
+      "title": "OWASP Node.js Security",
+      "question": "Walk through the most common security threats to a Node.js API and how you defend against them.",
+      "followUps": {
+        "Injection Attacks & Parameterized Queries": "How can raw SQL in Prisma bring back SQL injection, and how do you stay safe?",
+        "Rate Limiting & DoS Prevention": "Why does rate limiting need a shared store when you run several Node.js instances?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "graphql-dev-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Authentication Patterns",
+      "question": "Explain how authentication works in a GraphQL API with a single endpoint.",
+      "followUps": {
+        "JWT Authentication via Context": "Why should you set up auth in the context factory rather than on routes?",
+        "Token Refresh & Session Management": "How do short-lived access tokens with refresh rotation limit the damage of a stolen token?"
+      }
+    },
+    {
+      "title": "Field-level Authorization",
+      "question": "Explain where authorization checks should live in a GraphQL server.",
+      "followUps": {
+        "Authorization in Resolvers vs Schema Directives": "What are the trade-offs between checks inside resolvers and schema directives?",
+        "GraphQL Shield": "How does a dedicated permission layer like GraphQL Shield help you avoid a forgotten check?"
+      }
+    },
+    {
+      "title": "Role-based Access Control",
+      "question": "Walk through how you would design role-based access control for a GraphQL API.",
+      "followUps": {
+        "RBAC Design — Roles, Permissions & Context": "Why is hiding a button in the UI not real authorization?",
+        "Object-level vs Field-level Authorization": "What can leak if you only check access at the object level and not per field?"
+      }
+    },
+    {
+      "title": "Protecting Sensitive Operations",
+      "question": "Explain how you would protect a GraphQL API from abuse of its most sensitive features.",
+      "followUps": {
+        "Introspection in Production": "What does an attacker learn from introspection, and how would you limit it?",
+        "Mutation Rate Limiting": "Why do per-URL rate limits fail for GraphQL mutations?"
+      }
+    }
+  ]
+}

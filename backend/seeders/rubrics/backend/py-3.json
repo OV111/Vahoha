@@ -1,0 +1,39 @@
+{
+  "path": "backend",
+  "layer": "py-3",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "FastAPI Core Concepts",
+      "question": "Walk me through how a FastAPI route receives a request, gets what it needs, and returns a response.",
+      "followUps": {
+        "Path Operations & Dependency Injection": "Why is Depends a better way to share a database session than a module-level global?",
+        "Request & Response Models": "What can leak if you return raw dicts without a response_model, and why keep separate request and response schemas?"
+      }
+    },
+    {
+      "title": "Pydantic Validation",
+      "question": "Explain how you validate incoming data and application configuration in a FastAPI service.",
+      "followUps": {
+        "Pydantic Models & Validators": "Why should validation live in Pydantic models at the API boundary instead of in business logic?",
+        "Pydantic Settings & Configuration": "What goes wrong when you read os.environ directly all over the codebase instead of using one Settings model?"
+      }
+    },
+    {
+      "title": "API Design Principles",
+      "question": "Explain how you design a clean REST API and keep its documentation accurate.",
+      "followUps": {
+        "REST Resource Modeling & Status Codes": "What breaks when an API returns 200 for every response, including failures?",
+        "OpenAPI & Auto-Generated Documentation": "How does FastAPI keep its docs in sync with the code, and what do you have to do to keep them accurate?"
+      }
+    },
+    {
+      "title": "ASGI & Uvicorn",
+      "question": "Explain how FastAPI runs under an ASGI server and how a request moves through the app.",
+      "followUps": {
+        "ASGI — The Async Server Gateway Interface": "What does the ASGI lifespan protocol let you do at startup and shutdown, and why does it matter for connection pools?",
+        "Middleware & Request Lifecycle": "Why does middleware order matter, and what can go wrong when an exception is raised inside middleware?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "cloud",
+  "layer": "cloud-migration-8",
+  "reviewed": true,
+  "groups": [
+    {
+      "title": "Data Center Exit Planning",
+      "question": "Walk through how you would plan the exit from a data center.",
+      "followUps": {
+        "Data Center Exit Timeline and Milestones": "Why does physical decommissioning often take much longer than teams expect?",
+        "Workload Stability Validation Criteria": "Why is time alone a weak signal that a migrated workload is stable?"
+      }
+    },
+    {
+      "title": "Asset Management",
+      "question": "Explain what has to happen to servers and software once workloads have left them.",
+      "followUps": {
+        "IT Asset Inventory and Decommission Checklist": "What risks remain if you skip steps like removing firewall rules or DNS records?",
+        "License Reclamation and Software Inventory": "Why can unused licenses lose their value if you do not reclaim them on time?"
+      }
+    },
+    {
+      "title": "Contract and Cost Management",
+      "question": "Explain how contracts and cloud spending need to be managed during a data center exit.",
+      "followUps": {
+        "Colocation Contract Termination Planning": "Why do colocation notice periods force decisions long before the last workload moves?",
+        "Post-Migration Cost Validation": "Why should you compare real cloud costs to the business case soon after a wave goes live?"
+      }
+    },
+    {
+      "title": "Tracking Tools",
+      "question": "Explain how you would track migration progress and cloud costs across a large program.",
+      "followUps": {
+        "AWS Migration Hub for Progress Tracking": "Why track migration status per application instead of per server?",
+        "CloudHealth for Multi-Cloud Cost Tracking": "How does a unified cost view help you check spending against the business case?"
+      }
+    }
+  ]
+}
