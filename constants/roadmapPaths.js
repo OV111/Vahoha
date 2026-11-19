@@ -190,6 +190,18 @@ export const TRACKS = {
       available: true,
       techs: ["Node.js", "TypeScript", "Fastify", "Prisma"],
     },
+    {
+      id: "nestjs-dev",
+      title: "NestJS Developer",
+      available: true,
+      techs: ["NestJS", "TypeScript", "Prisma", "BullMQ"],
+    },
+    {
+      id: "aspnet-dev",
+      title: "ASP.NET Core Dev",
+      available: true,
+      techs: ["C#", "ASP.NET Core", "EF Core", "SQL Server"],
+    },
   ],
   mobile: [
     {

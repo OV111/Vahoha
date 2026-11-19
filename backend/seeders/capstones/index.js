@@ -17,6 +17,8 @@ import grpcDev from "./backend/grpc-dev.js";
 import microservices from "./backend/microservices.js";
 import securityDev from "./backend/security-dev.js";
 import systemsDev from "./backend/systems-dev.js";
+import nestjsDev from "./backend/nestjs-dev.js";
+import aspnetDev from "./backend/aspnet-dev.js";
 
 // blockchain
 import smartContract from "./blockchain/smart-contract.js";
@@ -225,6 +227,8 @@ export const briefs = [
   microservices,
   securityDev,
   systemsDev,
+  nestjsDev,
+  aspnetDev,
   mern,
   pern,
   t3,
