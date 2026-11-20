@@ -192,6 +192,15 @@ export const ENV_SPECS = [
     example: "8",
     effect: "uses the built-in default (8)",
   },
+  {
+    name: "GROQ_WHISPER_CONCURRENCY",
+    group: "ai",
+    requirement: "optional",
+    kind: "int",
+    description: "Most voice-exam transcriptions (Whisper) in flight at once, per server instance. Separate from the chat gate.",
+    example: "4",
+    effect: "uses the built-in default (4)",
+  },
 
   // ── email ───────────────────────────────────────────────────────────────
   {

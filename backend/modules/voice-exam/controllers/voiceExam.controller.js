@@ -1,7 +1,7 @@
 import { Buffer } from "buffer";
 import busboy from "busboy";
 import { dbOf, respond } from "../../../utils/respond.js";
-import { ValidationError } from "../../../utils/httpErrors.js";
+import { HttpError, ValidationError } from "../../../utils/httpErrors.js";
 import { audioFieldsSchema } from "../schemas/voiceExam.schemas.js";
 import { abandonAttempt, getEligibility, getLiveAttempt, listVerifiedLayers, startAttempt, submitTurn } from "../services/voiceExamService.js";
 
@@ -9,6 +9,11 @@ const uid = (req) => req.user._id.toString();
 
 // 5 minutes of Safari AAC is about 2.5 MB; this leaves room without inviting abuse.
 const MAX_AUDIO_BYTES = 10 * 1024 * 1024;
+
+// Each recording sits in RAM from upload until its answer is graded. This caps the worst case
+// at ~120 MB, so a crowd of uploads gets "busy" instead of crashing the server for everyone.
+const MAX_UPLOADS_IN_MEMORY = 12;
+let uploadsInMemory = 0;
 
 // Reads the recording into memory only; it is never written to disk or storage.
 const readAudio = (req) =>
@@ -43,6 +48,7 @@ const readAudio = (req) =>
     req.pipe(bb);
   });
 
+// Thin HTTP handlers: all logic lives in voiceExamService.
 export const verified = respond((req) => listVerifiedLayers(dbOf(req), uid(req)));
 export const eligibility = respond((req) => getEligibility(dbOf(req), uid(req), req.params.layerId));
 export const live = respond((req) => getLiveAttempt(dbOf(req), uid(req), req.params.layerId));
@@ -52,9 +58,19 @@ export const start = respond(
 );
 export const turn = respond((req) => submitTurn(dbOf(req), uid(req), req.params.id, req.body));
 export const audioTurn = respond(async (req) => {
-  const { audio, fields } = await readAudio(req);
-  const parsed = audioFieldsSchema.safeParse(fields);
-  if (!parsed.success) throw new ValidationError(parsed.error.issues[0].message);
-  return submitTurn(dbOf(req), uid(req), req.params.id, { audio, turnKey: parsed.data.turnKey });
+  if (uploadsInMemory >= MAX_UPLOADS_IN_MEMORY) {
+    // Drain the upload without keeping it, so the connection closes cleanly.
+    req.resume();
+    throw new HttpError(503, "Many answers are being checked right now. Try again in a few seconds.");
+  }
+  uploadsInMemory += 1;
+  try {
+    const { audio, fields } = await readAudio(req);
+    const parsed = audioFieldsSchema.safeParse(fields);
+    if (!parsed.success) throw new ValidationError(parsed.error.issues[0].message);
+    return await submitTurn(dbOf(req), uid(req), req.params.id, { audio, turnKey: parsed.data.turnKey });
+  } finally {
+    uploadsInMemory -= 1;
+  }
 });
 export const abandon = respond((req) => abandonAttempt(dbOf(req), uid(req), req.params.id));

@@ -9,6 +9,46 @@
       "followUps": {
         "Cache-Aside Pattern with Redis": "What goes wrong with cache-aside if you have no TTL or invalidation plan?",
         "Redis Data Structures": "Pick one Redis data structure beyond plain strings and explain a problem it solves well."
+      },
+      "criteria": {
+        "Cache-Aside Pattern with Redis": {
+          "id": "cache-aside",
+          "evidence": [
+            {
+              "id": "flow",
+              "text": "The app checks the cache first; on a miss it reads the database, stores the result in the cache and returns it."
+            },
+            {
+              "id": "stale",
+              "text": "Without a TTL or invalidation on writes, the cache keeps serving old data after the database changes."
+            },
+            {
+              "id": "invalidate",
+              "text": "Setting a TTL and deleting or updating the key when the data changes keeps it fresh enough."
+            }
+          ],
+          "notEnough": [
+            "Only saying cache with Redis without explaining the miss path or invalidation."
+          ],
+          "misconceptions": []
+        },
+        "Redis Data Structures": {
+          "id": "redis-structures",
+          "evidence": [
+            {
+              "id": "beyond-strings",
+              "text": "Redis has structures like hashes, lists, sets and sorted sets, each with atomic operations."
+            },
+            {
+              "id": "example",
+              "text": "The answer picks one and explains a real use, for example a sorted set for a leaderboard or a set for unique visitors."
+            }
+          ],
+          "notEnough": [
+            "Only listing data structure names without explaining a use for one."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -17,6 +57,46 @@
       "followUps": {
         "Job Queues & Workers": "Why should an endpoint enqueue a 30-second task instead of doing it before responding?",
         "Job Retries & Dead-Letter Queues": "Why should failed jobs end up in a dead-letter queue instead of being dropped?"
+      },
+      "criteria": {
+        "Job Queues & Workers": {
+          "id": "job-queues",
+          "evidence": [
+            {
+              "id": "enqueue",
+              "text": "The endpoint puts a job in the queue and answers right away, and a separate worker process does the slow work."
+            },
+            {
+              "id": "why",
+              "text": "Holding the request open for 30 seconds ties up resources, risks timeouts, and loses the work if the connection drops."
+            }
+          ],
+          "notEnough": [
+            "Only saying use a queue without explaining why the request shouldn't wait."
+          ],
+          "misconceptions": []
+        },
+        "Job Retries & Dead-Letter Queues": {
+          "id": "retries-dlq",
+          "evidence": [
+            {
+              "id": "retries",
+              "text": "Failed jobs are retried a set number of times with backoff, so temporary failures fix themselves."
+            },
+            {
+              "id": "dlq",
+              "text": "Jobs that still fail go to a dead-letter queue instead of being dropped."
+            },
+            {
+              "id": "why",
+              "text": "There they can be inspected, fixed and replayed, so no work is silently lost."
+            }
+          ],
+          "notEnough": [
+            "Only saying jobs are retried without explaining what happens after the last failure."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -25,6 +105,50 @@
       "followUps": {
         "Profiling with --prof & Clinic.js": "How would you use a profiler or flame graph to find what is eating CPU time?",
         "Detecting & Fixing Memory Leaks": "How would you track down a memory leak that only shows up after days of uptime?"
+      },
+      "criteria": {
+        "Profiling with --prof & Clinic.js": {
+          "id": "cpu-profiling",
+          "evidence": [
+            {
+              "id": "profile",
+              "text": "A CPU profiler, like --prof, --cpu-prof or Clinic, samples where the process spends its time."
+            },
+            {
+              "id": "flame-graph",
+              "text": "In a flame graph, the widest bars are the functions using the most CPU, which is where to look first."
+            },
+            {
+              "id": "realistic",
+              "text": "Profiling should run under realistic load, so the hot paths show up."
+            }
+          ],
+          "notEnough": [
+            "Only naming profiling tools without explaining how to read the result."
+          ],
+          "misconceptions": []
+        },
+        "Detecting & Fixing Memory Leaks": {
+          "id": "memory-leaks",
+          "evidence": [
+            {
+              "id": "symptom",
+              "text": "A leak shows as memory that keeps growing over time and isn't released by garbage collection."
+            },
+            {
+              "id": "snapshots",
+              "text": "Comparing heap snapshots taken some time apart shows which objects keep growing and what is holding on to them."
+            },
+            {
+              "id": "causes",
+              "text": "Common causes are growing caches or maps, forgotten listeners and timers, and closures keeping large objects alive."
+            }
+          ],
+          "notEnough": [
+            "Only saying use a heap snapshot without explaining how to find the leak."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -33,7 +157,44 @@
       "followUps": {
         "Database Connection Pool Tuning": "What happens when a database pool is too large, and what happens when it is too small?",
         "Redis Connection Management": "Why should a service share one Redis client instead of creating one per request?"
+      },
+      "criteria": {
+        "Database Connection Pool Tuning": {
+          "id": "db-pool-tuning",
+          "evidence": [
+            {
+              "id": "too-small",
+              "text": "Too small a pool makes requests wait for a free connection even when the database has capacity."
+            },
+            {
+              "id": "too-large",
+              "text": "Too large a pool, multiplied by every instance, can exceed the database's connection limit and slow it down with too many parallel queries."
+            }
+          ],
+          "notEnough": [
+            "Only saying tune the pool size without explaining what goes wrong at each extreme."
+          ],
+          "misconceptions": []
+        },
+        "Redis Connection Management": {
+          "id": "redis-client-sharing",
+          "evidence": [
+            {
+              "id": "one-client",
+              "text": "A Redis client keeps one connection that can handle many commands, so one shared client serves all requests."
+            },
+            {
+              "id": "per-request",
+              "text": "Creating a client per request opens and closes connections constantly, adds latency and can exhaust Redis's connection limit."
+            }
+          ],
+          "notEnough": [
+            "Only saying reuse the client without explaining the cost of one per request."
+          ],
+          "misconceptions": []
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": true
 }

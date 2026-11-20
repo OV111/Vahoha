@@ -2,75 +2,83 @@ import { combineOpinions, isDecisive, keepBest, verifyJudgement, verifyResults }
 import { gradeTurns } from "./graderService.js";
 import { judgeCriterion } from "./judgeService.js";
 
-// A subtopic with evidence points is judged on its own (v2); one without is graded with
-// its siblings in one checklist call (v1), exactly as before criteria existed.
+// v2 subtopics (with evidence points) get their own judge call; v1 ones (no evidence)
+// are graded together in one checklist call, exactly as before criteria existed.
 const hasEvidence = (s) => Array.isArray(s?.evidence) && s.evidence.length > 0;
 
+// All answers joined into one text, for the quote checks.
 const textOf = (turns) => turns.map((t) => t.text).join(" ");
 
-const logEntry = (stage, subtopic, raw, now) => ({ stage, ...(subtopic && { subtopic }), output: raw, at: now });
+// One record of what the model said and the tokens it cost, saved with the attempt for review.
+const logEntry = (stage, subtopic, raw, tokens, now) => ({ stage, ...(subtopic && { subtopic }), output: raw, tokens, at: now });
 
+// Puts one new grade in place of the old grade for the same subtopic.
+const replaceGrade = (concepts, grade) => concepts.map((c) => (c.label === grade.label ? grade : c));
+
+// Judges one v2 subtopic and checks the judge's quotes.
 const judge = async (subtopic, turns, now, stage, opts) => {
-  const { judgement, raw } = await judgeCriterion(subtopic, turns, opts);
-  return { concept: verifyJudgement(judgement, subtopic, textOf(turns)), log: logEntry(stage, subtopic.title, raw, now) };
+  const { judgement, raw, tokens } = await judgeCriterion(subtopic, turns, opts);
+  return { concept: verifyJudgement(judgement, subtopic, textOf(turns)), log: logEntry(stage, subtopic.title, raw, tokens, now) };
 };
 
+// Grades all v1 subtopics in one call and checks the quotes.
 const gradeChecklist = async (subtopics, turns, now, stage) => {
   if (!subtopics.length) return { concepts: [], logs: [] };
-  const { results, raw } = await gradeTurns(subtopics, turns);
-  return { concepts: verifyResults(results, subtopics, textOf(turns)), logs: [logEntry(stage, null, raw, now)] };
+  const { results, raw, usage } = await gradeTurns(subtopics, turns);
+  const tokens = usage?.total_tokens ?? 0;
+  return { concepts: verifyResults(results, subtopics, textOf(turns)), logs: [logEntry(stage, null, raw, tokens, now)] };
 };
 
-const inOrder = (subtopics, concepts) => subtopics.map((s) => concepts.find((c) => c.label === s.title));
-
-/** Grades the opening explanation: every subtopic, each v2 one in its own call, in parallel. */
+/** Grades the opening explanation: every v2 subtopic in its own call, all in parallel. */
 export const gradeExplanation = async (subtopics, turn, now) => {
-  const v2 = subtopics.filter(hasEvidence);
   const [judged, checklist] = await Promise.all([
-    Promise.all(v2.map((s) => judge(s, [turn], now, "explanation"))),
+    Promise.all(subtopics.filter(hasEvidence).map((s) => judge(s, [turn], now, "explanation"))),
     gradeChecklist(subtopics.filter((s) => !hasEvidence(s)), [turn], now, "explanation"),
   ]);
+  const all = [...judged.map((j) => j.concept), ...checklist.concepts];
   return {
-    concepts: inOrder(subtopics, [...judged.map((j) => j.concept), ...checklist.concepts]),
+    concepts: subtopics.map((s) => all.find((c) => c.label === s.title)),
     logs: [...judged.map((j) => j.log), ...checklist.logs],
   };
 };
 
 /**
- * After a follow-up, re-judges only the subtopic it was about, on the explanation plus that
- * answer. Other subtopics keep their grades, so nothing is re-judged without a new answer.
- * v1 subtopics wait for the final checklist call.
+ * After a follow-up, re-judges only the subtopic it was about, on the explanation plus that answer.
+ * Other subtopics keep their grades; v1 subtopics wait for the final checklist call.
  */
 export const gradeFollowUp = async (subtopics, concepts, explanation, followUp, now) => {
   const subtopic = subtopics.find((s) => s.title === followUp.subtopic);
   if (!subtopic || !hasEvidence(subtopic)) return { concepts, logs: [] };
   const { concept, log } = await judge(subtopic, [explanation, followUp], now, "followup");
-  return { concepts: keepBest(concepts, concepts.map((c) => (c.label === concept.label ? concept : c))), logs: [log] };
+  return { concepts: keepBest(concepts, replaceGrade(concepts, concept)), logs: [log] };
 };
 
 /**
- * Final grades: the v1 subtopics get their checklist regrade over every answer, then any v2
- * grade that both decides pass/fail and came out uncertain is judged a second time.
+ * Final grades: v1 subtopics are regraded over every answer, then each v2 grade that is
+ * uncertain and could flip pass/fail gets a second opinion.
  */
 export const finalizeConcepts = async (subtopics, concepts, turns, now, { regradeChecklist = true } = {}) => {
   // Skipped when the explanation was the only answer: the checklist already graded exactly that.
   const v1 = regradeChecklist ? subtopics.filter((s) => !hasEvidence(s)) : [];
   const checklist = await gradeChecklist(v1, turns, now, "final");
-  let final = keepBest(concepts, concepts.map((c) => checklist.concepts.find((x) => x.label === c.label) ?? c));
+  const regraded = concepts.map((c) => checklist.concepts.find((x) => x.label === c.label) ?? c);
+  const final = keepBest(concepts, regraded);
   const logs = [...checklist.logs];
 
-  const doubtful = final
-    .map((c, i) => ({ c, i, s: subtopics.find((x) => x.title === c.label) }))
-    .filter(({ c, i, s }) => hasEvidence(s) && c.confidence === "low" && isDecisive(final, i));
+  const subtopicOf = (c) => subtopics.find((s) => s.title === c.label);
+  const doubtful = [...final.keys()].filter((i) => hasEvidence(subtopicOf(final[i])) && final[i].confidence === "low" && isDecisive(final, i));
 
-  // A warmer second pass, so it is a genuinely independent look rather than the same answer twice.
+  // Warmer temperature, so the second look is independent rather than the same answer twice.
   const seconds = await Promise.all(
-    doubtful.map(({ s }) => judge(s, turns.filter((t) => t.kind === "explanation" || t.subtopic === s.title), now, "second-opinion", { temperature: 0.6 })),
+    doubtful.map((i) => {
+      const s = subtopicOf(final[i]);
+      const answers = turns.filter((t) => t.kind === "explanation" || t.subtopic === s.title);
+      return judge(s, answers, now, "second-opinion", { temperature: 0.6 });
+    }),
   );
-  seconds.forEach(({ concept, log }, k) => {
-    const { i } = doubtful[k];
-    final = final.map((c, j) => (j === i ? combineOpinions(c, concept) : c));
-    logs.push(log);
+  doubtful.forEach((i, k) => {
+    final[i] = combineOpinions(final[i], seconds[k].concept);
+    logs.push(seconds[k].log);
   });
   return { concepts: final, logs };
 };

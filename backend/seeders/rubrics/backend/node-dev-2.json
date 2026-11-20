@@ -9,6 +9,55 @@
       "followUps": {
         "libuv & the Thread Pool": "What kinds of work go to the libuv thread pool, and what happens when that pool is saturated?",
         "process.nextTick vs setImmediate": "Why can recursive process.nextTick calls make a server look frozen?"
+      },
+      "criteria": {
+        "libuv & the Thread Pool": {
+          "id": "libuv-thread-pool",
+          "evidence": [
+            {
+              "id": "offload",
+              "text": "Some work, like file system calls, DNS lookups, crypto and compression, runs on libuv's thread pool instead of the main JavaScript thread."
+            },
+            {
+              "id": "small-pool",
+              "text": "The pool is small by default (4 threads), so when it's full, new tasks queue up and even unrelated file or crypto work gets slow."
+            },
+            {
+              "id": "network-separate",
+              "text": "Most network I/O doesn't use the pool; the operating system handles it asynchronously."
+            }
+          ],
+          "notEnough": [
+            "Only saying libuv handles async work without saying what goes to the pool or what happens when it's full."
+          ],
+          "misconceptions": [
+            {
+              "id": "pool-for-all",
+              "text": "Says every async operation, including all network requests, runs on the thread pool."
+            }
+          ]
+        },
+        "process.nextTick vs setImmediate": {
+          "id": "nexttick-vs-setimmediate",
+          "evidence": [
+            {
+              "id": "nexttick-first",
+              "text": "process.nextTick callbacks run right after the current operation, before the event loop moves on to I/O or timers."
+            },
+            {
+              "id": "setimmediate",
+              "text": "setImmediate callbacks run in the check phase of the next loop iteration, after I/O has had its turn."
+            },
+            {
+              "id": "starvation",
+              "text": "Recursive nextTick calls keep the loop from ever reaching I/O, so the server stops answering requests."
+            }
+          ],
+          "notEnough": [
+            "Only saying nextTick runs sooner than setImmediate without explaining why recursion freezes the server."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -17,6 +66,51 @@
       "followUps": {
         "The fs Module & Async I/O": "Why is calling fs.readFileSync inside a request handler a problem under load?",
         "EventEmitter Pattern": "How can forgetting to remove EventEmitter listeners cause a slow memory leak?"
+      },
+      "criteria": {
+        "The fs Module & Async I/O": {
+          "id": "fs-async-io",
+          "evidence": [
+            {
+              "id": "sync-blocks",
+              "text": "Sync fs calls like readFileSync block the event loop until the disk work is done, so no other request is handled meanwhile."
+            },
+            {
+              "id": "async",
+              "text": "The async or promise versions hand the work off and let the event loop serve other requests while waiting."
+            }
+          ],
+          "notEnough": [
+            "Only saying use the async version without explaining what the sync one blocks."
+          ],
+          "misconceptions": [
+            {
+              "id": "sync-fine",
+              "text": "Says readFileSync inside a request handler is fine because it's fast for small files under any load."
+            }
+          ]
+        },
+        "EventEmitter Pattern": {
+          "id": "eventemitter",
+          "evidence": [
+            {
+              "id": "pattern",
+              "text": "An EventEmitter lets code register listeners with on and trigger them with emit, so parts of the app react to events without calling each other directly."
+            },
+            {
+              "id": "listeners-keep",
+              "text": "Each registered listener stays referenced, together with everything its closure holds, until it is removed."
+            },
+            {
+              "id": "leak",
+              "text": "Adding listeners again and again, for example per request, without removing them makes memory grow slowly; Node warns when there are too many listeners."
+            }
+          ],
+          "notEnough": [
+            "Only saying EventEmitter handles events without explaining how forgotten listeners leak."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -25,6 +119,46 @@
       "followUps": {
         "CommonJS Module Resolution": "How does require find a package, and how can that go wrong in a monorepo?",
         "Environment Variables & Config": "Why should a service validate its environment variables at startup?"
+      },
+      "criteria": {
+        "CommonJS Module Resolution": {
+          "id": "commonjs-resolution",
+          "evidence": [
+            {
+              "id": "lookup",
+              "text": "require first checks core modules, then relative paths, then walks up through node_modules folders from the current directory."
+            },
+            {
+              "id": "cache",
+              "text": "A module runs once and is cached, so later requires return the same exports."
+            },
+            {
+              "id": "monorepo",
+              "text": "In a monorepo, packages can resolve to different copies or versions in different node_modules folders, giving duplicate instances or the wrong version."
+            }
+          ],
+          "notEnough": [
+            "Only saying require loads a file without explaining how it searches."
+          ],
+          "misconceptions": []
+        },
+        "Environment Variables & Config": {
+          "id": "env-config",
+          "evidence": [
+            {
+              "id": "env",
+              "text": "Configuration like ports, URLs and secrets comes from environment variables, so the same code runs in every environment."
+            },
+            {
+              "id": "validate-startup",
+              "text": "Validating them at startup makes the service stop right away with a clear error instead of failing later with a confusing one."
+            }
+          ],
+          "notEnough": [
+            "Only saying use environment variables without explaining validation."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -33,7 +167,57 @@
       "followUps": {
         "V8 JIT Compilation & Hidden Classes": "Why does adding object properties in a different order slow down a hot code path?",
         "Garbage Collection & Memory": "How do garbage collection pauses show up in your latency numbers, and how do you keep them short?"
+      },
+      "criteria": {
+        "V8 JIT Compilation & Hidden Classes": {
+          "id": "v8-jit-hidden-classes",
+          "evidence": [
+            {
+              "id": "jit",
+              "text": "V8 compiles hot code into optimized machine code based on the types and object shapes it has seen."
+            },
+            {
+              "id": "hidden-classes",
+              "text": "Objects with the same properties added in the same order share a hidden class, which makes property access fast."
+            },
+            {
+              "id": "deopt",
+              "text": "Creating objects with different property orders or shapes gives them different hidden classes, so the optimized code is thrown away and the path slows down."
+            }
+          ],
+          "notEnough": [
+            "Only saying V8 is a JIT compiler without explaining object shapes."
+          ],
+          "misconceptions": []
+        },
+        "Garbage Collection & Memory": {
+          "id": "gc-memory",
+          "evidence": [
+            {
+              "id": "generations",
+              "text": "V8 collects new, short-lived objects often and cheaply, and long-lived objects less often in more expensive collections."
+            },
+            {
+              "id": "pauses",
+              "text": "Collections can pause JavaScript, which shows up as latency spikes in slow requests."
+            },
+            {
+              "id": "keep-short",
+              "text": "Creating fewer short-lived objects in hot paths and avoiding a huge long-lived heap keeps pauses short."
+            }
+          ],
+          "notEnough": [
+            "Only saying JavaScript has garbage collection without explaining how it affects latency."
+          ],
+          "misconceptions": [
+            {
+              "id": "no-leaks",
+              "text": "Says memory leaks are impossible in JavaScript because of garbage collection."
+            }
+          ]
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": true
 }

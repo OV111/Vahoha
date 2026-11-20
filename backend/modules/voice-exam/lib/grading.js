@@ -1,5 +1,6 @@
 // Pure rules: the model only proposes a status and a quote, the app decides what counts.
 
+// Lowercase, no punctuation, single spaces: so a quote matches however it was punctuated.
 const normalize = (text) =>
   String(text ?? "")
     .toLowerCase()
@@ -14,6 +15,7 @@ const MIN_QUOTE_WORDS = 3;
 const INSTRUCTION =
   /\b(ignore|disregard|forget)\b.{0,40}\b(instructions?|rules|prompt|checklist|above|previous)\b|\b(mark|grade|rate|score|label)\b.{0,40}\b(solid|shallow|passed|pass|full marks)\b|\byou are (now )?(an? |the )?(grader|examiner|ai|assistant|model)\b|\bsystem prompt\b/i;
 
+// True if the text tries to instruct the grader.
 export const looksLikeInstruction = (text) => INSTRUCTION.test(String(text ?? ""));
 
 // A quote counts only if it is long enough, really appears in what the learner said,
@@ -23,7 +25,7 @@ const quoteHolds = (quote, said) => {
   return q.split(" ").length >= MIN_QUOTE_WORDS && said.includes(q) && !looksLikeInstruction(quote);
 };
 
-/** A credit stands only if its quote really appears in what the learner said. */
+/** Checks the v1 checklist grades: a credit stands only if its quote really appears in what the learner said. */
 export const verifyResults = (results, subtopics, transcript) => {
   const said = normalize(transcript);
   const byN = new Map(results.map((r) => [Number(r?.n), r]));
@@ -48,9 +50,8 @@ export const deriveStatus = ({ met, solidNeeds, misconception }) => {
 };
 
 /**
- * Turns one judge's output for a subtopic with evidence points into a concept result.
- * A point the judge claimed but couldn't back with a real quote lowers confidence:
- * a sign of a confused judge, used to ask for a second opinion.
+ * Checks one judge's answer for a v2 subtopic and turns it into a grade.
+ * A point claimed without a real quote lowers confidence: a confused judge, worth a second opinion.
  */
 export const verifyJudgement = (judgement, subtopic, transcript) => {
   const said = normalize(transcript);
@@ -87,6 +88,7 @@ export const verifyJudgement = (judgement, subtopic, transcript) => {
   };
 };
 
+// Missing or wrong: either one fails the exam.
 const failing = (status) => status === "missing" || status === "incorrect";
 
 /** Pass: nothing missing or wrong, and at least half of the subtopics explained solidly. */
@@ -96,39 +98,39 @@ export const decidePass = (concepts) => {
   return concepts.every((c) => !failing(c.status)) && solid * 2 >= concepts.length;
 };
 
+// Picks one question group at random for the exam.
 export const pickGroup = (groups, random = Math.random) => groups[Math.floor(random() * groups.length)];
 
 const RANK = { incorrect: 0, missing: 0, shallow: 1, solid: 2 };
+const BY_RANK = ["missing", "shallow", "solid"];
 
 /**
- * The better grade per subtopic. A subtopic solid in the explanation gets no follow-up,
- * so the final regrade must not take that credit back without giving a chance to answer.
- * On a tie between two failing grades the misconception is kept: it says more.
+ * Keeps the better grade per subtopic. A subtopic solid in the explanation gets no follow-up,
+ * so a later regrade must not take that credit back. On a tie between two failing grades
+ * the misconception is kept: it says more.
  */
 export const keepBest = (earlier, later) =>
   later.map((c) => {
     const e = earlier?.find((x) => x.label === c.label);
     if (!e) return c;
-    if (RANK[e.status] > RANK[c.status]) return e;
-    if (RANK[e.status] === RANK[c.status] && e.status === "incorrect") return e;
-    return c;
+    const tieOnMisconception = RANK[e.status] === RANK[c.status] && e.status === "incorrect";
+    return RANK[e.status] > RANK[c.status] || tieOnMisconception ? e : c;
   });
 
 /** Would moving this one subtopic a step up or down change pass/fail? */
 export const isDecisive = (concepts, index) => {
   const passed = decidePass(concepts);
   const rank = RANK[concepts[index].status];
-  return [rank - 1, rank + 1]
-    .filter((r) => r >= 0 && r <= 2)
-    .some((r) => {
-      const status = ["missing", "shallow", "solid"][r];
-      return decidePass(concepts.map((c, i) => (i === index ? { ...c, status } : c))) !== passed;
-    });
+  const neighbours = [BY_RANK[rank - 1], BY_RANK[rank + 1]].filter(Boolean);
+  return neighbours.some((status) => {
+    const moved = concepts.map((c, i) => (i === index ? { ...c, status } : c));
+    return decidePass(moved) !== passed;
+  });
 };
 
 /**
- * Two independent judgements of the same subtopic. Agreement keeps the first;
- * disagreement keeps the lower grade, because a Verified badge must not rest on a disputed call.
+ * Combines two independent grades of the same subtopic. On disagreement the lower one wins:
+ * a Verified badge must not rest on a disputed call.
  */
 export const combineOpinions = (first, second) => {
   const agreed = first.status === second.status;

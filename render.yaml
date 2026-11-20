@@ -40,6 +40,8 @@ services:
         sync: false
       - key: GROQ_VOICE_API_KEY     # optional; voice exam speech-to-text, falls back to GROQ_API_KEY
         sync: false
+      - key: GROQ_GATE_TPM          # tokens per minute of your Groq tier for openai/gpt-oss-120b (console.groq.com/settings/limits); unset = only the concurrency cap
+        sync: false
       - key: GITHUB_TOKEN           # capstone repo checks; fine-grained token, public repos read-only
         sync: false
       - key: GEMINI_API_KEY         # optional, only if Gemini features are used

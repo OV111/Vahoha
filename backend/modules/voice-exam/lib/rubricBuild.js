@@ -27,6 +27,7 @@ const criterionSchema = z
 // All points when there are one or two; with three, one may be missing.
 const defaultSolidNeeds = (n) => (n <= 2 ? n : n - 1);
 
+// Validates one subtopic's criteria and fills in the defaults.
 const parseCriterion = (layerId, title, raw) => {
   const parsed = criterionSchema.safeParse(raw);
   if (!parsed.success) {
@@ -43,6 +44,7 @@ const parseCriterion = (layerId, title, raw) => {
   };
 };
 
+// Finds a layer by id anywhere in the roadmap.
 export const findLayer = (roadmap, layerId) => {
   for (const layers of Object.values(roadmap)) {
     const hit = Array.isArray(layers) && layers.find((l) => l.id === layerId);
@@ -52,6 +54,7 @@ export const findLayer = (roadmap, layerId) => {
 };
 
 /**
+ * Joins a rubric file with its roadmap layer into what the exam uses.
  * Throws on any mismatch: a follow-up for a renamed subtopic would silently never be asked.
  * Criteria are always validated, but only go live once a person has read them
  * (`criteriaReviewed: true`); the eval passes `draftCriteria` to measure drafts first.

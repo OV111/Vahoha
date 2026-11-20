@@ -9,6 +9,51 @@
       "followUps": {
         "Zod Schema Validation": "Why is a schema library like Zod better than hand-written if checks for request validation?",
         "Zod + TypeScript Type Inference": "What problem does z.infer solve compared with writing a separate interface?"
+      },
+      "criteria": {
+        "Zod Schema Validation": {
+          "id": "zod-validation",
+          "evidence": [
+            {
+              "id": "declarative",
+              "text": "A schema describes the expected shape, types and limits in one place instead of scattered if checks."
+            },
+            {
+              "id": "complete",
+              "text": "It checks everything consistently, including nested fields, and returns clear errors listing what's wrong."
+            },
+            {
+              "id": "parse",
+              "text": "Parsing returns clean typed data or rejects the request, so handlers only see valid input."
+            }
+          ],
+          "notEnough": [
+            "Only saying use Zod to validate without explaining why it beats hand-written checks."
+          ],
+          "misconceptions": []
+        },
+        "Zod + TypeScript Type Inference": {
+          "id": "zod-infer",
+          "evidence": [
+            {
+              "id": "infer",
+              "text": "z.infer derives a TypeScript type from the schema."
+            },
+            {
+              "id": "single-source",
+              "text": "The runtime check and the static type then come from one definition and can't drift apart, unlike a separate interface."
+            }
+          ],
+          "notEnough": [
+            "Only saying z.infer creates a type without explaining the drift problem."
+          ],
+          "misconceptions": [
+            {
+              "id": "types-validate",
+              "text": "Says TypeScript types alone validate request data at runtime."
+            }
+          ]
+        }
       }
     },
     {
@@ -17,6 +62,46 @@
       "followUps": {
         "Centralized Error Handler": "What problems show up when each route formats its own errors?",
         "Custom Error Classes": "How do custom error classes help a global error handler pick the right status code?"
+      },
+      "criteria": {
+        "Centralized Error Handler": {
+          "id": "central-error-handler",
+          "evidence": [
+            {
+              "id": "one-place",
+              "text": "One global error handler turns every thrown or passed error into the HTTP response."
+            },
+            {
+              "id": "per-route-problems",
+              "text": "When each route formats its own errors, responses are inconsistent, internals like stack traces can leak, and some errors are missed."
+            }
+          ],
+          "notEnough": [
+            "Only saying use a global error handler without explaining what goes wrong without one."
+          ],
+          "misconceptions": []
+        },
+        "Custom Error Classes": {
+          "id": "custom-error-classes",
+          "evidence": [
+            {
+              "id": "classes",
+              "text": "Custom error classes, like NotFoundError or ValidationError, extend Error and carry a status code or type."
+            },
+            {
+              "id": "mapping",
+              "text": "The global handler checks the class or its status to choose the response code and message."
+            },
+            {
+              "id": "unknown",
+              "text": "Errors that aren't known classes become a generic 500 without exposing details."
+            }
+          ],
+          "notEnough": [
+            "Only saying create custom errors without explaining how the handler uses them."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -25,6 +110,42 @@
       "followUps": {
         "Route → Service → Repository Pattern": "What does a repository layer let you do in tests that you could not do with queries in route handlers?",
         "Dependency Injection Patterns": "How does dependency injection make a payment service easier to test?"
+      },
+      "criteria": {
+        "Route → Service → Repository Pattern": {
+          "id": "layered-architecture",
+          "evidence": [
+            {
+              "id": "layers",
+              "text": "Routes handle HTTP, services hold business logic, and repositories handle data access."
+            },
+            {
+              "id": "test",
+              "text": "With queries behind a repository, tests can replace it with a fake and test the service logic without a database."
+            }
+          ],
+          "notEnough": [
+            "Only listing the layers without explaining the benefit for tests."
+          ],
+          "misconceptions": []
+        },
+        "Dependency Injection Patterns": {
+          "id": "dependency-injection",
+          "evidence": [
+            {
+              "id": "pass-in",
+              "text": "Dependency injection means a service receives its dependencies, like a payment client, instead of creating or importing them itself."
+            },
+            {
+              "id": "test",
+              "text": "In a test you pass a fake payment client, so you can check success and failure without charging real money."
+            }
+          ],
+          "notEnough": [
+            "Only defining dependency injection without showing how it helps testing."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -33,7 +154,48 @@
       "followUps": {
         "Validated Config with env-schema": "Why is failing at startup better than failing on the first request when config is wrong?",
         "Structured Logging with Pino": "Why are structured JSON logs more useful in production than console.log strings?"
+      },
+      "criteria": {
+        "Validated Config with env-schema": {
+          "id": "validated-config",
+          "evidence": [
+            {
+              "id": "schema",
+              "text": "Config is checked against a schema at startup: required values exist and have the right types."
+            },
+            {
+              "id": "fail-fast",
+              "text": "A wrong config then stops the service before it serves traffic, with a clear error, instead of failing on a real user's request."
+            }
+          ],
+          "notEnough": [
+            "Only saying validate config without explaining why at startup."
+          ],
+          "misconceptions": []
+        },
+        "Structured Logging with Pino": {
+          "id": "structured-logging",
+          "evidence": [
+            {
+              "id": "json",
+              "text": "Structured logs are JSON objects with fields like level, time, request ID and message."
+            },
+            {
+              "id": "searchable",
+              "text": "Log tools can filter and search them by field, which plain console.log strings don't allow."
+            },
+            {
+              "id": "fast",
+              "text": "Pino writes them with very little overhead, which matters in a busy service."
+            }
+          ],
+          "notEnough": [
+            "Only saying use Pino without explaining why structured logs help."
+          ],
+          "misconceptions": []
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": true
 }

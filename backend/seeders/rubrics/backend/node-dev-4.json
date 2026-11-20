@@ -9,6 +9,50 @@
       "followUps": {
         "Request Lifecycle & Hooks": "What goes wrong if you put an auth check in the wrong lifecycle hook?",
         "Schema-Based Validation & Serialization": "Why do response schemas make Fastify faster, not just safer?"
+      },
+      "criteria": {
+        "Request Lifecycle & Hooks": {
+          "id": "fastify-lifecycle",
+          "evidence": [
+            {
+              "id": "stages",
+              "text": "A request passes through set hooks in order, such as onRequest, preParsing, preValidation, preHandler, the handler, then onSend and onResponse."
+            },
+            {
+              "id": "auth-early",
+              "text": "Auth belongs in an early hook like onRequest or preHandler, so unauthorized requests are stopped before the handler or expensive work runs."
+            },
+            {
+              "id": "wrong-hook",
+              "text": "Putting it in a late hook like onSend means the handler has already run and may have changed data."
+            }
+          ],
+          "notEnough": [
+            "Only listing hook names without explaining their order or why it matters."
+          ],
+          "misconceptions": []
+        },
+        "Schema-Based Validation & Serialization": {
+          "id": "fastify-schemas",
+          "evidence": [
+            {
+              "id": "validation",
+              "text": "Request schemas validate input before the handler runs, rejecting invalid requests with a 400."
+            },
+            {
+              "id": "serialization",
+              "text": "Response schemas let Fastify compile a fast serializer, which is quicker than generic JSON.stringify."
+            },
+            {
+              "id": "no-leak",
+              "text": "Fields not in the response schema are dropped, so internal data like password hashes isn't sent by mistake."
+            }
+          ],
+          "notEnough": [
+            "Only saying schemas validate data without mentioning serialization."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -17,6 +61,50 @@
       "followUps": {
         "Plugin Encapsulation with fastify-plugin": "Why might a decorator registered in one plugin be missing in another, and how do you fix it?",
         "Decorators for Dependency Injection": "How do decorators make route handlers easier to unit test?"
+      },
+      "criteria": {
+        "Plugin Encapsulation with fastify-plugin": {
+          "id": "plugin-encapsulation",
+          "evidence": [
+            {
+              "id": "scope",
+              "text": "Each plugin gets its own encapsulated context; decorators and hooks it registers are visible only to it and its children."
+            },
+            {
+              "id": "missing",
+              "text": "So a decorator added in one plugin isn't available in a sibling plugin."
+            },
+            {
+              "id": "fastify-plugin",
+              "text": "Wrapping the plugin with fastify-plugin skips encapsulation and shares its decorators with the parent scope."
+            }
+          ],
+          "notEnough": [
+            "Only saying plugins organize code without explaining encapsulation."
+          ],
+          "misconceptions": []
+        },
+        "Decorators for Dependency Injection": {
+          "id": "decorators-di",
+          "evidence": [
+            {
+              "id": "decorate",
+              "text": "Decorators attach shared things, like a database client, to the Fastify instance or the request."
+            },
+            {
+              "id": "inject",
+              "text": "Handlers use those injected dependencies instead of importing them directly."
+            },
+            {
+              "id": "testing",
+              "text": "In tests you register a fake version of the decorator, so handlers can be tested without a real database."
+            }
+          ],
+          "notEnough": [
+            "Only saying decorators add properties without explaining how they help testing."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -25,6 +113,51 @@
       "followUps": {
         "RESTful Resource Modeling": "Why should URLs name resources instead of actions, and what does that give you?",
         "HTTP Status Codes & Error Responses": "What breaks when an API returns status 200 for every error?"
+      },
+      "criteria": {
+        "RESTful Resource Modeling": {
+          "id": "rest-resources",
+          "evidence": [
+            {
+              "id": "nouns",
+              "text": "URLs name resources, like /orders/42, and the HTTP method says the action."
+            },
+            {
+              "id": "predictable",
+              "text": "Clients can then guess endpoints, and methods carry known behavior, like GET being safe to repeat and cacheable."
+            }
+          ],
+          "notEnough": [
+            "Only listing HTTP methods without explaining resources."
+          ],
+          "misconceptions": [
+            {
+              "id": "put-patch-same",
+              "text": "Says PUT and PATCH do the same thing."
+            }
+          ]
+        },
+        "HTTP Status Codes & Error Responses": {
+          "id": "status-codes-errors",
+          "evidence": [
+            {
+              "id": "meaning",
+              "text": "Status codes tell clients what happened: 2xx success, 4xx a client problem, 5xx a server problem."
+            },
+            {
+              "id": "always-200",
+              "text": "Returning 200 for errors breaks clients, caches, retries and monitoring that rely on the code."
+            },
+            {
+              "id": "error-shape",
+              "text": "Error responses should use one consistent body shape, so clients handle them the same way everywhere."
+            }
+          ],
+          "notEnough": [
+            "Only listing code numbers without explaining why they matter to clients."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -33,7 +166,48 @@
       "followUps": {
         "Scalable Fastify Project Layout": "How would you split a growing Fastify app into folders, and what problem does that solve?",
         "Graceful Shutdown in Fastify": "What happens to in-flight requests during a deploy if the app ignores SIGTERM?"
+      },
+      "criteria": {
+        "Scalable Fastify Project Layout": {
+          "id": "project-layout",
+          "evidence": [
+            {
+              "id": "by-feature",
+              "text": "Code is split into folders by feature or layer, such as routes, plugins, services and schemas, rather than one growing file."
+            },
+            {
+              "id": "why",
+              "text": "Each part then has a clear home, so changes stay local and the app is easier to test and navigate."
+            }
+          ],
+          "notEnough": [
+            "Only saying split it into folders without explaining how or what it solves."
+          ],
+          "misconceptions": []
+        },
+        "Graceful Shutdown in Fastify": {
+          "id": "graceful-shutdown",
+          "evidence": [
+            {
+              "id": "sigterm",
+              "text": "On deploy, the platform sends SIGTERM before killing the process."
+            },
+            {
+              "id": "close",
+              "text": "The app should stop accepting new requests, finish in-flight ones, and close database connections, which fastify.close() handles."
+            },
+            {
+              "id": "ignore",
+              "text": "Ignoring SIGTERM means the process is killed mid-request, so users get errors and work can be half-finished."
+            }
+          ],
+          "notEnough": [
+            "Only saying handle SIGTERM without saying what the app should do."
+          ],
+          "misconceptions": []
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": true
 }

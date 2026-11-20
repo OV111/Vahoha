@@ -9,6 +9,55 @@
       "followUps": {
         "JWT Structure & Verification": "What does verifying a JWT signature prove, and what does it not prove?",
         "Refresh Token Rotation": "How does refresh token rotation limit the damage of a stolen refresh token?"
+      },
+      "criteria": {
+        "JWT Structure & Verification": {
+          "id": "jwt-verification",
+          "evidence": [
+            {
+              "id": "proves",
+              "text": "A valid signature proves the token was issued by someone with the secret and wasn't changed."
+            },
+            {
+              "id": "not-proves",
+              "text": "It doesn't prove the token wasn't stolen, or that the user still exists or still has those permissions."
+            },
+            {
+              "id": "expiry",
+              "text": "Verification should also check the expiry and the expected algorithm."
+            }
+          ],
+          "notEnough": [
+            "Only saying verify the JWT without saying what verification proves."
+          ],
+          "misconceptions": [
+            {
+              "id": "payload-encrypted",
+              "text": "Says the JWT payload is encrypted and hidden from the client."
+            }
+          ]
+        },
+        "Refresh Token Rotation": {
+          "id": "refresh-rotation",
+          "evidence": [
+            {
+              "id": "rotate",
+              "text": "Each time a refresh token is used, it's replaced with a new one and the old one stops working."
+            },
+            {
+              "id": "reuse-detect",
+              "text": "If an old refresh token is used again, that signals theft, and the server can revoke the whole token family."
+            },
+            {
+              "id": "limit",
+              "text": "A stolen refresh token therefore works at most once, until the real user's next refresh exposes it."
+            }
+          ],
+          "notEnough": [
+            "Only saying refresh tokens are rotated without explaining how that limits damage."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -17,6 +66,51 @@
       "followUps": {
         "Password Hashing with bcrypt": "Why is a slow hash like bcrypt better for passwords than SHA-256?",
         "Timing Attacks & Constant-Time Comparison": "How can comparing secret tokens with a normal equality check leak information to an attacker?"
+      },
+      "criteria": {
+        "Password Hashing with bcrypt": {
+          "id": "bcrypt",
+          "evidence": [
+            {
+              "id": "slow",
+              "text": "bcrypt is deliberately slow and its cost can be raised, so guessing passwords takes far longer than with a fast hash like SHA-256."
+            },
+            {
+              "id": "salt",
+              "text": "It adds a random salt per password, so identical passwords hash differently and precomputed tables don't work."
+            }
+          ],
+          "notEnough": [
+            "Only saying hash passwords with bcrypt without explaining why slow is good."
+          ],
+          "misconceptions": [
+            {
+              "id": "encrypt",
+              "text": "Says passwords should be encrypted so they can be decrypted later."
+            }
+          ]
+        },
+        "Timing Attacks & Constant-Time Comparison": {
+          "id": "constant-time-compare",
+          "evidence": [
+            {
+              "id": "early-exit",
+              "text": "A normal equality check stops at the first differing character, so it takes slightly longer the more characters match."
+            },
+            {
+              "id": "leak",
+              "text": "An attacker who measures response times can guess a secret character by character."
+            },
+            {
+              "id": "fix",
+              "text": "crypto.timingSafeEqual compares in a time that doesn't depend on where the values differ."
+            }
+          ],
+          "notEnough": [
+            "Only saying use timingSafeEqual without explaining what a timing attack is."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -25,6 +119,55 @@
       "followUps": {
         "Role-Based Access Control": "What is the trade-off between putting roles in the JWT and checking them in the database on each request?",
         "CORS & Security Headers": "What is a dangerous CORS setup for an API that uses cookies, and what do security headers add?"
+      },
+      "criteria": {
+        "Role-Based Access Control": {
+          "id": "rbac",
+          "evidence": [
+            {
+              "id": "roles",
+              "text": "Users get roles, and each role allows a set of actions, which the API checks before acting."
+            },
+            {
+              "id": "jwt-roles",
+              "text": "Roles in the JWT avoid a database lookup per request, but stay valid until the token expires even if the role is removed."
+            },
+            {
+              "id": "db-check",
+              "text": "Checking the database each time reflects changes immediately but costs a query per request."
+            }
+          ],
+          "notEnough": [
+            "Only saying use roles without explaining the trade-off."
+          ],
+          "misconceptions": []
+        },
+        "CORS & Security Headers": {
+          "id": "cors-headers",
+          "evidence": [
+            {
+              "id": "dangerous",
+              "text": "Reflecting any origin, or allowing a wildcard, together with credentials lets any site make logged-in requests and read the answers."
+            },
+            {
+              "id": "allowlist",
+              "text": "The API should allow only its own known frontend origins."
+            },
+            {
+              "id": "headers",
+              "text": "Security headers, for example via helmet, tell browsers to block framing, content-type sniffing and untrusted scripts."
+            }
+          ],
+          "notEnough": [
+            "Only saying configure CORS and add headers without saying what's dangerous."
+          ],
+          "misconceptions": [
+            {
+              "id": "cors-protects-api",
+              "text": "Says CORS stops tools like curl or other servers from calling the API."
+            }
+          ]
+        }
       }
     },
     {
@@ -33,7 +176,52 @@
       "followUps": {
         "Injection Attacks & Parameterized Queries": "How can raw SQL in Prisma bring back SQL injection, and how do you stay safe?",
         "Rate Limiting & DoS Prevention": "Why does rate limiting need a shared store when you run several Node.js instances?"
+      },
+      "criteria": {
+        "Injection Attacks & Parameterized Queries": {
+          "id": "injection",
+          "evidence": [
+            {
+              "id": "raw-sql",
+              "text": "Building raw SQL by putting user input into the string lets crafted input change the query."
+            },
+            {
+              "id": "prisma-raw",
+              "text": "Prisma's tagged $queryRaw template sends values as parameters, but $queryRawUnsafe or building the string yourself brings the risk back."
+            },
+            {
+              "id": "params",
+              "text": "Parameters keep values as data, never as SQL."
+            }
+          ],
+          "notEnough": [
+            "Only saying Prisma prevents injection without explaining when it doesn't."
+          ],
+          "misconceptions": []
+        },
+        "Rate Limiting & DoS Prevention": {
+          "id": "rate-limiting",
+          "evidence": [
+            {
+              "id": "purpose",
+              "text": "Rate limiting caps requests per client in a time window, slowing down brute force and abuse."
+            },
+            {
+              "id": "shared-store",
+              "text": "With several instances, each in-memory counter only sees part of the traffic, so the real limit multiplies by the number of instances."
+            },
+            {
+              "id": "redis",
+              "text": "A shared store like Redis keeps one counter per client across all instances."
+            }
+          ],
+          "notEnough": [
+            "Only saying add rate limiting without explaining the multi-instance problem."
+          ],
+          "misconceptions": []
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": true
 }

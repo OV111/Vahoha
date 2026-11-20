@@ -9,6 +9,46 @@
       "followUps": {
         "Vitest Fundamentals & Test Structure": "What kinds of bugs do unit tests catch that integration tests often miss?",
         "Mocking with vi.mock & vi.spyOn": "When would you use vi.spyOn instead of calling the real dependency in a test?"
+      },
+      "criteria": {
+        "Vitest Fundamentals & Test Structure": {
+          "id": "vitest-unit",
+          "evidence": [
+            {
+              "id": "focused",
+              "text": "Unit tests check one function or module alone, so they're fast and point straight at the broken logic."
+            },
+            {
+              "id": "edge-cases",
+              "text": "They're good for catching logic bugs and edge cases, like empty input or boundaries, that integration tests rarely try."
+            }
+          ],
+          "notEnough": [
+            "Only saying unit tests test small pieces without saying what bugs they catch."
+          ],
+          "misconceptions": []
+        },
+        "Mocking with vi.mock & vi.spyOn": {
+          "id": "mocking",
+          "evidence": [
+            {
+              "id": "spy",
+              "text": "vi.spyOn wraps a real function so the test can check how it was called, and optionally replace its result."
+            },
+            {
+              "id": "mock",
+              "text": "vi.mock replaces a whole module, for example to fake an HTTP client or a payment service."
+            },
+            {
+              "id": "when",
+              "text": "You fake dependencies that are slow, costly or unpredictable, so the test only checks your own logic."
+            }
+          ],
+          "notEnough": [
+            "Only naming vi.mock and vi.spyOn without explaining when to use them."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -17,6 +57,42 @@
       "followUps": {
         "API Testing with Supertest & Fastify inject()": "What kinds of bugs does an inject() integration test catch that unit tests miss?",
         "Test Databases & Fixtures": "Why should each test suite own an isolated database instead of sharing a dev database?"
+      },
+      "criteria": {
+        "API Testing with Supertest & Fastify inject()": {
+          "id": "api-integration",
+          "evidence": [
+            {
+              "id": "inject",
+              "text": "Fastify's inject() sends a fake HTTP request through the whole app without opening a network port."
+            },
+            {
+              "id": "catches",
+              "text": "It catches bugs between the parts: wrong routes, missing auth, validation and serialization mistakes, and wrong status codes."
+            }
+          ],
+          "notEnough": [
+            "Only saying test the API with inject without saying what it catches."
+          ],
+          "misconceptions": []
+        },
+        "Test Databases & Fixtures": {
+          "id": "test-databases",
+          "evidence": [
+            {
+              "id": "isolated",
+              "text": "Each test suite gets its own database or schema, reset between tests with known fixture data."
+            },
+            {
+              "id": "why",
+              "text": "A shared dev database has unpredictable data and tests that interfere with each other, which makes results flaky."
+            }
+          ],
+          "notEnough": [
+            "Only saying use a test database without explaining isolation."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -25,6 +101,51 @@
       "followUps": {
         "Coverage with V8 & Istanbul": "Why can a high line coverage number still hide untested bugs?",
         "Testing in CI with GitHub Actions": "Why would you run your CI tests against more than one Node.js version?"
+      },
+      "criteria": {
+        "Coverage with V8 & Istanbul": {
+          "id": "coverage",
+          "evidence": [
+            {
+              "id": "measures",
+              "text": "Coverage reports which lines and branches ran during the tests."
+            },
+            {
+              "id": "not-correctness",
+              "text": "A line can run without its result being checked, so high coverage can still hide bugs."
+            },
+            {
+              "id": "use",
+              "text": "Coverage is useful to find untested code, not to prove the code works."
+            }
+          ],
+          "notEnough": [
+            "Only saying aim for high coverage without explaining its limits."
+          ],
+          "misconceptions": [
+            {
+              "id": "coverage-correct",
+              "text": "Says 100% coverage proves the code has no bugs."
+            }
+          ]
+        },
+        "Testing in CI with GitHub Actions": {
+          "id": "ci-github-actions",
+          "evidence": [
+            {
+              "id": "every-push",
+              "text": "CI runs the tests automatically on every push or pull request."
+            },
+            {
+              "id": "matrix",
+              "text": "A version matrix runs them on several Node versions, catching code that only breaks on one of them before users or upgrades hit it."
+            }
+          ],
+          "notEnough": [
+            "Only saying run tests in CI without explaining the version matrix."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -33,7 +154,44 @@
       "followUps": {
         "Arrange-Act-Assert Pattern": "How does the Arrange-Act-Assert structure make a failing test easier to understand?",
         "Contract Testing": "What kind of production breakage does contract testing prevent?"
+      },
+      "criteria": {
+        "Arrange-Act-Assert Pattern": {
+          "id": "arrange-act-assert",
+          "evidence": [
+            {
+              "id": "three-parts",
+              "text": "Each test is split into arrange (set up data), act (run the code) and assert (check the result)."
+            },
+            {
+              "id": "readable",
+              "text": "When it fails, you can see at once what was set up, what was called and what was expected."
+            }
+          ],
+          "notEnough": [
+            "Only naming the three parts without explaining why it helps."
+          ],
+          "misconceptions": []
+        },
+        "Contract Testing": {
+          "id": "contract-testing",
+          "evidence": [
+            {
+              "id": "contract",
+              "text": "A contract test checks that the provider API still matches what its consumers expect: fields, types and status codes."
+            },
+            {
+              "id": "prevents",
+              "text": "It catches breaking API changes, like a renamed field, before deploy instead of in production."
+            }
+          ],
+          "notEnough": [
+            "Only saying contract testing tests APIs without explaining what breakage it prevents."
+          ],
+          "misconceptions": []
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": true
 }

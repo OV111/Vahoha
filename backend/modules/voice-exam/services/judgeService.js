@@ -22,6 +22,7 @@ Return ONLY valid JSON, no markdown.`;
 // Same fence rule as the checklist grader: a learner can't close the quotes and talk to the judge.
 const fence = (text) => String(text).replace(/"{3,}/g, '"');
 
+// Puts the subtopic's rubric and the learner's answers into one message.
 const buildPrompt = (subtopic, turns) => {
   const points = subtopic.evidence.map((p) => `- ${p.id}: ${p.text}`).join("\n");
   const notEnough = subtopic.notEnough.map((n) => `- ${n}`).join("\n") || "- (none)";
@@ -50,6 +51,7 @@ Return JSON in exactly this shape:
 // "medium" reasoning may be more thinking than it needs; JSON mode removes broken-JSON retries.
 export const JUDGE_DEFAULTS = Object.freeze({ reasoningEffort: null, jsonMode: false });
 
+// Reads the judge's JSON; null if it is broken or has the wrong shape.
 const parse = (raw) => {
   try {
     const result = judgementSchema.safeParse(JSON.parse(stripFences(raw)));
@@ -59,41 +61,34 @@ const parse = (raw) => {
   }
 };
 
-/**
- * Judges one subtopic that has evidence points. Unverified: lib/grading.js checks the quotes.
- * @returns {Promise<{judgement: object, raw: string, usage: object|null}>}
- */
+const MAX_ATTEMPTS = 2;
+
+// Asks the LLM to judge one subtopic. Its answer is unverified: lib/grading.js checks the quotes.
 export const judgeCriterion = async (
   subtopic,
   turns,
   { temperature = 0.1, reasoningEffort = JUDGE_DEFAULTS.reasoningEffort, jsonMode = JUDGE_DEFAULTS.jsonMode } = {},
 ) => {
-  const ask = () =>
-    askGroq(
-      {
-        model: MODEL,
-        temperature,
-        max_tokens: 1500,
-        ...(reasoningEffort && { reasoning_effort: reasoningEffort }),
-        ...(jsonMode && { response_format: { type: "json_object" } }),
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: buildPrompt(subtopic, turns) },
-        ],
-      },
-      "interactive",
-    );
+  const request = {
+    model: MODEL,
+    temperature,
+    max_tokens: 1500,
+    ...(reasoningEffort && { reasoning_effort: reasoningEffort }),
+    ...(jsonMode && { response_format: { type: "json_object" } }),
+    messages: [
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: buildPrompt(subtopic, turns) },
+    ],
+  };
 
-  let completion = await ask();
-  let raw = completion.choices[0]?.message?.content?.trim() ?? "";
-  let judgement = parse(raw);
-  if (!judgement) {
-    completion = await ask();
-    raw = completion.choices[0]?.message?.content?.trim() ?? "";
-    judgement = parse(raw);
+  // A retry is billed too, so `tokens` counts every attempt, not only the one that parsed.
+  let tokens = 0;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const completion = await askGroq(request, "interactive");
+    tokens += completion.usage?.total_tokens ?? 0;
+    const raw = completion.choices[0]?.message?.content?.trim() ?? "";
+    const judgement = parse(raw);
+    if (judgement) return { judgement, raw, usage: completion.usage ?? null, tokens };
   }
-  if (!judgement) {
-    throw Object.assign(new Error("The grader returned an unreadable answer. Try again."), { status: 502 });
-  }
-  return { judgement, raw, usage: completion.usage ?? null };
+  throw Object.assign(new Error("The grader returned an unreadable answer. Try again."), { status: 502 });
 };

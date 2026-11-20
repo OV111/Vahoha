@@ -36,7 +36,8 @@ const retryAfterSeconds = (err) => {
   return Number.isFinite(seconds) && seconds > 0 ? Math.min(seconds, MAX_RETRY_AFTER_SEC) : DEFAULT_RETRY_AFTER_SEC;
 };
 
-const noteRateLimit = (gate, err) => {
+// On Groq's 429, holds the gate for its retry-after. Also used by the Whisper gate.
+export const noteRateLimit = (gate, err) => {
   if (err?.status === 429) gate.pause(retryAfterSeconds(err));
 };
 

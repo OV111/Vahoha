@@ -32,6 +32,7 @@ Return JSON in exactly this shape, one row per checklist item:
 };
 
 /**
+ * v1 grading: all subtopics without evidence points in one LLM call.
  * @returns {Promise<{results: Array<{n?: number, title?: string, status: string, quote?: string}>, raw: string, usage: object|null}>}
  *   unverified model output, the raw text (so a disputed grade can be checked later), and token usage
  */

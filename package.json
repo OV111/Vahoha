@@ -16,6 +16,8 @@
     "seed:capstones": "node backend/seeders/capstoneSeeder.js",
     "prompts:exams": "node scripts/generateExamPrompts.js",
     "import:exams": "node backend/seeders/examImport.js",
+    "prompts:rubrics": "node scripts/generateRubricPrompts.js",
+    "import:rubrics": "node backend/seeders/rubricImport.js",
     "capstone:prompt": "node backend/scripts/capstonePrompt.js",
     "capstone:reset": "node backend/scripts/resetCapstone.js",
     "capstone:reopen": "node backend/scripts/reopenCapstone.js",

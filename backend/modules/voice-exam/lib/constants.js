@@ -7,6 +7,8 @@ export const STATES = Object.freeze({
   COMPLETED: "COMPLETED",
   EXPIRED: "EXPIRED",
   ABANDONED: "ABANDONED",
+  // Closed after MAX_FAILED_TRIES failed tries on one answer: never a fail, but it uses a try.
+  FAILED_TECHNICAL: "FAILED_TECHNICAL",
 });
 
 export const INPUT_STATES = [STATES.AWAITING_EXPLANATION, STATES.AWAITING_ANSWER];
@@ -22,8 +24,15 @@ export const RETRY_AFTER_FAIL_MS = 24 * 60 * 60 * 1000;
 
 export const MAX_ANSWER_CHARS = 8000;
 
+// Each failed try on an answer can cost Whisper and model calls, so resending is not endless.
+export const MAX_FAILED_TRIES = 3;
+
 // Groq allows 28,800 audio seconds a day per key; stop a little short so a burst can't trip it.
 export const DAILY_AUDIO_SEC_ALL_USERS = 25_000;
+
+// Three full exams (5 min explanation + a few 90 s follow-ups each) fit with room for re-records;
+// past this, one account is spending everyone's audio allowance.
+export const DAILY_AUDIO_SEC_PER_USER = 45 * 60;
 
 export const RUBRIC_COLLECTION = "voice_exam_rubrics";
 export const ATTEMPT_COLLECTION = "voice_exam_attempts";

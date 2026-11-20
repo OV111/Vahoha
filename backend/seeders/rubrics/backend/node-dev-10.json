@@ -9,6 +9,50 @@
       "followUps": {
         "Distributed Tracing with OpenTelemetry": "How does distributed tracing help you debug a slow request that crosses several services?",
         "Metrics & Health Checks": "What should a health check verify, and what happens when a service has none?"
+      },
+      "criteria": {
+        "Distributed Tracing with OpenTelemetry": {
+          "id": "distributed-tracing",
+          "evidence": [
+            {
+              "id": "trace",
+              "text": "A trace follows one request across services, with a span for each step and its timing."
+            },
+            {
+              "id": "propagation",
+              "text": "Trace context is passed along in headers, so spans from different services connect into one picture."
+            },
+            {
+              "id": "find-slow",
+              "text": "You can then see which service or call made the request slow."
+            }
+          ],
+          "notEnough": [
+            "Only naming OpenTelemetry without explaining what a trace shows."
+          ],
+          "misconceptions": []
+        },
+        "Metrics & Health Checks": {
+          "id": "metrics-health",
+          "evidence": [
+            {
+              "id": "metrics",
+              "text": "Metrics like request rate, error rate and latency show how the service behaves over time."
+            },
+            {
+              "id": "health-check",
+              "text": "A health check reports whether the service can do its job, for example whether it's up and can reach its database."
+            },
+            {
+              "id": "none",
+              "text": "Without one, the platform keeps sending traffic to a broken instance and never restarts it."
+            }
+          ],
+          "notEnough": [
+            "Only saying add health checks without saying what they check or why."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -17,6 +61,42 @@
       "followUps": {
         "Dockerizing a Node.js App": "What does a multi-stage Dockerfile give you over a single-stage one?",
         "Non-Root Users & Docker Security": "Why should a Node.js container run as a non-root user?"
+      },
+      "criteria": {
+        "Dockerizing a Node.js App": {
+          "id": "dockerize-node",
+          "evidence": [
+            {
+              "id": "multi-stage",
+              "text": "A multi-stage build installs and builds in one stage and copies only the output and production dependencies into the final image."
+            },
+            {
+              "id": "benefit",
+              "text": "The final image is smaller, faster to ship and has fewer tools and packages to attack."
+            }
+          ],
+          "notEnough": [
+            "Only saying use multi-stage builds without saying what's left out."
+          ],
+          "misconceptions": []
+        },
+        "Non-Root Users & Docker Security": {
+          "id": "non-root",
+          "evidence": [
+            {
+              "id": "default-root",
+              "text": "By default a container's process runs as root."
+            },
+            {
+              "id": "blast-radius",
+              "text": "If the app is compromised, a non-root user limits what the attacker can do inside the container and makes escaping harder."
+            }
+          ],
+          "notEnough": [
+            "Only saying don't run as root without explaining why."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -25,6 +105,42 @@
       "followUps": {
         "GitHub Actions for Node.js": "What does a CI pipeline protect you from, and how do you keep it fast?",
         "Container Registry & Image Tagging": "Why should you tag images with the commit SHA instead of only using latest?"
+      },
+      "criteria": {
+        "GitHub Actions for Node.js": {
+          "id": "github-actions-node",
+          "evidence": [
+            {
+              "id": "protects",
+              "text": "CI runs install, lint, tests and build on every push, so broken code is caught before it's merged or deployed."
+            },
+            {
+              "id": "fast",
+              "text": "Caching dependencies and running independent jobs in parallel keeps it fast."
+            }
+          ],
+          "notEnough": [
+            "Only saying use CI without saying what it protects or how to keep it fast."
+          ],
+          "misconceptions": []
+        },
+        "Container Registry & Image Tagging": {
+          "id": "image-tagging",
+          "evidence": [
+            {
+              "id": "sha",
+              "text": "Tagging each image with the commit SHA ties it to the exact code it was built from."
+            },
+            {
+              "id": "latest-problem",
+              "text": "latest moves with every build, so you can't tell what's running or roll back to an exact version."
+            }
+          ],
+          "notEnough": [
+            "Only saying don't use latest without explaining why."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -33,7 +149,48 @@
       "followUps": {
         "Graceful Shutdown & SIGTERM Handling": "Walk through what your service should do between receiving SIGTERM and exiting.",
         "Environment-Specific Configuration": "How do you keep development settings and credentials out of a production deployment?"
+      },
+      "criteria": {
+        "Graceful Shutdown & SIGTERM Handling": {
+          "id": "sigterm-handling",
+          "evidence": [
+            {
+              "id": "stop-new",
+              "text": "On SIGTERM the service stops accepting new connections and fails its readiness check."
+            },
+            {
+              "id": "finish",
+              "text": "It lets in-flight requests and jobs finish, within a timeout."
+            },
+            {
+              "id": "close",
+              "text": "Then it closes database and queue connections and exits."
+            }
+          ],
+          "notEnough": [
+            "Only saying handle SIGTERM without the steps."
+          ],
+          "misconceptions": []
+        },
+        "Environment-Specific Configuration": {
+          "id": "env-specific-config",
+          "evidence": [
+            {
+              "id": "env-vars",
+              "text": "Each environment gets its own config and credentials from its environment variables or a secrets manager, not from files in the code."
+            },
+            {
+              "id": "separate",
+              "text": "Production credentials exist only in production, so dev settings and secrets can't leak into it, and the reverse."
+            }
+          ],
+          "notEnough": [
+            "Only saying use environment variables without explaining separation between environments."
+          ],
+          "misconceptions": []
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": true
 }

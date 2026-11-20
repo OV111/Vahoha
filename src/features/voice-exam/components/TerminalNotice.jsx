@@ -14,12 +14,12 @@ const COPY = {
   },
   [EXAM_STATES.FAILED_TECHNICAL]: {
     icon: AlertTriangle,
-    title: "Something went wrong on our side",
-    body: "This attempt was not counted against you. Try again from the layer page.",
+    title: "We couldn't check your answer",
+    body: "It failed 3 times, so the exam was closed. It uses one of today's tries but never counts as a fail.",
   },
 };
 
-/** Non-result endings. A technical failure is never counted (spec section 7). */
+/** Non-result endings. A technical failure is never a fail, but it uses a try so it can't be looped. */
 const TerminalNotice = ({ state, onClose }) => {
   const {
     icon: Icon,

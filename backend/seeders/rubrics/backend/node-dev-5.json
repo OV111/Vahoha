@@ -9,6 +9,46 @@
       "followUps": {
         "Prisma Schema & Client Generation": "What goes wrong if you change the Prisma schema but forget to regenerate the client?",
         "Connection Pooling with Prisma": "Why is creating a new PrismaClient on every request dangerous, especially in serverless?"
+      },
+      "criteria": {
+        "Prisma Schema & Client Generation": {
+          "id": "prisma-client-generation",
+          "evidence": [
+            {
+              "id": "schema",
+              "text": "schema.prisma defines the models, and Prisma generates a typed client from it."
+            },
+            {
+              "id": "regenerate",
+              "text": "If the schema changes but the client isn't regenerated, the code's types and queries don't match the real database, causing type errors or runtime failures."
+            }
+          ],
+          "notEnough": [
+            "Only saying Prisma generates a client without explaining what goes wrong when it's stale."
+          ],
+          "misconceptions": []
+        },
+        "Connection Pooling with Prisma": {
+          "id": "prisma-pooling",
+          "evidence": [
+            {
+              "id": "pool-per-client",
+              "text": "Each PrismaClient has its own connection pool."
+            },
+            {
+              "id": "one-instance",
+              "text": "Creating a new client per request opens new pools and quickly uses up the database's connection limit."
+            },
+            {
+              "id": "serverless",
+              "text": "In serverless, many short-lived instances make this worse, so you reuse one client per instance or put a pooler in front."
+            }
+          ],
+          "notEnough": [
+            "Only saying reuse the client without explaining the connection limit."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -17,6 +57,50 @@
       "followUps": {
         "Prisma Migrate & Database Migrations": "Why should you avoid prisma db push in production?",
         "Relations & the N+1 Problem": "What is the N+1 problem, and how would you spot and fix it in Prisma code?"
+      },
+      "criteria": {
+        "Prisma Migrate & Database Migrations": {
+          "id": "prisma-migrate",
+          "evidence": [
+            {
+              "id": "migrations",
+              "text": "Prisma Migrate creates migration files from schema changes, which are committed and applied in order everywhere."
+            },
+            {
+              "id": "db-push",
+              "text": "db push syncs the schema directly without migration files or history, and can drop data, so it's for prototyping only."
+            },
+            {
+              "id": "deploy",
+              "text": "Production uses migrate deploy to apply the committed migrations."
+            }
+          ],
+          "notEnough": [
+            "Only naming the commands without explaining why db push is unsafe in production."
+          ],
+          "misconceptions": []
+        },
+        "Relations & the N+1 Problem": {
+          "id": "n-plus-one",
+          "evidence": [
+            {
+              "id": "problem",
+              "text": "N+1 is one query for a list and then one more query for each item's related data."
+            },
+            {
+              "id": "spot",
+              "text": "It shows up as many near-identical queries in the logs, and as slowness that grows with the list size."
+            },
+            {
+              "id": "fix",
+              "text": "In Prisma you load related data together with include or select, so the database is queried a few times instead of N+1."
+            }
+          ],
+          "notEnough": [
+            "Only naming the N+1 problem without explaining it or how to fix it."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -25,6 +109,50 @@
       "followUps": {
         "Indexes & Query Planning": "How would you find out why a query on a large table is slow?",
         "Transactions & ACID Guarantees": "Walk through a multi-step operation that needs a transaction, and what happens without one."
+      },
+      "criteria": {
+        "Indexes & Query Planning": {
+          "id": "pg-indexes-planning",
+          "evidence": [
+            {
+              "id": "explain",
+              "text": "EXPLAIN ANALYZE shows the plan PostgreSQL used and where time was spent."
+            },
+            {
+              "id": "seq-scan",
+              "text": "A sequential scan on a large table for a selective filter means an index is missing."
+            },
+            {
+              "id": "index",
+              "text": "An index on the filtered or sorted columns lets the planner find rows without reading the whole table."
+            }
+          ],
+          "notEnough": [
+            "Only saying add an index without explaining how to find the cause."
+          ],
+          "misconceptions": []
+        },
+        "Transactions & ACID Guarantees": {
+          "id": "transactions-acid",
+          "evidence": [
+            {
+              "id": "all-or-nothing",
+              "text": "A transaction makes several statements succeed together or roll back together."
+            },
+            {
+              "id": "example",
+              "text": "Without one, a failure halfway, like money leaving one account but not arriving in the other, leaves the data inconsistent."
+            },
+            {
+              "id": "isolation",
+              "text": "Isolation keeps concurrent transactions from seeing each other's half-finished changes."
+            }
+          ],
+          "notEnough": [
+            "Only spelling out what ACID stands for without explaining it."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -33,7 +161,48 @@
       "followUps": {
         "Database Normalization": "When would you choose to denormalize part of a schema, and what do you give up?",
         "Soft Deletes & Audit Trails": "What are the trade-offs of soft deletes compared with hard deletes?"
+      },
+      "criteria": {
+        "Database Normalization": {
+          "id": "normalization",
+          "evidence": [
+            {
+              "id": "normalize",
+              "text": "Normalization stores each fact once to avoid duplicated data getting out of sync."
+            },
+            {
+              "id": "denormalize",
+              "text": "Denormalizing copies some data to make frequent reads faster, at the cost of keeping the copies in sync on every write."
+            }
+          ],
+          "notEnough": [
+            "Only listing normal forms without explaining the trade-off."
+          ],
+          "misconceptions": []
+        },
+        "Soft Deletes & Audit Trails": {
+          "id": "soft-deletes",
+          "evidence": [
+            {
+              "id": "soft",
+              "text": "A soft delete marks a row as deleted, like setting deleted_at, instead of removing it, so it can be restored and audited."
+            },
+            {
+              "id": "cost",
+              "text": "Every query must filter out deleted rows, unique constraints get harder, and the data keeps growing."
+            },
+            {
+              "id": "audit",
+              "text": "An audit trail records who changed what and when, often in a separate table."
+            }
+          ],
+          "notEnough": [
+            "Only saying soft deletes keep the data without naming any downside."
+          ],
+          "misconceptions": []
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": true
 }

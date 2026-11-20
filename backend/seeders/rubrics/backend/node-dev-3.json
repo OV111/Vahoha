@@ -9,6 +9,46 @@
       "followUps": {
         "Readable & Writable Streams": "Why does streaming a large file use far less memory than reading it into a Buffer?",
         "Backpressure & pipe()": "What happens to memory if you ignore the return value of write() on a slow destination?"
+      },
+      "criteria": {
+        "Readable & Writable Streams": {
+          "id": "readable-writable",
+          "evidence": [
+            {
+              "id": "chunks",
+              "text": "Streams process data in small chunks as it arrives instead of loading all of it at once."
+            },
+            {
+              "id": "memory",
+              "text": "Memory stays roughly constant whatever the file size, while reading the whole file into a Buffer needs memory for all of it."
+            }
+          ],
+          "notEnough": [
+            "Only saying streams are for big data without explaining chunks or memory."
+          ],
+          "misconceptions": []
+        },
+        "Backpressure & pipe()": {
+          "id": "backpressure",
+          "evidence": [
+            {
+              "id": "write-false",
+              "text": "write() returns false when the destination's buffer is full, meaning stop and wait for the drain event."
+            },
+            {
+              "id": "ignore",
+              "text": "Ignoring that keeps the data piling up in memory until the process runs out of it."
+            },
+            {
+              "id": "pipe",
+              "text": "pipe() and stream.pipeline handle this automatically by pausing the source until the destination catches up."
+            }
+          ],
+          "notEnough": [
+            "Only naming backpressure without explaining what happens when it's ignored."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -17,6 +57,50 @@
       "followUps": {
         "Async Iterators & for-await-of": "How does for-await-of make reading a stream simpler and safer than data and end events?",
         "Transform Streams": "What makes a Transform stream pipeline hang forever, and how do you avoid it?"
+      },
+      "criteria": {
+        "Async Iterators & for-await-of": {
+          "id": "async-iterators",
+          "evidence": [
+            {
+              "id": "for-await",
+              "text": "Readable streams are async iterable, so for await...of reads them chunk by chunk like a loop."
+            },
+            {
+              "id": "simpler",
+              "text": "It replaces separate data, end and error handlers with one loop, and stream errors become exceptions you can catch with try/catch."
+            },
+            {
+              "id": "backpressure",
+              "text": "The loop only asks for the next chunk when the current one is done, which gives backpressure for free."
+            }
+          ],
+          "notEnough": [
+            "Only saying for-await-of is cleaner without saying what it replaces."
+          ],
+          "misconceptions": []
+        },
+        "Transform Streams": {
+          "id": "transform-streams",
+          "evidence": [
+            {
+              "id": "transform",
+              "text": "A Transform stream is both readable and writable, changing each chunk as it passes through, like compressing or parsing."
+            },
+            {
+              "id": "callback",
+              "text": "Its transform function must call the callback for every chunk; if it doesn't, or nobody reads the output, the pipeline stalls."
+            },
+            {
+              "id": "pipeline",
+              "text": "stream.pipeline connects the steps and passes any error to one handler, so a failed step doesn't leave the others hanging."
+            }
+          ],
+          "notEnough": [
+            "Only saying transform streams modify data without explaining how a pipeline hangs."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -25,6 +109,55 @@
       "followUps": {
         "Worker Threads for CPU Work": "When would you move work to a worker thread instead of keeping it on the main thread?",
         "Cluster Module & Load Distribution": "Why must session state live outside the process when you run a Node.js cluster?"
+      },
+      "criteria": {
+        "Worker Threads for CPU Work": {
+          "id": "worker-threads",
+          "evidence": [
+            {
+              "id": "cpu-blocks",
+              "text": "CPU-heavy work on the main thread blocks the event loop, so all requests wait."
+            },
+            {
+              "id": "worker",
+              "text": "Worker threads run JavaScript on other threads, so heavy work like image processing or big calculations doesn't block the loop."
+            },
+            {
+              "id": "not-for-io",
+              "text": "I/O-bound work doesn't need workers, because Node already handles it asynchronously."
+            }
+          ],
+          "notEnough": [
+            "Only saying worker threads run things in parallel without saying when to use them."
+          ],
+          "misconceptions": [
+            {
+              "id": "workers-for-io",
+              "text": "Says worker threads make database or network calls faster."
+            }
+          ]
+        },
+        "Cluster Module & Load Distribution": {
+          "id": "cluster",
+          "evidence": [
+            {
+              "id": "processes",
+              "text": "The cluster module starts several Node processes, usually one per CPU core, sharing the same port."
+            },
+            {
+              "id": "no-shared-memory",
+              "text": "Each process has its own memory, so a session kept in one process's memory isn't there for requests that land on another."
+            },
+            {
+              "id": "shared-store",
+              "text": "Session state must live in a shared store like Redis or a database."
+            }
+          ],
+          "notEnough": [
+            "Only saying cluster uses all cores without explaining the memory problem."
+          ],
+          "misconceptions": []
+        }
       }
     },
     {
@@ -33,7 +166,57 @@
       "followUps": {
         "Unhandled Promise Rejections": "What happens in modern Node.js when a rejected promise has no catch, and how do you guard against it?",
         "async_hooks & Context Propagation": "How does AsyncLocalStorage let you carry a request ID through async calls?"
+      },
+      "criteria": {
+        "Unhandled Promise Rejections": {
+          "id": "unhandled-rejections",
+          "evidence": [
+            {
+              "id": "crash",
+              "text": "In modern Node, an unhandled promise rejection crashes the process by default."
+            },
+            {
+              "id": "guard",
+              "text": "Every promise needs a catch or a try/catch around its await, and route handlers need their async errors passed to the error handler."
+            },
+            {
+              "id": "last-resort",
+              "text": "A process-level unhandledRejection handler is for logging and a clean shutdown, not for continuing as if nothing happened."
+            }
+          ],
+          "notEnough": [
+            "Only saying always catch errors without explaining what happens to unhandled rejections."
+          ],
+          "misconceptions": [
+            {
+              "id": "warning-only",
+              "text": "Says an unhandled rejection only prints a warning and the process keeps running normally."
+            }
+          ]
+        },
+        "async_hooks & Context Propagation": {
+          "id": "async-local-storage",
+          "evidence": [
+            {
+              "id": "context",
+              "text": "AsyncLocalStorage keeps a value, like a request ID, available through all the async calls started from one request."
+            },
+            {
+              "id": "no-passing",
+              "text": "Code deep in the call chain reads it without passing it through every function's parameters."
+            },
+            {
+              "id": "use",
+              "text": "Loggers use it to attach the request ID to every log line, so one request can be traced."
+            }
+          ],
+          "notEnough": [
+            "Only naming async_hooks or AsyncLocalStorage without explaining what it carries."
+          ],
+          "misconceptions": []
+        }
       }
     }
-  ]
+  ],
+  "criteriaReviewed": true
 }
