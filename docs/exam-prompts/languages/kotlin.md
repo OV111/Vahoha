@@ -6,7 +6,7 @@ Track: "Kotlin" (kotlin, category languages). It has 10 layers, listed at the bo
 Write the bank for ONE layer per reply, in the order listed. Each reply must contain exactly 60 questions for that layer. After each reply, stop and wait; I will type "next".
 
 ## OUTPUT FORMAT — follow exactly
-First line: the layer marker, exactly like this, with the layer id from the list:
+First line of EVERY reply, including every reply after "next": the layer marker, exactly like this, with the layer id from the list. A reply without it is thrown away by the importer.
 LAYER: <layer id>
 Then ONE ```json code block containing a JSON array of exactly 60 objects. No text after the block. Each object has exactly these fields:
 
@@ -27,7 +27,12 @@ Then ONE ```json code block containing a JSON array of exactly 60 objects. No te
 2. Exactly one choice is correct. Re-read each question and verify the key before you output it. If you are not sure of the answer, replace the question.
 3. Distractors must be plausible mistakes a real learner would make, not jokes and not obviously wrong.
 4. No "all of the above", "none of the above", "both A and B", and no negative stems ("which is NOT...").
-5. LENGTH BIAS IS THE MOST COMMON FAILURE. Models write the correct answer as the longest, most detailed choice, and learners learn to pick it without knowing the material. Write the three wrong choices FIRST, with the same level of detail, specific terms and length as the right one. The correct choice may be the longest in only about 1 of every 4 questions; in about 1 of 4 it should be the shortest. Wrong choices must sound like a real technical claim, never absurd ("compiles HTML into machine code").
+5. LENGTH BIAS IS THE MOST COMMON FAILURE, and earlier banks failed it badly (the correct answer was the longest choice in up to 95% of questions, so learners passed by picking the longest). Follow this plan exactly. Number the questions 1 to 60; the position of question N in a cycle of 4 fixes how long its CORRECT choice is compared with its three wrong choices:
+   - N = 1, 5, 9, ...: the correct choice is the SHORTEST of the four.
+   - N = 2, 6, 10, ...: the correct choice is the second shortest.
+   - N = 3, 7, 11, ...: the correct choice is the second longest.
+   - N = 4, 8, 12, ...: the correct choice is the LONGEST of the four.
+   Write the wrong choices with the same level of detail, specific terms and qualifiers as the right one; never make the right one the only careful, hedged or complete-sounding choice. Wrong choices must sound like a real technical claim, never absurd ("compiles HTML into machine code").
 6. Spread "answerIdx" evenly across 0, 1, 2 and 3 (about 15 each). Do not put the answer at index 0 or 1 most of the time.
 7. Difficulty mix per layer: about one third easy, half medium, the rest hard.
 8. Cover every topic of the layer, roughly evenly. Never repeat or rephrase a question within the layer.
@@ -35,18 +40,25 @@ Then ONE ```json code block containing a JSON array of exactly 60 objects. No te
 10. Stay accurate for current stable versions of the technologies. Avoid questions whose answer changed recently or is opinion.
 11. Escape quotes properly so the JSON parses. No trailing commas, no comments.
 
+## CHECK BEFORE YOU SEND EACH REPLY
+Silently verify all of these, and fix the reply until every one holds. Do not print the check.
+- The first line is LAYER: <the right layer id>.
+- The array has exactly 60 questions.
+- Count the questions whose correct choice is the longest of its four: at most 15. If more, lengthen wrong choices or shorten the right one until it holds.
+- Each answerIdx value (0, 1, 2, 3) appears about 15 times.
+
 ## LAYERS
 ### Layer 1 of 10 — id: kotlin-1
 Title: Kotlin Syntax and Basics
 Technologies: Kotlin, val/var, Functions, Kotlin REPL
-Description: Learn Kotlin syntax, type inference, and basic constructs. Understand how Kotlin differs from Java with its concise and expressive style.
+Description: Learn Kotlin syntax, type inference, and basic constructs, including control flow as expressions, labeled returns, and exceptions. Understand how Kotlin differs from Java with its concise and expressive style, and know that current Kotlin (2.x) is built on the faster K2 compiler.
 Topics:
 - val and var declarations
-- Basic types and type inference
+- Basic types, arrays, and type inference
 - String templates
-- Control flow: if, when, for, while
-- Functions and default arguments
-- Null safety overview
+- Control flow: if, when, loops, and labels
+- Exceptions and try as an expression
+- Functions, default arguments, and null safety overview
 
 ### Layer 2 of 10 — id: kotlin-2
 Title: Null Safety and Type System
@@ -63,14 +75,14 @@ Topics:
 ### Layer 3 of 10 — id: kotlin-3
 Title: OOP - Classes, Data Classes, and Objects
 Technologies: Kotlin, Data Classes, Companion Objects, Delegation
-Description: Use Kotlin classes, data classes, object declarations, and delegation to build concise and idiomatic OOP code. Understand primary constructors and init blocks.
+Description: Use Kotlin classes, data classes, object declarations, and delegation to build concise and idiomatic OOP code. Learn why classes are final by default, how visibility works, when to pick an enum over a sealed class, and how generics with in/out variance keep APIs type-safe.
 Topics:
-- Primary and secondary constructors
-- Data classes and destructuring
-- Object and companion object
-- Interface delegation
-- Operator overloading
-- Copy and equals
+- Constructors, data classes, and copy
+- Objects, companions, and delegation
+- open, abstract classes, and interfaces
+- Visibility modifiers
+- Enum classes vs sealed classes
+- Generics and variance (in/out)
 
 ### Layer 4 of 10 — id: kotlin-4
 Title: Functional Programming and Collections
@@ -99,14 +111,14 @@ Topics:
 ### Layer 6 of 10 — id: kotlin-6
 Title: Coroutines and Async Programming
 Technologies: Kotlin, Coroutines, Flow, Suspend
-Description: Write non-blocking async code using Kotlin coroutines with suspend functions, structured concurrency, and Flow for reactive streams. Replace callbacks and threads.
+Description: Write non-blocking async code using Kotlin coroutines with suspend functions, structured concurrency, and Flow for reactive streams. Learn how cancellation propagates, how coroutines talk through channels, and how exceptions travel up the job hierarchy.
 Topics:
 - suspend functions and coroutine builders
-- launch, async, await
-- Coroutine context and dispatchers
-- Structured concurrency and scopes
-- Flow and StateFlow
-- Error handling in coroutines
+- launch, async, and await
+- Dispatchers and withContext
+- Structured concurrency and cancellation
+- Channels, Flow, and StateFlow
+- Exception handling and CoroutineExceptionHandler
 
 ### Layer 7 of 10 — id: kotlin-7
 Title: Testing Kotlin Applications
@@ -117,32 +129,32 @@ Topics:
 - MockK mocking library
 - Kotest matchers and spec styles
 - Testing suspend functions with runTest
-- TestCoroutineDispatcher
+- StandardTestDispatcher and UnconfinedTestDispatcher
 - Property-based testing basics
 
 ### Layer 8 of 10 — id: kotlin-8
 Title: Kotlin Multiplatform and Stdlib Internals
-Technologies: Kotlin, KMP, stdlib, Reflection
-Description: Explore the Kotlin standard library deeply and understand Kotlin Multiplatform for sharing code across JVM, native, and JavaScript targets.
+Technologies: Kotlin, KMP, Compose Multiplatform, stdlib
+Description: Explore the Kotlin standard library deeply and understand Kotlin Multiplatform for sharing code across JVM, Android, iOS, and web (Wasm) targets. See how Compose Multiplatform extends sharing from business logic to the UI.
 Topics:
-- stdlib: ranges, progressions, delegates
-- Kotlin reflection API
+- stdlib: ranges, contracts, reflection
 - KMP project structure
 - expect and actual declarations
 - Sharing business logic across platforms
-- Interop with Java and Swift
+- Compose Multiplatform for shared UI
+- Choosing targets: JVM, iOS, Wasm
 
 ### Layer 9 of 10 — id: kotlin-9
 Title: Kotlin on the JVM - Performance and Interop
 Technologies: Kotlin, JVM, Bytecode, Java Interop
-Description: Understand how Kotlin compiles to JVM bytecode and how to interoperate cleanly with Java libraries. Analyze performance characteristics and avoid common pitfalls.
+Description: Understand how Kotlin compiles to JVM bytecode and how to interoperate cleanly with Java libraries. Analyze performance characteristics, avoid common pitfalls, and keep the build modern with KSP and the K2 compiler.
 Topics:
 - Kotlin bytecode inspection with IntelliJ
 - Calling Java from Kotlin and vice versa
 - @JvmStatic, @JvmField, @JvmOverloads
 - Inline functions and reified generics
 - Avoiding boxing in performance-critical code
-- Kotlin compiler plugins overview
+- KSP vs kapt
 
 ### Layer 10 of 10 — id: kotlin-10
 Title: Production Kotlin - Ktor, DI, and Deployment

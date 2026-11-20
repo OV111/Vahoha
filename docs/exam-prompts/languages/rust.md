@@ -6,7 +6,7 @@ Track: "Rust" (rust, category languages). It has 12 layers, listed at the bottom
 Write the bank for ONE layer per reply, in the order listed. Each reply must contain exactly 60 questions for that layer. After each reply, stop and wait; I will type "next".
 
 ## OUTPUT FORMAT — follow exactly
-First line: the layer marker, exactly like this, with the layer id from the list:
+First line of EVERY reply, including every reply after "next": the layer marker, exactly like this, with the layer id from the list. A reply without it is thrown away by the importer.
 LAYER: <layer id>
 Then ONE ```json code block containing a JSON array of exactly 60 objects. No text after the block. Each object has exactly these fields:
 
@@ -27,7 +27,12 @@ Then ONE ```json code block containing a JSON array of exactly 60 objects. No te
 2. Exactly one choice is correct. Re-read each question and verify the key before you output it. If you are not sure of the answer, replace the question.
 3. Distractors must be plausible mistakes a real learner would make, not jokes and not obviously wrong.
 4. No "all of the above", "none of the above", "both A and B", and no negative stems ("which is NOT...").
-5. LENGTH BIAS IS THE MOST COMMON FAILURE. Models write the correct answer as the longest, most detailed choice, and learners learn to pick it without knowing the material. Write the three wrong choices FIRST, with the same level of detail, specific terms and length as the right one. The correct choice may be the longest in only about 1 of every 4 questions; in about 1 of 4 it should be the shortest. Wrong choices must sound like a real technical claim, never absurd ("compiles HTML into machine code").
+5. LENGTH BIAS IS THE MOST COMMON FAILURE, and earlier banks failed it badly (the correct answer was the longest choice in up to 95% of questions, so learners passed by picking the longest). Follow this plan exactly. Number the questions 1 to 60; the position of question N in a cycle of 4 fixes how long its CORRECT choice is compared with its three wrong choices:
+   - N = 1, 5, 9, ...: the correct choice is the SHORTEST of the four.
+   - N = 2, 6, 10, ...: the correct choice is the second shortest.
+   - N = 3, 7, 11, ...: the correct choice is the second longest.
+   - N = 4, 8, 12, ...: the correct choice is the LONGEST of the four.
+   Write the wrong choices with the same level of detail, specific terms and qualifiers as the right one; never make the right one the only careful, hedged or complete-sounding choice. Wrong choices must sound like a real technical claim, never absurd ("compiles HTML into machine code").
 6. Spread "answerIdx" evenly across 0, 1, 2 and 3 (about 15 each). Do not put the answer at index 0 or 1 most of the time.
 7. Difficulty mix per layer: about one third easy, half medium, the rest hard.
 8. Cover every topic of the layer, roughly evenly. Never repeat or rephrase a question within the layer.
@@ -35,18 +40,25 @@ Then ONE ```json code block containing a JSON array of exactly 60 objects. No te
 10. Stay accurate for current stable versions of the technologies. Avoid questions whose answer changed recently or is opinion.
 11. Escape quotes properly so the JSON parses. No trailing commas, no comments.
 
+## CHECK BEFORE YOU SEND EACH REPLY
+Silently verify all of these, and fix the reply until every one holds. Do not print the check.
+- The first line is LAYER: <the right layer id>.
+- The array has exactly 60 questions.
+- Count the questions whose correct choice is the longest of its four: at most 15. If more, lengthen wrong choices or shorten the right one until it holds.
+- Each answerIdx value (0, 1, 2, 3) appears about 15 times.
+
 ## LAYERS
 ### Layer 1 of 12 — id: rust-1
 Title: Rust Setup and Basic Syntax
 Technologies: Rust, Cargo
-Description: Install Rust via rustup, understand Cargo as the build system and package manager, and learn Rust basic syntax. Rust's compiler is unusually helpful - learning to read its error messages is a core skill.
+Description: Install Rust with rustup, create and run projects with Cargo, and learn the core syntax: variables and mutability, scalar and compound types, the difference between String and &str, and control flow. Understand editions and start every new project on Rust 2024.
 Topics:
-- rustup and toolchain management
+- rustup, Cargo, and editions (Rust 2024)
 - Cargo new, build, run
 - Variables and mutability
-- Basic types (i32, f64, bool, char)
-- Control flow
-- println! and format! macros
+- Scalar and compound types
+- String vs &str
+- Control flow and println!/format! macros
 
 ### Layer 2 of 12 — id: rust-2
 Title: Ownership, Borrowing, and Lifetimes
@@ -75,10 +87,10 @@ Topics:
 ### Layer 4 of 12 — id: rust-4
 Title: Collections, Iterators, and Closures
 Technologies: Rust, Traits
-Description: Use Vec, HashMap, and HashSet from the standard library, and master Rust's powerful iterator adapters combined with closures. Rust iterators are lazy and zero-cost - using them is idiomatic and efficient.
+Description: Work with the standard collections (Vec, HashMap, HashSet, BTreeMap, VecDeque, BinaryHeap) and pick the right one for the job. Process data with lazy iterator chains and closures, and understand how collect() builds any collection through FromIterator.
 Topics:
 - Vec<T> operations
-- HashMap and HashSet
+- HashMap, HashSet, BTreeMap, VecDeque, BinaryHeap
 - Iterator trait and adapters (map, filter, fold)
 - Chaining iterators
 - Closures and capturing
@@ -146,15 +158,15 @@ Topics:
 
 ### Layer 10 of 12 — id: rust-9
 Title: Concurrency and Async Rust
-Technologies: Rust, Cargo, Traits
-Description: Use Rust threads and message-passing channels for parallelism, and learn async/await with the Tokio runtime for high-performance I/O. Rust guarantees thread safety at compile time - the compiler prevents data races.
+Technologies: Rust, Cargo, Traits, Tokio
+Description: Use threads, channels, locks, and atomics to share work safely, with Send and Sync enforced at compile time. Then move to async/await on the Tokio runtime: spawn tasks, wait on several futures with select!, and write async fn directly in traits.
 Topics:
-- std::thread and join handles
-- mpsc channels
-- Mutex<T> and Arc for shared state
-- async/await syntax
+- std::thread, mpsc channels, and Mutex/Arc
+- Atomics and memory ordering
+- async/await syntax and the Future trait
 - Tokio runtime basics
 - tokio::spawn and async tasks
+- async fn in traits
 
 ### Layer 11 of 12 — id: rust-12
 Title: Macros and Metaprogramming
@@ -170,14 +182,14 @@ Topics:
 
 ### Layer 12 of 12 — id: rust-10
 Title: Production Rust - Testing, Performance, and Ecosystem
-Technologies: Rust, Cargo, Traits, Ownership
-Description: Write unit and integration tests in Rust, benchmark with Criterion, profile binaries, and survey the production Rust ecosystem for web, CLI, and systems use cases. Rust in production rewards investment in tooling and ecosystem knowledge.
+Technologies: Rust, Cargo, Traits, Ownership, tracing, Criterion
+Description: Ship Rust with confidence: unit, integration, doc, mock, and property-based tests, Criterion benchmarks and flamegraphs, and structured logging with tracing. Survey the main ecosystem crates (Axum, Clap, Serde) and set up CI and cross-compilation.
 Topics:
 - Unit tests with #[test]
-- Integration tests in tests/ directory
+- Integration tests, doc tests, mocking, and property tests
 - Criterion benchmarking
 - cargo flamegraph profiling
-- unsafe Rust basics
+- Structured logging with tracing
 - Ecosystem overview (Axum, Clap, Serde, Diesel)
 
 Start now with Layer 1.

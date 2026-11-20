@@ -6,7 +6,7 @@ Track: "C++" (cpp, category languages). It has 14 layers, listed at the bottom.
 Write the bank for ONE layer per reply, in the order listed. Each reply must contain exactly 60 questions for that layer. After each reply, stop and wait; I will type "next".
 
 ## OUTPUT FORMAT — follow exactly
-First line: the layer marker, exactly like this, with the layer id from the list:
+First line of EVERY reply, including every reply after "next": the layer marker, exactly like this, with the layer id from the list. A reply without it is thrown away by the importer.
 LAYER: <layer id>
 Then ONE ```json code block containing a JSON array of exactly 60 objects. No text after the block. Each object has exactly these fields:
 
@@ -27,7 +27,12 @@ Then ONE ```json code block containing a JSON array of exactly 60 objects. No te
 2. Exactly one choice is correct. Re-read each question and verify the key before you output it. If you are not sure of the answer, replace the question.
 3. Distractors must be plausible mistakes a real learner would make, not jokes and not obviously wrong.
 4. No "all of the above", "none of the above", "both A and B", and no negative stems ("which is NOT...").
-5. LENGTH BIAS IS THE MOST COMMON FAILURE. Models write the correct answer as the longest, most detailed choice, and learners learn to pick it without knowing the material. Write the three wrong choices FIRST, with the same level of detail, specific terms and length as the right one. The correct choice may be the longest in only about 1 of every 4 questions; in about 1 of 4 it should be the shortest. Wrong choices must sound like a real technical claim, never absurd ("compiles HTML into machine code").
+5. LENGTH BIAS IS THE MOST COMMON FAILURE, and earlier banks failed it badly (the correct answer was the longest choice in up to 95% of questions, so learners passed by picking the longest). Follow this plan exactly. Number the questions 1 to 60; the position of question N in a cycle of 4 fixes how long its CORRECT choice is compared with its three wrong choices:
+   - N = 1, 5, 9, ...: the correct choice is the SHORTEST of the four.
+   - N = 2, 6, 10, ...: the correct choice is the second shortest.
+   - N = 3, 7, 11, ...: the correct choice is the second longest.
+   - N = 4, 8, 12, ...: the correct choice is the LONGEST of the four.
+   Write the wrong choices with the same level of detail, specific terms and qualifiers as the right one; never make the right one the only careful, hedged or complete-sounding choice. Wrong choices must sound like a real technical claim, never absurd ("compiles HTML into machine code").
 6. Spread "answerIdx" evenly across 0, 1, 2 and 3 (about 15 each). Do not put the answer at index 0 or 1 most of the time.
 7. Difficulty mix per layer: about one third easy, half medium, the rest hard.
 8. Cover every topic of the layer, roughly evenly. Never repeat or rephrase a question within the layer.
@@ -35,18 +40,25 @@ Then ONE ```json code block containing a JSON array of exactly 60 objects. No te
 10. Stay accurate for current stable versions of the technologies. Avoid questions whose answer changed recently or is opinion.
 11. Escape quotes properly so the JSON parses. No trailing commas, no comments.
 
+## CHECK BEFORE YOU SEND EACH REPLY
+Silently verify all of these, and fix the reply until every one holds. Do not print the check.
+- The first line is LAYER: <the right layer id>.
+- The array has exactly 60 questions.
+- Count the questions whose correct choice is the longest of its four: at most 15. If more, lengthen wrong choices or shorten the right one until it holds.
+- Each answerIdx value (0, 1, 2, 3) appears about 15 times.
+
 ## LAYERS
 ### Layer 1 of 14 — id: cpp-1
 Title: C++ Syntax and Compilation Model
 Technologies: C++
-Description: Set up a C++ compiler (GCC or Clang), understand the preprocessing, compilation, and linking pipeline, and learn basic syntax. C++ is a compiled systems language where understanding the build model is as important as the syntax.
+Description: Set up a C++ compiler (GCC or Clang), understand the preprocessing, compilation, and linking pipeline, and learn basic modern syntax: auto, the named C++ casts, and type-safe output with std::format and std::print. C++ is a compiled systems language where understanding the build model is as important as the syntax.
 Topics:
 - Setting up GCC/Clang and CMake
 - Headers vs source files
-- Variables, types, and constants
+- Variables, auto, and C++ casts
 - Control flow and functions
 - Namespaces
-- Basic I/O with iostream
+- Output with std::print and std::format
 
 ### Layer 2 of 14 — id: cpp-2
 Title: Pointers, References, and Memory Management
@@ -56,21 +68,21 @@ Topics:
 - Pointer syntax and arithmetic
 - References vs pointers
 - new and delete
-- Stack vs heap allocation
+- Object lifetime and storage duration
 - Memory leaks and dangling pointers
-- Valgrind basics
+- Valgrind and AddressSanitizer basics
 
 ### Layer 3 of 14 — id: cpp-3
 Title: Classes, OOP, and RAII
 Technologies: C++, RAII
-Description: Define C++ classes with constructors, destructors, and operator overloading, and learn RAII - the pattern of tying resource lifetimes to object lifetimes. RAII is the fundamental C++ idiom for safe resource management.
+Description: Define C++ classes with constructors, destructors, and operator overloading, use inheritance and virtual dispatch, and learn the class-design rules that keep resource handling correct: the Rule of Zero, Three and Five, move-only types, and the Pimpl idiom.
 Topics:
 - Class definition and access specifiers
 - Constructors and destructors
-- Copy and move semantics
+- Inheritance and virtual functions
 - Operator overloading
-- RAII pattern
-- Rule of Three/Five/Zero
+- Rule of Zero, Three and Five
+- Pimpl and non-copyable types
 
 ### Layer 4 of 14 — id: cpp-11
 Title: Move Semantics and Value Categories
@@ -87,14 +99,14 @@ Topics:
 ### Layer 5 of 14 — id: cpp-4
 Title: STL Containers and Algorithms
 Technologies: C++, STL
-Description: Use the C++ Standard Template Library containers (vector, map, set, unordered_map) and algorithms (sort, find, transform) to write efficient, idiomatic C++. The STL is one of the most powerful standard libraries in any language.
+Description: Use the C++ Standard Template Library containers (vector, map, set, unordered_map) and algorithms (sort, find, transform, erase_if) to write efficient, idiomatic C++, and handle dates and times with std::chrono. The STL is one of the most powerful standard libraries in any language.
 Topics:
 - vector, deque, list
 - map, unordered_map, set
-- STL algorithms (sort, find, transform, accumulate)
+- STL algorithms (sort, find, transform, erase_if)
 - Iterators and iterator categories
 - std::string and string_view
-- std::array
+- std::chrono dates and time zones
 
 ### Layer 6 of 14 — id: cpp-5
 Title: Templates and Generic Programming
@@ -105,7 +117,7 @@ Topics:
 - Class templates
 - Template specialization
 - Variadic templates
-- SFINAE basics
+- Concepts basics
 - constexpr and compile-time computation
 
 ### Layer 7 of 14 — id: cpp-12
@@ -147,9 +159,9 @@ Topics:
 ### Layer 10 of 14 — id: cpp-8
 Title: Concurrency in C++
 Technologies: C++, STL
-Description: Write multi-threaded C++ programs using std::thread, mutexes, condition variables, and atomics from the C++11 concurrency library. C++ concurrency requires explicit management - the memory model is the foundation.
+Description: Write multi-threaded C++ programs using std::jthread, mutexes, condition variables, and atomics from the standard concurrency library. C++ concurrency requires explicit management - the memory model is the foundation.
 Topics:
-- std::thread and join/detach
+- std::jthread, std::thread and stop_token
 - std::mutex and lock_guard
 - std::condition_variable
 - std::atomic
@@ -163,10 +175,10 @@ Description: Learn the two big C++20 language features that change how programs 
 Topics:
 - co_await, co_yield and co_return
 - Promise types and coroutine handles
-- Generators and lazy sequences
+- std::generator and lazy sequences
 - Coroutine lifetime and dangling references
-- Module interface units and import
-- Migrating from headers to modules
+- Module interface units and import std
+- Building modules with CMake 3.28+
 
 ### Layer 12 of 14 — id: cpp-9
 Title: Error Handling and Robust C++
@@ -175,10 +187,10 @@ Description: Handle errors in C++ using exceptions, noexcept, std::error_code, a
 Topics:
 - Exception hierarchy and throw/catch
 - noexcept specification
-- std::error_code and std::error_condition
-- Contract programming and assert
+- std::error_code and std::expected
+- C++26 contracts (pre/post/contract_assert) and assert
 - Exception safety guarantees (basic/strong/no-throw)
-- RAII for exception safety
+- RAII and copy-and-swap for exception safety
 
 ### Layer 13 of 14 — id: cpp-14
 Title: Performance Engineering: Cache, Memory Layout, and Allocators
@@ -195,13 +207,13 @@ Topics:
 ### Layer 14 of 14 — id: cpp-10
 Title: Production C++ - Build Systems, Profiling, and Ecosystem
 Technologies: C++, STL, RAII, Templates
-Description: Build production C++ with CMake, profile with perf or Instruments, use sanitizers to catch bugs, and understand the C++ ecosystem including Boost, Conan, and vcpkg. Production C++ requires mastery of the full toolchain.
+Description: Build production C++ with CMake, test with GoogleTest or Catch2, debug with GDB and LLDB, profile with perf, catch bugs with sanitizers, and manage dependencies with vcpkg or Conan. Production C++ requires mastery of the full toolchain.
 Topics:
 - CMake targets and modern CMake patterns
-- AddressSanitizer and UBSanitizer
-- perf and gprof profiling
-- Conan or vcpkg for dependencies
-- Google Test for unit testing
+- Unit testing with GoogleTest or Catch2
+- Debugging with GDB and LLDB
+- perf profiling and sanitizers
+- vcpkg or Conan for dependencies
 - C++ ecosystem overview (Boost, Abseil, fmtlib)
 
 Start now with Layer 1.

@@ -6,7 +6,7 @@ Track: "PHP" (php, category languages). It has 10 layers, listed at the bottom.
 Write the bank for ONE layer per reply, in the order listed. Each reply must contain exactly 60 questions for that layer. After each reply, stop and wait; I will type "next".
 
 ## OUTPUT FORMAT — follow exactly
-First line: the layer marker, exactly like this, with the layer id from the list:
+First line of EVERY reply, including every reply after "next": the layer marker, exactly like this, with the layer id from the list. A reply without it is thrown away by the importer.
 LAYER: <layer id>
 Then ONE ```json code block containing a JSON array of exactly 60 objects. No text after the block. Each object has exactly these fields:
 
@@ -27,7 +27,12 @@ Then ONE ```json code block containing a JSON array of exactly 60 objects. No te
 2. Exactly one choice is correct. Re-read each question and verify the key before you output it. If you are not sure of the answer, replace the question.
 3. Distractors must be plausible mistakes a real learner would make, not jokes and not obviously wrong.
 4. No "all of the above", "none of the above", "both A and B", and no negative stems ("which is NOT...").
-5. LENGTH BIAS IS THE MOST COMMON FAILURE. Models write the correct answer as the longest, most detailed choice, and learners learn to pick it without knowing the material. Write the three wrong choices FIRST, with the same level of detail, specific terms and length as the right one. The correct choice may be the longest in only about 1 of every 4 questions; in about 1 of 4 it should be the shortest. Wrong choices must sound like a real technical claim, never absurd ("compiles HTML into machine code").
+5. LENGTH BIAS IS THE MOST COMMON FAILURE, and earlier banks failed it badly (the correct answer was the longest choice in up to 95% of questions, so learners passed by picking the longest). Follow this plan exactly. Number the questions 1 to 60; the position of question N in a cycle of 4 fixes how long its CORRECT choice is compared with its three wrong choices:
+   - N = 1, 5, 9, ...: the correct choice is the SHORTEST of the four.
+   - N = 2, 6, 10, ...: the correct choice is the second shortest.
+   - N = 3, 7, 11, ...: the correct choice is the second longest.
+   - N = 4, 8, 12, ...: the correct choice is the LONGEST of the four.
+   Write the wrong choices with the same level of detail, specific terms and qualifiers as the right one; never make the right one the only careful, hedged or complete-sounding choice. Wrong choices must sound like a real technical claim, never absurd ("compiles HTML into machine code").
 6. Spread "answerIdx" evenly across 0, 1, 2 and 3 (about 15 each). Do not put the answer at index 0 or 1 most of the time.
 7. Difficulty mix per layer: about one third easy, half medium, the rest hard.
 8. Cover every topic of the layer, roughly evenly. Never repeat or rephrase a question within the layer.
@@ -35,125 +40,132 @@ Then ONE ```json code block containing a JSON array of exactly 60 objects. No te
 10. Stay accurate for current stable versions of the technologies. Avoid questions whose answer changed recently or is opinion.
 11. Escape quotes properly so the JSON parses. No trailing commas, no comments.
 
+## CHECK BEFORE YOU SEND EACH REPLY
+Silently verify all of these, and fix the reply until every one holds. Do not print the check.
+- The first line is LAYER: <the right layer id>.
+- The array has exactly 60 questions.
+- Count the questions whose correct choice is the longest of its four: at most 15. If more, lengthen wrong choices or shorten the right one until it holds.
+- Each answerIdx value (0, 1, 2, 3) appears about 15 times.
+
 ## LAYERS
 ### Layer 1 of 10 — id: php-1
 Title: PHP Syntax and Basics
-Technologies: PHP, Variables, Control Flow, Functions
-Description: Learn PHP syntax, data types, operators, and control flow structures. Understand how PHP scripts execute in a server context.
+Technologies: PHP, Docker, Herd, Functions
+Description: Set up a local PHP environment, then learn the core language: variables and scope, PHP's type system and type juggling, strings, match expressions, arrays, and functions with named arguments, closures, and arrow functions. Turn on strict_types early so the engine catches type mistakes for you.
 Topics:
-- Variables and data types
-- Strings and string functions
-- Arrays and array functions
-- Control flow: if, switch, loops
-- Functions and scope
-- Include and require
+- Local setup with Docker or Herd
+- Variables, scope, and constants
+- Types, type juggling, and strict_types
+- Strings, arrays, and array functions
+- if, match, and loops
+- Functions, closures, and arrow functions
 
 ### Layer 2 of 10 — id: php-2
 Title: Forms, Superglobals, and HTTP
-Technologies: PHP, GET, POST, Sessions
-Description: Handle HTTP requests and user input using PHP superglobals. Learn session and cookie management for stateful web interactions.
+Technologies: PHP, HTTP, Sessions, Cookies
+Description: Learn how PHP sees an HTTP request through superglobals, how to validate input and escape output, and how sessions, cookies, file uploads, headers and redirects work. These are the building blocks every PHP framework wraps.
 Topics:
-- $_GET, $_POST, $_REQUEST
-- Form validation and sanitization
-- Sessions and cookies
-- Header redirects
-- File uploads
-- Error handling basics
+- $_GET, $_POST, $_SERVER, and $_FILES
+- Validating and sanitizing input
+- Sessions, cookies, and session fixation
+- Secure file uploads
+- Headers, status codes, and redirects
+- include vs require and output escaping
 
 ### Layer 3 of 10 — id: php-3
 Title: Object-Oriented PHP
-Technologies: PHP, OOP, Classes, Interfaces
-Description: Master PHP classes, inheritance, interfaces, and traits. Apply OOP principles to structure reusable and maintainable code.
+Technologies: PHP, OOP, Interfaces, Traits
+Description: Model code with classes: constructor promotion, inheritance and abstract classes, interfaces, traits, static members, final and magic methods. Organize classes with namespaces and autoloading, and use PHP 8.4 property hooks and asymmetric visibility instead of boilerplate getters and setters.
 Topics:
-- Classes and objects
-- Constructors and destructors
-- Inheritance and abstract classes
+- Classes and constructor property promotion
+- Inheritance, abstract classes, and final
 - Interfaces and traits
-- Static methods and properties
-- Magic methods
+- Static members and magic methods
+- Namespaces and autoloading
+- Property hooks and asymmetric visibility (8.4)
 
 ### Layer 4 of 10 — id: php-4
 Title: Composer and Dependency Management
 Technologies: Composer, PSR-4, Autoloading, Packagist
-Description: Use Composer to manage packages and autoload classes following PSR-4 conventions. Understand the composer.json lifecycle.
+Description: Use Composer to install packages, lock exact versions, write version constraints, and autoload your own code with PSR-4. Learn Composer scripts, how to pick packages on Packagist, and how to optimize the autoloader and audit dependencies for production.
 Topics:
-- Installing and using Composer
-- composer.json and composer.lock
+- composer require and install
+- composer.json vs composer.lock
+- Version constraints and semver
 - PSR-4 autoloading
-- Requiring packages from Packagist
-- Semantic versioning
-- Scripts and hooks
+- Composer scripts
+- Packagist, composer audit, and optimized autoloading
 
 ### Layer 5 of 10 — id: php-5
 Title: Databases and PDO
 Technologies: PHP, PDO, MySQL, Prepared Statements
-Description: Connect PHP to relational databases using PDO with prepared statements to prevent SQL injection. Perform CRUD operations safely.
+Description: Talk to SQL databases through PDO: connect with a DSN, turn on exception error mode, use prepared statements with bound parameters, pick the right fetch mode, wrap multi-step writes in transactions, and hide SQL behind a repository class.
 Topics:
-- PDO connection and DSN
-- Prepared statements and binding
-- Fetching results
+- PDO connections and DSNs
+- Error mode and exceptions
+- Prepared statements and bound parameters
+- Fetch modes and hydrating objects
 - Transactions
-- Error handling with PDO
-- Basic query builder pattern
+- Repository pattern
 
 ### Layer 6 of 10 — id: php-6
 Title: PSR Standards and Clean Architecture
-Technologies: PSR, PHP-FIG, Coding Standards, Logging
-Description: Follow PSR-1, PSR-2, PSR-3, and PSR-12 coding standards to write interoperable PHP. Integrate a PSR-3 compliant logger.
+Technologies: PER Coding Style, PHP CS Fixer, Monolog, PSR-7
+Description: Follow the PHP-FIG standards that let code and libraries fit together: PER Coding Style enforced by PHP CS Fixer, PSR-3 logging with Monolog, PSR-7 and PSR-15 for HTTP, and a clear exception and error-handling strategy built on Throwable.
 Topics:
-- PSR-1 and PSR-12 coding style
-- PSR-3 logger interface
-- PSR-7 HTTP messages overview
-- PHP_CodeSniffer
-- Monolog integration
-- Separation of concerns
+- PER Coding Style (successor to PSR-12)
+- PHP CS Fixer
+- PSR-7 HTTP messages and PSR-15 middleware
+- Exceptions and the Throwable hierarchy
+- Error levels and global handlers
+- PSR-3 logging with Monolog
 
 ### Layer 7 of 10 — id: php-7
 Title: Testing PHP Applications
-Technologies: PHPUnit, Mocking, TDD, Code Coverage
-Description: Write unit and integration tests with PHPUnit using mocks and assertions. Practice test-driven development on your domain logic.
+Technologies: PHPUnit, Pest, PHPStan, CI
+Description: Test PHP code with PHPUnit and Pest, isolate dependencies with test doubles, cover many cases with data providers, and catch bugs before running anything with PHPStan. Measure coverage and run it all in CI on every push.
 Topics:
-- PHPUnit setup and assertions
-- Test doubles and mocking
+- PHPUnit tests and assertions
 - Data providers
-- Integration tests
-- Code coverage reports
-- TDD workflow
+- Test doubles: stubs and mocks
+- Pest
+- PHPStan levels and baselines
+- Code coverage and CI
 
 ### Layer 8 of 10 — id: php-8
-Title: Modern PHP 8 Features
-Technologies: PHP 8, Named Arguments, Fibers, Enums
-Description: Leverage PHP 8 features including named arguments, union types, match expressions, enums, and fibers. Write expressive modern PHP.
+Title: Modern PHP 8.x Features
+Technologies: PHP 8.x, Enums, Attributes, Fibers
+Description: Use the features that define modern PHP: union, intersection and DNF types, enums, readonly properties and classes, attributes, and fibers. Then catch up on PHP 8.4 (property hooks, new array functions, lazy objects) and the PHP 8.5 pipe operator.
 Topics:
-- Named arguments
-- Union and intersection types
-- Match expressions
-- Null safe operator
+- Union, intersection, and DNF types
 - Enums
-- Fibers and async basics
+- Readonly properties and classes
+- Attributes
+- Fibers
+- PHP 8.4 and the 8.5 pipe operator
 
 ### Layer 9 of 10 — id: php-9
 Title: Security and Performance
-Technologies: PHP, Security, Caching, Opcache
-Description: Harden your PHP application against common vulnerabilities including XSS, CSRF, and injection. Apply caching strategies to improve throughput.
+Technologies: PHP, OWASP, OPcache, Xdebug
+Description: Defend against the attacks that hit PHP apps most: XSS, SQL injection and CSRF. Store passwords with password_hash and generate secrets with random_bytes. Then make code fast with OPcache and JIT, cache data with APCu, and find real bottlenecks with the Xdebug profiler.
 Topics:
-- XSS prevention and output escaping
+- XSS and output escaping
+- SQL injection
 - CSRF tokens
-- Password hashing with bcrypt
-- Opcache configuration
-- APCu and Redis caching
-- Rate limiting patterns
+- password_hash and random_bytes
+- OPcache, JIT, and APCu
+- Profiling with Xdebug
 
 ### Layer 10 of 10 — id: php-10
 Title: Production PHP - APIs, Queues, and Deployment
-Technologies: PHP, REST API, Job Queues, Docker
-Description: Build and deploy a production-grade PHP REST API with background job processing and containerized infrastructure. Apply monitoring and zero-downtime deployment strategies.
+Technologies: PHP-FPM, FrankenPHP, Docker, Queues
+Description: Ship PHP to production: build JSON APIs with consistent errors, run background jobs through queues and workers, keep config and secrets in the environment, and serve PHP with PHP-FPM behind Nginx or with FrankenPHP. Package it in Docker and deploy through CI.
 Topics:
-- Building REST APIs in plain PHP or micro-framework
-- JSON serialization and content negotiation
-- Background queues with database or Redis
-- Dockerizing PHP-FPM and Nginx
-- Environment configuration and secrets
-- CI/CD pipeline and health checks
+- JSON encoding and API design
+- Queues and background workers
+- Configuration and secrets
+- PHP-FPM and Nginx
+- FrankenPHP and worker mode
+- Docker images and CI/CD
 
 Start now with Layer 1.

@@ -6,7 +6,7 @@ Track: "Go" (go, category languages). It has 10 layers, listed at the bottom.
 Write the bank for ONE layer per reply, in the order listed. Each reply must contain exactly 60 questions for that layer. After each reply, stop and wait; I will type "next".
 
 ## OUTPUT FORMAT — follow exactly
-First line: the layer marker, exactly like this, with the layer id from the list:
+First line of EVERY reply, including every reply after "next": the layer marker, exactly like this, with the layer id from the list. A reply without it is thrown away by the importer.
 LAYER: <layer id>
 Then ONE ```json code block containing a JSON array of exactly 60 objects. No text after the block. Each object has exactly these fields:
 
@@ -27,7 +27,12 @@ Then ONE ```json code block containing a JSON array of exactly 60 objects. No te
 2. Exactly one choice is correct. Re-read each question and verify the key before you output it. If you are not sure of the answer, replace the question.
 3. Distractors must be plausible mistakes a real learner would make, not jokes and not obviously wrong.
 4. No "all of the above", "none of the above", "both A and B", and no negative stems ("which is NOT...").
-5. LENGTH BIAS IS THE MOST COMMON FAILURE. Models write the correct answer as the longest, most detailed choice, and learners learn to pick it without knowing the material. Write the three wrong choices FIRST, with the same level of detail, specific terms and length as the right one. The correct choice may be the longest in only about 1 of every 4 questions; in about 1 of 4 it should be the shortest. Wrong choices must sound like a real technical claim, never absurd ("compiles HTML into machine code").
+5. LENGTH BIAS IS THE MOST COMMON FAILURE, and earlier banks failed it badly (the correct answer was the longest choice in up to 95% of questions, so learners passed by picking the longest). Follow this plan exactly. Number the questions 1 to 60; the position of question N in a cycle of 4 fixes how long its CORRECT choice is compared with its three wrong choices:
+   - N = 1, 5, 9, ...: the correct choice is the SHORTEST of the four.
+   - N = 2, 6, 10, ...: the correct choice is the second shortest.
+   - N = 3, 7, 11, ...: the correct choice is the second longest.
+   - N = 4, 8, 12, ...: the correct choice is the LONGEST of the four.
+   Write the wrong choices with the same level of detail, specific terms and qualifiers as the right one; never make the right one the only careful, hedged or complete-sounding choice. Wrong choices must sound like a real technical claim, never absurd ("compiles HTML into machine code").
 6. Spread "answerIdx" evenly across 0, 1, 2 and 3 (about 15 each). Do not put the answer at index 0 or 1 most of the time.
 7. Difficulty mix per layer: about one third easy, half medium, the rest hard.
 8. Cover every topic of the layer, roughly evenly. Never repeat or rephrase a question within the layer.
@@ -35,29 +40,36 @@ Then ONE ```json code block containing a JSON array of exactly 60 objects. No te
 10. Stay accurate for current stable versions of the technologies. Avoid questions whose answer changed recently or is opinion.
 11. Escape quotes properly so the JSON parses. No trailing commas, no comments.
 
+## CHECK BEFORE YOU SEND EACH REPLY
+Silently verify all of these, and fix the reply until every one holds. Do not print the check.
+- The first line is LAYER: <the right layer id>.
+- The array has exactly 60 questions.
+- Count the questions whose correct choice is the longest of its four: at most 15. If more, lengthen wrong choices or shorten the right one until it holds.
+- Each answerIdx value (0, 1, 2, 3) appears about 15 times.
+
 ## LAYERS
 ### Layer 1 of 10 — id: go-1
 Title: Go Syntax and Toolchain
 Technologies: Go, Modules
-Description: Set up the Go toolchain, understand the module system, and learn core syntax including variables, types, loops, and functions. Go's simplicity is intentional - the language is small and easy to hold in your head.
+Description: Set up the Go toolchain, understand the module system, and learn core syntax: variables, types, pointers, strings, loops, and functions including closures. Go's simplicity is intentional - the language is small and easy to hold in your head.
 Topics:
 - go mod init and module structure
-- Variables (var, :=, const)
-- Basic types and zero values
-- Control flow (if, for, switch)
-- Functions and multiple return values
+- Variables, basic types, and zero values
+- Pointers and strings (bytes vs runes)
+- Control flow and range over ints
+- Functions, closures, and variadic arguments
 - go fmt and go vet
 
 ### Layer 2 of 10 — id: go-2
 Title: Arrays, Slices, Maps, and Structs
-Technologies: Go, Std Library
+Technologies: Go, Std Library, slices, maps
 Description: Master Go's composite types - slices, maps, and structs - and understand the memory model behind them including capacity and append behavior. These types are the foundation of all Go data modeling.
 Topics:
 - Arrays vs slices
 - Slice internals (len, cap, append)
 - Maps and nil map gotchas
+- slices and maps standard packages
 - Structs and struct embedding
-- Anonymous structs
 - Comparable types
 
 ### Layer 3 of 10 — id: go-3
@@ -92,33 +104,33 @@ Topics:
 - Goroutine creation and lifecycle
 - Unbuffered and buffered channels
 - Select statement
-- sync.WaitGroup
-- Channel direction in signatures
+- sync.WaitGroup and sync.Mutex
+- Race detector (go test -race)
 - Goroutine leaks
 
 ### Layer 6 of 10 — id: go-6
 Title: The Standard Library
-Technologies: Go, Std Library, Modules
+Technologies: Go, Std Library, net/http, log/slog
 Description: Explore Go's rich standard library covering HTTP, JSON, file I/O, time, and strings. Go's stdlib is deliberately comprehensive so you can build production-quality programs with minimal external dependencies.
 Topics:
-- net/http for servers and clients
+- net/http servers and ServeMux routing
 - encoding/json marshal and unmarshal
-- os and io packages
-- strings and strconv
-- time package
-- bufio for efficient I/O
+- os, io, and bufio
+- context and time
+- Structured logging with log/slog
+- go:embed for static files
 
 ### Layer 7 of 10 — id: go-7
 Title: Testing in Go
 Technologies: Go, Std Library
 Description: Write table-driven tests, benchmarks, and examples using Go's built-in testing package, and use interfaces for testability. Go's testing tooling is built into the language - no external framework is needed.
 Topics:
-- testing package basics
-- Table-driven tests
-- Test helpers and t.Helper()
+- testing package and table-driven tests
+- Subtests and t.Helper()
+- httptest for HTTP handlers
 - Benchmarks with testing.B
-- Example functions
-- go test flags and coverage
+- Fuzzing with go test -fuzz
+- Testing concurrency with testing/synctest
 
 ### Layer 8 of 10 — id: go-8
 Title: Go Modules and Dependency Management
@@ -126,34 +138,34 @@ Technologies: Go, Modules
 Description: Manage Go module dependencies with go.mod and go.sum, understand versioning semantics, and use popular third-party packages responsibly. The Go module system provides reproducible builds by design.
 Topics:
 - go.mod and go.sum
-- go get, go tidy, go vendor
+- go get and go mod tidy
 - Semantic versioning in Go
 - Replacing and excluding modules
-- Workspace mode (go work)
-- Private module proxies
+- Tool dependencies (go get -tool)
+- GOPRIVATE and private modules
 
 ### Layer 9 of 10 — id: go-9
 Title: Advanced Go Patterns - Generics, Context, and sync
-Technologies: Go, Goroutines, Std Library
+Technologies: Go, Goroutines, Std Library, Generics, iter
 Description: Use Go generics (added in 1.18) for reusable data structures, propagate cancellation with context.Context, and synchronize goroutines safely with the sync package. These are the tools of idiomatic production Go.
 Topics:
 - Generic functions and type constraints
-- context.Context propagation
-- context.WithTimeout and WithCancel
+- Iterators (iter.Seq, range-over-func)
+- context.Context propagation and timeouts
 - sync.Mutex and sync.RWMutex
-- sync.Once and sync.Map
+- sync.Once and sync.Pool
 - errgroup for goroutine fan-out
 
 ### Layer 10 of 10 — id: go-10
 Title: Production Go - Build, Deploy, and Ecosystem
-Technologies: Go, Modules, Std Library, Goroutines
+Technologies: Go, Modules, Docker, pprof, golangci-lint
 Description: Build production Go binaries with cross-compilation, profiling, and embed, and understand the broader Go ecosystem for web, CLI, and systems programming. Go's single-binary deployment model is one of its greatest production advantages.
 Topics:
 - go build flags and ldflags
-- Cross-compilation (GOOS, GOARCH)
-- go:embed for static assets
-- pprof profiling
+- Cross-compilation and static binaries
+- pprof profiling and execution tracing
+- Linting and vulnerability scanning
 - Graceful HTTP shutdown
-- Go ecosystem overview (Gin, Echo, GORM, Cobra)
+- Observability with OpenTelemetry
 
 Start now with Layer 1.
