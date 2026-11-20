@@ -15,6 +15,7 @@ import {
   UserSearch,
   FlaskConical,
   Workflow,
+  Compass,
 } from "lucide-react";
 import { CATEGORY_OPTIONS, categoryHref } from "./categories";
 import { FEATURES } from "./features";
@@ -55,6 +56,7 @@ export const NAV_GROUPS_AUTH = [
       { label: "Challenges", to: "/coding-challenges", icon: Code2, description: "Graded problems in the browser" },
       { label: "Tests", to: "/roadmaps", match: "/roadmaps/exam", icon: GraduationCap, description: "Pass a layer to unlock the next" },
       { label: "Mentor", to: "/mentor", icon: Bot, description: "Get unstuck with a mentor that knows your progress" },
+      { label: "Judgment", to: "/judgment", icon: Compass, description: "Make real engineering calls and live with them" },
     ],
   },
   {

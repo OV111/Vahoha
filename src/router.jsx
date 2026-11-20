@@ -51,6 +51,8 @@ const LearnTopicPage = lazy(() => import("./features/learn/TopicPage"));
 const ProgressPage = lazy(() => import("./features/mastery/ProgressPage"));
 const VoiceReviewPage = lazy(() => import("./features/voice-review/VoiceReviewPage"));
 const VoiceExamPage = lazy(() => import("./features/voice-exam/VoiceExamPage"));
+const JudgmentHubPage = lazy(() => import("./features/judgment/JudgmentHubPage"));
+const JudgmentRunPage = lazy(() => import("./features/judgment/JudgmentRunPage"));
 
 const LibsPage = lazy(() => import("./features/coding-libs/LibsPage"));
 const BookDetailPage = lazy(() => import("./features/coding-libs/BookDetailPage"));
@@ -137,6 +139,8 @@ const protectedRoutes = [
   { path: "roadmaps/exam/:layerId", element: <ExamPage /> },
   { path: "voice-exam/:layerId", element: <VoiceExamPage /> },
   { path: "voice-review", element: <VoiceReviewPage /> },
+  { path: "judgment", element: <JudgmentHubPage /> },
+  { path: "judgment/run/:runId", element: <JudgmentRunPage /> },
   { path: "progress", element: <ProgressPage /> },
   { path: "billing", element: <BillingPage /> },
 
