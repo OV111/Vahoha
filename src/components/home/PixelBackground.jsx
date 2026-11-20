@@ -14,9 +14,13 @@ const SHAPES = [
   [[0, 0], [1, 0], [0, 1], [1, 1]],
 ];
 
-const DEFAULT_COLORS = { bg: "#000000", accent: "#8b5cf6" };
+// Violet shades, base tone weighted heaviest so clusters read as one colour with texture.
+const TONES = ["#8b5cf6", "#8b5cf6", "#8b5cf6", "#7c3aed", "#a78bfa"];
+const GLINT = "#ddd6fe";
+const GLINT_CHANCE = 0.06;
 const DEFAULT_SAFE_ZONES = "h1, h2, h3, h4, p, a, button, img, svg, li, span, [data-pixel-safe]";
 
+const BLOCK_GAP = 1;
 const STEP_MS = 70;
 const MIN_BAND = 48;
 const MOBILE_MAX = 768;
@@ -25,12 +29,22 @@ const SAFE_PAD = 64;
 const SPAWN_TRIES = 20;
 const RETRY_MS = 800;
 const ZONES_TTL_MS = 1000;
+const EDGE_ALPHA = 1;
+const INNER_ALPHA = 0.4;
 
 const rand = (min, max) => min + Math.random() * (max - min);
 const pick = (list) => list[Math.floor(Math.random() * list.length)];
 const snap = (v, size) => Math.round(v / size) * size;
 const overlaps = (a, b, pad) =>
   a.x < b.x + b.w + pad && b.x < a.x + a.w + pad && a.y < b.y + b.h + pad && b.y < a.y + a.h + pad;
+
+function shuffle(list) {
+  for (let i = list.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [list[i], list[j]] = [list[j], list[i]];
+  }
+  return list;
+}
 
 function shapeBox(shape, size) {
   const cols = Math.max(...shape.map(([gx]) => gx)) + 1;
@@ -39,14 +53,15 @@ function shapeBox(shape, size) {
 }
 
 function buildCluster({ x, y, shape, size, alpha, now, isStatic }) {
-  const blocks = shape
-    .map(([gx, gy]) => ({
+  const blocks = shuffle(
+    shape.map(([gx, gy]) => ({
       x: gx * size,
       y: gy * size,
+      color: Math.random() < GLINT_CHANCE ? GLINT : pick(TONES),
       // Lone pixels stay solid; holes only read on blocks that have neighbours.
       detail: shape.length > 2 && Math.random() < 0.25 ? pick(["dot", "hollow"]) : null,
-    }))
-    .sort(() => Math.random() - 0.5);
+    })),
+  );
 
   const appearEnd = blocks.length * STEP_MS;
   const hold = rand(2000, 4000);
@@ -70,30 +85,13 @@ function blockOn(cluster, i, now, isStatic) {
   return t >= i * STEP_MS && t < cluster.leaveAt + i * STEP_MS;
 }
 
-function drawBlock(ctx, x, y, size, block, colors) {
-  ctx.fillStyle = colors.accent;
-  ctx.fillRect(x, y, size, size);
-  if (!block.detail) return;
-
-  // Detail is cut back to the page colour so it reads as a hole in the block.
-  ctx.fillStyle = colors.bg;
-  if (block.detail === "dot") {
-    const d = Math.max(2, Math.round(size / 4));
-    ctx.fillRect(x + (size - d) / 2, y + (size - d) / 2, d, d);
-  } else {
-    const inset = Math.max(2, Math.round(size / 4));
-    ctx.fillRect(x + inset, y + inset, size - inset * 2, size - inset * 2);
-  }
-}
-
 /**
  * Animated 8-bit pixel clusters on a shared grid: mostly in the left and right bands
  * of the parent, plus a few dimmer ones in the middle that keep clear of `safeZoneSelector`
- * elements. The parent must be `position: relative`.
+ * elements. Side clusters fade as they near the content. The parent must be `position: relative`.
  */
 export default function PixelBackground({
-  colors,
-  blockSize = 12,
+  blockSize = 8,
   sideDensity = 2,
   centerDensity = 1,
   safeZoneSelector = DEFAULT_SAFE_ZONES,
@@ -102,23 +100,31 @@ export default function PixelBackground({
   topOffset = 0,
 }) {
   const canvasRef = useRef(null);
-  const { bg, accent } = { ...DEFAULT_COLORS, ...colors };
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!ctx) return undefined;
 
-    const palette = { bg, accent };
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let width = 0;
     let height = 0;
+    let dpr = 1;
     let band = 0;
     let slots = [];
     let zones = [];
     let zonesAt = -Infinity;
     let frame = 0;
     let visible = true;
+    let lastKey = "";
+
+    // Draw in whole device pixels so edges and holes stay sharp at 125%/150% zoom.
+    const px = (v) => Math.round(v * dpr);
+    const rect = (x, y, w, h) => {
+      const x0 = px(x);
+      const y0 = px(y);
+      return [x0, y0, px(x + w) - x0, px(y + h) - y0];
+    };
 
     const readZones = (now) => {
       if (now - zonesAt < ZONES_TTL_MS) return zones;
@@ -134,6 +140,13 @@ export default function PixelBackground({
     const isFree = (box, now, checkZones) => {
       if (slots.some((s) => s.cluster && overlaps(box, s.cluster, CLUSTER_PAD))) return false;
       return !checkZones || !readZones(now).some((z) => overlaps(box, z, SAFE_PAD));
+    };
+
+    const alphaFor = (kind, x, w) => {
+      if (kind === "center") return rand(0.45, 0.65);
+      const fromEdge = kind === "left" ? x + w / 2 : width - (x + w / 2);
+      const t = Math.min(1, fromEdge / band);
+      return EDGE_ALPHA + (INNER_ALPHA - EDGE_ALPHA) * t;
     };
 
     const spawn = (kind, now) => {
@@ -155,8 +168,7 @@ export default function PixelBackground({
         const x = Math.min(Math.max(snap(rand(minX, maxX), size), minX), maxX);
         const y = snap(rand(top, maxY), size);
         if (isFree({ x, y, w, h }, now, kind === "center")) {
-          const alpha = kind === "center" ? rand(0.55, 0.75) : 1;
-          return buildCluster({ x, y, shape, size, alpha, now, isStatic });
+          return buildCluster({ x, y, shape, size, alpha: alphaFor(kind, x, w), now, isStatic });
         }
       }
       return null;
@@ -184,14 +196,36 @@ export default function PixelBackground({
       }
     };
 
-    const draw = (now) => {
-      ctx.clearRect(0, 0, width, height);
+    const drawBlock = (x, y, size, block) => {
+      // A thin gap between neighbours keeps each block reading as its own pixel.
+      const s = size - BLOCK_GAP;
+      ctx.fillStyle = block.color;
+      ctx.fillRect(...rect(x, y, s, s));
+      if (!block.detail) return;
+      // Holes are cleared, not painted, so the real page background shows through.
+      const inset = Math.max(2, Math.round(s / 4));
+      if (block.detail === "dot") ctx.clearRect(...rect(x + (s - inset) / 2, y + (s - inset) / 2, inset, inset));
+      else ctx.clearRect(...rect(x + inset, y + inset, s - inset * 2, s - inset * 2));
+    };
+
+    const draw = (now, force = false) => {
       const isStatic = reduceMotion.matches;
+      // Blocks only change on step boundaries, so most frames have nothing new to paint.
+      let key = "";
+      for (const { cluster: c } of slots) {
+        if (!c) continue;
+        for (let i = 0; i < c.blocks.length; i += 1) key += blockOn(c, i, now, isStatic) ? "1" : "0";
+        key += "|";
+      }
+      if (!force && key === lastKey) return;
+      lastKey = key;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (const { cluster: c } of slots) {
         if (!c) continue;
         ctx.globalAlpha = c.alpha;
         c.blocks.forEach((b, i) => {
-          if (blockOn(c, i, now, isStatic)) drawBlock(ctx, c.x + b.x, c.y + b.y, c.size, b, palette);
+          if (blockOn(c, i, now, isStatic)) drawBlock(c.x + b.x, c.y + b.y, c.size, b);
         });
       }
       ctx.globalAlpha = 1;
@@ -215,25 +249,31 @@ export default function PixelBackground({
     const start = () => {
       stop();
       if (!visible || slots.length === 0) return;
-      if (reduceMotion.matches) draw(performance.now());
-      else frame = requestAnimationFrame(tick);
+      draw(performance.now(), true);
+      if (!reduceMotion.matches) frame = requestAnimationFrame(tick);
     };
 
     const resize = () => {
-      const rect = canvas.parentElement.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      width = rect.width;
-      height = rect.height;
+      const box = canvas.parentElement.getBoundingClientRect();
+      const widthChanged = box.width !== width;
+      dpr = window.devicePixelRatio || 1;
+      width = box.width;
+      height = box.height;
       // Side bands shrink with the screen so edge clusters never reach the content column.
       band = Math.min(bandWidth, Math.max(0, (width - contentWidth) / 2));
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.imageSmoothingEnabled = false;
-      seed(performance.now());
+      // Height-only changes (lazy sections loading in) keep the live clusters instead of reshuffling.
+      if (widthChanged || slots.length === 0) seed(performance.now());
       start();
+    };
+
+    const reset = () => {
+      slots = [];
+      resize();
     };
 
     const resizeObserver = new ResizeObserver(resize);
@@ -246,15 +286,15 @@ export default function PixelBackground({
     });
     intersectionObserver.observe(canvas);
 
-    reduceMotion.addEventListener("change", resize);
+    reduceMotion.addEventListener("change", reset);
 
     return () => {
       stop();
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
-      reduceMotion.removeEventListener("change", resize);
+      reduceMotion.removeEventListener("change", reset);
     };
-  }, [bg, accent, blockSize, sideDensity, centerDensity, safeZoneSelector, bandWidth, contentWidth, topOffset]);
+  }, [blockSize, sideDensity, centerDensity, safeZoneSelector, bandWidth, contentWidth, topOffset]);
 
   return (
     <canvas
