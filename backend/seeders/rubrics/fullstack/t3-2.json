@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "t3-2",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "React's rendering model and the component lifecycle",
+      "question": "A component's counter updates three times in one click handler but only re-renders once, and a teammate put a hook inside an if statement that sometimes breaks. Explain how React renders and why hooks have rules.",
+      "followUps": {
+        "How React reconciles the virtual DOM and batches renders": "Why does React render once even if you set state three times in one event?",
+        "Hooks rules: why they can't be called conditionally": "Why can't a hook be called inside an if statement?"
+      },
+      "criteria": {
+        "How React reconciles the virtual DOM and batches renders": {
+          "id": "reconcile-batch",
+          "evidence": [
+            {
+              "id": "diff",
+              "text": "React builds a new tree of what the UI should be, compares it to the previous one and applies only the needed DOM changes."
+            },
+            {
+              "id": "batch",
+              "text": "Several state updates in the same event are batched into a single re-render."
+            },
+            {
+              "id": "everywhere",
+              "text": "Since React 18, batching also applies inside timeouts and promises."
+            }
+          ],
+          "notEnough": [
+            "Only saying React uses a virtual DOM."
+          ],
+          "misconceptions": []
+        },
+        "Hooks rules: why they can't be called conditionally": {
+          "id": "hook-rules",
+          "evidence": [
+            {
+              "id": "call-order",
+              "text": "React identifies each hook by the order it is called during render."
+            },
+            {
+              "id": "shift",
+              "text": "A conditional hook changes that order between renders, so state gets attached to the wrong hook."
+            },
+            {
+              "id": "top-level",
+              "text": "Hooks must always be called at the top level in the same order."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a rule of hooks."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "TypeScript integration with React components and hooks",
+      "question": "You are converting a Card component and a search input to TypeScript. Explain how you would type the props, state, refs and event handlers.",
+      "followUps": {
+        "Typing component props with interfaces and React.FC": "How would you type a component's props, and why do many teams avoid React.FC?",
+        "Typing useState, useRef, and event handlers": "How would you type state that starts as null and an input's change handler?"
+      },
+      "criteria": {
+        "Typing component props with interfaces and React.FC": {
+          "id": "typing-props",
+          "evidence": [
+            {
+              "id": "interface",
+              "text": "Props are described with an interface or type and used to annotate the function's parameter."
+            },
+            {
+              "id": "explicit",
+              "text": "Annotating props directly keeps the component's typing simple and explicit."
+            },
+            {
+              "id": "fc-issues",
+              "text": "React.FC hides the return type and adds behavior many teams do not want."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add types to props."
+          ],
+          "misconceptions": []
+        },
+        "Typing useState, useRef, and event handlers": {
+          "id": "typing-hooks-events",
+          "evidence": [
+            {
+              "id": "nullable-state",
+              "text": "useState can be given a type like User or null so TypeScript knows both possibilities."
+            },
+            {
+              "id": "ref-target",
+              "text": "useRef is typed with the element it will point to, such as an input element."
+            },
+            {
+              "id": "event",
+              "text": "Event handlers use React's event types, such as a change event for an input element, so e.target is typed."
+            }
+          ],
+          "notEnough": [
+            "Only saying TypeScript infers it."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Building components with hooks and controlled forms",
+      "question": "A search box shows results for the previous search term, and an interval keeps running after the component is closed. Explain how state, effects and controlled inputs should work.",
+      "followUps": {
+        "useState and useEffect: state updates, stale closures, and cleanup": "Why does an effect sometimes see an old value of state, and how do you prevent it?",
+        "Controlled inputs and form handling in TypeScript React": "What makes an input controlled, and how do you update it?"
+      },
+      "criteria": {
+        "useState and useEffect: state updates, stale closures, and cleanup": {
+          "id": "state-effects-closures",
+          "evidence": [
+            {
+              "id": "next-render",
+              "text": "Calling a state setter does not change the value until the next render."
+            },
+            {
+              "id": "stale",
+              "text": "An effect's function keeps the values from the render it was created in, so it can see stale values if they are not in its dependencies."
+            },
+            {
+              "id": "cleanup",
+              "text": "Effects that start timers or subscriptions return a cleanup function so they stop when the component is removed or re-run."
+            }
+          ],
+          "notEnough": [
+            "Only saying to add the dependency array."
+          ],
+          "misconceptions": []
+        },
+        "Controlled inputs and form handling in TypeScript React": {
+          "id": "controlled-inputs",
+          "evidence": [
+            {
+              "id": "state-driven",
+              "text": "A controlled input's value comes from React state."
+            },
+            {
+              "id": "onchange",
+              "text": "Each change event updates the state with the input's new value."
+            },
+            {
+              "id": "single-source",
+              "text": "React state is the single source of truth, so the value can be validated or reset from code."
+            }
+          ],
+          "notEnough": [
+            "Only saying controlled inputs use value and onChange."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "List rendering, composition, and prop patterns",
+      "question": "You render a list of comments that can be added and deleted, and you are building Card and Modal components that wrap different content. Explain how you would render lists correctly and compose components.",
+      "followUps": {
+        "Rendering lists with stable key props from entity IDs": "Why should list keys come from database ids rather than the array index?",
+        "Component composition with children and render props": "When would you use children and when a render prop?"
+      },
+      "criteria": {
+        "Rendering lists with stable key props from entity IDs": {
+          "id": "stable-keys",
+          "evidence": [
+            {
+              "id": "identify",
+              "text": "Keys tell React which item is which between renders."
+            },
+            {
+              "id": "stable-id",
+              "text": "A database id stays the same for an item even when the list changes."
+            },
+            {
+              "id": "index-breaks",
+              "text": "Index keys shift when items are added, removed or reordered, which can attach state to the wrong item."
+            }
+          ],
+          "notEnough": [
+            "Only saying keys must be unique."
+          ],
+          "misconceptions": []
+        },
+        "Component composition with children and render props": {
+          "id": "composition-render-props",
+          "evidence": [
+            {
+              "id": "children",
+              "text": "children lets a component wrap whatever JSX is put inside it, which suits layout components."
+            },
+            {
+              "id": "render-prop",
+              "text": "A render prop is a function prop that decides what to render, often using data the component provides."
+            },
+            {
+              "id": "control",
+              "text": "Render props give the parent control over the content while the child handles the logic."
+            }
+          ],
+          "notEnough": [
+            "Only defining children as nested elements."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

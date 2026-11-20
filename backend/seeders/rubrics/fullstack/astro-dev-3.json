@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "astro-dev-3",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "File-Based Routing",
+      "question": "You are building an Astro blog with a homepage, an about page and a page for each post. Explain how routing works.",
+      "followUps": {
+        "Pages Directory Structure": "How do files in src/pages become URLs?",
+        "Dynamic Routes and getStaticPaths": "Why does [slug].astro need getStaticPaths in a static build?"
+      },
+      "criteria": {
+        "Pages Directory Structure": {
+          "id": "pages-directory",
+          "evidence": [
+            {
+              "id": "map",
+              "text": "Each file in src/pages becomes a route."
+            },
+            {
+              "id": "index",
+              "text": "index.astro is the root of its folder."
+            },
+            {
+              "id": "folders",
+              "text": "Nested folders become URL segments."
+            }
+          ],
+          "notEnough": [
+            "Only saying routing is file-based."
+          ],
+          "misconceptions": []
+        },
+        "Dynamic Routes and getStaticPaths": {
+          "id": "getstaticpaths",
+          "evidence": [
+            {
+              "id": "dynamic",
+              "text": "[slug].astro is a dynamic route."
+            },
+            {
+              "id": "list",
+              "text": "getStaticPaths returns every slug to build, with its props."
+            },
+            {
+              "id": "static",
+              "text": "In static output, Astro must know all pages at build time."
+            }
+          ],
+          "notEnough": [
+            "Only saying it lists paths."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Layouts",
+      "question": "Every blog page repeats the head, header and footer, and blog posts need extra layout around them. Explain Astro layouts.",
+      "followUps": {
+        "Layout Components and Slot Injection": "How does a layout wrap page content?",
+        "Nested Layouts": "How do nested layouts work?"
+      },
+      "criteria": {
+        "Layout Components and Slot Injection": {
+          "id": "layouts",
+          "evidence": [
+            {
+              "id": "component",
+              "text": "A layout is a normal component used around a page."
+            },
+            {
+              "id": "slot",
+              "text": "It renders the page's content through a slot."
+            },
+            {
+              "id": "shared",
+              "text": "Shared head metadata, header and footer are defined once."
+            }
+          ],
+          "notEnough": [
+            "Only saying layouts share UI."
+          ],
+          "misconceptions": []
+        },
+        "Nested Layouts": {
+          "id": "nested-layouts",
+          "evidence": [
+            {
+              "id": "wrap",
+              "text": "A blog layout can itself use the base layout."
+            },
+            {
+              "id": "props",
+              "text": "Props like the page title must be passed through."
+            },
+            {
+              "id": "compose",
+              "text": "This builds structure without repeating markup."
+            }
+          ],
+          "notEnough": [
+            "Only saying layouts can nest."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Navigation Patterns",
+      "question": "Navigating your Astro site feels like a hard page reload. Explain how view transitions and prefetching help.",
+      "followUps": {
+        "View Transitions API": "What do view transitions add?",
+        "Prefetching and Link Optimization": "How does prefetching speed up navigation?"
+      },
+      "criteria": {
+        "View Transitions API": {
+          "id": "view-transitions",
+          "evidence": [
+            {
+              "id": "animate",
+              "text": "View transitions animate between pages."
+            },
+            {
+              "id": "no-reload",
+              "text": "Astro's router swaps the page content without a full reload."
+            },
+            {
+              "id": "opt-in",
+              "text": "The ClientRouter or ViewTransitions component must be added to enable it."
+            }
+          ],
+          "notEnough": [
+            "Only saying pages animate."
+          ],
+          "misconceptions": []
+        },
+        "Prefetching and Link Optimization": {
+          "id": "prefetching",
+          "evidence": [
+            {
+              "id": "early",
+              "text": "Linked pages are fetched before the user clicks, such as on hover or when visible."
+            },
+            {
+              "id": "instant",
+              "text": "Navigation then feels instant."
+            },
+            {
+              "id": "balance",
+              "text": "Prefetching too much wastes bandwidth, so it should be targeted."
+            }
+          ],
+          "notEnough": [
+            "Only saying it preloads pages."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Output Modes",
+      "question": "Most of your site is static but the account page must show live user data, and broken links show the host's default error page. Explain output modes and custom error pages.",
+      "followUps": {
+        "Static vs Server Output": "What is the difference between static and server output?",
+        "404 and Error Pages": "How do you add a custom 404 page?"
+      },
+      "criteria": {
+        "Static vs Server Output": {
+          "id": "output-modes",
+          "evidence": [
+            {
+              "id": "static",
+              "text": "Static output builds all pages at build time."
+            },
+            {
+              "id": "server",
+              "text": "Server output renders pages on demand for each request."
+            },
+            {
+              "id": "mixed",
+              "text": "Individual pages can opt in or out, so mostly static sites can have a few dynamic pages."
+            }
+          ],
+          "notEnough": [
+            "Only listing the modes."
+          ],
+          "misconceptions": []
+        },
+        "404 and Error Pages": {
+          "id": "404-page",
+          "evidence": [
+            {
+              "id": "file",
+              "text": "A 404.astro file in src/pages creates it."
+            },
+            {
+              "id": "served",
+              "text": "Astro and most hosts serve it for missing pages."
+            },
+            {
+              "id": "ux",
+              "text": "It keeps the site's look and helps users find their way."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add a 404 page."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

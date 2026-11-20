@@ -1,0 +1,260 @@
+{
+  "path": "fullstack",
+  "layer": "next-fullstack-2",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "App Router Fundamentals",
+      "question": "You are structuring a Next.js app with a marketing site, a dashboard with a persistent sidebar and product pages by id. Explain how the App Router maps this.",
+      "followUps": {
+        "File-system routing and the app directory": "How does the app directory turn folders into URLs?",
+        "Nested layouts and shared UI segments": "Why does a layout keep its state when you navigate between child pages?",
+        "Dynamic routes and catch-all segments": "How do [id] and [...slug] routes differ?"
+      },
+      "criteria": {
+        "File-system routing and the app directory": {
+          "id": "file-routing",
+          "evidence": [
+            {
+              "id": "folders",
+              "text": "Each folder is a URL segment."
+            },
+            {
+              "id": "page",
+              "text": "A folder becomes a reachable route when it has a page file."
+            },
+            {
+              "id": "visible",
+              "text": "The URL structure can be read directly from the folder tree."
+            }
+          ],
+          "notEnough": [
+            "Only saying routing is file-based."
+          ],
+          "misconceptions": []
+        },
+        "Nested layouts and shared UI segments": {
+          "id": "nested-layouts",
+          "evidence": [
+            {
+              "id": "wrap",
+              "text": "A layout wraps all pages in its segment."
+            },
+            {
+              "id": "persist",
+              "text": "It stays mounted when navigating between those pages, so its state is kept."
+            },
+            {
+              "id": "uses",
+              "text": "This is how persistent sidebars and headers are built."
+            }
+          ],
+          "notEnough": [
+            "Only saying layouts share UI."
+          ],
+          "misconceptions": []
+        },
+        "Dynamic routes and catch-all segments": {
+          "id": "dynamic-routes",
+          "evidence": [
+            {
+              "id": "single",
+              "text": "[id] matches one segment and passes it as a parameter."
+            },
+            {
+              "id": "catch-all",
+              "text": "[...slug] matches any number of segments."
+            },
+            {
+              "id": "uses",
+              "text": "They power pages like products, blog posts and docs."
+            }
+          ],
+          "notEnough": [
+            "Only saying they are dynamic."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Navigation and Route Organization",
+      "question": "Your marketing pages and dashboard need different layouts without changing URLs, and slow pages should show a loading state. Explain how you would organise this.",
+      "followUps": {
+        "Route groups for layout organisation": "What does wrapping a folder name in parentheses do?",
+        "loading.tsx and error.tsx boundary files": "What do loading.tsx and error.tsx add to a route?"
+      },
+      "criteria": {
+        "Route groups for layout organisation": {
+          "id": "route-groups",
+          "evidence": [
+            {
+              "id": "no-url",
+              "text": "A route group organises folders without adding to the URL."
+            },
+            {
+              "id": "layouts",
+              "text": "Each group can have its own layout."
+            },
+            {
+              "id": "example",
+              "text": "Marketing pages and the dashboard can use different layouts at the same URL level."
+            }
+          ],
+          "notEnough": [
+            "Only saying it groups routes."
+          ],
+          "misconceptions": []
+        },
+        "loading.tsx and error.tsx boundary files": {
+          "id": "loading-error",
+          "evidence": [
+            {
+              "id": "loading",
+              "text": "loading.tsx wraps the segment in Suspense and shows a fallback instantly."
+            },
+            {
+              "id": "error",
+              "text": "error.tsx catches errors in the segment and shows a fallback with a retry."
+            },
+            {
+              "id": "scope",
+              "text": "Each only affects its own segment, so the rest of the page keeps working."
+            }
+          ],
+          "notEnough": [
+            "Only listing the files."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Navigation in Practice",
+      "question": "You are building the dashboard's sidebar navigation, redirecting after a form submit and showing a photo in a modal that also has its own URL. Explain the navigation tools you would use.",
+      "followUps": {
+        "Link component and programmatic navigation": "What does Link do that a plain anchor does not, and how do you navigate from code?",
+        "usePathname and active link highlighting": "How would you highlight the active link in the sidebar?",
+        "Parallel routes and intercepting routes": "How do parallel and intercepting routes let a modal have its own URL?"
+      },
+      "criteria": {
+        "Link component and programmatic navigation": {
+          "id": "link-router",
+          "evidence": [
+            {
+              "id": "prefetch",
+              "text": "Link prefetches routes in the background."
+            },
+            {
+              "id": "client-nav",
+              "text": "It navigates without a full reload."
+            },
+            {
+              "id": "router",
+              "text": "useRouter from next/navigation navigates from code, such as after a form submit."
+            }
+          ],
+          "notEnough": [
+            "Only saying Link is for navigation."
+          ],
+          "misconceptions": []
+        },
+        "usePathname and active link highlighting": {
+          "id": "active-links",
+          "evidence": [
+            {
+              "id": "pathname",
+              "text": "usePathname returns the current path."
+            },
+            {
+              "id": "compare",
+              "text": "Each link compares its href with the path."
+            },
+            {
+              "id": "style",
+              "text": "Matching links get an active style."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add an active class."
+          ],
+          "misconceptions": []
+        },
+        "Parallel routes and intercepting routes": {
+          "id": "parallel-intercepting",
+          "evidence": [
+            {
+              "id": "parallel",
+              "text": "Parallel routes render several pages in one layout at the same time."
+            },
+            {
+              "id": "intercepting",
+              "text": "Intercepting routes show a different UI, like a modal, when navigating within the app."
+            },
+            {
+              "id": "direct",
+              "text": "Opening the URL directly still shows the full page."
+            }
+          ],
+          "notEnough": [
+            "Only naming the two features."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Route Metadata and SEO",
+      "question": "Your product pages need good search results and link previews, and you want them built ahead of time. Explain how you would set metadata and pre-render the pages.",
+      "followUps": {
+        "Metadata API for SEO and Open Graph": "How would you set a unique title and preview for each product?",
+        "generateStaticParams for static dynamic routes": "What does generateStaticParams do?"
+      },
+      "criteria": {
+        "Metadata API for SEO and Open Graph": {
+          "id": "metadata-api",
+          "evidence": [
+            {
+              "id": "export",
+              "text": "Pages export metadata or a generateMetadata function."
+            },
+            {
+              "id": "dynamic",
+              "text": "generateMetadata can fetch the product to build its title and description."
+            },
+            {
+              "id": "og",
+              "text": "Open Graph tags control link previews on social sites."
+            }
+          ],
+          "notEnough": [
+            "Only saying you set the title."
+          ],
+          "misconceptions": []
+        },
+        "generateStaticParams for static dynamic routes": {
+          "id": "static-params",
+          "evidence": [
+            {
+              "id": "list",
+              "text": "It returns the list of parameter values to build."
+            },
+            {
+              "id": "prerender",
+              "text": "Those pages are rendered to static HTML at build time."
+            },
+            {
+              "id": "uses",
+              "text": "It suits known pages like blog posts, products and docs."
+            }
+          ],
+          "notEnough": [
+            "Only saying it makes pages static."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

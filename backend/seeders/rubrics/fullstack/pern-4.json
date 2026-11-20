@@ -1,0 +1,224 @@
+{
+  "path": "fullstack",
+  "layer": "pern-4",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "How React Router v6 renders nested route trees",
+      "question": "Your dashboard has a shared sidebar layout with several pages inside it, and each page shows server data that should stay fresh without refetching on every visit. Explain how the routes render inside the layout and how the cached server data is kept up to date.",
+      "followUps": {
+        "Nested routes and the Outlet component for shared layouts": "How does the dashboard layout know where to render the current child page?",
+        "TanStack Query cache model: staleTime, cacheTime, and invalidation": "After a user creates a post, how do you make the posts list show it, and what does staleTime control?"
+      },
+      "criteria": {
+        "Nested routes and the Outlet component for shared layouts": {
+          "id": "nested-routes-outlet",
+          "evidence": [
+            {
+              "id": "parent-layout",
+              "text": "A parent route renders the shared layout, and the child routes are defined inside it."
+            },
+            {
+              "id": "outlet",
+              "text": "The parent places an Outlet where the matched child route renders, so the layout stays and only the inner page changes."
+            }
+          ],
+          "notEnough": [
+            "Only saying use nested routes and Outlet without explaining what renders where."
+          ],
+          "misconceptions": []
+        },
+        "TanStack Query cache model: staleTime, cacheTime, and invalidation": {
+          "id": "query-cache",
+          "evidence": [
+            {
+              "id": "stale-time",
+              "text": "staleTime is how long cached data counts as fresh; while it's fresh, it is used without refetching."
+            },
+            {
+              "id": "background-refetch",
+              "text": "Once stale, the cached data is still shown but refetched in the background, for example on mount or when the window regains focus."
+            },
+            {
+              "id": "invalidate",
+              "text": "After a change, invalidating the matching query marks it stale and triggers a refetch, so the list shows the new item."
+            }
+          ],
+          "notEnough": [
+            "Only saying TanStack Query caches data without explaining when it refetches."
+          ],
+          "misconceptions": [
+            {
+              "id": "cachetime-fresh",
+              "text": "Says cacheTime (gcTime) controls how long the data counts as fresh."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Zustand's subscription model versus React Context",
+      "question": "Your app's global state (user, theme, cart) lives in one React Context, and typing in the search box makes the whole app feel slow. Explain why, how Zustand would behave differently, and whether wrapping things in useMemo and useCallback is the right fix.",
+      "followUps": {
+        "How Zustand avoids Context's re-render problem with selectors": "With Zustand, why doesn't a component that only reads the cart count re-render when the theme changes?",
+        "useMemo and useCallback: when memoization helps versus hurts": "When does useMemo or useCallback actually help, and when does it just add cost?"
+      },
+      "criteria": {
+        "How Zustand avoids Context's re-render problem with selectors": {
+          "id": "zustand-selectors",
+          "evidence": [
+            {
+              "id": "context-rerender",
+              "text": "When a Context value changes, every component that uses that context re-renders, even if the part it uses didn't change."
+            },
+            {
+              "id": "selector",
+              "text": "A Zustand component subscribes with a selector and re-renders only when the selected slice changes."
+            }
+          ],
+          "notEnough": [
+            "Only saying Zustand is faster than Context without explaining the re-render difference."
+          ],
+          "misconceptions": []
+        },
+        "useMemo and useCallback: when memoization helps versus hurts": {
+          "id": "memoization",
+          "evidence": [
+            {
+              "id": "what",
+              "text": "useMemo keeps a computed value and useCallback keeps a function between renders until their dependencies change."
+            },
+            {
+              "id": "when-helps",
+              "text": "They help for expensive calculations, or when a stable reference stops a memoized child or an effect from running again."
+            },
+            {
+              "id": "cost",
+              "text": "Elsewhere they add comparison work and complexity for no gain, so they're added after measuring a real problem."
+            }
+          ],
+          "notEnough": [
+            "Only saying useMemo makes things faster without saying when."
+          ],
+          "misconceptions": [
+            {
+              "id": "always-memo",
+              "text": "Says every value and function should be wrapped in useMemo or useCallback."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "React Router navigation APIs and protected routes",
+      "question": "Your app has a post page at /posts/:id with filters in the URL like ?sort=new, and a settings page only logged-in users may open. Explain how the page reads the id and the filters, how you send users somewhere after an action, and how you keep logged-out users away from settings.",
+      "followUps": {
+        "useNavigate, useParams, and useSearchParams": "Why keep the sort filter in the URL with useSearchParams instead of in component state?",
+        "Building protected routes with an auth-checking wrapper": "How would a protected route wrapper decide what to render, and where does it get the auth state from?"
+      },
+      "criteria": {
+        "useNavigate, useParams, and useSearchParams": {
+          "id": "router-hooks",
+          "evidence": [
+            {
+              "id": "params",
+              "text": "useParams reads dynamic segments of the URL, like the id in /posts/:id."
+            },
+            {
+              "id": "search-params",
+              "text": "useSearchParams reads and updates the query string, so filters survive a reload and can be shared as a link."
+            },
+            {
+              "id": "navigate",
+              "text": "useNavigate sends the user to another route from code, for example after saving a form."
+            }
+          ],
+          "notEnough": [
+            "Only listing the hook names without saying what each one reads or does."
+          ],
+          "misconceptions": []
+        },
+        "Building protected routes with an auth-checking wrapper": {
+          "id": "protected-routes",
+          "evidence": [
+            {
+              "id": "check",
+              "text": "A wrapper component reads the auth state and renders the protected page only for logged-in users."
+            },
+            {
+              "id": "redirect",
+              "text": "Otherwise it redirects to the login page, for example with Navigate."
+            },
+            {
+              "id": "server-too",
+              "text": "The API still has to check auth itself, because hiding a route in the browser doesn't protect the data."
+            }
+          ],
+          "notEnough": [
+            "Only saying use a protected route without explaining the check and the redirect."
+          ],
+          "misconceptions": [
+            {
+              "id": "frontend-secure",
+              "text": "Says hiding a route in React is enough to keep the data secure."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Custom hooks and code splitting",
+      "question": "Three pages in your app repeat the same fetch-with-loading-and-error logic, and the first page load downloads the code for every page, including the admin area. Explain how you'd remove the duplication and make the first load smaller.",
+      "followUps": {
+        "Extracting shared logic into custom hooks": "What makes a function a custom hook, and does sharing a hook share the state between components?",
+        "React.lazy and Suspense for route-level code splitting": "How do React.lazy and Suspense change when the admin page's code is downloaded, and what does the user see meanwhile?"
+      },
+      "criteria": {
+        "Extracting shared logic into custom hooks": {
+          "id": "custom-hooks",
+          "evidence": [
+            {
+              "id": "definition",
+              "text": "A custom hook is a function whose name starts with use and that calls other hooks, so stateful logic can be reused."
+            },
+            {
+              "id": "separate-state",
+              "text": "Each component that calls the hook gets its own state; the logic is shared, not the data."
+            }
+          ],
+          "notEnough": [
+            "Only saying put it in a custom hook without saying what a hook is or what it shares."
+          ],
+          "misconceptions": [
+            {
+              "id": "shared-state",
+              "text": "Says components that use the same custom hook share the same state."
+            }
+          ]
+        },
+        "React.lazy and Suspense for route-level code splitting": {
+          "id": "code-splitting",
+          "evidence": [
+            {
+              "id": "lazy",
+              "text": "React.lazy with a dynamic import puts the component in a separate chunk that downloads only when it is first rendered."
+            },
+            {
+              "id": "suspense",
+              "text": "Suspense shows a fallback, like a spinner, while that chunk loads."
+            },
+            {
+              "id": "smaller",
+              "text": "The first page load downloads less code, so the app becomes usable sooner."
+            }
+          ],
+          "notEnough": [
+            "Only saying use lazy loading without explaining when the code is downloaded."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

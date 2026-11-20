@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "django-react-4",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "DRF Core Concepts",
+      "question": "You are building a recipes API with Django REST Framework for a React frontend. Explain how serializers, views and permissions work together.",
+      "followUps": {
+        "Serializers and Data Validation": "What does a serializer do on the way in and on the way out?",
+        "Views, ViewSets, and Generic Views": "When would you use APIView, a generic view or a ViewSet?",
+        "Permissions and Authentication Classes": "What is the difference between authentication and permissions in DRF?"
+      },
+      "criteria": {
+        "Serializers and Data Validation": {
+          "id": "serializers",
+          "evidence": [
+            {
+              "id": "out",
+              "text": "It converts model instances into data that can be returned as JSON."
+            },
+            {
+              "id": "in",
+              "text": "It validates incoming data before saving it."
+            },
+            {
+              "id": "modelserializer",
+              "text": "ModelSerializer generates fields and validation from the model."
+            }
+          ],
+          "notEnough": [
+            "Only saying serializers convert data."
+          ],
+          "misconceptions": []
+        },
+        "Views, ViewSets, and Generic Views": {
+          "id": "views-viewsets",
+          "evidence": [
+            {
+              "id": "apiview",
+              "text": "APIView gives full control over each HTTP method."
+            },
+            {
+              "id": "generic",
+              "text": "Generic views provide common list and create behaviour with little code."
+            },
+            {
+              "id": "viewset",
+              "text": "ViewSets group related actions for one resource in one class."
+            }
+          ],
+          "notEnough": [
+            "Only listing the classes."
+          ],
+          "misconceptions": []
+        },
+        "Permissions and Authentication Classes": {
+          "id": "auth-permissions",
+          "evidence": [
+            {
+              "id": "authentication",
+              "text": "Authentication works out who is making the request."
+            },
+            {
+              "id": "permissions",
+              "text": "Permissions decide what that user is allowed to do."
+            },
+            {
+              "id": "object",
+              "text": "Object-level permissions check access to a specific record, such as only the owner editing."
+            }
+          ],
+          "notEnough": [
+            "Only saying DRF has permission classes."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "API Design Patterns",
+      "question": "Your recipes endpoint returns ten thousand rows at once and one client sends hundreds of requests per second. Explain how you would paginate, filter and limit requests.",
+      "followUps": {
+        "Pagination and Filtering Strategies": "Which pagination style would you choose for a long, frequently updated list?",
+        "Throttling and Rate Limiting APIs": "How does throttling protect the API?"
+      },
+      "criteria": {
+        "Pagination and Filtering Strategies": {
+          "id": "pagination-filtering",
+          "evidence": [
+            {
+              "id": "styles",
+              "text": "DRF offers page number, limit-offset and cursor pagination."
+            },
+            {
+              "id": "cursor",
+              "text": "Cursor pagination stays stable and fast when rows are added during browsing."
+            },
+            {
+              "id": "filter",
+              "text": "django-filter adds filtering through query parameters."
+            }
+          ],
+          "notEnough": [
+            "Only saying you paginate results."
+          ],
+          "misconceptions": []
+        },
+        "Throttling and Rate Limiting APIs": {
+          "id": "throttling",
+          "evidence": [
+            {
+              "id": "limit",
+              "text": "Throttling caps how many requests a user or IP can make in a time window."
+            },
+            {
+              "id": "classes",
+              "text": "Separate limits can apply to anonymous and logged-in users."
+            },
+            {
+              "id": "response",
+              "text": "Clients over the limit get a 429 response."
+            }
+          ],
+          "notEnough": [
+            "Only saying it limits requests."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Routing and Browsable API",
+      "question": "You have several ViewSets and want URLs generated for them and a quick way to try them in the browser. Explain routers and the browsable API.",
+      "followUps": {
+        "Routers and Auto URL Generation": "What does a DRF router generate?",
+        "Browsable API for Development": "How does the browsable API help during development?"
+      },
+      "criteria": {
+        "Routers and Auto URL Generation": {
+          "id": "routers",
+          "evidence": [
+            {
+              "id": "auto-urls",
+              "text": "A router creates the standard URL patterns for each ViewSet."
+            },
+            {
+              "id": "default",
+              "text": "DefaultRouter also adds an API root page."
+            },
+            {
+              "id": "simple",
+              "text": "SimpleRouter is lighter and leaves the root out."
+            }
+          ],
+          "notEnough": [
+            "Only saying routers create URLs."
+          ],
+          "misconceptions": []
+        },
+        "Browsable API for Development": {
+          "id": "browsable-api",
+          "evidence": [
+            {
+              "id": "html",
+              "text": "It shows each endpoint as an HTML page in the browser."
+            },
+            {
+              "id": "try",
+              "text": "You can send requests from forms without a separate tool."
+            },
+            {
+              "id": "errors",
+              "text": "Validation errors are shown in a readable way."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a web UI."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "API Documentation Tooling",
+      "question": "The frontend team needs accurate API documentation, and you need tests that prove endpoints enforce permissions. Explain how you would document and test the API.",
+      "followUps": {
+        "Auto-Generating OpenAPI Schemas": "How would you produce up-to-date API documentation?",
+        "Testing DRF Endpoints with APIClient": "How does APIClient help test endpoints?"
+      },
+      "criteria": {
+        "Auto-Generating OpenAPI Schemas": {
+          "id": "openapi-schema",
+          "evidence": [
+            {
+              "id": "generate",
+              "text": "DRF can generate an OpenAPI schema from your views and serializers."
+            },
+            {
+              "id": "spectacular",
+              "text": "drf-spectacular gives a more complete schema and Swagger or ReDoc pages."
+            },
+            {
+              "id": "in-sync",
+              "text": "Generated docs stay in sync with the code."
+            }
+          ],
+          "notEnough": [
+            "Only saying you write docs."
+          ],
+          "misconceptions": []
+        },
+        "Testing DRF Endpoints with APIClient": {
+          "id": "apiclient-tests",
+          "evidence": [
+            {
+              "id": "client",
+              "text": "APIClient sends requests to the API inside tests."
+            },
+            {
+              "id": "auth",
+              "text": "It can authenticate as a specific user."
+            },
+            {
+              "id": "assert",
+              "text": "Tests check status codes and data, including that unauthorized users are refused."
+            }
+          ],
+          "notEnough": [
+            "Only saying you test endpoints."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

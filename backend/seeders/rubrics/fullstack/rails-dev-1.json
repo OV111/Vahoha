@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "rails-dev-1",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Core Ruby Language Concepts",
+      "question": "You are writing a small Ruby script that groups a list of orders by status, totals them and handles a missing file. Explain the Ruby features you would use.",
+      "followUps": {
+        "Variables, methods, and blocks in Ruby": "What is a block in Ruby and how do methods use it?",
+        "Arrays, hashes, and Enumerable module": "How would you use Enumerable to filter and total orders?",
+        "Symbols, ranges, and exception handling": "Why are symbols used as hash keys, and how does Ruby handle exceptions?"
+      },
+      "criteria": {
+        "Variables, methods, and blocks in Ruby": {
+          "id": "blocks-methods",
+          "evidence": [
+            {
+              "id": "dynamic",
+              "text": "Ruby variables have no declared types; values carry their own type."
+            },
+            {
+              "id": "block",
+              "text": "A block is a chunk of code passed to a method with do...end or braces."
+            },
+            {
+              "id": "closure",
+              "text": "Blocks can use variables from the surrounding scope, and methods run them with yield or by iterating."
+            }
+          ],
+          "notEnough": [
+            "Only showing block syntax."
+          ],
+          "misconceptions": []
+        },
+        "Arrays, hashes, and Enumerable module": {
+          "id": "enumerable",
+          "evidence": [
+            {
+              "id": "collections",
+              "text": "Arrays and hashes are objects with rich methods."
+            },
+            {
+              "id": "enumerable",
+              "text": "Enumerable provides methods like map, select and reduce for iterating."
+            },
+            {
+              "id": "no-loops",
+              "text": "These replace manual loops with clear, chainable expressions."
+            }
+          ],
+          "notEnough": [
+            "Only listing methods."
+          ],
+          "misconceptions": []
+        },
+        "Symbols, ranges, and exception handling": {
+          "id": "symbols-ranges-exceptions",
+          "evidence": [
+            {
+              "id": "symbols",
+              "text": "Symbols are immutable names that are reused rather than recreated, which suits hash keys."
+            },
+            {
+              "id": "ranges",
+              "text": "Ranges represent sequences such as 1 to 10."
+            },
+            {
+              "id": "rescue",
+              "text": "begin, rescue and ensure catch errors and run cleanup code."
+            }
+          ],
+          "notEnough": [
+            "Only defining symbols."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Object-Oriented Ruby",
+      "question": "Two unrelated classes in your app need the same logging behaviour, and the app depends on several libraries. Explain how Ruby shares behaviour and manages dependencies.",
+      "followUps": {
+        "Classes, modules, and mixins pattern": "How do modules let unrelated classes share methods?",
+        "Gems and Bundler dependency management": "What do the Gemfile and Gemfile.lock do?"
+      },
+      "criteria": {
+        "Classes, modules, and mixins pattern": {
+          "id": "classes-mixins",
+          "evidence": [
+            {
+              "id": "single",
+              "text": "A Ruby class can inherit from only one parent class."
+            },
+            {
+              "id": "mixin",
+              "text": "Modules can be included in any class to add shared methods."
+            },
+            {
+              "id": "no-duplication",
+              "text": "This shares behaviour without forcing an inheritance relationship."
+            }
+          ],
+          "notEnough": [
+            "Only saying Ruby has modules."
+          ],
+          "misconceptions": []
+        },
+        "Gems and Bundler dependency management": {
+          "id": "gems-bundler",
+          "evidence": [
+            {
+              "id": "gems",
+              "text": "Gems are Ruby libraries."
+            },
+            {
+              "id": "gemfile",
+              "text": "The Gemfile lists the gems a project needs."
+            },
+            {
+              "id": "lock",
+              "text": "Bundler records exact versions in the lockfile so every machine uses the same ones."
+            }
+          ],
+          "notEnough": [
+            "Only saying Bundler installs gems."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Ruby Tooling and Environment",
+      "question": "You maintain two apps that need different Ruby versions, and you want to try out code quickly. Explain the tools you would use.",
+      "followUps": {
+        "Installing Ruby with rbenv or RVM": "Why use a version manager like rbenv?",
+        "IRB interactive Ruby shell usage": "What is IRB useful for?"
+      },
+      "criteria": {
+        "Installing Ruby with rbenv or RVM": {
+          "id": "rbenv-rvm",
+          "evidence": [
+            {
+              "id": "install",
+              "text": "Version managers install several Ruby versions side by side."
+            },
+            {
+              "id": "per-project",
+              "text": "Each project can use its own version."
+            },
+            {
+              "id": "conflicts",
+              "text": "This prevents one app's upgrade from breaking another."
+            }
+          ],
+          "notEnough": [
+            "Only saying it installs Ruby."
+          ],
+          "misconceptions": []
+        },
+        "IRB interactive Ruby shell usage": {
+          "id": "irb",
+          "evidence": [
+            {
+              "id": "repl",
+              "text": "IRB is Ruby's interactive shell."
+            },
+            {
+              "id": "experiment",
+              "text": "You can try expressions and methods instantly."
+            },
+            {
+              "id": "debug",
+              "text": "It helps check how code behaves before writing it into files."
+            }
+          ],
+          "notEnough": [
+            "Only saying it runs Ruby."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Practical Ruby Patterns",
+      "question": "Code reviews keep arguing about style and a bug only shows up deep in a method. Explain how you would keep code idiomatic and debug it.",
+      "followUps": {
+        "Writing idiomatic Ruby with style guides": "What does RuboCop do for a team?",
+        "Debugging Ruby code with Pry and byebug": "How do Pry and byebug help debug Ruby?"
+      },
+      "criteria": {
+        "Writing idiomatic Ruby with style guides": {
+          "id": "rubocop-style",
+          "evidence": [
+            {
+              "id": "guide",
+              "text": "RuboCop checks code against a community style guide."
+            },
+            {
+              "id": "idioms",
+              "text": "It encourages idioms like guard clauses and clear method names."
+            },
+            {
+              "id": "consistent",
+              "text": "Automated checks keep style consistent and end style debates in review."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a linter."
+          ],
+          "misconceptions": []
+        },
+        "Debugging Ruby code with Pry and byebug": {
+          "id": "pry-byebug",
+          "evidence": [
+            {
+              "id": "breakpoint",
+              "text": "They pause execution at a point you choose."
+            },
+            {
+              "id": "inspect",
+              "text": "You can inspect variables and objects at that point."
+            },
+            {
+              "id": "step",
+              "text": "byebug lets you step through code line by line."
+            }
+          ],
+          "notEnough": [
+            "Only saying they are debuggers."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

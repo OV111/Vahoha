@@ -1,0 +1,248 @@
+{
+  "path": "fullstack",
+  "layer": "django-react-1",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Core Language Concepts",
+      "question": "You are writing a small Python script that reads a list of orders, filters the paid ones and totals them by customer. Explain the Python features you would use and how you would organise the code.",
+      "followUps": {
+        "Variables, Types, and Control Flow": "How does Python's dynamic typing affect how you write and debug code?",
+        "Functions and Module System": "What do *args and **kwargs let a function accept?",
+        "List Comprehensions and Dict Patterns": "When would you use a list or dict comprehension instead of a loop?"
+      },
+      "criteria": {
+        "Variables, Types, and Control Flow": {
+          "id": "types-control-flow",
+          "evidence": [
+            {
+              "id": "dynamic",
+              "text": "Variables do not declare types; a name can hold any type and the type belongs to the value."
+            },
+            {
+              "id": "builtins",
+              "text": "Built-in types like int, str, list and dict cover most data."
+            },
+            {
+              "id": "indentation",
+              "text": "Blocks for if, for and while are defined by indentation, not braces."
+            }
+          ],
+          "notEnough": [
+            "Only listing Python types."
+          ],
+          "misconceptions": []
+        },
+        "Functions and Module System": {
+          "id": "functions-modules",
+          "evidence": [
+            {
+              "id": "first-class",
+              "text": "Functions are values that can be passed around and returned."
+            },
+            {
+              "id": "args",
+              "text": "*args collects extra positional arguments and **kwargs collects extra keyword arguments."
+            },
+            {
+              "id": "modules",
+              "text": "Code is split into modules and reused with import."
+            }
+          ],
+          "notEnough": [
+            "Only defining a function."
+          ],
+          "misconceptions": [
+            {
+              "id": "mutable-default",
+              "text": "Says a list used as a default argument is created fresh on every call."
+            }
+          ]
+        },
+        "List Comprehensions and Dict Patterns": {
+          "id": "comprehensions",
+          "evidence": [
+            {
+              "id": "concise",
+              "text": "A comprehension builds a list, set or dict from an iterable in one expression."
+            },
+            {
+              "id": "filter",
+              "text": "It can filter items with an if clause while transforming them."
+            },
+            {
+              "id": "readability",
+              "text": "Comprehensions suit simple transformations; complex logic reads better as a loop."
+            }
+          ],
+          "notEnough": [
+            "Only showing comprehension syntax."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Object-Oriented Python and Error Handling",
+      "question": "You are modelling customers and premium customers in Python, and reading a file that might be missing. Explain how classes and exceptions help.",
+      "followUps": {
+        "Classes, Objects, and Inheritance": "How do __init__ and inheritance work in Python classes?",
+        "Exception Handling with try/except": "How would you handle a missing file and define your own error?"
+      },
+      "criteria": {
+        "Classes, Objects, and Inheritance": {
+          "id": "classes-inheritance",
+          "evidence": [
+            {
+              "id": "init",
+              "text": "__init__ sets up a new object's attributes."
+            },
+            {
+              "id": "inherit",
+              "text": "A subclass inherits behaviour from its parent and can override methods."
+            },
+            {
+              "id": "dunder",
+              "text": "Special methods like __str__ or __eq__ customise how objects behave with built-in operations."
+            }
+          ],
+          "notEnough": [
+            "Only saying Python supports OOP."
+          ],
+          "misconceptions": []
+        },
+        "Exception Handling with try/except": {
+          "id": "exceptions",
+          "evidence": [
+            {
+              "id": "try-except",
+              "text": "try and except catch specific errors at runtime."
+            },
+            {
+              "id": "finally",
+              "text": "finally runs cleanup code whether or not an error happened."
+            },
+            {
+              "id": "custom",
+              "text": "Custom exceptions subclass Exception so callers can catch your specific error."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use try and except."
+          ],
+          "misconceptions": [
+            {
+              "id": "bare-except",
+              "text": "Says catching every exception with a bare except is good practice."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Environment and Package Management",
+      "question": "A teammate cannot run your project because their global Python has different package versions. Explain how you would isolate and reproduce the environment.",
+      "followUps": {
+        "Virtual Environments with venv": "What problem does a virtual environment solve?",
+        "Installing Packages with pip": "How do pip and requirements.txt make the setup reproducible?"
+      },
+      "criteria": {
+        "Virtual Environments with venv": {
+          "id": "venv",
+          "evidence": [
+            {
+              "id": "isolated",
+              "text": "A virtual environment gives the project its own Python packages."
+            },
+            {
+              "id": "no-conflict",
+              "text": "Different projects can use different versions without conflicts."
+            },
+            {
+              "id": "activate",
+              "text": "You activate it before installing packages so they go into the project, not globally."
+            }
+          ],
+          "notEnough": [
+            "Only saying venv creates an environment."
+          ],
+          "misconceptions": []
+        },
+        "Installing Packages with pip": {
+          "id": "pip-requirements",
+          "evidence": [
+            {
+              "id": "install",
+              "text": "pip installs packages from the Python Package Index."
+            },
+            {
+              "id": "freeze",
+              "text": "pip freeze writes the exact installed versions to a requirements file."
+            },
+            {
+              "id": "reproduce",
+              "text": "Installing from that file recreates the same environment elsewhere."
+            }
+          ],
+          "notEnough": [
+            "Only saying pip installs packages."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Python Tooling",
+      "question": "Your script gives a wrong total and the code style differs across the team. Explain how you would debug it and keep the style consistent.",
+      "followUps": {
+        "Interactive REPL and Debugging": "How would you inspect what is happening inside the script while it runs?",
+        "Code Style with PEP 8": "What is PEP 8 and how do you enforce it automatically?"
+      },
+      "criteria": {
+        "Interactive REPL and Debugging": {
+          "id": "repl-debugging",
+          "evidence": [
+            {
+              "id": "repl",
+              "text": "The interactive REPL lets you try small pieces of code instantly."
+            },
+            {
+              "id": "breakpoint",
+              "text": "breakpoint() pauses the program so you can inspect variables."
+            },
+            {
+              "id": "step",
+              "text": "The debugger lets you step through code line by line."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add print statements."
+          ],
+          "misconceptions": []
+        },
+        "Code Style with PEP 8": {
+          "id": "pep8",
+          "evidence": [
+            {
+              "id": "guide",
+              "text": "PEP 8 is Python's official style guide for naming, spacing and line length."
+            },
+            {
+              "id": "tools",
+              "text": "Linters like flake8 report style problems."
+            },
+            {
+              "id": "formatter",
+              "text": "Formatters like black rewrite code automatically, so the team stops debating style."
+            }
+          ],
+          "notEnough": [
+            "Only saying PEP 8 is a style guide."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "jamstack-2",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "React Core Concepts",
+      "question": "You are building a product page in React with a gallery, a size picker and an add-to-cart button. Explain how components, state and composition work together.",
+      "followUps": {
+        "Component model, props, and unidirectional data flow": "How does data flow between a parent and its child components?",
+        "State management with useState and useReducer hooks": "When would you use useReducer instead of useState?",
+        "Composition patterns and reusable component design": "Why build many small components instead of one large one?"
+      },
+      "criteria": {
+        "Component model, props, and unidirectional data flow": {
+          "id": "props-data-flow",
+          "evidence": [
+            {
+              "id": "props",
+              "text": "Components receive data through props and return UI."
+            },
+            {
+              "id": "one-way",
+              "text": "Data flows down from parent to child."
+            },
+            {
+              "id": "predictable",
+              "text": "One-way flow makes it clear where state lives and why the UI changed."
+            }
+          ],
+          "notEnough": [
+            "Only saying components use props."
+          ],
+          "misconceptions": []
+        },
+        "State management with useState and useReducer hooks": {
+          "id": "usestate-usereducer",
+          "evidence": [
+            {
+              "id": "usestate",
+              "text": "useState holds simple values like the selected size."
+            },
+            {
+              "id": "usereducer",
+              "text": "useReducer handles state with many related transitions in one function."
+            },
+            {
+              "id": "rerender",
+              "text": "Both trigger a re-render when the state changes."
+            }
+          ],
+          "notEnough": [
+            "Only saying useReducer is for complex state."
+          ],
+          "misconceptions": []
+        },
+        "Composition patterns and reusable component design": {
+          "id": "composition-patterns",
+          "evidence": [
+            {
+              "id": "small",
+              "text": "Small focused components are easier to read, test and reuse."
+            },
+            {
+              "id": "compose",
+              "text": "Larger UI is built by combining them, often passing content as children."
+            },
+            {
+              "id": "patterns",
+              "text": "Patterns like compound components let related parts share state while staying flexible."
+            }
+          ],
+          "notEnough": [
+            "Only saying components should be reusable."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Hooks and Side Effects",
+      "question": "Your component fetches products when it mounts, but refetches on every render, and the same fetching code is copied into three components. Explain how you would fix both.",
+      "followUps": {
+        "useEffect for data fetching and lifecycle side effects": "How does the dependency array control when an effect runs?",
+        "Custom hooks for encapsulating reusable stateful logic": "How would a custom hook remove the duplicated fetching code?"
+      },
+      "criteria": {
+        "useEffect for data fetching and lifecycle side effects": {
+          "id": "useeffect-deps",
+          "evidence": [
+            {
+              "id": "after-render",
+              "text": "useEffect runs after the component renders."
+            },
+            {
+              "id": "deps",
+              "text": "The dependency array lists the values that make the effect run again when they change."
+            },
+            {
+              "id": "missing",
+              "text": "Leaving it out runs the effect after every render, which can cause repeated fetches."
+            }
+          ],
+          "notEnough": [
+            "Only saying useEffect is for side effects."
+          ],
+          "misconceptions": []
+        },
+        "Custom hooks for encapsulating reusable stateful logic": {
+          "id": "custom-hooks",
+          "evidence": [
+            {
+              "id": "use-prefix",
+              "text": "A custom hook is a function starting with use that calls other hooks."
+            },
+            {
+              "id": "share-logic",
+              "text": "It moves the fetching logic into one place that components call."
+            },
+            {
+              "id": "own-state",
+              "text": "Each component using it gets its own state."
+            }
+          ],
+          "notEnough": [
+            "Only saying custom hooks are reusable."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "React Tooling and Setup",
+      "question": "You are starting a new React project and writing your first components with lists and conditional content. Explain your tooling choice and the JSX rules you follow.",
+      "followUps": {
+        "Setting up a React project with Vite or Create React App": "Why do most new projects choose Vite?",
+        "JSX syntax rules and conditional rendering patterns": "How do you conditionally render content in JSX?"
+      },
+      "criteria": {
+        "Setting up a React project with Vite or Create React App": {
+          "id": "vite-setup",
+          "evidence": [
+            {
+              "id": "fast-dev",
+              "text": "Vite starts quickly and updates changes instantly with hot module replacement."
+            },
+            {
+              "id": "lean-build",
+              "text": "It produces optimized production builds."
+            },
+            {
+              "id": "cra",
+              "text": "Create React App is older and slower, so it is rarely chosen for new projects."
+            }
+          ],
+          "notEnough": [
+            "Only saying Vite is faster."
+          ],
+          "misconceptions": []
+        },
+        "JSX syntax rules and conditional rendering patterns": {
+          "id": "jsx-conditional",
+          "evidence": [
+            {
+              "id": "expressions",
+              "text": "JSX compiles to JavaScript, so only expressions go inside curly braces."
+            },
+            {
+              "id": "ternary",
+              "text": "A ternary chooses between two pieces of UI."
+            },
+            {
+              "id": "and-trap",
+              "text": "Using && works for showing or hiding, but a value like 0 is rendered as text."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use if statements."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Data Fetching in React",
+      "question": "Your product list shows nothing while loading and nothing when the API fails, and the project folder has become hard to navigate. Explain how you would fetch data properly and organise files.",
+      "followUps": {
+        "Fetching API data with useEffect and handling loading states": "What states should a component that fetches data handle?",
+        "React project structure and file organisation conventions": "Why group files by feature instead of by type?"
+      },
+      "criteria": {
+        "Fetching API data with useEffect and handling loading states": {
+          "id": "fetch-loading-error",
+          "evidence": [
+            {
+              "id": "load-state",
+              "text": "The component tracks loading, data and error in state."
+            },
+            {
+              "id": "show",
+              "text": "It shows a loading indicator while waiting and the data when it arrives."
+            },
+            {
+              "id": "error",
+              "text": "Errors are caught and shown to the user instead of failing silently."
+            }
+          ],
+          "notEnough": [
+            "Only saying you show a spinner."
+          ],
+          "misconceptions": []
+        },
+        "React project structure and file organisation conventions": {
+          "id": "project-structure",
+          "evidence": [
+            {
+              "id": "feature",
+              "text": "Grouping by feature keeps everything about one feature in one folder."
+            },
+            {
+              "id": "scale",
+              "text": "This scales better than large components, hooks and utils folders as the app grows."
+            },
+            {
+              "id": "colocate",
+              "text": "Tests and styles sit next to their component, so related files are easy to find."
+            }
+          ],
+          "notEnough": [
+            "Only saying you organise folders."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

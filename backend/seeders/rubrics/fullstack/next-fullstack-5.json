@@ -1,0 +1,260 @@
+{
+  "path": "fullstack",
+  "layer": "next-fullstack-5",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Server Actions Architecture",
+      "question": "You are building a 'create post' form in Next.js without writing a separate API endpoint, and the post list must update after saving. Explain how server actions work.",
+      "followUps": {
+        "What server actions are and how they execute": "What is a server action and where does it run?",
+        "Form submissions with the action prop": "What happens when you pass a server action to a form's action prop?",
+        "Revalidation and cache invalidation after mutations": "Why must you revalidate after a mutation?"
+      },
+      "criteria": {
+        "What server actions are and how they execute": {
+          "id": "server-actions",
+          "evidence": [
+            {
+              "id": "use-server",
+              "text": "A server action is an async function marked use server."
+            },
+            {
+              "id": "runs-server",
+              "text": "It runs on the server, even when called from a client component or form."
+            },
+            {
+              "id": "no-api",
+              "text": "It removes the need for a separate API route for the app's own mutations."
+            }
+          ],
+          "notEnough": [
+            "Only saying it runs server code."
+          ],
+          "misconceptions": []
+        },
+        "Form submissions with the action prop": {
+          "id": "form-action",
+          "evidence": [
+            {
+              "id": "submit",
+              "text": "Submitting the form calls the action on the server with the form data."
+            },
+            {
+              "id": "no-js",
+              "text": "It works even before JavaScript loads, which is progressive enhancement."
+            },
+            {
+              "id": "simple",
+              "text": "No manual fetch or submit handler is needed."
+            }
+          ],
+          "notEnough": [
+            "Only saying the form calls the action."
+          ],
+          "misconceptions": []
+        },
+        "Revalidation and cache invalidation after mutations": {
+          "id": "revalidate-after-mutation",
+          "evidence": [
+            {
+              "id": "cache",
+              "text": "Pages and data may be cached."
+            },
+            {
+              "id": "stale",
+              "text": "Without revalidation, the UI keeps showing the old data."
+            },
+            {
+              "id": "call",
+              "text": "Calling revalidatePath or revalidateTag refreshes the affected pages."
+            }
+          ],
+          "notEnough": [
+            "Only saying you refresh data."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Validation and Error Handling",
+      "question": "Users can submit the create-post form with an empty title, and when something fails they see a crash instead of a message. Explain how you would validate and report results.",
+      "followUps": {
+        "Schema validation with Zod in server actions": "Why validate form data with Zod inside the server action?",
+        "Returning errors and success states from actions": "Why return an error object instead of throwing, and how does the form read it?"
+      },
+      "criteria": {
+        "Schema validation with Zod in server actions": {
+          "id": "zod-in-action",
+          "evidence": [
+            {
+              "id": "untrusted",
+              "text": "Form data reaching the server can be anything, regardless of client checks."
+            },
+            {
+              "id": "parse",
+              "text": "A Zod schema checks the types and shape before using the data."
+            },
+            {
+              "id": "messages",
+              "text": "Zod's errors can be returned to show which field is wrong."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use Zod."
+          ],
+          "misconceptions": []
+        },
+        "Returning errors and success states from actions": {
+          "id": "action-state",
+          "evidence": [
+            {
+              "id": "return",
+              "text": "Returning an object with errors or success gives the UI something to display."
+            },
+            {
+              "id": "throw",
+              "text": "Throwing would hit an error boundary instead of showing field messages."
+            },
+            {
+              "id": "hook",
+              "text": "useActionState connects the action's result to the form."
+            }
+          ],
+          "notEnough": [
+            "Only saying you return errors."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Route Handlers for APIs",
+      "question": "A mobile app and a partner service need to create posts too, not just your own forms. Explain when you would add route handlers and how they read requests.",
+      "followUps": {
+        "Route handlers as REST API endpoints": "When would you use a route handler instead of a server action?",
+        "Reading request body and query parameters": "How do you read the body and query parameters, and what must you always do with them?"
+      },
+      "criteria": {
+        "Route handlers as REST API endpoints": {
+          "id": "route-handlers",
+          "evidence": [
+            {
+              "id": "file",
+              "text": "A route.ts file exports functions named after HTTP methods."
+            },
+            {
+              "id": "external",
+              "text": "Route handlers suit public APIs used by other apps or services."
+            },
+            {
+              "id": "actions",
+              "text": "Server actions are mainly for your own app's forms and mutations."
+            }
+          ],
+          "notEnough": [
+            "Only saying route handlers are APIs."
+          ],
+          "misconceptions": []
+        },
+        "Reading request body and query parameters": {
+          "id": "read-request",
+          "evidence": [
+            {
+              "id": "body",
+              "text": "The request's JSON body is read from the request object."
+            },
+            {
+              "id": "params",
+              "text": "Query parameters come from the URL's search params."
+            },
+            {
+              "id": "validate",
+              "text": "All external input must be validated before use."
+            }
+          ],
+          "notEnough": [
+            "Only saying you read the request."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Optimistic UI and Pending States",
+      "question": "Users click submit twice because nothing shows it is working, likes take a second to appear, and errors only show after the server responds. Explain how you would improve the form experience.",
+      "followUps": {
+        "useFormStatus for pending button states": "How does useFormStatus help with the submit button?",
+        "useOptimistic for instant UI feedback": "How does useOptimistic make a like appear instantly?",
+        "Zod form validation and client-side error display": "Why also run Zod on the client?"
+      },
+      "criteria": {
+        "useFormStatus for pending button states": {
+          "id": "use-form-status",
+          "evidence": [
+            {
+              "id": "pending",
+              "text": "useFormStatus reads whether the surrounding form is submitting."
+            },
+            {
+              "id": "disable",
+              "text": "The button can be disabled and show a spinner while pending."
+            },
+            {
+              "id": "no-state",
+              "text": "No manual loading state is needed."
+            }
+          ],
+          "notEnough": [
+            "Only saying it shows status."
+          ],
+          "misconceptions": []
+        },
+        "useOptimistic for instant UI feedback": {
+          "id": "use-optimistic",
+          "evidence": [
+            {
+              "id": "predict",
+              "text": "useOptimistic shows the expected result immediately."
+            },
+            {
+              "id": "reconcile",
+              "text": "When the server responds, the real data replaces it."
+            },
+            {
+              "id": "failure",
+              "text": "If the action fails, the optimistic value is dropped."
+            }
+          ],
+          "notEnough": [
+            "Only saying it updates the UI first."
+          ],
+          "misconceptions": []
+        },
+        "Zod form validation and client-side error display": {
+          "id": "client-zod",
+          "evidence": [
+            {
+              "id": "instant",
+              "text": "Client-side checks catch obvious mistakes immediately."
+            },
+            {
+              "id": "field-errors",
+              "text": "Field-level messages guide users to fix their input."
+            },
+            {
+              "id": "server-still",
+              "text": "The server still validates, because client checks can be bypassed."
+            }
+          ],
+          "notEnough": [
+            "Only saying you validate on the client."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "frontend-dev-5",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "The DOM",
+      "question": "You are showing a user's comment on the page and animating a list as it grows, and the page feels janky. Explain how you change the page with the DOM safely and efficiently.",
+      "followUps": {
+        "Selecting and changing nodes": "Why is textContent safer than innerHTML for showing a user's comment?",
+        "Reflow and repaint cost": "Why does reading an element's height right after changing its style slow things down?"
+      },
+      "criteria": {
+        "Selecting and changing nodes": {
+          "id": "dom-changes",
+          "evidence": [
+            {
+              "id": "select-change",
+              "text": "You find elements with methods like querySelector and change them through their properties."
+            },
+            {
+              "id": "text-safe",
+              "text": "textContent treats the value as plain text, so any HTML in it is shown, not run."
+            },
+            {
+              "id": "xss",
+              "text": "innerHTML with user data can inject markup or scripts into the page."
+            }
+          ],
+          "notEnough": [
+            "Only saying innerHTML is bad without explaining what can happen."
+          ],
+          "misconceptions": []
+        },
+        "Reflow and repaint cost": {
+          "id": "reflow-repaint",
+          "evidence": [
+            {
+              "id": "recalc",
+              "text": "Changing styles can force the browser to recalculate layout and repaint."
+            },
+            {
+              "id": "forced",
+              "text": "Reading a layout value right after a change forces that recalculation to happen immediately."
+            },
+            {
+              "id": "batch",
+              "text": "Grouping all reads and then all writes avoids repeated recalculations."
+            }
+          ],
+          "notEnough": [
+            "Only saying DOM changes are slow."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Events",
+      "question": "You have a table with hundreds of rows, each with a delete button, and rows get added over time. You also want a smooth-scrolling page and separate widgets that react to each other. Explain how you would handle events.",
+      "followUps": {
+        "Bubbling and delegation": "Why can one listener on the table handle clicks for rows added later?",
+        "Passive listeners and custom events": "What does marking a scroll listener passive change?"
+      },
+      "criteria": {
+        "Bubbling and delegation": {
+          "id": "bubbling-delegation",
+          "evidence": [
+            {
+              "id": "bubble",
+              "text": "Most events travel up from the clicked element through its parents."
+            },
+            {
+              "id": "one-listener",
+              "text": "A single listener on a parent can check which child was clicked."
+            },
+            {
+              "id": "new-items",
+              "text": "This also works for elements added after the listener was set up."
+            }
+          ],
+          "notEnough": [
+            "Only saying events bubble without explaining delegation."
+          ],
+          "misconceptions": []
+        },
+        "Passive listeners and custom events": {
+          "id": "passive-custom",
+          "evidence": [
+            {
+              "id": "passive",
+              "text": "A passive listener promises not to cancel scrolling, so the browser can scroll without waiting for your code."
+            },
+            {
+              "id": "custom",
+              "text": "Custom events let one part of the page announce something that others can listen for."
+            },
+            {
+              "id": "decouple",
+              "text": "That way parts of the page communicate without holding direct references to each other."
+            }
+          ],
+          "notEnough": [
+            "Only saying passive listeners are faster."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Storage",
+      "question": "Your app stores the user's login token, a draft message and a large list of offline products in the browser. Explain where each should live and why.",
+      "followUps": {
+        "localStorage, sessionStorage and cookies": "Why is localStorage a bad place for a login token?",
+        "IndexedDB and caching": "When would you choose IndexedDB over localStorage?"
+      },
+      "criteria": {
+        "localStorage, sessionStorage and cookies": {
+          "id": "web-storage-cookies",
+          "evidence": [
+            {
+              "id": "readable",
+              "text": "localStorage can be read by any script running on the page, so injected scripts can steal what is there."
+            },
+            {
+              "id": "sync",
+              "text": "Web Storage is synchronous and stores only strings."
+            },
+            {
+              "id": "httponly",
+              "text": "Cookies marked HttpOnly cannot be read by JavaScript and are sent with each request."
+            }
+          ],
+          "notEnough": [
+            "Only saying localStorage is not secure without saying why."
+          ],
+          "misconceptions": [
+            {
+              "id": "session-secure",
+              "text": "Says sessionStorage is safe for secrets because it is cleared when the tab closes."
+            }
+          ]
+        },
+        "IndexedDB and caching": {
+          "id": "indexeddb-cache",
+          "evidence": [
+            {
+              "id": "large-structured",
+              "text": "IndexedDB stores large amounts of structured data."
+            },
+            {
+              "id": "async",
+              "text": "It is asynchronous, so it does not freeze the page while reading or writing."
+            },
+            {
+              "id": "cache-api",
+              "text": "The Cache API stores network responses so pages can work offline."
+            }
+          ],
+          "notEnough": [
+            "Only saying IndexedDB is a database in the browser."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Observation and Navigation",
+      "question": "You want images to load only when they scroll into view, a chart to resize with its container, and tabs that change the URL without reloading. Explain how browser APIs help with each.",
+      "followUps": {
+        "Intersection and Resize observers": "Why is an IntersectionObserver better than checking positions in a scroll handler?",
+        "History API": "How can a single-page app change the URL without a page reload, and what happens on the back button?"
+      },
+      "criteria": {
+        "Intersection and Resize observers": {
+          "id": "observers",
+          "evidence": [
+            {
+              "id": "notify",
+              "text": "Observers tell you when an element becomes visible or changes size."
+            },
+            {
+              "id": "no-polling",
+              "text": "A scroll handler runs constantly and does layout checks on every scroll."
+            },
+            {
+              "id": "performance",
+              "text": "Observers let the browser do that work efficiently, which keeps scrolling smooth."
+            }
+          ],
+          "notEnough": [
+            "Only saying observers watch elements."
+          ],
+          "misconceptions": []
+        },
+        "History API": {
+          "id": "history-api",
+          "evidence": [
+            {
+              "id": "pushstate",
+              "text": "pushState changes the URL and adds a history entry without reloading the page."
+            },
+            {
+              "id": "popstate",
+              "text": "When the user presses back or forward, a popstate event fires so the app can show the right view."
+            },
+            {
+              "id": "routers",
+              "text": "Frontend routers are built on these two pieces."
+            }
+          ],
+          "notEnough": [
+            "Only saying routers handle URLs."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "astro-dev-1",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "HTML Semantics & Accessibility",
+      "question": "You are building the HTML for a blog article page that must work well with screen readers and search engines. Explain how you would structure it.",
+      "followUps": {
+        "Semantic HTML Elements": "Why do elements like article, nav and main matter?",
+        "ARIA and Accessibility Tree": "What is the accessibility tree, and how can ARIA misuse hurt it?"
+      },
+      "criteria": {
+        "Semantic HTML Elements": {
+          "id": "semantic-elements",
+          "evidence": [
+            {
+              "id": "meaning",
+              "text": "Semantic elements describe what each part of the page is."
+            },
+            {
+              "id": "assistive",
+              "text": "Screen readers use them to let users jump between regions."
+            },
+            {
+              "id": "seo",
+              "text": "Search engines use the structure to understand the content."
+            }
+          ],
+          "notEnough": [
+            "Only saying semantic HTML is cleaner."
+          ],
+          "misconceptions": []
+        },
+        "ARIA and Accessibility Tree": {
+          "id": "aria-tree",
+          "evidence": [
+            {
+              "id": "tree",
+              "text": "The accessibility tree is what screen readers read, built from the DOM."
+            },
+            {
+              "id": "alt",
+              "text": "Images need alt text so their meaning appears there."
+            },
+            {
+              "id": "misuse",
+              "text": "Wrong ARIA roles give users false information, which is worse than none."
+            }
+          ],
+          "notEnough": [
+            "Only saying ARIA adds accessibility."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "CSS Layout Fundamentals",
+      "question": "Your blog's cards overflow their columns and the page layout is built with hacks. Explain the box model and modern layout tools.",
+      "followUps": {
+        "CSS Box Model": "Why does adding padding make a fixed-width card overflow?",
+        "Flexbox and Grid": "When would you use flexbox and when grid?"
+      },
+      "criteria": {
+        "CSS Box Model": {
+          "id": "box-model",
+          "evidence": [
+            {
+              "id": "layers",
+              "text": "Every element is a box of content, padding, border and margin."
+            },
+            {
+              "id": "content-box",
+              "text": "By default, width covers only the content, so padding is added on top."
+            },
+            {
+              "id": "border-box",
+              "text": "border-box includes padding and border in the width."
+            }
+          ],
+          "notEnough": [
+            "Only listing the box parts."
+          ],
+          "misconceptions": []
+        },
+        "Flexbox and Grid": {
+          "id": "flex-grid",
+          "evidence": [
+            {
+              "id": "flex",
+              "text": "Flexbox lays items out in one direction."
+            },
+            {
+              "id": "grid",
+              "text": "Grid controls rows and columns at the same time."
+            },
+            {
+              "id": "choice",
+              "text": "Grid suits page and card layouts; flexbox suits rows of items like navigation."
+            }
+          ],
+          "notEnough": [
+            "Only saying one is 1D and one is 2D."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "TypeScript Type System",
+      "question": "You are adding TypeScript to an Astro project and defining the shape of blog post data. Explain how TypeScript helps.",
+      "followUps": {
+        "Static Typing and Type Inference": "What does static typing catch, and when should you annotate rather than rely on inference?",
+        "Interfaces and Type Aliases": "When would you use an interface and when a type alias?"
+      },
+      "criteria": {
+        "Static Typing and Type Inference": {
+          "id": "static-typing",
+          "evidence": [
+            {
+              "id": "compile-time",
+              "text": "TypeScript catches type errors before the code runs."
+            },
+            {
+              "id": "inference",
+              "text": "It infers many types from values."
+            },
+            {
+              "id": "boundaries",
+              "text": "Function parameters and public boundaries should be annotated explicitly."
+            }
+          ],
+          "notEnough": [
+            "Only saying TypeScript adds types."
+          ],
+          "misconceptions": []
+        },
+        "Interfaces and Type Aliases": {
+          "id": "interface-alias",
+          "evidence": [
+            {
+              "id": "shape",
+              "text": "Both describe object shapes."
+            },
+            {
+              "id": "interface",
+              "text": "Interfaces can be extended and merged."
+            },
+            {
+              "id": "alias",
+              "text": "Type aliases can describe unions and intersections."
+            }
+          ],
+          "notEnough": [
+            "Only saying both define types."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Responsive Design",
+      "question": "Your blog looks good on desktop but breaks on phones, and the brand color is hard-coded in 50 places. Explain how you would make it responsive and themeable.",
+      "followUps": {
+        "Mobile-First Media Queries": "Why write styles mobile-first?",
+        "CSS Custom Properties": "How do CSS custom properties help with theming?"
+      },
+      "criteria": {
+        "Mobile-First Media Queries": {
+          "id": "mobile-first",
+          "evidence": [
+            {
+              "id": "base-small",
+              "text": "Base styles target small screens."
+            },
+            {
+              "id": "min-width",
+              "text": "min-width media queries add changes for larger screens."
+            },
+            {
+              "id": "leaner",
+              "text": "This usually produces less CSS than undoing a desktop layout."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use media queries."
+          ],
+          "misconceptions": []
+        },
+        "CSS Custom Properties": {
+          "id": "custom-properties",
+          "evidence": [
+            {
+              "id": "define",
+              "text": "Values like colors and spacing are defined once as variables."
+            },
+            {
+              "id": "cascade",
+              "text": "Variables cascade, so changing them on a parent updates everything inside."
+            },
+            {
+              "id": "theme",
+              "text": "Switching variable values switches the theme without rewriting CSS."
+            }
+          ],
+          "notEnough": [
+            "Only saying variables avoid repetition."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "nuxt-dev-9",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Web Performance Fundamentals",
+      "question": "Your Nuxt site scores poorly on Core Web Vitals and the first render is slow. Explain what the metrics measure and how the browser renders a page.",
+      "followUps": {
+        "Core Web Vitals: LCP, CLS, INP": "What do LCP, CLS and INP each measure?",
+        "Critical Rendering Path Optimization": "What blocks the first render, and how do you reduce it?"
+      },
+      "criteria": {
+        "Core Web Vitals: LCP, CLS, INP": {
+          "id": "web-vitals",
+          "evidence": [
+            {
+              "id": "lcp",
+              "text": "LCP measures how fast the main content appears."
+            },
+            {
+              "id": "cls",
+              "text": "CLS measures unexpected layout movement."
+            },
+            {
+              "id": "inp",
+              "text": "INP measures how quickly the page responds to input."
+            }
+          ],
+          "notEnough": [
+            "Only spelling out the names."
+          ],
+          "misconceptions": []
+        },
+        "Critical Rendering Path Optimization": {
+          "id": "critical-path",
+          "evidence": [
+            {
+              "id": "steps",
+              "text": "The browser parses HTML, builds the CSS model, lays out and paints."
+            },
+            {
+              "id": "blocking",
+              "text": "CSS and synchronous scripts block rendering."
+            },
+            {
+              "id": "reduce",
+              "text": "Deferring scripts and keeping critical CSS small speeds up the first render."
+            }
+          ],
+          "notEnough": [
+            "Only saying you optimise rendering."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Nuxt Performance Optimization",
+      "question": "Your Nuxt homepage loads a heavy chart library and large images up front. Explain how you would load components and images efficiently.",
+      "followUps": {
+        "Lazy Loading Components and Routes": "How do you keep heavy components out of the main bundle?",
+        "Image Optimization with nuxt/image": "What does @nuxt/image do?"
+      },
+      "criteria": {
+        "Lazy Loading Components and Routes": {
+          "id": "lazy-components",
+          "evidence": [
+            {
+              "id": "auto-split",
+              "text": "Nuxt splits pages automatically, but directly imported components join the main bundle."
+            },
+            {
+              "id": "lazy",
+              "text": "Lazy components or defineAsyncComponent load them only when needed."
+            },
+            {
+              "id": "prefix",
+              "text": "Nuxt's Lazy prefix makes a component load on demand."
+            }
+          ],
+          "notEnough": [
+            "Only saying you lazy load."
+          ],
+          "misconceptions": []
+        },
+        "Image Optimization with nuxt/image": {
+          "id": "nuxt-image",
+          "evidence": [
+            {
+              "id": "formats",
+              "text": "It converts images to modern formats like WebP or AVIF."
+            },
+            {
+              "id": "srcset",
+              "text": "It generates sizes for different screens."
+            },
+            {
+              "id": "lazy",
+              "text": "It lazy-loads images and can use an image CDN."
+            }
+          ],
+          "notEnough": [
+            "Only saying it optimises images."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "SEO in Nuxt",
+      "question": "Your Nuxt product pages need unique titles, share previews and rich results in search. Explain how you would manage head tags and structured data.",
+      "followUps": {
+        "useHead and Meta Tag Management": "How does useHead manage meta tags, and why must it run on the server?",
+        "Structured Data and JSON-LD": "What does JSON-LD structured data add?"
+      },
+      "criteria": {
+        "useHead and Meta Tag Management": {
+          "id": "use-head",
+          "evidence": [
+            {
+              "id": "reactive",
+              "text": "useHead sets title, meta and link tags reactively."
+            },
+            {
+              "id": "ssr",
+              "text": "Tags set during server rendering appear in the HTML."
+            },
+            {
+              "id": "crawlers",
+              "text": "Crawlers and link-preview bots often do not run JavaScript, so tags must be in the server HTML."
+            }
+          ],
+          "notEnough": [
+            "Only saying useHead sets the title."
+          ],
+          "misconceptions": []
+        },
+        "Structured Data and JSON-LD": {
+          "id": "json-ld",
+          "evidence": [
+            {
+              "id": "describe",
+              "text": "JSON-LD describes content like products or articles to search engines."
+            },
+            {
+              "id": "schema",
+              "text": "It uses schema.org types."
+            },
+            {
+              "id": "rich",
+              "text": "It can enable rich results like star ratings."
+            }
+          ],
+          "notEnough": [
+            "Only saying it helps SEO."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Vite Build Optimization",
+      "question": "Your bundle includes a whole utility library even though you use two functions, and a vendor chunk changes on every deploy. Explain tree shaking and code splitting.",
+      "followUps": {
+        "Bundle Analysis and Tree Shaking": "Why isn't the unused library code removed?",
+        "Code Splitting Strategy": "How would you control code splitting?"
+      },
+      "criteria": {
+        "Bundle Analysis and Tree Shaking": {
+          "id": "tree-shaking",
+          "evidence": [
+            {
+              "id": "remove",
+              "text": "Tree shaking removes code that is never imported."
+            },
+            {
+              "id": "esm",
+              "text": "It needs ES modules; CommonJS or side-effectful imports block it."
+            },
+            {
+              "id": "analyse",
+              "text": "A bundle analyser shows which libraries take up space."
+            }
+          ],
+          "notEnough": [
+            "Only saying tree shaking removes code."
+          ],
+          "misconceptions": []
+        },
+        "Code Splitting Strategy": {
+          "id": "code-splitting",
+          "evidence": [
+            {
+              "id": "auto",
+              "text": "Vite splits async imports and vendor code into chunks automatically."
+            },
+            {
+              "id": "manual",
+              "text": "manualChunks lets you group modules into chosen chunks."
+            },
+            {
+              "id": "caching",
+              "text": "Stable vendor chunks stay cached across deploys when only app code changes."
+            }
+          ],
+          "notEnough": [
+            "Only saying you split code."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

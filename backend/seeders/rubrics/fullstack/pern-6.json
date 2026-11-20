@@ -1,0 +1,201 @@
+{
+  "path": "fullstack",
+  "layer": "pern-6",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "How relational databases model data",
+      "question": "You're designing the tables for users, posts and comments in your PERN app. Explain how you'd split the data into tables, how they're linked, and what stops a comment from pointing to a post that doesn't exist.",
+      "followUps": {
+        "Normalization: eliminating redundancy across 1NF, 2NF, 3NF": "Why not just store the author's name and email on every post row?",
+        "Primary keys, foreign keys, and referential integrity": "What happens if you insert a comment with a post_id that doesn't exist, and why is that useful?"
+      },
+      "criteria": {
+        "Normalization: eliminating redundancy across 1NF, 2NF, 3NF": {
+          "id": "normalization",
+          "evidence": [
+            {
+              "id": "no-duplicates",
+              "text": "Normalization splits data so each fact is stored once, for example the author's details only in the users table."
+            },
+            {
+              "id": "anomalies",
+              "text": "Duplicated data gets out of sync, because an update has to change every copy."
+            },
+            {
+              "id": "tradeoff",
+              "text": "Going too far adds many joins, so some duplication is sometimes accepted for faster reads."
+            }
+          ],
+          "notEnough": [
+            "Only listing 1NF, 2NF and 3NF without explaining what problem they solve."
+          ],
+          "misconceptions": []
+        },
+        "Primary keys, foreign keys, and referential integrity": {
+          "id": "keys-integrity",
+          "evidence": [
+            {
+              "id": "primary",
+              "text": "A primary key uniquely identifies each row."
+            },
+            {
+              "id": "foreign",
+              "text": "A foreign key column must hold a value that exists in the referenced table's key, or NULL."
+            },
+            {
+              "id": "enforced",
+              "text": "The database rejects inserts and deletes that would break that link."
+            }
+          ],
+          "notEnough": [
+            "Only defining primary and foreign keys without saying what the database enforces."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "SQL query execution model",
+      "question": "You need a report of each user's name and how many posts they've written, including users with zero posts, showing only users with more than five. Explain how you'd write it and how the database combines and groups the rows.",
+      "followUps": {
+        "How the query planner executes JOIN operations": "Why does an INNER JOIN drop users who have no posts, and which join keeps them?",
+        "GROUP BY with aggregate functions: COUNT, SUM, AVG": "Why can't you filter on COUNT(*) in WHERE, and where does that condition go?"
+      },
+      "criteria": {
+        "How the query planner executes JOIN operations": {
+          "id": "joins",
+          "evidence": [
+            {
+              "id": "inner",
+              "text": "An INNER JOIN keeps only rows that have a match in both tables."
+            },
+            {
+              "id": "left",
+              "text": "A LEFT JOIN keeps every row from the left table and fills the right side with NULLs where there's no match."
+            }
+          ],
+          "notEnough": [
+            "Only naming join types without saying which rows each one returns."
+          ],
+          "misconceptions": []
+        },
+        "GROUP BY with aggregate functions: COUNT, SUM, AVG": {
+          "id": "group-by",
+          "evidence": [
+            {
+              "id": "groups",
+              "text": "GROUP BY collapses rows with the same value into one row per group."
+            },
+            {
+              "id": "aggregates",
+              "text": "Aggregate functions like COUNT and SUM compute one value per group."
+            },
+            {
+              "id": "having",
+              "text": "WHERE filters rows before grouping, and HAVING filters groups after aggregation."
+            }
+          ],
+          "notEnough": [
+            "Only saying GROUP BY groups data without explaining aggregates or HAVING."
+          ],
+          "misconceptions": [
+            {
+              "id": "count-null",
+              "text": "Says COUNT(column) also counts rows where that column is NULL."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Writing SQL queries from scratch",
+      "question": "On your blog's admin page you need the ten newest published posts, page by page, and an action that deletes all of one user's draft posts. Explain the queries you'd write and what could go badly wrong with the delete.",
+      "followUps": {
+        "SELECT, WHERE, ORDER BY, LIMIT: the core query structure": "In what order does the database logically process FROM, WHERE, SELECT and ORDER BY, and why does it matter?",
+        "INSERT, UPDATE, DELETE with WHERE clauses": "What happens if you run that DELETE without a WHERE clause, and how would you protect yourself?"
+      },
+      "criteria": {
+        "SELECT, WHERE, ORDER BY, LIMIT: the core query structure": {
+          "id": "select-structure",
+          "evidence": [
+            {
+              "id": "clauses",
+              "text": "SELECT picks the columns, WHERE filters rows, ORDER BY sorts, and LIMIT with OFFSET returns one page."
+            },
+            {
+              "id": "logical-order",
+              "text": "FROM and WHERE are processed before SELECT and ORDER BY, so for example an alias from SELECT can't be used in WHERE."
+            }
+          ],
+          "notEnough": [
+            "Only listing the keywords without saying what each one does."
+          ],
+          "misconceptions": []
+        },
+        "INSERT, UPDATE, DELETE with WHERE clauses": {
+          "id": "write-queries",
+          "evidence": [
+            {
+              "id": "where-scope",
+              "text": "The WHERE clause decides which rows an UPDATE or DELETE touches; without it every row in the table is changed or deleted."
+            },
+            {
+              "id": "transaction",
+              "text": "Running risky changes inside a transaction lets you check the result and roll back."
+            }
+          ],
+          "notEnough": [
+            "Only saying be careful with DELETE without explaining what the WHERE clause does."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Designing the blog schema for the PERN challenge",
+      "question": "Your blog posts can have many tags, and each tag can be on many posts. Explain how you'd store that in PostgreSQL, and how you'd check your tables from the command line while building it.",
+      "followUps": {
+        "Junction tables for many-to-many: posts_tags example": "Why not store the tags as a comma-separated text column on posts?",
+        "psql CLI basics: connecting, listing tables, and running queries": "Which psql commands would you use to connect to your database, list its tables and see a table's columns?"
+      },
+      "criteria": {
+        "Junction tables for many-to-many: posts_tags example": {
+          "id": "junction-table",
+          "evidence": [
+            {
+              "id": "junction",
+              "text": "A posts_tags table holds one row per post and tag pair, with foreign keys to both posts and tags."
+            },
+            {
+              "id": "why-not-csv",
+              "text": "Comma-separated ids can't be enforced with foreign keys, indexed well or joined cleanly."
+            }
+          ],
+          "notEnough": [
+            "Only saying use a junction table without explaining what its rows contain."
+          ],
+          "misconceptions": []
+        },
+        "psql CLI basics: connecting, listing tables, and running queries": {
+          "id": "psql-basics",
+          "evidence": [
+            {
+              "id": "connect",
+              "text": "psql connects to a database from the terminal, and \\c switches to another database."
+            },
+            {
+              "id": "inspect",
+              "text": "\\dt lists the tables and \\d with a table name shows its columns and constraints, and SQL can be run directly."
+            }
+          ],
+          "notEnough": [
+            "Only saying use psql without saying what you'd do with it."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

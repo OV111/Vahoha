@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "astro-dev-5",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Islands Architecture",
+      "question": "Your Astro page has a static article, a like button and a comments widget below the fold. Explain how islands make only the interactive parts load JavaScript.",
+      "followUps": {
+        "Client Directives": "What do client:load, client:idle and client:visible do?",
+        "Island Isolation and Props Serialization": "Why must props passed to islands be serialisable?"
+      },
+      "criteria": {
+        "Client Directives": {
+          "id": "client-directives",
+          "evidence": [
+            {
+              "id": "load",
+              "text": "client:load hydrates the component immediately."
+            },
+            {
+              "id": "idle",
+              "text": "client:idle waits until the browser is idle."
+            },
+            {
+              "id": "visible",
+              "text": "client:visible hydrates only when the component scrolls into view."
+            }
+          ],
+          "notEnough": [
+            "Only listing the directives."
+          ],
+          "misconceptions": []
+        },
+        "Island Isolation and Props Serialization": {
+          "id": "island-props",
+          "evidence": [
+            {
+              "id": "independent",
+              "text": "Each island hydrates on its own with its own JavaScript."
+            },
+            {
+              "id": "serialized",
+              "text": "Props are embedded in the HTML as data."
+            },
+            {
+              "id": "json",
+              "text": "So they must be JSON-serialisable; functions cannot be passed."
+            }
+          ],
+          "notEnough": [
+            "Only saying islands are separate."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "React Integration",
+      "question": "You added a React counter to an Astro page, but clicking it does nothing. Explain how React works inside Astro.",
+      "followUps": {
+        "Adding the React Integration": "What does the React integration add?",
+        "Server-Side vs Client-Side React": "Why doesn't the React counter respond to clicks?"
+      },
+      "criteria": {
+        "Adding the React Integration": {
+          "id": "react-integration",
+          "evidence": [
+            {
+              "id": "install",
+              "text": "The React integration adds React rendering to Astro's build."
+            },
+            {
+              "id": "jsx",
+              "text": "It lets you use .jsx and .tsx components."
+            },
+            {
+              "id": "required",
+              "text": "Without it, React components cannot be rendered."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add React."
+          ],
+          "misconceptions": []
+        },
+        "Server-Side vs Client-Side React": {
+          "id": "server-vs-client-react",
+          "evidence": [
+            {
+              "id": "static",
+              "text": "React components without a client directive render to static HTML only."
+            },
+            {
+              "id": "no-js",
+              "text": "No hooks, state or event handlers run in the browser."
+            },
+            {
+              "id": "directive",
+              "text": "Adding a client directive hydrates it so it becomes interactive."
+            }
+          ],
+          "notEnough": [
+            "Only saying it needs hydration."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Interactivity Patterns",
+      "question": "A cart icon in the header and an add-to-cart button in the page are separate islands but must share state. Explain how you would connect them and add small scripts.",
+      "followUps": {
+        "Nano Stores for Shared State": "How do Nano Stores share state between islands?",
+        "Script Tags and Client-Side JS": "How are script tags in Astro components handled?"
+      },
+      "criteria": {
+        "Nano Stores for Shared State": {
+          "id": "nanostores",
+          "evidence": [
+            {
+              "id": "atoms",
+              "text": "Nano Stores holds state in small observable stores."
+            },
+            {
+              "id": "framework-agnostic",
+              "text": "Islands built with different frameworks can subscribe to the same store."
+            },
+            {
+              "id": "sync",
+              "text": "Updating the store updates every island using it."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use a store."
+          ],
+          "misconceptions": []
+        },
+        "Script Tags and Client-Side JS": {
+          "id": "script-tags",
+          "evidence": [
+            {
+              "id": "bundled",
+              "text": "Scripts are bundled and processed by the build."
+            },
+            {
+              "id": "deduped",
+              "text": "A script used in many components ships only once."
+            },
+            {
+              "id": "inline",
+              "text": "is:inline opts out of this processing when needed."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add a script tag."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Multiple Framework Support",
+      "question": "Your Astro site uses React and Svelte islands, and a map component crashes during build because it uses window. Explain how frameworks mix and when to skip server rendering.",
+      "followUps": {
+        "Mixing Frameworks in One Project": "Can a React component pass children to a Svelte component?",
+        "client:only Directive": "When do you need client:only?"
+      },
+      "criteria": {
+        "Mixing Frameworks in One Project": {
+          "id": "mixing-frameworks",
+          "evidence": [
+            {
+              "id": "supported",
+              "text": "Astro can use several frameworks in one project."
+            },
+            {
+              "id": "islands",
+              "text": "Each framework's components render as separate islands."
+            },
+            {
+              "id": "boundary",
+              "text": "Components from different frameworks cannot be nested directly inside each other's render code."
+            }
+          ],
+          "notEnough": [
+            "Only saying Astro supports many frameworks."
+          ],
+          "misconceptions": []
+        },
+        "client:only Directive": {
+          "id": "client-only",
+          "evidence": [
+            {
+              "id": "skip-ssr",
+              "text": "client:only skips server rendering for the component."
+            },
+            {
+              "id": "browser-apis",
+              "text": "It suits components that use browser APIs like window during render."
+            },
+            {
+              "id": "framework",
+              "text": "You must tell it which framework to use, since it is not rendered on the server."
+            }
+          ],
+          "notEnough": [
+            "Only saying it renders on the client."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

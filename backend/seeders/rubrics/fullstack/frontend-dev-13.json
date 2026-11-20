@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "frontend-dev-13",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Metrics",
+      "question": "Your product page scores well in Lighthouse on your laptop, but real users report it loads slowly, jumps around and feels laggy when tapping. Explain how you would measure this properly.",
+      "followUps": {
+        "LCP, INP and CLS": "What do LCP, INP and CLS each measure?",
+        "Lab data versus field data": "Why can lab numbers look good while real users have a bad experience?"
+      },
+      "criteria": {
+        "LCP, INP and CLS": {
+          "id": "core-web-vitals",
+          "evidence": [
+            {
+              "id": "lcp",
+              "text": "Largest Contentful Paint measures how long the main content takes to appear."
+            },
+            {
+              "id": "inp",
+              "text": "Interaction to Next Paint measures how quickly the page responds visually to user input."
+            },
+            {
+              "id": "cls",
+              "text": "Cumulative Layout Shift measures how much content moves around unexpectedly."
+            }
+          ],
+          "notEnough": [
+            "Only spelling out the three names."
+          ],
+          "misconceptions": []
+        },
+        "Lab data versus field data": {
+          "id": "lab-vs-field",
+          "evidence": [
+            {
+              "id": "lab",
+              "text": "Lab tools like Lighthouse run on one device and network in controlled conditions."
+            },
+            {
+              "id": "field",
+              "text": "Field data comes from real users on their real devices and connections."
+            },
+            {
+              "id": "use",
+              "text": "Lab data is for debugging, while field data shows what users actually experience."
+            }
+          ],
+          "notEnough": [
+            "Only saying field data is more accurate."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Diagnosis",
+      "question": "Clicking a filter freezes the page for half a second, and the page jumps when an ad banner loads. Explain how you would find and fix both.",
+      "followUps": {
+        "The Performance panel": "How would a Performance panel recording help you find why a click feels slow?",
+        "Layout shift debugging": "What usually causes layout shift and how do you prevent it?"
+      },
+      "criteria": {
+        "The Performance panel": {
+          "id": "performance-panel",
+          "evidence": [
+            {
+              "id": "trace",
+              "text": "A recording shows what the main thread was doing over time."
+            },
+            {
+              "id": "long-tasks",
+              "text": "Long tasks over about 50 milliseconds block the page from responding."
+            },
+            {
+              "id": "find-cause",
+              "text": "You can see which function caused the long task and what layout or rendering work followed."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would record a trace."
+          ],
+          "misconceptions": []
+        },
+        "Layout shift debugging": {
+          "id": "layout-shift",
+          "evidence": [
+            {
+              "id": "causes",
+              "text": "Images without size, late-loading fonts and injected banners push content around."
+            },
+            {
+              "id": "reserve",
+              "text": "Reserving space with width, height or aspect ratio prevents the jump."
+            },
+            {
+              "id": "fonts",
+              "text": "Choosing a fallback font with similar size reduces shift when the web font loads."
+            }
+          ],
+          "notEnough": [
+            "Only saying to avoid layout shift."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Assets",
+      "question": "Your homepage hero image is 3 MB, fonts load late, and returning users download everything again. Explain how you would make the assets load fast.",
+      "followUps": {
+        "Images, fonts and lazy loading": "What would you do to the hero image and the images further down the page?",
+        "Caching, compression and CDNs": "How do fingerprinted file names let you cache files forever?"
+      },
+      "criteria": {
+        "Images, fonts and lazy loading": {
+          "id": "images-fonts-lazy",
+          "evidence": [
+            {
+              "id": "largest",
+              "text": "Images are usually the largest files on a page."
+            },
+            {
+              "id": "format-size",
+              "text": "Serving modern formats at the right size cuts their weight."
+            },
+            {
+              "id": "lazy-preload",
+              "text": "Images below the fold are lazy-loaded, while the main hero image is loaded early or preloaded."
+            }
+          ],
+          "notEnough": [
+            "Only saying to compress images."
+          ],
+          "misconceptions": [
+            {
+              "id": "lazy-hero",
+              "text": "Says the hero image should be lazy-loaded too."
+            }
+          ]
+        },
+        "Caching, compression and CDNs": {
+          "id": "caching-cdn",
+          "evidence": [
+            {
+              "id": "fingerprint",
+              "text": "A hash in the file name changes whenever the content changes."
+            },
+            {
+              "id": "forever",
+              "text": "Because a new version gets a new name, old names can be cached for a very long time."
+            },
+            {
+              "id": "compress-cdn",
+              "text": "Compression like Brotli shrinks text files, and a CDN serves files from servers close to the user."
+            }
+          ],
+          "notEnough": [
+            "Only saying to use a CDN."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "JavaScript Cost",
+      "question": "Your app ships a 2 MB JavaScript bundle, and a big list re-renders on every keystroke. Explain how you would reduce JavaScript cost and rendering work.",
+      "followUps": {
+        "Code splitting and tree shaking": "How do code splitting and tree shaking reduce what the browser downloads?",
+        "React rendering cost": "Why should you profile before adding memo and useMemo everywhere?"
+      },
+      "criteria": {
+        "Code splitting and tree shaking": {
+          "id": "code-split-tree-shake",
+          "evidence": [
+            {
+              "id": "per-route",
+              "text": "Code splitting loads only the code a route or feature needs."
+            },
+            {
+              "id": "dynamic-import",
+              "text": "Dynamic imports create separate chunks loaded on demand."
+            },
+            {
+              "id": "tree-shake",
+              "text": "Tree shaking removes exported code that is never used."
+            }
+          ],
+          "notEnough": [
+            "Only saying to make the bundle smaller."
+          ],
+          "misconceptions": []
+        },
+        "React rendering cost": {
+          "id": "react-render-cost",
+          "evidence": [
+            {
+              "id": "profile",
+              "text": "The React Profiler shows which components re-render and how long they take."
+            },
+            {
+              "id": "targeted",
+              "text": "Memoization, stable props and list virtualization help when a profile shows wasted renders."
+            },
+            {
+              "id": "cost",
+              "text": "Adding them blindly costs memory and readability without a guaranteed gain."
+            }
+          ],
+          "notEnough": [
+            "Only saying memo improves performance."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

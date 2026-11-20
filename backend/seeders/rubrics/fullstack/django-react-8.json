@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "django-react-8",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Django Performance Patterns",
+      "question": "Your recipe list page makes hundreds of queries, a welcome email should go out when users sign up, and you need a nightly cleanup script. Explain the Django tools you would use.",
+      "followUps": {
+        "select_related and prefetch_related": "When would you use select_related and when prefetch_related?",
+        "Django Signals for Decoupled Logic": "What are Django signals good for and why use them sparingly?",
+        "Custom Management Commands": "How do you add your own manage.py command?"
+      },
+      "criteria": {
+        "select_related and prefetch_related": {
+          "id": "select-prefetch",
+          "evidence": [
+            {
+              "id": "n-plus-one",
+              "text": "Accessing a relation for each item in a loop causes one query per item."
+            },
+            {
+              "id": "select",
+              "text": "select_related uses a SQL join for foreign keys and one-to-one relations."
+            },
+            {
+              "id": "prefetch",
+              "text": "prefetch_related runs a separate query and joins in Python, which suits many-to-many and reverse relations."
+            }
+          ],
+          "notEnough": [
+            "Only saying they reduce queries."
+          ],
+          "misconceptions": []
+        },
+        "Django Signals for Decoupled Logic": {
+          "id": "signals",
+          "evidence": [
+            {
+              "id": "trigger",
+              "text": "Signals like post_save run code when models change."
+            },
+            {
+              "id": "decouple",
+              "text": "They let side effects happen without the model knowing about them."
+            },
+            {
+              "id": "hidden",
+              "text": "Overusing them makes control flow hard to follow."
+            }
+          ],
+          "notEnough": [
+            "Only saying signals react to events."
+          ],
+          "misconceptions": []
+        },
+        "Custom Management Commands": {
+          "id": "management-commands",
+          "evidence": [
+            {
+              "id": "basecommand",
+              "text": "A class subclassing BaseCommand in a management/commands folder becomes a command."
+            },
+            {
+              "id": "uses",
+              "text": "Commands suit data fixes, scheduled jobs and admin utilities."
+            },
+            {
+              "id": "run",
+              "text": "They run with manage.py like built-in commands."
+            }
+          ],
+          "notEnough": [
+            "Only saying you create a command."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Background Processing",
+      "question": "Users wait ten seconds while uploaded recipe photos are resized and an email is sent, and uploads fill up the server's disk. Explain how you would move work to the background and store files.",
+      "followUps": {
+        "Celery Task Queue Architecture": "How does Celery run work outside the request?",
+        "File and Media Upload Handling": "Where should uploaded files go in production?"
+      },
+      "criteria": {
+        "Celery Task Queue Architecture": {
+          "id": "celery",
+          "evidence": [
+            {
+              "id": "offload",
+              "text": "Celery moves slow work like emails and image processing to background workers."
+            },
+            {
+              "id": "broker",
+              "text": "Tasks are sent through a message broker such as Redis."
+            },
+            {
+              "id": "fast-response",
+              "text": "The request returns immediately while the worker does the job."
+            }
+          ],
+          "notEnough": [
+            "Only saying Celery runs tasks."
+          ],
+          "misconceptions": []
+        },
+        "File and Media Upload Handling": {
+          "id": "file-uploads",
+          "evidence": [
+            {
+              "id": "fields",
+              "text": "FileField and ImageField handle uploads."
+            },
+            {
+              "id": "media",
+              "text": "MEDIA_ROOT and MEDIA_URL control where files are stored and served from."
+            },
+            {
+              "id": "cloud",
+              "text": "In production, cloud storage like S3 is used through a storage backend instead of the server's disk."
+            }
+          ],
+          "notEnough": [
+            "Only saying you save the file."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Caching with Redis",
+      "question": "Your homepage runs an expensive query on every visit and you want a leaderboard of top recipes. Explain how you would use Redis with Django.",
+      "followUps": {
+        "Configuring Django Cache with Redis": "How would you cache the expensive homepage query?",
+        "Redis Data Structures and Use Cases": "Which Redis data structures suit a leaderboard or rate limiting?"
+      },
+      "criteria": {
+        "Configuring Django Cache with Redis": {
+          "id": "django-redis-cache",
+          "evidence": [
+            {
+              "id": "backend",
+              "text": "CACHES is configured to use Redis as the backend."
+            },
+            {
+              "id": "get-set",
+              "text": "Results are stored with a key and an expiry and read back on later requests."
+            },
+            {
+              "id": "invalidate",
+              "text": "The cached value must be cleared or expire when the data changes."
+            }
+          ],
+          "notEnough": [
+            "Only saying you cache it."
+          ],
+          "misconceptions": []
+        },
+        "Redis Data Structures and Use Cases": {
+          "id": "redis-structures",
+          "evidence": [
+            {
+              "id": "sorted-sets",
+              "text": "Sorted sets keep items ordered by score, which suits leaderboards."
+            },
+            {
+              "id": "lists",
+              "text": "Lists work as simple queues."
+            },
+            {
+              "id": "expiring-keys",
+              "text": "Keys with expiry work for rate limiting and short-lived data."
+            }
+          ],
+          "notEnough": [
+            "Only saying Redis is a cache."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Celery Tooling",
+      "question": "You need a report emailed every Monday and a way to see whether background tasks are failing. Explain how you would schedule and monitor Celery tasks.",
+      "followUps": {
+        "Celery Beat for Periodic Tasks": "How does Celery Beat schedule periodic tasks?",
+        "Monitoring Celery with Flower": "What does Flower show you?"
+      },
+      "criteria": {
+        "Celery Beat for Periodic Tasks": {
+          "id": "celery-beat",
+          "evidence": [
+            {
+              "id": "scheduler",
+              "text": "Celery Beat sends tasks to the queue on a schedule."
+            },
+            {
+              "id": "schedules",
+              "text": "Schedules can be intervals or cron expressions."
+            },
+            {
+              "id": "db",
+              "text": "django-celery-beat stores the schedule in the database so it can be changed without redeploying."
+            }
+          ],
+          "notEnough": [
+            "Only saying Beat runs tasks on a schedule."
+          ],
+          "misconceptions": []
+        },
+        "Monitoring Celery with Flower": {
+          "id": "flower",
+          "evidence": [
+            {
+              "id": "dashboard",
+              "text": "Flower is a web dashboard for Celery."
+            },
+            {
+              "id": "status",
+              "text": "It shows active tasks and worker status."
+            },
+            {
+              "id": "history",
+              "text": "It shows task history, including failures."
+            }
+          ],
+          "notEnough": [
+            "Only saying it monitors Celery."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

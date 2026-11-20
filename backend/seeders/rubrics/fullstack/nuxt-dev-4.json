@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "nuxt-dev-4",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Nuxt Data Fetching Composables",
+      "question": "Your Nuxt page fetches products during server rendering, then fetches them again in the browser. Explain how useFetch and useAsyncData avoid this.",
+      "followUps": {
+        "useFetch vs useAsyncData: When to Use Each": "When would you use useFetch and when useAsyncData?",
+        "Keys and Cache Deduplication": "What does the key in useAsyncData do?"
+      },
+      "criteria": {
+        "useFetch vs useAsyncData: When to Use Each": {
+          "id": "usefetch-vs-useasyncdata",
+          "evidence": [
+            {
+              "id": "usefetch",
+              "text": "useFetch is a shortcut for fetching a URL."
+            },
+            {
+              "id": "useasyncdata",
+              "text": "useAsyncData wraps any async function for more complex cases."
+            },
+            {
+              "id": "dedupe",
+              "text": "Both carry server results to the client so the request is not repeated."
+            }
+          ],
+          "notEnough": [
+            "Only saying both fetch data."
+          ],
+          "misconceptions": []
+        },
+        "Keys and Cache Deduplication": {
+          "id": "keys-dedup",
+          "evidence": [
+            {
+              "id": "key",
+              "text": "The key identifies the data in Nuxt's cache."
+            },
+            {
+              "id": "dedupe",
+              "text": "Calls with the same key share the result."
+            },
+            {
+              "id": "collisions",
+              "text": "Reusing a key for different data shows the wrong data."
+            }
+          ],
+          "notEnough": [
+            "Only saying keys identify data."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Rendering Strategies",
+      "question": "Users see a spinner on every page while slow data loads, even though the server already rendered it. Explain the payload and lazy fetching.",
+      "followUps": {
+        "Universal Rendering and Payload Transfer": "How does the SSR payload stop the client from refetching?",
+        "Lazy Fetching and Suspense": "What does the lazy option change?"
+      },
+      "criteria": {
+        "Universal Rendering and Payload Transfer": {
+          "id": "payload",
+          "evidence": [
+            {
+              "id": "serialize",
+              "text": "Server fetch results are stored as JSON in the HTML."
+            },
+            {
+              "id": "reuse",
+              "text": "The client reads them during hydration instead of fetching again."
+            },
+            {
+              "id": "size",
+              "text": "Large payloads make the page heavier, so only needed data should be fetched."
+            }
+          ],
+          "notEnough": [
+            "Only saying data is passed to the client."
+          ],
+          "misconceptions": []
+        },
+        "Lazy Fetching and Suspense": {
+          "id": "lazy-fetching",
+          "evidence": [
+            {
+              "id": "non-blocking",
+              "text": "Lazy fetching does not block rendering the page."
+            },
+            {
+              "id": "pending",
+              "text": "The page renders first with a pending state."
+            },
+            {
+              "id": "handle",
+              "text": "The template must handle that loading state, for example with a skeleton."
+            }
+          ],
+          "notEnough": [
+            "Only saying lazy loads later."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "TypeScript in Nuxt Components",
+      "question": "You want full type safety from your server API to your components' props in Nuxt. Explain how you would type props and use Nuxt's generated types.",
+      "followUps": {
+        "defineProps with TypeScript Generics": "How do you type props with defineProps?",
+        "Auto-generated Types from Nuxt": "What types does Nuxt generate for you?"
+      },
+      "criteria": {
+        "defineProps with TypeScript Generics": {
+          "id": "defineprops-ts",
+          "evidence": [
+            {
+              "id": "interface",
+              "text": "An interface describes the props."
+            },
+            {
+              "id": "generic",
+              "text": "It is passed as a type parameter to defineProps."
+            },
+            {
+              "id": "inference",
+              "text": "Props are then typed in the script and template."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add types."
+          ],
+          "misconceptions": []
+        },
+        "Auto-generated Types from Nuxt": {
+          "id": "generated-types",
+          "evidence": [
+            {
+              "id": "generated",
+              "text": "Nuxt generates types for routes, server endpoints and runtime config."
+            },
+            {
+              "id": "end-to-end",
+              "text": "Calling your own API with useFetch gets typed responses."
+            },
+            {
+              "id": "sync",
+              "text": "Regenerating keeps the types in sync with the code."
+            }
+          ],
+          "notEnough": [
+            "Only saying Nuxt has types."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Server Routes and API Handlers",
+      "question": "You are adding API endpoints to your Nuxt app for listing and creating orders. Explain server routes and how they read requests.",
+      "followUps": {
+        "server/api/ Route Conventions": "How do server/api files become endpoints?",
+        "Event Handling with H3": "How do H3 helpers read the request?"
+      },
+      "criteria": {
+        "server/api/ Route Conventions": {
+          "id": "server-api",
+          "evidence": [
+            {
+              "id": "folder",
+              "text": "Files in server/api become API routes."
+            },
+            {
+              "id": "methods",
+              "text": "File names like index.get.ts or index.post.ts handle specific methods."
+            },
+            {
+              "id": "server-only",
+              "text": "This code only runs on the server."
+            }
+          ],
+          "notEnough": [
+            "Only saying server routes make APIs."
+          ],
+          "misconceptions": []
+        },
+        "Event Handling with H3": {
+          "id": "h3-events",
+          "evidence": [
+            {
+              "id": "event",
+              "text": "Handlers receive an event object for the request."
+            },
+            {
+              "id": "helpers",
+              "text": "Helpers like readBody, getQuery and setCookie work with it."
+            },
+            {
+              "id": "validate",
+              "text": "Input from the request must still be validated."
+            }
+          ],
+          "notEnough": [
+            "Only listing helpers."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

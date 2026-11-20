@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "django-react-2",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Django Project Architecture",
+      "question": "You are starting a Django project for a recipe site with recipes, user profiles and comments. Explain how you would organise it and what happens when a browser requests /recipes/5.",
+      "followUps": {
+        "Projects vs Apps in Django": "What is the difference between a Django project and an app?",
+        "URL Routing and Views": "How does a URL reach a view in Django?",
+        "Request/Response Cycle in Django": "What does a request pass through before reaching your view?"
+      },
+      "criteria": {
+        "Projects vs Apps in Django": {
+          "id": "projects-apps",
+          "evidence": [
+            {
+              "id": "project",
+              "text": "The project holds the overall configuration and settings."
+            },
+            {
+              "id": "apps",
+              "text": "Apps are self-contained modules for one area, like recipes or accounts."
+            },
+            {
+              "id": "focused",
+              "text": "Keeping each app focused on one domain makes it easier to reuse and maintain."
+            }
+          ],
+          "notEnough": [
+            "Only saying a project contains apps."
+          ],
+          "misconceptions": []
+        },
+        "URL Routing and Views": {
+          "id": "url-routing-views",
+          "evidence": [
+            {
+              "id": "patterns",
+              "text": "URL patterns map paths to view functions or classes."
+            },
+            {
+              "id": "params",
+              "text": "Parts of the URL, like an id, are captured and passed to the view."
+            },
+            {
+              "id": "response",
+              "text": "The view receives a request and returns a response."
+            }
+          ],
+          "notEnough": [
+            "Only saying urls.py maps URLs."
+          ],
+          "misconceptions": []
+        },
+        "Request/Response Cycle in Django": {
+          "id": "request-response-cycle",
+          "evidence": [
+            {
+              "id": "middleware",
+              "text": "The request first passes through middleware."
+            },
+            {
+              "id": "resolver",
+              "text": "The URL resolver picks the matching view."
+            },
+            {
+              "id": "back",
+              "text": "The view's response passes back through middleware before it is sent."
+            }
+          ],
+          "notEnough": [
+            "Only saying Django handles the request."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Templates and Configuration",
+      "question": "Your recipe pages repeat the same header and footer in every template, and the secret key is hard-coded in settings. Explain how templates and settings should work.",
+      "followUps": {
+        "Django Template Language Basics": "How does template inheritance remove repeated HTML?",
+        "Settings and Project Configuration": "Why must the secret key and database password not be written in settings.py?"
+      },
+      "criteria": {
+        "Django Template Language Basics": {
+          "id": "template-language",
+          "evidence": [
+            {
+              "id": "variables-tags",
+              "text": "Templates use variables to show data and tags for logic like loops."
+            },
+            {
+              "id": "extends",
+              "text": "A child template extends a base template."
+            },
+            {
+              "id": "blocks",
+              "text": "The child fills in named blocks, so shared layout lives in one place."
+            }
+          ],
+          "notEnough": [
+            "Only saying templates render HTML."
+          ],
+          "misconceptions": []
+        },
+        "Settings and Project Configuration": {
+          "id": "settings-config",
+          "evidence": [
+            {
+              "id": "settings",
+              "text": "settings.py configures databases, installed apps and middleware."
+            },
+            {
+              "id": "env",
+              "text": "Secrets should come from environment variables or an env file."
+            },
+            {
+              "id": "git",
+              "text": "Hard-coded secrets end up in version control where anyone with access can read them."
+            }
+          ],
+          "notEnough": [
+            "Only saying to keep secrets safe."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Static Files and Media",
+      "question": "Your recipe site needs CSS and images, and staff need a quick way to manage recipes without building pages. Explain static files and the admin.",
+      "followUps": {
+        "Serving Static Files in Development": "How does Django find and serve static files during development?",
+        "Django Admin Interface": "What does the Django admin give you and how do you customise it?"
+      },
+      "criteria": {
+        "Serving Static Files in Development": {
+          "id": "static-files",
+          "evidence": [
+            {
+              "id": "settings",
+              "text": "STATIC_URL and static directories tell Django where static files live."
+            },
+            {
+              "id": "template",
+              "text": "Templates load the static tag to build the right URLs."
+            },
+            {
+              "id": "dev-only",
+              "text": "Django serves them itself only in development; production uses another approach."
+            }
+          ],
+          "notEnough": [
+            "Only saying you put files in a static folder."
+          ],
+          "misconceptions": []
+        },
+        "Django Admin Interface": {
+          "id": "django-admin",
+          "evidence": [
+            {
+              "id": "crud",
+              "text": "The admin gives an automatic interface to create, read, update and delete records."
+            },
+            {
+              "id": "register",
+              "text": "Models are registered to appear in the admin."
+            },
+            {
+              "id": "modeladmin",
+              "text": "ModelAdmin options customise lists, filters and search."
+            }
+          ],
+          "notEnough": [
+            "Only saying the admin manages data."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Development Workflow",
+      "question": "You are setting up the project from scratch and need to add request logging and security headers to every request. Explain the commands you would run and how middleware fits in.",
+      "followUps": {
+        "Starting a Project with django-admin": "Which commands create a project, an app and run the server?",
+        "Middleware and the Django Pipeline": "What can middleware do that a view cannot?"
+      },
+      "criteria": {
+        "Starting a Project with django-admin": {
+          "id": "django-admin-scaffold",
+          "evidence": [
+            {
+              "id": "startproject",
+              "text": "django-admin startproject creates the project structure."
+            },
+            {
+              "id": "startapp",
+              "text": "manage.py startapp creates a new app."
+            },
+            {
+              "id": "runserver",
+              "text": "manage.py runserver starts a development server that reloads on changes."
+            }
+          ],
+          "notEnough": [
+            "Only listing commands."
+          ],
+          "misconceptions": []
+        },
+        "Middleware and the Django Pipeline": {
+          "id": "middleware",
+          "evidence": [
+            {
+              "id": "hooks",
+              "text": "Middleware processes every request before views and every response after."
+            },
+            {
+              "id": "builtin",
+              "text": "Django includes middleware for sessions, CSRF protection, auth and security headers."
+            },
+            {
+              "id": "order",
+              "text": "The order of middleware in settings matters, because each wraps the next."
+            }
+          ],
+          "notEnough": [
+            "Only saying middleware runs on every request."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

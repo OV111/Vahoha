@@ -1,0 +1,226 @@
+{
+  "path": "fullstack",
+  "layer": "frontend-dev-7",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Components",
+      "question": "You are building a product page with a reusable card and a page layout that wraps different content. Explain how React components share data and fit together.",
+      "followUps": {
+        "JSX and props": "Why shouldn't a child component change its own props?",
+        "Composition and children": "How does the children prop help you build a reusable layout component?"
+      },
+      "criteria": {
+        "JSX and props": {
+          "id": "jsx-props",
+          "evidence": [
+            {
+              "id": "jsx",
+              "text": "JSX is JavaScript syntax that describes what the UI should look like."
+            },
+            {
+              "id": "one-way",
+              "text": "Props pass data from parent to child in one direction."
+            },
+            {
+              "id": "read-only",
+              "text": "A child treats props as read-only; to change data, the parent owns it and passes down a way to update it."
+            }
+          ],
+          "notEnough": [
+            "Only saying props are inputs to components."
+          ],
+          "misconceptions": [
+            {
+              "id": "jsx-html",
+              "text": "Says JSX is HTML that runs in the browser."
+            }
+          ]
+        },
+        "Composition and children": {
+          "id": "composition-children",
+          "evidence": [
+            {
+              "id": "nest",
+              "text": "Components are combined by nesting them inside each other."
+            },
+            {
+              "id": "children",
+              "text": "The children prop holds whatever is placed between a component's tags."
+            },
+            {
+              "id": "generic",
+              "text": "That lets a layout component wrap any content without knowing what it is."
+            }
+          ],
+          "notEnough": [
+            "Only saying children are the nested elements."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Rendering",
+      "question": "You render a todo list where items can be reordered, and checked items get mixed up after reordering. Explain how React renders and what went wrong.",
+      "followUps": {
+        "Lists and keys": "Why does using the array index as a key cause bugs when the list is reordered?",
+        "Render is a pure calculation": "Why should a component not fetch data or change variables outside itself while rendering?"
+      },
+      "criteria": {
+        "Lists and keys": {
+          "id": "lists-keys",
+          "evidence": [
+            {
+              "id": "match",
+              "text": "Keys let React match each item between renders."
+            },
+            {
+              "id": "stable",
+              "text": "Keys must be stable and unique, such as an id from the data."
+            },
+            {
+              "id": "index-bug",
+              "text": "With index keys, reordering gives items different keys, so their state ends up on the wrong item."
+            }
+          ],
+          "notEnough": [
+            "Only saying keys must be unique."
+          ],
+          "misconceptions": [
+            {
+              "id": "keys-performance",
+              "text": "Says keys only matter for performance."
+            }
+          ]
+        },
+        "Render is a pure calculation": {
+          "id": "pure-render",
+          "evidence": [
+            {
+              "id": "same-output",
+              "text": "A component should return the same UI for the same props and state."
+            },
+            {
+              "id": "no-side-effects",
+              "text": "Rendering should not change things outside the component, such as sending requests or editing global variables."
+            },
+            {
+              "id": "predictable",
+              "text": "React may render a component more than once, so side effects during render cause bugs."
+            }
+          ],
+          "notEnough": [
+            "Only saying components should be pure."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "State",
+      "question": "A counter shows the old value right after you call the setter, and a form's object state does not update on screen. Explain how React state works.",
+      "followUps": {
+        "useState and re-rendering": "Why does logging the state right after calling setCount show the old value?",
+        "Updating objects and arrays": "You change one field in a state object directly, and nothing happens on screen. Why?"
+      },
+      "criteria": {
+        "useState and re-rendering": {
+          "id": "usestate-rerender",
+          "evidence": [
+            {
+              "id": "schedule",
+              "text": "Calling a state setter schedules a re-render with the new value."
+            },
+            {
+              "id": "snapshot",
+              "text": "Inside the current render, the state value is a fixed snapshot."
+            },
+            {
+              "id": "next-render",
+              "text": "The new value appears in the next render, not in the current one."
+            }
+          ],
+          "notEnough": [
+            "Only saying setState is asynchronous."
+          ],
+          "misconceptions": []
+        },
+        "Updating objects and arrays": {
+          "id": "update-objects-arrays",
+          "evidence": [
+            {
+              "id": "no-mutate",
+              "text": "Changing the existing object keeps the same reference."
+            },
+            {
+              "id": "new-object",
+              "text": "You need to create a new object or array with the change."
+            },
+            {
+              "id": "detect",
+              "text": "React compares references to decide that something changed and re-render."
+            }
+          ],
+          "notEnough": [
+            "Only saying state is immutable."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Structure",
+      "question": "A filter input and a results list are siblings that both need the search text, and you are about to build a new page from a mockup. Explain where state should live and how you would plan the components.",
+      "followUps": {
+        "Lifting state up": "Two sibling components need the same value. Where should that state live?",
+        "Thinking in React": "How would you go from a mockup to a working React page?"
+      },
+      "criteria": {
+        "Lifting state up": {
+          "id": "lifting-state",
+          "evidence": [
+            {
+              "id": "common-parent",
+              "text": "Shared state moves up to the closest common parent."
+            },
+            {
+              "id": "pass-down",
+              "text": "The parent passes the value and an update function down as props."
+            },
+            {
+              "id": "keep-low",
+              "text": "State should live as low in the tree as possible so fewer components re-render."
+            }
+          ],
+          "notEnough": [
+            "Only saying to lift state up."
+          ],
+          "misconceptions": []
+        },
+        "Thinking in React": {
+          "id": "thinking-in-react",
+          "evidence": [
+            {
+              "id": "break-down",
+              "text": "Break the UI into a tree of components."
+            },
+            {
+              "id": "static-first",
+              "text": "Build a static version first that only uses props."
+            },
+            {
+              "id": "minimal-state",
+              "text": "Find the smallest set of state needed and decide which component owns each piece."
+            }
+          ],
+          "notEnough": [
+            "Only listing the steps without explaining why minimal state matters."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

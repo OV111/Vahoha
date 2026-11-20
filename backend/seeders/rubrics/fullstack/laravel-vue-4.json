@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "laravel-vue-4",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Laravel Validation",
+      "question": "Your controllers are full of validation rules and permission checks, and you need a rule that a booking date falls on a weekday. Explain how Laravel organises validation.",
+      "followUps": {
+        "Form Request Classes and Authorization": "What does a Form Request class hold and why use one?",
+        "Custom Validation Rules": "How would you write a custom validation rule?"
+      },
+      "criteria": {
+        "Form Request Classes and Authorization": {
+          "id": "form-requests",
+          "evidence": [
+            {
+              "id": "rules",
+              "text": "A Form Request holds the validation rules for one request."
+            },
+            {
+              "id": "authorize",
+              "text": "It also has an authorize method for permission checks."
+            },
+            {
+              "id": "thin",
+              "text": "Controllers stay thin and only receive validated data."
+            }
+          ],
+          "notEnough": [
+            "Only saying it validates requests."
+          ],
+          "misconceptions": []
+        },
+        "Custom Validation Rules": {
+          "id": "custom-rules",
+          "evidence": [
+            {
+              "id": "rule",
+              "text": "A custom Rule class or closure holds domain-specific checks."
+            },
+            {
+              "id": "message",
+              "text": "It returns a clear error message when the check fails."
+            },
+            {
+              "id": "reuse",
+              "text": "Rule classes can be reused and tested across requests."
+            }
+          ],
+          "notEnough": [
+            "Only saying you can write custom rules."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Laravel Authentication",
+      "question": "Your Vue SPA and a mobile app both need to authenticate with Laravel, and only an order's owner may cancel it. Explain how Sanctum and authorization work.",
+      "followUps": {
+        "Laravel Sanctum for SPA Authentication": "How does Sanctum authenticate an SPA differently from a mobile app?",
+        "Gates and Policies for Authorization": "When would you use a gate and when a policy?"
+      },
+      "criteria": {
+        "Laravel Sanctum for SPA Authentication": {
+          "id": "sanctum",
+          "evidence": [
+            {
+              "id": "spa",
+              "text": "For a first-party SPA, Sanctum uses cookie-based sessions."
+            },
+            {
+              "id": "tokens",
+              "text": "For mobile apps and other clients, it issues API tokens."
+            },
+            {
+              "id": "confusion",
+              "text": "Using tokens in the browser when cookies would work adds risk and complexity."
+            }
+          ],
+          "notEnough": [
+            "Only saying Sanctum handles auth."
+          ],
+          "misconceptions": []
+        },
+        "Gates and Policies for Authorization": {
+          "id": "gates-policies",
+          "evidence": [
+            {
+              "id": "gate",
+              "text": "Gates are simple checks for actions not tied to one model."
+            },
+            {
+              "id": "policy",
+              "text": "Policies group the rules for one model, like who can update or delete an order."
+            },
+            {
+              "id": "use",
+              "text": "Controllers call authorize, which returns 403 when the rule fails."
+            }
+          ],
+          "notEnough": [
+            "Only saying both authorize users."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "CSRF Protection",
+      "question": "A malicious site tricks logged-in users into submitting a form to your app, and Stripe webhooks are being rejected with 419 errors. Explain how CSRF protection works and when to exclude routes.",
+      "followUps": {
+        "How Laravel's CSRF Token Works": "How does Laravel's CSRF token stop forged requests?",
+        "Excluding Routes from CSRF Verification": "Why exclude a webhook route from CSRF, and how do you keep it safe?"
+      },
+      "criteria": {
+        "How Laravel's CSRF Token Works": {
+          "id": "csrf-token",
+          "evidence": [
+            {
+              "id": "per-session",
+              "text": "Laravel creates a CSRF token for each session."
+            },
+            {
+              "id": "check",
+              "text": "Every state-changing request must include the token, which is compared with the session."
+            },
+            {
+              "id": "forged",
+              "text": "Another site cannot read the token, so its forged requests fail."
+            }
+          ],
+          "notEnough": [
+            "Only saying CSRF tokens protect forms."
+          ],
+          "misconceptions": []
+        },
+        "Excluding Routes from CSRF Verification": {
+          "id": "csrf-except",
+          "evidence": [
+            {
+              "id": "no-token",
+              "text": "External services like Stripe cannot send your CSRF token."
+            },
+            {
+              "id": "except",
+              "text": "Those routes are listed as exceptions to CSRF checks."
+            },
+            {
+              "id": "verify",
+              "text": "They must verify the request another way, such as checking the webhook signature."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add the route to except."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Blade Templating",
+      "question": "A comment containing a script tag runs in other users' browsers, and your Blade views repeat the same card markup. Explain how Blade escapes output and how components help.",
+      "followUps": {
+        "Blade Directives and XSS Prevention": "What is the difference between {{ }} and {!! !!} in Blade?",
+        "Blade Components and Slots": "How do Blade components and slots help reuse markup?"
+      },
+      "criteria": {
+        "Blade Directives and XSS Prevention": {
+          "id": "blade-escaping",
+          "evidence": [
+            {
+              "id": "escaped",
+              "text": "{{ }} escapes HTML so user content is shown as text."
+            },
+            {
+              "id": "raw",
+              "text": "{!! !!} outputs raw HTML without escaping."
+            },
+            {
+              "id": "xss",
+              "text": "Using raw output on user content allows cross-site scripting."
+            }
+          ],
+          "notEnough": [
+            "Only saying one is escaped."
+          ],
+          "misconceptions": []
+        },
+        "Blade Components and Slots": {
+          "id": "blade-components",
+          "evidence": [
+            {
+              "id": "component",
+              "text": "A Blade component is a reusable piece of UI with its own props."
+            },
+            {
+              "id": "slots",
+              "text": "Slots let callers pass content into named places."
+            },
+            {
+              "id": "server",
+              "text": "They render on the server, unlike Vue components."
+            }
+          ],
+          "notEnough": [
+            "Only saying components are reusable."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

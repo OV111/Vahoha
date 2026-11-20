@@ -1,0 +1,241 @@
+{
+  "path": "fullstack",
+  "layer": "frontend-dev-4",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Language Core",
+      "question": "You have a list of products and a button handler that updates a cart, and the UI does not refresh after you add an item. Explain how closures and immutable updates relate to this.",
+      "followUps": {
+        "Scope and closures": "A click handler keeps using an old value of a variable. How can a closure cause that?",
+        "Immutable updates": "You push an item into the cart array and the UI does not update. Why, and how should you update it instead?"
+      },
+      "criteria": {
+        "Scope and closures": {
+          "id": "closures",
+          "evidence": [
+            {
+              "id": "remember",
+              "text": "A closure is a function that keeps access to the variables from where it was created."
+            },
+            {
+              "id": "captured",
+              "text": "If those variables change later, a function created earlier may still see the values from its own creation."
+            },
+            {
+              "id": "everywhere",
+              "text": "Event handlers, callbacks and React hooks all rely on closures."
+            }
+          ],
+          "notEnough": [
+            "Only defining a closure as a function inside a function."
+          ],
+          "misconceptions": [
+            {
+              "id": "copies-global",
+              "text": "Says a closure copies global variables only."
+            }
+          ]
+        },
+        "Immutable updates": {
+          "id": "immutable-updates",
+          "evidence": [
+            {
+              "id": "reference-check",
+              "text": "Frameworks detect changes by checking whether the reference to an object or array changed."
+            },
+            {
+              "id": "mutation-hidden",
+              "text": "Mutating an array in place keeps the same reference, so the change can go unnoticed."
+            },
+            {
+              "id": "copy",
+              "text": "Creating a new array or object with spread or methods like map gives a new reference that triggers an update."
+            }
+          ],
+          "notEnough": [
+            "Only saying you should not mutate state without explaining why."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Arrays and Data",
+      "question": "An API returns a list of orders as JSON and you need to show only paid orders with their totals. Explain how you would turn that data into what the UI needs.",
+      "followUps": {
+        "map, filter and reduce": "When would you use reduce instead of map or filter?",
+        "JSON and structured data": "What can go wrong when you parse JSON from an API, and how would you guard against it?"
+      },
+      "criteria": {
+        "map, filter and reduce": {
+          "id": "map-filter-reduce",
+          "evidence": [
+            {
+              "id": "map",
+              "text": "map turns each item into a new item and returns a new array of the same length."
+            },
+            {
+              "id": "filter",
+              "text": "filter keeps only the items that pass a test."
+            },
+            {
+              "id": "reduce",
+              "text": "reduce combines all items into a single value, such as a total."
+            }
+          ],
+          "notEnough": [
+            "Only naming the three methods without saying what each returns."
+          ],
+          "misconceptions": [
+            {
+              "id": "map-mutates",
+              "text": "Says map changes the original array."
+            }
+          ]
+        },
+        "JSON and structured data": {
+          "id": "json-data",
+          "evidence": [
+            {
+              "id": "text-to-object",
+              "text": "JSON arrives as text and must be parsed into objects before use."
+            },
+            {
+              "id": "parse-error",
+              "text": "Parsing can fail if the text is not valid JSON, so it needs error handling."
+            },
+            {
+              "id": "shape",
+              "text": "The data may not have the shape you expect, so you check or reshape it before rendering."
+            }
+          ],
+          "notEnough": [
+            "Only saying you call JSON.parse."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Asynchronous JavaScript",
+      "question": "Your page freezes for two seconds when you sort a big list, and an API call sometimes finishes after the user has left the page. Explain how JavaScript runs code over time.",
+      "followUps": {
+        "The event loop": "Why does a long loop freeze the whole page, including clicks and scrolling?",
+        "Promises and async/await": "How does async/await change the way you write code that waits for an API?"
+      },
+      "criteria": {
+        "The event loop": {
+          "id": "event-loop",
+          "evidence": [
+            {
+              "id": "single-thread",
+              "text": "JavaScript runs one piece of code at a time on the main thread."
+            },
+            {
+              "id": "queue",
+              "text": "The event loop picks the next task or callback only after the current code finishes."
+            },
+            {
+              "id": "blocking",
+              "text": "A long loop blocks everything else, including rendering and user input, until it ends."
+            }
+          ],
+          "notEnough": [
+            "Only saying JavaScript is single-threaded without explaining what the event loop does."
+          ],
+          "misconceptions": [
+            {
+              "id": "settimeout-parallel",
+              "text": "Says setTimeout runs code in parallel on another thread."
+            }
+          ]
+        },
+        "Promises and async/await": {
+          "id": "promises-async",
+          "evidence": [
+            {
+              "id": "later-value",
+              "text": "A promise represents a value that will be available later, or an error."
+            },
+            {
+              "id": "await",
+              "text": "await pauses that function until the promise settles, without blocking the rest of the page."
+            },
+            {
+              "id": "try-catch",
+              "text": "Errors from awaited promises are handled with try and catch."
+            }
+          ],
+          "notEnough": [
+            "Only saying async/await is a nicer syntax without explaining what it waits for."
+          ],
+          "misconceptions": [
+            {
+              "id": "await-blocks",
+              "text": "Says await blocks the whole browser until the promise finishes."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Network and Modules",
+      "question": "Your search box calls an API on every keystroke, and some failed requests are silently treated as success. Explain how you would fetch data properly and how modules help you organize this code.",
+      "followUps": {
+        "fetch, errors and AbortController": "fetch returned without throwing, but the server answered 500. Why, and what should your code do?",
+        "ES modules": "How can dynamic import make the first page load faster?"
+      },
+      "criteria": {
+        "fetch, errors and AbortController": {
+          "id": "fetch-abort",
+          "evidence": [
+            {
+              "id": "ok-check",
+              "text": "fetch only rejects on network failure, so an HTTP error like 404 or 500 still resolves."
+            },
+            {
+              "id": "check-ok",
+              "text": "You must check response.ok or the status yourself and treat errors as failures."
+            },
+            {
+              "id": "abort",
+              "text": "AbortController cancels requests that are no longer needed, such as an older search."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would use try and catch."
+          ],
+          "misconceptions": [
+            {
+              "id": "fetch-rejects",
+              "text": "Says fetch throws an error whenever the server returns an error status."
+            }
+          ]
+        },
+        "ES modules": {
+          "id": "es-modules",
+          "evidence": [
+            {
+              "id": "own-scope",
+              "text": "Each module has its own scope, and you share code only through explicit imports and exports."
+            },
+            {
+              "id": "dynamic",
+              "text": "Dynamic import loads a module only when it is needed instead of upfront."
+            },
+            {
+              "id": "split",
+              "text": "That lets the first page load less code, which is the idea behind code splitting."
+            }
+          ],
+          "notEnough": [
+            "Only saying modules keep code organized."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

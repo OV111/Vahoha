@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "t3-5",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "How tRPC eliminates the client-server type boundary",
+      "question": "In your T3 app you rename a field on the server and the client code immediately shows a type error, without any generated client or schema file. Explain how tRPC makes this happen and how it treats input from the client.",
+      "followUps": {
+        "tRPC's type inference: how server types flow to the client": "How do server types reach the client in tRPC without a code generation step?",
+        "Zod input schemas in tRPC procedures: parsing untrusted input": "Types already describe the input, so why does a procedure also need a Zod schema?"
+      },
+      "criteria": {
+        "tRPC's type inference: how server types flow to the client": {
+          "id": "trpc-inference",
+          "evidence": [
+            {
+              "id": "router-type",
+              "text": "The server exports the type of its router."
+            },
+            {
+              "id": "type-only",
+              "text": "The client imports it as a type only, so no server code is shipped to the browser."
+            },
+            {
+              "id": "infer",
+              "text": "TypeScript infers each procedure's input and output types from that router type."
+            }
+          ],
+          "notEnough": [
+            "Only saying tRPC is end-to-end typesafe."
+          ],
+          "misconceptions": [
+            {
+              "id": "runtime-share",
+              "text": "Says tRPC sends the server's types to the browser at runtime."
+            }
+          ]
+        },
+        "Zod input schemas in tRPC procedures: parsing untrusted input": {
+          "id": "zod-input",
+          "evidence": [
+            {
+              "id": "untrusted",
+              "text": "Data arriving at the server can come from anyone, so it cannot be trusted just because of types."
+            },
+            {
+              "id": "parse",
+              "text": "The input schema validates the data before the procedure runs."
+            },
+            {
+              "id": "bad-request",
+              "text": "Invalid input is rejected with a bad request error that the client can show."
+            }
+          ],
+          "notEnough": [
+            "Only saying Zod validates input."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "tRPC middleware and context for auth and request data",
+      "question": "Many procedures need the current user and the database, and some must only be used by signed-in users. Explain how context and middleware handle this in tRPC.",
+      "followUps": {
+        "Context: passing the session and database client to procedures": "What goes into tRPC context and why is it created per request?",
+        "Protected procedures with tRPC middleware": "How does a protectedProcedure make sure no one forgets an auth check?"
+      },
+      "criteria": {
+        "Context: passing the session and database client to procedures": {
+          "id": "trpc-context",
+          "evidence": [
+            {
+              "id": "per-request",
+              "text": "Context is built for each request."
+            },
+            {
+              "id": "contents",
+              "text": "It typically holds the session and the database client."
+            },
+            {
+              "id": "available",
+              "text": "Every procedure receives it, so none needs to import or rebuild these itself."
+            }
+          ],
+          "notEnough": [
+            "Only saying context is shared data."
+          ],
+          "misconceptions": []
+        },
+        "Protected procedures with tRPC middleware": {
+          "id": "protected-procedure",
+          "evidence": [
+            {
+              "id": "middleware",
+              "text": "A middleware checks the session before the procedure runs."
+            },
+            {
+              "id": "unauthorized",
+              "text": "If there is no session it throws an unauthorized error."
+            },
+            {
+              "id": "compose",
+              "text": "Building procedures from protectedProcedure applies the check automatically every time."
+            }
+          ],
+          "notEnough": [
+            "Only saying it checks if the user is logged in."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Defining tRPC routers and procedures",
+      "question": "Your tRPC router has grown to fifty procedures in one file covering posts, users and comments. Explain how you would organize it and choose between queries and mutations.",
+      "followUps": {
+        "Queries versus mutations: when to use each in tRPC": "What is the difference between a query and a mutation, and why does it matter on the client?",
+        "Merging routers: splitting tRPC into feature-based sub-routers": "How would you split the router by feature and how does the client call a nested procedure?"
+      },
+      "criteria": {
+        "Queries versus mutations: when to use each in tRPC": {
+          "id": "query-vs-mutation",
+          "evidence": [
+            {
+              "id": "read-write",
+              "text": "Queries read data and mutations change it."
+            },
+            {
+              "id": "cache",
+              "text": "Queries are cached and can be refetched automatically by TanStack Query."
+            },
+            {
+              "id": "mutation-manual",
+              "text": "Mutations run only when called and are not cached."
+            }
+          ],
+          "notEnough": [
+            "Only saying queries get and mutations post."
+          ],
+          "misconceptions": []
+        },
+        "Merging routers: splitting tRPC into feature-based sub-routers": {
+          "id": "merge-routers",
+          "evidence": [
+            {
+              "id": "sub-routers",
+              "text": "Each feature gets its own router, such as posts, users and comments."
+            },
+            {
+              "id": "merge",
+              "text": "They are combined into one root router."
+            },
+            {
+              "id": "path",
+              "text": "The client calls them through matching nested names, like posts.list."
+            }
+          ],
+          "notEnough": [
+            "Only saying you split the file."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Using tRPC on the client with TanStack Query",
+      "question": "On the client you show a list of posts and a form that creates a post, and after creating one the list does not update. Explain how the tRPC client hooks work and how you would fix the list.",
+      "followUps": {
+        "useQuery and useMutation hooks generated by the tRPC client": "What do the tRPC useQuery and useMutation hooks give you?",
+        "Cache invalidation after mutations with utils.invalidate()": "After creating a post, how do you make the post list refresh?"
+      },
+      "criteria": {
+        "useQuery and useMutation hooks generated by the tRPC client": {
+          "id": "trpc-hooks",
+          "evidence": [
+            {
+              "id": "wrappers",
+              "text": "They are typed wrappers around TanStack Query's hooks."
+            },
+            {
+              "id": "query-state",
+              "text": "useQuery returns the data plus loading and error state."
+            },
+            {
+              "id": "mutation",
+              "text": "useMutation returns a function to trigger the change and its pending state."
+            }
+          ],
+          "notEnough": [
+            "Only saying they fetch data."
+          ],
+          "misconceptions": []
+        },
+        "Cache invalidation after mutations with utils.invalidate()": {
+          "id": "invalidate-after-mutation",
+          "evidence": [
+            {
+              "id": "invalidate",
+              "text": "In the mutation's success callback, invalidate the list query."
+            },
+            {
+              "id": "stale",
+              "text": "That marks the cached list as stale."
+            },
+            {
+              "id": "refetch",
+              "text": "The list is refetched in the background, so it shows the new post without a page reload."
+            }
+          ],
+          "notEnough": [
+            "Only saying you refetch."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

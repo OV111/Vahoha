@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "nuxt-dev-1",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "JavaScript Core Mechanics",
+      "question": "A teammate is confused that a Promise callback runs before a timer, and every click handler in a loop logs the same value. Explain how JavaScript runs async code and keeps variables.",
+      "followUps": {
+        "Event Loop and Async Model": "Why does a Promise callback run before a setTimeout of zero?",
+        "Closures and Scope Chain": "Why might every handler created in a loop log the same value?"
+      },
+      "criteria": {
+        "Event Loop and Async Model": {
+          "id": "event-loop",
+          "evidence": [
+            {
+              "id": "single",
+              "text": "JavaScript runs one piece of code at a time on the call stack."
+            },
+            {
+              "id": "microtasks",
+              "text": "After the current code, all microtasks such as Promise callbacks run."
+            },
+            {
+              "id": "macrotasks",
+              "text": "Only then does the next task, like a timer callback, run."
+            }
+          ],
+          "notEnough": [
+            "Only saying JavaScript is single-threaded."
+          ],
+          "misconceptions": [
+            {
+              "id": "timer-first",
+              "text": "Says setTimeout with zero delay runs before any Promise callback."
+            }
+          ]
+        },
+        "Closures and Scope Chain": {
+          "id": "closures",
+          "evidence": [
+            {
+              "id": "retain",
+              "text": "A closure keeps access to the variables of the scope where it was created."
+            },
+            {
+              "id": "shared",
+              "text": "With var, every handler shares one variable, so they all see its final value."
+            },
+            {
+              "id": "let",
+              "text": "let creates a new binding for each loop iteration, which fixes it."
+            }
+          ],
+          "notEnough": [
+            "Only defining closures."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "TypeScript Type System",
+      "question": "You are typing API data in a Nuxt app: an object from the server that must match an interface, and a helper that works with any entity that has an id. Explain the TypeScript behind this.",
+      "followUps": {
+        "Structural Typing vs Nominal Typing": "Why does an object satisfy an interface it was never declared with?",
+        "Generic Constraints and Inference": "How do generic constraints keep a helper flexible but safe?"
+      },
+      "criteria": {
+        "Structural Typing vs Nominal Typing": {
+          "id": "structural-typing",
+          "evidence": [
+            {
+              "id": "shape",
+              "text": "TypeScript checks the shape of a value, not its declared name."
+            },
+            {
+              "id": "compatible",
+              "text": "Any object with the required properties is accepted."
+            },
+            {
+              "id": "contrast",
+              "text": "Nominal typing, used in some languages, would require an explicit declaration."
+            }
+          ],
+          "notEnough": [
+            "Only saying TypeScript is structural."
+          ],
+          "misconceptions": []
+        },
+        "Generic Constraints and Inference": {
+          "id": "generic-constraints",
+          "evidence": [
+            {
+              "id": "generic",
+              "text": "A generic lets a function work with many types while keeping them linked."
+            },
+            {
+              "id": "extends",
+              "text": "extends restricts the type, for example to types with an id."
+            },
+            {
+              "id": "inference",
+              "text": "TypeScript usually infers the type from the arguments, so callers rarely write it."
+            }
+          ],
+          "notEnough": [
+            "Only saying generics are reusable."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Node.js Runtime Essentials",
+      "question": "A Nuxt server route reads a large file into memory and crashes, and an old package fails to import. Explain Node's module systems and streams.",
+      "followUps": {
+        "Module System: ESM vs CommonJS": "How do ES modules and CommonJS differ, and why does mixing them cause errors?",
+        "Streams and Buffer Handling": "Why use streams for large files?"
+      },
+      "criteria": {
+        "Module System: ESM vs CommonJS": {
+          "id": "esm-vs-cjs",
+          "evidence": [
+            {
+              "id": "syntax",
+              "text": "CommonJS uses require and module.exports; ES modules use import and export."
+            },
+            {
+              "id": "loading",
+              "text": "ES modules are analysed before running, while require runs at runtime."
+            },
+            {
+              "id": "interop",
+              "text": "They are not fully interchangeable, so mixing them needs care."
+            }
+          ],
+          "notEnough": [
+            "Only saying ESM is newer."
+          ],
+          "misconceptions": []
+        },
+        "Streams and Buffer Handling": {
+          "id": "streams",
+          "evidence": [
+            {
+              "id": "chunks",
+              "text": "Streams process data piece by piece."
+            },
+            {
+              "id": "memory",
+              "text": "They avoid loading the whole file into memory."
+            },
+            {
+              "id": "uses",
+              "text": "They suit uploads, downloads and large data processing."
+            }
+          ],
+          "notEnough": [
+            "Only saying streams are efficient."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Async Patterns in Practice",
+      "question": "Your Nuxt server code sometimes fails silently and some errors never reach your logs. Explain how errors flow through async code.",
+      "followUps": {
+        "Promise Chaining vs async/await": "What goes wrong when you forget to await a Promise?",
+        "Error Propagation in Async Code": "Why do unawaited Promises hide errors, and how does Promise.all behave on failure?"
+      },
+      "criteria": {
+        "Promise Chaining vs async/await": {
+          "id": "async-await",
+          "evidence": [
+            {
+              "id": "sugar",
+              "text": "async/await is a cleaner way to work with Promises."
+            },
+            {
+              "id": "missing-await",
+              "text": "Without await, the code continues before the work finishes."
+            },
+            {
+              "id": "try-catch",
+              "text": "Errors from awaited calls are caught with try and catch."
+            }
+          ],
+          "notEnough": [
+            "Only saying await waits."
+          ],
+          "misconceptions": []
+        },
+        "Error Propagation in Async Code": {
+          "id": "error-propagation",
+          "evidence": [
+            {
+              "id": "await-needed",
+              "text": "Errors only reach your try and catch when the Promise is awaited."
+            },
+            {
+              "id": "swallowed",
+              "text": "Unawaited Promises can fail without anyone noticing."
+            },
+            {
+              "id": "all",
+              "text": "Promise.all rejects as soon as one fails, while allSettled waits for all and reports each result."
+            }
+          ],
+          "notEnough": [
+            "Only saying you handle errors."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

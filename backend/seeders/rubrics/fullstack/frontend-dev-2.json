@@ -1,0 +1,241 @@
+{
+  "path": "fullstack",
+  "layer": "frontend-dev-2",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "The Cascade",
+      "question": "You added a style for buttons but some buttons ignore it, and someone 'fixed' it with !important everywhere. Explain how the browser decides which CSS rule wins and how you would clean this up.",
+      "followUps": {
+        "Specificity and source order": "Two rules set the same button's color. How does the browser choose between them?",
+        "Inheritance and cascade layers": "How do cascade layers help when a third-party library's CSS keeps overriding your own?"
+      },
+      "criteria": {
+        "Specificity and source order": {
+          "id": "specificity-order",
+          "evidence": [
+            {
+              "id": "specificity-first",
+              "text": "When rules conflict, the more specific selector wins, for example an id beats a class and a class beats an element."
+            },
+            {
+              "id": "order-second",
+              "text": "If specificity is equal, the rule that comes later in the CSS wins."
+            },
+            {
+              "id": "keep-flat",
+              "text": "Keeping selectors simple and low in specificity avoids override fights and the need for !important."
+            }
+          ],
+          "notEnough": [
+            "Only saying ids are stronger than classes without explaining the order of the checks."
+          ],
+          "misconceptions": [
+            {
+              "id": "last-always-wins",
+              "text": "Says the last rule in the file always wins regardless of the selector."
+            }
+          ]
+        },
+        "Inheritance and cascade layers": {
+          "id": "inheritance-layers",
+          "evidence": [
+            {
+              "id": "inherit",
+              "text": "Some properties like color and font are inherited by children, while others like border and margin are not."
+            },
+            {
+              "id": "layers-order",
+              "text": "Cascade layers let you put whole groups of styles, such as resets, libraries and components, in a chosen priority order."
+            },
+            {
+              "id": "no-specificity-war",
+              "text": "A later layer wins over an earlier one without needing more specific selectors."
+            }
+          ],
+          "notEnough": [
+            "Only naming @layer without explaining what problem it solves."
+          ],
+          "misconceptions": [
+            {
+              "id": "all-inherit",
+              "text": "Says every CSS property is inherited by child elements."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "The Box Model",
+      "question": "A card is wider than you set it, and the space between two paragraphs is smaller than the margins you gave them. Explain the box model and what is going on.",
+      "followUps": {
+        "Content, padding, border and margin": "You set a box to 300px wide with padding, and it ends up wider. Why, and how do you fix it?",
+        "Margin collapse": "Two paragraphs have 20px and 30px margins, but the gap between them is 30px. Why?"
+      },
+      "criteria": {
+        "Content, padding, border and margin": {
+          "id": "box-model",
+          "evidence": [
+            {
+              "id": "four-layers",
+              "text": "Every element is a box made of content, padding, border and margin."
+            },
+            {
+              "id": "content-box",
+              "text": "By default, width applies only to the content, so padding and border are added on top."
+            },
+            {
+              "id": "border-box",
+              "text": "box-sizing border-box makes the width include padding and border, so the box stays the size you set."
+            }
+          ],
+          "notEnough": [
+            "Only listing content, padding, border and margin without explaining how width is calculated."
+          ],
+          "misconceptions": []
+        },
+        "Margin collapse": {
+          "id": "margin-collapse",
+          "evidence": [
+            {
+              "id": "merge",
+              "text": "Vertical margins between block elements can merge into one instead of adding up."
+            },
+            {
+              "id": "larger-wins",
+              "text": "When they collapse, the gap equals the larger of the two margins."
+            },
+            {
+              "id": "avoid",
+              "text": "Margins do not collapse inside flex or grid layouts, and using gap or padding avoids the surprise."
+            }
+          ],
+          "notEnough": [
+            "Only saying margins collapse without saying when or what size the result is."
+          ],
+          "misconceptions": [
+            {
+              "id": "horizontal",
+              "text": "Says left and right margins collapse too."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Typography and Units",
+      "question": "A user with poor eyesight sets their browser to a larger default font, but your site's text stays the same size, and the headings look either huge on phones or tiny on desktops. Explain how you would size and style text so it works for everyone.",
+      "followUps": {
+        "rem, em and fluid sizing": "Why use rem instead of px for font sizes?",
+        "Web fonts and readability": "Your custom font makes the text invisible for a second on slow connections. Why, and what would you change?"
+      },
+      "criteria": {
+        "rem, em and fluid sizing": {
+          "id": "rem-fluid",
+          "evidence": [
+            {
+              "id": "user-setting",
+              "text": "rem is relative to the root font size, so text grows when the user increases their browser font size."
+            },
+            {
+              "id": "px-fixed",
+              "text": "Pixel sizes ignore that preference, which hurts people who need larger text."
+            },
+            {
+              "id": "clamp",
+              "text": "clamp lets a size grow smoothly between a minimum and a maximum based on screen width, without breakpoints."
+            }
+          ],
+          "notEnough": [
+            "Only saying rem is responsive without saying what it is relative to."
+          ],
+          "misconceptions": [
+            {
+              "id": "rem-parent",
+              "text": "Says rem is relative to the parent element's font size."
+            }
+          ]
+        },
+        "Web fonts and readability": {
+          "id": "fonts-readability",
+          "evidence": [
+            {
+              "id": "invisible-text",
+              "text": "While a web font downloads, browsers may hide text, and font-display controls whether a fallback font is shown instead."
+            },
+            {
+              "id": "line-length",
+              "text": "Long lines are hard to read, so text should be kept to a comfortable line length."
+            },
+            {
+              "id": "line-height",
+              "text": "Enough space between lines makes paragraphs easier to read."
+            }
+          ],
+          "notEnough": [
+            "Only saying to use a good font without explaining loading or readability."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Variables and Color",
+      "question": "Your team wants a dark mode and a consistent brand color across the whole app. Explain how you would use CSS variables and color to do it, and keep text readable.",
+      "followUps": {
+        "Custom properties": "How can changing one CSS variable restyle a whole section of the page?",
+        "Color and contrast": "Why might light grey text on white pass a design review but fail real users?"
+      },
+      "criteria": {
+        "Custom properties": {
+          "id": "custom-properties",
+          "evidence": [
+            {
+              "id": "cascade",
+              "text": "Custom properties cascade and inherit like normal properties, so a value set on a parent applies to everything inside it."
+            },
+            {
+              "id": "live",
+              "text": "They are live values, so changing a variable, for example on a dark-mode class, immediately updates every place that uses it."
+            },
+            {
+              "id": "tokens",
+              "text": "Defining colors and spacing once as variables gives one place to change the design."
+            }
+          ],
+          "notEnough": [
+            "Only saying variables avoid repeating values without explaining that they cascade."
+          ],
+          "misconceptions": [
+            {
+              "id": "like-sass",
+              "text": "Says CSS variables are replaced with fixed values at build time like Sass variables."
+            }
+          ]
+        },
+        "Color and contrast": {
+          "id": "color-contrast",
+          "evidence": [
+            {
+              "id": "contrast-ratio",
+              "text": "Text needs enough contrast against its background to be readable, especially for people with low vision."
+            },
+            {
+              "id": "measure",
+              "text": "Contrast can be measured with tools against accessibility guidelines instead of judged by eye."
+            },
+            {
+              "id": "predictable",
+              "text": "Color spaces like oklch make it easier to build palettes where lighter and darker shades behave predictably."
+            }
+          ],
+          "notEnough": [
+            "Only saying colors should look good without mentioning contrast for readability."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

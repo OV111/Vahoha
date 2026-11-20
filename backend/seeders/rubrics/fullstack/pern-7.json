@@ -1,0 +1,211 @@
+{
+  "path": "fullstack",
+  "layer": "pern-7",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "PostgreSQL internals: indexes and the query planner",
+      "question": "Your posts query that filters by author and sorts by date has become slow as the table grew to millions of rows. Explain how you'd find out why, and how an index would change the way PostgreSQL runs it.",
+      "followUps": {
+        "How B-tree indexes speed up equality and range queries": "How does a B-tree index find rows faster than scanning the table, and what does it cost you?",
+        "EXPLAIN ANALYZE: reading cost estimates and actual timings": "What's the difference between EXPLAIN and EXPLAIN ANALYZE, and what in the output tells you an index is missing?"
+      },
+      "criteria": {
+        "How B-tree indexes speed up equality and range queries": {
+          "id": "btree-index",
+          "evidence": [
+            {
+              "id": "sorted-tree",
+              "text": "A B-tree index keeps column values in a sorted tree, so equality and range lookups take a few steps instead of reading every row."
+            },
+            {
+              "id": "cost",
+              "text": "Indexes take space and slow down inserts and updates, because every index has to be updated too."
+            }
+          ],
+          "notEnough": [
+            "Only saying indexes make queries faster without explaining how."
+          ],
+          "misconceptions": [
+            {
+              "id": "index-everything",
+              "text": "Says adding an index on every column has no downside."
+            }
+          ]
+        },
+        "EXPLAIN ANALYZE: reading cost estimates and actual timings": {
+          "id": "explain-analyze",
+          "evidence": [
+            {
+              "id": "plan",
+              "text": "EXPLAIN shows the plan the planner chose, with estimated costs, without running the query."
+            },
+            {
+              "id": "analyze",
+              "text": "EXPLAIN ANALYZE runs the query and shows the actual row counts and times next to the estimates."
+            },
+            {
+              "id": "seq-scan",
+              "text": "A sequential scan over a large table for a selective filter is a sign that an index is missing."
+            }
+          ],
+          "notEnough": [
+            "Only saying use EXPLAIN without saying what you look for."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "ACID transactions and isolation levels",
+      "question": "When a user places an order, you insert the order and its items and reduce the stock, and each product also has flexible attributes like size or color that differ by category. Explain how you'd keep the order data consistent if something fails halfway, and how you'd store those attributes.",
+      "followUps": {
+        "ACID properties: why atomicity and isolation matter for data integrity": "If the stock update fails after the order row is inserted, what happens inside a transaction, and what does isolation protect you from?",
+        "JSONB columns for flexible semi-structured data": "Why use a JSONB column for product attributes instead of a column for each one, and when would that be a bad idea?"
+      },
+      "criteria": {
+        "ACID properties: why atomicity and isolation matter for data integrity": {
+          "id": "acid-transactions",
+          "evidence": [
+            {
+              "id": "atomic",
+              "text": "Inside a transaction all statements succeed together or are all rolled back, so no half-finished order is left behind."
+            },
+            {
+              "id": "isolation",
+              "text": "Isolation controls what concurrent transactions see of each other's unfinished changes, preventing problems like two orders taking the same stock."
+            }
+          ],
+          "notEnough": [
+            "Only spelling out what A, C, I and D stand for without explaining them."
+          ],
+          "misconceptions": [
+            {
+              "id": "autocommit-safe",
+              "text": "Says separate queries without a transaction are rolled back automatically when a later one fails."
+            }
+          ]
+        },
+        "JSONB columns for flexible semi-structured data": {
+          "id": "jsonb",
+          "evidence": [
+            {
+              "id": "flexible",
+              "text": "JSONB stores structured JSON in one column, so each row can have different attributes without schema changes."
+            },
+            {
+              "id": "queryable",
+              "text": "It is stored in a binary form that can be queried and indexed, for example with a GIN index."
+            },
+            {
+              "id": "limits",
+              "text": "Data you filter, join or constrain on all the time is better as regular columns."
+            }
+          ],
+          "notEnough": [
+            "Only saying JSONB stores JSON without explaining when to use it."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "PostgreSQL administration with psql",
+      "question": "Your app connects to PostgreSQL as the superuser, and several endpoints repeat the same long join between posts, users and tags. Explain how you'd set up a safer database user for the app, and how you'd stop repeating that query logic.",
+      "followUps": {
+        "Creating roles, databases, and granting privileges": "Why should the app's database role have only the privileges it needs, and what could go wrong otherwise?",
+        "Views and CTEs for reusable query logic": "What's the difference between a view and a CTE, and when would you use each?"
+      },
+      "criteria": {
+        "Creating roles, databases, and granting privileges": {
+          "id": "roles-privileges",
+          "evidence": [
+            {
+              "id": "role",
+              "text": "You create a separate login role for the app and grant it only the privileges it needs on specific databases, schemas and tables."
+            },
+            {
+              "id": "least-privilege",
+              "text": "If the app is compromised, the attacker is limited to those privileges instead of controlling the whole database."
+            }
+          ],
+          "notEnough": [
+            "Only saying create a user without explaining least privilege."
+          ],
+          "misconceptions": []
+        },
+        "Views and CTEs for reusable query logic": {
+          "id": "views-ctes",
+          "evidence": [
+            {
+              "id": "view",
+              "text": "A view stores a named query in the database that can be selected from like a table and reused across queries."
+            },
+            {
+              "id": "cte",
+              "text": "A CTE, written with WITH, names a subquery for one statement only and makes that query easier to read."
+            }
+          ],
+          "notEnough": [
+            "Only saying both simplify queries without saying how they differ."
+          ],
+          "misconceptions": [
+            {
+              "id": "view-copies",
+              "text": "Says a regular view stores its own copy of the data."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Window functions and query tuning",
+      "question": "You need each user's most recent post and the time gap between their consecutive posts, and the posts query filters by user_id and status. Explain how you'd write those queries and which index you'd add.",
+      "followUps": {
+        "Window functions: ROW_NUMBER, RANK, and LAG over partitions": "How is ROW_NUMBER() OVER (PARTITION BY ...) different from GROUP BY?",
+        "Index selection: composite versus partial indexes": "With an index on (user_id, status), which filters can use it, and when would a partial index be better?"
+      },
+      "criteria": {
+        "Window functions: ROW_NUMBER, RANK, and LAG over partitions": {
+          "id": "window-functions",
+          "evidence": [
+            {
+              "id": "keep-rows",
+              "text": "A window function computes a value over related rows while keeping every row, unlike GROUP BY, which collapses them."
+            },
+            {
+              "id": "partition",
+              "text": "PARTITION BY splits the rows into groups and ORDER BY orders them inside each group, so ROW_NUMBER can pick each user's latest post."
+            },
+            {
+              "id": "lag",
+              "text": "LAG reads a value from the previous row in that order, such as the previous post's date."
+            }
+          ],
+          "notEnough": [
+            "Only naming ROW_NUMBER, RANK or LAG without explaining what they compute."
+          ],
+          "misconceptions": []
+        },
+        "Index selection: composite versus partial indexes": {
+          "id": "index-selection",
+          "evidence": [
+            {
+              "id": "leftmost",
+              "text": "A composite index on (a, b) helps queries that filter on a, or on a and b, but not on b alone."
+            },
+            {
+              "id": "partial",
+              "text": "A partial index covers only rows that match a condition, like status = 'published', so it is smaller and faster for queries with that condition."
+            }
+          ],
+          "notEnough": [
+            "Only saying add an index without explaining which queries it serves."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

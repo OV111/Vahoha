@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "sveltekit-dev-9",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Server Endpoints",
+      "question": "A mobile app needs a JSON API from your SvelteKit project. Explain how you would build endpoints that return consistent responses.",
+      "followUps": {
+        "API routes with plus server.ts files": "How do +server.ts files create API endpoints?",
+        "json and error helpers for API responses": "What do the json() and error() helpers do?"
+      },
+      "criteria": {
+        "API routes with plus server.ts files": {
+          "id": "server-endpoints",
+          "evidence": [
+            {
+              "id": "methods",
+              "text": "+server.ts exports functions named after HTTP methods."
+            },
+            {
+              "id": "response",
+              "text": "Each returns a Response object."
+            },
+            {
+              "id": "alongside",
+              "text": "They live alongside page routes in the same app."
+            }
+          ],
+          "notEnough": [
+            "Only saying they make APIs."
+          ],
+          "misconceptions": []
+        },
+        "json and error helpers for API responses": {
+          "id": "json-error",
+          "evidence": [
+            {
+              "id": "json",
+              "text": "json() serialises data and sets the right content type."
+            },
+            {
+              "id": "error",
+              "text": "error() produces an error response with a status code."
+            },
+            {
+              "id": "consistent",
+              "text": "Using them gives consistent responses across endpoints."
+            }
+          ],
+          "notEnough": [
+            "Only listing the helpers."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Rendering Strategies",
+      "question": "Your marketing pages could be static, a dashboard does not need server rendering, and you must deploy to a Node server. Explain the rendering options and adapters.",
+      "followUps": {
+        "SSR, CSR, and prerendering page options": "How do ssr and prerender options change how a page is built?",
+        "SvelteKit adapters for deployment targets": "What does an adapter do?"
+      },
+      "criteria": {
+        "SSR, CSR, and prerendering page options": {
+          "id": "page-options",
+          "evidence": [
+            {
+              "id": "ssr-off",
+              "text": "ssr = false renders the page only in the browser."
+            },
+            {
+              "id": "prerender",
+              "text": "prerender = true builds the page as static HTML at build time."
+            },
+            {
+              "id": "choice",
+              "text": "Static pages are fastest and good for SEO; browser-only pages lose server-rendered content."
+            }
+          ],
+          "notEnough": [
+            "Only listing the options."
+          ],
+          "misconceptions": []
+        },
+        "SvelteKit adapters for deployment targets": {
+          "id": "adapters",
+          "evidence": [
+            {
+              "id": "transform",
+              "text": "An adapter turns the build into the format a platform needs."
+            },
+            {
+              "id": "node",
+              "text": "adapter-node produces a Node.js server."
+            },
+            {
+              "id": "static",
+              "text": "adapter-static outputs a fully static site."
+            }
+          ],
+          "notEnough": [
+            "Only saying adapters deploy apps."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Environment and Config",
+      "question": "A developer imported a secret API key into a component, and builds behave differently on different hosts. Explain environment variables and SvelteKit configuration.",
+      "followUps": {
+        "Public vs private environment variables in SvelteKit": "How do private and public environment variables differ in SvelteKit?",
+        "svelte.config.js and kit configuration options": "What does svelte.config.js control?"
+      },
+      "criteria": {
+        "Public vs private environment variables in SvelteKit": {
+          "id": "env-public-private",
+          "evidence": [
+            {
+              "id": "private",
+              "text": "$env/static/private is for server-only values."
+            },
+            {
+              "id": "public",
+              "text": "Public values need the PUBLIC_ prefix and can be used in the browser."
+            },
+            {
+              "id": "leak",
+              "text": "Importing private values into client code would leak them, and SvelteKit blocks it."
+            }
+          ],
+          "notEnough": [
+            "Only saying there are two kinds."
+          ],
+          "misconceptions": []
+        },
+        "svelte.config.js and kit configuration options": {
+          "id": "svelte-config",
+          "evidence": [
+            {
+              "id": "adapter",
+              "text": "It sets the adapter for the target platform."
+            },
+            {
+              "id": "aliases",
+              "text": "It defines path aliases."
+            },
+            {
+              "id": "kit",
+              "text": "It holds SvelteKit options that affect how the app builds."
+            }
+          ],
+          "notEnough": [
+            "Only saying it configures Svelte."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Path Aliases and Module Resolution",
+      "question": "Your imports are full of ../../../ paths and someone accidentally imported database code into a component. Explain $lib and server-only modules.",
+      "followUps": {
+        "$lib path alias for shared utilities": "What does $lib give you?",
+        "Server-only modules with plus server restriction": "How does $lib/server stop secrets reaching the browser?"
+      },
+      "criteria": {
+        "$lib path alias for shared utilities": {
+          "id": "lib-alias",
+          "evidence": [
+            {
+              "id": "alias",
+              "text": "$lib points to src/lib."
+            },
+            {
+              "id": "short",
+              "text": "It replaces long relative imports."
+            },
+            {
+              "id": "shared",
+              "text": "It is the standard place for shared components and utilities."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is an alias."
+          ],
+          "misconceptions": []
+        },
+        "Server-only modules with plus server restriction": {
+          "id": "server-only-modules",
+          "evidence": [
+            {
+              "id": "restricted",
+              "text": "Modules in $lib/server can only be imported by server code."
+            },
+            {
+              "id": "build-error",
+              "text": "Importing them from client code fails the build."
+            },
+            {
+              "id": "protect",
+              "text": "This keeps database code and secrets out of the browser bundle."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is for server code."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

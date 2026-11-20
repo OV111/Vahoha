@@ -1,0 +1,223 @@
+{
+  "path": "fullstack",
+  "layer": "mern-4",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Context API internals and when it causes re-renders",
+      "question": "Your app keeps the user, theme and a complex shopping cart in one React Context, and typing in the search box makes the whole app re-render. Explain why that happens and how you'd restructure the state, including the cart's update logic.",
+      "followUps": {
+        "How Context propagates values and triggers consumer re-renders": "Why does a component that only reads the theme re-render when the cart changes, and how would you fix it?",
+        "useReducer for state with multiple related sub-values": "Why would useReducer suit the cart better than several useState calls?"
+      },
+      "criteria": {
+        "How Context propagates values and triggers consumer re-renders": {
+          "id": "context-rerenders",
+          "evidence": [
+            {
+              "id": "all-consumers",
+              "text": "Every component that uses a context re-renders when the context value changes, even if it only uses part of it."
+            },
+            {
+              "id": "new-object",
+              "text": "Passing a new object as the value on every render counts as a change too."
+            },
+            {
+              "id": "split",
+              "text": "Splitting contexts by what changes together, or memoizing the value, limits the re-renders to components that need them."
+            }
+          ],
+          "notEnough": [
+            "Only saying Context causes re-renders without explaining which components and why."
+          ],
+          "misconceptions": []
+        },
+        "useReducer for state with multiple related sub-values": {
+          "id": "use-reducer",
+          "evidence": [
+            {
+              "id": "reducer",
+              "text": "useReducer keeps related values in one state and computes the next state in a reducer function from the current state and an action."
+            },
+            {
+              "id": "central-logic",
+              "text": "All the update rules live in one place, which keeps fields consistent with each other."
+            },
+            {
+              "id": "testable",
+              "text": "The reducer is a pure function, so it can be tested without rendering anything."
+            }
+          ],
+          "notEnough": [
+            "Only saying useReducer is for complex state without explaining actions and the reducer."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "React Router v6 rendering model",
+      "question": "Your dashboard has a shared sidebar layout with several pages, and one page renders a big chart that recalculates on every keystroke elsewhere on the page. Explain how the pages render inside the layout and how you'd decide whether memoization fixes the slow chart.",
+      "followUps": {
+        "Nested routes and the Outlet component for shared layouts": "How does the dashboard layout know where to render the current child page?",
+        "useMemo and useCallback: when memoization helps and when it hurts": "When does useMemo or useCallback actually help, and when does it just add cost?"
+      },
+      "criteria": {
+        "Nested routes and the Outlet component for shared layouts": {
+          "id": "nested-routes-outlet",
+          "evidence": [
+            {
+              "id": "parent-layout",
+              "text": "A parent route renders the shared layout, and the child routes are defined inside it."
+            },
+            {
+              "id": "outlet",
+              "text": "The parent places an Outlet where the matched child route renders, so the layout stays and only the inner page changes."
+            }
+          ],
+          "notEnough": [
+            "Only saying use nested routes and Outlet without explaining what renders where."
+          ],
+          "misconceptions": []
+        },
+        "useMemo and useCallback: when memoization helps and when it hurts": {
+          "id": "memoization",
+          "evidence": [
+            {
+              "id": "what",
+              "text": "useMemo keeps a computed value and useCallback keeps a function between renders until their dependencies change."
+            },
+            {
+              "id": "when-helps",
+              "text": "They help for expensive calculations, or when a stable reference stops a memoized child or an effect from running again."
+            },
+            {
+              "id": "measure",
+              "text": "Elsewhere they add comparison work for no gain, so they're added after a profiler shows a real problem."
+            }
+          ],
+          "notEnough": [
+            "Only saying useMemo makes things faster without saying when."
+          ],
+          "misconceptions": [
+            {
+              "id": "always-memo",
+              "text": "Says every value and function should be wrapped in useMemo or useCallback."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Custom hooks for reusable stateful logic",
+      "question": "Three pages in your app repeat the same fetch-with-loading-and-error logic, and the first load downloads the code for every page, including the admin area. Explain how you'd remove the duplication and make the first load smaller.",
+      "followUps": {
+        "Extracting stateful logic into custom hooks": "What makes a function a custom hook, and does sharing a hook share the state between components?",
+        "Code splitting with React.lazy and Suspense": "How do React.lazy and Suspense change when the admin page's code is downloaded, and what does the user see meanwhile?"
+      },
+      "criteria": {
+        "Extracting stateful logic into custom hooks": {
+          "id": "custom-hooks",
+          "evidence": [
+            {
+              "id": "definition",
+              "text": "A custom hook is a function whose name starts with use and that calls other hooks, so stateful logic can be reused."
+            },
+            {
+              "id": "separate-state",
+              "text": "Each component that calls the hook gets its own state; the logic is shared, not the data."
+            }
+          ],
+          "notEnough": [
+            "Only saying put it in a custom hook without saying what a hook is or what it shares."
+          ],
+          "misconceptions": [
+            {
+              "id": "shared-state",
+              "text": "Says components that use the same custom hook share the same state."
+            }
+          ]
+        },
+        "Code splitting with React.lazy and Suspense": {
+          "id": "code-splitting",
+          "evidence": [
+            {
+              "id": "lazy",
+              "text": "React.lazy with a dynamic import puts the component in a separate chunk that downloads only when it is first rendered."
+            },
+            {
+              "id": "suspense",
+              "text": "Suspense shows a fallback, like a spinner, while that chunk loads."
+            },
+            {
+              "id": "smaller",
+              "text": "The first page load downloads less code, so the app becomes usable sooner."
+            }
+          ],
+          "notEnough": [
+            "Only saying use lazy loading without explaining when the code is downloaded."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "React Router navigation APIs",
+      "question": "Your app has a post page at /posts/:id with filters in the URL like ?sort=new, and a settings page only logged-in users may open. Explain how the page reads the id and filters, how you send users somewhere after an action, and how you keep logged-out users away from settings.",
+      "followUps": {
+        "useNavigate, useParams, and useSearchParams": "Why keep the sort filter in the URL with useSearchParams instead of in component state?",
+        "Protected routes using wrapper components and redirect": "How would a protected route wrapper decide what to render, and where does it get the auth state from?"
+      },
+      "criteria": {
+        "useNavigate, useParams, and useSearchParams": {
+          "id": "router-hooks",
+          "evidence": [
+            {
+              "id": "params",
+              "text": "useParams reads dynamic segments of the URL, like the id in /posts/:id."
+            },
+            {
+              "id": "search-params",
+              "text": "useSearchParams reads and updates the query string, so filters survive a reload and can be shared as a link."
+            },
+            {
+              "id": "navigate",
+              "text": "useNavigate sends the user to another route from code, for example after saving a form."
+            }
+          ],
+          "notEnough": [
+            "Only listing the hook names without saying what each one reads or does."
+          ],
+          "misconceptions": []
+        },
+        "Protected routes using wrapper components and redirect": {
+          "id": "protected-routes",
+          "evidence": [
+            {
+              "id": "check",
+              "text": "A wrapper component reads the auth state, for example from context, and renders the protected page only for logged-in users."
+            },
+            {
+              "id": "redirect",
+              "text": "Otherwise it redirects to the login page, for example with Navigate."
+            },
+            {
+              "id": "server-too",
+              "text": "The API still has to check auth itself, because hiding a route in the browser doesn't protect the data."
+            }
+          ],
+          "notEnough": [
+            "Only saying use a protected route without explaining the check and the redirect."
+          ],
+          "misconceptions": [
+            {
+              "id": "frontend-secure",
+              "text": "Says hiding a route in React is enough to keep the data secure."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

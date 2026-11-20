@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "sveltekit-dev-3",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Routing Concepts",
+      "question": "You are building a SvelteKit blog with a shared navbar and a page for each post. Explain how routing and layouts work.",
+      "followUps": {
+        "File-based routing and the src/routes directory": "How does a folder in src/routes become a page?",
+        "Layouts and nested layout inheritance": "How do layouts wrap pages and nest?",
+        "Dynamic route parameters with bracket syntax": "How do you read the slug in /blog/[slug]?"
+      },
+      "criteria": {
+        "File-based routing and the src/routes directory": {
+          "id": "file-routing",
+          "evidence": [
+            {
+              "id": "map",
+              "text": "The folder structure maps to URLs."
+            },
+            {
+              "id": "page",
+              "text": "A +page.svelte file in a folder is the page for that route."
+            },
+            {
+              "id": "visible",
+              "text": "The route tree is visible directly in the file system."
+            }
+          ],
+          "notEnough": [
+            "Only saying routing is file-based."
+          ],
+          "misconceptions": []
+        },
+        "Layouts and nested layout inheritance": {
+          "id": "layouts",
+          "evidence": [
+            {
+              "id": "layout",
+              "text": "+layout.svelte wraps the pages below it with shared UI."
+            },
+            {
+              "id": "nest",
+              "text": "Nested folders can add their own layouts inside the parent ones."
+            },
+            {
+              "id": "persist",
+              "text": "Layouts stay in place when navigating between their child pages."
+            }
+          ],
+          "notEnough": [
+            "Only saying layouts share UI."
+          ],
+          "misconceptions": []
+        },
+        "Dynamic route parameters with bracket syntax": {
+          "id": "dynamic-params",
+          "evidence": [
+            {
+              "id": "brackets",
+              "text": "A folder named [slug] creates a dynamic segment."
+            },
+            {
+              "id": "params",
+              "text": "The value is available as params.slug in load functions."
+            },
+            {
+              "id": "many",
+              "text": "One route file serves every post."
+            }
+          ],
+          "notEnough": [
+            "Only saying brackets are dynamic."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Error and Navigation",
+      "question": "A missing post crashes your page, and a new teammate does not know where to put shared utilities. Explain error pages and the project structure.",
+      "followUps": {
+        "Error pages with +error.svelte boundary": "What does +error.svelte do and how is it scoped?",
+        "SvelteKit project folder structure overview": "What are src/routes, src/lib, static and svelte.config.js for?"
+      },
+      "criteria": {
+        "Error pages with +error.svelte boundary": {
+          "id": "error-pages",
+          "evidence": [
+            {
+              "id": "catch",
+              "text": "+error.svelte shows a fallback when a load function throws an error."
+            },
+            {
+              "id": "nested",
+              "text": "Error pages in nested folders only cover their part of the app."
+            },
+            {
+              "id": "status",
+              "text": "It can show the status and message, such as a 404 for a missing post."
+            }
+          ],
+          "notEnough": [
+            "Only saying it shows errors."
+          ],
+          "misconceptions": []
+        },
+        "SvelteKit project folder structure overview": {
+          "id": "project-structure",
+          "evidence": [
+            {
+              "id": "routes",
+              "text": "src/routes holds pages, layouts and endpoints."
+            },
+            {
+              "id": "lib",
+              "text": "src/lib holds shared code, imported with $lib."
+            },
+            {
+              "id": "static-config",
+              "text": "static holds files served as-is, and svelte.config.js configures the framework."
+            }
+          ],
+          "notEnough": [
+            "Only listing folders."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Navigation and Links",
+      "question": "You need links between posts and a redirect to the new post after a form submit. Explain how navigation works in SvelteKit.",
+      "followUps": {
+        "Client-side navigation with anchor tags": "How does a plain <a> tag become client-side navigation?",
+        "Programmatic navigation with goto function": "When would you use goto?"
+      },
+      "criteria": {
+        "Client-side navigation with anchor tags": {
+          "id": "anchor-navigation",
+          "evidence": [
+            {
+              "id": "auto",
+              "text": "SvelteKit intercepts normal links within the app automatically."
+            },
+            {
+              "id": "no-reload",
+              "text": "It loads the new page without a full reload."
+            },
+            {
+              "id": "no-component",
+              "text": "No special Link component is needed."
+            }
+          ],
+          "notEnough": [
+            "Only saying links navigate."
+          ],
+          "misconceptions": []
+        },
+        "Programmatic navigation with goto function": {
+          "id": "goto",
+          "evidence": [
+            {
+              "id": "programmatic",
+              "text": "goto navigates from code, like after a form submission."
+            },
+            {
+              "id": "options",
+              "text": "It can replace the history entry instead of adding one."
+            },
+            {
+              "id": "vs-link",
+              "text": "Links are preferred for normal navigation because they work without JavaScript."
+            }
+          ],
+          "notEnough": [
+            "Only saying goto navigates."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Route Groups and Advanced Routing",
+      "question": "Marketing pages and the app need different layouts without changing URLs, and docs pages can be any depth. Explain route groups and rest parameters.",
+      "followUps": {
+        "Route groups to share layouts without URL segments": "What does a folder in parentheses do?",
+        "Rest and optional route parameter patterns": "How do [...rest] and [[optional]] differ?"
+      },
+      "criteria": {
+        "Route groups to share layouts without URL segments": {
+          "id": "route-groups",
+          "evidence": [
+            {
+              "id": "group",
+              "text": "A route group organises routes without adding to the URL."
+            },
+            {
+              "id": "layout",
+              "text": "Each group can have its own layout."
+            },
+            {
+              "id": "example",
+              "text": "Marketing pages and the app can share URL levels but use different layouts."
+            }
+          ],
+          "notEnough": [
+            "Only saying it groups routes."
+          ],
+          "misconceptions": []
+        },
+        "Rest and optional route parameter patterns": {
+          "id": "rest-optional",
+          "evidence": [
+            {
+              "id": "rest",
+              "text": "[...rest] matches any number of path segments."
+            },
+            {
+              "id": "optional",
+              "text": "[[optional]] makes a segment optional."
+            },
+            {
+              "id": "uses",
+              "text": "Rest suits catch-all docs pages; optional suits things like a language prefix."
+            }
+          ],
+          "notEnough": [
+            "Only listing the syntax."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

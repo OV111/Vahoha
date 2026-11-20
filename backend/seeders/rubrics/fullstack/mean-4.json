@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "mean-4",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Reactive programming with RxJS Observables",
+      "question": "A teammate asks why Angular's HttpClient returns Observables instead of Promises, and why two components subscribing to one HTTP call send two requests. Explain the difference and how sharing works.",
+      "followUps": {
+        "Observables versus Promises: lazy, cancellable, multi-value streams": "How is an Observable different from a Promise?",
+        "Hot versus cold Observables and multicasting with Subject": "Why do two subscribers cause two HTTP requests, and how does a Subject help share values?"
+      },
+      "criteria": {
+        "Observables versus Promises: lazy, cancellable, multi-value streams": {
+          "id": "observables-vs-promises",
+          "evidence": [
+            {
+              "id": "lazy",
+              "text": "An Observable does nothing until something subscribes, while a Promise starts immediately."
+            },
+            {
+              "id": "many-values",
+              "text": "An Observable can emit many values over time, while a Promise resolves once."
+            },
+            {
+              "id": "cancel",
+              "text": "Unsubscribing from an Observable can cancel its work."
+            }
+          ],
+          "notEnough": [
+            "Only saying Observables are streams."
+          ],
+          "misconceptions": []
+        },
+        "Hot versus cold Observables and multicasting with Subject": {
+          "id": "hot-cold-subject",
+          "evidence": [
+            {
+              "id": "cold",
+              "text": "A cold Observable starts a new execution for each subscriber, such as a new HTTP request."
+            },
+            {
+              "id": "hot",
+              "text": "A hot Observable shares one execution between all subscribers."
+            },
+            {
+              "id": "subject",
+              "text": "A Subject can both receive and emit values, so it can multicast one source to many subscribers."
+            }
+          ],
+          "notEnough": [
+            "Only defining hot and cold."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "RxJS operators and stream composition",
+      "question": "A search box fires a request for every keystroke and shows results from old searches, and the app slows down the longer it runs. Explain which RxJS operators fix the requests and what causes the slowdown.",
+      "followUps": {
+        "Transformation operators: map, switchMap, mergeMap, and concatMap": "Why use switchMap rather than mergeMap for a search box?",
+        "Memory leaks from unsubscribed Observables": "Why can forgotten subscriptions slow the app down, and how do you avoid them?"
+      },
+      "criteria": {
+        "Transformation operators: map, switchMap, mergeMap, and concatMap": {
+          "id": "flattening-operators",
+          "evidence": [
+            {
+              "id": "switchmap",
+              "text": "switchMap cancels the previous inner request when a new value arrives."
+            },
+            {
+              "id": "mergemap",
+              "text": "mergeMap runs all inner requests at the same time, so old results can arrive late."
+            },
+            {
+              "id": "concatmap",
+              "text": "concatMap runs them one after another in order."
+            }
+          ],
+          "notEnough": [
+            "Only listing the operators."
+          ],
+          "misconceptions": []
+        },
+        "Memory leaks from unsubscribed Observables": {
+          "id": "unsubscribe-leaks",
+          "evidence": [
+            {
+              "id": "never-complete",
+              "text": "Observables like intervals or Subjects never complete on their own."
+            },
+            {
+              "id": "leak",
+              "text": "If they are not unsubscribed, they keep running and holding memory after the component is gone."
+            },
+            {
+              "id": "fix",
+              "text": "The async pipe or takeUntil-style patterns unsubscribe automatically when the component is destroyed."
+            }
+          ],
+          "notEnough": [
+            "Only saying you must unsubscribe."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Using RxJS in Angular components and services",
+      "question": "Several components show and update the current list of tasks. Explain how you would hold this state in a service and display it without manual subscriptions.",
+      "followUps": {
+        "The async pipe: automatic subscription and unsubscription in templates": "What does the async pipe do for you?",
+        "BehaviorSubject for shared state in Angular services": "Why use a BehaviorSubject for shared state in a service?"
+      },
+      "criteria": {
+        "The async pipe: automatic subscription and unsubscription in templates": {
+          "id": "async-pipe",
+          "evidence": [
+            {
+              "id": "subscribe",
+              "text": "The async pipe subscribes to an Observable when the template renders."
+            },
+            {
+              "id": "unsubscribe",
+              "text": "It unsubscribes automatically when the component is destroyed."
+            },
+            {
+              "id": "update",
+              "text": "It marks the view for update when new values arrive."
+            }
+          ],
+          "notEnough": [
+            "Only saying it unwraps Observables."
+          ],
+          "misconceptions": []
+        },
+        "BehaviorSubject for shared state in Angular services": {
+          "id": "behaviorsubject",
+          "evidence": [
+            {
+              "id": "current-value",
+              "text": "A BehaviorSubject holds a current value."
+            },
+            {
+              "id": "new-subscribers",
+              "text": "New subscribers immediately get the latest value."
+            },
+            {
+              "id": "expose",
+              "text": "The service exposes it as an Observable and changes it only through its own methods."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a Subject with a value."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Live search with debounce and distinctUntilChanged",
+      "question": "Your task search calls the API on every keystroke, and a dashboard needs data from three API calls before it can show anything. Explain which operators you would use.",
+      "followUps": {
+        "debounceTime and distinctUntilChanged for efficient search inputs": "How do debounceTime and distinctUntilChanged reduce API calls?",
+        "Combining streams: combineLatest and forkJoin": "When would you use forkJoin and when combineLatest?"
+      },
+      "criteria": {
+        "debounceTime and distinctUntilChanged for efficient search inputs": {
+          "id": "debounce-distinct",
+          "evidence": [
+            {
+              "id": "debounce",
+              "text": "debounceTime waits until the user stops typing for a set time before emitting."
+            },
+            {
+              "id": "distinct",
+              "text": "distinctUntilChanged ignores a value that is the same as the previous one."
+            },
+            {
+              "id": "fewer",
+              "text": "Together they cut API calls to only meaningful searches."
+            }
+          ],
+          "notEnough": [
+            "Only saying they reduce requests."
+          ],
+          "misconceptions": []
+        },
+        "Combining streams: combineLatest and forkJoin": {
+          "id": "combine-streams",
+          "evidence": [
+            {
+              "id": "forkjoin",
+              "text": "forkJoin waits for all Observables to complete and emits their last values together."
+            },
+            {
+              "id": "combinelatest",
+              "text": "combineLatest emits every time any source emits, with the latest value from each."
+            },
+            {
+              "id": "choice",
+              "text": "forkJoin suits several one-time HTTP calls, combineLatest suits values that keep changing."
+            }
+          ],
+          "notEnough": [
+            "Only saying both combine streams."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

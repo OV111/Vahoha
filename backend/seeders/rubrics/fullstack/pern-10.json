@@ -1,0 +1,205 @@
+{
+  "path": "fullstack",
+  "layer": "pern-10",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Testing strategy for a full-stack PERN application",
+      "question": "Your PERN app has no tests yet, and you want confidence before each deploy without a slow, flaky suite. Explain which kinds of tests you'd write, how many of each, and how every developer would run them against the same database setup.",
+      "followUps": {
+        "Testing pyramid: unit tests fast, integration tests real, E2E minimal": "Why have many unit tests, fewer integration tests and only a few end-to-end tests?",
+        "Docker Compose for reproducible test environments": "How does Docker Compose make the integration tests behave the same on every machine?"
+      },
+      "criteria": {
+        "Testing pyramid: unit tests fast, integration tests real, E2E minimal": {
+          "id": "testing-pyramid",
+          "evidence": [
+            {
+              "id": "levels",
+              "text": "Unit tests check small pieces alone, integration tests check pieces together with real dependencies like the database, and end-to-end tests drive the real app in a browser."
+            },
+            {
+              "id": "tradeoff",
+              "text": "Lower levels are fast and stable, while higher levels give more confidence but are slower and flakier, so there are fewer of them."
+            }
+          ],
+          "notEnough": [
+            "Only naming unit, integration and end-to-end tests without explaining the trade-off."
+          ],
+          "misconceptions": []
+        },
+        "Docker Compose for reproducible test environments": {
+          "id": "docker-compose-tests",
+          "evidence": [
+            {
+              "id": "services",
+              "text": "A compose file defines services like Node and PostgreSQL with fixed versions and settings."
+            },
+            {
+              "id": "reproducible",
+              "text": "Everyone starts the same environment with one command, so the tests don't depend on what is installed locally."
+            }
+          ],
+          "notEnough": [
+            "Only saying use Docker without explaining what it makes reproducible."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Container and CI/CD concepts",
+      "question": "You want every merge to main to test, build and deploy your API automatically as a small Docker image. Explain how the Dockerfile and the CI pipeline would be set up.",
+      "followUps": {
+        "Multi-stage Dockerfiles for lean Node production images": "How does a multi-stage Dockerfile make the final image smaller, and what gets left behind?",
+        "GitHub Actions workflow: test, build, and deploy on merge": "In GitHub Actions, what triggers the workflow, in what order do the steps run, and where do the secrets come from?"
+      },
+      "criteria": {
+        "Multi-stage Dockerfiles for lean Node production images": {
+          "id": "multi-stage-docker",
+          "evidence": [
+            {
+              "id": "stages",
+              "text": "A build stage installs all dependencies and compiles the code."
+            },
+            {
+              "id": "final",
+              "text": "The final stage copies only the built output and the production dependencies, leaving build tools and dev dependencies behind."
+            },
+            {
+              "id": "smaller",
+              "text": "The result is a smaller image that deploys faster and has less in it to attack."
+            }
+          ],
+          "notEnough": [
+            "Only saying use multi-stage builds without saying what is copied."
+          ],
+          "misconceptions": []
+        },
+        "GitHub Actions workflow: test, build, and deploy on merge": {
+          "id": "github-actions",
+          "evidence": [
+            {
+              "id": "trigger",
+              "text": "A workflow runs on an event, such as a push to main."
+            },
+            {
+              "id": "steps",
+              "text": "Its steps run in order with tests first, so a failing test stops the build and the deploy."
+            },
+            {
+              "id": "secrets",
+              "text": "Secrets are stored in the repository settings and passed to the steps as environment variables, never written in the workflow file."
+            }
+          ],
+          "notEnough": [
+            "Only saying use GitHub Actions for CI/CD without describing the steps."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Writing tests for the PERN stack",
+      "question": "You need tests for a date formatting helper, a Zod signup schema and the POST /posts endpoint that requires auth. Explain how you'd test each of them.",
+      "followUps": {
+        "Vitest unit tests for utility functions and Zod schemas": "What edge cases would you test for the signup schema, and why are these tests so fast?",
+        "Supertest integration tests for Express endpoints": "How does Supertest call your Express app in a test, and what would you check for the POST /posts endpoint?"
+      },
+      "criteria": {
+        "Vitest unit tests for utility functions and Zod schemas": {
+          "id": "unit-tests",
+          "evidence": [
+            {
+              "id": "pure",
+              "text": "Pure functions and schemas are tested by giving inputs and checking outputs, with no server or database."
+            },
+            {
+              "id": "edge-cases",
+              "text": "Good tests cover edge cases, like an invalid email or a missing field being rejected by the schema."
+            }
+          ],
+          "notEnough": [
+            "Only saying write unit tests with Vitest without saying what is checked."
+          ],
+          "misconceptions": []
+        },
+        "Supertest integration tests for Express endpoints": {
+          "id": "integration-tests",
+          "evidence": [
+            {
+              "id": "in-process",
+              "text": "Supertest sends real HTTP requests to the Express app inside the test process, without deploying it."
+            },
+            {
+              "id": "full-cycle",
+              "text": "The test covers the whole path: validation, auth middleware, handler and database."
+            },
+            {
+              "id": "assert",
+              "text": "It checks status codes and response bodies, for example 401 without a token and 201 with valid input."
+            }
+          ],
+          "notEnough": [
+            "Only saying test the endpoints with Supertest without saying what is checked."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Deployment: React to Vercel, API to Railway, Postgres to managed host",
+      "question": "You're deploying your PERN app: the React frontend to Vercel, the Express API to Railway and PostgreSQL to a managed host. Explain the settings you'd configure, and how database changes are applied safely on each deploy.",
+      "followUps": {
+        "Vercel project settings, build output, and environment variables": "Vite environment variables are set in the Vercel dashboard. When do they take effect, and why must secrets never go there?",
+        "Running Prisma migrations in production deployments": "Why run prisma migrate deploy as part of the release, before the new API version starts?"
+      },
+      "criteria": {
+        "Vercel project settings, build output, and environment variables": {
+          "id": "vercel-settings",
+          "evidence": [
+            {
+              "id": "build",
+              "text": "Vercel needs the frontend's root folder, build command and output folder, like dist for Vite."
+            },
+            {
+              "id": "build-time-env",
+              "text": "Frontend environment variables are baked into the bundle at build time, so changing one needs a redeploy."
+            },
+            {
+              "id": "public",
+              "text": "Anything in the frontend bundle is visible to users, so it must not contain secrets."
+            }
+          ],
+          "notEnough": [
+            "Only saying set the env vars in Vercel without explaining when they apply."
+          ],
+          "misconceptions": [
+            {
+              "id": "runtime-env",
+              "text": "Says frontend environment variables can be changed at runtime without rebuilding."
+            }
+          ]
+        },
+        "Running Prisma migrations in production deployments": {
+          "id": "prod-migrations",
+          "evidence": [
+            {
+              "id": "release-step",
+              "text": "Pending migrations are applied with prisma migrate deploy as a release step, before the new server starts."
+            },
+            {
+              "id": "why",
+              "text": "That way the new code never runs against a database that is missing the tables or columns it expects."
+            }
+          ],
+          "notEnough": [
+            "Only saying run the migrations in production without saying when or why."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

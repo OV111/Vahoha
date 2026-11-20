@@ -1,0 +1,228 @@
+{
+  "path": "fullstack",
+  "layer": "pern-5",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "The Node.js event loop and non-blocking I/O model",
+      "question": "Your Express API runs as a single Node process and serves hundreds of users at once, and every request passes through logging, auth and body parsing before reaching its handler. Explain how one thread can serve so many requests, and how a request moves through those steps.",
+      "followUps": {
+        "How libuv delegates I/O so Node can handle concurrent connections": "What would happen to all users if one handler ran a heavy synchronous loop for five seconds, and why?",
+        "Express middleware chain: how next() passes control": "What happens if a middleware neither calls next() nor sends a response, and what does next(err) do?"
+      },
+      "criteria": {
+        "How libuv delegates I/O so Node can handle concurrent connections": {
+          "id": "node-nonblocking",
+          "evidence": [
+            {
+              "id": "delegate",
+              "text": "Node hands slow I/O like network and file work to the operating system or libuv's thread pool instead of waiting for it."
+            },
+            {
+              "id": "callbacks",
+              "text": "The single JavaScript thread keeps handling other requests, and the event loop runs each callback when its I/O completes."
+            },
+            {
+              "id": "cpu-blocks",
+              "text": "Long synchronous CPU work blocks the event loop, so every other request has to wait."
+            }
+          ],
+          "notEnough": [
+            "Only saying Node is non-blocking or uses an event loop without explaining how waiting is avoided."
+          ],
+          "misconceptions": [
+            {
+              "id": "thread-per-request",
+              "text": "Says Node creates a new thread for every request."
+            }
+          ]
+        },
+        "Express middleware chain: how next() passes control": {
+          "id": "middleware-next",
+          "evidence": [
+            {
+              "id": "order",
+              "text": "Middleware runs in the order it is registered, and each one receives req, res and next."
+            },
+            {
+              "id": "next",
+              "text": "Calling next() passes control to the next middleware; if it isn't called and no response is sent, the request hangs."
+            },
+            {
+              "id": "next-err",
+              "text": "Calling next(err) skips ahead to the error-handling middleware."
+            }
+          ],
+          "notEnough": [
+            "Only saying next() goes to the next middleware without the order or what happens otherwise."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "RESTful API design principles",
+      "question": "You're designing the blog posts API of your PERN app: listing, reading one, creating, editing and deleting. Explain how you'd name the URLs, which HTTP methods you'd use and which status codes each outcome returns.",
+      "followUps": {
+        "Resource-based URLs and correct HTTP verb semantics": "Why /posts/42 with GET and DELETE instead of /getPost and /deletePost, and what's the difference between PUT and PATCH?",
+        "HTTP status codes: 2xx success, 4xx client error, 5xx server error": "What should the API return when the user isn't logged in, versus logged in but not allowed to edit this post?"
+      },
+      "criteria": {
+        "Resource-based URLs and correct HTTP verb semantics": {
+          "id": "rest-resources",
+          "evidence": [
+            {
+              "id": "nouns",
+              "text": "URLs name resources, like /posts and /posts/42, and the HTTP method says what to do with them."
+            },
+            {
+              "id": "verbs",
+              "text": "GET reads, POST creates, PUT replaces, PATCH changes part of a resource, and DELETE removes it."
+            },
+            {
+              "id": "predictable",
+              "text": "Using the methods correctly lets clients and caches rely on their behavior, for example GET being safe to repeat."
+            }
+          ],
+          "notEnough": [
+            "Only listing the HTTP methods without explaining how URLs and methods divide the work."
+          ],
+          "misconceptions": [
+            {
+              "id": "put-patch-same",
+              "text": "Says PUT and PATCH do the same thing."
+            }
+          ]
+        },
+        "HTTP status codes: 2xx success, 4xx client error, 5xx server error": {
+          "id": "status-codes",
+          "evidence": [
+            {
+              "id": "classes",
+              "text": "2xx means success, 4xx means the client sent something wrong, and 5xx means the server failed."
+            },
+            {
+              "id": "specific",
+              "text": "Specific codes tell the client what happened, like 201 after creating, 204 with no body, and 400 or 422 for invalid input."
+            },
+            {
+              "id": "401-403",
+              "text": "401 means the client is not authenticated, while 403 means it is authenticated but not allowed."
+            }
+          ],
+          "notEnough": [
+            "Only listing code numbers without saying what they mean."
+          ],
+          "misconceptions": [
+            {
+              "id": "always-200",
+              "text": "Says the API can return 200 for every response and put errors in the body with no downside."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Structuring an Express application for a PERN project",
+      "question": "Your Express app started as one big index.js with every route in it, and it crashes later at runtime when an environment variable is missing. Explain how you'd reorganize the code and how you'd handle configuration.",
+      "followUps": {
+        "Router modules and controller separation by resource": "Why split routes into one router per resource and move the logic into controllers, and what does each part do?",
+        "Environment configuration with dotenv and config validation": "Why validate environment variables at startup instead of reading them when they're needed?"
+      },
+      "criteria": {
+        "Router modules and controller separation by resource": {
+          "id": "router-controllers",
+          "evidence": [
+            {
+              "id": "router",
+              "text": "express.Router creates a separate router per resource, mounted on a prefix like /posts or /users."
+            },
+            {
+              "id": "thin-routes",
+              "text": "Route files only map paths to handlers, while controllers or services hold the logic, so each part is easier to find and test."
+            }
+          ],
+          "notEnough": [
+            "Only saying split it into files without explaining what goes where."
+          ],
+          "misconceptions": []
+        },
+        "Environment configuration with dotenv and config validation": {
+          "id": "env-config",
+          "evidence": [
+            {
+              "id": "dotenv",
+              "text": "dotenv loads variables from a .env file into process.env before the rest of the app reads them."
+            },
+            {
+              "id": "fail-fast",
+              "text": "Validating the required variables at startup with a schema stops the app right away with a clear error instead of failing later."
+            },
+            {
+              "id": "secrets",
+              "text": "The .env file holds secrets, so it stays out of git."
+            }
+          ],
+          "notEnough": [
+            "Only saying use dotenv without explaining validation or why it matters."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Input validation and centralized error handling",
+      "question": "A user sends a signup request with an invalid email, and somewhere else a database error crashes a handler and returns an HTML stack trace. Explain how you'd validate input and handle errors so every failure returns a consistent JSON response.",
+      "followUps": {
+        "Request body validation with express-validator": "Where do the validation rules run, and what should the handler do when they fail?",
+        "Four-argument error middleware registered last in app.use()": "What makes Express treat a middleware as an error handler, and why does it have to be registered last?"
+      },
+      "criteria": {
+        "Request body validation with express-validator": {
+          "id": "request-validation",
+          "evidence": [
+            {
+              "id": "rules-on-route",
+              "text": "Validation rules are attached to the route and check the request body before the handler logic runs."
+            },
+            {
+              "id": "reject",
+              "text": "When the input is invalid, the handler returns 400 or 422 with the errors and doesn't touch the database."
+            }
+          ],
+          "notEnough": [
+            "Only saying validate the input without saying where or what happens when it fails."
+          ],
+          "misconceptions": [
+            {
+              "id": "frontend-enough",
+              "text": "Says validating in the frontend form is enough."
+            }
+          ]
+        },
+        "Four-argument error middleware registered last in app.use()": {
+          "id": "error-middleware",
+          "evidence": [
+            {
+              "id": "four-args",
+              "text": "Express recognizes error middleware by its four arguments: err, req, res and next."
+            },
+            {
+              "id": "last",
+              "text": "It is registered after all routes, so errors from anywhere end up there."
+            },
+            {
+              "id": "consistent",
+              "text": "Handlers pass errors on with next(err), and that one handler returns the same JSON shape and a fitting status for every error."
+            }
+          ],
+          "notEnough": [
+            "Only saying use an error handler without explaining how errors reach it."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

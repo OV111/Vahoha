@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "rails-dev-2",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "MVC Architecture and Rails Philosophy",
+      "question": "You are starting a Rails app for a recipe site. Explain how Rails organises the code and why you rarely write configuration.",
+      "followUps": {
+        "Model-View-Controller pattern in Rails": "What does each part of MVC do in a Rails request?",
+        "Convention over configuration Rails principle": "What does convention over configuration mean in practice?",
+        "Rails project directory structure overview": "Where would you find models, routes and configuration in a Rails app?"
+      },
+      "criteria": {
+        "Model-View-Controller pattern in Rails": {
+          "id": "mvc",
+          "evidence": [
+            {
+              "id": "model",
+              "text": "Models handle data and business rules."
+            },
+            {
+              "id": "controller",
+              "text": "Controllers handle the request and decide what to do."
+            },
+            {
+              "id": "view",
+              "text": "Views render the response, usually HTML."
+            }
+          ],
+          "notEnough": [
+            "Only spelling out Model, View, Controller."
+          ],
+          "misconceptions": []
+        },
+        "Convention over configuration Rails principle": {
+          "id": "convention-over-config",
+          "evidence": [
+            {
+              "id": "defaults",
+              "text": "Rails assumes sensible defaults."
+            },
+            {
+              "id": "naming",
+              "text": "Naming conventions connect classes, files and tables automatically, such as a Recipe model and a recipes table."
+            },
+            {
+              "id": "less-setup",
+              "text": "This removes most setup code, as long as you follow the conventions."
+            }
+          ],
+          "notEnough": [
+            "Only repeating the phrase."
+          ],
+          "misconceptions": []
+        },
+        "Rails project directory structure overview": {
+          "id": "directory-structure",
+          "evidence": [
+            {
+              "id": "app",
+              "text": "app holds models, views, controllers and other application code."
+            },
+            {
+              "id": "config",
+              "text": "config holds routes and settings."
+            },
+            {
+              "id": "db",
+              "text": "db holds migrations and the schema."
+            }
+          ],
+          "notEnough": [
+            "Only listing folder names."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Routing and Request Handling",
+      "question": "You need pages to list, create, edit and delete recipes, and you want a working version quickly. Explain how routing and generators help.",
+      "followUps": {
+        "Routes, controllers, and resourceful routing": "What does resources :recipes create in the routes?",
+        "Rails generators and scaffolding workflow": "What do generators and scaffolding give you, and what are their limits?"
+      },
+      "criteria": {
+        "Routes, controllers, and resourceful routing": {
+          "id": "resourceful-routing",
+          "evidence": [
+            {
+              "id": "map",
+              "text": "Routes map HTTP methods and URLs to controller actions."
+            },
+            {
+              "id": "seven",
+              "text": "resources generates the seven standard actions for a resource in one line."
+            },
+            {
+              "id": "rest",
+              "text": "This follows REST conventions, such as GET for index and DELETE for destroy."
+            }
+          ],
+          "notEnough": [
+            "Only saying routes map URLs."
+          ],
+          "misconceptions": []
+        },
+        "Rails generators and scaffolding workflow": {
+          "id": "generators-scaffold",
+          "evidence": [
+            {
+              "id": "generate",
+              "text": "Generators create models, controllers, views and migrations."
+            },
+            {
+              "id": "scaffold",
+              "text": "Scaffolding builds a full working CRUD interface for a resource."
+            },
+            {
+              "id": "limits",
+              "text": "Scaffold code is a starting point that usually needs editing for real use."
+            }
+          ],
+          "notEnough": [
+            "Only saying generators create files."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Rails Development Tools",
+      "question": "A page shows the wrong recipes and you are not sure what SQL ran. Explain how you would explore the app and trace the request.",
+      "followUps": {
+        "Rails console for live app exploration": "How does the Rails console help you explore the app?",
+        "Development server and request logging": "What does the development log show for each request?"
+      },
+      "criteria": {
+        "Rails console for live app exploration": {
+          "id": "rails-console",
+          "evidence": [
+            {
+              "id": "loaded",
+              "text": "The console opens Ruby with the whole app loaded."
+            },
+            {
+              "id": "query",
+              "text": "You can query the database and call model methods directly."
+            },
+            {
+              "id": "inspect",
+              "text": "It is quick for checking data and testing code."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a shell."
+          ],
+          "misconceptions": []
+        },
+        "Development server and request logging": {
+          "id": "server-logging",
+          "evidence": [
+            {
+              "id": "server",
+              "text": "rails server starts the local web server."
+            },
+            {
+              "id": "log",
+              "text": "Each request is logged with its controller action and parameters."
+            },
+            {
+              "id": "sql-timing",
+              "text": "The log shows the SQL queries and how long each part took."
+            }
+          ],
+          "notEnough": [
+            "Only saying Rails logs requests."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Views and Template Rendering",
+      "question": "Every page needs the same header, and after saving a recipe the user should see 'Recipe saved'. Explain how layouts and flash messages work.",
+      "followUps": {
+        "ERB templates and layout inheritance": "How does a layout wrap each view?",
+        "Flash messages and redirect patterns": "Why use a redirect with a flash message after saving a form?"
+      },
+      "criteria": {
+        "ERB templates and layout inheritance": {
+          "id": "erb-layouts",
+          "evidence": [
+            {
+              "id": "erb",
+              "text": "ERB embeds Ruby in HTML templates."
+            },
+            {
+              "id": "layout",
+              "text": "The layout holds the shared page structure."
+            },
+            {
+              "id": "yield",
+              "text": "yield in the layout marks where each action's view is inserted."
+            }
+          ],
+          "notEnough": [
+            "Only saying layouts are templates."
+          ],
+          "misconceptions": []
+        },
+        "Flash messages and redirect patterns": {
+          "id": "flash-redirect",
+          "evidence": [
+            {
+              "id": "flash",
+              "text": "Flash stores a short message for the next request only."
+            },
+            {
+              "id": "redirect",
+              "text": "Redirecting after a successful save prevents a duplicate submit on refresh."
+            },
+            {
+              "id": "show",
+              "text": "The layout shows the flash message on the page the user lands on."
+            }
+          ],
+          "notEnough": [
+            "Only saying flash shows messages."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

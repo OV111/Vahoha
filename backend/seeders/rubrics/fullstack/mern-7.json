@@ -1,0 +1,233 @@
+{
+  "path": "fullstack",
+  "layer": "mern-7",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Password security and cryptographic hashing",
+      "question": "Your MERN app stores user passwords and gives logged-in users a JWT. Explain how passwords should be stored so a stolen database doesn't reveal them, and what a JWT contains and protects.",
+      "followUps": {
+        "Why bcrypt uses work factor and salting to resist brute force": "Why does bcrypt use a salt and a cost factor, and why not just hash the password with SHA-256?",
+        "JWT structure: header, payload, and signature verification": "Anyone can decode a JWT's payload. So what does the signature protect, and how does the server check it?"
+      },
+      "criteria": {
+        "Why bcrypt uses work factor and salting to resist brute force": {
+          "id": "bcrypt-hashing",
+          "evidence": [
+            {
+              "id": "salt",
+              "text": "bcrypt adds a random salt per password, so identical passwords get different hashes and precomputed tables don't work."
+            },
+            {
+              "id": "cost",
+              "text": "Its cost factor makes each hash deliberately slow, so guessing passwords at scale is very expensive, and it can be raised as hardware gets faster."
+            },
+            {
+              "id": "one-way",
+              "text": "At login the entered password is hashed and compared; the original password is never stored or decrypted."
+            }
+          ],
+          "notEnough": [
+            "Only saying hash passwords with bcrypt without explaining the salt or the slowness."
+          ],
+          "misconceptions": [
+            {
+              "id": "encrypt",
+              "text": "Says passwords should be encrypted so they can be decrypted later."
+            }
+          ]
+        },
+        "JWT structure: header, payload, and signature verification": {
+          "id": "jwt-structure",
+          "evidence": [
+            {
+              "id": "parts",
+              "text": "A JWT has a header, a payload of claims and a signature, each Base64URL-encoded and joined by dots."
+            },
+            {
+              "id": "not-secret",
+              "text": "The payload is only encoded, not encrypted, so anyone can read it; passwords and secrets never go there."
+            },
+            {
+              "id": "verify",
+              "text": "The server recomputes the signature from the header and payload with its secret; if it doesn't match, the token was changed and is rejected."
+            }
+          ],
+          "notEnough": [
+            "Only saying a JWT has three parts without saying what the signature does."
+          ],
+          "misconceptions": [
+            {
+              "id": "payload-encrypted",
+              "text": "Says the JWT payload is encrypted and safe for sensitive data."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "HTTP-only cookies versus localStorage for token storage",
+      "question": "You need to decide where your React app keeps the auth token, knowing that a comment field might let an attacker inject a script, and that other sites might try to make requests to your API. Explain your choice and the attacks it defends against.",
+      "followUps": {
+        "Why XSS can steal localStorage tokens but not HTTP-only cookies": "Why can an injected script steal a token from localStorage but not from an HTTP-only cookie?",
+        "CSRF attacks and SameSite cookie attribute as defense": "Cookies are sent automatically, so what is CSRF, and how does SameSite help?"
+      },
+      "criteria": {
+        "Why XSS can steal localStorage tokens but not HTTP-only cookies": {
+          "id": "token-storage-xss",
+          "evidence": [
+            {
+              "id": "localstorage",
+              "text": "Any script running on the page, including an injected one, can read localStorage and send the token away."
+            },
+            {
+              "id": "httponly",
+              "text": "JavaScript can't read an HTTP-only cookie, so the token is sent with requests but can't be stolen by the script."
+            }
+          ],
+          "notEnough": [
+            "Only saying cookies are safer than localStorage without explaining why."
+          ],
+          "misconceptions": [
+            {
+              "id": "stops-xss",
+              "text": "Says HTTP-only cookies stop XSS attacks from happening at all."
+            }
+          ]
+        },
+        "CSRF attacks and SameSite cookie attribute as defense": {
+          "id": "csrf-samesite",
+          "evidence": [
+            {
+              "id": "csrf",
+              "text": "CSRF makes a logged-in user's browser send a request to your API from another site, and the browser attaches the cookie automatically."
+            },
+            {
+              "id": "samesite",
+              "text": "The SameSite attribute stops the cookie from being sent on cross-site requests (Strict) or most of them (Lax), which blocks that attack."
+            }
+          ],
+          "notEnough": [
+            "Only saying use SameSite without explaining what CSRF is."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Implementing JWT auth in Express",
+      "question": "Users log in to your Express API and then call protected endpoints like creating a post. Explain how the server issues tokens at login, how long they last, and how each protected request is checked.",
+      "followUps": {
+        "Signing and verifying JWTs with jsonwebtoken": "Why always set expiresIn, and how does a refresh token keep the user logged in?",
+        "Auth middleware: extracting and verifying the Bearer token": "Walk through what the auth middleware does with the Authorization header, and what happens if the token has expired."
+      },
+      "criteria": {
+        "Signing and verifying JWTs with jsonwebtoken": {
+          "id": "jwt-signing",
+          "evidence": [
+            {
+              "id": "sign",
+              "text": "At login the server signs a token with a secret, containing claims like the user id, plus an expiry."
+            },
+            {
+              "id": "expiry",
+              "text": "A short expiry limits how long a stolen token can be used."
+            },
+            {
+              "id": "refresh",
+              "text": "A longer-lived refresh token, kept in an HTTP-only cookie, is used to get new access tokens without logging in again."
+            }
+          ],
+          "notEnough": [
+            "Only saying sign a token with jsonwebtoken without explaining expiry or refresh."
+          ],
+          "misconceptions": []
+        },
+        "Auth middleware: extracting and verifying the Bearer token": {
+          "id": "auth-middleware",
+          "evidence": [
+            {
+              "id": "read-header",
+              "text": "The middleware reads the Bearer token from the Authorization header."
+            },
+            {
+              "id": "verify",
+              "text": "It verifies the signature and the expiry with the secret, and rejects the request with 401 if that fails."
+            },
+            {
+              "id": "attach",
+              "text": "On success it attaches the decoded user to req and calls next(), and it's applied only to the routes that need auth."
+            }
+          ],
+          "notEnough": [
+            "Only saying check the token in a middleware without the steps."
+          ],
+          "misconceptions": [
+            {
+              "id": "decode-enough",
+              "text": "Says decoding the token is enough without verifying its signature."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "CORS and input sanitization",
+      "question": "Your React app on one domain calls your API on another, and a security review found that users can open other users' orders by changing the id in the URL. Explain how you'd configure cross-origin access and fix the most common security holes.",
+      "followUps": {
+        "Configuring cors middleware with an origin allowlist": "Why restrict the cors origin to your frontend's URL, and why can't you use '*' with cookies?",
+        "OWASP Top 10 essentials: injection, broken auth, and IDOR": "What is IDOR, and how would you fix the orders endpoint? Name another OWASP risk relevant to MongoDB."
+      },
+      "criteria": {
+        "Configuring cors middleware with an origin allowlist": {
+          "id": "cors-allowlist",
+          "evidence": [
+            {
+              "id": "browser-rule",
+              "text": "Browsers block a page from reading responses from another origin unless the API allows that origin in its CORS headers."
+            },
+            {
+              "id": "allowlist",
+              "text": "The API should allow only its own frontend's origins, not every site."
+            },
+            {
+              "id": "credentials",
+              "text": "When requests carry cookies, the allowed origin must be named exactly; a wildcard isn't allowed with credentials."
+            }
+          ],
+          "notEnough": [
+            "Only saying enable cors without explaining what it controls."
+          ],
+          "misconceptions": [
+            {
+              "id": "cors-security",
+              "text": "Says CORS protects the API from requests made by scripts or tools like curl."
+            }
+          ]
+        },
+        "OWASP Top 10 essentials: injection, broken auth, and IDOR": {
+          "id": "owasp-basics",
+          "evidence": [
+            {
+              "id": "idor",
+              "text": "IDOR means the API returns or changes an object just because its id was given, without checking that it belongs to the user."
+            },
+            {
+              "id": "ownership",
+              "text": "The fix is to check on the server that the logged-in user owns or may access that object."
+            },
+            {
+              "id": "nosql-injection",
+              "text": "Injection also applies to MongoDB: passing raw request objects into queries lets attackers add operators like $ne, so input must be validated."
+            }
+          ],
+          "notEnough": [
+            "Only naming OWASP Top 10 items without explaining any of them."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

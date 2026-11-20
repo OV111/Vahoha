@@ -1,0 +1,231 @@
+{
+  "path": "fullstack",
+  "layer": "fullstack-engineer-6",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Authentication fundamentals: sessions versus tokens",
+      "question": "You are adding login to your recipe app and must choose between sessions and JWTs. Explain how each works and what it means for logging users out.",
+      "followUps": {
+        "Session-based auth: server stores state, cookie holds session ID": "How does session-based authentication work, and how do you log someone out?",
+        "JWT-based auth: stateless tokens with HMAC signatures": "Why is revoking a JWT harder than revoking a session?"
+      },
+      "criteria": {
+        "Session-based auth: server stores state, cookie holds session ID": {
+          "id": "session-auth",
+          "evidence": [
+            {
+              "id": "server-record",
+              "text": "The server stores a session record and sends the browser a cookie with the session id."
+            },
+            {
+              "id": "lookup",
+              "text": "On each request the browser sends the cookie and the server looks up the session."
+            },
+            {
+              "id": "revoke",
+              "text": "Deleting the session on the server logs the user out immediately."
+            }
+          ],
+          "notEnough": [
+            "Only saying sessions use cookies."
+          ],
+          "misconceptions": []
+        },
+        "JWT-based auth: stateless tokens with HMAC signatures": {
+          "id": "jwt-auth",
+          "evidence": [
+            {
+              "id": "signed",
+              "text": "A JWT contains the user's identity and is signed so the server can verify it was not changed."
+            },
+            {
+              "id": "stateless",
+              "text": "The server does not need to store it, so each request is checked by verifying the signature."
+            },
+            {
+              "id": "revocation",
+              "text": "A valid JWT works until it expires, so short expiry and refresh tokens are used to limit the risk."
+            }
+          ],
+          "notEnough": [
+            "Only saying JWTs are stateless."
+          ],
+          "misconceptions": [
+            {
+              "id": "jwt-encrypted",
+              "text": "Says a JWT's contents are encrypted and cannot be read without the secret."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Password security and token storage",
+      "question": "Your user table leaks in a breach, and separately an XSS bug lets an attacker run scripts on your site. Explain how password hashing and cookie settings limit the damage.",
+      "followUps": {
+        "bcrypt's adaptive cost factor and per-password salting": "Why use bcrypt with a salt and cost factor instead of a fast hash?",
+        "HTTP-only cookies prevent XSS from stealing auth tokens": "How do HttpOnly, Secure and SameSite cookie flags protect the session?"
+      },
+      "criteria": {
+        "bcrypt's adaptive cost factor and per-password salting": {
+          "id": "bcrypt-salting",
+          "evidence": [
+            {
+              "id": "salt",
+              "text": "A random salt makes identical passwords produce different hashes."
+            },
+            {
+              "id": "slow",
+              "text": "The cost factor makes hashing deliberately slow, so guessing passwords takes far longer."
+            },
+            {
+              "id": "tunable",
+              "text": "The cost can be raised over time as computers get faster."
+            }
+          ],
+          "notEnough": [
+            "Only saying bcrypt is secure."
+          ],
+          "misconceptions": [
+            {
+              "id": "encrypt",
+              "text": "Says passwords should be encrypted so they can be decrypted when needed."
+            }
+          ]
+        },
+        "HTTP-only cookies prevent XSS from stealing auth tokens": {
+          "id": "httponly-cookies",
+          "evidence": [
+            {
+              "id": "httponly",
+              "text": "HttpOnly cookies cannot be read by JavaScript, so XSS cannot steal them."
+            },
+            {
+              "id": "secure",
+              "text": "Secure cookies are only sent over HTTPS."
+            },
+            {
+              "id": "samesite",
+              "text": "SameSite limits sending the cookie on cross-site requests, which helps against CSRF."
+            }
+          ],
+          "notEnough": [
+            "Only saying cookies are safer than localStorage."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Implementing auth in Express and React",
+      "question": "You are writing the sign-up, login and auth middleware for your Express API. Explain how passwords are stored and checked and how protected routes know who the user is.",
+      "followUps": {
+        "bcrypt.hash and bcrypt.compare for password hashing": "How do bcrypt.hash and bcrypt.compare work at sign-up and login?",
+        "JWT auth middleware: verify Bearer token and attach user to req": "What does a JWT auth middleware do on each request?"
+      },
+      "criteria": {
+        "bcrypt.hash and bcrypt.compare for password hashing": {
+          "id": "bcrypt-hash-compare",
+          "evidence": [
+            {
+              "id": "hash",
+              "text": "At sign-up the password is hashed with a cost factor and only the hash is stored."
+            },
+            {
+              "id": "compare",
+              "text": "At login bcrypt.compare checks the typed password against the stored hash."
+            },
+            {
+              "id": "no-equals",
+              "text": "You never compare passwords or hashes with a plain equality check."
+            }
+          ],
+          "notEnough": [
+            "Only saying you hash passwords."
+          ],
+          "misconceptions": []
+        },
+        "JWT auth middleware: verify Bearer token and attach user to req": {
+          "id": "jwt-middleware",
+          "evidence": [
+            {
+              "id": "read",
+              "text": "It reads the token from the Authorization header."
+            },
+            {
+              "id": "verify",
+              "text": "It verifies the signature and expiry, rejecting the request if invalid."
+            },
+            {
+              "id": "attach",
+              "text": "It attaches the decoded user to the request for later handlers."
+            }
+          ],
+          "notEnough": [
+            "Only saying it checks the token."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Role-based access control and React route guards",
+      "question": "Admins can delete any recipe, regular users only their own, and signed-out users who open /dashboard should be sent to login and then back. Explain how you would enforce this on the server and in React.",
+      "followUps": {
+        "Express middleware for role-based authorization": "How would a requireRole middleware work, and what does it not cover?",
+        "ProtectedRoute wrapper in React Router v6": "How would a ProtectedRoute redirect to login and then back to the original page?"
+      },
+      "criteria": {
+        "Express middleware for role-based authorization": {
+          "id": "role-middleware",
+          "evidence": [
+            {
+              "id": "after-auth",
+              "text": "It runs after authentication, once the user is known."
+            },
+            {
+              "id": "check-role",
+              "text": "It checks the user's role and returns forbidden if it does not match."
+            },
+            {
+              "id": "ownership",
+              "text": "Rules like 'only your own recipe' need a separate check against the record itself."
+            }
+          ],
+          "notEnough": [
+            "Only saying it checks if the user is admin."
+          ],
+          "misconceptions": []
+        },
+        "ProtectedRoute wrapper in React Router v6": {
+          "id": "protected-route",
+          "evidence": [
+            {
+              "id": "check",
+              "text": "It reads the auth state and renders the page only for signed-in users."
+            },
+            {
+              "id": "redirect",
+              "text": "Otherwise it redirects to the login page."
+            },
+            {
+              "id": "return",
+              "text": "It passes the original location so login can send the user back afterwards."
+            }
+          ],
+          "notEnough": [
+            "Only saying it blocks the route."
+          ],
+          "misconceptions": [
+            {
+              "id": "frontend-secure",
+              "text": "Says a frontend route guard alone keeps the data secure."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

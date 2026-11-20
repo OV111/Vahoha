@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "sveltekit-dev-2",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Component Model",
+      "question": "You are building a Svelte 5 card component with a title prop, a like count and a slot for custom content. Explain how components, runes and composition work.",
+      "followUps": {
+        "Single-file components and props declaration": "How is a Svelte component structured and how are props declared in Svelte 5?",
+        "Reactivity with runes and $state": "What do $state and $derived do?",
+        "Slots and component composition patterns": "How does a parent pass custom markup into a child component?"
+      },
+      "criteria": {
+        "Single-file components and props declaration": {
+          "id": "components-props",
+          "evidence": [
+            {
+              "id": "sfc",
+              "text": "A .svelte file has script, markup and style sections."
+            },
+            {
+              "id": "props",
+              "text": "Svelte 5 declares props with the $props rune."
+            },
+            {
+              "id": "one-way",
+              "text": "Props flow from parent to child."
+            }
+          ],
+          "notEnough": [
+            "Only saying components are files."
+          ],
+          "misconceptions": []
+        },
+        "Reactivity with runes and $state": {
+          "id": "runes-state",
+          "evidence": [
+            {
+              "id": "state",
+              "text": "$state makes a variable reactive, so changes update the UI."
+            },
+            {
+              "id": "derived",
+              "text": "$derived computes a value from other state and updates automatically."
+            },
+            {
+              "id": "explicit",
+              "text": "Runes make reactive data flow explicit and are handled by the compiler."
+            }
+          ],
+          "notEnough": [
+            "Only saying runes are reactive."
+          ],
+          "misconceptions": []
+        },
+        "Slots and component composition patterns": {
+          "id": "slots-composition",
+          "evidence": [
+            {
+              "id": "project",
+              "text": "Slots, or snippets in Svelte 5, let a parent pass markup into a child."
+            },
+            {
+              "id": "layout",
+              "text": "This is how layout wrappers like cards and modals are built."
+            },
+            {
+              "id": "named",
+              "text": "Several named slots or snippets let the parent fill different areas."
+            }
+          ],
+          "notEnough": [
+            "Only saying slots pass content."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Template Directives",
+      "question": "You render a todo list that can be reordered and an empty-state message. Explain how Svelte's template blocks work.",
+      "followUps": {
+        "Conditional rendering with if and else blocks": "What does {#if} do to the DOM?",
+        "List rendering with each blocks and keys": "Why add a key to an {#each} block?"
+      },
+      "criteria": {
+        "Conditional rendering with if and else blocks": {
+          "id": "if-blocks",
+          "evidence": [
+            {
+              "id": "conditional",
+              "text": "{#if} includes or removes markup based on a condition."
+            },
+            {
+              "id": "real-dom",
+              "text": "Svelte creates and destroys the real DOM elements, not a virtual copy."
+            },
+            {
+              "id": "else",
+              "text": "{:else} handles the alternative case, like an empty state."
+            }
+          ],
+          "notEnough": [
+            "Only saying it shows conditionally."
+          ],
+          "misconceptions": []
+        },
+        "List rendering with each blocks and keys": {
+          "id": "each-keys",
+          "evidence": [
+            {
+              "id": "iterate",
+              "text": "{#each} repeats markup for each item."
+            },
+            {
+              "id": "key",
+              "text": "A key tells Svelte which item is which."
+            },
+            {
+              "id": "reorder",
+              "text": "With keys, reordering moves elements correctly instead of mixing up their state."
+            }
+          ],
+          "notEnough": [
+            "Only saying keys are unique."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Events and Bindings",
+      "question": "You are building a search form whose input updates state and whose button triggers a search. Explain events and bindings in Svelte 5.",
+      "followUps": {
+        "DOM event handling with onclick and on directives": "How do you handle a click in Svelte 5?",
+        "Two-way binding with bind directive": "What does bind:value save you?"
+      },
+      "criteria": {
+        "DOM event handling with onclick and on directives": {
+          "id": "event-handling",
+          "evidence": [
+            {
+              "id": "onclick",
+              "text": "Svelte 5 uses onclick as a normal attribute with a handler."
+            },
+            {
+              "id": "handler",
+              "text": "The handler is a function that runs when the event fires."
+            },
+            {
+              "id": "delegation",
+              "text": "Svelte may delegate some events to a shared listener for performance."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add onclick."
+          ],
+          "misconceptions": []
+        },
+        "Two-way binding with bind directive": {
+          "id": "bind-value",
+          "evidence": [
+            {
+              "id": "two-way",
+              "text": "bind:value keeps an input and a state variable in sync both ways."
+            },
+            {
+              "id": "no-handler",
+              "text": "It removes the need to write an input handler."
+            },
+            {
+              "id": "forms",
+              "text": "It suits common form inputs like text fields and checkboxes."
+            }
+          ],
+          "notEnough": [
+            "Only saying bind syncs values."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Styles and Scoping",
+      "question": "A component's .title style unexpectedly does not affect a child component, and you need an active tab style. Explain how styling works in Svelte.",
+      "followUps": {
+        "Scoped CSS and global style overrides": "Why don't a component's styles affect other components?",
+        "Class and style directives for dynamic styling": "How do class: and style: directives help with dynamic styling?"
+      },
+      "criteria": {
+        "Scoped CSS and global style overrides": {
+          "id": "scoped-css",
+          "evidence": [
+            {
+              "id": "scoped",
+              "text": "Styles in a component's style block are scoped to that component."
+            },
+            {
+              "id": "hash",
+              "text": "Svelte adds a unique class to keep them from leaking."
+            },
+            {
+              "id": "global",
+              "text": "The :global() modifier is used when a style must reach outside."
+            }
+          ],
+          "notEnough": [
+            "Only saying styles are scoped."
+          ],
+          "misconceptions": []
+        },
+        "Class and style directives for dynamic styling": {
+          "id": "class-style-directives",
+          "evidence": [
+            {
+              "id": "class",
+              "text": "class:active={isActive} adds the class only when the condition is true."
+            },
+            {
+              "id": "style",
+              "text": "style:color={value} sets an inline style reactively."
+            },
+            {
+              "id": "clean",
+              "text": "This avoids building class strings by hand."
+            }
+          ],
+          "notEnough": [
+            "Only listing the directives."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,214 @@
+{
+  "path": "fullstack",
+  "layer": "mern-6",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "NoSQL document model versus relational tables",
+      "question": "You're designing the MongoDB data for a blog: posts, their comments and the authors. Explain how you'd decide what goes inside a post document and what's stored separately, and what the _id values actually are.",
+      "followUps": {
+        "Embedding versus referencing documents in MongoDB": "When would you embed comments inside the post, and when would you reference them by id instead?",
+        "MongoDB BSON types and the ObjectId structure": "What does an ObjectId contain, and why does MongoDB store BSON instead of plain JSON?"
+      },
+      "criteria": {
+        "Embedding versus referencing documents in MongoDB": {
+          "id": "embed-vs-reference",
+          "evidence": [
+            {
+              "id": "embed",
+              "text": "Embedding puts related data inside the document, which suits data that is always read together and stays small, so one read gets everything."
+            },
+            {
+              "id": "reference",
+              "text": "Referencing stores an ObjectId to another document, which suits data that is large, grows without limit or is shared, like authors."
+            },
+            {
+              "id": "doc-limit",
+              "text": "A single document has a size limit, so unbounded lists like all comments of a busy post shouldn't be embedded."
+            }
+          ],
+          "notEnough": [
+            "Only saying you can embed or reference without explaining when to choose each."
+          ],
+          "misconceptions": []
+        },
+        "MongoDB BSON types and the ObjectId structure": {
+          "id": "bson-objectid",
+          "evidence": [
+            {
+              "id": "bson",
+              "text": "MongoDB stores documents as BSON, a binary format with extra types JSON lacks, like ObjectId, Date and 64-bit integers."
+            },
+            {
+              "id": "objectid",
+              "text": "An ObjectId includes a creation timestamp, so ids are unique without a central counter and roughly sort by creation time."
+            }
+          ],
+          "notEnough": [
+            "Only saying MongoDB uses BSON and ObjectIds without explaining what they add."
+          ],
+          "misconceptions": [
+            {
+              "id": "objectid-random",
+              "text": "Says an ObjectId is a completely random string with no meaning."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Mongoose schema validation and middleware hooks",
+      "question": "Your User model must always have a valid email, a role that defaults to 'user', and a password that is never saved in plain text. Explain how you'd enforce this with Mongoose.",
+      "followUps": {
+        "Schema types, validators, and default values in Mongoose": "What does a Mongoose schema check for you before saving, and what does it not protect against?",
+        "Mongoose pre/post middleware for cross-cutting logic": "How would a pre('save') hook hash the password, and what trap is there when the password hasn't changed?"
+      },
+      "criteria": {
+        "Schema types, validators, and default values in Mongoose": {
+          "id": "schema-validation",
+          "evidence": [
+            {
+              "id": "shape",
+              "text": "A schema defines each field's type, whether it's required, defaults and validators like min, max or match."
+            },
+            {
+              "id": "before-save",
+              "text": "Mongoose runs these checks before saving and rejects documents that break them."
+            },
+            {
+              "id": "app-level",
+              "text": "These checks run in your app, not in MongoDB itself, so data written another way bypasses them."
+            }
+          ],
+          "notEnough": [
+            "Only saying Mongoose validates data without saying what or when."
+          ],
+          "misconceptions": []
+        },
+        "Mongoose pre/post middleware for cross-cutting logic": {
+          "id": "mongoose-hooks",
+          "evidence": [
+            {
+              "id": "pre-post",
+              "text": "pre hooks run before an operation like save, and post hooks run after it, for logic that should always happen."
+            },
+            {
+              "id": "hash",
+              "text": "A pre('save') hook can hash the password before it is stored."
+            },
+            {
+              "id": "modified",
+              "text": "It should check isModified('password'), otherwise it would hash the already-hashed password again on every save."
+            }
+          ],
+          "notEnough": [
+            "Only saying use middleware hooks without explaining when they run."
+          ],
+          "misconceptions": [
+            {
+              "id": "hooks-everywhere",
+              "text": "Says pre('save') hooks also run for updateOne and findByIdAndUpdate calls."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "MongoDB Atlas setup and connection management",
+      "question": "Your Express API connects to MongoDB Atlas and has endpoints to create, read, update and delete posts. Explain how the connection is set up and handled, and how the CRUD handlers should use the model.",
+      "followUps": {
+        "Connecting with mongoose.connect and handling connection events": "Why connect once at startup and listen for connection events, instead of connecting in each request?",
+        "CRUD operations with Mongoose model methods": "findById returns null for a missing post. Why must your handler check for that, and what should it return?"
+      },
+      "criteria": {
+        "Connecting with mongoose.connect and handling connection events": {
+          "id": "mongoose-connection",
+          "evidence": [
+            {
+              "id": "once",
+              "text": "mongoose.connect is called once at startup with the connection string from an environment variable, and the connection pool is reused by all requests."
+            },
+            {
+              "id": "events",
+              "text": "Listening for events like connected and error lets the app log problems and react, for example by not starting the server without a database."
+            }
+          ],
+          "notEnough": [
+            "Only saying call mongoose.connect without explaining when or what happens on failure."
+          ],
+          "misconceptions": []
+        },
+        "CRUD operations with Mongoose model methods": {
+          "id": "mongoose-crud",
+          "evidence": [
+            {
+              "id": "methods",
+              "text": "Model methods like create, find, findById, findByIdAndUpdate and deleteOne do the CRUD work and return promises that must be awaited."
+            },
+            {
+              "id": "null-case",
+              "text": "A query for a missing document returns null instead of throwing, so the handler must check and answer 404."
+            },
+            {
+              "id": "update-options",
+              "text": "findByIdAndUpdate returns the old document unless you ask for the new one, and needs runValidators to apply schema validation."
+            }
+          ],
+          "notEnough": [
+            "Only listing method names without explaining awaiting or the null case."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Querying and indexing for performance",
+      "question": "Users search posts by tag, date range and title text, and the posts collection now has millions of documents and these searches are slow. Explain how you'd write the queries and make them fast.",
+      "followUps": {
+        "MongoDB query operators: $eq, $in, $gte, $regex": "How would you query posts with any of three tags, created this month, and how do operators like $in and $gte work?",
+        "Creating indexes to avoid full collection scans": "What happens on a query without a matching index, and how would you add one?"
+      },
+      "criteria": {
+        "MongoDB query operators: $eq, $in, $gte, $regex": {
+          "id": "query-operators",
+          "evidence": [
+            {
+              "id": "operators",
+              "text": "Filters use operator objects inside the query, like $in for matching any value in a list and $gte and $lte for ranges."
+            },
+            {
+              "id": "regex-cost",
+              "text": "$regex can match text patterns, but a pattern that doesn't start at the beginning of the string can't use an index well and scans many documents."
+            }
+          ],
+          "notEnough": [
+            "Only listing operator names without explaining what they match."
+          ],
+          "misconceptions": []
+        },
+        "Creating indexes to avoid full collection scans": {
+          "id": "mongo-indexes",
+          "evidence": [
+            {
+              "id": "collscan",
+              "text": "Without an index on the filtered field, MongoDB has to scan every document in the collection."
+            },
+            {
+              "id": "create",
+              "text": "You add indexes on fields you often filter or sort by, with schema.index in Mongoose or createIndex."
+            },
+            {
+              "id": "cost",
+              "text": "Indexes take space and slow down writes, so you only add the ones your queries need."
+            }
+          ],
+          "notEnough": [
+            "Only saying add an index without explaining what it avoids."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

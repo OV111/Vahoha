@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "sveltekit-dev-1",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Modern JavaScript Core",
+      "question": "You are writing the data-loading code for a SvelteKit page that imports helpers from other files and fetches from an API. Explain the modern JavaScript you rely on.",
+      "followUps": {
+        "Arrow functions and destructuring syntax": "How do arrow functions and destructuring reduce boilerplate?",
+        "ES modules import and export system": "What is the difference between named and default exports?",
+        "Promises and async/await control flow": "How do you handle errors in async code so they do not fail silently?"
+      },
+      "criteria": {
+        "Arrow functions and destructuring syntax": {
+          "id": "arrows-destructuring",
+          "evidence": [
+            {
+              "id": "arrows",
+              "text": "Arrow functions give a short syntax for functions, often used for callbacks."
+            },
+            {
+              "id": "destructuring",
+              "text": "Destructuring pulls fields out of objects and arrays into variables."
+            },
+            {
+              "id": "common",
+              "text": "Both appear constantly in component and load function code."
+            }
+          ],
+          "notEnough": [
+            "Only naming the features."
+          ],
+          "misconceptions": []
+        },
+        "ES modules import and export system": {
+          "id": "es-modules",
+          "evidence": [
+            {
+              "id": "named",
+              "text": "A module can have many named exports, imported by their exact names."
+            },
+            {
+              "id": "default",
+              "text": "A module has at most one default export, imported under any name."
+            },
+            {
+              "id": "errors",
+              "text": "Mixing them up causes undefined imports or build errors."
+            }
+          ],
+          "notEnough": [
+            "Only saying modules split code."
+          ],
+          "misconceptions": []
+        },
+        "Promises and async/await control flow": {
+          "id": "promises-async",
+          "evidence": [
+            {
+              "id": "promise",
+              "text": "A promise represents a value or error that arrives later."
+            },
+            {
+              "id": "await",
+              "text": "await pauses the function until the promise settles."
+            },
+            {
+              "id": "catch",
+              "text": "try and catch handle failures; unhandled rejections hide errors or crash."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use async/await."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "TypeScript Type System",
+      "question": "SvelteKit generates types for your routes, and you are writing typed load functions. Explain the TypeScript you need.",
+      "followUps": {
+        "Interfaces and type aliases in TypeScript": "When would you use an interface and when a type alias?",
+        "Generics and utility types overview": "How do generics appear in SvelteKit's typed helpers?"
+      },
+      "criteria": {
+        "Interfaces and type aliases in TypeScript": {
+          "id": "interfaces-aliases",
+          "evidence": [
+            {
+              "id": "shape",
+              "text": "Both describe the shape of objects and function signatures."
+            },
+            {
+              "id": "interface",
+              "text": "Interfaces can be extended and merged."
+            },
+            {
+              "id": "alias",
+              "text": "Type aliases can also name unions and other complex types."
+            }
+          ],
+          "notEnough": [
+            "Only saying both define types."
+          ],
+          "misconceptions": []
+        },
+        "Generics and utility types overview": {
+          "id": "generics",
+          "evidence": [
+            {
+              "id": "reusable",
+              "text": "Generics let one type or function work with many types safely."
+            },
+            {
+              "id": "helpers",
+              "text": "SvelteKit's generated types like PageLoad use generics to describe each route's data."
+            },
+            {
+              "id": "utility",
+              "text": "Utility types like Partial and Pick derive new types from existing ones."
+            }
+          ],
+          "notEnough": [
+            "Only saying generics are reusable."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Vite Dev Server",
+      "question": "You are adding a plugin to your SvelteKit project and notice component state resets when you edit some files. Explain how Vite powers development.",
+      "followUps": {
+        "Vite project structure and config file": "What does vite.config.ts control in a SvelteKit project?",
+        "Hot Module Replacement during development": "How does hot module replacement work, and why might state reset?"
+      },
+      "criteria": {
+        "Vite project structure and config file": {
+          "id": "vite-config",
+          "evidence": [
+            {
+              "id": "build-tool",
+              "text": "Vite is the build tool SvelteKit runs on."
+            },
+            {
+              "id": "config",
+              "text": "vite.config.ts adds plugins and customises the dev server and build."
+            },
+            {
+              "id": "sveltekit-plugin",
+              "text": "The SvelteKit plugin is registered there."
+            }
+          ],
+          "notEnough": [
+            "Only saying Vite builds the project."
+          ],
+          "misconceptions": []
+        },
+        "Hot Module Replacement during development": {
+          "id": "hmr",
+          "evidence": [
+            {
+              "id": "patch",
+              "text": "HMR updates only the changed module in the browser."
+            },
+            {
+              "id": "no-reload",
+              "text": "This avoids a full page reload during development."
+            },
+            {
+              "id": "state-loss",
+              "text": "Some changes cannot be patched in place, so the module reloads and its state is lost."
+            }
+          ],
+          "notEnough": [
+            "Only saying HMR updates the page."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "DOM and Browser APIs",
+      "question": "You need to measure an element after it appears and debug a failing API request in a SvelteKit app. Explain when you use browser APIs directly.",
+      "followUps": {
+        "DOM querying and event listener basics": "Why must DOM code run inside onMount?",
+        "Fetch API for HTTP requests": "Why is it useful to know the raw Fetch API when SvelteKit wraps it?"
+      },
+      "criteria": {
+        "DOM querying and event listener basics": {
+          "id": "dom-onmount",
+          "evidence": [
+            {
+              "id": "abstraction",
+              "text": "Svelte usually handles the DOM for you."
+            },
+            {
+              "id": "browser-only",
+              "text": "Components also render on the server, where the DOM does not exist."
+            },
+            {
+              "id": "onmount",
+              "text": "onMount runs only in the browser after the component is added, so DOM APIs are safe there."
+            }
+          ],
+          "notEnough": [
+            "Only saying onMount runs on mount."
+          ],
+          "misconceptions": []
+        },
+        "Fetch API for HTTP requests": {
+          "id": "fetch-api",
+          "evidence": [
+            {
+              "id": "base",
+              "text": "SvelteKit's data loading is built on fetch."
+            },
+            {
+              "id": "status",
+              "text": "fetch resolves even for error statuses, so response.ok must be checked."
+            },
+            {
+              "id": "debug",
+              "text": "Knowing the raw API helps debug network issues and responses."
+            }
+          ],
+          "notEnough": [
+            "Only saying fetch makes requests."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

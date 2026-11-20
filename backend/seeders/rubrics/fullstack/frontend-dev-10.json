@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "frontend-dev-10",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Styling Approaches",
+      "question": "Your app's CSS has grown into thousands of lines with unused rules and class names that clash between components. Explain how Tailwind or CSS Modules would solve this.",
+      "followUps": {
+        "Utility-first with Tailwind": "With Tailwind, what do you do when the same set of classes repeats in many places?",
+        "CSS Modules": "How do CSS Modules stop two components' .title classes from clashing?"
+      },
+      "criteria": {
+        "Utility-first with Tailwind": {
+          "id": "tailwind-utility",
+          "evidence": [
+            {
+              "id": "utilities",
+              "text": "Tailwind styles elements with small single-purpose classes written in the markup."
+            },
+            {
+              "id": "no-dead-css",
+              "text": "This avoids naming classes and leaves no unused CSS behind, since only used classes are generated."
+            },
+            {
+              "id": "extract-component",
+              "text": "Repeated patterns are extracted into a reusable component, not into new CSS classes."
+            }
+          ],
+          "notEnough": [
+            "Only saying Tailwind is faster to write."
+          ],
+          "misconceptions": []
+        },
+        "CSS Modules": {
+          "id": "css-modules",
+          "evidence": [
+            {
+              "id": "scoped",
+              "text": "CSS Modules rename class names at build time so they are unique to their file."
+            },
+            {
+              "id": "no-leak",
+              "text": "Styles in one component cannot accidentally affect another."
+            },
+            {
+              "id": "normal-css",
+              "text": "You still write normal CSS, just without global collisions."
+            }
+          ],
+          "notEnough": [
+            "Only saying CSS Modules are local styles."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Design Tokens",
+      "question": "Marketing wants a new brand color and a dark mode, and today the old color is hard-coded in 200 places. Explain how design tokens and theming would make this a one-line change.",
+      "followUps": {
+        "Tokens as CSS variables": "What is a design token, and why define tokens as CSS variables?",
+        "Theming and dark mode": "How would you switch to dark mode and respect the user's system setting?"
+      },
+      "criteria": {
+        "Tokens as CSS variables": {
+          "id": "tokens-variables",
+          "evidence": [
+            {
+              "id": "named-values",
+              "text": "Design tokens are named values for colors, spacing and type sizes."
+            },
+            {
+              "id": "one-place",
+              "text": "Defining them once as CSS variables means changing a token updates every use."
+            },
+            {
+              "id": "shared-language",
+              "text": "Tokens give designers and developers a shared vocabulary."
+            }
+          ],
+          "notEnough": [
+            "Only saying tokens are variables."
+          ],
+          "misconceptions": []
+        },
+        "Theming and dark mode": {
+          "id": "theming-dark-mode",
+          "evidence": [
+            {
+              "id": "swap-variables",
+              "text": "Changing the token variables on the root element switches the whole theme."
+            },
+            {
+              "id": "system-default",
+              "text": "prefers-color-scheme lets you follow the user's system setting by default."
+            },
+            {
+              "id": "override",
+              "text": "Users should still be able to choose a theme that overrides the default."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would add a dark class."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Components",
+      "question": "You are building a shared Button and a Dialog for your team's component library. Explain how you would design their options and make sure they are accessible.",
+      "followUps": {
+        "Variants and composition": "Why give a Button a few variants like size and intent instead of accepting any style?",
+        "Headless, accessible primitives": "Why use a headless library like Radix for a dialog instead of building it from scratch?"
+      },
+      "criteria": {
+        "Variants and composition": {
+          "id": "variants-composition",
+          "evidence": [
+            {
+              "id": "limited-variants",
+              "text": "A small set of named variants keeps the UI consistent."
+            },
+            {
+              "id": "no-arbitrary",
+              "text": "Accepting arbitrary styles lets every screen drift from the design."
+            },
+            {
+              "id": "mapping",
+              "text": "A helper like class-variance-authority maps each variant to its classes in one place."
+            }
+          ],
+          "notEnough": [
+            "Only listing variants without explaining why they are limited."
+          ],
+          "misconceptions": []
+        },
+        "Headless, accessible primitives": {
+          "id": "headless-primitives",
+          "evidence": [
+            {
+              "id": "behavior",
+              "text": "Headless libraries provide the behavior and accessibility of dialogs, menus and tabs."
+            },
+            {
+              "id": "hard-parts",
+              "text": "That includes focus handling, keyboard support and screen reader attributes that are easy to get wrong."
+            },
+            {
+              "id": "own-style",
+              "text": "They do not impose a look, so you style them with your own design."
+            }
+          ],
+          "notEnough": [
+            "Only saying it saves time."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Documentation",
+      "question": "Designers keep finding small spacing and color differences between screens, and a refactor once changed button styles across the app without anyone noticing. Explain how you would document components and keep the UI consistent.",
+      "followUps": {
+        "Storybook": "What does Storybook give a team that a running app does not?",
+        "Visual consistency checks": "How would you catch an accidental style change before it reaches users?"
+      },
+      "criteria": {
+        "Storybook": {
+          "id": "storybook",
+          "evidence": [
+            {
+              "id": "isolation",
+              "text": "Storybook shows each component on its own, outside the app."
+            },
+            {
+              "id": "variants",
+              "text": "It shows every variant and state, including rare ones like errors."
+            },
+            {
+              "id": "review",
+              "text": "That makes components easy to review, test and hand off to designers."
+            }
+          ],
+          "notEnough": [
+            "Only saying Storybook is documentation."
+          ],
+          "misconceptions": []
+        },
+        "Visual consistency checks": {
+          "id": "visual-consistency",
+          "evidence": [
+            {
+              "id": "scales",
+              "text": "Shared spacing and type scales keep screens consistent."
+            },
+            {
+              "id": "shared-components",
+              "text": "Using shared components instead of one-off styles prevents drift."
+            },
+            {
+              "id": "visual-tests",
+              "text": "Visual regression tests compare screenshots and flag unexpected changes."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would review it manually."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "t3-7",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "OAuth flow and session management in NextAuth",
+      "question": "Users sign in to your T3 app with GitHub, and you must decide how sessions are stored. Explain how the login flow works and the trade-offs between session types.",
+      "followUps": {
+        "How OAuth 2.0 authorization code flow works with a provider": "Walk through what happens between clicking 'Sign in with GitHub' and being logged in.",
+        "JWT strategy versus database sessions: trade-offs": "Why can't you instantly log out a user with JWT sessions, and what does a database session cost?"
+      },
+      "criteria": {
+        "How OAuth 2.0 authorization code flow works with a provider": {
+          "id": "oauth-code-flow",
+          "evidence": [
+            {
+              "id": "redirect",
+              "text": "The user is sent to GitHub to log in and approve access."
+            },
+            {
+              "id": "code",
+              "text": "GitHub redirects back to the app with a short-lived authorization code."
+            },
+            {
+              "id": "exchange",
+              "text": "The server exchanges that code for tokens and the user's profile, then creates a session."
+            }
+          ],
+          "notEnough": [
+            "Only saying OAuth lets users log in with another account."
+          ],
+          "misconceptions": [
+            {
+              "id": "password-shared",
+              "text": "Says the app receives the user's GitHub password."
+            }
+          ]
+        },
+        "JWT strategy versus database sessions: trade-offs": {
+          "id": "jwt-vs-database",
+          "evidence": [
+            {
+              "id": "jwt-stateless",
+              "text": "JWT sessions are stored in the token itself, so no database lookup is needed."
+            },
+            {
+              "id": "no-revoke",
+              "text": "A JWT stays valid until it expires, so it cannot be revoked instantly."
+            },
+            {
+              "id": "db-session",
+              "text": "Database sessions can be revoked at once but need a database query on each request."
+            }
+          ],
+          "notEnough": [
+            "Only saying one uses tokens and one uses a database."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Protecting tRPC procedures and Next.js routes",
+      "question": "Some pages and tRPC procedures must only be used by signed-in users, and some only by admins. Explain how you would read the session on the server and enforce roles.",
+      "followUps": {
+        "Reading the session in server components with getServerSession": "How do you get the session in a server component or tRPC context?",
+        "Role-based authorization in protected tRPC procedures": "How would you add a role to the session and use it to block non-admins?"
+      },
+      "criteria": {
+        "Reading the session in server components with getServerSession": {
+          "id": "server-session",
+          "evidence": [
+            {
+              "id": "server-call",
+              "text": "A server-side helper reads the session from the request cookies."
+            },
+            {
+              "id": "no-round-trip",
+              "text": "This happens on the server without an extra HTTP request."
+            },
+            {
+              "id": "where",
+              "text": "It is used in tRPC context creation and in server components and layouts."
+            }
+          ],
+          "notEnough": [
+            "Only saying you call getServerSession."
+          ],
+          "misconceptions": []
+        },
+        "Role-based authorization in protected tRPC procedures": {
+          "id": "role-authorization",
+          "evidence": [
+            {
+              "id": "extend-type",
+              "text": "The session type is extended to include the user's role."
+            },
+            {
+              "id": "check",
+              "text": "Middleware on admin procedures checks the role."
+            },
+            {
+              "id": "forbidden",
+              "text": "Users without the right role get a forbidden error, separate from being unauthenticated."
+            }
+          ],
+          "notEnough": [
+            "Only saying you check if the user is admin."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Configuring NextAuth in a T3 app",
+      "question": "You are setting up authentication in a fresh T3 app with GitHub and Google login, storing users in your database. Explain the setup and where secrets go.",
+      "followUps": {
+        "Setting up the Prisma adapter for user and session storage": "What does the Prisma adapter do for NextAuth?",
+        "Configuring GitHub and Google OAuth providers": "Where do the GitHub client ID and secret come from, and where must they be stored?"
+      },
+      "criteria": {
+        "Setting up the Prisma adapter for user and session storage": {
+          "id": "prisma-adapter",
+          "evidence": [
+            {
+              "id": "tables",
+              "text": "The adapter stores users, accounts, sessions and verification tokens in your database."
+            },
+            {
+              "id": "schema",
+              "text": "Those models are added to the Prisma schema and created with a migration."
+            },
+            {
+              "id": "link",
+              "text": "It links each sign-in provider account to a single user record."
+            }
+          ],
+          "notEnough": [
+            "Only saying it connects NextAuth to Prisma."
+          ],
+          "misconceptions": []
+        },
+        "Configuring GitHub and Google OAuth providers": {
+          "id": "oauth-providers",
+          "evidence": [
+            {
+              "id": "register",
+              "text": "You register an OAuth app with GitHub or Google to get a client ID and secret."
+            },
+            {
+              "id": "callback",
+              "text": "The provider must know your app's callback URL to send users back."
+            },
+            {
+              "id": "env",
+              "text": "The secret is stored in environment variables and never in code or the client bundle."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add providers to the config."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Client-side session access and sign-in/out",
+      "question": "Your navbar shows the user's avatar, and you need sign-in and sign-out buttons that send users to the right page. Explain how client components access and change the session.",
+      "followUps": {
+        "useSession hook for accessing session in client components": "What does useSession return, and what is needed for it to work?",
+        "signIn and signOut functions and redirect behaviour": "How do signIn and signOut decide where the user ends up?"
+      },
+      "criteria": {
+        "useSession hook for accessing session in client components": {
+          "id": "usesession",
+          "evidence": [
+            {
+              "id": "provider",
+              "text": "The app must be wrapped in a SessionProvider for useSession to work."
+            },
+            {
+              "id": "status",
+              "text": "useSession returns the session and a status of loading, authenticated or unauthenticated."
+            },
+            {
+              "id": "loading",
+              "text": "The UI should handle the loading status instead of assuming the user is signed out."
+            }
+          ],
+          "notEnough": [
+            "Only saying it returns the session."
+          ],
+          "misconceptions": []
+        },
+        "signIn and signOut functions and redirect behaviour": {
+          "id": "signin-signout",
+          "evidence": [
+            {
+              "id": "signin",
+              "text": "signIn starts the login flow for a provider."
+            },
+            {
+              "id": "callback-url",
+              "text": "A callback URL sets where the user is redirected after signing in or out."
+            },
+            {
+              "id": "signout",
+              "text": "signOut clears the session cookie before redirecting."
+            }
+          ],
+          "notEnough": [
+            "Only saying they log the user in and out."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

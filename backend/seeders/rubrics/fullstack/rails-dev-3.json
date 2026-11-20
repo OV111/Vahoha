@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "rails-dev-3",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Active Record Fundamentals",
+      "question": "You are modelling recipes, authors and ingredients in Rails, and bad data keeps getting saved. Explain how models, migrations, associations and validations fit together.",
+      "followUps": {
+        "Models, migrations, and schema evolution": "How do migrations change the database over time?",
+        "Active Record associations and relationships": "How would you model recipes with many ingredients through a join table?",
+        "Model validations for data integrity": "What do validations protect, and what can they not guarantee?"
+      },
+      "criteria": {
+        "Models, migrations, and schema evolution": {
+          "id": "models-migrations",
+          "evidence": [
+            {
+              "id": "mapping",
+              "text": "A model maps to a table by naming convention."
+            },
+            {
+              "id": "migrations",
+              "text": "Migrations are versioned Ruby files that change the schema step by step."
+            },
+            {
+              "id": "shared",
+              "text": "Committing them lets every environment apply the same changes in order."
+            }
+          ],
+          "notEnough": [
+            "Only saying migrations change the database."
+          ],
+          "misconceptions": []
+        },
+        "Active Record associations and relationships": {
+          "id": "associations",
+          "evidence": [
+            {
+              "id": "declare",
+              "text": "belongs_to, has_many and has_one declare relationships."
+            },
+            {
+              "id": "through",
+              "text": "has_many through uses a join model, such as recipe ingredients with quantities."
+            },
+            {
+              "id": "helpers",
+              "text": "Rails generates helper methods to read and build associated records."
+            }
+          ],
+          "notEnough": [
+            "Only listing association types."
+          ],
+          "misconceptions": []
+        },
+        "Model validations for data integrity": {
+          "id": "validations",
+          "evidence": [
+            {
+              "id": "before-save",
+              "text": "Validations run before a record is saved."
+            },
+            {
+              "id": "types",
+              "text": "They check presence, format, uniqueness and custom rules."
+            },
+            {
+              "id": "db-backup",
+              "text": "Uniqueness checks can race under concurrency, so a database unique index is still needed."
+            }
+          ],
+          "notEnough": [
+            "Only saying validations check data."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Querying and Database Patterns",
+      "question": "Your controllers repeat the same where clauses for 'published recipes', and you need to create, update and delete records. Explain the query interface and scopes.",
+      "followUps": {
+        "Query interface and named scopes": "What is a scope and why use one?",
+        "CRUD operations with Active Record": "What is the difference between save, create and update?"
+      },
+      "criteria": {
+        "Query interface and named scopes": {
+          "id": "query-scopes",
+          "evidence": [
+            {
+              "id": "chain",
+              "text": "Queries are built by chaining methods like where, order and limit."
+            },
+            {
+              "id": "scope",
+              "text": "A scope names a reusable query condition, such as published."
+            },
+            {
+              "id": "reuse",
+              "text": "Scopes can be chained together and keep query logic in the model."
+            }
+          ],
+          "notEnough": [
+            "Only saying scopes are queries."
+          ],
+          "misconceptions": []
+        },
+        "CRUD operations with Active Record": {
+          "id": "crud",
+          "evidence": [
+            {
+              "id": "create",
+              "text": "create builds and saves a record in one step."
+            },
+            {
+              "id": "save",
+              "text": "save writes a record and returns false if validations fail."
+            },
+            {
+              "id": "bang",
+              "text": "Bang versions like save! raise an error on failure instead."
+            }
+          ],
+          "notEnough": [
+            "Only listing methods."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Database Configuration",
+      "question": "You are moving from SQLite to PostgreSQL before launch and new developers need sample data. Explain the configuration and seeding.",
+      "followUps": {
+        "Switching SQLite to PostgreSQL in Rails": "What changes when you switch to PostgreSQL?",
+        "Database seeds and test data setup": "What is db/seeds.rb for and how do you make it safe to rerun?"
+      },
+      "criteria": {
+        "Switching SQLite to PostgreSQL in Rails": {
+          "id": "postgres-switch",
+          "evidence": [
+            {
+              "id": "gem",
+              "text": "The PostgreSQL adapter gem is added to the Gemfile."
+            },
+            {
+              "id": "config",
+              "text": "database.yml or a database URL points Rails to PostgreSQL."
+            },
+            {
+              "id": "why",
+              "text": "PostgreSQL is more robust and matches production, unlike SQLite."
+            }
+          ],
+          "notEnough": [
+            "Only saying you change the database."
+          ],
+          "misconceptions": []
+        },
+        "Database seeds and test data setup": {
+          "id": "seeds",
+          "evidence": [
+            {
+              "id": "seeds",
+              "text": "seeds.rb creates initial or sample data."
+            },
+            {
+              "id": "run",
+              "text": "It runs with the db:seed command."
+            },
+            {
+              "id": "idempotent",
+              "text": "Using find_or_create_by makes it safe to run more than once."
+            }
+          ],
+          "notEnough": [
+            "Only saying seeds add data."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Active Record Tooling",
+      "question": "Pages are slow and you suspect too many queries and missing indexes. Explain how you would inspect the database and find slow queries.",
+      "followUps": {
+        "Database console and schema inspection": "What is schema.rb and how do you open the database console?",
+        "Using PgHero and Bullet for query analysis": "What do Bullet and PgHero help you find?"
+      },
+      "criteria": {
+        "Database console and schema inspection": {
+          "id": "dbconsole-schema",
+          "evidence": [
+            {
+              "id": "schema",
+              "text": "schema.rb shows the current database structure generated from migrations."
+            },
+            {
+              "id": "source",
+              "text": "It is used to set up new databases instead of running every migration."
+            },
+            {
+              "id": "dbconsole",
+              "text": "dbconsole opens the database's own command-line client."
+            }
+          ],
+          "notEnough": [
+            "Only saying schema.rb lists tables."
+          ],
+          "misconceptions": []
+        },
+        "Using PgHero and Bullet for query analysis": {
+          "id": "bullet-pghero",
+          "evidence": [
+            {
+              "id": "bullet",
+              "text": "Bullet warns about N+1 queries and missing eager loading in development."
+            },
+            {
+              "id": "pghero",
+              "text": "PgHero shows slow queries and index usage in PostgreSQL."
+            },
+            {
+              "id": "act",
+              "text": "Together they point to where to add includes or indexes."
+            }
+          ],
+          "notEnough": [
+            "Only naming the tools."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

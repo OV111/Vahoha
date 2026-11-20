@@ -1,0 +1,194 @@
+{
+  "path": "fullstack",
+  "layer": "t3-10",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Testing strategy for a T3 application",
+      "question": "You want confidence that your tRPC procedures and key user flows work before every deploy. Explain how you would test a T3 app at the API level and in the browser.",
+      "followUps": {
+        "Unit testing tRPC procedures with the caller API": "How can you test a tRPC procedure without running an HTTP server?",
+        "End-to-end testing with Playwright: browser automation concepts": "What does an end-to-end test with Playwright catch that unit tests miss?"
+      },
+      "criteria": {
+        "Unit testing tRPC procedures with the caller API": {
+          "id": "trpc-caller",
+          "evidence": [
+            {
+              "id": "caller",
+              "text": "tRPC lets tests call procedures directly through a caller."
+            },
+            {
+              "id": "mock-context",
+              "text": "Tests pass a context with a fake session and a test or mocked database."
+            },
+            {
+              "id": "cases",
+              "text": "This checks the procedure's logic, including unauthorized and invalid input cases."
+            }
+          ],
+          "notEnough": [
+            "Only saying you unit test procedures."
+          ],
+          "misconceptions": []
+        },
+        "End-to-end testing with Playwright: browser automation concepts": {
+          "id": "playwright-e2e",
+          "evidence": [
+            {
+              "id": "real-browser",
+              "text": "Playwright drives a real browser through the full app."
+            },
+            {
+              "id": "full-stack",
+              "text": "It checks that frontend, API and database work together."
+            },
+            {
+              "id": "flows",
+              "text": "It is best used for a few critical flows like sign-in and checkout."
+            }
+          ],
+          "notEnough": [
+            "Only saying it tests the whole app."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Production deployment concepts for Next.js on Vercel",
+      "question": "Your T3 app is deployed on Vercel and some pages are fast while others are slow on the first request. Explain how Vercel runs the different parts of a Next.js app.",
+      "followUps": {
+        "Vercel's build output: static, SSR, and Edge runtime": "Where do static pages, server-rendered pages and edge code run on Vercel?"
+      },
+      "criteria": {
+        "Vercel's build output: static, SSR, and Edge runtime": {
+          "id": "vercel-output",
+          "evidence": [
+            {
+              "id": "static-cdn",
+              "text": "Statically generated pages are served from a CDN."
+            },
+            {
+              "id": "ssr-functions",
+              "text": "Server-rendered pages and API routes run in serverless functions."
+            },
+            {
+              "id": "edge",
+              "text": "Edge runtime code runs on servers close to users with a more limited set of APIs."
+            }
+          ],
+          "notEnough": [
+            "Only saying Vercel hosts Next.js."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Writing and running tests for a T3 project",
+      "question": "You are setting up Vitest for a T3 project and testing a component that loads posts through tRPC. Explain the configuration and how the test should be written.",
+      "followUps": {
+        "Vitest configuration for a Next.js project with path aliases": "What needs configuring for Vitest to understand your imports and components?",
+        "Testing React components with Testing Library and mock server": "How would you test a component that loads data through tRPC?"
+      },
+      "criteria": {
+        "Vitest configuration for a Next.js project with path aliases": {
+          "id": "vitest-config",
+          "evidence": [
+            {
+              "id": "aliases",
+              "text": "Path aliases from tsconfig must be added to the Vitest config so imports resolve."
+            },
+            {
+              "id": "react-plugin",
+              "text": "A React plugin handles JSX."
+            },
+            {
+              "id": "jsdom",
+              "text": "Component tests need a browser-like environment such as jsdom."
+            }
+          ],
+          "notEnough": [
+            "Only saying you install Vitest."
+          ],
+          "misconceptions": []
+        },
+        "Testing React components with Testing Library and mock server": {
+          "id": "testing-library-mock",
+          "evidence": [
+            {
+              "id": "render",
+              "text": "Render the component with Testing Library."
+            },
+            {
+              "id": "mock-network",
+              "text": "Fake the API responses, for example with MSW, so the test does not hit a real server."
+            },
+            {
+              "id": "assert-visible",
+              "text": "Find elements by role, interact with user events and check the visible result."
+            }
+          ],
+          "notEnough": [
+            "Only saying you render the component."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Deploying T3 to Vercel with a production database",
+      "question": "You are deploying your T3 app to Vercel with a production database, and a teammate wants to put the database URL in a NEXT_PUBLIC variable to fix an error. Explain how environment variables and migrations should be handled.",
+      "followUps": {
+        "Environment variables in Vercel: build-time versus runtime": "Why must the database URL never be a NEXT_PUBLIC variable?",
+        "Running prisma migrate deploy in the Vercel build step": "How do database migrations get applied when you deploy?"
+      },
+      "criteria": {
+        "Environment variables in Vercel: build-time versus runtime": {
+          "id": "vercel-env-vars",
+          "evidence": [
+            {
+              "id": "inlined",
+              "text": "NEXT_PUBLIC variables are inlined into the browser bundle at build time."
+            },
+            {
+              "id": "visible",
+              "text": "Anything in the bundle can be read by any user."
+            },
+            {
+              "id": "server-only",
+              "text": "Secrets like the database URL stay server-only and are read at runtime."
+            }
+          ],
+          "notEnough": [
+            "Only saying not to expose secrets."
+          ],
+          "misconceptions": []
+        },
+        "Running prisma migrate deploy in the Vercel build step": {
+          "id": "migrate-deploy",
+          "evidence": [
+            {
+              "id": "deploy-command",
+              "text": "prisma migrate deploy applies pending migrations to the production database."
+            },
+            {
+              "id": "before-code",
+              "text": "It runs in the build or release step before the new code serves traffic."
+            },
+            {
+              "id": "no-dev",
+              "text": "migrate dev is for development only and must not be used against production."
+            }
+          ],
+          "notEnough": [
+            "Only saying migrations run on deploy."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

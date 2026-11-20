@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "laravel-vue-6",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "RESTful API Design in Laravel",
+      "question": "A mobile team uses your Laravel API, and renaming a database column broke their app. Explain how API resources and versioning protect clients.",
+      "followUps": {
+        "API Resources and Transforming Eloquent Models": "What do API Resources do between your models and the JSON response?",
+        "API Versioning Strategy": "How would you version the API so old app versions keep working?"
+      },
+      "criteria": {
+        "API Resources and Transforming Eloquent Models": {
+          "id": "api-resources",
+          "evidence": [
+            {
+              "id": "transform",
+              "text": "API Resources turn models into the JSON shape clients receive."
+            },
+            {
+              "id": "decouple",
+              "text": "They separate the database structure from the public API."
+            },
+            {
+              "id": "control",
+              "text": "Renaming a column only requires updating the resource, not every client."
+            }
+          ],
+          "notEnough": [
+            "Only saying resources format JSON."
+          ],
+          "misconceptions": []
+        },
+        "API Versioning Strategy": {
+          "id": "api-versioning",
+          "evidence": [
+            {
+              "id": "prefix",
+              "text": "Versions are separated with URL prefixes like /api/v1 or with headers."
+            },
+            {
+              "id": "evolve",
+              "text": "A new version can change the contract while the old one keeps working."
+            },
+            {
+              "id": "retire",
+              "text": "Old versions are retired only after clients have moved."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add a version number."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "JSON Response Patterns",
+      "question": "Different endpoints return errors in different shapes and some return 200 with an error message. Explain how you would make responses consistent and meaningful.",
+      "followUps": {
+        "Consistent Error Response Structure": "How would you give every API error the same shape?",
+        "HTTP Status Codes and Semantic Responses": "Which status codes would you use for create, delete, invalid input and not found?"
+      },
+      "criteria": {
+        "Consistent Error Response Structure": {
+          "id": "error-envelope",
+          "evidence": [
+            {
+              "id": "handler",
+              "text": "Laravel's exception handler can turn all API errors into one JSON format."
+            },
+            {
+              "id": "fields",
+              "text": "The format includes a message and, for validation, field errors."
+            },
+            {
+              "id": "clients",
+              "text": "Clients can then handle every error the same way."
+            }
+          ],
+          "notEnough": [
+            "Only saying you return JSON errors."
+          ],
+          "misconceptions": []
+        },
+        "HTTP Status Codes and Semantic Responses": {
+          "id": "status-codes",
+          "evidence": [
+            {
+              "id": "success",
+              "text": "201 for created and 204 for a delete with no body."
+            },
+            {
+              "id": "client-errors",
+              "text": "422 for invalid input and 404 when the resource does not exist."
+            },
+            {
+              "id": "why",
+              "text": "Correct codes let clients, caches and monitoring react properly."
+            }
+          ],
+          "notEnough": [
+            "Only saying 200 is success."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Laravel Sanctum API Tokens",
+      "question": "A reporting integration should only read orders, and a leaked token must be stoppable immediately. Explain how Sanctum tokens handle permissions and revocation.",
+      "followUps": {
+        "Token Abilities and Scoped Permissions": "How do token abilities limit what a token can do?",
+        "Token Expiration and Revocation": "How do you revoke a token or make tokens expire?"
+      },
+      "criteria": {
+        "Token Abilities and Scoped Permissions": {
+          "id": "token-abilities",
+          "evidence": [
+            {
+              "id": "abilities",
+              "text": "Tokens are created with ability strings like read:orders."
+            },
+            {
+              "id": "check",
+              "text": "Code checks tokenCan before allowing an action."
+            },
+            {
+              "id": "least",
+              "text": "Giving each token only the abilities it needs limits damage if it leaks."
+            }
+          ],
+          "notEnough": [
+            "Only saying tokens have permissions."
+          ],
+          "misconceptions": []
+        },
+        "Token Expiration and Revocation": {
+          "id": "token-revocation",
+          "evidence": [
+            {
+              "id": "stored",
+              "text": "Sanctum stores tokens in a database table."
+            },
+            {
+              "id": "revoke",
+              "text": "Deleting the token record revokes it immediately."
+            },
+            {
+              "id": "expire",
+              "text": "An expiration setting makes old tokens stop working automatically."
+            }
+          ],
+          "notEnough": [
+            "Only saying you delete tokens."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Rate Limiting",
+      "question": "Your login endpoint is being brute-forced and a partner's integration needs a higher limit than anonymous users. Explain Laravel's rate limiting.",
+      "followUps": {
+        "Laravel's Built-in Rate Limiter": "How do you add rate limits to routes in Laravel?",
+        "Custom Rate Limit Keys": "How would you give logged-in partners a higher limit than anonymous users?"
+      },
+      "criteria": {
+        "Laravel's Built-in Rate Limiter": {
+          "id": "rate-limiter",
+          "evidence": [
+            {
+              "id": "define",
+              "text": "Named limits are defined with the RateLimiter."
+            },
+            {
+              "id": "throttle",
+              "text": "The throttle middleware applies them to routes."
+            },
+            {
+              "id": "login",
+              "text": "Strict limits on login and other auth routes slow down brute-force attacks."
+            }
+          ],
+          "notEnough": [
+            "Only saying Laravel has throttling."
+          ],
+          "misconceptions": []
+        },
+        "Custom Rate Limit Keys": {
+          "id": "custom-keys",
+          "evidence": [
+            {
+              "id": "key",
+              "text": "Limits are keyed by something like user id or IP address."
+            },
+            {
+              "id": "different",
+              "text": "Different limits can apply to authenticated and anonymous requests."
+            },
+            {
+              "id": "fair",
+              "text": "This keeps limits strict for unknown callers without blocking trusted ones."
+            }
+          ],
+          "notEnough": [
+            "Only saying you change the limit."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

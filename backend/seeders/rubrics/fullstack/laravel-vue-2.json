@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "laravel-vue-2",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Laravel Routing Internals",
+      "question": "Your Laravel routes load models by hand and build URLs as hard-coded strings. Explain how route model binding and named routes clean this up.",
+      "followUps": {
+        "Route Model Binding": "How does route model binding work and what happens when the model does not exist?",
+        "Named Routes and URL Generation": "Why use named routes instead of hard-coded URLs?"
+      },
+      "criteria": {
+        "Route Model Binding": {
+          "id": "route-model-binding",
+          "evidence": [
+            {
+              "id": "resolve",
+              "text": "Laravel loads the model automatically from the route parameter."
+            },
+            {
+              "id": "match",
+              "text": "It matches the parameter name to the type-hinted model and its key."
+            },
+            {
+              "id": "404",
+              "text": "If no record is found, Laravel returns a 404 automatically."
+            }
+          ],
+          "notEnough": [
+            "Only saying Laravel injects the model."
+          ],
+          "misconceptions": []
+        },
+        "Named Routes and URL Generation": {
+          "id": "named-routes",
+          "evidence": [
+            {
+              "id": "name",
+              "text": "Routes are given names and URLs are generated from them."
+            },
+            {
+              "id": "change",
+              "text": "Changing a path updates every generated link automatically."
+            },
+            {
+              "id": "no-broken",
+              "text": "Hard-coded URLs break silently when paths change."
+            }
+          ],
+          "notEnough": [
+            "Only saying routes can have names."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Middleware Pipeline",
+      "question": "Admin routes need authentication, logging and a URL prefix, and a teammate is confused about why some middleware code runs after the response is built. Explain Laravel's middleware.",
+      "followUps": {
+        "How Middleware Wraps the Request Lifecycle": "How can middleware run code both before and after the controller?",
+        "Route Groups and Middleware Inheritance": "How do route groups help with shared middleware and prefixes?"
+      },
+      "criteria": {
+        "How Middleware Wraps the Request Lifecycle": {
+          "id": "middleware-onion",
+          "evidence": [
+            {
+              "id": "wrap",
+              "text": "Each middleware wraps the next layer like an onion."
+            },
+            {
+              "id": "before",
+              "text": "Code before calling the next layer runs on the way in."
+            },
+            {
+              "id": "after",
+              "text": "Code after it runs on the way out, with the response available."
+            }
+          ],
+          "notEnough": [
+            "Only saying middleware filters requests."
+          ],
+          "misconceptions": []
+        },
+        "Route Groups and Middleware Inheritance": {
+          "id": "route-groups",
+          "evidence": [
+            {
+              "id": "shared",
+              "text": "A group applies middleware, prefixes and names to many routes at once."
+            },
+            {
+              "id": "inherit",
+              "text": "Every route in the group inherits those settings."
+            },
+            {
+              "id": "no-repeat",
+              "text": "This avoids repeating them and forgetting one on a new route."
+            }
+          ],
+          "notEnough": [
+            "Only saying groups organise routes."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Artisan CLI",
+      "question": "You keep creating controllers by hand with typos in namespaces, and a nightly cleanup task runs from a random script. Explain how Artisan helps.",
+      "followUps": {
+        "Artisan Make Commands and Code Generation": "What do Artisan's make commands give you?",
+        "Custom Artisan Commands for Automation": "Why turn a recurring task into a custom Artisan command?"
+      },
+      "criteria": {
+        "Artisan Make Commands and Code Generation": {
+          "id": "artisan-make",
+          "evidence": [
+            {
+              "id": "generate",
+              "text": "make commands create files like controllers, models and migrations."
+            },
+            {
+              "id": "conventions",
+              "text": "Generated files follow Laravel's naming and namespace conventions."
+            },
+            {
+              "id": "fewer-errors",
+              "text": "This avoids small mistakes from writing boilerplate by hand."
+            }
+          ],
+          "notEnough": [
+            "Only listing commands."
+          ],
+          "misconceptions": []
+        },
+        "Custom Artisan Commands for Automation": {
+          "id": "custom-commands",
+          "evidence": [
+            {
+              "id": "encapsulate",
+              "text": "A custom command wraps an operational task in a named CLI tool."
+            },
+            {
+              "id": "anywhere",
+              "text": "It can be run in any environment the same way."
+            },
+            {
+              "id": "schedule",
+              "text": "It can be scheduled by Laravel's scheduler."
+            }
+          ],
+          "notEnough": [
+            "Only saying you can create commands."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Service Container Basics",
+      "question": "A controller creates its own mailer and payment client with new, and tests cannot replace them. Explain how Laravel's service container and facades work.",
+      "followUps": {
+        "Automatic Constructor Injection": "How does Laravel inject dependencies into a controller's constructor?",
+        "Facades vs. Dependency Injection": "What is a facade, and why might you prefer constructor injection?"
+      },
+      "criteria": {
+        "Automatic Constructor Injection": {
+          "id": "constructor-injection",
+          "evidence": [
+            {
+              "id": "reflection",
+              "text": "The container reads the constructor's type hints."
+            },
+            {
+              "id": "resolve",
+              "text": "It creates and passes in the needed objects automatically."
+            },
+            {
+              "id": "swap",
+              "text": "Because they come from the container, tests can replace them with fakes."
+            }
+          ],
+          "notEnough": [
+            "Only saying Laravel injects dependencies."
+          ],
+          "misconceptions": []
+        },
+        "Facades vs. Dependency Injection": {
+          "id": "facades-vs-di",
+          "evidence": [
+            {
+              "id": "proxy",
+              "text": "A facade is a static-looking proxy to an object in the container."
+            },
+            {
+              "id": "hidden",
+              "text": "It hides the dependency, so a class's needs are not visible in its constructor."
+            },
+            {
+              "id": "testing",
+              "text": "Constructor injection makes dependencies explicit and easier to test, though facades can also be faked."
+            }
+          ],
+          "notEnough": [
+            "Only saying facades are static."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

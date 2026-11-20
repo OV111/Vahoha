@@ -1,0 +1,231 @@
+{
+  "path": "fullstack",
+  "layer": "mern-3",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "React's component model and virtual DOM reconciliation",
+      "question": "In your MERN app, a parent component holds a list of posts and each child shows a like button. When a user clicks like, explain how the change travels through your components and how React updates the page without rebuilding all of it.",
+      "followUps": {
+        "How React diffs the virtual DOM and batches DOM updates": "When state changes and a component re-renders, why doesn't React replace the whole page in the real DOM?",
+        "Unidirectional data flow: props down, events up": "How does the like button in the child change state that lives in the parent, and why is that easier to debug?"
+      },
+      "criteria": {
+        "How React diffs the virtual DOM and batches DOM updates": {
+          "id": "reconciliation",
+          "evidence": [
+            {
+              "id": "new-tree",
+              "text": "On each render React produces a new tree of elements and compares it with the previous one."
+            },
+            {
+              "id": "minimal",
+              "text": "It then applies only the differences to the real DOM, and groups several state updates into one re-render."
+            }
+          ],
+          "notEnough": [
+            "Only saying React uses a virtual DOM so it's fast, without explaining the comparison."
+          ],
+          "misconceptions": [
+            {
+              "id": "no-dom",
+              "text": "Says React never updates the real DOM, only the virtual DOM."
+            }
+          ]
+        },
+        "Unidirectional data flow: props down, events up": {
+          "id": "data-flow",
+          "evidence": [
+            {
+              "id": "props-down",
+              "text": "Data is passed down from parent to child through props."
+            },
+            {
+              "id": "callbacks-up",
+              "text": "A child changes the parent's state by calling a function the parent passed down as a prop."
+            },
+            {
+              "id": "traceable",
+              "text": "Because state only changes where it lives, any change can be traced back to one place."
+            }
+          ],
+          "notEnough": [
+            "Only saying data flows one way without explaining how a child updates a parent."
+          ],
+          "misconceptions": [
+            {
+              "id": "mutate-props",
+              "text": "Says a child can change its props directly to update the parent."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "useState and useEffect semantics",
+      "question": "Your component has a counter, and it also subscribes to live updates when it mounts. A teammate reports that the counter sometimes uses an old value and the subscription keeps firing after leaving the page. Explain why both bugs happen and how you'd fix them.",
+      "followUps": {
+        "Why state updates are asynchronous and batched": "You call setCount(count + 1) twice in one click handler and the count only goes up by one. Why, and what's the fix?",
+        "useEffect dependency array and cleanup functions": "What decides when your effect runs again, and what goes wrong if you don't return a cleanup function?"
+      },
+      "criteria": {
+        "Why state updates are asynchronous and batched": {
+          "id": "state-updates",
+          "evidence": [
+            {
+              "id": "next-render",
+              "text": "Calling the setter doesn't change the variable right away; React queues the update and the new value is seen on the next render."
+            },
+            {
+              "id": "batched",
+              "text": "Updates in the same handler are batched into one re-render, and both calls read the same old count."
+            },
+            {
+              "id": "functional-update",
+              "text": "Passing a function, like setCount(c => c + 1), always works from the latest value."
+            }
+          ],
+          "notEnough": [
+            "Only saying state is asynchronous without explaining why the old value is read."
+          ],
+          "misconceptions": [
+            {
+              "id": "immediate",
+              "text": "Says the state variable holds the new value right after the setter is called."
+            }
+          ]
+        },
+        "useEffect dependency array and cleanup functions": {
+          "id": "effect-cleanup",
+          "evidence": [
+            {
+              "id": "dependencies",
+              "text": "The effect runs after render and again whenever a value in its dependency array changes; an empty array means only after the first render."
+            },
+            {
+              "id": "cleanup",
+              "text": "The function returned from the effect runs before the effect runs again and when the component unmounts, to cancel subscriptions, timers or requests."
+            }
+          ],
+          "notEnough": [
+            "Only naming the dependency array and cleanup without saying when each one runs."
+          ],
+          "misconceptions": [
+            {
+              "id": "no-array-once",
+              "text": "Says an effect with no dependency array runs only once."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "JSX syntax and component composition patterns",
+      "question": "You're building a product list that renders a Button component for each product, shows 'No products' when the list is empty, and lets users reorder the items. Explain what your JSX turns into and how React keeps the list correct.",
+      "followUps": {
+        "JSX compiles to React.createElement calls": "What does <Button color=\"blue\">Click</Button> become after compiling, and why does that explain JSX's rules?",
+        "Rendering lists with key props and conditional rendering": "Why is using the array index as the key a problem when the list can be reordered?"
+      },
+      "criteria": {
+        "JSX compiles to React.createElement calls": {
+          "id": "jsx-compiles",
+          "evidence": [
+            {
+              "id": "function-calls",
+              "text": "JSX is compiled into JavaScript function calls, like React.createElement(Button, { color: 'blue' }, 'Click'), that create element objects."
+            },
+            {
+              "id": "expressions",
+              "text": "Because it's JavaScript, you use expressions inside JSX, like a ternary or && for conditions, and a component returns one root element or a Fragment."
+            }
+          ],
+          "notEnough": [
+            "Only saying JSX is HTML in JavaScript without saying what it compiles to."
+          ],
+          "misconceptions": [
+            {
+              "id": "jsx-is-html",
+              "text": "Says the browser reads JSX directly as HTML."
+            }
+          ]
+        },
+        "Rendering lists with key props and conditional rendering": {
+          "id": "list-keys",
+          "evidence": [
+            {
+              "id": "identity",
+              "text": "React uses keys to match each list item with the same item from the previous render."
+            },
+            {
+              "id": "stable-id",
+              "text": "Keys should be stable unique ids, like database ids; index keys break when items are reordered, inserted or removed, and state gets mixed up between items."
+            }
+          ],
+          "notEnough": [
+            "Only saying every list item needs a key without explaining what React uses it for."
+          ],
+          "misconceptions": [
+            {
+              "id": "key-is-prop",
+              "text": "Says the key is passed to the component as a normal prop it can read."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Controlled forms and event handling in React",
+      "question": "You're building a signup form in React with name, email and password fields, live validation and a reset button. Explain how React should own the input values and how event handling works in React.",
+      "followUps": {
+        "Controlled inputs: value prop + onChange handler": "What makes an input controlled, and why does that make validation and clearing the form easy?",
+        "Synthetic events and event pooling in React": "What is a SyntheticEvent, and can you still read the event's properties inside a setTimeout in modern React?"
+      },
+      "criteria": {
+        "Controlled inputs: value prop + onChange handler": {
+          "id": "controlled-inputs",
+          "evidence": [
+            {
+              "id": "value-state",
+              "text": "A controlled input gets its value from React state, and onChange updates that state on every keystroke."
+            },
+            {
+              "id": "single-source",
+              "text": "React state is then the single source of truth, so validating, transforming or clearing the value is just changing state."
+            },
+            {
+              "id": "needs-handler",
+              "text": "Without an onChange handler a controlled input can't change, so every controlled input needs one."
+            }
+          ],
+          "notEnough": [
+            "Only saying use value and onChange without explaining that state drives the input."
+          ],
+          "misconceptions": []
+        },
+        "Synthetic events and event pooling in React": {
+          "id": "synthetic-events",
+          "evidence": [
+            {
+              "id": "wrapper",
+              "text": "React passes handlers a SyntheticEvent, a wrapper around the native event with the same interface across browsers."
+            },
+            {
+              "id": "no-pooling",
+              "text": "Since React 17 events are no longer pooled, so their properties can be read later, for example in a timeout, without event.persist()."
+            }
+          ],
+          "notEnough": [
+            "Only saying React has its own events without saying what they wrap."
+          ],
+          "misconceptions": [
+            {
+              "id": "persist-needed",
+              "text": "Says modern React still needs event.persist() to read an event asynchronously."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

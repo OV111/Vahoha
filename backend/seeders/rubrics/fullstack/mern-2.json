@@ -1,0 +1,246 @@
+{
+  "path": "fullstack",
+  "layer": "mern-2",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "The JavaScript event loop and async execution model",
+      "question": "A teammate's code logs messages in an order they didn't expect, and a list of click handlers created in a loop all use the last value. Explain how JavaScript decides when each piece of code runs, and how functions remember the variables around them.",
+      "followUps": {
+        "Call stack, task queue, and microtask queue ordering": "In what order do a console.log, a Promise.then callback and a setTimeout with 0 ms run, and why?",
+        "How closures capture free variables in the scope chain": "Why might every handler created in a loop use the last value, and how does let fix it?"
+      },
+      "criteria": {
+        "Call stack, task queue, and microtask queue ordering": {
+          "id": "event-loop-order",
+          "evidence": [
+            {
+              "id": "stack-first",
+              "text": "The current synchronous code on the call stack always runs to the end first."
+            },
+            {
+              "id": "microtasks",
+              "text": "Then all microtasks, such as promise callbacks, run before the next task."
+            },
+            {
+              "id": "tasks",
+              "text": "Timer callbacks like setTimeout are tasks, so they run after the microtasks, even with a 0 ms delay."
+            }
+          ],
+          "notEnough": [
+            "Only naming the call stack and the queues without explaining the order."
+          ],
+          "misconceptions": [
+            {
+              "id": "timeout-zero",
+              "text": "Says setTimeout with 0 ms runs immediately, before any promise callbacks."
+            }
+          ]
+        },
+        "How closures capture free variables in the scope chain": {
+          "id": "closures",
+          "evidence": [
+            {
+              "id": "captures",
+              "text": "A function keeps access to the variables of the scope it was created in, even after that scope has finished."
+            },
+            {
+              "id": "reference",
+              "text": "It holds the variable itself, not a copy of its value, so it sees later changes to it."
+            },
+            {
+              "id": "let-loop",
+              "text": "With let, each loop iteration gets its own variable, so each handler remembers its own value; with var they all share one."
+            }
+          ],
+          "notEnough": [
+            "Only defining a closure as a function inside a function without explaining what it keeps."
+          ],
+          "misconceptions": [
+            {
+              "id": "copies-value",
+              "text": "Says a closure stores a copy of the variable's value at the moment it was created."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Promises and the async/await desugaring",
+      "question": "Your dashboard loads a user, then their orders, then shows stats from three independent APIs. Explain how you'd write these async calls so they're readable, as fast as possible, and don't lose errors.",
+      "followUps": {
+        "Promise chaining versus async/await for sequential calls": "How do the same sequential calls look with .then chains versus async/await, and what does await actually do?",
+        "Promise.all, Promise.allSettled, and race conditions": "What's the difference between Promise.all and Promise.allSettled when one of the three APIs fails?"
+      },
+      "criteria": {
+        "Promise chaining versus async/await for sequential calls": {
+          "id": "promises-vs-await",
+          "evidence": [
+            {
+              "id": "same-thing",
+              "text": "async and await are built on promises: an async function returns a promise, and await pauses that function until the promise settles."
+            },
+            {
+              "id": "sequential",
+              "text": "Each await waits for the previous call, which is right when a call needs the result of the one before."
+            },
+            {
+              "id": "errors",
+              "text": "Errors are caught with try/catch around awaits, or with .catch on a chain; an unhandled rejection is lost."
+            }
+          ],
+          "notEnough": [
+            "Only saying async/await is cleaner than .then without explaining what await does."
+          ],
+          "misconceptions": [
+            {
+              "id": "await-blocks",
+              "text": "Says await blocks the whole program until the promise finishes."
+            }
+          ]
+        },
+        "Promise.all, Promise.allSettled, and race conditions": {
+          "id": "promise-combinators",
+          "evidence": [
+            {
+              "id": "parallel",
+              "text": "Starting independent calls together and waiting for all of them is faster than awaiting them one by one."
+            },
+            {
+              "id": "all-rejects",
+              "text": "Promise.all rejects as soon as any promise rejects, so you lose the other results."
+            },
+            {
+              "id": "allsettled",
+              "text": "Promise.allSettled waits for every promise and reports each one's success or failure, so the page can show what did load."
+            }
+          ],
+          "notEnough": [
+            "Only listing Promise.all and allSettled without saying how they handle a failure."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Modern ES6+ syntax patterns used in MERN codebases",
+      "question": "Your React component receives a user object as props and an array of orders from the API, and needs to show only the paid orders' totals. Explain the modern JavaScript syntax you'd use to unpack, copy and transform this data.",
+      "followUps": {
+        "Destructuring, spread, and rest in function signatures": "How do destructuring, spread and rest differ, and why do you see spread so often when updating state?",
+        "Array methods: map, filter, reduce, and their composition": "How would you get the total of the paid orders using filter, map and reduce, and what does each step return?"
+      },
+      "criteria": {
+        "Destructuring, spread, and rest in function signatures": {
+          "id": "destructure-spread",
+          "evidence": [
+            {
+              "id": "destructure",
+              "text": "Destructuring pulls properties or array items into variables in one line, for example in a function's parameters."
+            },
+            {
+              "id": "spread",
+              "text": "Spread copies the items of an array or the properties of an object into a new one, which is how you make an updated copy without changing the original."
+            },
+            {
+              "id": "rest",
+              "text": "Rest collects the remaining items or properties into a new array or object."
+            }
+          ],
+          "notEnough": [
+            "Only naming destructuring, spread and rest without explaining what each one does."
+          ],
+          "misconceptions": [
+            {
+              "id": "deep-copy",
+              "text": "Says spreading an object makes a deep copy of all nested objects."
+            }
+          ]
+        },
+        "Array methods: map, filter, reduce, and their composition": {
+          "id": "array-methods",
+          "evidence": [
+            {
+              "id": "filter",
+              "text": "filter returns a new array with only the items that pass a test, like the paid orders."
+            },
+            {
+              "id": "map",
+              "text": "map returns a new array with each item transformed, like each order turned into its amount."
+            },
+            {
+              "id": "reduce",
+              "text": "reduce combines all items into one value, like the sum of the amounts."
+            }
+          ],
+          "notEnough": [
+            "Only listing the method names without saying what each one returns."
+          ],
+          "misconceptions": [
+            {
+              "id": "mutates",
+              "text": "Says map and filter change the original array."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Fetch API and error handling patterns",
+      "question": "Your frontend calls the API with fetch, and when the server returns a 500 the page silently shows nothing. Your project also mixes require and import. Explain what's going wrong with the fetch, and how the two module systems differ.",
+      "followUps": {
+        "fetch, Response.ok, and typed error handling": "Why doesn't fetch throw on a 404 or 500, and how do you handle it properly?",
+        "ES modules: import/export and the difference from CommonJS": "What's the practical difference between require and import, and why can't you always mix them freely?"
+      },
+      "criteria": {
+        "fetch, Response.ok, and typed error handling": {
+          "id": "fetch-errors",
+          "evidence": [
+            {
+              "id": "no-reject",
+              "text": "fetch only rejects on network failure; a 404 or 500 still resolves with a response."
+            },
+            {
+              "id": "check-ok",
+              "text": "You have to check response.ok or the status and throw or handle the error yourself."
+            },
+            {
+              "id": "parse",
+              "text": "The body is read separately, for example with response.json(), which is also async and can fail."
+            }
+          ],
+          "notEnough": [
+            "Only saying wrap fetch in try/catch without explaining that HTTP errors don't reject."
+          ],
+          "misconceptions": [
+            {
+              "id": "rejects-on-500",
+              "text": "Says fetch rejects its promise when the server returns a 500."
+            }
+          ]
+        },
+        "ES modules: import/export and the difference from CommonJS": {
+          "id": "esm-vs-commonjs",
+          "evidence": [
+            {
+              "id": "static",
+              "text": "ES module imports and exports are static, so tools can analyze them before the code runs, which enables things like tree shaking."
+            },
+            {
+              "id": "dynamic",
+              "text": "CommonJS require is a normal function call that runs at runtime and loads modules synchronously."
+            },
+            {
+              "id": "boundary",
+              "text": "A file is treated as one system or the other, set by package.json type or the .mjs and .cjs extensions, which decides which syntax works in it."
+            }
+          ],
+          "notEnough": [
+            "Only saying import is newer than require without explaining the difference."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

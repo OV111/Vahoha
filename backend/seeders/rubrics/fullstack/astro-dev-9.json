@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "astro-dev-9",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Core Web Vitals",
+      "question": "Your Astro blog's hero image loads slowly and text jumps around as images load. Explain the two metrics affected and how you would fix them.",
+      "followUps": {
+        "Largest Contentful Paint (LCP)": "What affects Largest Contentful Paint and how do you improve it?",
+        "Cumulative Layout Shift (CLS)": "What causes layout shift and how do you prevent it?"
+      },
+      "criteria": {
+        "Largest Contentful Paint (LCP)": {
+          "id": "lcp",
+          "evidence": [
+            {
+              "id": "measure",
+              "text": "LCP measures when the largest visible element finishes rendering."
+            },
+            {
+              "id": "causes",
+              "text": "Large unoptimised hero images and slow servers delay it."
+            },
+            {
+              "id": "fix",
+              "text": "Optimised, correctly sized images loaded with priority improve it."
+            }
+          ],
+          "notEnough": [
+            "Only saying LCP is load speed."
+          ],
+          "misconceptions": []
+        },
+        "Cumulative Layout Shift (CLS)": {
+          "id": "cls",
+          "evidence": [
+            {
+              "id": "measure",
+              "text": "CLS measures unexpected layout movement."
+            },
+            {
+              "id": "causes",
+              "text": "Images without dimensions and late-inserted content cause shifts."
+            },
+            {
+              "id": "fix",
+              "text": "Setting width and height or reserving space prevents them."
+            }
+          ],
+          "notEnough": [
+            "Only saying CLS is layout shift."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Lighthouse Auditing",
+      "question": "Performance keeps slipping with each release and nobody notices. Explain how you would audit automatically and set limits.",
+      "followUps": {
+        "Running Lighthouse in CI": "How does Lighthouse CI catch regressions?",
+        "Performance Budget": "What is a performance budget?"
+      },
+      "criteria": {
+        "Running Lighthouse in CI": {
+          "id": "lighthouse-ci",
+          "evidence": [
+            {
+              "id": "pipeline",
+              "text": "Lighthouse CI runs audits in the deployment pipeline."
+            },
+            {
+              "id": "thresholds",
+              "text": "Builds fail when scores drop below set thresholds."
+            },
+            {
+              "id": "categories",
+              "text": "It covers performance, accessibility and SEO."
+            }
+          ],
+          "notEnough": [
+            "Only saying you run Lighthouse."
+          ],
+          "misconceptions": []
+        },
+        "Performance Budget": {
+          "id": "performance-budget",
+          "evidence": [
+            {
+              "id": "limits",
+              "text": "A budget sets maximum sizes and timings, like JavaScript size or time to interactive."
+            },
+            {
+              "id": "enforced",
+              "text": "Tools enforce it automatically."
+            },
+            {
+              "id": "prevent",
+              "text": "It stops slow growth that nobody notices release by release."
+            }
+          ],
+          "notEnough": [
+            "Only saying budgets limit size."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "SEO Fundamentals",
+      "question": "Your Astro pages rarely show up in search results and shared links have no preview. Explain meta tags and sitemaps.",
+      "followUps": {
+        "Meta Tags and Open Graph": "What do meta description and Open Graph tags do?",
+        "Sitemap Generation": "How does a sitemap help, and how do you generate one in Astro?"
+      },
+      "criteria": {
+        "Meta Tags and Open Graph": {
+          "id": "meta-og",
+          "evidence": [
+            {
+              "id": "description",
+              "text": "The meta description summarises the page for search results."
+            },
+            {
+              "id": "og",
+              "text": "Open Graph tags control link previews on social sites."
+            },
+            {
+              "id": "unique",
+              "text": "Each page needs its own accurate tags."
+            }
+          ],
+          "notEnough": [
+            "Only listing tags."
+          ],
+          "misconceptions": []
+        },
+        "Sitemap Generation": {
+          "id": "sitemap",
+          "evidence": [
+            {
+              "id": "list",
+              "text": "A sitemap lists the site's public URLs."
+            },
+            {
+              "id": "discover",
+              "text": "It helps search engines find all pages."
+            },
+            {
+              "id": "integration",
+              "text": "The sitemap integration generates it automatically at build time."
+            }
+          ],
+          "notEnough": [
+            "Only saying sitemaps help SEO."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Asset Optimization",
+      "question": "Text is invisible for a moment while fonts load, and the first paint waits on a large stylesheet. Explain how you would load fonts and CSS.",
+      "followUps": {
+        "Font Loading Strategy": "What does font-display swap change?",
+        "Critical CSS and Resource Hints": "How do critical CSS and resource hints speed up the first paint?"
+      },
+      "criteria": {
+        "Font Loading Strategy": {
+          "id": "font-loading",
+          "evidence": [
+            {
+              "id": "invisible",
+              "text": "Without it, text can be hidden while the web font downloads."
+            },
+            {
+              "id": "swap",
+              "text": "swap shows a fallback font immediately and switches when the font loads."
+            },
+            {
+              "id": "preload",
+              "text": "Preloading key fonts makes them arrive sooner."
+            }
+          ],
+          "notEnough": [
+            "Only saying you optimise fonts."
+          ],
+          "misconceptions": []
+        },
+        "Critical CSS and Resource Hints": {
+          "id": "critical-css",
+          "evidence": [
+            {
+              "id": "inline",
+              "text": "Critical CSS inlines the styles needed for the first screen."
+            },
+            {
+              "id": "no-block",
+              "text": "This avoids waiting for a full stylesheet before painting."
+            },
+            {
+              "id": "hints",
+              "text": "Resource hints like preload and preconnect start important downloads early."
+            }
+          ],
+          "notEnough": [
+            "Only saying you inline CSS."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

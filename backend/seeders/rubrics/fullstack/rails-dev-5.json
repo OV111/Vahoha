@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "rails-dev-5",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Authentication Concepts",
+      "question": "You are adding login to your Rails app, plus an admin role that can delete any recipe. Explain how sessions, password storage and roles work.",
+      "followUps": {
+        "Sessions, cookies, and stateful authentication": "How does a Rails session keep a user logged in?",
+        "Password hashing with bcrypt security": "What does has_secure_password do?",
+        "Authorization roles and permissions design": "How is authorization different from authentication?"
+      },
+      "criteria": {
+        "Sessions, cookies, and stateful authentication": {
+          "id": "sessions-cookies",
+          "evidence": [
+            {
+              "id": "cookie",
+              "text": "Rails stores session data in a signed, encrypted cookie."
+            },
+            {
+              "id": "persist",
+              "text": "The session persists data like the user id between requests."
+            },
+            {
+              "id": "tamper",
+              "text": "Signing and encryption stop users from reading or changing it."
+            }
+          ],
+          "notEnough": [
+            "Only saying sessions use cookies."
+          ],
+          "misconceptions": []
+        },
+        "Password hashing with bcrypt security": {
+          "id": "bcrypt",
+          "evidence": [
+            {
+              "id": "hash",
+              "text": "It hashes passwords with bcrypt before saving."
+            },
+            {
+              "id": "slow-salt",
+              "text": "bcrypt is deliberately slow and salted, which makes cracking leaked hashes hard."
+            },
+            {
+              "id": "authenticate",
+              "text": "It adds an authenticate method that checks a password against the hash."
+            }
+          ],
+          "notEnough": [
+            "Only saying it secures passwords."
+          ],
+          "misconceptions": []
+        },
+        "Authorization roles and permissions design": {
+          "id": "roles-permissions",
+          "evidence": [
+            {
+              "id": "difference",
+              "text": "Authentication checks who the user is; authorization decides what they may do."
+            },
+            {
+              "id": "roles",
+              "text": "Roles like admin and user group permissions."
+            },
+            {
+              "id": "check-before",
+              "text": "Permissions are checked before sensitive actions."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add roles."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Authentication Patterns",
+      "question": "You are building sign-up, login and logout by hand, and some pages must only be seen by logged-in users. Explain the flow and how you protect actions.",
+      "followUps": {
+        "User signup, login, and logout flow": "Walk through what happens at sign-up, login and logout.",
+        "Protecting controller actions with before_action": "How does before_action protect controller actions?"
+      },
+      "criteria": {
+        "User signup, login, and logout flow": {
+          "id": "auth-flow",
+          "evidence": [
+            {
+              "id": "signup",
+              "text": "Sign-up creates a user with a hashed password."
+            },
+            {
+              "id": "login",
+              "text": "Login checks credentials and stores the user id in the session."
+            },
+            {
+              "id": "logout",
+              "text": "Logout clears the session."
+            }
+          ],
+          "notEnough": [
+            "Only saying users can log in and out."
+          ],
+          "misconceptions": []
+        },
+        "Protecting controller actions with before_action": {
+          "id": "before-action",
+          "evidence": [
+            {
+              "id": "filter",
+              "text": "before_action runs a method before chosen actions."
+            },
+            {
+              "id": "redirect",
+              "text": "If the user is not logged in, it redirects and stops the action."
+            },
+            {
+              "id": "apply",
+              "text": "It can apply to all actions with exceptions for public ones."
+            }
+          ],
+          "notEnough": [
+            "Only saying before_action runs first."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Authentication Libraries",
+      "question": "You need password resets, email confirmation and 'Sign in with GitHub' quickly. Explain the libraries you would use.",
+      "followUps": {
+        "Devise gem for full-featured authentication": "What does Devise give you out of the box?",
+        "OmniAuth for third-party OAuth providers": "How does OmniAuth add GitHub login?"
+      },
+      "criteria": {
+        "Devise gem for full-featured authentication": {
+          "id": "devise",
+          "evidence": [
+            {
+              "id": "features",
+              "text": "Devise provides sign-up, sign-in, password reset and email confirmation."
+            },
+            {
+              "id": "modules",
+              "text": "It is modular, so you enable only the features you need."
+            },
+            {
+              "id": "trade-off",
+              "text": "It saves time but adds conventions you must learn and customise around."
+            }
+          ],
+          "notEnough": [
+            "Only saying Devise handles auth."
+          ],
+          "misconceptions": []
+        },
+        "OmniAuth for third-party OAuth providers": {
+          "id": "omniauth",
+          "evidence": [
+            {
+              "id": "standard",
+              "text": "OmniAuth gives one interface for OAuth providers."
+            },
+            {
+              "id": "providers",
+              "text": "Each provider, like GitHub or Google, is added as a strategy with its credentials."
+            },
+            {
+              "id": "devise",
+              "text": "It integrates with Devise to sign in or create the user."
+            }
+          ],
+          "notEnough": [
+            "Only saying it supports OAuth."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Authorization Libraries",
+      "question": "Rules like 'only the author or an admin can edit a recipe' are scattered across controllers. Explain how Pundit or CanCanCan organise authorization.",
+      "followUps": {
+        "Pundit policy objects for authorization": "How does Pundit structure authorization rules?",
+        "CanCanCan ability-based authorization": "How does CanCanCan differ from Pundit?"
+      },
+      "criteria": {
+        "Pundit policy objects for authorization": {
+          "id": "pundit",
+          "evidence": [
+            {
+              "id": "policies",
+              "text": "Pundit uses a plain Ruby policy class per model."
+            },
+            {
+              "id": "methods",
+              "text": "Each action has a method, like update?, returning true or false."
+            },
+            {
+              "id": "authorize",
+              "text": "Controllers call authorize, keeping rules out of controllers."
+            }
+          ],
+          "notEnough": [
+            "Only saying Pundit uses policies."
+          ],
+          "misconceptions": []
+        },
+        "CanCanCan ability-based authorization": {
+          "id": "cancancan",
+          "evidence": [
+            {
+              "id": "ability",
+              "text": "CanCanCan defines all permissions in one Ability class."
+            },
+            {
+              "id": "can-cannot",
+              "text": "Rules are written with can and cannot."
+            },
+            {
+              "id": "auto",
+              "text": "It can load and authorize resources for standard actions automatically."
+            }
+          ],
+          "notEnough": [
+            "Only saying it handles permissions."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

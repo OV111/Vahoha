@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "nuxt-dev-6",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Database Integration Patterns",
+      "question": "You are adding PostgreSQL with Drizzle to your Nuxt app and the schema will evolve. Explain how Drizzle defines the schema and changes the database.",
+      "followUps": {
+        "Drizzle ORM Schema Definition": "How does Drizzle define a schema and give you typed queries?",
+        "Drizzle Migrations Workflow": "How does Drizzle's migration workflow work?"
+      },
+      "criteria": {
+        "Drizzle ORM Schema Definition": {
+          "id": "drizzle-schema",
+          "evidence": [
+            {
+              "id": "typescript",
+              "text": "The schema is written in TypeScript as table definitions."
+            },
+            {
+              "id": "inference",
+              "text": "Query types are inferred from it without a code generation step."
+            },
+            {
+              "id": "source",
+              "text": "The schema is the single source of truth for the database structure."
+            }
+          ],
+          "notEnough": [
+            "Only saying Drizzle is an ORM."
+          ],
+          "misconceptions": []
+        },
+        "Drizzle Migrations Workflow": {
+          "id": "drizzle-migrations",
+          "evidence": [
+            {
+              "id": "generate",
+              "text": "drizzle-kit generate writes SQL migration files from schema changes."
+            },
+            {
+              "id": "apply",
+              "text": "drizzle-kit migrate applies them to the database."
+            },
+            {
+              "id": "review",
+              "text": "The generated SQL should be reviewed before applying it."
+            }
+          ],
+          "notEnough": [
+            "Only saying you run migrations."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "PostgreSQL Fundamentals",
+      "question": "Your serverless deployment runs out of database connections, and creating a user plus their profile sometimes leaves half-saved data. Explain pooling and transactions.",
+      "followUps": {
+        "Connection Pooling in Serverless Environments": "Why do serverless functions exhaust PostgreSQL connections?",
+        "Transactions and ACID Guarantees": "How do transactions prevent half-saved data?"
+      },
+      "criteria": {
+        "Connection Pooling in Serverless Environments": {
+          "id": "pooling",
+          "evidence": [
+            {
+              "id": "expensive",
+              "text": "Database connections are costly and limited."
+            },
+            {
+              "id": "instances",
+              "text": "Many short-lived function instances each open their own connections."
+            },
+            {
+              "id": "pooler",
+              "text": "A connection pooler or a serverless-friendly driver shares a small number of connections."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use pooling."
+          ],
+          "misconceptions": []
+        },
+        "Transactions and ACID Guarantees": {
+          "id": "transactions",
+          "evidence": [
+            {
+              "id": "atomic",
+              "text": "A transaction groups operations so they all succeed or all fail."
+            },
+            {
+              "id": "rollback",
+              "text": "If one step fails, the earlier ones are rolled back."
+            },
+            {
+              "id": "acid",
+              "text": "Transactions also isolate concurrent work and keep data consistent."
+            }
+          ],
+          "notEnough": [
+            "Only saying transactions are atomic."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Nuxt and Database Architecture",
+      "question": "You are building a multi-tenant SaaS on Nuxt where each company's data must stay separate. Explain how you would set up the database client and enforce isolation.",
+      "followUps": {
+        "Database Client Singleton Pattern": "How do you share one database client across server routes?",
+        "Row-Level Security and Multi-tenancy": "How does Row-Level Security protect tenants?"
+      },
+      "criteria": {
+        "Database Client Singleton Pattern": {
+          "id": "client-singleton",
+          "evidence": [
+            {
+              "id": "module",
+              "text": "Modules are cached, so a client created in one file is shared when imported."
+            },
+            {
+              "id": "one",
+              "text": "One client is created and reused across routes."
+            },
+            {
+              "id": "no-per-request",
+              "text": "Creating a client per request wastes connections."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use a singleton."
+          ],
+          "misconceptions": []
+        },
+        "Row-Level Security and Multi-tenancy": {
+          "id": "rls",
+          "evidence": [
+            {
+              "id": "policies",
+              "text": "Row-Level Security policies limit which rows a session can see."
+            },
+            {
+              "id": "database",
+              "text": "The database enforces them even if application code forgets a filter."
+            },
+            {
+              "id": "defense",
+              "text": "It is a second layer of protection on top of application checks."
+            }
+          ],
+          "notEnough": [
+            "Only saying RLS secures rows."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Query Optimization",
+      "question": "Your posts page makes a query per author, and filtering orders by customer gets slower every month. Explain how you would fix both.",
+      "followUps": {
+        "N+1 Query Problem with Drizzle": "What is the N+1 problem here and how would you fix it with Drizzle?",
+        "Index Strategy for Common Query Patterns": "Which columns would you index?"
+      },
+      "criteria": {
+        "N+1 Query Problem with Drizzle": {
+          "id": "n-plus-one",
+          "evidence": [
+            {
+              "id": "pattern",
+              "text": "Fetching a list, then a query per item for related data, makes many queries."
+            },
+            {
+              "id": "join",
+              "text": "A join or relational query loads related data together."
+            },
+            {
+              "id": "fewer",
+              "text": "This turns many queries into one or two."
+            }
+          ],
+          "notEnough": [
+            "Only saying N+1 is slow."
+          ],
+          "misconceptions": []
+        },
+        "Index Strategy for Common Query Patterns": {
+          "id": "indexes",
+          "evidence": [
+            {
+              "id": "columns",
+              "text": "Columns used in WHERE, ORDER BY and joins are good index candidates."
+            },
+            {
+              "id": "scan",
+              "text": "Without indexes, the database scans the whole table."
+            },
+            {
+              "id": "cost",
+              "text": "Indexes slow writes slightly, so add them for real query patterns."
+            }
+          ],
+          "notEnough": [
+            "Only saying indexes help."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

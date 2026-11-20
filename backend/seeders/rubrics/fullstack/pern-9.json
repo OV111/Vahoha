@@ -1,0 +1,228 @@
+{
+  "path": "fullstack",
+  "layer": "pern-9",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Password hashing and JWT security internals",
+      "question": "Your PERN app stores user passwords and gives logged-in users a JWT. Explain how passwords should be stored so a stolen database doesn't reveal them, and what a JWT contains and protects.",
+      "followUps": {
+        "bcrypt's adaptive work factor and per-password salting": "Why does bcrypt use a salt and a cost factor, and why not just hash the password with SHA-256?",
+        "JWT structure: header.payload.signature and what to put in each": "Anyone can decode a JWT's payload. So what does the signature protect, and what must never go in the payload?"
+      },
+      "criteria": {
+        "bcrypt's adaptive work factor and per-password salting": {
+          "id": "bcrypt-hashing",
+          "evidence": [
+            {
+              "id": "salt",
+              "text": "bcrypt adds a random salt per password, so identical passwords get different hashes and precomputed tables don't work."
+            },
+            {
+              "id": "cost",
+              "text": "Its cost factor makes each hash deliberately slow, so guessing passwords at scale is very expensive, and it can be raised as hardware gets faster."
+            },
+            {
+              "id": "one-way",
+              "text": "At login the entered password is hashed and compared; the original password is never stored or decrypted."
+            }
+          ],
+          "notEnough": [
+            "Only saying hash passwords with bcrypt without explaining the salt or the slowness."
+          ],
+          "misconceptions": [
+            {
+              "id": "encrypt",
+              "text": "Says passwords should be encrypted so they can be decrypted later."
+            }
+          ]
+        },
+        "JWT structure: header.payload.signature and what to put in each": {
+          "id": "jwt-structure",
+          "evidence": [
+            {
+              "id": "parts",
+              "text": "A JWT has a header, a payload of claims and a signature, each base64url-encoded."
+            },
+            {
+              "id": "not-secret",
+              "text": "The payload is only encoded, not encrypted, so anyone can read it; passwords and secrets never go there."
+            },
+            {
+              "id": "signature",
+              "text": "The signature, made with the server's secret, lets the server detect any change to the header or the payload."
+            }
+          ],
+          "notEnough": [
+            "Only saying a JWT has three parts without saying what the signature does."
+          ],
+          "misconceptions": [
+            {
+              "id": "payload-encrypted",
+              "text": "Says the JWT payload is encrypted and safe for sensitive data."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Web security: XSS, CSRF, and secure cookies",
+      "question": "Your app needs to store the auth token in the browser, and a comment field might let an attacker inject a script into other users' pages. Explain where you'd keep the token so that script can't steal it, and how you'd make sure only valid data reaches your API.",
+      "followUps": {
+        "HTTP-only cookies prevent XSS from stealing auth tokens": "How does an HTTP-only cookie stop an injected script from taking the token, and what do Secure and SameSite add?",
+        "Zod schema validation: parsing untrusted input at the boundary": "Why validate with a schema on the server even if the React form already checks the input?"
+      },
+      "criteria": {
+        "HTTP-only cookies prevent XSS from stealing auth tokens": {
+          "id": "httponly-cookies",
+          "evidence": [
+            {
+              "id": "httponly",
+              "text": "JavaScript can't read an HTTP-only cookie, so an injected script can't steal a token kept there, unlike one in localStorage."
+            },
+            {
+              "id": "secure-samesite",
+              "text": "Secure sends the cookie only over HTTPS, and SameSite limits sending it on cross-site requests, which helps against CSRF."
+            }
+          ],
+          "notEnough": [
+            "Only saying use HTTP-only cookies without explaining what they block."
+          ],
+          "misconceptions": [
+            {
+              "id": "stops-xss",
+              "text": "Says HTTP-only cookies stop XSS attacks from happening at all."
+            }
+          ]
+        },
+        "Zod schema validation: parsing untrusted input at the boundary": {
+          "id": "schema-validation",
+          "evidence": [
+            {
+              "id": "boundary",
+              "text": "All input from outside is untrusted, so it is parsed against a schema on the server before it is used."
+            },
+            {
+              "id": "parse",
+              "text": "Invalid input is rejected with a clear error, and valid input comes out with the expected shape and types."
+            },
+            {
+              "id": "shared",
+              "text": "The same schema can be shared by the frontend and the backend, so the rules live in one place."
+            }
+          ],
+          "notEnough": [
+            "Only saying validate with Zod without explaining why on the server."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Implementing JWT auth in a PERN Express API",
+      "question": "Users log in to your Express API and then call protected endpoints like creating a post. Explain how the server issues tokens at login, how long they last, and how each protected request is checked.",
+      "followUps": {
+        "Signing JWTs with jsonwebtoken and setting expiry": "Why keep the access token short-lived, and how does a refresh token keep the user logged in?",
+        "Auth middleware: verify Bearer token and attach user to req": "Walk through what the auth middleware does with the Authorization header, and what happens if the token has expired."
+      },
+      "criteria": {
+        "Signing JWTs with jsonwebtoken and setting expiry": {
+          "id": "jwt-signing",
+          "evidence": [
+            {
+              "id": "sign",
+              "text": "At login the server signs a token with a secret, containing claims like the user id and role, plus an expiry."
+            },
+            {
+              "id": "short-lived",
+              "text": "A short expiry limits how long a stolen access token can be used."
+            },
+            {
+              "id": "refresh",
+              "text": "A longer-lived refresh token, kept in an HTTP-only cookie, is used to get new access tokens."
+            }
+          ],
+          "notEnough": [
+            "Only saying sign a token with jsonwebtoken without explaining expiry or refresh."
+          ],
+          "misconceptions": []
+        },
+        "Auth middleware: verify Bearer token and attach user to req": {
+          "id": "auth-middleware",
+          "evidence": [
+            {
+              "id": "read-header",
+              "text": "The middleware reads the Bearer token from the Authorization header."
+            },
+            {
+              "id": "verify",
+              "text": "It verifies the signature and the expiry with the secret, and rejects the request with 401 if that fails."
+            },
+            {
+              "id": "attach",
+              "text": "On success it attaches the decoded user to req, so the handlers know who is calling."
+            }
+          ],
+          "notEnough": [
+            "Only saying check the token in a middleware without the steps."
+          ],
+          "misconceptions": [
+            {
+              "id": "decode-enough",
+              "text": "Says decoding the token is enough without verifying its signature."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Security hardening with Zod, Helmet, and rate limiting",
+      "question": "Before launching your PERN app, you want to harden the API against common browser attacks, and against attackers guessing passwords on the login endpoint. Explain what you'd add and why.",
+      "followUps": {
+        "helmet middleware for secure HTTP response headers": "What do the headers that helmet sets protect against, for example X-Frame-Options or Content-Security-Policy?",
+        "express-rate-limit to prevent brute-force on auth endpoints": "Why put a strict rate limit on /login specifically, and what should the client get when it's exceeded?"
+      },
+      "criteria": {
+        "helmet middleware for secure HTTP response headers": {
+          "id": "helmet-headers",
+          "evidence": [
+            {
+              "id": "headers",
+              "text": "helmet sets security-related HTTP response headers on every response."
+            },
+            {
+              "id": "examples",
+              "text": "They tell the browser to block things like showing your page in a frame (clickjacking), guessing content types, or running scripts from untrusted sources."
+            }
+          ],
+          "notEnough": [
+            "Only saying use helmet for security without saying what the headers do."
+          ],
+          "misconceptions": []
+        },
+        "express-rate-limit to prevent brute-force on auth endpoints": {
+          "id": "rate-limiting",
+          "evidence": [
+            {
+              "id": "limit",
+              "text": "Rate limiting caps how many requests one client can make in a time window."
+            },
+            {
+              "id": "brute-force",
+              "text": "On login and register, it stops attackers from trying many passwords quickly."
+            },
+            {
+              "id": "status-429",
+              "text": "Over the limit, the server answers 429 Too Many Requests, ideally saying when to retry."
+            }
+          ],
+          "notEnough": [
+            "Only saying add rate limiting without explaining what it stops."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,287 @@
+{
+  "path": "fullstack",
+  "layer": "next-fullstack-1",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "TypeScript Core Concepts",
+      "question": "You are typing the data for a Next.js app: a User, a partial update to a user, and an API result that is either data or an error. Explain the TypeScript tools you would use.",
+      "followUps": {
+        "Types, interfaces, and type aliases": "When would you use an interface and when a type alias?",
+        "Generics and utility types in TypeScript": "How do generics and utility types avoid repeating type definitions?",
+        "Union, intersection, and narrowing types": "How does TypeScript know which variant of a union you have?"
+      },
+      "criteria": {
+        "Types, interfaces, and type aliases": {
+          "id": "types-interfaces",
+          "evidence": [
+            {
+              "id": "annotate",
+              "text": "Types describe the shape of variables, parameters and return values."
+            },
+            {
+              "id": "interface",
+              "text": "Interfaces describe object shapes and can be extended or merged."
+            },
+            {
+              "id": "alias",
+              "text": "Type aliases can name any type, including unions and intersections."
+            }
+          ],
+          "notEnough": [
+            "Only saying both define types."
+          ],
+          "misconceptions": []
+        },
+        "Generics and utility types in TypeScript": {
+          "id": "generics-utility",
+          "evidence": [
+            {
+              "id": "generic",
+              "text": "Generics let one function or component work with many types while staying type-safe."
+            },
+            {
+              "id": "utility",
+              "text": "Utility types like Partial, Pick and Omit build new types from existing ones."
+            },
+            {
+              "id": "single-source",
+              "text": "Changes to the base type flow to all derived types."
+            }
+          ],
+          "notEnough": [
+            "Only listing utility types."
+          ],
+          "misconceptions": []
+        },
+        "Union, intersection, and narrowing types": {
+          "id": "union-narrowing",
+          "evidence": [
+            {
+              "id": "union",
+              "text": "A union says a value can be one of several types."
+            },
+            {
+              "id": "guards",
+              "text": "Checks like typeof, in or a shared kind field narrow the type."
+            },
+            {
+              "id": "intersection",
+              "text": "An intersection combines several types into one that has all their properties."
+            }
+          ],
+          "notEnough": [
+            "Only saying unions mean or."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "React Component Model",
+      "question": "You are building a settings page with a form, a theme shared across the app and a subscription to a live connection. Explain the React tools you would use.",
+      "followUps": {
+        "Functional components, props, and composition": "How does composition help avoid passing props through many layers?",
+        "State management with hooks and context": "When would you lift state and when use context?",
+        "Effect hook and lifecycle understanding": "What does the dependency array of useEffect control?"
+      },
+      "criteria": {
+        "Functional components, props, and composition": {
+          "id": "components-composition",
+          "evidence": [
+            {
+              "id": "functions",
+              "text": "Components are functions that receive props and return JSX."
+            },
+            {
+              "id": "compose",
+              "text": "Building UI from small components passed as children keeps each part focused."
+            },
+            {
+              "id": "drilling",
+              "text": "Passing content as children can avoid threading props through layers that do not use them."
+            }
+          ],
+          "notEnough": [
+            "Only saying components are reusable."
+          ],
+          "misconceptions": []
+        },
+        "State management with hooks and context": {
+          "id": "hooks-context",
+          "evidence": [
+            {
+              "id": "local",
+              "text": "useState and useReducer hold state inside a component."
+            },
+            {
+              "id": "lift",
+              "text": "State shared by nearby components moves to their common parent."
+            },
+            {
+              "id": "context",
+              "text": "Context shares slow-changing values, like theme, with many components."
+            }
+          ],
+          "notEnough": [
+            "Only listing hooks."
+          ],
+          "misconceptions": []
+        },
+        "Effect hook and lifecycle understanding": {
+          "id": "useeffect-lifecycle",
+          "evidence": [
+            {
+              "id": "sync",
+              "text": "useEffect keeps a component in sync with something outside React."
+            },
+            {
+              "id": "deps",
+              "text": "The dependency array decides when the effect runs again."
+            },
+            {
+              "id": "bugs",
+              "text": "Wrong dependencies cause stale values or endless re-runs, and cleanup stops subscriptions."
+            }
+          ],
+          "notEnough": [
+            "Only saying useEffect runs after render."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "TypeScript Tooling Setup",
+      "question": "You are starting a Next.js project with TypeScript and writing typed form handlers. Explain your tsconfig choices and how you type events.",
+      "followUps": {
+        "Configure tsconfig for a Next.js project": "What tsconfig settings matter most in a Next.js project?",
+        "Typing React event handlers and form inputs": "How do you type an input's change handler and a form submit?"
+      },
+      "criteria": {
+        "Configure tsconfig for a Next.js project": {
+          "id": "tsconfig",
+          "evidence": [
+            {
+              "id": "strict",
+              "text": "strict mode turns on checks like null safety."
+            },
+            {
+              "id": "paths",
+              "text": "Path aliases like @/ simplify imports."
+            },
+            {
+              "id": "resolution",
+              "text": "Module resolution must match how Next.js resolves imports to avoid confusing errors."
+            }
+          ],
+          "notEnough": [
+            "Only saying Next.js creates tsconfig."
+          ],
+          "misconceptions": []
+        },
+        "Typing React event handlers and form inputs": {
+          "id": "typing-events",
+          "evidence": [
+            {
+              "id": "synthetic",
+              "text": "React wraps browser events in its own event types."
+            },
+            {
+              "id": "generic",
+              "text": "Event types take the element type, such as an input change event."
+            },
+            {
+              "id": "benefit",
+              "text": "Typed events make properties like target.value safe to use."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add types."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Modern JS Patterns",
+      "question": "You are reading API data that may have missing fields, loading several things at once and organising a growing codebase. Explain the modern JavaScript patterns you would use.",
+      "followUps": {
+        "Destructuring, spread, and optional chaining": "How do optional chaining and nullish coalescing help with missing fields?",
+        "Async/await and Promise handling patterns": "Why avoid awaiting independent requests one after another?",
+        "ES modules, imports, and barrel files": "What are named and default exports, and what do barrel files do?"
+      },
+      "criteria": {
+        "Destructuring, spread, and optional chaining": {
+          "id": "optional-chaining",
+          "evidence": [
+            {
+              "id": "optional",
+              "text": "Optional chaining returns undefined instead of throwing when a value along the path is missing."
+            },
+            {
+              "id": "nullish",
+              "text": "Nullish coalescing gives a default only for null or undefined, not for 0 or empty strings."
+            },
+            {
+              "id": "destructuring",
+              "text": "Destructuring and spread pull out and copy values cleanly."
+            }
+          ],
+          "notEnough": [
+            "Only naming the operators."
+          ],
+          "misconceptions": [
+            {
+              "id": "or-same",
+              "text": "Says ?? behaves exactly like || for defaults."
+            }
+          ]
+        },
+        "Async/await and Promise handling patterns": {
+          "id": "async-await",
+          "evidence": [
+            {
+              "id": "await",
+              "text": "await pauses until a promise settles and works with try and catch."
+            },
+            {
+              "id": "sequential",
+              "text": "Awaiting independent requests one by one adds their times together."
+            },
+            {
+              "id": "parallel",
+              "text": "Promise.all runs them at the same time, so the total is the slowest one."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use async/await."
+          ],
+          "misconceptions": []
+        },
+        "ES modules, imports, and barrel files": {
+          "id": "es-modules",
+          "evidence": [
+            {
+              "id": "named-default",
+              "text": "A module can have many named exports and one default export."
+            },
+            {
+              "id": "barrel",
+              "text": "A barrel file re-exports a folder's modules from one index file."
+            },
+            {
+              "id": "trade-off",
+              "text": "Barrels simplify imports but can pull in more code than needed if overused."
+            }
+          ],
+          "notEnough": [
+            "Only saying modules split code."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

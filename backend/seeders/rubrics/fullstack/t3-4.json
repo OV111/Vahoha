@@ -1,0 +1,226 @@
+{
+  "path": "fullstack",
+  "layer": "t3-4",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "How Tailwind's utility-first model works",
+      "question": "A teammate builds class names like bg-${color}-500 and the colors never appear in production, and two conflicting padding classes on one element behave unexpectedly. Explain how Tailwind generates and applies its CSS.",
+      "followUps": {
+        "Tailwind purges unused classes at build time via content scanning": "Why don't dynamically built Tailwind class names work?",
+        "The cascade in Tailwind: last class wins within the same property": "Two classes on one element set padding. Which one wins and why?"
+      },
+      "criteria": {
+        "Tailwind purges unused classes at build time via content scanning": {
+          "id": "content-scanning",
+          "evidence": [
+            {
+              "id": "scan",
+              "text": "Tailwind scans source files for class names and only generates CSS for the ones it finds."
+            },
+            {
+              "id": "full-strings",
+              "text": "A class built from pieces at runtime never appears as a full string, so its CSS is not generated."
+            },
+            {
+              "id": "fix",
+              "text": "Use complete class names, for example by mapping each option to a full class string."
+            }
+          ],
+          "notEnough": [
+            "Only saying Tailwind purges unused CSS."
+          ],
+          "misconceptions": []
+        },
+        "The cascade in Tailwind: last class wins within the same property": {
+          "id": "last-class-wins",
+          "evidence": [
+            {
+              "id": "single-purpose",
+              "text": "Each Tailwind utility sets one property."
+            },
+            {
+              "id": "stylesheet-order",
+              "text": "When two set the same property, the one defined later in the generated stylesheet wins, not the one written later in the class attribute."
+            },
+            {
+              "id": "avoid",
+              "text": "Conflicting classes should be avoided or merged with a tool like tailwind-merge."
+            }
+          ],
+          "notEnough": [
+            "Only saying the last class wins."
+          ],
+          "misconceptions": [
+            {
+              "id": "attribute-order",
+              "text": "Says the class written last in the HTML attribute always wins."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Design tokens and the theme system",
+      "question": "Your brand needs custom colors and spacing, and users want a dark mode toggle that works regardless of their system setting. Explain how you would configure Tailwind's theme.",
+      "followUps": {
+        "Customizing the theme: colors, spacing, and breakpoints": "Why use extend in the Tailwind config instead of replacing the theme?",
+        "Dark mode with the class strategy and prefers-color-scheme": "How does the class strategy for dark mode work?"
+      },
+      "criteria": {
+        "Customizing the theme: colors, spacing, and breakpoints": {
+          "id": "theme-customizing",
+          "evidence": [
+            {
+              "id": "config",
+              "text": "Brand colors, spacing and breakpoints are added in the Tailwind config file."
+            },
+            {
+              "id": "extend",
+              "text": "extend adds new values while keeping Tailwind's defaults."
+            },
+            {
+              "id": "replace",
+              "text": "Replacing the theme removes all default values, which breaks existing classes."
+            }
+          ],
+          "notEnough": [
+            "Only saying you edit the config file."
+          ],
+          "misconceptions": []
+        },
+        "Dark mode with the class strategy and prefers-color-scheme": {
+          "id": "dark-mode-class",
+          "evidence": [
+            {
+              "id": "dark-variant",
+              "text": "dark: classes apply only when dark mode is active."
+            },
+            {
+              "id": "class-toggle",
+              "text": "With the class strategy, dark mode is on when a dark class is on the html element, which code can toggle."
+            },
+            {
+              "id": "system",
+              "text": "The initial value can follow prefers-color-scheme while still letting users override it."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add dark: prefixes."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Tailwind layout and responsive design patterns",
+      "question": "You are building a responsive page with a header bar and a card grid that shows one column on phones and three on desktops. Explain how you would do it with Tailwind.",
+      "followUps": {
+        "Responsive breakpoints: mobile-first with sm, md, lg, xl prefixes": "If sm:flex applies at 640px and up, what applies on smaller screens?",
+        "Flexbox and grid utilities: flex, grid, gap, col-span": "When would you use flex utilities and when grid utilities?"
+      },
+      "criteria": {
+        "Responsive breakpoints: mobile-first with sm, md, lg, xl prefixes": {
+          "id": "responsive-breakpoints",
+          "evidence": [
+            {
+              "id": "mobile-first",
+              "text": "Unprefixed classes apply at all screen sizes."
+            },
+            {
+              "id": "min-width",
+              "text": "Prefixed classes like sm: and md: apply from that width upward."
+            },
+            {
+              "id": "build-up",
+              "text": "You design for small screens first and add prefixed classes for larger ones."
+            }
+          ],
+          "notEnough": [
+            "Only listing the breakpoint names."
+          ],
+          "misconceptions": [
+            {
+              "id": "sm-mobile",
+              "text": "Says sm: classes target small phone screens."
+            }
+          ]
+        },
+        "Flexbox and grid utilities: flex, grid, gap, col-span": {
+          "id": "flex-grid-utilities",
+          "evidence": [
+            {
+              "id": "flex",
+              "text": "flex with alignment classes handles one-direction layouts like a header bar."
+            },
+            {
+              "id": "grid",
+              "text": "grid with column counts and gap handles card grids."
+            },
+            {
+              "id": "span",
+              "text": "col-span lets one item cover several columns."
+            }
+          ],
+          "notEnough": [
+            "Only naming the classes."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Reusable component patterns with Tailwind in T3",
+      "question": "Your Button component accepts extra classes, and passing p-2 when it already has p-4 leaves both on the element. You also want a card's text to change color when the card is hovered. Explain how you would handle both.",
+      "followUps": {
+        "Using clsx and tailwind-merge to compose conditional classes": "What does a cn helper built from clsx and tailwind-merge do?",
+        "Applying variants with the group and peer modifiers": "How do the group and peer modifiers let one element's state style another?"
+      },
+      "criteria": {
+        "Using clsx and tailwind-merge to compose conditional classes": {
+          "id": "clsx-twmerge",
+          "evidence": [
+            {
+              "id": "clsx",
+              "text": "clsx joins class names conditionally, dropping false values."
+            },
+            {
+              "id": "twmerge",
+              "text": "tailwind-merge removes conflicting Tailwind classes, keeping the last one passed."
+            },
+            {
+              "id": "override",
+              "text": "Together they let callers override a component's default classes cleanly."
+            }
+          ],
+          "notEnough": [
+            "Only saying it combines classes."
+          ],
+          "misconceptions": []
+        },
+        "Applying variants with the group and peer modifiers": {
+          "id": "group-peer",
+          "evidence": [
+            {
+              "id": "group",
+              "text": "Adding group to a parent lets children use group-hover to react when the parent is hovered."
+            },
+            {
+              "id": "peer",
+              "text": "peer lets an element style a following sibling based on the peer's state."
+            },
+            {
+              "id": "no-js",
+              "text": "These work in CSS alone without JavaScript state."
+            }
+          ],
+          "notEnough": [
+            "Only saying group styles children."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,223 @@
+{
+  "path": "fullstack",
+  "layer": "mern-5",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "The Node.js runtime: event loop and the module system",
+      "question": "Your Express API runs as a single Node process and serves hundreds of users at once, and the codebase mixes require and import. Explain how one thread can serve so many requests and how Node's two module systems differ.",
+      "followUps": {
+        "How Node.js handles I/O without blocking using libuv": "What would happen to all users if one handler ran a heavy synchronous loop for five seconds, and why?",
+        "CommonJS require versus ES module import in Node": "How does Node decide whether a file uses require or import, and why can't you just mix them anywhere?"
+      },
+      "criteria": {
+        "How Node.js handles I/O without blocking using libuv": {
+          "id": "node-nonblocking",
+          "evidence": [
+            {
+              "id": "delegate",
+              "text": "Node hands slow I/O like network and file work to the operating system or libuv's thread pool instead of waiting for it."
+            },
+            {
+              "id": "callbacks",
+              "text": "The single JavaScript thread keeps handling other requests, and the event loop runs each callback when its I/O completes."
+            },
+            {
+              "id": "cpu-blocks",
+              "text": "Long synchronous CPU work blocks the event loop, so every other request has to wait."
+            }
+          ],
+          "notEnough": [
+            "Only saying Node is non-blocking or uses an event loop without explaining how waiting is avoided."
+          ],
+          "misconceptions": [
+            {
+              "id": "thread-per-request",
+              "text": "Says Node creates a new thread for every request."
+            }
+          ]
+        },
+        "CommonJS require versus ES module import in Node": {
+          "id": "node-modules",
+          "evidence": [
+            {
+              "id": "cjs",
+              "text": "CommonJS uses require and module.exports and loads modules synchronously at runtime."
+            },
+            {
+              "id": "esm",
+              "text": "ES modules use import and export, are analyzed statically and load asynchronously."
+            },
+            {
+              "id": "choose",
+              "text": "The package.json type field or the .mjs and .cjs extensions decide which system a file uses, which decides which syntax works in it."
+            }
+          ],
+          "notEnough": [
+            "Only saying import is newer than require without explaining the difference."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Express middleware chain execution model",
+      "question": "You're designing the API for blog posts in your MERN app, and every request passes through logging and auth before its handler. Explain how a request moves through Express and how you'd design the URLs, methods and status codes.",
+      "followUps": {
+        "How Express routes and middleware compose with next()": "What happens if a middleware neither calls next() nor sends a response, and what does next(err) do?",
+        "RESTful API design: resources, verbs, and status codes": "Why /posts/42 with GET and DELETE instead of /getPost, and which status codes would you return for create, delete and invalid input?"
+      },
+      "criteria": {
+        "How Express routes and middleware compose with next()": {
+          "id": "middleware-next",
+          "evidence": [
+            {
+              "id": "order",
+              "text": "Middleware and routes run in the order they are registered, and each one receives req, res and next."
+            },
+            {
+              "id": "next",
+              "text": "Calling next() passes control to the next middleware; if it isn't called and no response is sent, the request hangs."
+            },
+            {
+              "id": "next-err",
+              "text": "Calling next(err) skips ahead to the error-handling middleware."
+            }
+          ],
+          "notEnough": [
+            "Only saying next() goes to the next middleware without the order or what happens otherwise."
+          ],
+          "misconceptions": []
+        },
+        "RESTful API design: resources, verbs, and status codes": {
+          "id": "rest-design",
+          "evidence": [
+            {
+              "id": "nouns",
+              "text": "URLs name resources, like /posts and /posts/42, and the HTTP method says the action: GET reads, POST creates, PUT or PATCH updates, DELETE removes."
+            },
+            {
+              "id": "status",
+              "text": "Status codes tell the client what happened, like 201 after creating, 204 with no body, 404 when not found and 422 for invalid input."
+            }
+          ],
+          "notEnough": [
+            "Only listing methods or code numbers without explaining what they mean."
+          ],
+          "misconceptions": [
+            {
+              "id": "always-200",
+              "text": "Says the API can return 200 for every response and put errors in the body with no downside."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Setting up and structuring an Express application",
+      "question": "Your Express app started as one big server.js with every route in it, and the MongoDB password is written directly in the code. Explain how you'd reorganize the code and handle configuration and secrets.",
+      "followUps": {
+        "Router modules for separating concerns by resource": "Why split routes into one router per resource, and what goes in each router file?",
+        "Environment variables with dotenv and the config pattern": "Why must the .env file stay out of git, and how do new developers know which variables they need?"
+      },
+      "criteria": {
+        "Router modules for separating concerns by resource": {
+          "id": "router-modules",
+          "evidence": [
+            {
+              "id": "router",
+              "text": "express.Router creates a mini-app per resource with its own routes and middleware, mounted on a prefix like /posts or /auth."
+            },
+            {
+              "id": "focused",
+              "text": "Each file then handles one resource, so it's easier to find, change and test."
+            }
+          ],
+          "notEnough": [
+            "Only saying split it into files without explaining routers or what goes where."
+          ],
+          "misconceptions": []
+        },
+        "Environment variables with dotenv and the config pattern": {
+          "id": "dotenv-config",
+          "evidence": [
+            {
+              "id": "dotenv",
+              "text": "dotenv loads variables from a .env file into process.env at startup, so secrets aren't written in the code."
+            },
+            {
+              "id": "gitignore",
+              "text": "The .env file holds secrets, so it's listed in .gitignore and never committed."
+            },
+            {
+              "id": "example",
+              "text": "A .env.example file lists the required variable names without real values, so others know what to set."
+            }
+          ],
+          "notEnough": [
+            "Only saying use dotenv without explaining why secrets stay out of git."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Request validation and centralized error handling",
+      "question": "A user sends a signup request with an invalid email, and elsewhere a database error crashes a handler and returns an HTML stack trace. Explain how you'd validate input and handle errors so every failure returns a consistent JSON response.",
+      "followUps": {
+        "Input validation with express-validator or Joi": "Where should validation run, and what should happen when the input is invalid?",
+        "Centralized error middleware with four-argument signature": "What makes Express treat a middleware as an error handler, and why does it have to be registered last?"
+      },
+      "criteria": {
+        "Input validation with express-validator or Joi": {
+          "id": "input-validation",
+          "evidence": [
+            {
+              "id": "untrusted",
+              "text": "req.body comes from the client and can't be trusted, even if the frontend validates it."
+            },
+            {
+              "id": "before-logic",
+              "text": "Its shape, types and limits are checked at the route, before any business logic or database call."
+            },
+            {
+              "id": "reject",
+              "text": "Invalid input is answered with a 400 or 422 listing the problems."
+            }
+          ],
+          "notEnough": [
+            "Only saying validate the input without saying where or what happens when it fails."
+          ],
+          "misconceptions": [
+            {
+              "id": "frontend-enough",
+              "text": "Says validating in the frontend form is enough."
+            }
+          ]
+        },
+        "Centralized error middleware with four-argument signature": {
+          "id": "error-middleware",
+          "evidence": [
+            {
+              "id": "four-args",
+              "text": "Express recognizes error middleware by its four arguments: err, req, res and next."
+            },
+            {
+              "id": "last",
+              "text": "It is registered after all routes, so errors from anywhere end up there."
+            },
+            {
+              "id": "consistent",
+              "text": "Handlers pass errors on with next(err), and that one handler returns the same JSON shape and a fitting status for every error."
+            }
+          ],
+          "notEnough": [
+            "Only saying use an error handler without explaining how errors reach it."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "mean-7",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Angular HttpClient and reactive HTTP patterns",
+      "question": "Your Angular app calls the tasks API in several components, sends the same request twice, and every request needs the user's token. Explain how HttpClient works and how you would add the token once.",
+      "followUps": {
+        "How HttpClient returns cold Observables for each request": "Why does HttpClient not send the request until something subscribes, and how do you share one response?",
+        "HTTP interceptors for centralized auth header injection": "How does an interceptor add the auth token to every request?"
+      },
+      "criteria": {
+        "How HttpClient returns cold Observables for each request": {
+          "id": "cold-http",
+          "evidence": [
+            {
+              "id": "cold",
+              "text": "HttpClient returns a cold Observable that sends the request only when subscribed."
+            },
+            {
+              "id": "per-subscriber",
+              "text": "Each subscription sends a new request."
+            },
+            {
+              "id": "share",
+              "text": "shareReplay can share one response between several subscribers."
+            }
+          ],
+          "notEnough": [
+            "Only saying HttpClient returns Observables."
+          ],
+          "misconceptions": []
+        },
+        "HTTP interceptors for centralized auth header injection": {
+          "id": "http-interceptors",
+          "evidence": [
+            {
+              "id": "every-request",
+              "text": "An interceptor runs for every HTTP request the app makes."
+            },
+            {
+              "id": "clone",
+              "text": "Requests are immutable, so the interceptor clones the request with the extra header."
+            },
+            {
+              "id": "one-place",
+              "text": "Auth headers are added in one place instead of in every service."
+            }
+          ],
+          "notEnough": [
+            "Only saying interceptors modify requests."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Error handling in Observable-based HTTP calls",
+      "question": "Your app crashes on API errors, a 401 should log users out everywhere, and the API URL is hard-coded to localhost. Explain how you would handle errors and configuration.",
+      "followUps": {
+        "catchError operator: handling HTTP errors in the service layer": "Where would you handle a 401 and where a 'task not found' error?",
+        "Environment-based API URL configuration in Angular": "How would you use different API URLs for development and production?"
+      },
+      "criteria": {
+        "catchError operator: handling HTTP errors in the service layer": {
+          "id": "catch-error",
+          "evidence": [
+            {
+              "id": "operator",
+              "text": "catchError intercepts an error inside the Observable pipeline."
+            },
+            {
+              "id": "global",
+              "text": "Errors that affect the whole app, like 401, are handled once in an interceptor."
+            },
+            {
+              "id": "local",
+              "text": "Errors specific to one feature are handled in its service or component, with a message for the user."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use catchError."
+          ],
+          "misconceptions": []
+        },
+        "Environment-based API URL configuration in Angular": {
+          "id": "environment-config",
+          "evidence": [
+            {
+              "id": "files",
+              "text": "Angular environment files hold settings like the API URL per environment."
+            },
+            {
+              "id": "swap",
+              "text": "The build swaps in the production file when building for production."
+            },
+            {
+              "id": "no-secrets",
+              "text": "These values end up in the browser bundle, so they must not contain secrets."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use environment.ts."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Making typed HTTP calls with Angular HttpClient",
+      "question": "You are writing a TaskService and a task list component that shows a loading message until data arrives. Explain how you would type the calls and handle loading in the template.",
+      "followUps": {
+        "Typing HTTP responses with generics: HttpClient.get<Task[]>()": "What does the type parameter in http.get<Task[]>() give you, and what does it not check?",
+        "Loading and error state management with the async pipe": "How would you show a loading state using the async pipe?"
+      },
+      "criteria": {
+        "Typing HTTP responses with generics: HttpClient.get<Task[]>()": {
+          "id": "typed-http",
+          "evidence": [
+            {
+              "id": "typed",
+              "text": "The type parameter makes the response a typed Observable of tasks."
+            },
+            {
+              "id": "inference",
+              "text": "Code using the result gets autocompletion and type checks."
+            },
+            {
+              "id": "no-runtime",
+              "text": "It does not check the data at runtime, so the API must actually return that shape."
+            }
+          ],
+          "notEnough": [
+            "Only saying it types the response."
+          ],
+          "misconceptions": []
+        },
+        "Loading and error state management with the async pipe": {
+          "id": "async-pipe-loading",
+          "evidence": [
+            {
+              "id": "expose",
+              "text": "The component exposes the Observable from the service."
+            },
+            {
+              "id": "template",
+              "text": "The template uses the async pipe with an else block that shows a loading message."
+            },
+            {
+              "id": "no-manual",
+              "text": "The pipe subscribes and unsubscribes automatically, so no manual subscription code is needed."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use the async pipe."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "HTTP retries and request cancellation",
+      "question": "Network blips cause requests to fail randomly, and requests keep running after users leave the page. Explain how you would retry safely and cancel requests.",
+      "followUps": {
+        "retryWhen and retry operators for transient API failures": "Why should you retry a GET but be careful retrying a POST?",
+        "takeUntilDestroyed for automatic unsubscription in Angular 16+": "What does takeUntilDestroyed do?"
+      },
+      "criteria": {
+        "retryWhen and retry operators for transient API failures": {
+          "id": "retry-operators",
+          "evidence": [
+            {
+              "id": "retry",
+              "text": "retry resends a failed request a set number of times, ideally with a delay."
+            },
+            {
+              "id": "idempotent",
+              "text": "GET requests are safe to repeat."
+            },
+            {
+              "id": "post-risk",
+              "text": "Retrying a POST could create duplicates, such as two tasks."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use retry."
+          ],
+          "misconceptions": []
+        },
+        "takeUntilDestroyed for automatic unsubscription in Angular 16+": {
+          "id": "take-until-destroyed",
+          "evidence": [
+            {
+              "id": "complete",
+              "text": "It completes the Observable when the component is destroyed."
+            },
+            {
+              "id": "cancel",
+              "text": "For HTTP calls, unsubscribing cancels the in-flight request."
+            },
+            {
+              "id": "less-boilerplate",
+              "text": "It replaces the manual destroy Subject pattern."
+            }
+          ],
+          "notEnough": [
+            "Only saying it unsubscribes."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

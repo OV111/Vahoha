@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "laravel-vue-9",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Laravel Architecture Patterns",
+      "question": "Your OrderController has grown to 600 lines and checkout logic is also needed by an Artisan command. Explain how you would restructure the code.",
+      "followUps": {
+        "Service Classes and Thin Controllers": "Why move business logic into service classes?",
+        "Repository Pattern and Data Access Abstraction": "When does the repository pattern help, and when is it overkill?"
+      },
+      "criteria": {
+        "Service Classes and Thin Controllers": {
+          "id": "service-classes",
+          "evidence": [
+            {
+              "id": "extract",
+              "text": "Service classes hold business logic outside controllers."
+            },
+            {
+              "id": "reuse",
+              "text": "The same logic can run from controllers, commands and jobs."
+            },
+            {
+              "id": "test",
+              "text": "Services can be tested without HTTP."
+            }
+          ],
+          "notEnough": [
+            "Only saying services organise code."
+          ],
+          "misconceptions": []
+        },
+        "Repository Pattern and Data Access Abstraction": {
+          "id": "repository-pattern",
+          "evidence": [
+            {
+              "id": "wrap",
+              "text": "A repository wraps data access behind an interface."
+            },
+            {
+              "id": "swap",
+              "text": "It allows swapping the data source without changing business logic."
+            },
+            {
+              "id": "overkill",
+              "text": "With Eloquent, it often adds a layer with little benefit unless the data source really varies."
+            }
+          ],
+          "notEnough": [
+            "Only describing the pattern."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Caching Strategies",
+      "question": "Product pages run the same queries for every visitor, and after editing a product, related cached pages show old data. Explain your caching strategy.",
+      "followUps": {
+        "Cache Tags and Invalidation Strategy": "How does Cache::remember implement cache-aside?",
+        "remember() and the Cache-Aside Pattern": "How do cache tags make invalidation easier?"
+      },
+      "criteria": {
+        "Cache Tags and Invalidation Strategy": {
+          "id": "cache-remember",
+          "evidence": [
+            {
+              "id": "check",
+              "text": "It returns the cached value if present."
+            },
+            {
+              "id": "compute",
+              "text": "On a miss, it runs the callback and stores the result."
+            },
+            {
+              "id": "ttl",
+              "text": "A time-to-live keeps entries from staying stale forever."
+            }
+          ],
+          "notEnough": [
+            "Only saying it caches results."
+          ],
+          "misconceptions": []
+        },
+        "remember() and the Cache-Aside Pattern": {
+          "id": "cache-tags",
+          "evidence": [
+            {
+              "id": "group",
+              "text": "Tags group related cache entries, such as everything about one product."
+            },
+            {
+              "id": "flush",
+              "text": "Flushing a tag clears all entries with it at once."
+            },
+            {
+              "id": "drivers",
+              "text": "Tags only work with cache stores like Redis and Memcached."
+            }
+          ],
+          "notEnough": [
+            "Only saying tags label cache entries."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Vue 3 Performance Optimization",
+      "question": "Your Vue orders table re-renders every row when one changes, and the admin charts make the initial download huge. Explain how you would optimise the frontend.",
+      "followUps": {
+        "v-memo and Preventing Unnecessary Re-renders": "What does v-memo do for a large list?",
+        "defineAsyncComponent and Code Splitting": "How does defineAsyncComponent reduce the first download?"
+      },
+      "criteria": {
+        "v-memo and Preventing Unnecessary Re-renders": {
+          "id": "v-memo",
+          "evidence": [
+            {
+              "id": "memoize",
+              "text": "v-memo skips re-rendering a part of the template unless its listed values change."
+            },
+            {
+              "id": "lists",
+              "text": "In large lists, unchanged rows are skipped."
+            },
+            {
+              "id": "careful",
+              "text": "Listing the wrong values can make rows show stale data."
+            }
+          ],
+          "notEnough": [
+            "Only saying v-memo improves performance."
+          ],
+          "misconceptions": []
+        },
+        "defineAsyncComponent and Code Splitting": {
+          "id": "async-components",
+          "evidence": [
+            {
+              "id": "dynamic",
+              "text": "It wraps a dynamic import of the component."
+            },
+            {
+              "id": "split",
+              "text": "The build puts that component in its own chunk."
+            },
+            {
+              "id": "on-demand",
+              "text": "The chunk loads only when the component is needed."
+            }
+          ],
+          "notEnough": [
+            "Only saying components load later."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Redis Advanced Usage",
+      "question": "Your Vue app polls the API every few seconds for new orders, and Redis connection errors appear under load. Explain how you would push updates and manage Redis connections.",
+      "followUps": {
+        "Redis Pub/Sub for Real-Time Events": "How do Redis pub/sub and Laravel Echo replace polling?",
+        "Redis Connection Pooling and Persistent Connections": "Why reuse Redis connections, and what happens if you do not?"
+      },
+      "criteria": {
+        "Redis Pub/Sub for Real-Time Events": {
+          "id": "pubsub-echo",
+          "evidence": [
+            {
+              "id": "publish",
+              "text": "The server publishes an event when something changes."
+            },
+            {
+              "id": "broadcast",
+              "text": "A broadcaster like Reverb or Pusher pushes it to connected browsers."
+            },
+            {
+              "id": "echo",
+              "text": "Laravel Echo in the Vue app listens for those events, so no polling is needed."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use WebSockets."
+          ],
+          "misconceptions": []
+        },
+        "Redis Connection Pooling and Persistent Connections": {
+          "id": "redis-connections",
+          "evidence": [
+            {
+              "id": "clients",
+              "text": "Laravel connects through phpredis or Predis."
+            },
+            {
+              "id": "reuse",
+              "text": "Reusing connections avoids the cost of opening new ones."
+            },
+            {
+              "id": "exhaust",
+              "text": "Opening too many connections under load can hit Redis limits and cause errors."
+            }
+          ],
+          "notEnough": [
+            "Only saying you configure Redis."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

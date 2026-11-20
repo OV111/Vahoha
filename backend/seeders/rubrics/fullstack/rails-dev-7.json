@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "rails-dev-7",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Background Job Concepts",
+      "question": "Signing up takes seconds because the welcome email is sent during the request, and sometimes the email service fails. Explain how you would move this to the background.",
+      "followUps": {
+        "Active Job abstraction and adapter pattern": "What does Active Job give you?",
+        "Job retries, error handling, and dead queues": "How should a job handle failures?",
+        "Action Mailer email composition and delivery": "How do mailers and deliver_later work together?"
+      },
+      "criteria": {
+        "Active Job abstraction and adapter pattern": {
+          "id": "active-job",
+          "evidence": [
+            {
+              "id": "interface",
+              "text": "Active Job is one interface for writing background jobs."
+            },
+            {
+              "id": "adapters",
+              "text": "The backend, such as Sidekiq, is chosen with an adapter."
+            },
+            {
+              "id": "swap",
+              "text": "Changing the backend does not require rewriting the jobs."
+            }
+          ],
+          "notEnough": [
+            "Only saying it runs jobs."
+          ],
+          "misconceptions": []
+        },
+        "Job retries, error handling, and dead queues": {
+          "id": "retries-discard",
+          "evidence": [
+            {
+              "id": "retry-on",
+              "text": "retry_on retries a job on given errors with increasing waits."
+            },
+            {
+              "id": "discard-on",
+              "text": "discard_on drops jobs that fail in ways retrying cannot fix."
+            },
+            {
+              "id": "dead",
+              "text": "Jobs that keep failing end up in a dead queue for inspection."
+            }
+          ],
+          "notEnough": [
+            "Only saying jobs retry."
+          ],
+          "misconceptions": []
+        },
+        "Action Mailer email composition and delivery": {
+          "id": "action-mailer",
+          "evidence": [
+            {
+              "id": "mailer",
+              "text": "Mailer classes build emails from templates."
+            },
+            {
+              "id": "deliver-later",
+              "text": "deliver_later queues the email as a background job."
+            },
+            {
+              "id": "fast",
+              "text": "The request returns immediately while the email is sent separately."
+            }
+          ],
+          "notEnough": [
+            "Only saying mailers send email."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Email Templates and Testing",
+      "question": "Your emails look broken in some email clients and you keep sending yourself test emails to check templates. Explain how you would build and preview emails.",
+      "followUps": {
+        "Email templates HTML and text multipart": "Why send both HTML and plain-text versions?",
+        "Mailer previews for development email testing": "How do mailer previews speed up email work?"
+      },
+      "criteria": {
+        "Email templates HTML and text multipart": {
+          "id": "multipart",
+          "evidence": [
+            {
+              "id": "two",
+              "text": "Rails renders both an HTML and a plain-text template."
+            },
+            {
+              "id": "clients",
+              "text": "Some email clients or users only show plain text."
+            },
+            {
+              "id": "deliverability",
+              "text": "Multipart emails are more compatible and less likely to look like spam."
+            }
+          ],
+          "notEnough": [
+            "Only saying emails have templates."
+          ],
+          "misconceptions": []
+        },
+        "Mailer previews for development email testing": {
+          "id": "mailer-previews",
+          "evidence": [
+            {
+              "id": "browser",
+              "text": "Previews render emails in the browser."
+            },
+            {
+              "id": "no-send",
+              "text": "Nothing is actually sent."
+            },
+            {
+              "id": "iterate",
+              "text": "You can change templates and refresh to see the result."
+            }
+          ],
+          "notEnough": [
+            "Only saying previews show emails."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Sidekiq and Redis Setup",
+      "question": "You chose Sidekiq for background jobs and need to see queue backlogs and failed jobs. Explain how Sidekiq works and how you monitor it.",
+      "followUps": {
+        "Sidekiq worker processes and Redis backend": "How does Sidekiq process jobs?",
+        "Sidekiq Web UI for job monitoring": "What does the Sidekiq web UI show and how do you protect it?"
+      },
+      "criteria": {
+        "Sidekiq worker processes and Redis backend": {
+          "id": "sidekiq",
+          "evidence": [
+            {
+              "id": "redis",
+              "text": "Sidekiq stores queued jobs in Redis."
+            },
+            {
+              "id": "threads",
+              "text": "Each worker process runs many jobs at once using threads."
+            },
+            {
+              "id": "throughput",
+              "text": "This handles high job volumes with fewer processes."
+            }
+          ],
+          "notEnough": [
+            "Only saying Sidekiq uses Redis."
+          ],
+          "misconceptions": []
+        },
+        "Sidekiq Web UI for job monitoring": {
+          "id": "sidekiq-ui",
+          "evidence": [
+            {
+              "id": "metrics",
+              "text": "It shows queue sizes, processed jobs, failures and retries."
+            },
+            {
+              "id": "mount",
+              "text": "It is mounted as a route in the app."
+            },
+            {
+              "id": "auth",
+              "text": "It must be behind authentication, since it can retry or delete jobs."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a dashboard."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Job Scheduling and Reliability",
+      "question": "You need a daily digest email and production emails must be delivered reliably. Explain how you would schedule jobs and configure delivery.",
+      "followUps": {
+        "Scheduling recurring jobs with sidekiq-cron": "How would you schedule a job to run every day?",
+        "Email delivery with SendGrid and Postmark": "How do you send production email through a provider like Postmark?"
+      },
+      "criteria": {
+        "Scheduling recurring jobs with sidekiq-cron": {
+          "id": "sidekiq-cron",
+          "evidence": [
+            {
+              "id": "cron",
+              "text": "sidekiq-cron adds cron-style schedules to Sidekiq."
+            },
+            {
+              "id": "file",
+              "text": "Schedules are defined in a configuration file."
+            },
+            {
+              "id": "ui",
+              "text": "Scheduled jobs appear in the Sidekiq web UI."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use cron."
+          ],
+          "misconceptions": []
+        },
+        "Email delivery with SendGrid and Postmark": {
+          "id": "email-provider",
+          "evidence": [
+            {
+              "id": "smtp",
+              "text": "Action Mailer is configured with the provider's SMTP or API settings."
+            },
+            {
+              "id": "env",
+              "text": "Credentials come from environment variables or encrypted credentials."
+            },
+            {
+              "id": "deliverability",
+              "text": "Providers improve delivery and give bounce and open tracking."
+            }
+          ],
+          "notEnough": [
+            "Only saying you configure SMTP."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

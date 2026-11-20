@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "fullstack-engineer-10",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "CI/CD pipeline concepts",
+      "question": "Your team deploys by building on a laptop and copying files to the server, and nobody knows exactly which version is running. Explain how CI and container registries fix this.",
+      "followUps": {
+        "Continuous integration: automated testing on every push": "What does continuous integration give a team?",
+        "Container registries: pushing and pulling images for deployment": "Why tag images with the git SHA and push them to a registry?"
+      },
+      "criteria": {
+        "Continuous integration: automated testing on every push": {
+          "id": "continuous-integration",
+          "evidence": [
+            {
+              "id": "every-push",
+              "text": "CI runs tests automatically on every push and pull request."
+            },
+            {
+              "id": "gate",
+              "text": "A passing run is required before merging, so broken code does not reach main."
+            },
+            {
+              "id": "early",
+              "text": "Problems are found minutes after they are introduced rather than at release time."
+            }
+          ],
+          "notEnough": [
+            "Only saying CI runs tests."
+          ],
+          "misconceptions": []
+        },
+        "Container registries: pushing and pulling images for deployment": {
+          "id": "registry-tags",
+          "evidence": [
+            {
+              "id": "build-once",
+              "text": "The image is built once in CI and pushed to a registry."
+            },
+            {
+              "id": "sha",
+              "text": "Tagging it with the commit SHA links each image to exact source code."
+            },
+            {
+              "id": "reproducible",
+              "text": "Deploying that exact image makes releases reproducible and rollbacks easy."
+            }
+          ],
+          "notEnough": [
+            "Only saying registries store images."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Cloud hosting and managed services",
+      "question": "You are choosing where to host your Postgres database, and deploys currently cause a minute of downtime. Explain the hosting trade-offs and how to deploy without downtime.",
+      "followUps": {
+        "Managed PostgreSQL versus self-hosted: operational trade-offs": "What do you gain and give up with a managed database?",
+        "Zero-downtime deployments with rolling updates": "How does a rolling deployment avoid downtime, and where do migrations fit?"
+      },
+      "criteria": {
+        "Managed PostgreSQL versus self-hosted: operational trade-offs": {
+          "id": "managed-vs-self-hosted",
+          "evidence": [
+            {
+              "id": "managed",
+              "text": "A managed database handles backups, updates and replication for you."
+            },
+            {
+              "id": "self-hosted",
+              "text": "Self-hosting gives more control but you are responsible for all operations."
+            },
+            {
+              "id": "choice",
+              "text": "For most small teams, managed is worth the cost because operations mistakes risk losing data."
+            }
+          ],
+          "notEnough": [
+            "Only saying managed is easier."
+          ],
+          "misconceptions": []
+        },
+        "Zero-downtime deployments with rolling updates": {
+          "id": "rolling-deploys",
+          "evidence": [
+            {
+              "id": "rolling",
+              "text": "New instances start and receive traffic before old ones are stopped."
+            },
+            {
+              "id": "health",
+              "text": "The load balancer only sends traffic to instances that pass health checks."
+            },
+            {
+              "id": "migrations",
+              "text": "Migrations run before the new code and must stay compatible with the old code still running."
+            }
+          ],
+          "notEnough": [
+            "Only saying you deploy gradually."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "GitHub Actions workflow for a full-stack app",
+      "question": "You are writing a GitHub Actions workflow that tests your API against a real Postgres database and then deploys. Explain how the workflow is structured.",
+      "followUps": {
+        "Workflow triggers, jobs, and steps syntax": "How do triggers, jobs and steps fit together in a workflow?",
+        "Service containers in Actions: running PostgreSQL for integration tests": "How would integration tests get a real Postgres database in CI?"
+      },
+      "criteria": {
+        "Workflow triggers, jobs, and steps syntax": {
+          "id": "actions-structure",
+          "evidence": [
+            {
+              "id": "trigger",
+              "text": "The on section says which events start the workflow, such as a push to main."
+            },
+            {
+              "id": "jobs",
+              "text": "Jobs run in parallel by default, and needs makes one wait for another."
+            },
+            {
+              "id": "steps",
+              "text": "Steps inside a job either use ready-made actions or run shell commands."
+            }
+          ],
+          "notEnough": [
+            "Only saying workflows are YAML files."
+          ],
+          "misconceptions": []
+        },
+        "Service containers in Actions: running PostgreSQL for integration tests": {
+          "id": "service-containers",
+          "evidence": [
+            {
+              "id": "service",
+              "text": "A service container starts Postgres alongside the job."
+            },
+            {
+              "id": "env",
+              "text": "Connection details are passed to the tests as environment variables."
+            },
+            {
+              "id": "real",
+              "text": "Tests run against a real database, just like locally."
+            }
+          ],
+          "notEnough": [
+            "Only saying you start a database."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Deploying to a cloud host",
+      "question": "You are deploying your frontend to Vercel and your API to Railway, and the API sometimes keeps getting traffic while it cannot reach the database. Explain how you would handle configuration and health in production.",
+      "followUps": {
+        "Environment variables and secrets in Vercel and Railway": "Where do secrets go when deploying, and why must API secrets never use a VITE_ prefix?",
+        "Monitoring with structured logs and health check endpoints": "What should a health check endpoint check, and who uses it?"
+      },
+      "criteria": {
+        "Environment variables and secrets in Vercel and Railway": {
+          "id": "platform-env-secrets",
+          "evidence": [
+            {
+              "id": "dashboard",
+              "text": "Environment variables and secrets are set in the hosting platform, not committed to git."
+            },
+            {
+              "id": "client-exposed",
+              "text": "VITE_ variables are built into the frontend bundle and visible to anyone."
+            },
+            {
+              "id": "server-only",
+              "text": "Secrets like database URLs are only given to the server at runtime."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use environment variables."
+          ],
+          "misconceptions": []
+        },
+        "Monitoring with structured logs and health check endpoints": {
+          "id": "health-monitoring",
+          "evidence": [
+            {
+              "id": "check",
+              "text": "A health endpoint checks that the app can reach critical dependencies like the database."
+            },
+            {
+              "id": "status",
+              "text": "It returns 200 when healthy and an error status like 503 when not."
+            },
+            {
+              "id": "load-balancer",
+              "text": "The platform uses it to stop sending traffic to unhealthy instances, and logs help explain why."
+            }
+          ],
+          "notEnough": [
+            "Only saying it returns OK."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "remix-dev-8",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Advanced Loader Patterns",
+      "question": "After every action, Remix refetches data for every route on the page, and a deep component needs the parent's user data. Explain revalidation and accessing parent data.",
+      "followUps": {
+        "Revalidation and shouldRevalidate": "Why does Remix revalidate loaders after actions, and when would you skip it?",
+        "useLoaderData vs useRouteLoaderData": "How can a deeply nested component use a parent route's data?"
+      },
+      "criteria": {
+        "Revalidation and shouldRevalidate": {
+          "id": "should-revalidate",
+          "evidence": [
+            {
+              "id": "default",
+              "text": "By default, all active loaders run again after an action."
+            },
+            {
+              "id": "fresh",
+              "text": "This keeps data consistent with the change."
+            },
+            {
+              "id": "skip",
+              "text": "shouldRevalidate lets a route skip refetching when its data cannot have changed."
+            }
+          ],
+          "notEnough": [
+            "Only saying loaders revalidate."
+          ],
+          "misconceptions": []
+        },
+        "useLoaderData vs useRouteLoaderData": {
+          "id": "route-loader-data",
+          "evidence": [
+            {
+              "id": "by-id",
+              "text": "useRouteLoaderData reads a loader's data by route id."
+            },
+            {
+              "id": "no-drilling",
+              "text": "It avoids passing data through many components."
+            },
+            {
+              "id": "vs-own",
+              "text": "useLoaderData only returns the current route's own data."
+            }
+          ],
+          "notEnough": [
+            "Only saying you read loader data."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Advanced Prisma Patterns",
+      "question": "Your activity feed gets slow on later pages, and listing projects with their owners makes many queries. Explain how you would paginate and load relations with Prisma.",
+      "followUps": {
+        "Pagination with cursor-based vs offset": "Why is cursor pagination better than skip and take for big tables?",
+        "N+1 Queries and include vs select": "How can loading relations cause an N+1 problem, and how do you avoid it?"
+      },
+      "criteria": {
+        "Pagination with cursor-based vs offset": {
+          "id": "cursor-pagination",
+          "evidence": [
+            {
+              "id": "skip",
+              "text": "Skip makes the database read and discard all earlier rows."
+            },
+            {
+              "id": "slow",
+              "text": "Deep pages get slower as the table grows."
+            },
+            {
+              "id": "cursor",
+              "text": "A cursor continues from the last item and stays fast."
+            }
+          ],
+          "notEnough": [
+            "Only saying cursor is faster."
+          ],
+          "misconceptions": []
+        },
+        "N+1 Queries and include vs select": {
+          "id": "n-plus-one",
+          "evidence": [
+            {
+              "id": "loop",
+              "text": "Querying relations inside a loop runs one query per item."
+            },
+            {
+              "id": "single",
+              "text": "Loading the relations in the main query avoids that."
+            },
+            {
+              "id": "select",
+              "text": "Selecting only needed nested fields keeps the result small."
+            }
+          ],
+          "notEnough": [
+            "Only saying include loads relations."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Data Validation",
+      "question": "Your action trusts the shape of form data because TypeScript says so, and form errors are wired up by hand everywhere. Explain how you would validate and build forms.",
+      "followUps": {
+        "Zod for Schema Validation": "Why validate with Zod when you already have TypeScript types?",
+        "conform for Type-Safe Forms": "What does conform add on top of Zod?"
+      },
+      "criteria": {
+        "Zod for Schema Validation": {
+          "id": "zod",
+          "evidence": [
+            {
+              "id": "runtime",
+              "text": "TypeScript types do not exist at runtime."
+            },
+            {
+              "id": "parse",
+              "text": "Zod checks and parses the actual form or JSON data."
+            },
+            {
+              "id": "errors",
+              "text": "Invalid data returns clear errors instead of reaching the database."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use Zod."
+          ],
+          "misconceptions": []
+        },
+        "conform for Type-Safe Forms": {
+          "id": "conform",
+          "evidence": [
+            {
+              "id": "bridge",
+              "text": "conform connects Zod schemas to HTML forms."
+            },
+            {
+              "id": "errors",
+              "text": "It binds errors to fields with accessible attributes."
+            },
+            {
+              "id": "progressive",
+              "text": "It works with progressive enhancement, with and without JavaScript."
+            }
+          ],
+          "notEnough": [
+            "Only saying it validates forms."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Multi-tenancy Patterns",
+      "question": "A user can view another company's invoice by changing the id in the URL, and two people editing the same record overwrite each other. Explain how you would prevent both.",
+      "followUps": {
+        "Row-Level Security via Loader Guards": "How do you stop users from loading other users' records?",
+        "Optimistic Concurrency with version Fields": "How does a version field prevent lost updates?"
+      },
+      "criteria": {
+        "Row-Level Security via Loader Guards": {
+          "id": "ownership-guards",
+          "evidence": [
+            {
+              "id": "scope",
+              "text": "Every query for user data is scoped to the logged-in user or tenant."
+            },
+            {
+              "id": "id-only",
+              "text": "Fetching by record id alone lets users change the id to see other data."
+            },
+            {
+              "id": "every-loader",
+              "text": "This check is needed in every loader and action, not just the UI."
+            }
+          ],
+          "notEnough": [
+            "Only saying you check permissions."
+          ],
+          "misconceptions": []
+        },
+        "Optimistic Concurrency with version Fields": {
+          "id": "optimistic-concurrency",
+          "evidence": [
+            {
+              "id": "version",
+              "text": "Each record has a version number."
+            },
+            {
+              "id": "where",
+              "text": "Updates include the expected version and increment it."
+            },
+            {
+              "id": "conflict",
+              "text": "If no row was updated, someone else changed it first, so the user is told."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use a version."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,260 @@
+{
+  "path": "fullstack",
+  "layer": "next-fullstack-3",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Rendering Mental Models",
+      "question": "Your product page reads from the database, has an add-to-cart button and slow reviews. Explain where each part renders and how the page can show content before everything loads.",
+      "followUps": {
+        "Server vs client component boundary rules": "What decides whether a component runs on the server or in the browser?",
+        "Static vs dynamic rendering strategies": "What makes a route dynamic instead of static?",
+        "Streaming and progressive page hydration": "How does streaming let users see content before slow data arrives?"
+      },
+      "criteria": {
+        "Server vs client component boundary rules": {
+          "id": "server-client-boundary",
+          "evidence": [
+            {
+              "id": "server",
+              "text": "Server components run only on the server and can access the database directly."
+            },
+            {
+              "id": "client",
+              "text": "Client components run in the browser and handle interactivity and state."
+            },
+            {
+              "id": "directive",
+              "text": "The use client directive marks where the client part of the tree starts."
+            }
+          ],
+          "notEnough": [
+            "Only saying there are two kinds of components."
+          ],
+          "misconceptions": []
+        },
+        "Static vs dynamic rendering strategies": {
+          "id": "static-dynamic",
+          "evidence": [
+            {
+              "id": "static-default",
+              "text": "Routes are rendered statically at build time by default."
+            },
+            {
+              "id": "dynamic-functions",
+              "text": "Using request data like cookies or headers makes the route render per request."
+            },
+            {
+              "id": "trade-off",
+              "text": "Static is faster and cacheable; dynamic gives fresh, per-user content."
+            }
+          ],
+          "notEnough": [
+            "Only saying routes can be static or dynamic."
+          ],
+          "misconceptions": []
+        },
+        "Streaming and progressive page hydration": {
+          "id": "streaming",
+          "evidence": [
+            {
+              "id": "chunks",
+              "text": "The server sends HTML in chunks as it becomes ready."
+            },
+            {
+              "id": "suspense",
+              "text": "Slow components wrapped in Suspense show a fallback first."
+            },
+            {
+              "id": "faster",
+              "text": "Users see and use the rest of the page sooner."
+            }
+          ],
+          "notEnough": [
+            "Only saying streaming is faster."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Caching and Revalidation Theory",
+      "question": "After editing a product, users still see the old price for a while. Explain how Next.js caches data and how you would refresh it.",
+      "followUps": {
+        "Next.js caching layers and how they interact": "What are Next.js's caching layers and why do they cause stale data surprises?",
+        "Time-based and on-demand revalidation concepts": "How do time-based and on-demand revalidation differ?"
+      },
+      "criteria": {
+        "Next.js caching layers and how they interact": {
+          "id": "cache-layers",
+          "evidence": [
+            {
+              "id": "memo",
+              "text": "Request memoization dedupes identical fetches within one render."
+            },
+            {
+              "id": "data-route",
+              "text": "The Data Cache stores fetch results across requests and the Full Route Cache stores rendered pages."
+            },
+            {
+              "id": "router",
+              "text": "The client Router Cache keeps visited pages in the browser, so a change may need invalidation in more than one layer."
+            }
+          ],
+          "notEnough": [
+            "Only saying Next.js caches things."
+          ],
+          "misconceptions": []
+        },
+        "Time-based and on-demand revalidation concepts": {
+          "id": "revalidation",
+          "evidence": [
+            {
+              "id": "time",
+              "text": "A revalidate time refreshes cached data after a set number of seconds."
+            },
+            {
+              "id": "on-demand",
+              "text": "revalidatePath or revalidateTag clears the cache immediately when data changes."
+            },
+            {
+              "id": "choice",
+              "text": "Use on-demand after known edits and time-based for data that changes on its own."
+            }
+          ],
+          "notEnough": [
+            "Only saying you revalidate."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Data Fetching Patterns",
+      "question": "Your dashboard page loads user, orders and stats one after another and takes three seconds, and one widget needs live client-side data. Explain how you would fetch data.",
+      "followUps": {
+        "fetch in Server Components with caching options": "How do fetch options control caching in a server component?",
+        "Parallel data fetching with Promise.all": "Why use Promise.all for independent requests?",
+        "use client directive and client-side fetching": "When would you fetch in a client component, and with what?"
+      },
+      "criteria": {
+        "fetch in Server Components with caching options": {
+          "id": "fetch-options",
+          "evidence": [
+            {
+              "id": "direct",
+              "text": "Server components fetch data directly without an API layer."
+            },
+            {
+              "id": "cache",
+              "text": "Options choose whether the result is cached or fetched fresh."
+            },
+            {
+              "id": "revalidate",
+              "text": "A revalidate time keeps cached data reasonably fresh."
+            }
+          ],
+          "notEnough": [
+            "Only saying fetch is extended."
+          ],
+          "misconceptions": []
+        },
+        "Parallel data fetching with Promise.all": {
+          "id": "parallel-fetch",
+          "evidence": [
+            {
+              "id": "sequential",
+              "text": "Awaiting requests one after another adds their times together."
+            },
+            {
+              "id": "parallel",
+              "text": "Starting them together with Promise.all runs them at the same time."
+            },
+            {
+              "id": "total",
+              "text": "Total time becomes that of the slowest request."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is faster."
+          ],
+          "misconceptions": []
+        },
+        "use client directive and client-side fetching": {
+          "id": "client-fetching",
+          "evidence": [
+            {
+              "id": "use-client",
+              "text": "use client marks a component to run in the browser."
+            },
+            {
+              "id": "when",
+              "text": "Client fetching suits data that changes with user interaction or must update live."
+            },
+            {
+              "id": "query",
+              "text": "TanStack Query handles caching, refetching and loading states there."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use useEffect."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Suspense and Skeleton UI",
+      "question": "Your whole dashboard is blank until the slowest query finishes, and one failing widget breaks the entire page. Explain how Suspense and error boundaries fix this.",
+      "followUps": {
+        "Suspense boundaries for incremental page loading": "How does wrapping a slow component in Suspense help?",
+        "Error boundaries to gracefully handle fetch errors": "How does error.tsx stop one failure from breaking the whole page?"
+      },
+      "criteria": {
+        "Suspense boundaries for incremental page loading": {
+          "id": "suspense-boundaries",
+          "evidence": [
+            {
+              "id": "fallback",
+              "text": "Suspense shows a fallback, like a skeleton, while the component loads."
+            },
+            {
+              "id": "rest",
+              "text": "The rest of the page renders immediately."
+            },
+            {
+              "id": "progressive",
+              "text": "Content appears progressively instead of all at once."
+            }
+          ],
+          "notEnough": [
+            "Only saying Suspense shows loading."
+          ],
+          "misconceptions": []
+        },
+        "Error boundaries to gracefully handle fetch errors": {
+          "id": "error-boundaries",
+          "evidence": [
+            {
+              "id": "catch",
+              "text": "error.tsx creates an error boundary for its segment."
+            },
+            {
+              "id": "fallback",
+              "text": "A thrown error shows a fallback UI only for that segment."
+            },
+            {
+              "id": "retry",
+              "text": "The fallback can offer a reset to try again."
+            }
+          ],
+          "notEnough": [
+            "Only saying it handles errors."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

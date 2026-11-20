@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "mean-5",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Node.js runtime and Express middleware model",
+      "question": "Your Express API for the task app freezes for every user while one request generates a large report, and a middleware is not reaching its error handler. Explain how Node and Express process requests.",
+      "followUps": {
+        "Node's non-blocking I/O and why CPU-bound work blocks the event loop": "Why does one CPU-heavy request slow down every other user?",
+        "Express middleware execution order and error propagation with next()": "How does an error in middleware reach the error handler?"
+      },
+      "criteria": {
+        "Node's non-blocking I/O and why CPU-bound work blocks the event loop": {
+          "id": "event-loop-blocking",
+          "evidence": [
+            {
+              "id": "io-async",
+              "text": "Node handles I/O like database calls without blocking the event loop."
+            },
+            {
+              "id": "cpu-blocks",
+              "text": "CPU-heavy code runs on the single main thread and blocks every other request."
+            },
+            {
+              "id": "offload",
+              "text": "Heavy work should be moved to worker threads, a queue or another service."
+            }
+          ],
+          "notEnough": [
+            "Only saying Node is single-threaded."
+          ],
+          "misconceptions": []
+        },
+        "Express middleware execution order and error propagation with next()": {
+          "id": "middleware-next",
+          "evidence": [
+            {
+              "id": "order",
+              "text": "Middleware runs in the order it is registered."
+            },
+            {
+              "id": "next",
+              "text": "next passes control to the next middleware."
+            },
+            {
+              "id": "next-error",
+              "text": "next with an error skips normal middleware and goes to error-handling middleware."
+            }
+          ],
+          "notEnough": [
+            "Only saying middleware runs in order."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "REST API conventions for a MEAN backend",
+      "question": "Your Angular app on port 4200 calls an Express API on port 3000 to manage tasks. Explain how you would design the API's URLs and methods and make the browser allow the calls.",
+      "followUps": {
+        "Resource-based URL design and correct HTTP verb semantics": "How would you design URLs and methods for tasks?",
+        "CORS configuration for Angular consuming an Express API": "Why does the browser block the Angular app's calls, and how do you configure CORS?"
+      },
+      "criteria": {
+        "Resource-based URL design and correct HTTP verb semantics": {
+          "id": "rest-design",
+          "evidence": [
+            {
+              "id": "resources",
+              "text": "URLs name resources like /tasks/42, not actions."
+            },
+            {
+              "id": "methods",
+              "text": "GET reads, POST creates, PATCH updates part of a task and DELETE removes it."
+            },
+            {
+              "id": "predictable",
+              "text": "Consistent conventions make the API predictable for the Angular client."
+            }
+          ],
+          "notEnough": [
+            "Only listing HTTP methods."
+          ],
+          "misconceptions": []
+        },
+        "CORS configuration for Angular consuming an Express API": {
+          "id": "cors-angular",
+          "evidence": [
+            {
+              "id": "origins",
+              "text": "Different ports count as different origins, so the browser applies CORS rules."
+            },
+            {
+              "id": "allow",
+              "text": "The server must allow the Angular app's origin."
+            },
+            {
+              "id": "restrict",
+              "text": "In production, only the deployed frontend's origin should be allowed."
+            }
+          ],
+          "notEnough": [
+            "Only saying you enable CORS."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Structuring and running a MEAN Express API",
+      "question": "Your Express app has all logic in route handlers, and it crashes hours after deploying because an environment variable was missing. Explain how you would structure the code and configuration.",
+      "followUps": {
+        "Router modules, controllers, and the service layer pattern": "What do routers, controllers and services each do?",
+        "Environment config with dotenv and startup validation": "Why validate environment variables at startup?"
+      },
+      "criteria": {
+        "Router modules, controllers, and the service layer pattern": {
+          "id": "routers-controllers-services",
+          "evidence": [
+            {
+              "id": "router",
+              "text": "Routers map URLs to controller functions."
+            },
+            {
+              "id": "controller",
+              "text": "Controllers handle the request and response."
+            },
+            {
+              "id": "service",
+              "text": "Services hold business logic, so it can be tested and reused independently."
+            }
+          ],
+          "notEnough": [
+            "Only saying you split code into files."
+          ],
+          "misconceptions": []
+        },
+        "Environment config with dotenv and startup validation": {
+          "id": "env-validation",
+          "evidence": [
+            {
+              "id": "dotenv",
+              "text": "dotenv loads variables from a .env file into the process environment."
+            },
+            {
+              "id": "fail-fast",
+              "text": "Checking required variables at startup makes the app fail immediately with a clear error."
+            },
+            {
+              "id": "vs-later",
+              "text": "Otherwise a missing value causes a confusing crash later when it is first used."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use dotenv."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Input validation and error handling",
+      "question": "Users can create tasks with empty titles, and every route has its own try/catch with different error formats. Explain how you would validate input and handle errors consistently.",
+      "followUps": {
+        "express-validator for route-level request body validation": "How would you validate a task's title on the route?",
+        "Centralized error middleware and async error wrappers": "How do you handle errors from async routes in one place?"
+      },
+      "criteria": {
+        "express-validator for route-level request body validation": {
+          "id": "express-validator",
+          "evidence": [
+            {
+              "id": "chain",
+              "text": "Validation rules are chained per field, such as not empty and trimmed."
+            },
+            {
+              "id": "check-result",
+              "text": "The handler checks the validation result first."
+            },
+            {
+              "id": "respond",
+              "text": "It returns a 422 with the list of errors if any rule fails."
+            }
+          ],
+          "notEnough": [
+            "Only saying you validate the body."
+          ],
+          "misconceptions": []
+        },
+        "Centralized error middleware and async error wrappers": {
+          "id": "error-middleware-async",
+          "evidence": [
+            {
+              "id": "middleware",
+              "text": "A single error middleware with four arguments is registered after all routes."
+            },
+            {
+              "id": "wrapper",
+              "text": "An async wrapper forwards rejected promises to next with the error."
+            },
+            {
+              "id": "consistent",
+              "text": "All errors then get the same response format."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add error handling."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

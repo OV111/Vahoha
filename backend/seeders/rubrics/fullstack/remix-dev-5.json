@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "remix-dev-5",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Prisma ORM Fundamentals",
+      "question": "Your Remix app uses Prisma, and in development you hit 'too many connections' after a few edits. Explain the schema's role and how to create the client safely.",
+      "followUps": {
+        "Prisma Schema and Data Modeling": "Why must schema changes go through the Prisma schema?",
+        "PrismaClient Singleton Pattern": "Why does HMR exhaust connections and how does a singleton help?"
+      },
+      "criteria": {
+        "Prisma Schema and Data Modeling": {
+          "id": "prisma-schema",
+          "evidence": [
+            {
+              "id": "source",
+              "text": "The schema defines both the database structure and the TypeScript types."
+            },
+            {
+              "id": "drift",
+              "text": "Changing the database directly makes them disagree."
+            },
+            {
+              "id": "generate",
+              "text": "The client is regenerated from the schema to stay in sync."
+            }
+          ],
+          "notEnough": [
+            "Only saying the schema defines models."
+          ],
+          "misconceptions": []
+        },
+        "PrismaClient Singleton Pattern": {
+          "id": "prisma-singleton",
+          "evidence": [
+            {
+              "id": "reload",
+              "text": "Hot reloading can create a new client on each change."
+            },
+            {
+              "id": "pools",
+              "text": "Each client opens its own connections."
+            },
+            {
+              "id": "global",
+              "text": "Storing one client on a global variable reuses it."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use a singleton."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Querying with Prisma",
+      "question": "Your user loader returns password hashes to the client, and creating an order sometimes leaves orphaned records. Explain how you would query and write safely.",
+      "followUps": {
+        "findUnique, findMany, and Select": "How does select help with performance and security?",
+        "Transactions and Atomic Operations": "When must you use a transaction?"
+      },
+      "criteria": {
+        "findUnique, findMany, and Select": {
+          "id": "select-fields",
+          "evidence": [
+            {
+              "id": "methods",
+              "text": "findUnique fetches one record and findMany fetches lists."
+            },
+            {
+              "id": "select",
+              "text": "select returns only the chosen fields."
+            },
+            {
+              "id": "sensitive",
+              "text": "This avoids sending sensitive fields like password hashes to the page."
+            }
+          ],
+          "notEnough": [
+            "Only saying select picks fields."
+          ],
+          "misconceptions": []
+        },
+        "Transactions and Atomic Operations": {
+          "id": "transactions",
+          "evidence": [
+            {
+              "id": "related",
+              "text": "Related writes, like an order and its items, must succeed or fail together."
+            },
+            {
+              "id": "transaction",
+              "text": "A transaction rolls back every write if one fails."
+            },
+            {
+              "id": "orphans",
+              "text": "Without it, a failure can leave half-saved data."
+            }
+          ],
+          "notEnough": [
+            "Only saying transactions are atomic."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "SQLite in Development",
+      "question": "Your migrations work locally on SQLite but fail on production PostgreSQL, and someone edited the database by hand. Explain the risks and the right workflow.",
+      "followUps": {
+        "SQLite Limitations and Production Parity": "Why can SQLite in development cause production surprises?",
+        "Prisma Migrate and Schema Drift": "What is schema drift and how do migrations prevent it?"
+      },
+      "criteria": {
+        "SQLite Limitations and Production Parity": {
+          "id": "sqlite-parity",
+          "evidence": [
+            {
+              "id": "limits",
+              "text": "SQLite has limited ALTER TABLE support and handles concurrent writes differently."
+            },
+            {
+              "id": "differs",
+              "text": "Behaviour and migrations that work in SQLite can fail in PostgreSQL."
+            },
+            {
+              "id": "parity",
+              "text": "Using the same database in development as in production avoids this."
+            }
+          ],
+          "notEnough": [
+            "Only saying SQLite is different."
+          ],
+          "misconceptions": []
+        },
+        "Prisma Migrate and Schema Drift": {
+          "id": "migrate-drift",
+          "evidence": [
+            {
+              "id": "migrate",
+              "text": "migrate dev creates versioned SQL migration files."
+            },
+            {
+              "id": "drift",
+              "text": "Manual database edits make the real schema differ from the migrations."
+            },
+            {
+              "id": "consequence",
+              "text": "Drift breaks future migrations and other environments."
+            }
+          ],
+          "notEnough": [
+            "Only saying migrations change schemas."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Data Access Patterns",
+      "question": "Your loaders contain long Prisma queries and tests fail randomly because they share a development database. Explain how you would organise data access and test data.",
+      "followUps": {
+        "Repository Pattern with Remix Loaders": "Why move queries out of loaders into model functions?",
+        "Seeding and Test Databases": "How do seeds and separate test databases help?"
+      },
+      "criteria": {
+        "Repository Pattern with Remix Loaders": {
+          "id": "repository",
+          "evidence": [
+            {
+              "id": "separate",
+              "text": "Query logic lives in dedicated model or repository functions."
+            },
+            {
+              "id": "thin",
+              "text": "Loaders stay short and focused on the request."
+            },
+            {
+              "id": "test-reuse",
+              "text": "Queries can be tested and reused across routes."
+            }
+          ],
+          "notEnough": [
+            "Only saying it organises code."
+          ],
+          "misconceptions": []
+        },
+        "Seeding and Test Databases": {
+          "id": "seed-test-db",
+          "evidence": [
+            {
+              "id": "seed",
+              "text": "A seed script fills a fresh database with known data."
+            },
+            {
+              "id": "separate",
+              "text": "Tests use their own database, not the shared development one."
+            },
+            {
+              "id": "reliable",
+              "text": "Tests become reliable because they start from known state."
+            }
+          ],
+          "notEnough": [
+            "Only saying you seed data."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

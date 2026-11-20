@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "sveltekit-dev-5",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Form Actions Concepts",
+      "question": "Your todo page has forms to create and delete items, and invalid input should show an error next to the field. Explain how SvelteKit form actions work.",
+      "followUps": {
+        "Defining actions in plus page.server.ts files": "How do form actions receive a form's POST?",
+        "Named actions for multiple forms on one page": "How do named actions let one page have several forms?",
+        "Returning validation errors from actions": "How does fail() return errors to the form?"
+      },
+      "criteria": {
+        "Defining actions in plus page.server.ts files": {
+          "id": "form-actions",
+          "evidence": [
+            {
+              "id": "export",
+              "text": "+page.server.ts exports an actions object."
+            },
+            {
+              "id": "post",
+              "text": "Forms on the page post to these actions."
+            },
+            {
+              "id": "colocated",
+              "text": "Mutation logic lives next to the page that uses it."
+            }
+          ],
+          "notEnough": [
+            "Only saying actions handle forms."
+          ],
+          "misconceptions": []
+        },
+        "Named actions for multiple forms on one page": {
+          "id": "named-actions",
+          "evidence": [
+            {
+              "id": "named",
+              "text": "Each action has a name, like create or delete."
+            },
+            {
+              "id": "route",
+              "text": "A form targets one with action set to ?/name."
+            },
+            {
+              "id": "separate",
+              "text": "Each form's logic stays in its own handler."
+            }
+          ],
+          "notEnough": [
+            "Only saying actions have names."
+          ],
+          "misconceptions": []
+        },
+        "Returning validation errors from actions": {
+          "id": "fail-errors",
+          "evidence": [
+            {
+              "id": "fail",
+              "text": "fail returns a status like 400 with error data."
+            },
+            {
+              "id": "no-redirect",
+              "text": "The page stays where it is."
+            },
+            {
+              "id": "form-prop",
+              "text": "The page reads the result through its form prop and shows the errors."
+            }
+          ],
+          "notEnough": [
+            "Only saying you return errors."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Schema Validation",
+      "question": "Your action reads form fields by hand and crashes when a field is missing. Explain how you would validate form data safely.",
+      "followUps": {
+        "Zod schema validation for form data": "Why validate form data with Zod in the action?",
+        "Parsing FormData with Object.fromEntries": "Why convert FormData before parsing it?"
+      },
+      "criteria": {
+        "Zod schema validation for form data": {
+          "id": "zod-validation",
+          "evidence": [
+            {
+              "id": "untrusted",
+              "text": "Form data can contain anything, regardless of the HTML form."
+            },
+            {
+              "id": "parse",
+              "text": "A Zod schema checks types and required fields."
+            },
+            {
+              "id": "messages",
+              "text": "It returns readable errors for each field."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use Zod."
+          ],
+          "misconceptions": []
+        },
+        "Parsing FormData with Object.fromEntries": {
+          "id": "formdata-conversion",
+          "evidence": [
+            {
+              "id": "formdata",
+              "text": "FormData is not a plain object."
+            },
+            {
+              "id": "convert",
+              "text": "Object.fromEntries turns it into a plain object Zod can parse."
+            },
+            {
+              "id": "strings",
+              "text": "All values arrive as strings, so numbers and booleans need conversion."
+            }
+          ],
+          "notEnough": [
+            "Only saying you convert it."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Progressive Enhancement",
+      "question": "Your forms reload the whole page on submit, and you want likes to appear instantly. Explain progressive enhancement with use:enhance.",
+      "followUps": {
+        "Enhance directive for JavaScript-enhanced forms": "What does use:enhance change, and what happens without JavaScript?",
+        "Custom enhance callback for optimistic updates": "How would you use a custom enhance callback for an optimistic update?"
+      },
+      "criteria": {
+        "Enhance directive for JavaScript-enhanced forms": {
+          "id": "use-enhance",
+          "evidence": [
+            {
+              "id": "fetch",
+              "text": "use:enhance submits the form with fetch instead of a full reload."
+            },
+            {
+              "id": "no-js",
+              "text": "Without JavaScript, the form still works as a normal submission."
+            },
+            {
+              "id": "progressive",
+              "text": "This is progressive enhancement: it works first and improves with JavaScript."
+            }
+          ],
+          "notEnough": [
+            "Only saying it enhances forms."
+          ],
+          "misconceptions": []
+        },
+        "Custom enhance callback for optimistic updates": {
+          "id": "custom-enhance",
+          "evidence": [
+            {
+              "id": "callback",
+              "text": "A callback passed to use:enhance runs before submission and receives the result."
+            },
+            {
+              "id": "optimistic",
+              "text": "The UI can be updated before the server responds."
+            },
+            {
+              "id": "control",
+              "text": "It can roll back on failure or handle redirects itself."
+            }
+          ],
+          "notEnough": [
+            "Only saying you pass a function."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Invalidation After Mutations",
+      "question": "After saving, the page sometimes shows old data, and refreshing after a submit sends the form again. Explain how SvelteKit handles data after mutations.",
+      "followUps": {
+        "Automatic data invalidation after action success": "What happens to load data after a successful enhanced action?",
+        "Redirect after POST to prevent duplicate submissions": "Why redirect with 303 after a successful POST?"
+      },
+      "criteria": {
+        "Automatic data invalidation after action success": {
+          "id": "auto-invalidation",
+          "evidence": [
+            {
+              "id": "rerun",
+              "text": "By default use:enhance re-runs load functions after success."
+            },
+            {
+              "id": "fresh",
+              "text": "The page shows fresh data without a manual refresh."
+            },
+            {
+              "id": "custom",
+              "text": "A custom callback can change or skip this behaviour."
+            }
+          ],
+          "notEnough": [
+            "Only saying data refreshes."
+          ],
+          "misconceptions": []
+        },
+        "Redirect after POST to prevent duplicate submissions": {
+          "id": "post-redirect-get",
+          "evidence": [
+            {
+              "id": "redirect",
+              "text": "Throwing redirect with 303 sends the browser to a new page with a GET."
+            },
+            {
+              "id": "refresh",
+              "text": "Refreshing then repeats the GET, not the POST."
+            },
+            {
+              "id": "duplicates",
+              "text": "This prevents accidental duplicate submissions."
+            }
+          ],
+          "notEnough": [
+            "Only saying you redirect."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

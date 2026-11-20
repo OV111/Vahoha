@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "t3-3",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Next.js App Router rendering model",
+      "question": "You are building a blog page in the Next.js App Router that reads posts from the database, has a like button and loads slow comments. Explain how rendering works and where each part runs.",
+      "followUps": {
+        "Server components versus client components: execution boundary": "What can a server component do that a client component cannot, and the reverse?",
+        "Static rendering, dynamic rendering, and streaming with Suspense": "How does Suspense let the page show before the slow comments have loaded?"
+      },
+      "criteria": {
+        "Server components versus client components: execution boundary": {
+          "id": "server-vs-client",
+          "evidence": [
+            {
+              "id": "server-access",
+              "text": "Server components run only on the server, so they can read databases and secrets directly."
+            },
+            {
+              "id": "no-hooks",
+              "text": "Server components cannot use state, effects or browser APIs."
+            },
+            {
+              "id": "use-client",
+              "text": "use client marks where code starts running in the browser for interactivity."
+            }
+          ],
+          "notEnough": [
+            "Only saying one renders on the server and one in the browser."
+          ],
+          "misconceptions": [
+            {
+              "id": "client-browser-only",
+              "text": "Says client components are never rendered on the server."
+            }
+          ]
+        },
+        "Static rendering, dynamic rendering, and streaming with Suspense": {
+          "id": "static-dynamic-streaming",
+          "evidence": [
+            {
+              "id": "static",
+              "text": "Static routes are rendered at build time and cached."
+            },
+            {
+              "id": "dynamic",
+              "text": "Using things like cookies or search params makes a route dynamic, rendered per request."
+            },
+            {
+              "id": "streaming",
+              "text": "Suspense lets the server send the rest of the page first and stream the slow part in when it is ready."
+            }
+          ],
+          "notEnough": [
+            "Only saying Suspense shows a loading state."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "File-based routing and the layout system",
+      "question": "Your app has a dashboard section with a shared sidebar and pages that fetch data that changes every minute. Explain how the App Router's files fit together and how fetching and caching work.",
+      "followUps": {
+        "How layout.tsx, page.tsx, and loading.tsx compose the route tree": "How do layout, page and loading files work together for a route?",
+        "Data fetching in server components: fetch with cache control": "How would you make a server component's fetch refresh every 60 seconds?"
+      },
+      "criteria": {
+        "How layout.tsx, page.tsx, and loading.tsx compose the route tree": {
+          "id": "layout-page-loading",
+          "evidence": [
+            {
+              "id": "layout-wraps",
+              "text": "layout.tsx wraps the page.tsx of that segment and its children."
+            },
+            {
+              "id": "no-remount",
+              "text": "Layouts stay mounted when navigating between child pages, so they keep their state."
+            },
+            {
+              "id": "loading",
+              "text": "loading.tsx is shown automatically as a fallback while the page loads."
+            }
+          ],
+          "notEnough": [
+            "Only listing the file names."
+          ],
+          "misconceptions": []
+        },
+        "Data fetching in server components: fetch with cache control": {
+          "id": "fetch-cache-control",
+          "evidence": [
+            {
+              "id": "cache-options",
+              "text": "fetch in server components accepts caching options."
+            },
+            {
+              "id": "no-store",
+              "text": "no-store fetches fresh data on every request."
+            },
+            {
+              "id": "revalidate",
+              "text": "A revalidate time like 60 seconds serves cached data and refreshes it in the background after that time."
+            }
+          ],
+          "notEnough": [
+            "Only saying Next.js caches fetch."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Setting up and navigating a Next.js App Router project",
+      "question": "You are adding pages for individual posts at /posts/123 and documentation pages at any depth, plus navigation between them. Explain how dynamic routes and client-side navigation work.",
+      "followUps": {
+        "Dynamic routes with [slug] and catch-all [...slug] segments": "How do [id] and [...slug] folders differ, and what does generateStaticParams do?",
+        "The Link component and useRouter for client-side navigation": "Why use the Link component instead of a plain anchor tag?"
+      },
+      "criteria": {
+        "Dynamic routes with [slug] and catch-all [...slug] segments": {
+          "id": "dynamic-routes",
+          "evidence": [
+            {
+              "id": "single",
+              "text": "A folder named with brackets like [id] matches one URL segment and passes it as a param."
+            },
+            {
+              "id": "catch-all",
+              "text": "A catch-all segment like [...slug] matches any number of segments."
+            },
+            {
+              "id": "static-params",
+              "text": "generateStaticParams lists which dynamic pages to build ahead of time."
+            }
+          ],
+          "notEnough": [
+            "Only saying brackets make dynamic routes."
+          ],
+          "misconceptions": []
+        },
+        "The Link component and useRouter for client-side navigation": {
+          "id": "link-userouter",
+          "evidence": [
+            {
+              "id": "no-reload",
+              "text": "Link navigates without a full page reload."
+            },
+            {
+              "id": "prefetch",
+              "text": "It prefetches the target route in the background so navigation feels instant."
+            },
+            {
+              "id": "router",
+              "text": "useRouter from next/navigation lets code navigate programmatically, for example after a form submit."
+            }
+          ],
+          "notEnough": [
+            "Only saying Link is for navigation."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Metadata, error boundaries, and loading states",
+      "question": "Your post pages have no titles in search results, and a missing post shows a crash screen instead of a helpful message. Explain how you would set metadata and handle errors per route.",
+      "followUps": {
+        "Generating SEO metadata with the Metadata API": "How would you give each post page its own title and preview image?",
+        "error.tsx and not-found.tsx for route-level error handling": "What do error.tsx and not-found.tsx handle, and why must error.tsx be a client component?"
+      },
+      "criteria": {
+        "Generating SEO metadata with the Metadata API": {
+          "id": "metadata-api",
+          "evidence": [
+            {
+              "id": "export",
+              "text": "A page or layout exports a metadata object or a generateMetadata function."
+            },
+            {
+              "id": "dynamic",
+              "text": "generateMetadata can fetch the post on the server to build the title and description."
+            },
+            {
+              "id": "og",
+              "text": "Open Graph fields set the preview shown when the link is shared."
+            }
+          ],
+          "notEnough": [
+            "Only saying you set the title tag."
+          ],
+          "misconceptions": []
+        },
+        "error.tsx and not-found.tsx for route-level error handling": {
+          "id": "error-not-found",
+          "evidence": [
+            {
+              "id": "error-boundary",
+              "text": "error.tsx catches errors in its route segment and shows a fallback with a way to retry."
+            },
+            {
+              "id": "client",
+              "text": "It must be a client component because it uses a reset function to re-render the segment."
+            },
+            {
+              "id": "not-found",
+              "text": "not-found.tsx is shown when code calls notFound, such as for a missing post."
+            }
+          ],
+          "notEnough": [
+            "Only saying they show error pages."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

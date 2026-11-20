@@ -1,0 +1,241 @@
+{
+  "path": "fullstack",
+  "layer": "frontend-dev-1",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "How the Web Works",
+      "question": "A user types your site's address and the page loads slowly, and one image never appears. Walk through what happens between pressing Enter and seeing the page, and how you would find out what went wrong.",
+      "followUps": {
+        "The request and response cycle": "Why does a request that returns a 404 still count as a successful network round trip, and what does that tell you when debugging?",
+        "DevTools Network panel": "A page feels slow. How would you use the Network panel to find which request is the problem?"
+      },
+      "criteria": {
+        "The request and response cycle": {
+          "id": "request-response-cycle",
+          "evidence": [
+            {
+              "id": "dns",
+              "text": "The domain name is first turned into a server address before the browser can connect and send its request."
+            },
+            {
+              "id": "request-reply",
+              "text": "The browser sends an HTTP request and the server answers with a status code, headers and a body."
+            },
+            {
+              "id": "status-meaning",
+              "text": "The status code tells you what happened, such as 200 for success, 404 for not found and 500 for a server error."
+            }
+          ],
+          "notEnough": [
+            "Only listing DNS, HTTP and status codes without explaining the order things happen in."
+          ],
+          "misconceptions": [
+            {
+              "id": "status-always-200",
+              "text": "Says the server only sends a response when the request succeeds."
+            }
+          ]
+        },
+        "DevTools Network panel": {
+          "id": "devtools-network",
+          "evidence": [
+            {
+              "id": "every-request",
+              "text": "The Network panel lists every request the page makes, including images, scripts and API calls."
+            },
+            {
+              "id": "timing-status",
+              "text": "Each entry shows its status, size and how long it took, so failed or slow requests stand out."
+            },
+            {
+              "id": "inspect",
+              "text": "Clicking a request shows its headers and response, which tells you what was sent and what came back."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would open DevTools without saying what you would look at."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Document Structure",
+      "question": "You open a page's source and see a messy document: missing closing tags and no viewport or title in the head. Explain how the browser turns HTML into a page and why these problems show up for users.",
+      "followUps": {
+        "Elements, attributes and the DOM tree": "Why might a page with a missing closing tag still render, but not the way you expected?",
+        "Metadata and the head": "Your site looks tiny and zoomed out on phones. What in the head causes that, and what else belongs there?"
+      },
+      "criteria": {
+        "Elements, attributes and the DOM tree": {
+          "id": "dom-tree",
+          "evidence": [
+            {
+              "id": "parse-tree",
+              "text": "The browser parses HTML into a tree of nested elements called the DOM."
+            },
+            {
+              "id": "nesting",
+              "text": "Where an element sits in the tree depends on how tags are nested, and attributes add extra information to each element."
+            },
+            {
+              "id": "auto-repair",
+              "text": "Broken HTML is silently repaired by the browser, which can build a different tree than the author intended."
+            }
+          ],
+          "notEnough": [
+            "Only saying HTML is made of tags and attributes without explaining the tree."
+          ],
+          "misconceptions": [
+            {
+              "id": "errors-shown",
+              "text": "Says the browser shows an error message when the HTML is invalid."
+            }
+          ]
+        },
+        "Metadata and the head": {
+          "id": "head-metadata",
+          "evidence": [
+            {
+              "id": "viewport",
+              "text": "Without a viewport meta tag, mobile browsers render the page at desktop width and shrink it."
+            },
+            {
+              "id": "title-charset",
+              "text": "The head holds the page title and character set, which control the tab name and how text is decoded."
+            },
+            {
+              "id": "social",
+              "text": "Metadata in the head also controls how links to the page look when shared on social sites and in search results."
+            }
+          ],
+          "notEnough": [
+            "Only listing tags that go in the head without saying what each one does."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Semantics",
+      "question": "A blind user tells you they cannot find their way around your website with a screen reader. Explain how page structure and headings help them, and what you would change.",
+      "followUps": {
+        "Landmark elements": "Why is a nav element better than a div with a class of nav for screen reader users?",
+        "Headings and document outline": "A designer wants an h4 right after the h1 because it has the right size. Why is that a problem?"
+      },
+      "criteria": {
+        "Landmark elements": {
+          "id": "landmarks",
+          "evidence": [
+            {
+              "id": "meaning",
+              "text": "Landmark elements like header, nav, main and footer tell browsers and assistive tools what each region of the page is."
+            },
+            {
+              "id": "navigate",
+              "text": "Screen reader users can jump directly between landmarks instead of reading the whole page."
+            },
+            {
+              "id": "div-no-meaning",
+              "text": "A plain div carries no meaning, so a class name is invisible to assistive technology."
+            }
+          ],
+          "notEnough": [
+            "Only saying semantic HTML is cleaner or better for SEO without explaining who uses it and how."
+          ],
+          "misconceptions": [
+            {
+              "id": "visual-only",
+              "text": "Says landmark elements change how the page looks."
+            }
+          ]
+        },
+        "Headings and document outline": {
+          "id": "heading-outline",
+          "evidence": [
+            {
+              "id": "outline",
+              "text": "Headings form an outline of the page that screen reader users use to skim and jump between sections."
+            },
+            {
+              "id": "levels",
+              "text": "Skipping heading levels breaks that outline, so users lose track of how sections relate."
+            },
+            {
+              "id": "style-separately",
+              "text": "The visual size should be set with CSS, not by picking a different heading level."
+            }
+          ],
+          "notEnough": [
+            "Only saying there should be one h1 without explaining why levels matter."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Forms and Media",
+      "question": "You are building a sign-up form with a profile photo and an intro video. Explain how you would build the form controls and the media so they work on phones and for everyone.",
+      "followUps": {
+        "Native form controls": "Why use an input with type email instead of a plain text input with your own validation?",
+        "Images, video and alt text": "When should an image have an empty alt attribute instead of a description?"
+      },
+      "criteria": {
+        "Native form controls": {
+          "id": "native-controls",
+          "evidence": [
+            {
+              "id": "free-features",
+              "text": "Native controls give built-in validation, the right keyboard on mobile and keyboard support without extra code."
+            },
+            {
+              "id": "labels",
+              "text": "Each input needs a label tied to it so screen readers announce what the field is for and clicking the label focuses the field."
+            },
+            {
+              "id": "prefer-native",
+              "text": "Building a custom control means re-creating all of that behaviour, which is easy to get wrong."
+            }
+          ],
+          "notEnough": [
+            "Only listing input types without saying what they give the user."
+          ],
+          "misconceptions": [
+            {
+              "id": "placeholder-label",
+              "text": "Says a placeholder is enough instead of a label."
+            }
+          ]
+        },
+        "Images, video and alt text": {
+          "id": "alt-text-media",
+          "evidence": [
+            {
+              "id": "informative",
+              "text": "Images that carry information need alt text describing what they show, so people who cannot see them get the same information."
+            },
+            {
+              "id": "decorative",
+              "text": "Purely decorative images get an empty alt so screen readers skip them."
+            },
+            {
+              "id": "right-size",
+              "text": "srcset and the picture element let the browser pick an image size that fits the screen, so phones do not download huge files."
+            }
+          ],
+          "notEnough": [
+            "Only saying every image needs alt text without explaining what it should say or when it should be empty."
+          ],
+          "misconceptions": [
+            {
+              "id": "alt-filename",
+              "text": "Says alt text should be the image's file name or the word image."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

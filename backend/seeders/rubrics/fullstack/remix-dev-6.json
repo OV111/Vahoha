@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "remix-dev-6",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Session Management",
+      "question": "You are adding login to your Remix app with cookie sessions, but logins sometimes do not stick. Explain how Remix sessions are stored and saved.",
+      "followUps": {
+        "createCookieSessionStorage": "What does createCookieSessionStorage do and why does the secret matter?",
+        "commitSession and destroySession": "Why might a login not stick after you set the user id in the session?"
+      },
+      "criteria": {
+        "createCookieSessionStorage": {
+          "id": "cookie-session-storage",
+          "evidence": [
+            {
+              "id": "cookie",
+              "text": "Session data is stored in a signed cookie."
+            },
+            {
+              "id": "secret",
+              "text": "A strong secret signs it so users cannot change it."
+            },
+            {
+              "id": "rotate",
+              "text": "Secrets should be kept private and can be rotated."
+            }
+          ],
+          "notEnough": [
+            "Only saying it stores sessions."
+          ],
+          "misconceptions": []
+        },
+        "commitSession and destroySession": {
+          "id": "commit-destroy",
+          "evidence": [
+            {
+              "id": "commit",
+              "text": "Changes only persist when commitSession is called."
+            },
+            {
+              "id": "header",
+              "text": "Its Set-Cookie header must be returned in the Response."
+            },
+            {
+              "id": "destroy",
+              "text": "destroySession clears the session on logout the same way."
+            }
+          ],
+          "notEnough": [
+            "Only saying you commit the session."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Password and User Auth",
+      "question": "Your user table could leak one day, and attackers might guess which usernames exist by timing login responses. Explain how you would store and check passwords.",
+      "followUps": {
+        "Hashing Passwords with bcrypt": "Why hash passwords with bcrypt?",
+        "Timing-Safe Comparisons": "How can a normal string comparison leak information, and how do you prevent it?"
+      },
+      "criteria": {
+        "Hashing Passwords with bcrypt": {
+          "id": "bcrypt",
+          "evidence": [
+            {
+              "id": "slow-salted",
+              "text": "bcrypt is slow and salted on purpose."
+            },
+            {
+              "id": "leak",
+              "text": "A leaked database is then very hard to crack."
+            },
+            {
+              "id": "fast-bad",
+              "text": "Fast hashes like MD5 can be cracked quickly."
+            }
+          ],
+          "notEnough": [
+            "Only saying you hash passwords."
+          ],
+          "misconceptions": []
+        },
+        "Timing-Safe Comparisons": {
+          "id": "timing-safe",
+          "evidence": [
+            {
+              "id": "early-exit",
+              "text": "A normal comparison stops at the first different character."
+            },
+            {
+              "id": "timing",
+              "text": "Response time differences can reveal information to attackers."
+            },
+            {
+              "id": "constant",
+              "text": "Constant-time comparison functions and consistent login responses prevent this."
+            }
+          ],
+          "notEnough": [
+            "Only saying you compare safely."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Cookie Security",
+      "question": "A security review flags your session cookie settings, and you want a 'Saved!' message after redirecting. Explain cookie attributes and flash messages.",
+      "followUps": {
+        "HttpOnly, Secure, and SameSite Attributes": "What do HttpOnly, Secure and SameSite do for a session cookie?",
+        "Flash Messages via Session": "How do flash messages work in Remix sessions?"
+      },
+      "criteria": {
+        "HttpOnly, Secure, and SameSite Attributes": {
+          "id": "cookie-attributes",
+          "evidence": [
+            {
+              "id": "httponly",
+              "text": "HttpOnly stops JavaScript from reading the cookie."
+            },
+            {
+              "id": "secure",
+              "text": "Secure sends it only over HTTPS."
+            },
+            {
+              "id": "samesite",
+              "text": "SameSite Lax or Strict blocks most cross-site uses, which helps against CSRF."
+            }
+          ],
+          "notEnough": [
+            "Only listing the attributes."
+          ],
+          "misconceptions": []
+        },
+        "Flash Messages via Session": {
+          "id": "flash-messages",
+          "evidence": [
+            {
+              "id": "flash",
+              "text": "A flash value is stored in the session for the next request."
+            },
+            {
+              "id": "read-once",
+              "text": "It is removed automatically after being read."
+            },
+            {
+              "id": "commit",
+              "text": "The session must be committed after reading so the value is cleared."
+            }
+          ],
+          "notEnough": [
+            "Only saying flash shows messages."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "OAuth and Third-Party Auth",
+      "question": "You need GitHub login and must protect actions that other sites might try to trigger. Explain remix-auth and CSRF protection.",
+      "followUps": {
+        "remix-auth and Strategy Pattern": "What does remix-auth give you?",
+        "CSRF Protection in Remix Actions": "Is SameSite enough to prevent CSRF in Remix?"
+      },
+      "criteria": {
+        "remix-auth and Strategy Pattern": {
+          "id": "remix-auth",
+          "evidence": [
+            {
+              "id": "strategies",
+              "text": "remix-auth uses strategies for different login methods like OAuth."
+            },
+            {
+              "id": "flow",
+              "text": "It handles redirects, callback verification and saving the user in the session."
+            },
+            {
+              "id": "less-custom",
+              "text": "This avoids writing error-prone OAuth code by hand."
+            }
+          ],
+          "notEnough": [
+            "Only saying it handles auth."
+          ],
+          "misconceptions": []
+        },
+        "CSRF Protection in Remix Actions": {
+          "id": "csrf",
+          "evidence": [
+            {
+              "id": "baseline",
+              "text": "SameSite cookies give baseline protection."
+            },
+            {
+              "id": "gaps",
+              "text": "Endpoints that accept cross-origin requests or older browsers need more."
+            },
+            {
+              "id": "tokens",
+              "text": "CSRF tokens or origin checks add protection where needed."
+            }
+          ],
+          "notEnough": [
+            "Only saying SameSite prevents CSRF."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "rails-dev-10",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Testing Philosophy and Strategies",
+      "question": "You are writing tests for a Rails app with models, an API and Turbo-powered pages, and your fixtures keep breaking. Explain your testing approach.",
+      "followUps": {
+        "RSpec model and request spec patterns": "What do model specs and request specs each cover?",
+        "System tests with Capybara and browser drivers": "What do system tests with Capybara catch?",
+        "FactoryBot for test data factories": "Why use FactoryBot instead of fixtures?"
+      },
+      "criteria": {
+        "RSpec model and request spec patterns": {
+          "id": "rspec-specs",
+          "evidence": [
+            {
+              "id": "model",
+              "text": "Model specs test validations, associations and business logic."
+            },
+            {
+              "id": "request",
+              "text": "Request specs test the full HTTP stack and responses."
+            },
+            {
+              "id": "levels",
+              "text": "Using both catches bugs in logic and in wiring."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use RSpec."
+          ],
+          "misconceptions": []
+        },
+        "System tests with Capybara and browser drivers": {
+          "id": "system-tests",
+          "evidence": [
+            {
+              "id": "browser",
+              "text": "Capybara drives a real browser through user flows."
+            },
+            {
+              "id": "js",
+              "text": "It covers JavaScript and Turbo behaviour that other specs cannot."
+            },
+            {
+              "id": "slow",
+              "text": "They are slow, so they are kept to the most important flows."
+            }
+          ],
+          "notEnough": [
+            "Only saying they test the UI."
+          ],
+          "misconceptions": []
+        },
+        "FactoryBot for test data factories": {
+          "id": "factorybot",
+          "evidence": [
+            {
+              "id": "defaults",
+              "text": "Factories build records with sensible defaults."
+            },
+            {
+              "id": "traits",
+              "text": "Traits add variations, like an admin user."
+            },
+            {
+              "id": "readable",
+              "text": "Tests only set the fields they care about, which keeps setup clear."
+            }
+          ],
+          "notEnough": [
+            "Only saying it creates test data."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "CI and Quality Gates",
+      "question": "Broken code keeps reaching main and test coverage is dropping. Explain how you would set up CI and coverage checks.",
+      "followUps": {
+        "GitHub Actions CI pipeline for Rails": "What does a GitHub Actions workflow for Rails need?",
+        "Code coverage with SimpleCov reporting": "How does SimpleCov help, and what are the limits of coverage numbers?"
+      },
+      "criteria": {
+        "GitHub Actions CI pipeline for Rails": {
+          "id": "github-actions",
+          "evidence": [
+            {
+              "id": "ruby",
+              "text": "It installs Ruby and the gems."
+            },
+            {
+              "id": "postgres",
+              "text": "It starts a PostgreSQL service container and loads the schema."
+            },
+            {
+              "id": "run",
+              "text": "It runs the full test suite on every pull request."
+            }
+          ],
+          "notEnough": [
+            "Only saying CI runs tests."
+          ],
+          "misconceptions": []
+        },
+        "Code coverage with SimpleCov reporting": {
+          "id": "simplecov",
+          "evidence": [
+            {
+              "id": "report",
+              "text": "SimpleCov reports which lines the tests ran."
+            },
+            {
+              "id": "threshold",
+              "text": "A minimum threshold can fail the build when coverage drops."
+            },
+            {
+              "id": "limits",
+              "text": "Covered lines are not necessarily well tested, so coverage is a guide, not proof."
+            }
+          ],
+          "notEnough": [
+            "Only saying it measures coverage."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Containerization",
+      "question": "You want to run your Rails app in containers for production and local development with Postgres and Redis. Explain the setup.",
+      "followUps": {
+        "Dockerfile for Rails production containers": "What does the Rails-generated production Dockerfile do?",
+        "Docker Compose for local development stack": "How does Docker Compose help local development?"
+      },
+      "criteria": {
+        "Dockerfile for Rails production containers": {
+          "id": "rails-dockerfile",
+          "evidence": [
+            {
+              "id": "multi-stage",
+              "text": "It uses a multi-stage build with a slim Ruby image."
+            },
+            {
+              "id": "assets",
+              "text": "It precompiles assets during the build."
+            },
+            {
+              "id": "run",
+              "text": "It starts the app with Puma, with migrations run as part of release."
+            }
+          ],
+          "notEnough": [
+            "Only saying Rails has a Dockerfile."
+          ],
+          "misconceptions": []
+        },
+        "Docker Compose for local development stack": {
+          "id": "compose",
+          "evidence": [
+            {
+              "id": "services",
+              "text": "Compose runs Rails, PostgreSQL and Redis together."
+            },
+            {
+              "id": "config",
+              "text": "Services, ports and environment variables are defined in one file."
+            },
+            {
+              "id": "same",
+              "text": "Every developer gets the same setup with one command."
+            }
+          ],
+          "notEnough": [
+            "Only saying it runs containers."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Cloud Deployment",
+      "question": "You are choosing how to deploy your Rails app: a platform like Render or your own servers. Explain both options.",
+      "followUps": {
+        "Deploying Rails to Render or Railway": "What does a platform like Render or Railway handle for you?",
+        "Kamal for zero-downtime Rails deployment": "How does Kamal deploy with zero downtime?"
+      },
+      "criteria": {
+        "Deploying Rails to Render or Railway": {
+          "id": "render-railway",
+          "evidence": [
+            {
+              "id": "from-repo",
+              "text": "They deploy straight from the GitHub repository."
+            },
+            {
+              "id": "detect",
+              "text": "They detect the Dockerfile or buildpack and provision PostgreSQL."
+            },
+            {
+              "id": "release",
+              "text": "They run release commands like migrations before switching traffic."
+            }
+          ],
+          "notEnough": [
+            "Only naming platforms."
+          ],
+          "misconceptions": []
+        },
+        "Kamal for zero-downtime Rails deployment": {
+          "id": "kamal",
+          "evidence": [
+            {
+              "id": "image",
+              "text": "Kamal builds a Docker image and pushes it to a registry."
+            },
+            {
+              "id": "servers",
+              "text": "It deploys the image to your own servers."
+            },
+            {
+              "id": "health",
+              "text": "It starts the new version, checks its health, then switches traffic from the old one."
+            }
+          ],
+          "notEnough": [
+            "Only saying Kamal deploys Rails."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

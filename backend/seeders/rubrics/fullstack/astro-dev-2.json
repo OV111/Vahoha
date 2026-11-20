@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "astro-dev-2",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Astro Component Model",
+      "question": "You are building an Astro card component that reads data and receives a title prop. Explain where its code runs and how props work.",
+      "followUps": {
+        "Component Script Fence": "Where does code inside the --- fence run?",
+        "Props and Component Composition": "How do you type an Astro component's props?"
+      },
+      "criteria": {
+        "Component Script Fence": {
+          "id": "script-fence",
+          "evidence": [
+            {
+              "id": "server",
+              "text": "Code in the frontmatter fence runs on the server or at build time."
+            },
+            {
+              "id": "not-shipped",
+              "text": "None of it is sent to the browser."
+            },
+            {
+              "id": "safe",
+              "text": "It can fetch data and use secrets safely."
+            }
+          ],
+          "notEnough": [
+            "Only saying the fence holds scripts."
+          ],
+          "misconceptions": []
+        },
+        "Props and Component Composition": {
+          "id": "props-composition",
+          "evidence": [
+            {
+              "id": "interface",
+              "text": "A Props interface in the frontmatter describes the props."
+            },
+            {
+              "id": "astro-props",
+              "text": "Props are read from Astro.props."
+            },
+            {
+              "id": "checked",
+              "text": "TypeScript then checks how the component is used."
+            }
+          ],
+          "notEnough": [
+            "Only saying components take props."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Zero-JS by Default",
+      "question": "A client asks why your Astro site loads so much faster than their old React site, and you need a reusable page wrapper. Explain Astro's output and slots.",
+      "followUps": {
+        "HTML-first Output": "Why does an Astro page ship no JavaScript by default?",
+        "Slots and Template Composition": "How do slots let a wrapper component accept content?"
+      },
+      "criteria": {
+        "HTML-first Output": {
+          "id": "html-first",
+          "evidence": [
+            {
+              "id": "html",
+              "text": "Astro components compile to plain HTML."
+            },
+            {
+              "id": "no-js",
+              "text": "No JavaScript is sent unless a component explicitly needs it."
+            },
+            {
+              "id": "fast",
+              "text": "This gives a very fast first paint."
+            }
+          ],
+          "notEnough": [
+            "Only saying Astro is fast."
+          ],
+          "misconceptions": []
+        },
+        "Slots and Template Composition": {
+          "id": "slots",
+          "evidence": [
+            {
+              "id": "placeholder",
+              "text": "A slot marks where a parent's content is inserted."
+            },
+            {
+              "id": "named",
+              "text": "Named slots allow several insertion points."
+            },
+            {
+              "id": "layout",
+              "text": "This is how wrappers and layouts are composed."
+            }
+          ],
+          "notEnough": [
+            "Only saying slots pass content."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Astro Templating",
+      "question": "A teammate tries to use an onClick handler in an Astro template and styles from one component leak into another. Explain how Astro templates and styles work.",
+      "followUps": {
+        "Astro Template Expressions": "Why doesn't an onClick handler work in an Astro template?",
+        "Scoped CSS in Astro": "How does Astro scope component styles?"
+      },
+      "criteria": {
+        "Astro Template Expressions": {
+          "id": "template-expressions",
+          "evidence": [
+            {
+              "id": "jsx-like",
+              "text": "Astro templates use JSX-like expressions."
+            },
+            {
+              "id": "server",
+              "text": "They are rendered to HTML on the server, not in the browser."
+            },
+            {
+              "id": "no-events",
+              "text": "Event handlers need a script tag or a framework island."
+            }
+          ],
+          "notEnough": [
+            "Only saying Astro is not React."
+          ],
+          "misconceptions": []
+        },
+        "Scoped CSS in Astro": {
+          "id": "scoped-css",
+          "evidence": [
+            {
+              "id": "scoped",
+              "text": "Styles in a component are scoped to it automatically."
+            },
+            {
+              "id": "attribute",
+              "text": "Astro adds a unique attribute to keep them from leaking."
+            },
+            {
+              "id": "global",
+              "text": "Global styles must be opted into explicitly."
+            }
+          ],
+          "notEnough": [
+            "Only saying styles are scoped."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "TypeScript in Astro",
+      "question": "A developer wants to turn off strict mode because of null errors, and a component is imported with the wrong props. Explain TypeScript in Astro.",
+      "followUps": {
+        "Strict Mode TypeScript Config": "Why keep strict mode on?",
+        "Type-safe Component Imports": "How does Astro catch wrong props on imported components?"
+      },
+      "criteria": {
+        "Strict Mode TypeScript Config": {
+          "id": "strict-mode",
+          "evidence": [
+            {
+              "id": "checks",
+              "text": "Strict mode turns on null checks and stricter rules."
+            },
+            {
+              "id": "masks",
+              "text": "Turning it off hides real bugs instead of fixing them."
+            },
+            {
+              "id": "fix",
+              "text": "The errors point to places where values can be missing."
+            }
+          ],
+          "notEnough": [
+            "Only saying strict is stricter."
+          ],
+          "misconceptions": []
+        },
+        "Type-safe Component Imports": {
+          "id": "typed-imports",
+          "evidence": [
+            {
+              "id": "checked",
+              "text": "Imports are type-checked against the component's Props."
+            },
+            {
+              "id": "compile",
+              "text": "Wrong or missing props are reported before the build."
+            },
+            {
+              "id": "check",
+              "text": "Running astro check catches these in CI."
+            }
+          ],
+          "notEnough": [
+            "Only saying imports are typed."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,260 @@
+{
+  "path": "fullstack",
+  "layer": "next-fullstack-4",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Prisma Schema Design",
+      "question": "You are designing the database for a Next.js app with users, posts and tags using Prisma, and the schema will change as features grow. Explain how you would model and evolve it.",
+      "followUps": {
+        "Defining models, fields, and scalar types": "How does a Prisma model map to the database?",
+        "Relations: one-to-many and many-to-many": "How would you model posts with one author and many tags?",
+        "Migrations workflow and schema evolution": "How do migrations keep everyone's database in sync?"
+      },
+      "criteria": {
+        "Defining models, fields, and scalar types": {
+          "id": "prisma-models",
+          "evidence": [
+            {
+              "id": "source",
+              "text": "The Prisma schema is the single source of truth for the database structure."
+            },
+            {
+              "id": "tables",
+              "text": "Models map to tables and fields to columns."
+            },
+            {
+              "id": "types",
+              "text": "Scalar types like String and DateTime map to database column types."
+            }
+          ],
+          "notEnough": [
+            "Only saying Prisma defines models."
+          ],
+          "misconceptions": []
+        },
+        "Relations: one-to-many and many-to-many": {
+          "id": "prisma-relations",
+          "evidence": [
+            {
+              "id": "one-many",
+              "text": "A one-to-many relation stores a foreign key on the many side."
+            },
+            {
+              "id": "relation",
+              "text": "Relation fields let you navigate from either model."
+            },
+            {
+              "id": "many-many",
+              "text": "Many-to-many uses a join table that Prisma can manage for you."
+            }
+          ],
+          "notEnough": [
+            "Only listing relation types."
+          ],
+          "misconceptions": []
+        },
+        "Migrations workflow and schema evolution": {
+          "id": "migrations",
+          "evidence": [
+            {
+              "id": "generate",
+              "text": "migrate dev writes SQL migrations from schema changes and applies them."
+            },
+            {
+              "id": "history",
+              "text": "Migration files are committed and applied in order everywhere."
+            },
+            {
+              "id": "data",
+              "text": "Changes that move or reshape data need extra steps to avoid losing it."
+            }
+          ],
+          "notEnough": [
+            "Only saying migrations update the schema."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Query Patterns",
+      "question": "Your post list must be filtered, sorted and paged, and creating a post with tags must never leave half-saved data. Explain how you would write these queries.",
+      "followUps": {
+        "Filtering, sorting, and pagination with Prisma": "Why is cursor pagination better than offset for large lists?",
+        "Nested writes and transactional operations": "How do nested writes and transactions keep related records consistent?"
+      },
+      "criteria": {
+        "Filtering, sorting, and pagination with Prisma": {
+          "id": "filter-sort-paginate",
+          "evidence": [
+            {
+              "id": "options",
+              "text": "Prisma queries take typed where, orderBy, take and skip options."
+            },
+            {
+              "id": "offset",
+              "text": "Skipping many rows gets slower as pages get deeper."
+            },
+            {
+              "id": "cursor",
+              "text": "Cursor pagination continues from the last item and stays fast."
+            }
+          ],
+          "notEnough": [
+            "Only saying you paginate."
+          ],
+          "misconceptions": []
+        },
+        "Nested writes and transactional operations": {
+          "id": "nested-transactions",
+          "evidence": [
+            {
+              "id": "nested",
+              "text": "Nested writes create or connect related records in one query."
+            },
+            {
+              "id": "transaction",
+              "text": "$transaction runs several operations so they all succeed or all fail."
+            },
+            {
+              "id": "consistent",
+              "text": "This prevents half-finished data if one step fails."
+            }
+          ],
+          "notEnough": [
+            "Only saying transactions are atomic."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Prisma Setup and Tooling",
+      "question": "A new developer needs a working local database with realistic data. Explain how you would set up Prisma, inspect data and seed it.",
+      "followUps": {
+        "Install Prisma and configure database connection": "What do you need to connect Prisma to a local PostgreSQL?",
+        "Prisma Studio for visual database inspection": "What is Prisma Studio useful for?",
+        "Seeding the database with realistic test data": "How do you seed the database and make it safe to rerun?"
+      },
+      "criteria": {
+        "Install Prisma and configure database connection": {
+          "id": "prisma-setup",
+          "evidence": [
+            {
+              "id": "packages",
+              "text": "Install the Prisma CLI and the Prisma client."
+            },
+            {
+              "id": "url",
+              "text": "Set DATABASE_URL in an environment file."
+            },
+            {
+              "id": "docker",
+              "text": "Running PostgreSQL in Docker gives every developer the same database."
+            }
+          ],
+          "notEnough": [
+            "Only saying you install Prisma."
+          ],
+          "misconceptions": []
+        },
+        "Prisma Studio for visual database inspection": {
+          "id": "prisma-studio",
+          "evidence": [
+            {
+              "id": "gui",
+              "text": "Prisma Studio is a browser interface for the database."
+            },
+            {
+              "id": "browse-edit",
+              "text": "You can browse and edit records."
+            },
+            {
+              "id": "verify",
+              "text": "It quickly confirms that migrations and writes did what you expected."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a GUI."
+          ],
+          "misconceptions": []
+        },
+        "Seeding the database with realistic test data": {
+          "id": "seeding",
+          "evidence": [
+            {
+              "id": "script",
+              "text": "A seed script creates consistent starting data."
+            },
+            {
+              "id": "command",
+              "text": "It is registered so prisma db seed runs it."
+            },
+            {
+              "id": "rerun",
+              "text": "Using upserts makes it safe to run repeatedly."
+            }
+          ],
+          "notEnough": [
+            "Only saying seeds add data."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Prisma in Next.js",
+      "question": "In development your app starts throwing 'too many connections' errors after a few code changes. Explain why and how you use Prisma safely in Next.js.",
+      "followUps": {
+        "Singleton Prisma Client pattern in Next.js": "Why does hot reloading exhaust database connections, and how does a singleton fix it?",
+        "Type-safe CRUD with generated Prisma types": "What do generated Prisma types give you in practice?"
+      },
+      "criteria": {
+        "Singleton Prisma Client pattern in Next.js": {
+          "id": "prisma-singleton",
+          "evidence": [
+            {
+              "id": "reload",
+              "text": "Hot reloading re-runs modules and can create a new Prisma client each time."
+            },
+            {
+              "id": "connections",
+              "text": "Each client opens its own connection pool, so connections run out."
+            },
+            {
+              "id": "global",
+              "text": "Storing one client on the global object reuses it across reloads."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use a singleton."
+          ],
+          "misconceptions": []
+        },
+        "Type-safe CRUD with generated Prisma types": {
+          "id": "typed-crud",
+          "evidence": [
+            {
+              "id": "generated",
+              "text": "Prisma generates TypeScript types from the schema."
+            },
+            {
+              "id": "results",
+              "text": "Every query result is typed, including selected fields and relations."
+            },
+            {
+              "id": "errors",
+              "text": "Typos and wrong field types are caught before the code runs."
+            }
+          ],
+          "notEnough": [
+            "Only saying Prisma is typed."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

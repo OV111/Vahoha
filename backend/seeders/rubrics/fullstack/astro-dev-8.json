@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "astro-dev-8",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "CMS Integration",
+      "question": "Your marketing team writes content in a headless CMS, and published changes should appear without rebuilding the whole site. Explain how Astro uses a CMS and refreshes content.",
+      "followUps": {
+        "Headless CMS with Astro": "How does Astro pull CMS content into a static site?",
+        "Incremental Static Regeneration": "How can CMS changes appear without a full rebuild?"
+      },
+      "criteria": {
+        "Headless CMS with Astro": {
+          "id": "headless-cms",
+          "evidence": [
+            {
+              "id": "fetch",
+              "text": "Astro fetches content from the CMS API at build time."
+            },
+            {
+              "id": "static",
+              "text": "Pages are generated as static HTML."
+            },
+            {
+              "id": "fast",
+              "text": "The site is fast because no CMS request happens per visit."
+            }
+          ],
+          "notEnough": [
+            "Only saying Astro works with CMSes."
+          ],
+          "misconceptions": []
+        },
+        "Incremental Static Regeneration": {
+          "id": "on-demand-content",
+          "evidence": [
+            {
+              "id": "ssr-pages",
+              "text": "Specific pages can be server-rendered while others stay static."
+            },
+            {
+              "id": "caching",
+              "text": "Caching on the host or CDN keeps those pages fast."
+            },
+            {
+              "id": "rebuild",
+              "text": "Alternatively, a CMS webhook can trigger a rebuild when content is published."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use SSR."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Data Fetching",
+      "question": "Your Astro page fetches the post, the author and related posts one after another and the build is slow. Explain how you would fetch data efficiently.",
+      "followUps": {
+        "fetch() in Astro Frontmatter": "Where does fetch in Astro frontmatter run?",
+        "Parallel Data Fetching with Promise.all": "Why use Promise.all for independent requests?"
+      },
+      "criteria": {
+        "fetch() in Astro Frontmatter": {
+          "id": "frontmatter-fetch",
+          "evidence": [
+            {
+              "id": "server",
+              "text": "It runs on the server, at build time or per request with SSR."
+            },
+            {
+              "id": "no-client",
+              "text": "The request is not made from the user's browser."
+            },
+            {
+              "id": "secrets",
+              "text": "API keys used there stay private."
+            }
+          ],
+          "notEnough": [
+            "Only saying you can use fetch."
+          ],
+          "misconceptions": []
+        },
+        "Parallel Data Fetching with Promise.all": {
+          "id": "parallel-fetch",
+          "evidence": [
+            {
+              "id": "waterfall",
+              "text": "Awaiting requests one after another adds up their times."
+            },
+            {
+              "id": "parallel",
+              "text": "Promise.all starts them together."
+            },
+            {
+              "id": "total",
+              "text": "The total time becomes that of the slowest request."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is faster."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Astro Integrations",
+      "question": "You want to add a sitemap, an MDX setup and optimised images to your Astro site. Explain the integration system and image handling.",
+      "followUps": {
+        "Official Integrations Ecosystem": "What can an Astro integration do?",
+        "Image Optimization with astro:assets": "What does the Image component from astro:assets do?"
+      },
+      "criteria": {
+        "Official Integrations Ecosystem": {
+          "id": "integrations",
+          "evidence": [
+            {
+              "id": "hooks",
+              "text": "Integrations hook into Astro's build and dev server."
+            },
+            {
+              "id": "capabilities",
+              "text": "They can add renderers, processors and scripts."
+            },
+            {
+              "id": "config",
+              "text": "They are added in the Astro configuration."
+            }
+          ],
+          "notEnough": [
+            "Only saying integrations add features."
+          ],
+          "misconceptions": []
+        },
+        "Image Optimization with astro:assets": {
+          "id": "astro-image",
+          "evidence": [
+            {
+              "id": "formats",
+              "text": "It generates optimised formats like WebP or AVIF."
+            },
+            {
+              "id": "resize",
+              "text": "It resizes images to the needed dimensions."
+            },
+            {
+              "id": "no-shift",
+              "text": "It sets width and height to prevent layout shift."
+            }
+          ],
+          "notEnough": [
+            "Only saying it optimises images."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "TypeScript and API Types",
+      "question": "A CMS API changed a field and your pages broke silently, and every page reloads the same user from the database. Explain how you would type API data and share request data.",
+      "followUps": {
+        "Typing External API Responses": "How do you make API responses type-safe?",
+        "Astro.locals for Request-Scoped Data": "What is Astro.locals for?"
+      },
+      "criteria": {
+        "Typing External API Responses": {
+          "id": "typing-api",
+          "evidence": [
+            {
+              "id": "interfaces",
+              "text": "Interfaces describe the expected response shape."
+            },
+            {
+              "id": "assertion-risk",
+              "text": "Type assertions alone do not check the real data."
+            },
+            {
+              "id": "zod",
+              "text": "Validating with Zod catches changed or missing fields at runtime."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add types."
+          ],
+          "misconceptions": []
+        },
+        "Astro.locals for Request-Scoped Data": {
+          "id": "astro-locals",
+          "evidence": [
+            {
+              "id": "request-scoped",
+              "text": "Astro.locals holds data for a single request."
+            },
+            {
+              "id": "middleware",
+              "text": "Middleware sets it, for example with the current user."
+            },
+            {
+              "id": "reuse",
+              "text": "Pages and endpoints read it without loading the data again."
+            }
+          ],
+          "notEnough": [
+            "Only saying locals stores data."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

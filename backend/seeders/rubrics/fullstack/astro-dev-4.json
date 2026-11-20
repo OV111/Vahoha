@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "astro-dev-4",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Content Collections",
+      "question": "Your blog posts are Markdown files, and a missing date in one post broke the live site. Explain how content collections prevent this.",
+      "followUps": {
+        "Collection Schema Definition": "How does a collection schema catch bad frontmatter?",
+        "getCollection and getEntry APIs": "What do getCollection and getEntry return?"
+      },
+      "criteria": {
+        "Collection Schema Definition": {
+          "id": "collection-schema",
+          "evidence": [
+            {
+              "id": "zod",
+              "text": "A Zod schema defines the expected frontmatter fields."
+            },
+            {
+              "id": "build",
+              "text": "Every entry is validated at build time."
+            },
+            {
+              "id": "early",
+              "text": "Missing or wrong fields fail the build instead of breaking the live site."
+            }
+          ],
+          "notEnough": [
+            "Only saying collections have schemas."
+          ],
+          "misconceptions": []
+        },
+        "getCollection and getEntry APIs": {
+          "id": "get-collection",
+          "evidence": [
+            {
+              "id": "all",
+              "text": "getCollection returns all validated entries in a collection."
+            },
+            {
+              "id": "one",
+              "text": "getEntry returns one entry by its id or slug."
+            },
+            {
+              "id": "typed",
+              "text": "Both are fully typed from the schema."
+            }
+          ],
+          "notEnough": [
+            "Only saying they fetch content."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "MDX Integration",
+      "question": "Your editors want interactive charts inside posts and automatic syntax highlighting and table of contents. Explain MDX and remark and rehype plugins.",
+      "followUps": {
+        "MDX Components and Slots": "What does MDX add to Markdown?",
+        "Remark and Rehype Plugins": "What is the difference between remark and rehype plugins?"
+      },
+      "criteria": {
+        "MDX Components and Slots": {
+          "id": "mdx-components",
+          "evidence": [
+            {
+              "id": "components",
+              "text": "MDX lets you import and use components inside Markdown."
+            },
+            {
+              "id": "integration",
+              "text": "It needs the MDX integration to be installed."
+            },
+            {
+              "id": "rich",
+              "text": "Editors can mix prose with interactive elements."
+            }
+          ],
+          "notEnough": [
+            "Only saying MDX is Markdown with JSX."
+          ],
+          "misconceptions": []
+        },
+        "Remark and Rehype Plugins": {
+          "id": "remark-rehype",
+          "evidence": [
+            {
+              "id": "remark",
+              "text": "Remark plugins work on the Markdown structure."
+            },
+            {
+              "id": "rehype",
+              "text": "Rehype plugins work on the HTML produced from it."
+            },
+            {
+              "id": "uses",
+              "text": "They add things like syntax highlighting and table of contents."
+            }
+          ],
+          "notEnough": [
+            "Only naming the two."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Frontmatter and Data Modeling",
+      "question": "Each post has an author, and author details are repeated and inconsistent across posts. Explain how you would model the content.",
+      "followUps": {
+        "Typed Frontmatter with Zod": "How do Zod types map to frontmatter fields?",
+        "Reference Fields Between Collections": "How does reference() link posts to authors?"
+      },
+      "criteria": {
+        "Typed Frontmatter with Zod": {
+          "id": "typed-frontmatter",
+          "evidence": [
+            {
+              "id": "map",
+              "text": "Schema types like string, date and array match the frontmatter values."
+            },
+            {
+              "id": "coerce",
+              "text": "Dates in frontmatter can be parsed into real date objects."
+            },
+            {
+              "id": "guarantee",
+              "text": "Every entry is guaranteed to have the right shape."
+            }
+          ],
+          "notEnough": [
+            "Only saying frontmatter is typed."
+          ],
+          "misconceptions": []
+        },
+        "Reference Fields Between Collections": {
+          "id": "reference-fields",
+          "evidence": [
+            {
+              "id": "reference",
+              "text": "reference() makes a field point to an entry in another collection."
+            },
+            {
+              "id": "typed",
+              "text": "The link is type-checked at build time."
+            },
+            {
+              "id": "single-source",
+              "text": "Author details live in one place and posts only point to them."
+            }
+          ],
+          "notEnough": [
+            "Only saying you can reference collections."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Content Rendering",
+      "question": "You are rendering blog posts from your collection and building their URLs. Explain how the body is rendered and how slugs work.",
+      "followUps": {
+        "render() and <Content /> Component": "How do you render a post's Markdown body?",
+        "Slug Generation and URL Mapping": "How are slugs generated and used for URLs?"
+      },
+      "criteria": {
+        "render() and <Content /> Component": {
+          "id": "render-content",
+          "evidence": [
+            {
+              "id": "render",
+              "text": "Rendering an entry returns a Content component."
+            },
+            {
+              "id": "component",
+              "text": "The Content component outputs the compiled HTML of the body."
+            },
+            {
+              "id": "not-raw",
+              "text": "Inserting the raw body string would skip the Markdown processing."
+            }
+          ],
+          "notEnough": [
+            "Only saying you render the post."
+          ],
+          "misconceptions": []
+        },
+        "Slug Generation and URL Mapping": {
+          "id": "slug-mapping",
+          "evidence": [
+            {
+              "id": "filename",
+              "text": "Slugs or ids come from file names by default."
+            },
+            {
+              "id": "custom",
+              "text": "A custom slug field can override that."
+            },
+            {
+              "id": "paths",
+              "text": "getStaticPaths uses them to build each post's URL."
+            }
+          ],
+          "notEnough": [
+            "Only saying slugs are URLs."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

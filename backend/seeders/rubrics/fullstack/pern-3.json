@@ -1,0 +1,226 @@
+{
+  "path": "fullstack",
+  "layer": "pern-3",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "React's rendering model and reconciliation",
+      "question": "In your PERN app, a parent component holds a list of posts and each child shows a like button. When a user clicks like, explain how the change travels through your components and how React updates the page without rebuilding all of it.",
+      "followUps": {
+        "How React diffs the virtual DOM to minimize real DOM changes": "When state changes and a component re-renders, why doesn't React replace the whole page in the real DOM?",
+        "Unidirectional data flow and why it simplifies debugging": "How does the like button in the child change state that lives in the parent, and why is that easier to debug?"
+      },
+      "criteria": {
+        "How React diffs the virtual DOM to minimize real DOM changes": {
+          "id": "reconciliation",
+          "evidence": [
+            {
+              "id": "new-tree",
+              "text": "On each render React produces a new tree of elements and compares it with the previous one."
+            },
+            {
+              "id": "minimal",
+              "text": "It then applies only the differences to the real DOM, which is the slow part to touch."
+            }
+          ],
+          "notEnough": [
+            "Only saying React uses a virtual DOM so it's fast, without explaining the comparison."
+          ],
+          "misconceptions": [
+            {
+              "id": "no-dom",
+              "text": "Says React never updates the real DOM, only the virtual DOM."
+            }
+          ]
+        },
+        "Unidirectional data flow and why it simplifies debugging": {
+          "id": "data-flow",
+          "evidence": [
+            {
+              "id": "props-down",
+              "text": "Data is passed down from parent to child through props."
+            },
+            {
+              "id": "callbacks-up",
+              "text": "A child changes the parent's state by calling a function the parent passed down as a prop."
+            },
+            {
+              "id": "traceable",
+              "text": "Because state only changes where it lives, any change can be traced back to one place."
+            }
+          ],
+          "notEnough": [
+            "Only saying data flows one way without explaining how a child updates a parent."
+          ],
+          "misconceptions": [
+            {
+              "id": "mutate-props",
+              "text": "Says a child can change its props directly to update the parent."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "useState and useEffect internals",
+      "question": "Your component has a counter, and it also opens a live-updates subscription when it mounts. A teammate reports that the counter sometimes uses an old value and the subscription keeps firing after leaving the page. Explain why both bugs happen and how you'd fix them.",
+      "followUps": {
+        "Why state updates are asynchronous and stale closures occur": "You call setCount(count + 1) twice in one click handler and the count only goes up by one. Why, and what's the fix?",
+        "useEffect dependencies and the cleanup pattern": "What decides when your effect runs again, and what goes wrong if you don't return a cleanup function?"
+      },
+      "criteria": {
+        "Why state updates are asynchronous and stale closures occur": {
+          "id": "state-updates",
+          "evidence": [
+            {
+              "id": "next-render",
+              "text": "Calling the setter doesn't change the variable right away; the new value is only seen on the next render."
+            },
+            {
+              "id": "stale-closure",
+              "text": "Handlers and effects capture the value from the render they were created in, so they can use an old value."
+            },
+            {
+              "id": "functional-update",
+              "text": "Passing a function, like setCount(c => c + 1), always works from the latest value."
+            }
+          ],
+          "notEnough": [
+            "Only saying state is asynchronous without explaining why the old value is read."
+          ],
+          "misconceptions": [
+            {
+              "id": "immediate",
+              "text": "Says the state variable holds the new value right after the setter is called."
+            }
+          ]
+        },
+        "useEffect dependencies and the cleanup pattern": {
+          "id": "effect-cleanup",
+          "evidence": [
+            {
+              "id": "dependencies",
+              "text": "The effect runs after render and again whenever a value in its dependency array changes, and every value it uses should be listed."
+            },
+            {
+              "id": "cleanup",
+              "text": "The function returned from the effect runs before the effect runs again and when the component unmounts, to cancel subscriptions, timers or requests."
+            }
+          ],
+          "notEnough": [
+            "Only naming the dependency array and cleanup without saying when each one runs."
+          ],
+          "misconceptions": [
+            {
+              "id": "empty-array-never",
+              "text": "Says an effect with an empty dependency array never runs."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "JSX, props, and component composition",
+      "question": "You're building a search page where a SearchBox and a ResultsList both need the current search text. Explain how you'd share that value between them, and what JSX actually turns into that explains its rules.",
+      "followUps": {
+        "JSX compiles to React.createElement — implications for JSX rules": "Why must a component return a single root element, and how do Fragments help?",
+        "Lifting state up to the nearest common ancestor": "Where should the search text live so both components can use it, and how does each one get it?"
+      },
+      "criteria": {
+        "JSX compiles to React.createElement — implications for JSX rules": {
+          "id": "jsx-compiles",
+          "evidence": [
+            {
+              "id": "function-calls",
+              "text": "JSX is compiled into JavaScript function calls that create element objects, such as React.createElement or the newer JSX runtime."
+            },
+            {
+              "id": "single-root",
+              "text": "Because a component returns one value, JSX needs a single root, and a Fragment groups children without adding an extra DOM element."
+            }
+          ],
+          "notEnough": [
+            "Only saying JSX is HTML in JavaScript without saying what it compiles to."
+          ],
+          "misconceptions": [
+            {
+              "id": "jsx-is-html",
+              "text": "Says the browser reads JSX directly as HTML."
+            }
+          ]
+        },
+        "Lifting state up to the nearest common ancestor": {
+          "id": "lifting-state",
+          "evidence": [
+            {
+              "id": "common-parent",
+              "text": "Shared state moves up to the closest common parent of the components that need it."
+            },
+            {
+              "id": "pass-down",
+              "text": "The parent passes the value down as props and passes a setter function to the component that changes it."
+            }
+          ],
+          "notEnough": [
+            "Only saying lift state up without explaining where it goes and how the children use it."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Fetching data from APIs in React",
+      "question": "Your Posts page loads posts from your Express API and lets users reorder them. Explain how you'd fetch the data in a component, what the user sees while it loads or fails, and how React keeps the list correct when the order changes.",
+      "followUps": {
+        "Data fetching in useEffect: loading, data, and error states": "The user leaves the page before the fetch finishes. What can go wrong, and how do you prevent it?",
+        "Rendering lists with key props derived from stable IDs": "Why is using the array index as the key a problem when the list can be reordered?"
+      },
+      "criteria": {
+        "Data fetching in useEffect: loading, data, and error states": {
+          "id": "fetch-in-effect",
+          "evidence": [
+            {
+              "id": "effect",
+              "text": "The request is started inside useEffect, not during render, so it doesn't run on every render."
+            },
+            {
+              "id": "states",
+              "text": "Loading, error and data are kept in state, so the component shows a spinner, an error message or the list."
+            },
+            {
+              "id": "abort",
+              "text": "The effect's cleanup aborts the request, for example with AbortController, so a component that is gone doesn't get updated."
+            }
+          ],
+          "notEnough": [
+            "Only saying fetch in useEffect without the loading and error states or the cleanup."
+          ],
+          "misconceptions": []
+        },
+        "Rendering lists with key props derived from stable IDs": {
+          "id": "list-keys",
+          "evidence": [
+            {
+              "id": "identity",
+              "text": "React uses keys to match each list item with the same item from the previous render."
+            },
+            {
+              "id": "stable-id",
+              "text": "Keys should be stable unique ids, like database ids; index keys break when items are reordered, inserted or removed, and state gets mixed up between items."
+            }
+          ],
+          "notEnough": [
+            "Only saying every list item needs a key without explaining what React uses it for."
+          ],
+          "misconceptions": [
+            {
+              "id": "key-is-prop",
+              "text": "Says the key is passed to the component as a normal prop it can read."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

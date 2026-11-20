@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "jamstack-6",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Serverless Functions Concepts",
+      "question": "Your static site needs a contact form and a weather widget that uses a paid API key. Explain how serverless functions handle this and what to watch out for.",
+      "followUps": {
+        "Serverless execution model and cold start trade-offs": "What is a cold start and why does it happen?",
+        "HTTP request and response structure in serverless handlers": "What does a serverless handler receive and return?",
+        "Environment variables and secrets management in functions": "Why must the API key live in the function and not the frontend?"
+      },
+      "criteria": {
+        "Serverless execution model and cold start trade-offs": {
+          "id": "serverless-model",
+          "evidence": [
+            {
+              "id": "on-demand",
+              "text": "Serverless functions run in short-lived containers started on demand."
+            },
+            {
+              "id": "stateless",
+              "text": "They keep no state between requests, so data must live in a database or other service."
+            },
+            {
+              "id": "cold-start",
+              "text": "The first request to an idle function waits for it to start, which adds latency."
+            }
+          ],
+          "notEnough": [
+            "Only saying serverless means no servers."
+          ],
+          "misconceptions": []
+        },
+        "HTTP request and response structure in serverless handlers": {
+          "id": "handler-structure",
+          "evidence": [
+            {
+              "id": "event",
+              "text": "The handler receives the request with its headers, query parameters and body."
+            },
+            {
+              "id": "response",
+              "text": "It returns a status code, headers and a body."
+            },
+            {
+              "id": "http",
+              "text": "It works like a normal HTTP request and response."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a function."
+          ],
+          "misconceptions": []
+        },
+        "Environment variables and secrets management in functions": {
+          "id": "function-secrets",
+          "evidence": [
+            {
+              "id": "bundle",
+              "text": "Anything in client code is visible to users."
+            },
+            {
+              "id": "env",
+              "text": "Functions read secrets from environment variables set in the hosting dashboard."
+            },
+            {
+              "id": "server-side",
+              "text": "The key is used only on the server, so it never reaches the browser."
+            }
+          ],
+          "notEnough": [
+            "Only saying to keep keys secret."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Error Handling and Rate Limits",
+      "question": "Your serverless function calls an external API that sometimes returns 429, and the browser blocks calls to your function from another domain. Explain how you would handle both.",
+      "followUps": {
+        "Rate limiting strategies and handling 429 API responses": "What does a 429 mean and how should your code respond?",
+        "CORS configuration for serverless function endpoints": "What must the function return for a cross-origin browser request?"
+      },
+      "criteria": {
+        "Rate limiting strategies and handling 429 API responses": {
+          "id": "rate-limits",
+          "evidence": [
+            {
+              "id": "429",
+              "text": "429 means you have sent too many requests in a time window."
+            },
+            {
+              "id": "backoff",
+              "text": "Retry after waiting, with longer waits each time."
+            },
+            {
+              "id": "avoid",
+              "text": "Queuing or caching requests avoids hitting the limit in the first place."
+            }
+          ],
+          "notEnough": [
+            "Only saying you retry."
+          ],
+          "misconceptions": []
+        },
+        "CORS configuration for serverless function endpoints": {
+          "id": "function-cors",
+          "evidence": [
+            {
+              "id": "allow-origin",
+              "text": "The response needs an Access-Control-Allow-Origin header for the allowed site."
+            },
+            {
+              "id": "preflight",
+              "text": "The function must also answer preflight OPTIONS requests."
+            },
+            {
+              "id": "restrict",
+              "text": "Only trusted origins should be allowed."
+            }
+          ],
+          "notEnough": [
+            "Only saying you enable CORS."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Calling External APIs Securely",
+      "question": "Your site's contact form and search use third-party APIs with secret keys, and you have no backend server. Explain how you would call these APIs safely.",
+      "followUps": {
+        "Proxying third-party API calls through serverless functions": "How does a serverless proxy keep an API key off the client?",
+        "Form submission handling without a backend server": "How would you handle a contact form without your own server?"
+      },
+      "criteria": {
+        "Proxying third-party API calls through serverless functions": {
+          "id": "api-proxy",
+          "evidence": [
+            {
+              "id": "receive",
+              "text": "The client calls your function instead of the third-party API."
+            },
+            {
+              "id": "add-key",
+              "text": "The function adds the secret key from its environment and forwards the request."
+            },
+            {
+              "id": "validate",
+              "text": "The function can also validate input and limit what clients may request."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use a proxy."
+          ],
+          "misconceptions": []
+        },
+        "Form submission handling without a backend server": {
+          "id": "serverless-forms",
+          "evidence": [
+            {
+              "id": "post",
+              "text": "The form posts to a serverless function or a platform form service."
+            },
+            {
+              "id": "validate",
+              "text": "The function validates the input and rejects bad submissions."
+            },
+            {
+              "id": "send",
+              "text": "It then sends an email or stores the message through an external service."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use Netlify Forms."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Next.js API Routes and Edge Functions",
+      "question": "You are adding API endpoints to a Next.js site and want to redirect users by country before pages load. Explain route handlers and edge functions.",
+      "followUps": {
+        "Next.js Route Handlers as serverless API endpoints": "How do you create an API endpoint in the Next.js App Router?",
+        "Edge Functions for low-latency personalisation and middleware": "What are edge functions good for and what limits do they have?"
+      },
+      "criteria": {
+        "Next.js Route Handlers as serverless API endpoints": {
+          "id": "route-handlers",
+          "evidence": [
+            {
+              "id": "file",
+              "text": "A route file under the app directory exports functions named after HTTP methods."
+            },
+            {
+              "id": "serverless",
+              "text": "On Vercel these become serverless functions."
+            },
+            {
+              "id": "shared",
+              "text": "They can use the same code and environment as the rest of the app."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add an api folder."
+          ],
+          "misconceptions": []
+        },
+        "Edge Functions for low-latency personalisation and middleware": {
+          "id": "edge-functions",
+          "evidence": [
+            {
+              "id": "close",
+              "text": "Edge functions run on servers close to the user."
+            },
+            {
+              "id": "use-cases",
+              "text": "They suit quick tasks like redirects, A/B tests and auth checks."
+            },
+            {
+              "id": "limits",
+              "text": "They run in a lighter runtime that lacks some Node.js APIs."
+            }
+          ],
+          "notEnough": [
+            "Only saying edge functions are fast."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

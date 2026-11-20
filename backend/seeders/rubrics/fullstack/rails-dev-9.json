@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "rails-dev-9",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Performance Optimization Theory",
+      "question": "Your recipe index page is slow: it runs hundreds of queries, renders the same partials on every request and filters on unindexed columns. Explain how you would fix each.",
+      "followUps": {
+        "N+1 queries and eager loading with includes": "What is an N+1 query and how does includes fix it?",
+        "Fragment and Russian doll caching strategies": "How does Russian doll caching know when to expire?",
+        "Database indexing for query performance": "Which columns should you index and how do you check the effect?"
+      },
+      "criteria": {
+        "N+1 queries and eager loading with includes": {
+          "id": "n-plus-one",
+          "evidence": [
+            {
+              "id": "pattern",
+              "text": "Loading an association inside a loop runs one query per record."
+            },
+            {
+              "id": "includes",
+              "text": "includes, preload or eager_load load associations up front."
+            },
+            {
+              "id": "fewer",
+              "text": "This turns many queries into one or two."
+            }
+          ],
+          "notEnough": [
+            "Only saying N+1 is slow."
+          ],
+          "misconceptions": []
+        },
+        "Fragment and Russian doll caching strategies": {
+          "id": "fragment-caching",
+          "evidence": [
+            {
+              "id": "fragment",
+              "text": "Fragment caching stores rendered partials in a cache."
+            },
+            {
+              "id": "keys",
+              "text": "Cache keys include the record's updated time, so changes create a new key."
+            },
+            {
+              "id": "nested",
+              "text": "Nested caches expire the parent when a child changes, by touching the parent."
+            }
+          ],
+          "notEnough": [
+            "Only saying you cache views."
+          ],
+          "misconceptions": []
+        },
+        "Database indexing for query performance": {
+          "id": "indexing",
+          "evidence": [
+            {
+              "id": "which",
+              "text": "Index foreign keys and columns used for filtering and sorting."
+            },
+            {
+              "id": "migration",
+              "text": "Indexes are added in migrations."
+            },
+            {
+              "id": "explain",
+              "text": "EXPLAIN ANALYZE shows whether the query uses the index."
+            }
+          ],
+          "notEnough": [
+            "Only saying indexes make queries faster."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Code Architecture Patterns",
+      "question": "Your Order model has grown to 800 lines and controllers contain checkout logic. Explain how you would reorganise the code.",
+      "followUps": {
+        "Service objects for complex business logic": "What is a service object and when should you use one?",
+        "Concerns and modules for code reuse": "When is a concern a good fit, and when does it hide problems?"
+      },
+      "criteria": {
+        "Service objects for complex business logic": {
+          "id": "service-objects",
+          "evidence": [
+            {
+              "id": "plain",
+              "text": "A service object is a plain Ruby class that does one business operation."
+            },
+            {
+              "id": "thin",
+              "text": "It keeps controllers thin and models focused on data."
+            },
+            {
+              "id": "testable",
+              "text": "It can be tested on its own without HTTP."
+            }
+          ],
+          "notEnough": [
+            "Only saying services hold logic."
+          ],
+          "misconceptions": []
+        },
+        "Concerns and modules for code reuse": {
+          "id": "concerns",
+          "evidence": [
+            {
+              "id": "shared",
+              "text": "Concerns extract behaviour shared by several models or controllers."
+            },
+            {
+              "id": "module",
+              "text": "They are modules that can define callbacks, scopes and methods."
+            },
+            {
+              "id": "hiding",
+              "text": "Moving code into concerns without a real shared purpose just hides a large class."
+            }
+          ],
+          "notEnough": [
+            "Only saying concerns share code."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Caching Infrastructure",
+      "question": "You run several app servers and the cache is not shared, and browsers re-download pages that have not changed. Explain how you would configure caching.",
+      "followUps": {
+        "Redis cache store configuration in Rails": "Why use Redis as the cache store with several servers?",
+        "HTTP caching with ETags and Last-Modified": "How do ETags reduce work for unchanged pages?"
+      },
+      "criteria": {
+        "Redis cache store configuration in Rails": {
+          "id": "redis-cache-store",
+          "evidence": [
+            {
+              "id": "shared",
+              "text": "A Redis cache is shared by every app server."
+            },
+            {
+              "id": "expiry",
+              "text": "Entries can expire automatically."
+            },
+            {
+              "id": "vs-memory",
+              "text": "An in-memory cache is per process, so servers would each hold different copies."
+            }
+          ],
+          "notEnough": [
+            "Only saying Redis is fast."
+          ],
+          "misconceptions": []
+        },
+        "HTTP caching with ETags and Last-Modified": {
+          "id": "etags",
+          "evidence": [
+            {
+              "id": "headers",
+              "text": "Rails can set ETag and Last-Modified headers on responses."
+            },
+            {
+              "id": "conditional",
+              "text": "Browsers send them back on the next request."
+            },
+            {
+              "id": "304",
+              "text": "If nothing changed, Rails replies 304 without rendering the body."
+            }
+          ],
+          "notEnough": [
+            "Only saying ETags help caching."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Monitoring and Profiling Tools",
+      "question": "Some production requests are slow and you do not know why, and you want to see query counts while developing. Explain the monitoring and profiling tools you would use.",
+      "followUps": {
+        "Application performance monitoring with Scout APM": "What does an APM tool like Scout show you?",
+        "rack-mini-profiler for request-level profiling": "What does rack-mini-profiler show while developing?"
+      },
+      "criteria": {
+        "Application performance monitoring with Scout APM": {
+          "id": "apm",
+          "evidence": [
+            {
+              "id": "traces",
+              "text": "It traces slow requests in production."
+            },
+            {
+              "id": "breakdown",
+              "text": "It shows time spent in the database, views and code."
+            },
+            {
+              "id": "problems",
+              "text": "It flags issues like N+1 queries and memory growth."
+            }
+          ],
+          "notEnough": [
+            "Only saying it monitors performance."
+          ],
+          "misconceptions": []
+        },
+        "rack-mini-profiler for request-level profiling": {
+          "id": "mini-profiler",
+          "evidence": [
+            {
+              "id": "badge",
+              "text": "It adds a badge on each page with timing information."
+            },
+            {
+              "id": "queries",
+              "text": "It shows how many SQL queries ran and how long they took."
+            },
+            {
+              "id": "allocations",
+              "text": "It can show memory allocations to find heavy code."
+            }
+          ],
+          "notEnough": [
+            "Only saying it profiles requests."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

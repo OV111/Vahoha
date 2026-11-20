@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "nuxt-dev-10",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Unit Testing with Vitest",
+      "question": "You are writing unit tests for a Vue component that calls an API and emits events. Explain how you would test it in isolation.",
+      "followUps": {
+        "Testing Vue Components with @vue/test-utils": "What does @vue/test-utils let you check?",
+        "Mocking in Vitest: vi.mock and Spies": "How do vi.mock and spies isolate the component?"
+      },
+      "criteria": {
+        "Testing Vue Components with @vue/test-utils": {
+          "id": "vue-test-utils",
+          "evidence": [
+            {
+              "id": "mount",
+              "text": "mount renders a component in a test environment."
+            },
+            {
+              "id": "interact",
+              "text": "Tests trigger events like clicks and inputs."
+            },
+            {
+              "id": "assert",
+              "text": "Tests check rendered output and emitted events."
+            }
+          ],
+          "notEnough": [
+            "Only saying you mount components."
+          ],
+          "misconceptions": []
+        },
+        "Mocking in Vitest: vi.mock and Spies": {
+          "id": "vitest-mocks",
+          "evidence": [
+            {
+              "id": "mock",
+              "text": "vi.mock replaces imported modules with test doubles."
+            },
+            {
+              "id": "spies",
+              "text": "Spies record calls so tests can check them."
+            },
+            {
+              "id": "isolate",
+              "text": "The component is tested without real API calls."
+            }
+          ],
+          "notEnough": [
+            "Only saying you mock things."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Testing Nuxt-specific Code",
+      "question": "You need to test a Nuxt server route and middleware with real requests, and composables that use Pinia keep sharing state between tests. Explain Nuxt-specific testing.",
+      "followUps": {
+        "nuxt/test-utils for Integration Testing": "What does @nuxt/test-utils let you test?",
+        "Testing Composables with Pinia": "How do you give each test a fresh Pinia store?"
+      },
+      "criteria": {
+        "nuxt/test-utils for Integration Testing": {
+          "id": "nuxt-test-utils",
+          "evidence": [
+            {
+              "id": "real-app",
+              "text": "It starts a real Nuxt app in tests."
+            },
+            {
+              "id": "requests",
+              "text": "Tests can send real HTTP requests to server routes."
+            },
+            {
+              "id": "ssr",
+              "text": "It covers middleware and SSR behaviour that unit tests miss."
+            }
+          ],
+          "notEnough": [
+            "Only saying it tests Nuxt."
+          ],
+          "misconceptions": []
+        },
+        "Testing Composables with Pinia": {
+          "id": "testing-pinia",
+          "evidence": [
+            {
+              "id": "fresh",
+              "text": "Each test creates a new Pinia instance."
+            },
+            {
+              "id": "testing-pinia",
+              "text": "createTestingPinia creates fresh stores with stubbed actions."
+            },
+            {
+              "id": "isolated",
+              "text": "Tests no longer share state."
+            }
+          ],
+          "notEnough": [
+            "Only saying you set up Pinia."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "End-to-End Testing with Playwright",
+      "question": "You want end-to-end tests for login and checkout that do not break whenever a button label changes. Explain how you would use Playwright.",
+      "followUps": {
+        "Playwright Test Architecture": "What does Playwright run, and what can tests check?",
+        "Page Object Model Pattern": "How does the page object model keep tests maintainable?"
+      },
+      "criteria": {
+        "Playwright Test Architecture": {
+          "id": "playwright",
+          "evidence": [
+            {
+              "id": "browsers",
+              "text": "Playwright drives real browsers like Chromium, Firefox and WebKit."
+            },
+            {
+              "id": "interactions",
+              "text": "Tests automate clicks, typing and navigation."
+            },
+            {
+              "id": "assert",
+              "text": "They can assert on the page, network requests and storage."
+            }
+          ],
+          "notEnough": [
+            "Only saying Playwright tests the UI."
+          ],
+          "misconceptions": []
+        },
+        "Page Object Model Pattern": {
+          "id": "pom",
+          "evidence": [
+            {
+              "id": "encapsulate",
+              "text": "Page objects hold each page's selectors and actions."
+            },
+            {
+              "id": "readable",
+              "text": "Tests read like user steps."
+            },
+            {
+              "id": "one-place",
+              "text": "A UI change only requires updating the page object."
+            }
+          ],
+          "notEnough": [
+            "Only saying it organises tests."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Deployment and CI/CD",
+      "question": "You are deploying your Nuxt app to Vercel and want every pull request checked before merging. Explain deployment presets and the CI pipeline.",
+      "followUps": {
+        "Nuxt Deployment Targets and Presets": "What does a Nitro deployment preset do?",
+        "CI/CD Pipeline for Nuxt Apps": "What should a CI pipeline for a Nuxt app run?"
+      },
+      "criteria": {
+        "Nuxt Deployment Targets and Presets": {
+          "id": "presets",
+          "evidence": [
+            {
+              "id": "target",
+              "text": "Presets build the output for a target platform."
+            },
+            {
+              "id": "examples",
+              "text": "Targets include Node servers, static hosting, Vercel and Cloudflare."
+            },
+            {
+              "id": "match",
+              "text": "The preset must match the platform or the app fails at runtime."
+            }
+          ],
+          "notEnough": [
+            "Only saying Nuxt can deploy anywhere."
+          ],
+          "misconceptions": []
+        },
+        "CI/CD Pipeline for Nuxt Apps": {
+          "id": "ci-pipeline",
+          "evidence": [
+            {
+              "id": "checks",
+              "text": "It runs type checking and linting."
+            },
+            {
+              "id": "tests",
+              "text": "It runs unit and end-to-end tests."
+            },
+            {
+              "id": "build",
+              "text": "It verifies the production build on every pull request before merging."
+            }
+          ],
+          "notEnough": [
+            "Only saying CI runs tests."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

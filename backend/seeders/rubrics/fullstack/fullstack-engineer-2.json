@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "fullstack-engineer-2",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "React's virtual DOM and component model",
+      "question": "You are building a recipe page in React where a parent shows a list and a child shows details and a 'save' button. Explain how React decides what to update and how data moves between these components.",
+      "followUps": {
+        "How React diffs the virtual DOM to minimize real DOM mutations": "How does React avoid rebuilding the whole page on every state change?",
+        "Unidirectional data flow: props down, callbacks up": "How does the child tell the parent that 'save' was clicked?"
+      },
+      "criteria": {
+        "How React diffs the virtual DOM to minimize real DOM mutations": {
+          "id": "virtual-dom-diff",
+          "evidence": [
+            {
+              "id": "tree",
+              "text": "React keeps a description of the UI and builds a new one on each render."
+            },
+            {
+              "id": "diff",
+              "text": "It compares the new description with the previous one."
+            },
+            {
+              "id": "minimal",
+              "text": "Only the parts that changed are applied to the real DOM."
+            }
+          ],
+          "notEnough": [
+            "Only saying React uses a virtual DOM."
+          ],
+          "misconceptions": []
+        },
+        "Unidirectional data flow: props down, callbacks up": {
+          "id": "unidirectional-flow",
+          "evidence": [
+            {
+              "id": "props-down",
+              "text": "Data flows from parent to child through props."
+            },
+            {
+              "id": "callbacks-up",
+              "text": "The parent passes a callback, and the child calls it to report events."
+            },
+            {
+              "id": "traceable",
+              "text": "One-way flow makes it easy to trace where a change came from."
+            }
+          ],
+          "notEnough": [
+            "Only saying props go down."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "useState, useEffect, and the hooks model",
+      "question": "A counter logs the old value right after you set it, and a chat component keeps receiving messages after it is closed. Explain how state updates and effects work in React.",
+      "followUps": {
+        "Why state updates are asynchronous and batched in React 18": "Why does reading state right after calling the setter give the old value?",
+        "useEffect cleanup prevents memory leaks from subscriptions and timers": "What should an effect's cleanup do for a subscription or timer?"
+      },
+      "criteria": {
+        "Why state updates are asynchronous and batched in React 18": {
+          "id": "batched-updates",
+          "evidence": [
+            {
+              "id": "next-render",
+              "text": "Setting state schedules a re-render; the new value is available in the next render."
+            },
+            {
+              "id": "batched",
+              "text": "Multiple updates in the same event are batched into one render."
+            },
+            {
+              "id": "snapshot",
+              "text": "Within one render, state is a fixed snapshot."
+            }
+          ],
+          "notEnough": [
+            "Only saying setState is asynchronous."
+          ],
+          "misconceptions": []
+        },
+        "useEffect cleanup prevents memory leaks from subscriptions and timers": {
+          "id": "effect-cleanup",
+          "evidence": [
+            {
+              "id": "cleanup-fn",
+              "text": "An effect can return a cleanup function."
+            },
+            {
+              "id": "when",
+              "text": "React runs it before the effect re-runs and when the component unmounts."
+            },
+            {
+              "id": "leak",
+              "text": "Without cleanup, timers, subscriptions and requests keep running and cause leaks or updates to unmounted components."
+            }
+          ],
+          "notEnough": [
+            "Only saying cleanup prevents memory leaks."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Building components with Vite and React",
+      "question": "You are starting a new React app with Vite and need pages for a recipe list, a recipe detail and a settings area with its own sidebar. Explain how the tooling and routing work.",
+      "followUps": {
+        "Vite dev server: HMR, fast cold starts, and the build output": "Why does Vite's dev server start fast, and how is the production build different?",
+        "Client-side routing with React Router v6": "How do nested routes and Outlet let pages share a layout?"
+      },
+      "criteria": {
+        "Vite dev server: HMR, fast cold starts, and the build output": {
+          "id": "vite-dev-build",
+          "evidence": [
+            {
+              "id": "native-modules",
+              "text": "In development Vite serves source files as native ES modules without bundling."
+            },
+            {
+              "id": "hmr",
+              "text": "Hot module replacement updates only the changed module in the browser."
+            },
+            {
+              "id": "build",
+              "text": "For production, Vite bundles and optimizes the code with Rollup."
+            }
+          ],
+          "notEnough": [
+            "Only saying Vite is fast."
+          ],
+          "misconceptions": []
+        },
+        "Client-side routing with React Router v6": {
+          "id": "react-router",
+          "evidence": [
+            {
+              "id": "nested",
+              "text": "Routes can be nested so child pages share a parent's layout."
+            },
+            {
+              "id": "outlet",
+              "text": "The parent renders an Outlet where the matching child appears."
+            },
+            {
+              "id": "link-navigate",
+              "text": "Link and useNavigate move between pages without a full reload."
+            }
+          ],
+          "notEnough": [
+            "Only saying React Router handles routes."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Fetching data in components",
+      "question": "Your recipe list fetches data in a component, and a filter component next to it also needs the selected category. Explain how you would fetch data and share state between them.",
+      "followUps": {
+        "Data fetching pattern in useEffect with loading and error state": "What states does a component need when it fetches data in an effect, and how do you cancel the request?",
+        "Lifting state to the nearest common ancestor": "Two sibling components need the same category value. Where should it live?"
+      },
+      "criteria": {
+        "Data fetching pattern in useEffect with loading and error state": {
+          "id": "fetch-in-effect",
+          "evidence": [
+            {
+              "id": "states",
+              "text": "The component tracks loading, data and error in state."
+            },
+            {
+              "id": "abort",
+              "text": "An AbortController cancels the request when the component unmounts or the inputs change."
+            },
+            {
+              "id": "libraries",
+              "text": "Libraries like React Query automate this pattern with caching."
+            }
+          ],
+          "notEnough": [
+            "Only saying you fetch inside useEffect."
+          ],
+          "misconceptions": []
+        },
+        "Lifting state to the nearest common ancestor": {
+          "id": "lift-state",
+          "evidence": [
+            {
+              "id": "parent",
+              "text": "The state moves up to the closest common parent."
+            },
+            {
+              "id": "pass",
+              "text": "The parent passes the value down as props and an update function as a callback."
+            },
+            {
+              "id": "single-source",
+              "text": "This keeps one source of truth for the value."
+            }
+          ],
+          "notEnough": [
+            "Only saying to lift state up."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "sveltekit-dev-6",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Prisma Schema and Models",
+      "question": "You are adding a PostgreSQL database with Prisma to your SvelteKit app for users and their posts. Explain how you would define the models and relations.",
+      "followUps": {
+        "Defining models and fields in schema.prisma": "How does schema.prisma become a typed client?",
+        "Model relations: one-to-many and many-to-many": "How do you model a user with many posts?"
+      },
+      "criteria": {
+        "Defining models and fields in schema.prisma": {
+          "id": "prisma-schema",
+          "evidence": [
+            {
+              "id": "models",
+              "text": "The schema describes tables as models with typed fields."
+            },
+            {
+              "id": "generate",
+              "text": "prisma generate builds a type-safe client from it."
+            },
+            {
+              "id": "sync",
+              "text": "The client must be regenerated after schema changes."
+            }
+          ],
+          "notEnough": [
+            "Only saying Prisma defines models."
+          ],
+          "misconceptions": []
+        },
+        "Model relations: one-to-many and many-to-many": {
+          "id": "relations",
+          "evidence": [
+            {
+              "id": "foreign-key",
+              "text": "The post stores a foreign key to its user."
+            },
+            {
+              "id": "both-sides",
+              "text": "Relation fields on both models let you navigate either way."
+            },
+            {
+              "id": "include",
+              "text": "Defined relations allow nested queries with include."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add a relation."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Migrations and Seeding",
+      "question": "A teammate changed the schema and everyone's database is now out of sync, and new developers start with empty tables. Explain migrations and seeding.",
+      "followUps": {
+        "Creating and applying database migrations": "What does prisma migrate dev do?",
+        "Seeding the database with initial data": "How do you seed development data?"
+      },
+      "criteria": {
+        "Creating and applying database migrations": {
+          "id": "migrations",
+          "evidence": [
+            {
+              "id": "generate",
+              "text": "It writes SQL migration files from schema changes."
+            },
+            {
+              "id": "apply",
+              "text": "It applies them to the local database."
+            },
+            {
+              "id": "commit",
+              "text": "Committed migrations let everyone apply the same changes in order."
+            }
+          ],
+          "notEnough": [
+            "Only saying it migrates the database."
+          ],
+          "misconceptions": []
+        },
+        "Seeding the database with initial data": {
+          "id": "seeding",
+          "evidence": [
+            {
+              "id": "script",
+              "text": "A seed script creates development data."
+            },
+            {
+              "id": "command",
+              "text": "It is registered so prisma db seed runs it."
+            },
+            {
+              "id": "rerun",
+              "text": "Using upserts makes it safe to run again."
+            }
+          ],
+          "notEnough": [
+            "Only saying seeds add data."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Querying in Server Code",
+      "question": "Your load functions read and write posts, and some return far more data than the page needs. Explain how you would query with Prisma.",
+      "followUps": {
+        "CRUD operations with PrismaClient": "Which Prisma methods cover most operations?",
+        "Filtering and selecting fields in queries": "How do where, select and include control what you fetch?"
+      },
+      "criteria": {
+        "CRUD operations with PrismaClient": {
+          "id": "crud",
+          "evidence": [
+            {
+              "id": "methods",
+              "text": "findMany, create, update and delete cover most needs."
+            },
+            {
+              "id": "typed",
+              "text": "Each returns typed results that match the schema."
+            },
+            {
+              "id": "server",
+              "text": "These calls belong in server-only code like +page.server.ts."
+            }
+          ],
+          "notEnough": [
+            "Only listing methods."
+          ],
+          "misconceptions": []
+        },
+        "Filtering and selecting fields in queries": {
+          "id": "select-include",
+          "evidence": [
+            {
+              "id": "where",
+              "text": "where filters rows."
+            },
+            {
+              "id": "select",
+              "text": "select returns only chosen fields, reducing the payload."
+            },
+            {
+              "id": "include",
+              "text": "include adds related records."
+            }
+          ],
+          "notEnough": [
+            "Only saying you filter queries."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Environment Configuration",
+      "question": "Your app crashes with too many database connections after editing files, and you are unsure how to read the database URL. Explain the configuration.",
+      "followUps": {
+        "DATABASE_URL env variable setup for Prisma": "How do Prisma and SvelteKit read DATABASE_URL?",
+        "Singleton PrismaClient pattern in SvelteKit": "Why use a singleton Prisma client?"
+      },
+      "criteria": {
+        "DATABASE_URL env variable setup for Prisma": {
+          "id": "database-url",
+          "evidence": [
+            {
+              "id": "env",
+              "text": "Prisma reads the connection string from DATABASE_URL."
+            },
+            {
+              "id": "private",
+              "text": "SvelteKit exposes server-only variables through $env/static/private."
+            },
+            {
+              "id": "never-client",
+              "text": "The database URL must never be imported into client code."
+            }
+          ],
+          "notEnough": [
+            "Only saying you set an env var."
+          ],
+          "misconceptions": []
+        },
+        "Singleton PrismaClient pattern in SvelteKit": {
+          "id": "prisma-singleton",
+          "evidence": [
+            {
+              "id": "reload",
+              "text": "Hot reloading can create a new client on each edit."
+            },
+            {
+              "id": "exhaust",
+              "text": "Each client has its own connection pool, so connections run out."
+            },
+            {
+              "id": "global",
+              "text": "Storing one client on globalThis reuses it."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use a singleton."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

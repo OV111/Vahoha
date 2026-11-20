@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "remix-dev-10",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Unit Testing with Vitest",
+      "question": "You want fast tests for your loaders and actions without running a server or a real database. Explain how you would test them.",
+      "followUps": {
+        "Testing Loaders and Actions in Isolation": "Why are loaders and actions easy to test directly?",
+        "Mocking Prisma with Vitest": "How would you mock Prisma in these tests?"
+      },
+      "criteria": {
+        "Testing Loaders and Actions in Isolation": {
+          "id": "test-loaders",
+          "evidence": [
+            {
+              "id": "functions",
+              "text": "Loaders and actions are plain async functions."
+            },
+            {
+              "id": "request",
+              "text": "Tests call them with a constructed Request object."
+            },
+            {
+              "id": "assert",
+              "text": "Tests check the returned data, status or redirect."
+            }
+          ],
+          "notEnough": [
+            "Only saying you test loaders."
+          ],
+          "misconceptions": []
+        },
+        "Mocking Prisma with Vitest": {
+          "id": "mock-prisma",
+          "evidence": [
+            {
+              "id": "mock",
+              "text": "The Prisma client is replaced with a mock."
+            },
+            {
+              "id": "control",
+              "text": "Tests decide what each query returns."
+            },
+            {
+              "id": "fast",
+              "text": "Tests run without a database and give the same result every time."
+            }
+          ],
+          "notEnough": [
+            "Only saying you mock Prisma."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Component Testing",
+      "question": "Your component tests crash because components use Remix hooks, and accessibility issues are only found manually. Explain how you would test components.",
+      "followUps": {
+        "React Testing Library with Remix Wrappers": "Why do components using Remix hooks need a wrapper in tests?",
+        "Accessibility Testing with axe-core": "How does axe-core help in component tests?"
+      },
+      "criteria": {
+        "React Testing Library with Remix Wrappers": {
+          "id": "rtl-wrappers",
+          "evidence": [
+            {
+              "id": "context",
+              "text": "Hooks like useLoaderData need router context."
+            },
+            {
+              "id": "stub",
+              "text": "A test router or Remix's createRemixStub provides it."
+            },
+            {
+              "id": "crash",
+              "text": "Without it, rendering throws."
+            }
+          ],
+          "notEnough": [
+            "Only saying you wrap components."
+          ],
+          "misconceptions": []
+        },
+        "Accessibility Testing with axe-core": {
+          "id": "axe",
+          "evidence": [
+            {
+              "id": "automated",
+              "text": "axe checks rendered components for accessibility problems."
+            },
+            {
+              "id": "every-commit",
+              "text": "Running it in tests catches issues on every change."
+            },
+            {
+              "id": "limits",
+              "text": "It finds only part of the issues, so manual checks are still needed."
+            }
+          ],
+          "notEnough": [
+            "Only saying axe tests accessibility."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "End-to-End Testing with Playwright",
+      "question": "Your end-to-end tests repeat login steps and break whenever the markup changes. Explain how fixtures and page objects help.",
+      "followUps": {
+        "Playwright Test Setup and Fixtures": "What can Playwright fixtures set up for tests?",
+        "Page Object Model Pattern": "How do page objects make tests less fragile?"
+      },
+      "criteria": {
+        "Playwright Test Setup and Fixtures": {
+          "id": "fixtures",
+          "evidence": [
+            {
+              "id": "reusable",
+              "text": "Fixtures provide reusable setup for tests."
+            },
+            {
+              "id": "examples",
+              "text": "Examples include a logged-in user, seeded data and browser contexts."
+            },
+            {
+              "id": "no-repeat",
+              "text": "Tests do not repeat setup steps."
+            }
+          ],
+          "notEnough": [
+            "Only saying fixtures set up tests."
+          ],
+          "misconceptions": []
+        },
+        "Page Object Model Pattern": {
+          "id": "pom",
+          "evidence": [
+            {
+              "id": "encapsulate",
+              "text": "Page objects wrap a page's selectors and actions."
+            },
+            {
+              "id": "decouple",
+              "text": "Tests describe user steps, not HTML details."
+            },
+            {
+              "id": "one-place",
+              "text": "Markup changes only require updating the page object."
+            }
+          ],
+          "notEnough": [
+            "Only saying it organises tests."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Deployment",
+      "question": "You are choosing where to deploy your Remix app and a teammate tried to read a secret in client code. Explain adapters and environment variables.",
+      "followUps": {
+        "Remix Server Adapters": "What does a Remix server adapter do?",
+        "Environment Variables and .env Files": "How should environment variables reach the client?"
+      },
+      "criteria": {
+        "Remix Server Adapters": {
+          "id": "adapters",
+          "evidence": [
+            {
+              "id": "target",
+              "text": "Adapters connect Remix to a runtime like an Express server or Cloudflare Workers."
+            },
+            {
+              "id": "platform",
+              "text": "Each platform needs the right adapter."
+            },
+            {
+              "id": "apis",
+              "text": "Edge runtimes lack some Node APIs, which affects what code can run."
+            }
+          ],
+          "notEnough": [
+            "Only listing adapters."
+          ],
+          "misconceptions": []
+        },
+        "Environment Variables and .env Files": {
+          "id": "env-vars",
+          "evidence": [
+            {
+              "id": "server",
+              "text": "process.env is only available on the server."
+            },
+            {
+              "id": "explicit",
+              "text": "Values the client needs are passed explicitly, for example through loader data."
+            },
+            {
+              "id": "secrets",
+              "text": "Secrets are never sent to the client."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use .env files."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

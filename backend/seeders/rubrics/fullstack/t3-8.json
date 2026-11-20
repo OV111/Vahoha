@@ -1,0 +1,199 @@
+{
+  "path": "fullstack",
+  "layer": "t3-8",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "TanStack Query's cache model and server state semantics",
+      "question": "Your dashboard refetches the same data every time a tab gets focus, and after editing an item the list sometimes shows old data. Explain how TanStack Query decides when to refetch and how to update it after a change.",
+      "followUps": {
+        "staleTime, gcTime, and the background refetch lifecycle": "What do staleTime and gcTime each control?",
+        "Query invalidation versus refetch: when to use each": "When would you invalidate a query instead of forcing a refetch?"
+      },
+      "criteria": {
+        "staleTime, gcTime, and the background refetch lifecycle": {
+          "id": "stale-gc-time",
+          "evidence": [
+            {
+              "id": "stale",
+              "text": "staleTime is how long data counts as fresh; while fresh, no refetch happens."
+            },
+            {
+              "id": "background",
+              "text": "After that, cached data is shown immediately while a refetch runs in the background."
+            },
+            {
+              "id": "gc",
+              "text": "gcTime is how long unused cached data is kept before it is removed from memory."
+            }
+          ],
+          "notEnough": [
+            "Only saying they control caching."
+          ],
+          "misconceptions": [
+            {
+              "id": "stale-deleted",
+              "text": "Says stale data is deleted from the cache."
+            }
+          ]
+        },
+        "Query invalidation versus refetch: when to use each": {
+          "id": "invalidate-vs-refetch",
+          "evidence": [
+            {
+              "id": "invalidate",
+              "text": "Invalidation marks data stale and refetches it only if something on screen is using it."
+            },
+            {
+              "id": "refetch",
+              "text": "Refetch forces an immediate request regardless."
+            },
+            {
+              "id": "prefer",
+              "text": "Invalidation is usually preferred because it avoids requests for data nobody is looking at."
+            }
+          ],
+          "notEnough": [
+            "Only saying both reload data."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Optimistic updates and rollback on error",
+      "question": "When a user checks off a todo, you want the checkbox to update instantly even though the server takes a second. Explain how you would do an optimistic update safely.",
+      "followUps": {
+        "Optimistic updates: apply immediately, rollback on mutation failure": "Walk through the steps of an optimistic update, including what happens when the request fails."
+      },
+      "criteria": {
+        "Optimistic updates: apply immediately, rollback on mutation failure": {
+          "id": "optimistic-rollback",
+          "evidence": [
+            {
+              "id": "cancel-snapshot",
+              "text": "Before the change, cancel in-flight fetches for that data and save a snapshot of the current cache."
+            },
+            {
+              "id": "apply",
+              "text": "Update the cache immediately so the UI changes at once."
+            },
+            {
+              "id": "rollback-sync",
+              "text": "If the request fails, restore the snapshot, and when it settles, invalidate to sync with the server."
+            }
+          ],
+          "notEnough": [
+            "Only saying you update the UI first."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Advanced TanStack Query patterns in T3",
+      "question": "Your feed loads more posts as the user scrolls, and you want the first page to appear instantly without a loading spinner. Explain how infinite queries and server prefetching work.",
+      "followUps": {
+        "Infinite queries for cursor-based pagination with fetchNextPage": "How does useInfiniteQuery know what to load next?",
+        "Prefetching data in server components for instant client hydration": "How can a server component prefetch data so the client renders without a spinner?"
+      },
+      "criteria": {
+        "Infinite queries for cursor-based pagination with fetchNextPage": {
+          "id": "infinite-queries",
+          "evidence": [
+            {
+              "id": "pages",
+              "text": "useInfiniteQuery stores the data as a list of pages."
+            },
+            {
+              "id": "next-param",
+              "text": "getNextPageParam reads the cursor for the next page from the last page."
+            },
+            {
+              "id": "trigger",
+              "text": "fetchNextPage loads more, often triggered when an element at the end of the list becomes visible."
+            }
+          ],
+          "notEnough": [
+            "Only saying it loads more data."
+          ],
+          "misconceptions": []
+        },
+        "Prefetching data in server components for instant client hydration": {
+          "id": "prefetch-hydrate",
+          "evidence": [
+            {
+              "id": "prefetch",
+              "text": "The server fetches the query into a query client before rendering."
+            },
+            {
+              "id": "dehydrate",
+              "text": "The cache is serialized and sent to the browser with the page."
+            },
+            {
+              "id": "hydrate",
+              "text": "The client starts with that cached data, so the first render already has it."
+            }
+          ],
+          "notEnough": [
+            "Only saying the data is fetched on the server."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Global state versus server state in T3",
+      "question": "Your app keeps API data in Zustand alongside UI flags, and mutation code mixes loading toasts, rollbacks and refetches in one place. Explain how you would separate state and organize mutation logic.",
+      "followUps": {
+        "When to use Zustand for client-only global state": "What belongs in Zustand and what belongs in TanStack Query?",
+        "Mutation lifecycle callbacks: onMutate, onError, onSuccess, onSettled": "What is each mutation callback for: onMutate, onError, onSuccess and onSettled?"
+      },
+      "criteria": {
+        "When to use Zustand for client-only global state": {
+          "id": "zustand-vs-query",
+          "evidence": [
+            {
+              "id": "query",
+              "text": "Data from the server belongs in TanStack Query, which handles caching and refetching."
+            },
+            {
+              "id": "zustand",
+              "text": "Zustand suits UI state that does not come from an API, like whether a modal is open."
+            },
+            {
+              "id": "no-mix",
+              "text": "Copying server data into Zustand creates two sources of truth that drift apart."
+            }
+          ],
+          "notEnough": [
+            "Only saying one is for client state and one for server state."
+          ],
+          "misconceptions": []
+        },
+        "Mutation lifecycle callbacks: onMutate, onError, onSuccess, onSettled": {
+          "id": "mutation-lifecycle",
+          "evidence": [
+            {
+              "id": "onmutate",
+              "text": "onMutate runs before the request and is where optimistic updates happen."
+            },
+            {
+              "id": "onerror",
+              "text": "onError receives the error and can roll back using the saved context."
+            },
+            {
+              "id": "onsettled",
+              "text": "onSuccess runs only on success, while onSettled runs either way and is used for invalidation."
+            }
+          ],
+          "notEnough": [
+            "Only listing the callback names."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

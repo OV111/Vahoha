@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "mean-3",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Angular's architecture and change detection model",
+      "question": "Your Angular view updates after an HTTP call without you telling it to, and a service you thought was shared has different data in two components. Explain how Angular tracks changes and provides services.",
+      "followUps": {
+        "Zone.js and how Angular knows when to run change detection": "How does Angular know it needs to update the view after an HTTP response?",
+        "Dependency injection: the hierarchical injector tree": "Why might two components get different instances of the same service?"
+      },
+      "criteria": {
+        "Zone.js and how Angular knows when to run change detection": {
+          "id": "zonejs-change-detection",
+          "evidence": [
+            {
+              "id": "patches",
+              "text": "Zone.js wraps async APIs like timers, events and HTTP so Angular knows when async work finishes."
+            },
+            {
+              "id": "run-cd",
+              "text": "Angular then runs change detection to compare bindings and update the view."
+            },
+            {
+              "id": "outside",
+              "text": "Work done outside Angular's zone does not trigger updates automatically."
+            }
+          ],
+          "notEnough": [
+            "Only saying Angular uses change detection."
+          ],
+          "misconceptions": []
+        },
+        "Dependency injection: the hierarchical injector tree": {
+          "id": "hierarchical-injector",
+          "evidence": [
+            {
+              "id": "tree",
+              "text": "Angular resolves services by walking up a tree of injectors from the component to the root."
+            },
+            {
+              "id": "root-singleton",
+              "text": "A service provided in root is a single shared instance."
+            },
+            {
+              "id": "component-instance",
+              "text": "A service provided in a component gets a new instance for that component and its children."
+            }
+          ],
+          "notEnough": [
+            "Only saying Angular uses dependency injection."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Component lifecycle hooks and template binding",
+      "question": "A component fetches data in its constructor and its inputs are undefined there, and a form field does not update the model. Explain the component lifecycle and the kinds of data binding.",
+      "followUps": {
+        "ngOnInit vs constructor: when to initialize versus inject": "Why should data loading go in ngOnInit rather than the constructor?",
+        "Data binding: interpolation, property binding, event binding, two-way": "What are the four kinds of data binding in Angular templates?"
+      },
+      "criteria": {
+        "ngOnInit vs constructor: when to initialize versus inject": {
+          "id": "oninit-vs-constructor",
+          "evidence": [
+            {
+              "id": "constructor",
+              "text": "The constructor is for injecting dependencies."
+            },
+            {
+              "id": "inputs-ready",
+              "text": "ngOnInit runs after Angular has set the component's inputs."
+            },
+            {
+              "id": "destroy",
+              "text": "ngOnDestroy is where subscriptions and timers are cleaned up."
+            }
+          ],
+          "notEnough": [
+            "Only saying ngOnInit runs when the component starts."
+          ],
+          "misconceptions": []
+        },
+        "Data binding: interpolation, property binding, event binding, two-way": {
+          "id": "data-binding",
+          "evidence": [
+            {
+              "id": "interpolation",
+              "text": "Interpolation shows a value as text."
+            },
+            {
+              "id": "property-event",
+              "text": "Property binding sets an element property from the component, and event binding calls a method when an event happens."
+            },
+            {
+              "id": "two-way",
+              "text": "Two-way binding combines both, so the input and the model stay in sync."
+            }
+          ],
+          "notEnough": [
+            "Only listing the syntax."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Building Angular components and using directives",
+      "question": "You are building a task list component that shows tasks only when loaded and repeats a row per task, using the Angular CLI. Explain the template features and the tooling.",
+      "followUps": {
+        "Structural directives: *ngIf, *ngFor, and ng-template": "What does the asterisk in *ngIf and *ngFor mean?",
+        "Angular CLI: generate, serve, build, and test commands": "What do the main Angular CLI commands do?"
+      },
+      "criteria": {
+        "Structural directives: *ngIf, *ngFor, and ng-template": {
+          "id": "structural-directives",
+          "evidence": [
+            {
+              "id": "add-remove",
+              "text": "Structural directives add or remove elements from the page."
+            },
+            {
+              "id": "template",
+              "text": "The asterisk is shorthand for wrapping the element in an ng-template."
+            },
+            {
+              "id": "examples",
+              "text": "ngIf renders conditionally and ngFor repeats an element for each item."
+            }
+          ],
+          "notEnough": [
+            "Only saying they show and loop."
+          ],
+          "misconceptions": []
+        },
+        "Angular CLI: generate, serve, build, and test commands": {
+          "id": "angular-cli",
+          "evidence": [
+            {
+              "id": "generate",
+              "text": "ng generate creates components, services and their test files."
+            },
+            {
+              "id": "serve",
+              "text": "ng serve runs a development server that reloads on changes."
+            },
+            {
+              "id": "build-test",
+              "text": "ng build creates an optimized production build and ng test runs the tests."
+            }
+          ],
+          "notEnough": [
+            "Only listing command names."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Services and the Angular router",
+      "question": "Several components need the same task data, and the app needs pages for the task list and task details. Explain how you would create services and set up routing.",
+      "followUps": {
+        "Creating and injecting services with @Injectable": "How do you create a service shared across the whole app and use it in a component?",
+        "Angular Router: RouterModule, routes array, and routerLink": "How do routes, routerLink and router-outlet work together?"
+      },
+      "criteria": {
+        "Creating and injecting services with @Injectable": {
+          "id": "injectable-services",
+          "evidence": [
+            {
+              "id": "provided-in-root",
+              "text": "Marking a service injectable and provided in root makes one shared instance."
+            },
+            {
+              "id": "inject",
+              "text": "Components receive it through constructor injection or the inject function."
+            },
+            {
+              "id": "no-new",
+              "text": "Creating it yourself with new skips dependency injection and loses sharing and testability."
+            }
+          ],
+          "notEnough": [
+            "Only saying services share data."
+          ],
+          "misconceptions": []
+        },
+        "Angular Router: RouterModule, routes array, and routerLink": {
+          "id": "angular-router",
+          "evidence": [
+            {
+              "id": "routes",
+              "text": "A routes array maps paths to components."
+            },
+            {
+              "id": "outlet",
+              "text": "router-outlet marks where the matched component appears."
+            },
+            {
+              "id": "link",
+              "text": "routerLink navigates without a full page reload."
+            }
+          ],
+          "notEnough": [
+            "Only saying Angular has a router."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

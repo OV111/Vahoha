@@ -1,0 +1,265 @@
+{
+  "path": "fullstack",
+  "layer": "next-fullstack-6",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Authentication Concepts",
+      "question": "You are adding login to your Next.js app with GitHub and email-password options, and the whole /dashboard area must be private. Explain the auth flows, session choices and how you protect routes.",
+      "followUps": {
+        "OAuth flow and credential-based authentication": "How does OAuth login differ from a credentials provider?",
+        "Sessions vs JWT token strategies": "What are the trade-offs between database sessions and JWT sessions?",
+        "Protecting routes with middleware-based guards": "Why protect routes in middleware, and is that enough?"
+      },
+      "criteria": {
+        "OAuth flow and credential-based authentication": {
+          "id": "oauth-vs-credentials",
+          "evidence": [
+            {
+              "id": "oauth",
+              "text": "OAuth sends the user to a provider like GitHub, which confirms who they are."
+            },
+            {
+              "id": "credentials",
+              "text": "A credentials provider checks a username and password in your own app."
+            },
+            {
+              "id": "responsibility",
+              "text": "With credentials, you are responsible for storing and protecting passwords safely."
+            }
+          ],
+          "notEnough": [
+            "Only saying both log users in."
+          ],
+          "misconceptions": []
+        },
+        "Sessions vs JWT token strategies": {
+          "id": "sessions-vs-jwt",
+          "evidence": [
+            {
+              "id": "db",
+              "text": "Database sessions store a session record and send its id in a cookie."
+            },
+            {
+              "id": "jwt",
+              "text": "JWT sessions put the session data in a signed token."
+            },
+            {
+              "id": "trade-off",
+              "text": "Database sessions are easy to revoke but need lookups; JWTs avoid lookups but are hard to revoke early."
+            }
+          ],
+          "notEnough": [
+            "Only saying one uses a database."
+          ],
+          "misconceptions": []
+        },
+        "Protecting routes with middleware-based guards": {
+          "id": "middleware-guards",
+          "evidence": [
+            {
+              "id": "before",
+              "text": "Middleware runs before the request reaches a page."
+            },
+            {
+              "id": "redirect",
+              "text": "It redirects unauthenticated users in one central place."
+            },
+            {
+              "id": "not-only",
+              "text": "Data access in pages and actions must still check the session."
+            }
+          ],
+          "notEnough": [
+            "Only saying middleware protects routes."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Auth.js Integration Patterns",
+      "question": "You want users to stay signed in across devices and to show their name in both server and client components. Explain how Auth.js stores and exposes sessions.",
+      "followUps": {
+        "Prisma adapter for persisting sessions to database": "What does the Prisma adapter store?",
+        "Reading session server-side and client-side": "When do you use auth() and when useSession?"
+      },
+      "criteria": {
+        "Prisma adapter for persisting sessions to database": {
+          "id": "prisma-adapter",
+          "evidence": [
+            {
+              "id": "models",
+              "text": "It stores users, accounts and sessions in your database."
+            },
+            {
+              "id": "schema",
+              "text": "It needs specific models added to the Prisma schema."
+            },
+            {
+              "id": "multi-device",
+              "text": "Stored sessions support looking up users and managing several devices."
+            }
+          ],
+          "notEnough": [
+            "Only saying it connects to Prisma."
+          ],
+          "misconceptions": []
+        },
+        "Reading session server-side and client-side": {
+          "id": "read-session",
+          "evidence": [
+            {
+              "id": "server",
+              "text": "auth() reads the session in server components and actions."
+            },
+            {
+              "id": "client",
+              "text": "useSession reads it in client components."
+            },
+            {
+              "id": "prefer-server",
+              "text": "Reading it on the server avoids extra client requests and loading flashes."
+            }
+          ],
+          "notEnough": [
+            "Only listing the functions."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Auth.js Setup",
+      "question": "You are setting up Auth.js in a fresh Next.js app with GitHub login. Explain the configuration and the secrets it needs.",
+      "followUps": {
+        "Install and configure Auth.js with Next.js": "What goes in auth.ts and the auth route handler?",
+        "Environment variables for OAuth credentials": "Which environment variables does it need and why?"
+      },
+      "criteria": {
+        "Install and configure Auth.js with Next.js": {
+          "id": "authjs-setup",
+          "evidence": [
+            {
+              "id": "config",
+              "text": "auth.ts configures providers and exports auth, signIn and signOut."
+            },
+            {
+              "id": "route",
+              "text": "A catch-all route under api/auth handles the auth requests."
+            },
+            {
+              "id": "one-place",
+              "text": "All auth settings live in one file."
+            }
+          ],
+          "notEnough": [
+            "Only saying you install Auth.js."
+          ],
+          "misconceptions": []
+        },
+        "Environment variables for OAuth credentials": {
+          "id": "auth-env",
+          "evidence": [
+            {
+              "id": "client",
+              "text": "Each OAuth provider needs a client id and secret from its developer console."
+            },
+            {
+              "id": "secret",
+              "text": "AUTH_SECRET is a random string used to sign and encrypt tokens."
+            },
+            {
+              "id": "safe",
+              "text": "These stay in environment variables and are never committed."
+            }
+          ],
+          "notEnough": [
+            "Only saying you set env vars."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Route and Action Protection",
+      "question": "A user who is not logged in manages to delete a post by calling a server action directly, and you also need an admin-only page. Explain how you would secure actions and roles.",
+      "followUps": {
+        "Protecting server actions by checking session": "Why must every server action check the session itself?",
+        "Role-based access control with session callbacks": "How would you add a role to the session and enforce it?",
+        "Configuring sign-in and sign-out UI flows": "How do you customise sign-in and sign-out flows?"
+      },
+      "criteria": {
+        "Protecting server actions by checking session": {
+          "id": "protect-actions",
+          "evidence": [
+            {
+              "id": "callable",
+              "text": "Server actions can be called directly, not only from your UI."
+            },
+            {
+              "id": "check",
+              "text": "Each action calls auth() and refuses if there is no session."
+            },
+            {
+              "id": "ui-not-enough",
+              "text": "Hiding a button in the UI does not stop the request."
+            }
+          ],
+          "notEnough": [
+            "Only saying actions need auth."
+          ],
+          "misconceptions": [
+            {
+              "id": "hidden-ui",
+              "text": "Says hiding the delete button is enough to protect the action."
+            }
+          ]
+        },
+        "Role-based access control with session callbacks": {
+          "id": "rbac-callbacks",
+          "evidence": [
+            {
+              "id": "callbacks",
+              "text": "The jwt and session callbacks add custom fields like role."
+            },
+            {
+              "id": "check",
+              "text": "Middleware or actions check the role before allowing access."
+            },
+            {
+              "id": "forbidden",
+              "text": "Users without the role get a forbidden response."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add roles."
+          ],
+          "misconceptions": []
+        },
+        "Configuring sign-in and sign-out UI flows": {
+          "id": "signin-signout-ui",
+          "evidence": [
+            {
+              "id": "pages",
+              "text": "Custom sign-in pages are set through the pages option."
+            },
+            {
+              "id": "actions",
+              "text": "signIn and signOut can be called from server actions."
+            },
+            {
+              "id": "redirect",
+              "text": "Redirects send users to the right page afterwards."
+            }
+          ],
+          "notEnough": [
+            "Only saying Auth.js has default pages."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

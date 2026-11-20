@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "django-react-3",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Models and Relationships",
+      "question": "You are modelling recipes, authors and tags in Django and need a page showing each author's number of recipes. Explain how models, relationships and aggregations work.",
+      "followUps": {
+        "Defining Models and Field Types": "How does a Django model map to the database?",
+        "Relationships: ForeignKey, ManyToMany": "How would you model recipes with one author and many tags?",
+        "Aggregations and Annotations": "Why count recipes per author with annotate instead of a Python loop?"
+      },
+      "criteria": {
+        "Defining Models and Field Types": {
+          "id": "models-fields",
+          "evidence": [
+            {
+              "id": "table",
+              "text": "Each model maps to a database table."
+            },
+            {
+              "id": "fields",
+              "text": "Each field becomes a column with a type, like text or dates."
+            },
+            {
+              "id": "validation",
+              "text": "Field options add validation and constraints, such as maximum length."
+            }
+          ],
+          "notEnough": [
+            "Only saying models are classes."
+          ],
+          "misconceptions": []
+        },
+        "Relationships: ForeignKey, ManyToMany": {
+          "id": "relationships",
+          "evidence": [
+            {
+              "id": "foreignkey",
+              "text": "A ForeignKey creates a many-to-one link, such as many recipes to one author."
+            },
+            {
+              "id": "manytomany",
+              "text": "A ManyToManyField uses a join table, such as recipes and tags."
+            },
+            {
+              "id": "both-sides",
+              "text": "Related objects can be queried from either side of the relationship."
+            }
+          ],
+          "notEnough": [
+            "Only listing the field types."
+          ],
+          "misconceptions": []
+        },
+        "Aggregations and Annotations": {
+          "id": "aggregations",
+          "evidence": [
+            {
+              "id": "database",
+              "text": "annotate and aggregate run counts and sums in the database with SQL."
+            },
+            {
+              "id": "annotate",
+              "text": "annotate adds a computed value to each row, like a recipe count per author."
+            },
+            {
+              "id": "faster",
+              "text": "This avoids loading every row into Python, which is much faster."
+            }
+          ],
+          "notEnough": [
+            "Only saying Django can count."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "QuerySets and Database Queries",
+      "question": "Your recipe list filters and sorts recipes, and a teammate changed a model and the production database broke. Explain how querysets and migrations work.",
+      "followUps": {
+        "QuerySet API: filter, exclude, order_by": "When does a queryset actually hit the database?",
+        "Database Migrations Workflow": "What do makemigrations and migrate do, and why review migrations?"
+      },
+      "criteria": {
+        "QuerySet API: filter, exclude, order_by": {
+          "id": "queryset-api",
+          "evidence": [
+            {
+              "id": "lazy",
+              "text": "Querysets are lazy and build up the query without running it."
+            },
+            {
+              "id": "chain",
+              "text": "filter, exclude and order_by can be chained to build the query."
+            },
+            {
+              "id": "evaluate",
+              "text": "The query runs only when results are needed, such as looping or converting to a list."
+            }
+          ],
+          "notEnough": [
+            "Only listing queryset methods."
+          ],
+          "misconceptions": []
+        },
+        "Database Migrations Workflow": {
+          "id": "migrations",
+          "evidence": [
+            {
+              "id": "make",
+              "text": "makemigrations writes migration files from model changes."
+            },
+            {
+              "id": "migrate",
+              "text": "migrate applies them to the database."
+            },
+            {
+              "id": "review",
+              "text": "Reviewing generated migrations catches destructive changes before they run in production."
+            }
+          ],
+          "notEnough": [
+            "Only saying migrations update the database."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "PostgreSQL Integration",
+      "question": "You are moving from SQLite to PostgreSQL and one report needs a complex query the ORM cannot express well. Explain how you would connect and when you would use raw SQL.",
+      "followUps": {
+        "Connecting Django to PostgreSQL": "How do you connect Django to PostgreSQL safely?",
+        "Raw SQL and Database Functions": "When would you use raw SQL or database functions, and what must you be careful of?"
+      },
+      "criteria": {
+        "Connecting Django to PostgreSQL": {
+          "id": "postgres-connect",
+          "evidence": [
+            {
+              "id": "driver",
+              "text": "A PostgreSQL driver like psycopg is installed."
+            },
+            {
+              "id": "settings",
+              "text": "The DATABASES setting points Django to PostgreSQL."
+            },
+            {
+              "id": "secrets",
+              "text": "Credentials come from environment variables, never committed code."
+            }
+          ],
+          "notEnough": [
+            "Only saying you change the database setting."
+          ],
+          "misconceptions": []
+        },
+        "Raw SQL and Database Functions": {
+          "id": "raw-sql",
+          "evidence": [
+            {
+              "id": "functions",
+              "text": "Database functions like Coalesce or Extract push logic into SQL while staying in the ORM."
+            },
+            {
+              "id": "raw",
+              "text": "raw queries handle cases the ORM cannot express well."
+            },
+            {
+              "id": "params",
+              "text": "Values must be passed as parameters, not formatted into the string, to avoid SQL injection."
+            }
+          ],
+          "notEnough": [
+            "Only saying Django supports raw SQL."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "ORM Tooling",
+      "question": "You want to try a few ORM queries and understand how your models relate before writing views. Explain the tools you would use.",
+      "followUps": {
+        "Django Shell for ORM Exploration": "What is manage.py shell useful for?",
+        "django-extensions and Model Diagrams": "What do shell_plus and graph_models add?"
+      },
+      "criteria": {
+        "Django Shell for ORM Exploration": {
+          "id": "django-shell",
+          "evidence": [
+            {
+              "id": "repl",
+              "text": "It opens a Python shell with Django set up."
+            },
+            {
+              "id": "try",
+              "text": "You can run queries and inspect data interactively."
+            },
+            {
+              "id": "verify",
+              "text": "It helps check model behaviour before writing view code."
+            }
+          ],
+          "notEnough": [
+            "Only saying it opens a shell."
+          ],
+          "misconceptions": []
+        },
+        "django-extensions and Model Diagrams": {
+          "id": "django-extensions",
+          "evidence": [
+            {
+              "id": "shell-plus",
+              "text": "shell_plus imports all models automatically."
+            },
+            {
+              "id": "graph",
+              "text": "graph_models generates a diagram of models and their relationships."
+            },
+            {
+              "id": "speed",
+              "text": "Both make exploring the data model faster."
+            }
+          ],
+          "notEnough": [
+            "Only naming the tools."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

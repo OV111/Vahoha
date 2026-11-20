@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "fullstack-engineer-8",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Docker containers and the image layer model",
+      "question": "Your Node API's Docker image is over a gigabyte and rebuilds every dependency on every code change. Explain how images are built and how you would make them small and fast to build.",
+      "followUps": {
+        "Images, containers, and the union filesystem layer model": "What is the difference between an image and a container, and why do layers matter?",
+        "Multi-stage Dockerfiles for lean production Node images": "How does a multi-stage Dockerfile make the final image smaller?"
+      },
+      "criteria": {
+        "Images, containers, and the union filesystem layer model": {
+          "id": "images-containers-layers",
+          "evidence": [
+            {
+              "id": "image",
+              "text": "An image is a stack of read-only filesystem layers."
+            },
+            {
+              "id": "container",
+              "text": "A container is a running instance of an image with a thin writable layer on top."
+            },
+            {
+              "id": "share",
+              "text": "Images that share base layers store and download them only once."
+            }
+          ],
+          "notEnough": [
+            "Only saying a container is a running image."
+          ],
+          "misconceptions": []
+        },
+        "Multi-stage Dockerfiles for lean production Node images": {
+          "id": "multi-stage",
+          "evidence": [
+            {
+              "id": "build-stage",
+              "text": "A build stage installs dev dependencies and compiles the code."
+            },
+            {
+              "id": "copy",
+              "text": "The final stage copies only the built output and production dependencies."
+            },
+            {
+              "id": "smaller",
+              "text": "Build tools and dev dependencies never reach the final image, so it is much smaller and safer."
+            }
+          ],
+          "notEnough": [
+            "Only saying multi-stage builds are smaller."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Docker Compose and multi-service networking",
+      "question": "You run your API and PostgreSQL together with Docker Compose, and after restarting, all your data is gone. Explain how Compose services find each other and how to keep data.",
+      "followUps": {
+        "Docker Compose service discovery via container name DNS": "How does the API connect to Postgres without knowing its IP address?",
+        "Named volumes for persistent PostgreSQL data across container restarts": "Why did the database data disappear, and how do named volumes fix it?"
+      },
+      "criteria": {
+        "Docker Compose service discovery via container name DNS": {
+          "id": "compose-dns",
+          "evidence": [
+            {
+              "id": "network",
+              "text": "Compose puts services on a shared network."
+            },
+            {
+              "id": "name",
+              "text": "Each service can be reached by its service name, like postgres."
+            },
+            {
+              "id": "no-ip",
+              "text": "That name resolves to the right container, so no IP addresses are hard-coded."
+            }
+          ],
+          "notEnough": [
+            "Only saying containers can talk to each other."
+          ],
+          "misconceptions": [
+            {
+              "id": "localhost",
+              "text": "Says the API should connect to the database on localhost inside its container."
+            }
+          ]
+        },
+        "Named volumes for persistent PostgreSQL data across container restarts": {
+          "id": "named-volumes",
+          "evidence": [
+            {
+              "id": "ephemeral",
+              "text": "Data written inside a container is lost when the container is removed."
+            },
+            {
+              "id": "volume",
+              "text": "A named volume stores the data outside the container's lifecycle."
+            },
+            {
+              "id": "persist",
+              "text": "The database keeps its data across container restarts and recreation."
+            }
+          ],
+          "notEnough": [
+            "Only saying volumes store data."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Writing a Dockerfile for a Node/Express app",
+      "question": "You are writing the Dockerfile for your Express app, and the build is slow and somehow includes your .env file. Explain how you would order the instructions and what you would exclude.",
+      "followUps": {
+        "Dockerfile instruction order: COPY package.json before source code": "Why copy package.json and install dependencies before copying the source code?",
+        "Using .dockerignore to exclude node_modules and .env": "What does .dockerignore prevent?"
+      },
+      "criteria": {
+        "Dockerfile instruction order: COPY package.json before source code": {
+          "id": "layer-caching-order",
+          "evidence": [
+            {
+              "id": "cache",
+              "text": "Docker caches each instruction's layer and reuses it if its inputs did not change."
+            },
+            {
+              "id": "deps-first",
+              "text": "Copying package files and installing first means that layer is reused when only source code changes."
+            },
+            {
+              "id": "faster",
+              "text": "Only the later steps rerun, making rebuilds much faster."
+            }
+          ],
+          "notEnough": [
+            "Only saying the order matters."
+          ],
+          "misconceptions": []
+        },
+        "Using .dockerignore to exclude node_modules and .env": {
+          "id": "dockerignore",
+          "evidence": [
+            {
+              "id": "excludes",
+              "text": "It keeps files like node_modules, .env and .git out of the build context."
+            },
+            {
+              "id": "speed",
+              "text": "A smaller build context makes builds faster."
+            },
+            {
+              "id": "secrets",
+              "text": "It stops secrets from ending up inside the image."
+            }
+          ],
+          "notEnough": [
+            "Only saying it ignores files."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Docker Compose for local full-stack development",
+      "question": "When you start your stack with Docker Compose, the API crashes because Postgres is not ready yet, and you need to inspect the database. Explain the day-to-day commands and how to order startup.",
+      "followUps": {
+        "docker compose up, down, logs, and exec commands": "Which Compose commands would you use to run, inspect and debug the stack?",
+        "Health checks and depends_on for service startup ordering": "Why isn't depends_on alone enough to make the API wait for Postgres?"
+      },
+      "criteria": {
+        "docker compose up, down, logs, and exec commands": {
+          "id": "compose-commands",
+          "evidence": [
+            {
+              "id": "up-down",
+              "text": "up starts the services, optionally in the background, and down stops and removes them."
+            },
+            {
+              "id": "logs",
+              "text": "logs shows a service's output, and can follow it live."
+            },
+            {
+              "id": "exec",
+              "text": "exec runs a command inside a running container, such as opening a database shell."
+            }
+          ],
+          "notEnough": [
+            "Only listing commands without what they do."
+          ],
+          "misconceptions": []
+        },
+        "Health checks and depends_on for service startup ordering": {
+          "id": "healthcheck-depends",
+          "evidence": [
+            {
+              "id": "start-not-ready",
+              "text": "depends_on alone only waits for the container to start, not for the database to accept connections."
+            },
+            {
+              "id": "healthcheck",
+              "text": "A health check tests whether Postgres is actually ready."
+            },
+            {
+              "id": "condition",
+              "text": "depends_on with the service_healthy condition makes the API wait until the health check passes."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use depends_on."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

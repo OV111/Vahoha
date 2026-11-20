@@ -1,0 +1,194 @@
+{
+  "path": "fullstack",
+  "layer": "t3-9",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Shared Zod schemas across client and server",
+      "question": "Your sign-up form checks that a username is at least 3 characters, but the server allows 2, and users get confusing errors. Explain how you would share validation between client and server.",
+      "followUps": {
+        "Why sharing schemas eliminates client-server validation drift": "How does sharing one Zod schema prevent client and server from disagreeing?",
+        "Zod's refinement and transform methods for complex validation": "When would you use refine and when transform in a Zod schema?"
+      },
+      "criteria": {
+        "Why sharing schemas eliminates client-server validation drift": {
+          "id": "shared-schemas",
+          "evidence": [
+            {
+              "id": "one-schema",
+              "text": "One schema is imported by both the tRPC procedure and the form."
+            },
+            {
+              "id": "same-rules",
+              "text": "Both sides then enforce exactly the same rules."
+            },
+            {
+              "id": "one-change",
+              "text": "Changing a rule in the schema updates validation everywhere at once."
+            }
+          ],
+          "notEnough": [
+            "Only saying you reuse the schema."
+          ],
+          "misconceptions": []
+        },
+        "Zod's refinement and transform methods for complex validation": {
+          "id": "refine-transform",
+          "evidence": [
+            {
+              "id": "refine",
+              "text": "refine adds a custom check with its own error message."
+            },
+            {
+              "id": "transform",
+              "text": "transform changes the value while parsing, for example trimming spaces."
+            },
+            {
+              "id": "both-sides",
+              "text": "Because the schema is shared, these run the same way on client and server."
+            }
+          ],
+          "notEnough": [
+            "Only saying they add custom logic."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "React Hook Form architecture: uncontrolled inputs with a single re-render",
+      "question": "A large form with twenty fields lags on every keystroke. Explain how React Hook Form avoids this.",
+      "followUps": {
+        "Why RHF uses refs instead of state to avoid per-keystroke re-renders": "Why doesn't React Hook Form re-render the form on every keystroke?"
+      },
+      "criteria": {
+        "Why RHF uses refs instead of state to avoid per-keystroke re-renders": {
+          "id": "rhf-uncontrolled",
+          "evidence": [
+            {
+              "id": "refs",
+              "text": "React Hook Form keeps input values in refs, not React state."
+            },
+            {
+              "id": "no-render",
+              "text": "Typing does not cause the form component to re-render."
+            },
+            {
+              "id": "when",
+              "text": "It re-renders only when needed, such as on submit, on errors or for watched fields."
+            }
+          ],
+          "notEnough": [
+            "Only saying React Hook Form is faster."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Wiring React Hook Form with Zod and tRPC",
+      "question": "You are wiring a create-post form with React Hook Form, a Zod schema and a tRPC mutation. Explain how the pieces connect from typing to submitting.",
+      "followUps": {
+        "zodResolver: connecting a Zod schema to useForm": "What does zodResolver do?",
+        "register, handleSubmit, and formState.errors in practice": "What do register, handleSubmit and formState.errors each do?"
+      },
+      "criteria": {
+        "zodResolver: connecting a Zod schema to useForm": {
+          "id": "zod-resolver",
+          "evidence": [
+            {
+              "id": "connect",
+              "text": "zodResolver connects a Zod schema to React Hook Form."
+            },
+            {
+              "id": "validate",
+              "text": "On submit the form values are checked against the schema."
+            },
+            {
+              "id": "errors",
+              "text": "Schema errors are mapped to the matching fields without manual validation code."
+            }
+          ],
+          "notEnough": [
+            "Only saying it uses Zod for validation."
+          ],
+          "misconceptions": []
+        },
+        "register, handleSubmit, and formState.errors in practice": {
+          "id": "register-submit-errors",
+          "evidence": [
+            {
+              "id": "register",
+              "text": "register connects an input to the form with its name and change handlers."
+            },
+            {
+              "id": "handle-submit",
+              "text": "handleSubmit validates the form and calls your function only with valid, typed data."
+            },
+            {
+              "id": "errors",
+              "text": "formState.errors holds the messages to show next to each field."
+            }
+          ],
+          "notEnough": [
+            "Only listing the functions."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Accessible form UI and user feedback patterns",
+      "question": "Screen reader users submit your form and do not know which fields have errors, and users click save twice because nothing tells them it worked. Explain how you would give clear feedback.",
+      "followUps": {
+        "Associating error messages with inputs for screen readers": "How do you make sure a screen reader announces a field's error?",
+        "Optimistic toast notifications with react-hot-toast": "How would toast notifications show the progress of a save?"
+      },
+      "criteria": {
+        "Associating error messages with inputs for screen readers": {
+          "id": "aria-describedby-errors",
+          "evidence": [
+            {
+              "id": "link",
+              "text": "The input points to its error message with aria-describedby."
+            },
+            {
+              "id": "announce",
+              "text": "Screen readers read the error when the input gets focus."
+            },
+            {
+              "id": "invalid",
+              "text": "Marking the input as invalid also tells assistive tools that it has a problem."
+            }
+          ],
+          "notEnough": [
+            "Only saying errors should be accessible."
+          ],
+          "misconceptions": []
+        },
+        "Optimistic toast notifications with react-hot-toast": {
+          "id": "toast-feedback",
+          "evidence": [
+            {
+              "id": "loading",
+              "text": "A loading toast appears when the save starts."
+            },
+            {
+              "id": "replace",
+              "text": "It is replaced with a success or error message when the request settles."
+            },
+            {
+              "id": "prevent-double",
+              "text": "Clear feedback stops users from clicking again because they think nothing happened."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would show a toast."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

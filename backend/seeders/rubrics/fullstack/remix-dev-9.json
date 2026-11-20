@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "remix-dev-9",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Tailwind CSS in Remix",
+      "question": "You are adding Tailwind to your Remix app and want themes without hard-coded colors. Explain the setup and theming approach.",
+      "followUps": {
+        "Tailwind Setup and PostCSS Integration": "How is Tailwind set up in a Remix app?",
+        "CSS Custom Properties and Theming": "How do CSS custom properties help with theming?"
+      },
+      "criteria": {
+        "Tailwind Setup and PostCSS Integration": {
+          "id": "tailwind-setup",
+          "evidence": [
+            {
+              "id": "build",
+              "text": "Tailwind runs as part of the Vite build."
+            },
+            {
+              "id": "import",
+              "text": "The CSS is imported once at the root so every page gets it."
+            },
+            {
+              "id": "links",
+              "text": "It can be linked through the root's links so it loads as a stylesheet."
+            }
+          ],
+          "notEnough": [
+            "Only saying you install Tailwind."
+          ],
+          "misconceptions": []
+        },
+        "CSS Custom Properties and Theming": {
+          "id": "css-variables",
+          "evidence": [
+            {
+              "id": "tokens",
+              "text": "Design tokens are stored as CSS variables."
+            },
+            {
+              "id": "runtime",
+              "text": "Changing variables switches themes without JavaScript re-renders."
+            },
+            {
+              "id": "no-hardcode",
+              "text": "Using tokens instead of arbitrary values keeps colors consistent."
+            }
+          ],
+          "notEnough": [
+            "Only saying variables enable themes."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Performance Optimization",
+      "question": "Your Remix pages flash unstyled content, and a parent route imports a large chart library that every child page downloads. Explain how styles and code are loaded.",
+      "followUps": {
+        "links() Export and Stylesheet Preloading": "What does a route's links export do?",
+        "Code Splitting and Route-Based Chunks": "How does Remix split code, and how can a parent route undo it?"
+      },
+      "criteria": {
+        "links() Export and Stylesheet Preloading": {
+          "id": "links-export",
+          "evidence": [
+            {
+              "id": "links",
+              "text": "links returns link tags for stylesheets and preloads."
+            },
+            {
+              "id": "route",
+              "text": "Each route declares the styles it needs."
+            },
+            {
+              "id": "no-flash",
+              "text": "Stylesheets load with the HTML, avoiding unstyled content."
+            }
+          ],
+          "notEnough": [
+            "Only saying links adds stylesheets."
+          ],
+          "misconceptions": []
+        },
+        "Code Splitting and Route-Based Chunks": {
+          "id": "route-splitting",
+          "evidence": [
+            {
+              "id": "per-route",
+              "text": "Remix splits JavaScript by route automatically."
+            },
+            {
+              "id": "parent",
+              "text": "Libraries imported in a parent route load for every child page."
+            },
+            {
+              "id": "fix",
+              "text": "Importing heavy libraries only where needed keeps other pages light."
+            }
+          ],
+          "notEnough": [
+            "Only saying Remix splits code."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Web Vitals and Rendering",
+      "question": "Your Remix app's LCP got worse after someone moved data loading into effects, and the back button loses the user's scroll position. Explain rendering and navigation UX.",
+      "followUps": {
+        "Largest Contentful Paint and SSR": "Why does Remix's server rendering help LCP, and how can effects undo it?",
+        "ScrollRestoration and Navigation UX": "What does ScrollRestoration do?"
+      },
+      "criteria": {
+        "Largest Contentful Paint and SSR": {
+          "id": "ssr-lcp",
+          "evidence": [
+            {
+              "id": "html",
+              "text": "Remix sends complete HTML with data on the first request."
+            },
+            {
+              "id": "fast",
+              "text": "The main content appears without waiting for JavaScript."
+            },
+            {
+              "id": "effects",
+              "text": "Fetching data in effects delays content until the browser runs JavaScript."
+            }
+          ],
+          "notEnough": [
+            "Only saying SSR is faster."
+          ],
+          "misconceptions": []
+        },
+        "ScrollRestoration and Navigation UX": {
+          "id": "scroll-restoration",
+          "evidence": [
+            {
+              "id": "restore",
+              "text": "It restores scroll position on back and forward navigation."
+            },
+            {
+              "id": "new-page",
+              "text": "New pages start at the top."
+            },
+            {
+              "id": "ux",
+              "text": "Without it, users lose their place when going back."
+            }
+          ],
+          "notEnough": [
+            "Only saying it handles scrolling."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Image and Asset Optimization",
+      "question": "Your logo is re-downloaded on every visit and mobile users download huge desktop images. Explain how you would serve assets and images.",
+      "followUps": {
+        "Static Assets in the public Directory": "How should static assets be served for good caching?",
+        "Responsive Images with srcset": "How do srcset and sizes help mobile users?"
+      },
+      "criteria": {
+        "Static Assets in the public Directory": {
+          "id": "public-assets",
+          "evidence": [
+            {
+              "id": "public",
+              "text": "Files in public are served as-is."
+            },
+            {
+              "id": "fingerprint",
+              "text": "Assets imported through the build get fingerprinted names."
+            },
+            {
+              "id": "cache",
+              "text": "Fingerprinted files can be cached for a long time and updated by changing names."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use the public folder."
+          ],
+          "misconceptions": []
+        },
+        "Responsive Images with srcset": {
+          "id": "srcset",
+          "evidence": [
+            {
+              "id": "options",
+              "text": "srcset lists several image sizes."
+            },
+            {
+              "id": "sizes",
+              "text": "sizes tells the browser how wide the image will be shown."
+            },
+            {
+              "id": "choose",
+              "text": "The browser picks the smallest suitable image, saving bandwidth and improving LCP."
+            }
+          ],
+          "notEnough": [
+            "Only saying srcset is responsive."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

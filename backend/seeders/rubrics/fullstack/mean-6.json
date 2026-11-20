@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "mean-6",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "MongoDB document model and schema design",
+      "question": "You are designing MongoDB documents for tasks, their comments and the users assigned to them. Explain how you would structure the data and what MongoDB stores beyond plain JSON.",
+      "followUps": {
+        "Embedding versus referencing: choosing the right data model": "When would you embed comments inside a task and when reference users by id?",
+        "BSON types: ObjectId, Date, and Int64 beyond JSON": "What types does BSON add, and what is special about ObjectId?"
+      },
+      "criteria": {
+        "Embedding versus referencing: choosing the right data model": {
+          "id": "embed-vs-reference",
+          "evidence": [
+            {
+              "id": "embed",
+              "text": "Embed data that is always read with its parent and stays small, like a task's comments."
+            },
+            {
+              "id": "reference",
+              "text": "Reference data that is large, shared or updated on its own, like users."
+            },
+            {
+              "id": "growth",
+              "text": "Embedding data that grows without limit can hit document size limits and slow writes."
+            }
+          ],
+          "notEnough": [
+            "Only saying MongoDB is flexible."
+          ],
+          "misconceptions": []
+        },
+        "BSON types: ObjectId, Date, and Int64 beyond JSON": {
+          "id": "bson-types",
+          "evidence": [
+            {
+              "id": "types",
+              "text": "BSON adds types JSON lacks, such as ObjectId, dates and specific integer sizes."
+            },
+            {
+              "id": "objectid",
+              "text": "An ObjectId includes a timestamp, so ids roughly sort by creation time."
+            },
+            {
+              "id": "dates",
+              "text": "Storing dates as real date types allows correct sorting and range queries."
+            }
+          ],
+          "notEnough": [
+            "Only saying BSON is binary JSON."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Mongoose schema validation and middleware hooks",
+      "question": "Tasks are saved with missing titles, and user passwords must always be hashed before saving no matter which code saves them. Explain how Mongoose schemas and hooks handle this.",
+      "followUps": {
+        "Schema types, validators, required, and default values": "What do required, default and validators in a Mongoose schema do?",
+        "Pre/post hooks for cross-cutting concerns like password hashing": "How would a pre-save hook hash passwords, and why check isModified?"
+      },
+      "criteria": {
+        "Schema types, validators, required, and default values": {
+          "id": "schema-validation",
+          "evidence": [
+            {
+              "id": "shape",
+              "text": "The schema defines each field's type, whether it is required and its default."
+            },
+            {
+              "id": "before-save",
+              "text": "Mongoose validates documents before saving them."
+            },
+            {
+              "id": "app-level",
+              "text": "This adds application-level rules on top of MongoDB, which accepts any document by default."
+            }
+          ],
+          "notEnough": [
+            "Only saying schemas define structure."
+          ],
+          "misconceptions": []
+        },
+        "Pre/post hooks for cross-cutting concerns like password hashing": {
+          "id": "pre-post-hooks",
+          "evidence": [
+            {
+              "id": "hook",
+              "text": "A pre-save hook runs before a document is saved."
+            },
+            {
+              "id": "hash",
+              "text": "It can hash the password automatically so no code path forgets."
+            },
+            {
+              "id": "modified",
+              "text": "Checking that the password was modified avoids hashing an already-hashed value again."
+            }
+          ],
+          "notEnough": [
+            "Only saying hooks run before save."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "CRUD and querying with Mongoose",
+      "question": "You are writing endpoints that list open tasks due today, update a task and return the updated version. Explain the Mongoose methods and query operators you would use.",
+      "followUps": {
+        "Model.find(), findById(), create(), findByIdAndUpdate()": "Why pass new and runValidators to findByIdAndUpdate?",
+        "Query operators: $in, $gte, $regex, and $or for filtering": "How would you find tasks with several allowed statuses that are due before a date?"
+      },
+      "criteria": {
+        "Model.find(), findById(), create(), findByIdAndUpdate()": {
+          "id": "crud-methods",
+          "evidence": [
+            {
+              "id": "methods",
+              "text": "find, findById, create and findByIdAndUpdate cover most create, read and update work."
+            },
+            {
+              "id": "new",
+              "text": "new returns the updated document instead of the old one."
+            },
+            {
+              "id": "validators",
+              "text": "runValidators applies schema validation on updates, which is off by default."
+            }
+          ],
+          "notEnough": [
+            "Only listing the methods."
+          ],
+          "misconceptions": []
+        },
+        "Query operators: $in, $gte, $regex, and $or for filtering": {
+          "id": "query-operators",
+          "evidence": [
+            {
+              "id": "in",
+              "text": "$in matches any value from a list, such as several statuses."
+            },
+            {
+              "id": "comparison",
+              "text": "Comparison operators like $lte filter by ranges such as due dates."
+            },
+            {
+              "id": "or-regex",
+              "text": "$or combines alternative conditions and $regex matches text patterns."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use find."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Connections, indexes, and population",
+      "question": "Your API connects to MongoDB on every request, slows down as tasks grow, and returns assignee ids instead of names. Explain how you would manage connections, indexes and related data.",
+      "followUps": {
+        "mongoose.connect with connection event handling": "How should a Node app connect to MongoDB?",
+        "Mongoose populate for resolving ObjectId references": "What does populate do, and what does it cost?"
+      },
+      "criteria": {
+        "mongoose.connect with connection event handling": {
+          "id": "mongoose-connect",
+          "evidence": [
+            {
+              "id": "once",
+              "text": "Connect once at startup and reuse the connection pool."
+            },
+            {
+              "id": "events",
+              "text": "Listen for connection and error events to log and react to problems."
+            },
+            {
+              "id": "timeouts",
+              "text": "Set sensible timeouts so a missing database fails clearly instead of hanging."
+            }
+          ],
+          "notEnough": [
+            "Only saying you call mongoose.connect."
+          ],
+          "misconceptions": []
+        },
+        "Mongoose populate for resolving ObjectId references": {
+          "id": "populate",
+          "evidence": [
+            {
+              "id": "replace",
+              "text": "populate replaces stored ids with fields from the referenced documents."
+            },
+            {
+              "id": "select-fields",
+              "text": "You can choose which fields to bring in, like name and email."
+            },
+            {
+              "id": "extra-query",
+              "text": "It runs extra queries behind the scenes, so populating large lists can be slow."
+            }
+          ],
+          "notEnough": [
+            "Only saying populate joins collections."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

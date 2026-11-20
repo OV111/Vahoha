@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "laravel-vue-8",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Laravel Queues",
+      "question": "Emails seem to send instantly in production, but requests have become slow, and a job that keeps failing is retried forever. Explain how Laravel queues should be set up.",
+      "followUps": {
+        "Queue Drivers and the Sync Driver Trap": "Why is the sync queue driver a trap in production?",
+        "Job Retries, Failures, and the Dead Letter Queue": "How should retries and failures be configured?"
+      },
+      "criteria": {
+        "Queue Drivers and the Sync Driver Trap": {
+          "id": "queue-drivers",
+          "evidence": [
+            {
+              "id": "backends",
+              "text": "Laravel supports queue backends like Redis, SQS and the database."
+            },
+            {
+              "id": "sync",
+              "text": "The sync driver runs jobs immediately in the same request."
+            },
+            {
+              "id": "trap",
+              "text": "In production that makes requests wait for every job, defeating the purpose of queues."
+            }
+          ],
+          "notEnough": [
+            "Only listing drivers."
+          ],
+          "misconceptions": []
+        },
+        "Job Retries, Failures, and the Dead Letter Queue": {
+          "id": "retries-failures",
+          "evidence": [
+            {
+              "id": "tries",
+              "text": "Jobs set a maximum number of attempts."
+            },
+            {
+              "id": "backoff",
+              "text": "Backoff adds increasing waits between attempts."
+            },
+            {
+              "id": "failed",
+              "text": "Jobs that still fail go to the failed jobs table for inspection and retry."
+            }
+          ],
+          "notEnough": [
+            "Only saying jobs retry."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Redis Integration",
+      "question": "Clearing the cache in production also wiped out all pending jobs, and you cannot see why the queue is backing up. Explain how you would configure Redis and monitor queues.",
+      "followUps": {
+        "Redis for Caching vs Queuing — Separate Databases": "Why did clearing the cache destroy queued jobs?",
+        "Laravel Horizon for Queue Monitoring": "What does Horizon give you?"
+      },
+      "criteria": {
+        "Redis for Caching vs Queuing — Separate Databases": {
+          "id": "redis-separate",
+          "evidence": [
+            {
+              "id": "shared-db",
+              "text": "Cache and queue both used the same Redis database by default."
+            },
+            {
+              "id": "flush",
+              "text": "Flushing the cache cleared everything in that database, including jobs."
+            },
+            {
+              "id": "separate",
+              "text": "Using separate Redis databases or connections keeps them apart."
+            }
+          ],
+          "notEnough": [
+            "Only saying to use Redis."
+          ],
+          "misconceptions": []
+        },
+        "Laravel Horizon for Queue Monitoring": {
+          "id": "horizon",
+          "evidence": [
+            {
+              "id": "dashboard",
+              "text": "Horizon is a dashboard for Redis queues."
+            },
+            {
+              "id": "workers",
+              "text": "It manages worker counts per queue from configuration."
+            },
+            {
+              "id": "metrics",
+              "text": "It shows throughput, wait times and failed jobs, and can alert."
+            }
+          ],
+          "notEnough": [
+            "Only saying it monitors queues."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Laravel Mail",
+      "question": "You need an order confirmation email that looks good, is easy to preview, and does not slow down checkout. Explain how Laravel Mail handles this.",
+      "followUps": {
+        "Mailable Classes and Markdown Templates": "What does a Mailable class contain?",
+        "Queueing Emails and Mail Drivers": "How does queueing emails speed up checkout?"
+      },
+      "criteria": {
+        "Mailable Classes and Markdown Templates": {
+          "id": "mailables",
+          "evidence": [
+            {
+              "id": "object",
+              "text": "A Mailable holds the subject, recipients and template data."
+            },
+            {
+              "id": "markdown",
+              "text": "Markdown templates give consistent, responsive email layouts."
+            },
+            {
+              "id": "preview-test",
+              "text": "Mailables can be previewed in the browser and tested."
+            }
+          ],
+          "notEnough": [
+            "Only saying Mailables send email."
+          ],
+          "misconceptions": []
+        },
+        "Queueing Emails and Mail Drivers": {
+          "id": "queued-mail",
+          "evidence": [
+            {
+              "id": "should-queue",
+              "text": "Implementing ShouldQueue sends the email from a queue worker."
+            },
+            {
+              "id": "no-wait",
+              "text": "The request does not wait for the mail server."
+            },
+            {
+              "id": "drivers",
+              "text": "Mail drivers like SMTP or an API service are configured separately."
+            }
+          ],
+          "notEnough": [
+            "Only saying you queue emails."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Laravel Notifications",
+      "question": "When an order ships, the customer should get an email, an in-app notification with an unread badge and maybe a text. Explain how Laravel notifications handle this.",
+      "followUps": {
+        "Multi-Channel Notifications": "How does one notification class send through several channels?",
+        "Database Notifications and Read State": "How do database notifications support an unread count?"
+      },
+      "criteria": {
+        "Multi-Channel Notifications": {
+          "id": "multi-channel",
+          "evidence": [
+            {
+              "id": "via",
+              "text": "The via method lists channels like mail, database or SMS."
+            },
+            {
+              "id": "per-channel",
+              "text": "The class has a method for each channel's message."
+            },
+            {
+              "id": "one-place",
+              "text": "All channels for that event live in one class."
+            }
+          ],
+          "notEnough": [
+            "Only saying notifications use channels."
+          ],
+          "misconceptions": []
+        },
+        "Database Notifications and Read State": {
+          "id": "database-notifications",
+          "evidence": [
+            {
+              "id": "table",
+              "text": "Database notifications are stored in a notifications table."
+            },
+            {
+              "id": "read-at",
+              "text": "A read_at timestamp marks whether each one was read."
+            },
+            {
+              "id": "count",
+              "text": "Counting rows without read_at gives the unread badge."
+            }
+          ],
+          "notEnough": [
+            "Only saying notifications are stored."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

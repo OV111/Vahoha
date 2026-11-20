@@ -1,0 +1,260 @@
+{
+  "path": "fullstack",
+  "layer": "next-fullstack-8",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Advanced Caching Theory",
+      "question": "Three server components on one page fetch the same user, a page shows stale posts after an edit, and you want to refresh only post-related data. Explain how Next.js caching works at this level.",
+      "followUps": {
+        "Request memoization within a single render pass": "Why don't three identical fetches in one render cause three requests?",
+        "Data Cache vs Full Route Cache differences": "What is the difference between the Data Cache and the Full Route Cache?",
+        "Tag-based cache invalidation for fine control": "How do cache tags let you refresh just post data?"
+      },
+      "criteria": {
+        "Request memoization within a single render pass": {
+          "id": "request-memoization",
+          "evidence": [
+            {
+              "id": "dedupe",
+              "text": "Identical fetch calls during one server render are deduplicated."
+            },
+            {
+              "id": "per-render",
+              "text": "This only lasts for that single render."
+            },
+            {
+              "id": "colocate",
+              "text": "Each component can fetch what it needs without passing data down."
+            }
+          ],
+          "notEnough": [
+            "Only saying fetches are cached."
+          ],
+          "misconceptions": []
+        },
+        "Data Cache vs Full Route Cache differences": {
+          "id": "data-vs-route-cache",
+          "evidence": [
+            {
+              "id": "data",
+              "text": "The Data Cache stores fetch results between requests."
+            },
+            {
+              "id": "route",
+              "text": "The Full Route Cache stores the rendered HTML of static routes."
+            },
+            {
+              "id": "which",
+              "text": "Knowing which one is stale tells you what to revalidate."
+            }
+          ],
+          "notEnough": [
+            "Only listing the caches."
+          ],
+          "misconceptions": []
+        },
+        "Tag-based cache invalidation for fine control": {
+          "id": "tag-invalidation",
+          "evidence": [
+            {
+              "id": "tag",
+              "text": "fetch calls can be tagged, such as with posts."
+            },
+            {
+              "id": "revalidate-tag",
+              "text": "revalidateTag clears only entries with that tag."
+            },
+            {
+              "id": "targeted",
+              "text": "This avoids clearing unrelated cached data."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use tags."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Runtime Considerations",
+      "question": "One route must use a Node library that reads files, another should run close to users worldwide, and a stock price page must never be cached. Explain the runtime and caching choices.",
+      "followUps": {
+        "Edge runtime vs Node.js runtime trade-offs": "When would you choose the edge runtime over Node.js?",
+        "Avoiding stale data with cache: no-store": "What does cache no-store do and when do you need it?"
+      },
+      "criteria": {
+        "Edge runtime vs Node.js runtime trade-offs": {
+          "id": "edge-vs-node",
+          "evidence": [
+            {
+              "id": "edge",
+              "text": "The edge runtime starts quickly and runs close to users."
+            },
+            {
+              "id": "limits",
+              "text": "It lacks many Node.js APIs, like the file system."
+            },
+            {
+              "id": "choice",
+              "text": "Routes needing Node libraries use the Node runtime; light, latency-sensitive ones can use the edge."
+            }
+          ],
+          "notEnough": [
+            "Only saying edge is faster."
+          ],
+          "misconceptions": []
+        },
+        "Avoiding stale data with cache: no-store": {
+          "id": "no-store",
+          "evidence": [
+            {
+              "id": "opt-out",
+              "text": "no-store skips the Data Cache for that fetch."
+            },
+            {
+              "id": "fresh",
+              "text": "Every request fetches fresh data."
+            },
+            {
+              "id": "when",
+              "text": "It suits data that must always be current, like prices or account balances."
+            }
+          ],
+          "notEnough": [
+            "Only saying it disables cache."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Client-Side Data Management",
+      "question": "A client-side dashboard widget needs live data, optimistic updates and a second query that depends on the first. Explain how you would use TanStack Query.",
+      "followUps": {
+        "TanStack Query for client-side server state": "Why use TanStack Query in client components alongside server components?",
+        "Optimistic updates with useMutation": "How does useMutation support optimistic updates?",
+        "Parallel and dependent queries with useQuery": "How do you make one query wait for another?"
+      },
+      "criteria": {
+        "TanStack Query for client-side server state": {
+          "id": "tanstack-query",
+          "evidence": [
+            {
+              "id": "client-state",
+              "text": "It manages server data in client components."
+            },
+            {
+              "id": "features",
+              "text": "It handles background refetching, stale time and invalidation."
+            },
+            {
+              "id": "complement",
+              "text": "Server components cover initial data; TanStack Query covers interactive, live client data."
+            }
+          ],
+          "notEnough": [
+            "Only saying it fetches data."
+          ],
+          "misconceptions": []
+        },
+        "Optimistic updates with useMutation": {
+          "id": "optimistic-mutation",
+          "evidence": [
+            {
+              "id": "onmutate",
+              "text": "onMutate applies the expected change to the cache before the request."
+            },
+            {
+              "id": "onerror",
+              "text": "onError rolls back to the saved previous value."
+            },
+            {
+              "id": "onsettled",
+              "text": "onSettled refetches to sync with the server."
+            }
+          ],
+          "notEnough": [
+            "Only saying it updates the UI early."
+          ],
+          "misconceptions": []
+        },
+        "Parallel and dependent queries with useQuery": {
+          "id": "dependent-queries",
+          "evidence": [
+            {
+              "id": "parallel",
+              "text": "Several useQuery calls run in parallel by default."
+            },
+            {
+              "id": "enabled",
+              "text": "The enabled option holds a query until its input is ready."
+            },
+            {
+              "id": "example",
+              "text": "For example, a user's projects query waits until the user id is known."
+            }
+          ],
+          "notEnough": [
+            "Only saying queries can depend on each other."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "ISR and On-demand Revalidation",
+      "question": "Your blog pages are static, but editors want new posts live within a minute or instantly after publishing. Explain how ISR and on-demand revalidation work.",
+      "followUps": {
+        "Incremental Static Regeneration with revalidate option": "What does exporting revalidate = 60 from a page do?",
+        "On-demand revalidation via webhook route handler": "How would a CMS webhook refresh pages instantly?"
+      },
+      "criteria": {
+        "Incremental Static Regeneration with revalidate option": {
+          "id": "isr",
+          "evidence": [
+            {
+              "id": "regenerate",
+              "text": "The page is regenerated at most every 60 seconds."
+            },
+            {
+              "id": "serve-stale",
+              "text": "Visitors get the cached page while a new one is built in the background."
+            },
+            {
+              "id": "benefit",
+              "text": "This gives static speed with near-real-time freshness."
+            }
+          ],
+          "notEnough": [
+            "Only saying ISR updates pages."
+          ],
+          "misconceptions": []
+        },
+        "On-demand revalidation via webhook route handler": {
+          "id": "on-demand-webhook",
+          "evidence": [
+            {
+              "id": "route",
+              "text": "A route handler receives the CMS webhook."
+            },
+            {
+              "id": "secret",
+              "text": "It checks a secret so only the CMS can trigger it."
+            },
+            {
+              "id": "revalidate",
+              "text": "It calls revalidatePath or revalidateTag to refresh the affected pages without redeploying."
+            }
+          ],
+          "notEnough": [
+            "Only saying the webhook triggers revalidation."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

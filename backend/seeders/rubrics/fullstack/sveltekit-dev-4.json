@@ -1,0 +1,243 @@
+{
+  "path": "fullstack",
+  "layer": "sveltekit-dev-4",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Load Function Concepts",
+      "question": "Your post page needs data from the database and from a public API. Explain how load functions work and where each kind should run.",
+      "followUps": {
+        "Page and layout load functions explained": "What does a load function return, and how does the page receive it?",
+        "Server-only vs universal load distinction": "What is the difference between +page.server.ts and +page.ts?",
+        "Type-safe data with generated PageData types": "How do generated PageData types help?"
+      },
+      "criteria": {
+        "Page and layout load functions explained": {
+          "id": "load-functions",
+          "evidence": [
+            {
+              "id": "before",
+              "text": "A load function fetches data before the page renders."
+            },
+            {
+              "id": "data",
+              "text": "Its returned object becomes the page's data prop."
+            },
+            {
+              "id": "layouts",
+              "text": "Layouts can have load functions too, and their data is available to child pages."
+            }
+          ],
+          "notEnough": [
+            "Only saying load fetches data."
+          ],
+          "misconceptions": []
+        },
+        "Server-only vs universal load distinction": {
+          "id": "server-vs-universal",
+          "evidence": [
+            {
+              "id": "server",
+              "text": "+page.server.ts runs only on the server."
+            },
+            {
+              "id": "universal",
+              "text": "+page.ts runs on the server for the first load and in the browser after that."
+            },
+            {
+              "id": "secrets",
+              "text": "Database access and secrets belong only in server loads."
+            }
+          ],
+          "notEnough": [
+            "Only saying one runs on the server."
+          ],
+          "misconceptions": [
+            {
+              "id": "universal-secret",
+              "text": "Says it is safe to use secret keys in +page.ts."
+            }
+          ]
+        },
+        "Type-safe data with generated PageData types": {
+          "id": "pagedata-types",
+          "evidence": [
+            {
+              "id": "generated",
+              "text": "SvelteKit generates types for each route."
+            },
+            {
+              "id": "match",
+              "text": "PageData matches what the load function returns."
+            },
+            {
+              "id": "errors",
+              "text": "Using it catches mismatches between load data and the page at compile time."
+            }
+          ],
+          "notEnough": [
+            "Only saying SvelteKit has types."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Error and Redirect Handling",
+      "question": "A missing post should show a 404, signed-out users should go to login, and slow comments should not hold up the page. Explain error, redirect and streaming in load functions.",
+      "followUps": {
+        "Throwing error and redirect inside load functions": "How do error() and redirect() work inside load?",
+        "Streaming data with deferred promises": "How does returning an unawaited promise stream data?"
+      },
+      "criteria": {
+        "Throwing error and redirect inside load functions": {
+          "id": "error-redirect",
+          "evidence": [
+            {
+              "id": "throw",
+              "text": "error() and redirect() are thrown to stop loading."
+            },
+            {
+              "id": "error-page",
+              "text": "error() shows the nearest error page with the given status."
+            },
+            {
+              "id": "redirect",
+              "text": "redirect() sends the user to another URL."
+            }
+          ],
+          "notEnough": [
+            "Only listing the helpers."
+          ],
+          "misconceptions": []
+        },
+        "Streaming data with deferred promises": {
+          "id": "streaming",
+          "evidence": [
+            {
+              "id": "promise",
+              "text": "A load can return a promise for slow data without awaiting it."
+            },
+            {
+              "id": "html-first",
+              "text": "The page HTML is sent right away."
+            },
+            {
+              "id": "await-block",
+              "text": "The page shows the data with an await block when the promise resolves."
+            }
+          ],
+          "notEnough": [
+            "Only saying data streams."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Params and Fetch",
+      "question": "Your load function needs the post slug, the user's cookies and data from your own API endpoints. Explain what the load event gives you.",
+      "followUps": {
+        "Accessing route params inside the load event": "What does the load event contain?",
+        "Using the load event fetch helper safely": "Why use the fetch passed to load instead of the global fetch?"
+      },
+      "criteria": {
+        "Accessing route params inside the load event": {
+          "id": "load-event",
+          "evidence": [
+            {
+              "id": "params",
+              "text": "params holds the dynamic route segments."
+            },
+            {
+              "id": "url",
+              "text": "url gives the full URL, including query parameters."
+            },
+            {
+              "id": "cookies",
+              "text": "Server loads also get cookies and other request data."
+            }
+          ],
+          "notEnough": [
+            "Only saying load gets params."
+          ],
+          "misconceptions": []
+        },
+        "Using the load event fetch helper safely": {
+          "id": "load-fetch",
+          "evidence": [
+            {
+              "id": "cookies",
+              "text": "On the server it forwards the user's cookies."
+            },
+            {
+              "id": "relative",
+              "text": "It can call your own endpoints with relative URLs."
+            },
+            {
+              "id": "efficient",
+              "text": "SvelteKit can reuse server responses during hydration instead of fetching again."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a better fetch."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Invalidation and Dependencies",
+      "question": "After adding a comment, the comment list does not update until you refresh. Explain how to re-run load functions.",
+      "followUps": {
+        "invalidate and invalidateAll for re-running loads": "What do invalidate and invalidateAll do?",
+        "depends() for manual load dependency tracking": "What does depends() add?"
+      },
+      "criteria": {
+        "invalidate and invalidateAll for re-running loads": {
+          "id": "invalidate",
+          "evidence": [
+            {
+              "id": "rerun",
+              "text": "invalidate re-runs load functions that depend on a given URL."
+            },
+            {
+              "id": "all",
+              "text": "invalidateAll re-runs every active load function."
+            },
+            {
+              "id": "no-navigation",
+              "text": "Data refreshes without a full page navigation."
+            }
+          ],
+          "notEnough": [
+            "Only saying they refresh data."
+          ],
+          "misconceptions": []
+        },
+        "depends() for manual load dependency tracking": {
+          "id": "depends",
+          "evidence": [
+            {
+              "id": "custom",
+              "text": "depends registers a custom key a load function depends on."
+            },
+            {
+              "id": "targeted",
+              "text": "Calling invalidate with that key re-runs only those loads."
+            },
+            {
+              "id": "precise",
+              "text": "This refreshes exactly the data affected by a change."
+            }
+          ],
+          "notEnough": [
+            "Only saying it tracks dependencies."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,226 @@
+{
+  "path": "fullstack",
+  "layer": "mean-8",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "JWT auth security: token structure and storage",
+      "question": "Your MEAN app uses JWTs, and a teammate wants to put the user's role and email in the token and store it in localStorage. Explain what is inside a JWT and where it should be stored.",
+      "followUps": {
+        "JWT header.payload.signature: what each part contains": "What do the three parts of a JWT contain, and can users read the payload?",
+        "Token storage: why memory > localStorage > HTTP-only cookie trade-offs": "What are the trade-offs between memory, localStorage and HttpOnly cookies for a token?"
+      },
+      "criteria": {
+        "JWT header.payload.signature: what each part contains": {
+          "id": "jwt-structure",
+          "evidence": [
+            {
+              "id": "parts",
+              "text": "A JWT has a header with the algorithm, a payload with claims and a signature."
+            },
+            {
+              "id": "signature",
+              "text": "The signature proves the token was not changed, using the server's secret."
+            },
+            {
+              "id": "readable",
+              "text": "The payload is only encoded, not encrypted, so anyone can read it and it must not hold secrets."
+            }
+          ],
+          "notEnough": [
+            "Only listing the three parts."
+          ],
+          "misconceptions": [
+            {
+              "id": "encrypted",
+              "text": "Says the JWT payload is encrypted."
+            }
+          ]
+        },
+        "Token storage: why memory > localStorage > HTTP-only cookie trade-offs": {
+          "id": "token-storage",
+          "evidence": [
+            {
+              "id": "memory",
+              "text": "Keeping the token in memory is safest from XSS but it is lost on page refresh."
+            },
+            {
+              "id": "localstorage",
+              "text": "localStorage survives refreshes but any script, including injected ones, can read it."
+            },
+            {
+              "id": "cookie",
+              "text": "HttpOnly cookies cannot be read by scripts but need CSRF protection."
+            }
+          ],
+          "notEnough": [
+            "Only saying localStorage is insecure."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Angular route guards for client-side protection",
+      "question": "Signed-out users can open the /tasks page in your Angular app, and a teammate says a route guard makes the API secure. Explain what guards do and what they do not do.",
+      "followUps": {
+        "CanActivate guard: redirecting unauthenticated users at the router level": "How does a CanActivate guard redirect a signed-out user?",
+        "CanActivate is client-side only — server routes must always verify tokens": "Why isn't a route guard enough to protect your data?"
+      },
+      "criteria": {
+        "CanActivate guard: redirecting unauthenticated users at the router level": {
+          "id": "canactivate-redirect",
+          "evidence": [
+            {
+              "id": "check",
+              "text": "The guard checks the auth state before navigation."
+            },
+            {
+              "id": "allow",
+              "text": "It returns true to allow navigation."
+            },
+            {
+              "id": "redirect",
+              "text": "Otherwise it returns a URL tree that redirects to the login page."
+            }
+          ],
+          "notEnough": [
+            "Only saying guards protect routes."
+          ],
+          "misconceptions": []
+        },
+        "CanActivate is client-side only — server routes must always verify tokens": {
+          "id": "guards-client-only",
+          "evidence": [
+            {
+              "id": "bypass",
+              "text": "Guards run in the browser, so anyone can bypass them or call the API directly."
+            },
+            {
+              "id": "server",
+              "text": "Every API endpoint must verify the token itself."
+            },
+            {
+              "id": "ux",
+              "text": "Guards improve the user experience; security comes from the server."
+            }
+          ],
+          "notEnough": [
+            "Only saying the server must check too."
+          ],
+          "misconceptions": [
+            {
+              "id": "guards-secure",
+              "text": "Says Angular route guards stop unauthorized users from getting data."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Implementing JWT auth on the Express backend",
+      "question": "You are writing the login endpoint and the auth middleware for your Express API. Explain how tokens are created and checked on each request.",
+      "followUps": {
+        "Signing and verifying JWTs with jsonwebtoken": "What does jwt.sign create and why give access tokens a short expiry?",
+        "Auth middleware: extract Bearer token and attach user to req": "What does the auth middleware do with the Authorization header?"
+      },
+      "criteria": {
+        "Signing and verifying JWTs with jsonwebtoken": {
+          "id": "sign-verify",
+          "evidence": [
+            {
+              "id": "sign",
+              "text": "jwt.sign creates a token from a payload, a secret and an expiry."
+            },
+            {
+              "id": "verify",
+              "text": "jwt.verify checks the signature and expiry and returns the payload."
+            },
+            {
+              "id": "short",
+              "text": "A short expiry limits how long a stolen token is useful."
+            }
+          ],
+          "notEnough": [
+            "Only saying jsonwebtoken creates tokens."
+          ],
+          "misconceptions": []
+        },
+        "Auth middleware: extract Bearer token and attach user to req": {
+          "id": "auth-middleware",
+          "evidence": [
+            {
+              "id": "extract",
+              "text": "It reads the bearer token from the Authorization header."
+            },
+            {
+              "id": "verify-attach",
+              "text": "It verifies the token and attaches the user to the request."
+            },
+            {
+              "id": "fail",
+              "text": "If verification fails, it returns an unauthorized error through the error middleware."
+            }
+          ],
+          "notEnough": [
+            "Only saying it checks the token."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Angular auth service and HTTP interceptor",
+      "question": "On the Angular side, the navbar must update instantly on login and logout, and every API call needs the token. Explain how you would build the auth service and interceptor.",
+      "followUps": {
+        "Auth service: storing token, exposing currentUser$, and signOut": "How would an auth service let the whole app react to login and logout?",
+        "JWT interceptor: injecting the Authorization header on every request": "How does the interceptor attach the token?"
+      },
+      "criteria": {
+        "Auth service: storing token, exposing currentUser$, and signOut": {
+          "id": "auth-service-state",
+          "evidence": [
+            {
+              "id": "subject",
+              "text": "The service keeps the token or user in a BehaviorSubject."
+            },
+            {
+              "id": "derived",
+              "text": "It exposes Observables like isAuthenticated derived from that state."
+            },
+            {
+              "id": "signout",
+              "text": "Sign out clears the state and navigates to login, and every subscriber updates."
+            }
+          ],
+          "notEnough": [
+            "Only saying the service stores the token."
+          ],
+          "misconceptions": []
+        },
+        "JWT interceptor: injecting the Authorization header on every request": {
+          "id": "jwt-interceptor",
+          "evidence": [
+            {
+              "id": "read",
+              "text": "The interceptor reads the current token from the auth service."
+            },
+            {
+              "id": "clone",
+              "text": "It clones the request with the Authorization header set."
+            },
+            {
+              "id": "skip",
+              "text": "Requests without a token, or to other domains, are passed through unchanged."
+            }
+          ],
+          "notEnough": [
+            "Only saying it adds a header."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

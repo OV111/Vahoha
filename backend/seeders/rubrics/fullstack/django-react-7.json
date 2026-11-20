@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "django-react-7",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Token Authentication Concepts",
+      "question": "You are adding login and registration to your Django REST API for the React app. Explain the token options and how you would protect the API.",
+      "followUps": {
+        "Token vs JWT Authentication": "How does DRF's built-in token auth differ from JWT?",
+        "Login and Registration API Endpoints": "What should the login and registration endpoints do?",
+        "Protecting API Views with Permissions": "How do you require authentication across the whole API?"
+      },
+      "criteria": {
+        "Token vs JWT Authentication": {
+          "id": "token-vs-jwt",
+          "evidence": [
+            {
+              "id": "db-token",
+              "text": "DRF's built-in tokens are stored in the database and looked up on each request."
+            },
+            {
+              "id": "jwt",
+              "text": "JWTs carry their data and are verified by signature without a lookup."
+            },
+            {
+              "id": "simplejwt",
+              "text": "Simple JWT is the common library for JWT with DRF."
+            }
+          ],
+          "notEnough": [
+            "Only saying both are tokens."
+          ],
+          "misconceptions": []
+        },
+        "Login and Registration API Endpoints": {
+          "id": "login-register",
+          "evidence": [
+            {
+              "id": "login",
+              "text": "Login checks the credentials and returns a token."
+            },
+            {
+              "id": "register",
+              "text": "Registration creates a user, often returning a token for immediate login."
+            },
+            {
+              "id": "validate",
+              "text": "Serializers validate input, and passwords are hashed by Django's user model."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add endpoints."
+          ],
+          "misconceptions": []
+        },
+        "Protecting API Views with Permissions": {
+          "id": "protect-views",
+          "evidence": [
+            {
+              "id": "defaults",
+              "text": "Default authentication and permission classes are set in DRF settings."
+            },
+            {
+              "id": "global",
+              "text": "This protects every view by default."
+            },
+            {
+              "id": "override",
+              "text": "Individual views can override the defaults, for example to allow public reads."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add IsAuthenticated."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Token Lifecycle Management",
+      "question": "Your JWTs last 30 days, and when a user logs out their token still works. Explain how token lifetimes and logout should work.",
+      "followUps": {
+        "Access Tokens, Refresh Tokens, and Rotation": "Why use short access tokens with refresh tokens?",
+        "Logout and Token Blacklisting": "How can you make logout actually invalidate a JWT session?"
+      },
+      "criteria": {
+        "Access Tokens, Refresh Tokens, and Rotation": {
+          "id": "access-refresh",
+          "evidence": [
+            {
+              "id": "short",
+              "text": "Short-lived access tokens limit damage if stolen."
+            },
+            {
+              "id": "refresh",
+              "text": "A refresh token gets new access tokens without logging in again."
+            },
+            {
+              "id": "rotate",
+              "text": "Rotating refresh tokens issues a new one each time, making stolen ones less useful."
+            }
+          ],
+          "notEnough": [
+            "Only saying refresh tokens refresh."
+          ],
+          "misconceptions": []
+        },
+        "Logout and Token Blacklisting": {
+          "id": "blacklisting",
+          "evidence": [
+            {
+              "id": "valid-until",
+              "text": "A JWT stays valid until it expires."
+            },
+            {
+              "id": "blacklist",
+              "text": "Storing invalidated refresh tokens in a blacklist stops them being used."
+            },
+            {
+              "id": "logout",
+              "text": "On logout, the refresh token is blacklisted so no new access tokens can be made."
+            }
+          ],
+          "notEnough": [
+            "Only saying you delete the token."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "React Auth Implementation",
+      "question": "On the React side, you need to store the token and let the whole app know who is logged in. Explain your storage choice and how components access the user.",
+      "followUps": {
+        "Storing Tokens: localStorage vs Cookies": "What are the risks of storing the token in localStorage versus an HttpOnly cookie?",
+        "Auth Context and useContext Hook": "How does an AuthContext share the current user?"
+      },
+      "criteria": {
+        "Storing Tokens: localStorage vs Cookies": {
+          "id": "token-storage",
+          "evidence": [
+            {
+              "id": "localstorage",
+              "text": "localStorage is simple but any script, including injected ones, can read it."
+            },
+            {
+              "id": "cookie",
+              "text": "HttpOnly cookies cannot be read by JavaScript."
+            },
+            {
+              "id": "csrf",
+              "text": "Cookies are sent automatically, so they need CSRF protection."
+            }
+          ],
+          "notEnough": [
+            "Only saying localStorage is insecure."
+          ],
+          "misconceptions": []
+        },
+        "Auth Context and useContext Hook": {
+          "id": "auth-context",
+          "evidence": [
+            {
+              "id": "provider",
+              "text": "A context provider wraps the app and holds the user and token."
+            },
+            {
+              "id": "consume",
+              "text": "Components read it with useContext."
+            },
+            {
+              "id": "react",
+              "text": "They show or redirect based on whether a user is logged in."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use context."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Protected Routes and UX",
+      "question": "Signed-out users can open the dashboard, and when an access token expires users are kicked out mid-session. Explain how you would protect routes and refresh tokens.",
+      "followUps": {
+        "Protected Route Component Pattern": "How does a protected route component work in React Router?",
+        "Axios Interceptor for Token Refresh": "How would an Axios interceptor refresh an expired token without the user noticing?"
+      },
+      "criteria": {
+        "Protected Route Component Pattern": {
+          "id": "protected-route",
+          "evidence": [
+            {
+              "id": "check",
+              "text": "It checks the auth state before showing private routes."
+            },
+            {
+              "id": "redirect",
+              "text": "If the user is not logged in, it redirects to /login."
+            },
+            {
+              "id": "outlet",
+              "text": "With nested routes, it renders an Outlet for the protected pages."
+            }
+          ],
+          "notEnough": [
+            "Only saying it protects routes."
+          ],
+          "misconceptions": []
+        },
+        "Axios Interceptor for Token Refresh": {
+          "id": "refresh-interceptor",
+          "evidence": [
+            {
+              "id": "catch-401",
+              "text": "The interceptor catches 401 responses."
+            },
+            {
+              "id": "refresh",
+              "text": "It calls the refresh endpoint and stores the new token."
+            },
+            {
+              "id": "retry",
+              "text": "It retries the original request so the calling code never sees the error."
+            }
+          ],
+          "notEnough": [
+            "Only saying it refreshes the token."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "jamstack-3",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Next.js Rendering Strategies",
+      "question": "You are building a Next.js site with marketing pages, a blog updated a few times a day and product pages. Explain which rendering strategy you would use for each and how you would set page metadata.",
+      "followUps": {
+        "Static generation versus server-side rendering trade-offs": "When would you choose static generation over server-side rendering?",
+        "Incremental Static Regeneration revalidation concepts": "How does incremental static regeneration keep a static page up to date?",
+        "Metadata API and SEO configuration in Next.js App Router": "How do you give each blog post its own title and preview tags in the App Router?"
+      },
+      "criteria": {
+        "Static generation versus server-side rendering trade-offs": {
+          "id": "ssg-vs-ssr",
+          "evidence": [
+            {
+              "id": "ssg",
+              "text": "Static generation builds pages at deploy time, so they can be served from a CDN very fast."
+            },
+            {
+              "id": "ssr",
+              "text": "Server-side rendering builds pages on each request, so data is always current."
+            },
+            {
+              "id": "choice",
+              "text": "Pages that rarely change suit static generation, while personalised or real-time pages suit SSR."
+            }
+          ],
+          "notEnough": [
+            "Only spelling out the acronyms."
+          ],
+          "misconceptions": []
+        },
+        "Incremental Static Regeneration revalidation concepts": {
+          "id": "isr",
+          "evidence": [
+            {
+              "id": "revalidate",
+              "text": "A revalidate interval marks the page as stale after a set time."
+            },
+            {
+              "id": "background",
+              "text": "The next request still gets the cached page while a new one is built in the background."
+            },
+            {
+              "id": "no-rebuild",
+              "text": "This updates content without redeploying the whole site."
+            }
+          ],
+          "notEnough": [
+            "Only saying ISR updates static pages."
+          ],
+          "misconceptions": []
+        },
+        "Metadata API and SEO configuration in Next.js App Router": {
+          "id": "metadata-api",
+          "evidence": [
+            {
+              "id": "export",
+              "text": "A page or layout exports a metadata object or generateMetadata function."
+            },
+            {
+              "id": "dynamic",
+              "text": "generateMetadata can use the post's data to build its title and description."
+            },
+            {
+              "id": "og",
+              "text": "Open Graph tags set how the page looks when shared."
+            }
+          ],
+          "notEnough": [
+            "Only saying you set the title."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Routing and Page Architecture",
+      "question": "Your blog needs a page per post at /blog/my-post and a shared layout with loading and error states. Explain how Next.js routing builds this.",
+      "followUps": {
+        "File-system routing and dynamic route segments explained": "How does a file named [slug] become a page for every post?",
+        "App Router layouts, loading, and error boundaries": "What do layout, loading and error files do in the App Router?"
+      },
+      "criteria": {
+        "File-system routing and dynamic route segments explained": {
+          "id": "file-routing",
+          "evidence": [
+            {
+              "id": "files",
+              "text": "Files and folders map directly to URL routes."
+            },
+            {
+              "id": "brackets",
+              "text": "Square brackets mark a dynamic segment that matches any value."
+            },
+            {
+              "id": "params",
+              "text": "The matched value is passed to the page as a parameter."
+            }
+          ],
+          "notEnough": [
+            "Only saying Next.js uses file-based routing."
+          ],
+          "misconceptions": []
+        },
+        "App Router layouts, loading, and error boundaries": {
+          "id": "layouts-loading-error",
+          "evidence": [
+            {
+              "id": "layout",
+              "text": "Layouts wrap pages and stay in place when navigating between them."
+            },
+            {
+              "id": "loading",
+              "text": "loading.tsx shows a fallback while the route's content streams in."
+            },
+            {
+              "id": "error",
+              "text": "error.tsx catches errors in that route and shows a fallback instead of crashing the app."
+            }
+          ],
+          "notEnough": [
+            "Only listing the files."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Next.js Optimisation Features",
+      "question": "Your blog's images are huge, the page jumps as images and fonts load, and Lighthouse complains about font requests. Explain how Next.js's built-in components help.",
+      "followUps": {
+        "next/image component for automatic image optimisation": "What does next/image do automatically?",
+        "next/font for self-hosted Google Fonts without layout shift": "What does next/font change about loading web fonts?"
+      },
+      "criteria": {
+        "next/image component for automatic image optimisation": {
+          "id": "next-image",
+          "evidence": [
+            {
+              "id": "formats-sizes",
+              "text": "It serves modern formats and sizes that fit the screen."
+            },
+            {
+              "id": "lazy",
+              "text": "It lazy-loads images below the fold."
+            },
+            {
+              "id": "no-shift",
+              "text": "Required dimensions reserve space, which prevents layout shift."
+            }
+          ],
+          "notEnough": [
+            "Only saying it optimises images."
+          ],
+          "misconceptions": []
+        },
+        "next/font for self-hosted Google Fonts without layout shift": {
+          "id": "next-font",
+          "evidence": [
+            {
+              "id": "self-host",
+              "text": "Fonts are downloaded at build time and served from your own domain."
+            },
+            {
+              "id": "no-extra-request",
+              "text": "This removes requests to a third-party font server."
+            },
+            {
+              "id": "no-shift",
+              "text": "Fallback font settings reduce layout shift when the font loads."
+            }
+          ],
+          "notEnough": [
+            "Only saying it loads Google Fonts."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Data Fetching Patterns",
+      "question": "You fetch blog posts from a CMS and want pages to be fast but still show new posts within a few minutes. Explain how data fetching and caching work in the App Router.",
+      "followUps": {
+        "Server Components data fetching with async/await": "How does a server component fetch data without useEffect?",
+        "Caching and revalidation strategies with fetch options": "How would you make cached CMS data refresh every few minutes?"
+      },
+      "criteria": {
+        "Server Components data fetching with async/await": {
+          "id": "server-component-fetch",
+          "evidence": [
+            {
+              "id": "async",
+              "text": "Server components can be async and await data directly in the component."
+            },
+            {
+              "id": "server",
+              "text": "The fetch runs on the server, so no fetching code is sent to the browser."
+            },
+            {
+              "id": "secrets",
+              "text": "API keys used there stay on the server."
+            }
+          ],
+          "notEnough": [
+            "Only saying server components fetch on the server."
+          ],
+          "misconceptions": []
+        },
+        "Caching and revalidation strategies with fetch options": {
+          "id": "fetch-revalidate",
+          "evidence": [
+            {
+              "id": "cache",
+              "text": "Next.js can cache fetch results."
+            },
+            {
+              "id": "revalidate",
+              "text": "A revalidate time refreshes the cached data after that many seconds."
+            },
+            {
+              "id": "no-store",
+              "text": "Data that must always be fresh can opt out of caching."
+            }
+          ],
+          "notEnough": [
+            "Only saying Next.js caches fetch."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

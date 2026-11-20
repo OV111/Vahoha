@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "fullstack-engineer-5",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "HTTP and the browser's same-origin policy",
+      "question": "Your React app on one domain calls your API on another, and the browser blocks a DELETE request with a CORS error even though it works in Postman. Explain what is going on.",
+      "followUps": {
+        "Why the browser blocks cross-origin requests by default": "Why does the browser block the response but Postman does not?",
+        "Preflight OPTIONS requests and the CORS negotiation flow": "Why does a DELETE request trigger an extra OPTIONS request first?"
+      },
+      "criteria": {
+        "Why the browser blocks cross-origin requests by default": {
+          "id": "same-origin",
+          "evidence": [
+            {
+              "id": "policy",
+              "text": "Browsers stop scripts on one origin from reading responses from another origin by default."
+            },
+            {
+              "id": "opt-in",
+              "text": "CORS headers from the server tell the browser which origins are allowed."
+            },
+            {
+              "id": "browser-only",
+              "text": "Tools like Postman are not browsers, so they do not enforce this."
+            }
+          ],
+          "notEnough": [
+            "Only saying CORS is a security feature."
+          ],
+          "misconceptions": [
+            {
+              "id": "server-blocks",
+              "text": "Says the server blocks the request because of CORS."
+            }
+          ]
+        },
+        "Preflight OPTIONS requests and the CORS negotiation flow": {
+          "id": "preflight",
+          "evidence": [
+            {
+              "id": "non-simple",
+              "text": "Requests with methods like DELETE or custom headers are not simple requests."
+            },
+            {
+              "id": "preflight",
+              "text": "The browser first sends an OPTIONS request to ask the server what is allowed."
+            },
+            {
+              "id": "headers",
+              "text": "Only if the server's CORS headers allow it does the browser send the real request."
+            }
+          ],
+          "notEnough": [
+            "Only saying OPTIONS is a preflight."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "API client organization and loading states",
+      "question": "Fetch calls are scattered across your components, and the recipe list needs pages of 10 items with a total count. Explain how you would organize API calls and pagination.",
+      "followUps": {
+        "Centralizing API calls in a services layer": "Why put API calls in a services layer instead of inside components?",
+        "Pagination with query parameters: page, limit, and offset": "How would the client and server handle page and limit?"
+      },
+      "criteria": {
+        "Centralizing API calls in a services layer": {
+          "id": "services-layer",
+          "evidence": [
+            {
+              "id": "separate",
+              "text": "Components focus on UI while service files handle requests."
+            },
+            {
+              "id": "one-place",
+              "text": "Base URLs, headers and error handling live in one place."
+            },
+            {
+              "id": "change",
+              "text": "Swapping the HTTP client or adding auth headers does not require touching every component."
+            }
+          ],
+          "notEnough": [
+            "Only saying it keeps code organized."
+          ],
+          "misconceptions": []
+        },
+        "Pagination with query parameters: page, limit, and offset": {
+          "id": "pagination-params",
+          "evidence": [
+            {
+              "id": "params",
+              "text": "The client sends page and limit as query parameters."
+            },
+            {
+              "id": "offset",
+              "text": "The server calculates the offset from them, such as page minus one times limit."
+            },
+            {
+              "id": "total",
+              "text": "The server returns the total count so the client can show page controls."
+            }
+          ],
+          "notEnough": [
+            "Only saying you pass page numbers."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Connecting React to an Express API in development",
+      "question": "In development your React app on port 5173 calls Express on port 3000, and in production the frontend lives on its own domain and sends cookies. Explain how you would handle cross-origin calls in both cases.",
+      "followUps": {
+        "Vite proxy configuration to avoid CORS in development": "How does a Vite proxy remove CORS problems in development?",
+        "cors middleware on Express: origin allowlist and credentials": "How would you configure CORS on Express when the frontend sends cookies?"
+      },
+      "criteria": {
+        "Vite proxy configuration to avoid CORS in development": {
+          "id": "vite-proxy",
+          "evidence": [
+            {
+              "id": "forward",
+              "text": "The Vite dev server forwards requests on a path like /api to the Express server."
+            },
+            {
+              "id": "same-origin",
+              "text": "The browser only talks to Vite, so requests look same-origin."
+            },
+            {
+              "id": "dev-only",
+              "text": "This is a development convenience; production still needs proper configuration."
+            }
+          ],
+          "notEnough": [
+            "Only saying you configure a proxy."
+          ],
+          "misconceptions": []
+        },
+        "cors middleware on Express: origin allowlist and credentials": {
+          "id": "cors-middleware",
+          "evidence": [
+            {
+              "id": "allowlist",
+              "text": "List the exact frontend origins that are allowed."
+            },
+            {
+              "id": "credentials",
+              "text": "Enable credentials so cookies or auth headers are accepted."
+            },
+            {
+              "id": "no-wildcard",
+              "text": "A wildcard origin cannot be used with credentials and would allow any site."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add the cors package."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Managing async UI state: loading, error, and empty",
+      "question": "Your recipe page shows a blank area while loading, shows nothing when there are no recipes and the whole app goes white when one component throws. Explain how you would handle every state.",
+      "followUps": {
+        "Modeling all four fetch states: idle, loading, success, error": "How would you model the states of a data-fetching component?",
+        "Error boundaries for catching render errors in React subtrees": "What does an error boundary do and what can it not catch?"
+      },
+      "criteria": {
+        "Modeling all four fetch states: idle, loading, success, error": {
+          "id": "fetch-states",
+          "evidence": [
+            {
+              "id": "four",
+              "text": "A component can be idle, loading, successful or in error."
+            },
+            {
+              "id": "status-field",
+              "text": "A single status field drives rendering instead of several separate booleans."
+            },
+            {
+              "id": "empty",
+              "text": "A successful but empty result needs its own message."
+            }
+          ],
+          "notEnough": [
+            "Only saying you show a spinner while loading."
+          ],
+          "misconceptions": []
+        },
+        "Error boundaries for catching render errors in React subtrees": {
+          "id": "error-boundaries",
+          "evidence": [
+            {
+              "id": "catch-render",
+              "text": "An error boundary catches errors thrown while rendering its child components."
+            },
+            {
+              "id": "fallback",
+              "text": "It shows a fallback UI instead of crashing the whole app."
+            },
+            {
+              "id": "limits",
+              "text": "It does not catch errors in event handlers or async code, which need their own handling."
+            }
+          ],
+          "notEnough": [
+            "Only saying it catches errors."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

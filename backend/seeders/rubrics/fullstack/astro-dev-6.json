@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "astro-dev-6",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "CSS in Astro",
+      "question": "A component's style needs to affect Markdown content rendered inside it, and the site needs a CSS reset applied everywhere. Explain scoped and global styles in Astro.",
+      "followUps": {
+        "Scoped Styles and :global()": "Why don't scoped styles reach rendered Markdown, and how does :global() help?",
+        "Global Stylesheets": "Where should global stylesheets be imported?"
+      },
+      "criteria": {
+        "Scoped Styles and :global()": {
+          "id": "scoped-global",
+          "evidence": [
+            {
+              "id": "scoped",
+              "text": "Scoped styles only apply to elements in the component's own template."
+            },
+            {
+              "id": "markdown",
+              "text": "Rendered Markdown and child components are outside that scope."
+            },
+            {
+              "id": "global",
+              "text": ":global() lets a selector reach them deliberately."
+            }
+          ],
+          "notEnough": [
+            "Only saying :global makes styles global."
+          ],
+          "misconceptions": []
+        },
+        "Global Stylesheets": {
+          "id": "global-stylesheets",
+          "evidence": [
+            {
+              "id": "layout",
+              "text": "Global CSS is imported once, usually in a layout."
+            },
+            {
+              "id": "all-pages",
+              "text": "It then applies to every page that uses the layout."
+            },
+            {
+              "id": "not-everywhere",
+              "text": "Importing it in many components is unnecessary."
+            }
+          ],
+          "notEnough": [
+            "Only saying you import CSS."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Tailwind CSS Integration",
+      "question": "You are adding Tailwind to your Astro site with brand colors and spacing. Explain how the integration and configuration work.",
+      "followUps": {
+        "Tailwind with Astro Integration": "What does the Tailwind integration set up?",
+        "Tailwind Configuration and Design Tokens": "How do you add brand colors and spacing to Tailwind?"
+      },
+      "criteria": {
+        "Tailwind with Astro Integration": {
+          "id": "tailwind-integration",
+          "evidence": [
+            {
+              "id": "setup",
+              "text": "It configures Tailwind in Astro's build pipeline."
+            },
+            {
+              "id": "layers",
+              "text": "It injects Tailwind's base, component and utility styles."
+            },
+            {
+              "id": "no-manual",
+              "text": "This avoids setting up PostCSS by hand."
+            }
+          ],
+          "notEnough": [
+            "Only saying you install Tailwind."
+          ],
+          "misconceptions": []
+        },
+        "Tailwind Configuration and Design Tokens": {
+          "id": "tailwind-tokens",
+          "evidence": [
+            {
+              "id": "config",
+              "text": "Custom values are added in the Tailwind configuration."
+            },
+            {
+              "id": "utilities",
+              "text": "They become utilities like bg-brand."
+            },
+            {
+              "id": "consistent",
+              "text": "Using them instead of hard-coded values keeps the design consistent."
+            }
+          ],
+          "notEnough": [
+            "Only saying you edit the config."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Design Systems",
+      "question": "Your design system's colors and spacing must be shared across components, and users want a dark mode toggle. Explain design tokens and dark mode.",
+      "followUps": {
+        "CSS Custom Properties as Design Tokens": "Why define design tokens as CSS custom properties?",
+        "Dark Mode with CSS and Tailwind": "How would you implement dark mode?"
+      },
+      "criteria": {
+        "CSS Custom Properties as Design Tokens": {
+          "id": "design-tokens",
+          "evidence": [
+            {
+              "id": "root",
+              "text": "Tokens are defined once as variables on :root."
+            },
+            {
+              "id": "single-source",
+              "text": "They are the single source of truth for colors, spacing and typography."
+            },
+            {
+              "id": "readable",
+              "text": "Both CSS and JavaScript can read them."
+            }
+          ],
+          "notEnough": [
+            "Only saying tokens are variables."
+          ],
+          "misconceptions": []
+        },
+        "Dark Mode with CSS and Tailwind": {
+          "id": "dark-mode",
+          "evidence": [
+            {
+              "id": "media",
+              "text": "prefers-color-scheme follows the user's system setting."
+            },
+            {
+              "id": "class",
+              "text": "A dark class on the root, toggled by code, gives manual control."
+            },
+            {
+              "id": "variables",
+              "text": "Switching token values or dark: variants changes the whole theme."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add dark styles."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "CSS Architecture",
+      "question": "Some styles look broken in older browsers, and utility classes keep losing to component styles. Explain how CSS processing and layers help.",
+      "followUps": {
+        "PostCSS and CSS Processing": "What does PostCSS do in an Astro project?",
+        "CSS Layers and Specificity Control": "How does @layer control which styles win?"
+      },
+      "criteria": {
+        "PostCSS and CSS Processing": {
+          "id": "postcss",
+          "evidence": [
+            {
+              "id": "auto",
+              "text": "Astro runs CSS through PostCSS."
+            },
+            {
+              "id": "autoprefixer",
+              "text": "Autoprefixer adds vendor prefixes for browser compatibility."
+            },
+            {
+              "id": "transforms",
+              "text": "Plugins enable features like nesting."
+            }
+          ],
+          "notEnough": [
+            "Only saying PostCSS processes CSS."
+          ],
+          "misconceptions": []
+        },
+        "CSS Layers and Specificity Control": {
+          "id": "css-layers",
+          "evidence": [
+            {
+              "id": "layers",
+              "text": "@layer groups styles into named layers."
+            },
+            {
+              "id": "order",
+              "text": "Layer order decides priority, regardless of selector specificity."
+            },
+            {
+              "id": "no-wars",
+              "text": "This stops specificity fights between resets, components and utilities."
+            }
+          ],
+          "notEnough": [
+            "Only saying layers organise CSS."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

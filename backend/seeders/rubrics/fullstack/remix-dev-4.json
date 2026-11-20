@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "remix-dev-4",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Action Functions",
+      "question": "You are building a 'new project' form in Remix that shows field errors after submit. Explain how actions process forms and return errors.",
+      "followUps": {
+        "The action Function and FormData": "How does an action read submitted form data?",
+        "useActionData for Validation Feedback": "How do validation errors get back to the form?"
+      },
+      "criteria": {
+        "The action Function and FormData": {
+          "id": "action-formdata",
+          "evidence": [
+            {
+              "id": "request",
+              "text": "The action reads the request's FormData."
+            },
+            {
+              "id": "get",
+              "text": "Fields are read with formData.get, not bracket notation."
+            },
+            {
+              "id": "strings",
+              "text": "Values arrive as strings or files and need validation and conversion."
+            }
+          ],
+          "notEnough": [
+            "Only saying actions handle forms."
+          ],
+          "misconceptions": []
+        },
+        "useActionData for Validation Feedback": {
+          "id": "action-data",
+          "evidence": [
+            {
+              "id": "return",
+              "text": "The action returns error data instead of redirecting."
+            },
+            {
+              "id": "hook",
+              "text": "useActionData gives the component that data after submission."
+            },
+            {
+              "id": "show",
+              "text": "The form shows each error next to its field."
+            }
+          ],
+          "notEnough": [
+            "Only saying you return errors."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Progressive Enhancement",
+      "question": "Your forms do nothing until JavaScript loads, and a 'mark as done' toggle navigates to a new page. Explain Remix's approach to forms and non-navigating mutations.",
+      "followUps": {
+        "Form vs form and JavaScript-Optional Design": "How does Remix's Form work with and without JavaScript?",
+        "useFetcher for Non-Navigation Mutations": "When would you use useFetcher?"
+      },
+      "criteria": {
+        "Form vs form and JavaScript-Optional Design": {
+          "id": "form-progressive",
+          "evidence": [
+            {
+              "id": "native",
+              "text": "Form behaves like a normal HTML form without JavaScript."
+            },
+            {
+              "id": "enhanced",
+              "text": "With JavaScript, Remix submits it with fetch and updates the page without a full reload."
+            },
+            {
+              "id": "no-onclick",
+              "text": "Relying on onClick handlers instead breaks the form without JavaScript."
+            }
+          ],
+          "notEnough": [
+            "Only saying Form is enhanced."
+          ],
+          "misconceptions": []
+        },
+        "useFetcher for Non-Navigation Mutations": {
+          "id": "use-fetcher",
+          "evidence": [
+            {
+              "id": "no-nav",
+              "text": "useFetcher submits to actions or loaders without navigating."
+            },
+            {
+              "id": "uses",
+              "text": "It suits inline edits, toggles and buttons that stay on the page."
+            },
+            {
+              "id": "state",
+              "text": "Each fetcher tracks its own state, so several can run at once."
+            }
+          ],
+          "notEnough": [
+            "Only saying it fetches data."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Optimistic UI",
+      "question": "Users click save twice because nothing indicates progress, and a todo checkbox waits a second before ticking. Explain pending and optimistic UI in Remix.",
+      "followUps": {
+        "useNavigation and Pending States": "What does useNavigation tell you?",
+        "Optimistic Updates with useFetcher": "How do you make a fetcher update feel instant?"
+      },
+      "criteria": {
+        "useNavigation and Pending States": {
+          "id": "use-navigation",
+          "evidence": [
+            {
+              "id": "state",
+              "text": "useNavigation exposes whether the app is idle, submitting or loading."
+            },
+            {
+              "id": "indicators",
+              "text": "It drives pending indicators like disabled buttons or progress bars."
+            },
+            {
+              "id": "no-manual",
+              "text": "No manual loading state is needed for navigations and form submissions."
+            }
+          ],
+          "notEnough": [
+            "Only saying it shows loading."
+          ],
+          "misconceptions": []
+        },
+        "Optimistic Updates with useFetcher": {
+          "id": "optimistic-fetcher",
+          "evidence": [
+            {
+              "id": "formdata",
+              "text": "fetcher.formData holds the submitted data before the server responds."
+            },
+            {
+              "id": "render",
+              "text": "The UI renders that expected value immediately."
+            },
+            {
+              "id": "revert",
+              "text": "If the action fails, the UI falls back to the real data."
+            }
+          ],
+          "notEnough": [
+            "Only saying the UI updates first."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Method and Intent Handling",
+      "question": "One route needs to create, rename and delete projects, and refreshing after a successful save submits the form again. Explain how you handle multiple intents and redirects.",
+      "followUps": {
+        "HTTP Methods in Remix Actions": "How does one action handle create, update and delete?",
+        "Post/Redirect/Get Pattern": "Why redirect after a successful action?"
+      },
+      "criteria": {
+        "HTTP Methods in Remix Actions": {
+          "id": "intent-handling",
+          "evidence": [
+            {
+              "id": "get-post",
+              "text": "HTML forms only send GET or POST."
+            },
+            {
+              "id": "intent",
+              "text": "A hidden intent field tells the action which operation to run."
+            },
+            {
+              "id": "switch",
+              "text": "The action branches on the intent, validating each case."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use one action."
+          ],
+          "misconceptions": []
+        },
+        "Post/Redirect/Get Pattern": {
+          "id": "prg",
+          "evidence": [
+            {
+              "id": "redirect",
+              "text": "The action returns a redirect after success."
+            },
+            {
+              "id": "get",
+              "text": "The browser then loads the next page with GET."
+            },
+            {
+              "id": "no-resubmit",
+              "text": "Refreshing no longer resubmits the form."
+            }
+          ],
+          "notEnough": [
+            "Only saying you redirect."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

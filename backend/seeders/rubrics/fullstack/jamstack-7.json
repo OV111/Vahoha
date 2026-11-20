@@ -1,0 +1,243 @@
+{
+  "path": "fullstack",
+  "layer": "jamstack-7",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Authentication Concepts",
+      "question": "Your JAMstack site needs users to log in with Google and access a members-only area. Explain the login flow and how you would keep users signed in.",
+      "followUps": {
+        "OAuth 2.0 and OpenID Connect flows explained": "How do OAuth and OpenID Connect differ, and which flow should a web app use?",
+        "JWT structure, signing, and verification fundamentals": "How is a JWT verified without looking anything up?",
+        "Session cookies versus token-based authentication comparison": "Why are session cookies often a better default for web apps than tokens in storage?"
+      },
+      "criteria": {
+        "OAuth 2.0 and OpenID Connect flows explained": {
+          "id": "oauth-oidc",
+          "evidence": [
+            {
+              "id": "oauth",
+              "text": "OAuth lets an app get permission to act for the user through an identity provider."
+            },
+            {
+              "id": "oidc",
+              "text": "OpenID Connect adds a standard way to learn who the user is."
+            },
+            {
+              "id": "pkce",
+              "text": "The authorization code flow with PKCE is the recommended flow for web apps."
+            }
+          ],
+          "notEnough": [
+            "Only saying OAuth is for login."
+          ],
+          "misconceptions": []
+        },
+        "JWT structure, signing, and verification fundamentals": {
+          "id": "jwt-basics",
+          "evidence": [
+            {
+              "id": "parts",
+              "text": "A JWT has a header, a payload of claims and a signature."
+            },
+            {
+              "id": "verify",
+              "text": "The server checks the signature with a secret or public key."
+            },
+            {
+              "id": "no-lookup",
+              "text": "If the signature and expiry are valid, no session lookup is needed."
+            }
+          ],
+          "notEnough": [
+            "Only saying JWTs are tokens."
+          ],
+          "misconceptions": [
+            {
+              "id": "encrypted",
+              "text": "Says a JWT's payload is encrypted."
+            }
+          ]
+        },
+        "Session cookies versus token-based authentication comparison": {
+          "id": "cookies-vs-tokens",
+          "evidence": [
+            {
+              "id": "session",
+              "text": "A session cookie holds an id that the server looks up."
+            },
+            {
+              "id": "httponly",
+              "text": "HttpOnly cookies cannot be read by scripts, which protects against XSS theft."
+            },
+            {
+              "id": "tokens",
+              "text": "Self-contained tokens avoid lookups but are harder to revoke and risky to store in the browser."
+            }
+          ],
+          "notEnough": [
+            "Only saying cookies are more secure."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Roles and Access Control",
+      "question": "Members can read premium articles, admins can edit them, and your serverless functions serve the article data. Explain how you would control access.",
+      "followUps": {
+        "Role-based access control and gated content patterns": "How would you restrict content by role?",
+        "Protecting serverless API routes from unauthenticated requests": "Why must every serverless function check the token itself?"
+      },
+      "criteria": {
+        "Role-based access control and gated content patterns": {
+          "id": "rbac",
+          "evidence": [
+            {
+              "id": "roles",
+              "text": "Users are given roles like admin or member."
+            },
+            {
+              "id": "check",
+              "text": "Each protected route or resource checks the role before allowing access."
+            },
+            {
+              "id": "claims",
+              "text": "Roles can be stored as claims in the token so checks do not need a database lookup."
+            }
+          ],
+          "notEnough": [
+            "Only saying you check roles."
+          ],
+          "misconceptions": []
+        },
+        "Protecting serverless API routes from unauthenticated requests": {
+          "id": "protect-functions",
+          "evidence": [
+            {
+              "id": "stateless",
+              "text": "Functions are stateless and anyone can call them directly."
+            },
+            {
+              "id": "verify",
+              "text": "Each one must verify the token on every request."
+            },
+            {
+              "id": "reject",
+              "text": "Requests without a valid token are rejected with 401."
+            }
+          ],
+          "notEnough": [
+            "Only saying functions need auth."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Auth Providers and SDKs",
+      "question": "You are choosing between NextAuth and Netlify Identity to add login to your site. Explain how each is set up.",
+      "followUps": {
+        "NextAuth.js setup with GitHub and Google OAuth providers": "What do you need to set up GitHub login with NextAuth?",
+        "Netlify Identity for zero-config JAMstack authentication": "What does Netlify Identity give you without backend code?"
+      },
+      "criteria": {
+        "NextAuth.js setup with GitHub and Google OAuth providers": {
+          "id": "nextauth",
+          "evidence": [
+            {
+              "id": "route",
+              "text": "NextAuth is added as a route handler in the Next.js app."
+            },
+            {
+              "id": "provider-app",
+              "text": "You register an OAuth app with GitHub to get a client id and secret."
+            },
+            {
+              "id": "env",
+              "text": "Those credentials are stored as environment variables."
+            }
+          ],
+          "notEnough": [
+            "Only saying you install NextAuth."
+          ],
+          "misconceptions": []
+        },
+        "Netlify Identity for zero-config JAMstack authentication": {
+          "id": "netlify-identity",
+          "evidence": [
+            {
+              "id": "features",
+              "text": "It provides sign-up, login and token issuing."
+            },
+            {
+              "id": "widget",
+              "text": "A widget handles the login UI."
+            },
+            {
+              "id": "functions",
+              "text": "Serverless functions on Netlify can read the logged-in user from the request."
+            }
+          ],
+          "notEnough": [
+            "Only saying it handles auth."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Login Flows and Route Protection",
+      "question": "You are building login and sign-up forms and need to keep signed-out users away from /account. Explain how you would build the forms and protect the route.",
+      "followUps": {
+        "Building login and signup forms with validation": "Why validate login forms on both the client and the server?",
+        "Next.js Middleware for protecting authenticated routes": "How does Next.js middleware protect /account?"
+      },
+      "criteria": {
+        "Building login and signup forms with validation": {
+          "id": "login-forms",
+          "evidence": [
+            {
+              "id": "send",
+              "text": "The form sends credentials to an auth endpoint."
+            },
+            {
+              "id": "client",
+              "text": "Client-side checks give quick feedback on mistakes."
+            },
+            {
+              "id": "server",
+              "text": "The server must validate again because client checks can be bypassed."
+            }
+          ],
+          "notEnough": [
+            "Only saying you validate the form."
+          ],
+          "misconceptions": []
+        },
+        "Next.js Middleware for protecting authenticated routes": {
+          "id": "middleware-protection",
+          "evidence": [
+            {
+              "id": "before",
+              "text": "Middleware runs before matched routes are rendered."
+            },
+            {
+              "id": "check",
+              "text": "It checks for a valid session cookie or token."
+            },
+            {
+              "id": "redirect",
+              "text": "If there is none, it redirects to the login page."
+            }
+          ],
+          "notEnough": [
+            "Only saying middleware blocks routes."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

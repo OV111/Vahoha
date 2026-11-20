@@ -1,0 +1,260 @@
+{
+  "path": "fullstack",
+  "layer": "sveltekit-dev-10",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Unit Testing with Vitest",
+      "question": "You want fast tests for your stores and helpers that do not need real secrets. Explain how you would set up Vitest.",
+      "followUps": {
+        "Vitest setup and test file conventions": "Why does Vitest fit a SvelteKit project?",
+        "Testing pure utility functions and stores": "Why are stores and helpers easy to test?",
+        "Mocking modules and environment variables in tests": "How would you mock modules and environment variables?"
+      },
+      "criteria": {
+        "Vitest setup and test file conventions": {
+          "id": "vitest-setup",
+          "evidence": [
+            {
+              "id": "vite-native",
+              "text": "Vitest uses Vite and shares its configuration."
+            },
+            {
+              "id": "aliases",
+              "text": "It supports the same import aliases as the app."
+            },
+            {
+              "id": "convention",
+              "text": "Files named .test.ts run automatically."
+            }
+          ],
+          "notEnough": [
+            "Only saying Vitest runs tests."
+          ],
+          "misconceptions": []
+        },
+        "Testing pure utility functions and stores": {
+          "id": "test-pure",
+          "evidence": [
+            {
+              "id": "plain",
+              "text": "Stores and helpers are plain JavaScript."
+            },
+            {
+              "id": "no-dom",
+              "text": "They can be tested without a browser or DOM."
+            },
+            {
+              "id": "fast",
+              "text": "Such tests run quickly in Node."
+            }
+          ],
+          "notEnough": [
+            "Only saying you test functions."
+          ],
+          "misconceptions": []
+        },
+        "Mocking modules and environment variables in tests": {
+          "id": "mocking",
+          "evidence": [
+            {
+              "id": "vi-mock",
+              "text": "vi.mock replaces a module with a test double."
+            },
+            {
+              "id": "env",
+              "text": "Mocking the $env modules avoids needing real secrets."
+            },
+            {
+              "id": "control",
+              "text": "Tests control what dependencies return."
+            }
+          ],
+          "notEnough": [
+            "Only saying you mock things."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Deployment Strategies",
+      "question": "Your app works locally but fails on the host because of a wrong adapter and missing variables. Explain how you would deploy correctly.",
+      "followUps": {
+        "Choosing an adapter for your target platform": "How do you choose an adapter?",
+        "Environment variables in production deployments": "How are environment variables set for production?"
+      },
+      "criteria": {
+        "Choosing an adapter for your target platform": {
+          "id": "choose-adapter",
+          "evidence": [
+            {
+              "id": "match",
+              "text": "The adapter must match the host, such as Vercel, Netlify or a Node server."
+            },
+            {
+              "id": "output",
+              "text": "Each adapter produces a different build output."
+            },
+            {
+              "id": "errors",
+              "text": "A mismatched adapter causes deploy or runtime errors."
+            }
+          ],
+          "notEnough": [
+            "Only listing adapters."
+          ],
+          "misconceptions": []
+        },
+        "Environment variables in production deployments": {
+          "id": "prod-env",
+          "evidence": [
+            {
+              "id": "dashboard",
+              "text": "Production values are set in the hosting dashboard, not in committed .env files."
+            },
+            {
+              "id": "public",
+              "text": "The PUBLIC_ prefix decides what gets into the client bundle."
+            },
+            {
+              "id": "secrets",
+              "text": "Secrets stay private and server-only."
+            }
+          ],
+          "notEnough": [
+            "Only saying you set env vars."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "End-to-End Testing with Playwright",
+      "question": "You want end-to-end tests for login and creating a post, without logging in at the start of every test. Explain how you would use Playwright.",
+      "followUps": {
+        "Playwright installation and browser setup": "What does Playwright run your tests against?",
+        "Writing page navigation and form interaction tests": "What would a good test for creating a post check?",
+        "Using Playwright fixtures and page object model": "How do fixtures and page objects avoid repetition?"
+      },
+      "criteria": {
+        "Playwright installation and browser setup": {
+          "id": "playwright-setup",
+          "evidence": [
+            {
+              "id": "browsers",
+              "text": "Playwright drives real Chromium, Firefox and WebKit browsers."
+            },
+            {
+              "id": "runner",
+              "text": "It has its own test runner."
+            },
+            {
+              "id": "install",
+              "text": "Browsers are installed with Playwright's install command."
+            }
+          ],
+          "notEnough": [
+            "Only saying you install Playwright."
+          ],
+          "misconceptions": []
+        },
+        "Writing page navigation and form interaction tests": {
+          "id": "flow-tests",
+          "evidence": [
+            {
+              "id": "actions",
+              "text": "The test fills forms and clicks buttons like a user."
+            },
+            {
+              "id": "assert",
+              "text": "It asserts on the URL and what appears on the page."
+            },
+            {
+              "id": "integration",
+              "text": "It catches problems where parts work alone but fail together."
+            }
+          ],
+          "notEnough": [
+            "Only saying you test forms."
+          ],
+          "misconceptions": []
+        },
+        "Using Playwright fixtures and page object model": {
+          "id": "fixtures-pom",
+          "evidence": [
+            {
+              "id": "pom",
+              "text": "Page objects wrap selectors and actions for each page."
+            },
+            {
+              "id": "fixtures",
+              "text": "Fixtures provide ready setups, like an already logged-in browser."
+            },
+            {
+              "id": "no-repeat",
+              "text": "Tests do not repeat login steps or selectors."
+            }
+          ],
+          "notEnough": [
+            "Only naming the patterns."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Monitoring and Previews",
+      "question": "Reviewers want to see changes before merge, and production errors only show minified stack traces. Explain previews and error monitoring.",
+      "followUps": {
+        "Preview deployments with adapter-vercel or Netlify": "What does a preview deployment give the team?",
+        "Sourcemaps and error monitoring in production": "Why upload source maps to Sentry?"
+      },
+      "criteria": {
+        "Preview deployments with adapter-vercel or Netlify": {
+          "id": "preview-deploys",
+          "evidence": [
+            {
+              "id": "per-pr",
+              "text": "Each pull request gets its own URL."
+            },
+            {
+              "id": "prod-build",
+              "text": "It runs the production build, often with staging settings."
+            },
+            {
+              "id": "review",
+              "text": "Changes are tested before merging."
+            }
+          ],
+          "notEnough": [
+            "Only saying previews show changes."
+          ],
+          "misconceptions": []
+        },
+        "Sourcemaps and error monitoring in production": {
+          "id": "sourcemaps-monitoring",
+          "evidence": [
+            {
+              "id": "capture",
+              "text": "Monitoring tools capture production errors."
+            },
+            {
+              "id": "minified",
+              "text": "Production code is minified, so raw stack traces are unreadable."
+            },
+            {
+              "id": "map",
+              "text": "Source maps translate them back to the original code."
+            }
+          ],
+          "notEnough": [
+            "Only saying Sentry tracks errors."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "jamstack-1",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Web Foundations Theory",
+      "question": "A client wants a fast, secure marketing site with a blog and a contact form, and asks why you suggest a JAMstack site instead of a classic server-rendered one. Explain the rendering models, the JAMstack idea and why your HTML structure matters.",
+      "followUps": {
+        "Semantic HTML elements and accessibility basics": "Why do semantic elements like article and nav matter for users and search engines?",
+        "Static versus dynamic site rendering models": "What is the difference between serving static HTML and generating it per request?",
+        "JAMstack philosophy and the decoupled architecture": "What does decoupling the frontend from the backend give a JAMstack site?"
+      },
+      "criteria": {
+        "Semantic HTML elements and accessibility basics": {
+          "id": "semantic-html",
+          "evidence": [
+            {
+              "id": "meaning",
+              "text": "Semantic elements describe what each part of the page is."
+            },
+            {
+              "id": "assistive",
+              "text": "Screen readers use that meaning to let users jump between regions."
+            },
+            {
+              "id": "seo",
+              "text": "Search engines also use the structure to understand the content."
+            }
+          ],
+          "notEnough": [
+            "Only saying semantic HTML is best practice."
+          ],
+          "misconceptions": []
+        },
+        "Static versus dynamic site rendering models": {
+          "id": "static-vs-dynamic",
+          "evidence": [
+            {
+              "id": "static",
+              "text": "A static site serves HTML that was built ahead of time, with no server work per request."
+            },
+            {
+              "id": "dynamic",
+              "text": "A dynamic site builds HTML on each request, which adds work and latency."
+            },
+            {
+              "id": "trade-off",
+              "text": "Dynamic rendering allows personalised, always-fresh content that static pages cannot easily show."
+            }
+          ],
+          "notEnough": [
+            "Only saying static is faster."
+          ],
+          "misconceptions": []
+        },
+        "JAMstack philosophy and the decoupled architecture": {
+          "id": "jamstack-philosophy",
+          "evidence": [
+            {
+              "id": "prebuilt",
+              "text": "Pages are pre-built as markup and served from a CDN."
+            },
+            {
+              "id": "apis",
+              "text": "Dynamic features use APIs and serverless functions instead of a server rendering every page."
+            },
+            {
+              "id": "benefits",
+              "text": "Less server code exposed means a smaller attack surface and easier scaling."
+            }
+          ],
+          "notEnough": [
+            "Only spelling out JavaScript, APIs and Markup."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "CDNs and Edge Delivery Concepts",
+      "question": "Your static site loads fast in Europe but slowly in Asia, and it shows live weather from a third-party API. Explain how CDNs deliver the site and how the browser gets the live data.",
+      "followUps": {
+        "How content delivery networks cache and serve assets": "Why does a CDN make a site faster for users far away from your origin server?",
+        "Working with third-party REST APIs in the browser": "How does a static page fetch live data from an API in the browser?"
+      },
+      "criteria": {
+        "How content delivery networks cache and serve assets": {
+          "id": "cdn-caching",
+          "evidence": [
+            {
+              "id": "edges",
+              "text": "A CDN keeps copies of your files on servers around the world."
+            },
+            {
+              "id": "nearest",
+              "text": "Users are served from the nearest copy, so data travels a shorter distance."
+            },
+            {
+              "id": "ttfb",
+              "text": "That reduces the time to the first byte and load on the origin."
+            }
+          ],
+          "notEnough": [
+            "Only saying CDNs cache files."
+          ],
+          "misconceptions": []
+        },
+        "Working with third-party REST APIs in the browser": {
+          "id": "third-party-apis",
+          "evidence": [
+            {
+              "id": "fetch",
+              "text": "The page uses fetch at runtime to request data from the API."
+            },
+            {
+              "id": "json",
+              "text": "The response is usually JSON that the code parses and renders."
+            },
+            {
+              "id": "async",
+              "text": "async/await keeps the code readable, and errors and loading states must be handled."
+            }
+          ],
+          "notEnough": [
+            "Only saying you call the API."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "HTML and CSS Tooling",
+      "question": "You are building the layout of your static site: a header, a three-column card grid that collapses on phones and readable text on every screen. Explain the CSS you would use.",
+      "followUps": {
+        "CSS Flexbox and Grid layout systems hands-on": "When would you use flexbox and when grid?",
+        "Responsive design with media queries and fluid units": "How do media queries and fluid units make the layout responsive?"
+      },
+      "criteria": {
+        "CSS Flexbox and Grid layout systems hands-on": {
+          "id": "flexbox-grid",
+          "evidence": [
+            {
+              "id": "flex",
+              "text": "Flexbox lays items out in one direction, like a row of header links."
+            },
+            {
+              "id": "grid",
+              "text": "Grid handles rows and columns together, like a card grid."
+            },
+            {
+              "id": "replace-floats",
+              "text": "Both replace older float-based layout tricks."
+            }
+          ],
+          "notEnough": [
+            "Only saying one is 1D and one is 2D."
+          ],
+          "misconceptions": []
+        },
+        "Responsive design with media queries and fluid units": {
+          "id": "responsive-design",
+          "evidence": [
+            {
+              "id": "media",
+              "text": "Media queries apply different styles at different screen widths."
+            },
+            {
+              "id": "fluid",
+              "text": "Relative units like rem, percentages and viewport units scale with the screen or user settings."
+            },
+            {
+              "id": "fewer-breakpoints",
+              "text": "Fluid sizing reduces how many breakpoints you need."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use media queries."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "JavaScript Essentials Practice",
+      "question": "Your site's JavaScript calls an API and something is wrong with the data shown. Explain the modern JavaScript you would write and how you would debug it in the browser.",
+      "followUps": {
+        "ES6 features: arrow functions, destructuring, modules": "Which modern JavaScript features do you use most in framework code and why?",
+        "Browser DevTools for debugging and network inspection": "How would you use DevTools to check whether an API call returned the right data?"
+      },
+      "criteria": {
+        "ES6 features: arrow functions, destructuring, modules": {
+          "id": "es6-features",
+          "evidence": [
+            {
+              "id": "arrows",
+              "text": "Arrow functions give short function syntax and keep the surrounding this."
+            },
+            {
+              "id": "destructuring",
+              "text": "Destructuring pulls fields out of objects and arrays in one step."
+            },
+            {
+              "id": "modules",
+              "text": "ES modules split code into files with explicit imports and exports."
+            }
+          ],
+          "notEnough": [
+            "Only listing the features."
+          ],
+          "misconceptions": []
+        },
+        "Browser DevTools for debugging and network inspection": {
+          "id": "devtools-debugging",
+          "evidence": [
+            {
+              "id": "network",
+              "text": "The Network tab shows each request with its status and response body."
+            },
+            {
+              "id": "console-sources",
+              "text": "The console and debugger let you inspect values and step through code."
+            },
+            {
+              "id": "elements",
+              "text": "The Elements panel shows whether the DOM matches what you expected."
+            }
+          ],
+          "notEnough": [
+            "Only saying you open DevTools."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

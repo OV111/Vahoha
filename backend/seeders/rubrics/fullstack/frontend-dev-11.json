@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "frontend-dev-11",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Principles",
+      "question": "Your company needs its web app to meet accessibility requirements, and the current UI uses clickable divs and custom ARIA everywhere. Explain what standard you would aim for and how you would fix the foundations.",
+      "followUps": {
+        "WCAG in practice": "What does WCAG level AA mean for a team building a web app?",
+        "Semantic HTML first": "Why is a native button better than a div with a click handler and ARIA?"
+      },
+      "criteria": {
+        "WCAG in practice": {
+          "id": "wcag-practice",
+          "evidence": [
+            {
+              "id": "four-principles",
+              "text": "WCAG groups its rules under four principles: content must be perceivable, operable, understandable and robust."
+            },
+            {
+              "id": "levels",
+              "text": "Rules come in levels A, AA and AAA."
+            },
+            {
+              "id": "aa-target",
+              "text": "Level AA is the usual legal and professional target."
+            }
+          ],
+          "notEnough": [
+            "Only saying WCAG is the accessibility standard."
+          ],
+          "misconceptions": []
+        },
+        "Semantic HTML first": {
+          "id": "semantic-first",
+          "evidence": [
+            {
+              "id": "built-in",
+              "text": "Native elements already have roles, names and keyboard behavior."
+            },
+            {
+              "id": "div-missing",
+              "text": "A clickable div needs focus, Enter and Space handling and a role added by hand."
+            },
+            {
+              "id": "first-rule",
+              "text": "The first rule of ARIA is not to use it when a native element can do the job."
+            }
+          ],
+          "notEnough": [
+            "Only saying semantic HTML is better."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Keyboard and Focus",
+      "question": "A keyboard user cannot see where they are on the page, a modal lets focus escape behind it, and after navigating screen reader users do not know the page changed. Explain how you would manage focus.",
+      "followUps": {
+        "Focus order and visible focus": "A designer removed the focus outline because it looks ugly. What is the problem and what would you do?",
+        "Focus management in dialogs and routes": "Where should focus go when a dialog opens, when it closes and after a route change?"
+      },
+      "criteria": {
+        "Focus order and visible focus": {
+          "id": "focus-order-visible",
+          "evidence": [
+            {
+              "id": "reachable",
+              "text": "Every interactive element must be reachable with the Tab key in a logical order."
+            },
+            {
+              "id": "visible",
+              "text": "Keyboard users need a clear focus indicator to see where they are."
+            },
+            {
+              "id": "replace",
+              "text": "The outline can be restyled but must not be removed without a visible replacement."
+            }
+          ],
+          "notEnough": [
+            "Only saying the outline is needed for accessibility."
+          ],
+          "misconceptions": []
+        },
+        "Focus management in dialogs and routes": {
+          "id": "focus-management",
+          "evidence": [
+            {
+              "id": "into-dialog",
+              "text": "Opening a dialog should move focus into it and keep it there."
+            },
+            {
+              "id": "return",
+              "text": "Closing the dialog should return focus to the element that opened it."
+            },
+            {
+              "id": "route-change",
+              "text": "After a route change, focus moves to the new page heading so screen reader users know the page changed."
+            }
+          ],
+          "notEnough": [
+            "Only saying focus should be trapped."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "ARIA",
+      "question": "Your accordion buttons do not tell screen readers whether they are open, and form errors appear on screen but are never announced. Explain how ARIA helps and how it can hurt.",
+      "followUps": {
+        "Roles, states and properties": "Why can a wrong ARIA attribute be worse than none?",
+        "Live regions and announcements": "How do you make a screen reader announce an error that appears after submitting?"
+      },
+      "criteria": {
+        "Roles, states and properties": {
+          "id": "roles-states",
+          "evidence": [
+            {
+              "id": "adds-meaning",
+              "text": "ARIA adds meaning HTML cannot express, such as aria-expanded on a toggle button."
+            },
+            {
+              "id": "promise",
+              "text": "ARIA changes what assistive tools announce but adds no behavior."
+            },
+            {
+              "id": "wrong-worse",
+              "text": "A wrong role or state tells users something false, which is worse than saying nothing."
+            }
+          ],
+          "notEnough": [
+            "Only listing ARIA attributes."
+          ],
+          "misconceptions": [
+            {
+              "id": "aria-behavior",
+              "text": "Says adding a role like button also makes the element keyboard accessible."
+            }
+          ]
+        },
+        "Live regions and announcements": {
+          "id": "live-regions",
+          "evidence": [
+            {
+              "id": "silent",
+              "text": "Changes that appear on screen are not announced by default."
+            },
+            {
+              "id": "live",
+              "text": "A live region tells screen readers to announce its content when it changes."
+            },
+            {
+              "id": "polite",
+              "text": "Polite announcements wait for a pause, while assertive ones interrupt, so most updates should be polite."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would use aria-live."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Perception and Testing",
+      "question": "Your site passes an automated scan but users with low vision and motion sensitivity still complain. Explain what else you must check and how you would test it.",
+      "followUps": {
+        "Contrast, zoom and reduced motion": "What should still work when a user zooms to 200 percent or turns on reduced motion?",
+        "Automated and manual testing": "Why isn't a clean axe report enough to call a site accessible?"
+      },
+      "criteria": {
+        "Contrast, zoom and reduced motion": {
+          "id": "contrast-zoom-motion",
+          "evidence": [
+            {
+              "id": "contrast",
+              "text": "Text must have enough contrast against its background."
+            },
+            {
+              "id": "zoom",
+              "text": "The layout must stay usable at 200 percent zoom without content being cut off."
+            },
+            {
+              "id": "motion",
+              "text": "Animations should be reduced or removed when the user sets prefers-reduced-motion."
+            }
+          ],
+          "notEnough": [
+            "Only saying the site should be readable."
+          ],
+          "misconceptions": []
+        },
+        "Automated and manual testing": {
+          "id": "testing-a11y",
+          "evidence": [
+            {
+              "id": "partial",
+              "text": "Automated tools catch only part of accessibility issues."
+            },
+            {
+              "id": "manual",
+              "text": "Keyboard-only testing finds focus and interaction problems tools miss."
+            },
+            {
+              "id": "screen-reader",
+              "text": "Testing with a real screen reader shows whether content is announced in a way that makes sense."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would run Lighthouse."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

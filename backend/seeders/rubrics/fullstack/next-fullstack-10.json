@@ -1,0 +1,260 @@
+{
+  "path": "fullstack",
+  "layer": "next-fullstack-10",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Testing Philosophy",
+      "question": "You need to test your Next.js app before every release: validation logic, components and the sign-in and checkout flows. Explain your testing approach.",
+      "followUps": {
+        "Unit testing server and client logic with Vitest": "What would you unit test with Vitest?",
+        "Component testing with React Testing Library": "How does React Testing Library encourage good component tests?",
+        "End-to-end testing strategy with Playwright": "Which flows would you cover with Playwright and why only a few?"
+      },
+      "criteria": {
+        "Unit testing server and client logic with Vitest": {
+          "id": "vitest-unit",
+          "evidence": [
+            {
+              "id": "fast",
+              "text": "Vitest is a fast test runner compatible with Jest's API."
+            },
+            {
+              "id": "targets",
+              "text": "Pure functions, Zod schemas and server action logic are good unit test targets."
+            },
+            {
+              "id": "regressions",
+              "text": "These tests catch regressions quickly on every change."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use Vitest."
+          ],
+          "misconceptions": []
+        },
+        "Component testing with React Testing Library": {
+          "id": "rtl",
+          "evidence": [
+            {
+              "id": "render",
+              "text": "It renders components and finds elements by role and label."
+            },
+            {
+              "id": "behaviour",
+              "text": "Tests focus on what users see and do, not internals."
+            },
+            {
+              "id": "resilient",
+              "text": "Such tests survive refactors that do not change behaviour."
+            }
+          ],
+          "notEnough": [
+            "Only saying you test components."
+          ],
+          "misconceptions": []
+        },
+        "End-to-end testing strategy with Playwright": {
+          "id": "playwright-strategy",
+          "evidence": [
+            {
+              "id": "real-browser",
+              "text": "Playwright drives real browsers through full flows."
+            },
+            {
+              "id": "critical",
+              "text": "It covers critical paths like sign-in, checkout and form submission."
+            },
+            {
+              "id": "few",
+              "text": "These tests are slower, so they are kept to the most important flows."
+            }
+          ],
+          "notEnough": [
+            "Only saying you write E2E tests."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Deployment Architecture",
+      "question": "You are deploying to Vercel with a PostgreSQL database, and after launch you see 'too many connections' errors. Explain the deployment setup and the cause.",
+      "followUps": {
+        "Vercel project structure and environment setup": "How do Vercel projects and environments work?",
+        "Production database setup with connection pooling": "Why do serverless functions exhaust database connections, and what fixes it?"
+      },
+      "criteria": {
+        "Vercel project structure and environment setup": {
+          "id": "vercel-setup",
+          "evidence": [
+            {
+              "id": "git",
+              "text": "Connecting the repository deploys on every push."
+            },
+            {
+              "id": "envs",
+              "text": "Production, preview and development have separate environment variables."
+            },
+            {
+              "id": "preview",
+              "text": "Each branch or pull request can get its own deployment."
+            }
+          ],
+          "notEnough": [
+            "Only saying Vercel deploys Next.js."
+          ],
+          "misconceptions": []
+        },
+        "Production database setup with connection pooling": {
+          "id": "connection-pooling",
+          "evidence": [
+            {
+              "id": "per-instance",
+              "text": "Many serverless instances each open their own connections."
+            },
+            {
+              "id": "limit",
+              "text": "PostgreSQL has a limited number of connections, which runs out under load."
+            },
+            {
+              "id": "pooler",
+              "text": "A connection pooler like PgBouncer or Prisma Accelerate shares a small pool of connections."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use pooling."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Testing Tooling",
+      "question": "You are writing your first Playwright tests, isolating unit tests from Prisma and running everything on pull requests. Explain how you would set this up.",
+      "followUps": {
+        "Writing and running Playwright E2E tests": "How do you write and generate Playwright tests?",
+        "Mocking modules and fetch calls in Vitest": "How does vi.mock isolate code from Prisma or fetch?",
+        "Continuous integration with GitHub Actions": "What should a GitHub Actions workflow run on pull requests?"
+      },
+      "criteria": {
+        "Writing and running Playwright E2E tests": {
+          "id": "playwright-tests",
+          "evidence": [
+            {
+              "id": "api",
+              "text": "Tests use page actions like goto and click with expectations on the page."
+            },
+            {
+              "id": "codegen",
+              "text": "The codegen tool records actions in a browser and writes test code."
+            },
+            {
+              "id": "auto-wait",
+              "text": "Playwright waits automatically, avoiding fixed sleeps."
+            }
+          ],
+          "notEnough": [
+            "Only saying you write tests."
+          ],
+          "misconceptions": []
+        },
+        "Mocking modules and fetch calls in Vitest": {
+          "id": "vitest-mocks",
+          "evidence": [
+            {
+              "id": "replace",
+              "text": "vi.mock replaces a module with a controlled fake."
+            },
+            {
+              "id": "control",
+              "text": "Tests decide what the fake returns."
+            },
+            {
+              "id": "deterministic",
+              "text": "Tests run without a real database or network and give the same result every time."
+            }
+          ],
+          "notEnough": [
+            "Only saying you mock modules."
+          ],
+          "misconceptions": []
+        },
+        "Continuous integration with GitHub Actions": {
+          "id": "ci-actions",
+          "evidence": [
+            {
+              "id": "run",
+              "text": "It runs unit tests and Playwright tests on every pull request."
+            },
+            {
+              "id": "block",
+              "text": "Failing checks block merging broken code."
+            },
+            {
+              "id": "cache",
+              "text": "Caching dependencies keeps the pipeline fast."
+            }
+          ],
+          "notEnough": [
+            "Only saying CI runs tests."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Vercel Deployment",
+      "question": "Reviewers want to see UI changes before merge, and after launch you want to know how fast the site is for real users. Explain preview deployments and Vercel's monitoring.",
+      "followUps": {
+        "Preview deployments for pull request review": "What does a preview deployment give reviewers?",
+        "Vercel Analytics and Speed Insights monitoring": "What do Vercel Analytics and Speed Insights report?"
+      },
+      "criteria": {
+        "Preview deployments for pull request review": {
+          "id": "preview-deploys",
+          "evidence": [
+            {
+              "id": "url",
+              "text": "Each pull request gets its own deployment URL."
+            },
+            {
+              "id": "real",
+              "text": "Reviewers test the change on production-like infrastructure."
+            },
+            {
+              "id": "before-merge",
+              "text": "Problems are found before the change reaches production."
+            }
+          ],
+          "notEnough": [
+            "Only saying previews show changes."
+          ],
+          "misconceptions": []
+        },
+        "Vercel Analytics and Speed Insights monitoring": {
+          "id": "analytics-insights",
+          "evidence": [
+            {
+              "id": "analytics",
+              "text": "Analytics tracks real user page views."
+            },
+            {
+              "id": "vitals",
+              "text": "Speed Insights reports Core Web Vitals like LCP and CLS from real users."
+            },
+            {
+              "id": "setup",
+              "text": "Both are enabled by installing a package and adding a component."
+            }
+          ],
+          "notEnough": [
+            "Only saying they monitor the site."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

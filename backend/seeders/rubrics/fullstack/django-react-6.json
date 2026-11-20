@@ -1,0 +1,243 @@
+{
+  "path": "fullstack",
+  "layer": "django-react-6",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Cross-Origin Communication",
+      "question": "Your React app on localhost:5173 calls your Django API on localhost:8000, and POST requests fail with CORS and CSRF errors. Explain what is happening and how you would fix it.",
+      "followUps": {
+        "CORS Configuration in Django": "Why does the browser block the React app's request, and how does django-cors-headers fix it?",
+        "CSRF Tokens and API Safety": "When does Django require a CSRF token, and when can an API skip it?"
+      },
+      "criteria": {
+        "CORS Configuration in Django": {
+          "id": "cors-django",
+          "evidence": [
+            {
+              "id": "origins",
+              "text": "Different ports are different origins, so the browser blocks reading the response by default."
+            },
+            {
+              "id": "headers",
+              "text": "django-cors-headers adds CORS headers that allow chosen origins."
+            },
+            {
+              "id": "middleware",
+              "text": "Its middleware must be added and the React origin listed explicitly."
+            }
+          ],
+          "notEnough": [
+            "Only saying you enable CORS."
+          ],
+          "misconceptions": []
+        },
+        "CSRF Tokens and API Safety": {
+          "id": "csrf-tokens",
+          "evidence": [
+            {
+              "id": "session",
+              "text": "With session or cookie authentication, unsafe requests like POST need a CSRF token."
+            },
+            {
+              "id": "why",
+              "text": "The token proves the request came from your own site and not a forged one."
+            },
+            {
+              "id": "jwt",
+              "text": "APIs that use tokens in headers instead of cookies are not exposed the same way."
+            }
+          ],
+          "notEnough": [
+            "Only saying CSRF tokens are required."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Handling Async State in React",
+      "question": "Your React recipe pages need to show loading and errors, create and edit recipes, and page through hundreds of results from DRF. Explain how you would handle each.",
+      "followUps": {
+        "Loading and Error State Patterns": "How would you model the states of a request in the UI?",
+        "Posting and Updating Data to APIs": "After creating a recipe, how do you update the list?",
+        "Client-Side Pagination with APIs": "How would the frontend use DRF's pagination data?"
+      },
+      "criteria": {
+        "Loading and Error State Patterns": {
+          "id": "loading-error-states",
+          "evidence": [
+            {
+              "id": "three",
+              "text": "A request is loading, successful or failed."
+            },
+            {
+              "id": "status",
+              "text": "A single status value drives what is rendered."
+            },
+            {
+              "id": "ui",
+              "text": "Each state has its own UI, such as a spinner or an error message."
+            }
+          ],
+          "notEnough": [
+            "Only saying you show a spinner."
+          ],
+          "misconceptions": []
+        },
+        "Posting and Updating Data to APIs": {
+          "id": "post-update",
+          "evidence": [
+            {
+              "id": "json",
+              "text": "Send the data as JSON with the right content type."
+            },
+            {
+              "id": "methods",
+              "text": "Use POST to create and PUT or PATCH to update."
+            },
+            {
+              "id": "refresh",
+              "text": "On success, refetch the list or add the returned item to state."
+            }
+          ],
+          "notEnough": [
+            "Only saying you post the data."
+          ],
+          "misconceptions": []
+        },
+        "Client-Side Pagination with APIs": {
+          "id": "pagination-client",
+          "evidence": [
+            {
+              "id": "meta",
+              "text": "DRF returns the count and next and previous URLs with each page."
+            },
+            {
+              "id": "state",
+              "text": "The current page is kept in state."
+            },
+            {
+              "id": "controls",
+              "text": "The frontend fetches the next or previous URL and shows page controls."
+            }
+          ],
+          "notEnough": [
+            "Only saying you paginate."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Axios HTTP Client",
+      "question": "Fetch calls with full URLs and headers are copied across your React app, and every component handles 401 errors differently. Explain how an Axios setup fixes this.",
+      "followUps": {
+        "Creating an Axios Instance with Base URL": "Why create one Axios instance for the app?",
+        "Axios Interceptors for Error Handling": "What can request and response interceptors do?"
+      },
+      "criteria": {
+        "Creating an Axios Instance with Base URL": {
+          "id": "axios-instance",
+          "evidence": [
+            {
+              "id": "base-url",
+              "text": "An instance sets the base URL and default headers once."
+            },
+            {
+              "id": "one-file",
+              "text": "It is exported from one file and used everywhere."
+            },
+            {
+              "id": "change",
+              "text": "Changing the API URL or headers then happens in one place."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use Axios."
+          ],
+          "misconceptions": []
+        },
+        "Axios Interceptors for Error Handling": {
+          "id": "axios-interceptors",
+          "evidence": [
+            {
+              "id": "request",
+              "text": "A request interceptor can attach the auth header to every request."
+            },
+            {
+              "id": "response",
+              "text": "A response interceptor can handle errors like 401 in one place."
+            },
+            {
+              "id": "refresh",
+              "text": "It can also refresh tokens before the error reaches components."
+            }
+          ],
+          "notEnough": [
+            "Only saying interceptors modify requests."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Environment Configuration",
+      "question": "Your API URL is hard-coded to localhost and a developer committed the Django secret key. Explain how you would configure both apps and avoid CORS in development.",
+      "followUps": {
+        "Environment Variables in Vite and Django": "How do Vite and Django read environment variables?",
+        "Proxy Configuration for Local Development": "How does a Vite proxy remove CORS problems in development?"
+      },
+      "criteria": {
+        "Environment Variables in Vite and Django": {
+          "id": "env-vars",
+          "evidence": [
+            {
+              "id": "vite",
+              "text": "Vite exposes only variables prefixed with VITE_ to the browser code."
+            },
+            {
+              "id": "django",
+              "text": "Django reads variables from the environment or a .env file through a helper library."
+            },
+            {
+              "id": "no-commit",
+              "text": ".env files with secrets are never committed."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use .env files."
+          ],
+          "misconceptions": [
+            {
+              "id": "vite-secret",
+              "text": "Says secrets in VITE_ variables are hidden from users."
+            }
+          ]
+        },
+        "Proxy Configuration for Local Development": {
+          "id": "vite-proxy",
+          "evidence": [
+            {
+              "id": "forward",
+              "text": "The Vite dev server forwards /api requests to Django."
+            },
+            {
+              "id": "same-origin",
+              "text": "The browser sees only one origin, so no CORS rules apply."
+            },
+            {
+              "id": "dev-only",
+              "text": "It is only for local development."
+            }
+          ],
+          "notEnough": [
+            "Only saying you configure a proxy."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

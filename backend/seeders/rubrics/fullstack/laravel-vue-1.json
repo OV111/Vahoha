@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "laravel-vue-1",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "PHP Core Concepts",
+      "question": "A login check in your PHP code lets a user in when it should not, because '0' compared equal to false, and a new class clashes with one from a package. Explain how PHP's types and namespaces work.",
+      "followUps": {
+        "Type System and Type Juggling": "Why can '0' == false be true, and how do you avoid surprises like this?",
+        "Namespaces and Autoloading": "How do namespaces and PSR-4 autoloading find your classes?"
+      },
+      "criteria": {
+        "Type System and Type Juggling": {
+          "id": "type-juggling",
+          "evidence": [
+            {
+              "id": "loose",
+              "text": "Loose comparison with == converts values to a common type before comparing."
+            },
+            {
+              "id": "strict",
+              "text": "Strict comparison with === also checks the type, so different types are never equal."
+            },
+            {
+              "id": "declare",
+              "text": "Type declarations and strict types make PHP reject wrong types instead of converting them."
+            }
+          ],
+          "notEnough": [
+            "Only saying to use triple equals."
+          ],
+          "misconceptions": [
+            {
+              "id": "same",
+              "text": "Says == and === behave the same for strings and booleans."
+            }
+          ]
+        },
+        "Namespaces and Autoloading": {
+          "id": "namespaces-autoloading",
+          "evidence": [
+            {
+              "id": "collisions",
+              "text": "Namespaces keep classes with the same name in different packages apart."
+            },
+            {
+              "id": "psr4",
+              "text": "PSR-4 maps a namespace to a folder, so a class's namespace matches its file path."
+            },
+            {
+              "id": "composer",
+              "text": "Composer's autoloader loads classes on demand from those rules."
+            }
+          ],
+          "notEnough": [
+            "Only saying namespaces organise code."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Object-Oriented PHP",
+      "question": "You are writing payment gateways that must be swappable and several models that share the same 'sluggable' behaviour. Explain how interfaces, abstract classes and traits help.",
+      "followUps": {
+        "Interfaces and Abstract Classes": "When would you use an interface and when an abstract class?",
+        "Traits and Code Reuse": "How do traits share behaviour, and what happens when two traits define the same method?"
+      },
+      "criteria": {
+        "Interfaces and Abstract Classes": {
+          "id": "interfaces-abstract",
+          "evidence": [
+            {
+              "id": "interface",
+              "text": "An interface defines methods a class promises to implement, with no shared code."
+            },
+            {
+              "id": "abstract",
+              "text": "An abstract class can share code and leave some methods for subclasses to fill in."
+            },
+            {
+              "id": "decouple",
+              "text": "Code that depends on an interface can work with any implementation, which Laravel's container relies on."
+            }
+          ],
+          "notEnough": [
+            "Only saying both define methods."
+          ],
+          "misconceptions": []
+        },
+        "Traits and Code Reuse": {
+          "id": "traits",
+          "evidence": [
+            {
+              "id": "compose",
+              "text": "Traits add methods to classes regardless of their inheritance."
+            },
+            {
+              "id": "examples",
+              "text": "Laravel uses traits like SoftDeletes and Notifiable."
+            },
+            {
+              "id": "conflicts",
+              "text": "Conflicting method names must be resolved explicitly with insteadof or aliases."
+            }
+          ],
+          "notEnough": [
+            "Only saying traits reuse code."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Composer Dependency Management",
+      "question": "A teammate's install pulled a different version of a library and broke production. Explain how Composer manages versions.",
+      "followUps": {
+        "composer.lock and Reproducible Builds": "Why commit composer.lock?",
+        "Semantic Versioning and Version Constraints": "What do the ^ and ~ constraints allow?"
+      },
+      "criteria": {
+        "composer.lock and Reproducible Builds": {
+          "id": "composer-lock",
+          "evidence": [
+            {
+              "id": "pins",
+              "text": "composer.lock records the exact version of every installed package."
+            },
+            {
+              "id": "same",
+              "text": "composer install uses it so every environment gets identical code."
+            },
+            {
+              "id": "update",
+              "text": "Only composer update changes the versions, and that should be deliberate."
+            }
+          ],
+          "notEnough": [
+            "Only saying the lock file locks versions."
+          ],
+          "misconceptions": []
+        },
+        "Semantic Versioning and Version Constraints": {
+          "id": "semver-constraints",
+          "evidence": [
+            {
+              "id": "semver",
+              "text": "Semantic versions are major.minor.patch, where a major bump may break things."
+            },
+            {
+              "id": "caret",
+              "text": "^2.0 allows any 2.x version but not 3.0."
+            },
+            {
+              "id": "tilde",
+              "text": "~2.1 allows 2.1 and later 2.x versions, but not 3.0, while ~2.1.0 allows only 2.1.x patches."
+            }
+          ],
+          "notEnough": [
+            "Only saying they set version ranges."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "PHP Built-in Functions",
+      "question": "Your import script runs out of memory on a large CSV and user names with accents get cut in the middle. Explain how you would process the data and handle text safely.",
+      "followUps": {
+        "Array Functions and Performance": "When would you use a generator instead of array_map on a large dataset?",
+        "String Handling and Multibyte Safety": "Why do strlen and substr break on accented text, and what should you use?"
+      },
+      "criteria": {
+        "Array Functions and Performance": {
+          "id": "arrays-generators",
+          "evidence": [
+            {
+              "id": "in-memory",
+              "text": "Array functions like array_map and array_filter work on whole arrays in memory."
+            },
+            {
+              "id": "generators",
+              "text": "Generators with yield produce one value at a time."
+            },
+            {
+              "id": "memory",
+              "text": "Generators keep memory low for large files or result sets."
+            }
+          ],
+          "notEnough": [
+            "Only saying generators are lazy."
+          ],
+          "misconceptions": []
+        },
+        "String Handling and Multibyte Safety": {
+          "id": "multibyte",
+          "evidence": [
+            {
+              "id": "bytes",
+              "text": "strlen and substr count bytes, not characters."
+            },
+            {
+              "id": "utf8",
+              "text": "In UTF-8 one character can be several bytes, so cutting by bytes can split characters."
+            },
+            {
+              "id": "mb",
+              "text": "Multibyte functions like mb_strlen and mb_substr work on characters."
+            }
+          ],
+          "notEnough": [
+            "Only saying to use mb functions."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

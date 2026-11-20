@@ -1,0 +1,225 @@
+{
+  "path": "fullstack",
+  "layer": "mern-1",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "How browsers parse and render HTML/CSS",
+      "question": "A user opens your MERN app on a slow phone and sees a blank screen for two seconds. Walk through what the browser does with your HTML and CSS before anything appears, and how your markup choices affect people who use screen readers.",
+      "followUps": {
+        "The critical rendering path and render-blocking resources": "Why can a large stylesheet or a script in the head delay the first paint, and what would you change?",
+        "Semantic HTML and the accessibility tree": "A screen reader user can't find the navigation on your site built only from divs. Why, and what would fix it?"
+      },
+      "criteria": {
+        "The critical rendering path and render-blocking resources": {
+          "id": "critical-rendering-path",
+          "evidence": [
+            {
+              "id": "dom-cssom",
+              "text": "The browser builds a DOM from the HTML and a CSSOM from the CSS, and combines them into a render tree before it can lay out and paint."
+            },
+            {
+              "id": "blocking",
+              "text": "CSS blocks rendering and a plain script blocks HTML parsing until it is downloaded and run, so both delay the first paint."
+            },
+            {
+              "id": "fix",
+              "text": "Putting scripts at the end of the body or marking them defer or async, and keeping critical CSS small, lets the page appear sooner."
+            }
+          ],
+          "notEnough": [
+            "Only naming DOM, CSSOM or render-blocking without explaining what blocks what and why."
+          ],
+          "misconceptions": [
+            {
+              "id": "css-nonblocking",
+              "text": "Says CSS never delays rendering because it only changes how things look after the page appears."
+            }
+          ]
+        },
+        "Semantic HTML and the accessibility tree": {
+          "id": "semantic-html-a11y",
+          "evidence": [
+            {
+              "id": "roles",
+              "text": "Semantic elements like nav, main and button carry built-in roles that end up in the accessibility tree."
+            },
+            {
+              "id": "assistive",
+              "text": "Screen readers and keyboard users rely on those roles to jump between regions and operate controls, which plain divs don't provide."
+            }
+          ],
+          "notEnough": [
+            "Only saying semantic HTML is better or cleaner without saying who uses the roles and how."
+          ],
+          "misconceptions": [
+            {
+              "id": "looks-only",
+              "text": "Says semantic elements only change how the page looks."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "CSS layout models: flow, flexbox, and grid",
+      "question": "You're building the dashboard page of your MERN app: a header, sidebar, main area and footer, with a row of cards in the main area. Explain how you'd lay it out and why element widths often come out bigger than you set them.",
+      "followUps": {
+        "The box model: content, padding, border, and margin": "You set a card to width 300px with padding and a border, and it overflows its column. Why, and how does box-sizing change that?",
+        "When to use flexbox versus CSS grid": "Why would you use grid for the page skeleton but flexbox for the row of cards or buttons?"
+      },
+      "criteria": {
+        "The box model: content, padding, border, and margin": {
+          "id": "box-model",
+          "evidence": [
+            {
+              "id": "layers",
+              "text": "Every element is a box made of content, padding, border and margin, from the inside out."
+            },
+            {
+              "id": "content-box",
+              "text": "By default the width covers only the content, so padding and border are added on top and the box ends up wider."
+            },
+            {
+              "id": "border-box",
+              "text": "With box-sizing border-box, padding and border are included in the width, so the box is exactly as wide as you set it."
+            }
+          ],
+          "notEnough": [
+            "Only listing content, padding, border and margin without explaining how the width is calculated."
+          ],
+          "misconceptions": [
+            {
+              "id": "margin-included",
+              "text": "Says border-box also includes the margin in the element's width."
+            }
+          ]
+        },
+        "When to use flexbox versus CSS grid": {
+          "id": "flex-vs-grid",
+          "evidence": [
+            {
+              "id": "flex-one-d",
+              "text": "Flexbox lays items out along one direction, a row or a column, which suits a row of cards or buttons."
+            },
+            {
+              "id": "grid-two-d",
+              "text": "Grid controls rows and columns at the same time, which suits a whole-page layout."
+            }
+          ],
+          "notEnough": [
+            "Only saying grid is for layouts or more powerful than flexbox."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Responsive design with media queries and units",
+      "question": "Your app's pages look fine on a laptop but break on phones, and you need to find out quickly why. Explain how you'd write the CSS so it works from small to large screens, and how you'd debug the layout in the browser.",
+      "followUps": {
+        "Mobile-first breakpoints with min-width media queries": "Why write the small-screen styles first and add min-width media queries on top, instead of starting from desktop?",
+        "Browser DevTools: inspecting layout, styles, and the network tab": "A card is wider than expected and an API call is slow. What would you look at in DevTools for each problem?"
+      },
+      "criteria": {
+        "Mobile-first breakpoints with min-width media queries": {
+          "id": "mobile-first",
+          "evidence": [
+            {
+              "id": "base-small",
+              "text": "The base styles target small screens, and min-width media queries add or change styles as the screen gets wider."
+            },
+            {
+              "id": "leaner",
+              "text": "Phones then load only the simple base rules, and you avoid writing desktop styles just to undo them for mobile."
+            }
+          ],
+          "notEnough": [
+            "Only saying use media queries without explaining the mobile-first order."
+          ],
+          "misconceptions": []
+        },
+        "Browser DevTools: inspecting layout, styles, and the network tab": {
+          "id": "devtools-debugging",
+          "evidence": [
+            {
+              "id": "elements",
+              "text": "The Elements and Styles panels show which CSS rules apply, which are overridden, and the element's box model, and you can edit them live."
+            },
+            {
+              "id": "network",
+              "text": "The Network tab lists every request with its status, headers, response and timing, so you see failed or slow calls."
+            }
+          ],
+          "notEnough": [
+            "Only saying open DevTools without saying what you look at."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "JavaScript DOM manipulation and events",
+      "question": "Your app shows a todo list where each item has a delete button, items are added all the time, and you're doing it in plain JavaScript before learning React. Explain how you'd update the page from JavaScript and how you'd handle clicks on all those buttons.",
+      "followUps": {
+        "Selecting elements and modifying the DOM at runtime": "Why toggle a class with classList instead of setting styles from JavaScript, and why textContent instead of innerHTML for user text?",
+        "Event bubbling, delegation, and removeEventListener": "Why put one click listener on the list instead of one on every button, and when do you need removeEventListener?"
+      },
+      "criteria": {
+        "Selecting elements and modifying the DOM at runtime": {
+          "id": "dom-selection",
+          "evidence": [
+            {
+              "id": "select",
+              "text": "You find elements with methods like querySelector and then read or change them through the DOM."
+            },
+            {
+              "id": "classlist",
+              "text": "Toggling a class with classList keeps the styling in CSS, and JavaScript only switches the state."
+            },
+            {
+              "id": "textcontent",
+              "text": "textContent sets plain text, so text from users is not parsed as HTML the way it is with innerHTML."
+            }
+          ],
+          "notEnough": [
+            "Only listing querySelector, textContent and classList without saying what each one does."
+          ],
+          "misconceptions": [
+            {
+              "id": "innerhtml-safe",
+              "text": "Says innerHTML is safe for inserting text that users typed."
+            }
+          ]
+        },
+        "Event bubbling, delegation, and removeEventListener": {
+          "id": "event-delegation",
+          "evidence": [
+            {
+              "id": "bubbling",
+              "text": "An event on an element bubbles up through its parents, so a listener on a parent also sees clicks on its children."
+            },
+            {
+              "id": "delegation",
+              "text": "One listener on the list checks event.target to find which item was clicked, so items added later work without new listeners."
+            },
+            {
+              "id": "remove",
+              "text": "Listeners added to elements or the window should be removed with removeEventListener when no longer needed, so they don't keep running and holding memory."
+            }
+          ],
+          "notEnough": [
+            "Only saying use event delegation without explaining bubbling or event.target."
+          ],
+          "misconceptions": [
+            {
+              "id": "no-bubble",
+              "text": "Says an event only fires on the exact element that was clicked and never reaches its parents."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

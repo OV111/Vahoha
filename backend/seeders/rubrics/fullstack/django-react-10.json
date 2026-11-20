@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "django-react-10",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Testing Django and React",
+      "question": "You need tests for your Django API and your React components before releasing. Explain how you would test each and fake the API in frontend tests.",
+      "followUps": {
+        "Django Testing with pytest and pytest-django": "What does pytest-django give you for testing the API?",
+        "React Component Testing with Vitest": "How would you test a React component with Vitest and Testing Library?",
+        "Mocking API Calls with MSW": "How does MSW fake API calls in tests?"
+      },
+      "criteria": {
+        "Django Testing with pytest and pytest-django": {
+          "id": "pytest-django",
+          "evidence": [
+            {
+              "id": "fixtures",
+              "text": "pytest-django provides fixtures like database access and a test client."
+            },
+            {
+              "id": "apiclient",
+              "text": "APIClient sends authenticated requests to DRF endpoints."
+            },
+            {
+              "id": "assert",
+              "text": "Tests check status codes, data and permission rules."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use pytest."
+          ],
+          "misconceptions": []
+        },
+        "React Component Testing with Vitest": {
+          "id": "vitest-rtl",
+          "evidence": [
+            {
+              "id": "vitest",
+              "text": "Vitest runs fast and shares the Vite configuration."
+            },
+            {
+              "id": "render",
+              "text": "Testing Library renders the component."
+            },
+            {
+              "id": "user-view",
+              "text": "Tests assert on what the user sees rather than internal details."
+            }
+          ],
+          "notEnough": [
+            "Only saying you write component tests."
+          ],
+          "misconceptions": []
+        },
+        "Mocking API Calls with MSW": {
+          "id": "msw",
+          "evidence": [
+            {
+              "id": "intercept",
+              "text": "Mock Service Worker intercepts network requests."
+            },
+            {
+              "id": "real-code",
+              "text": "Components run their real fetching code against fake responses."
+            },
+            {
+              "id": "reuse",
+              "text": "The same handlers work in tests and during development."
+            }
+          ],
+          "notEnough": [
+            "Only saying MSW mocks the API."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Containerization",
+      "question": "You are packaging the Django API, the React build, Postgres, Redis and Nginx to run together. Explain how you would containerise the stack and handle secrets.",
+      "followUps": {
+        "Dockerizing Django and React": "How would you containerise Django and React?",
+        "Environment Variables and Secrets in Docker": "How should secrets be passed to containers?"
+      },
+      "criteria": {
+        "Dockerizing Django and React": {
+          "id": "dockerize",
+          "evidence": [
+            {
+              "id": "react-build",
+              "text": "A multi-stage Dockerfile builds React and keeps only the static output."
+            },
+            {
+              "id": "django",
+              "text": "Django runs in its own image with Gunicorn."
+            },
+            {
+              "id": "compose",
+              "text": "Docker Compose runs the app, database, Redis and Nginx together."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use Docker."
+          ],
+          "misconceptions": []
+        },
+        "Environment Variables and Secrets in Docker": {
+          "id": "docker-secrets",
+          "evidence": [
+            {
+              "id": "env",
+              "text": "Secrets are passed as environment variables, not baked into images."
+            },
+            {
+              "id": "no-commit",
+              "text": ".env files with secrets are not committed."
+            },
+            {
+              "id": "managers",
+              "text": "In production a secrets manager or the platform's secret store is used."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use environment variables."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Production Serving",
+      "question": "In production, Django should not serve static files or face the internet directly. Explain how Gunicorn and Nginx serve the app.",
+      "followUps": {
+        "Gunicorn WSGI Server Configuration": "What does Gunicorn do, and how do you choose the number of workers?",
+        "Nginx as Reverse Proxy and Static Server": "What does Nginx do in front of Django?"
+      },
+      "criteria": {
+        "Gunicorn WSGI Server Configuration": {
+          "id": "gunicorn",
+          "evidence": [
+            {
+              "id": "wsgi",
+              "text": "Gunicorn is a production server that runs the Django app."
+            },
+            {
+              "id": "workers",
+              "text": "It runs several worker processes, often about two per CPU core plus one."
+            },
+            {
+              "id": "behind-proxy",
+              "text": "It runs behind a reverse proxy rather than facing the internet directly."
+            }
+          ],
+          "notEnough": [
+            "Only saying Gunicorn runs Django."
+          ],
+          "misconceptions": []
+        },
+        "Nginx as Reverse Proxy and Static Server": {
+          "id": "nginx",
+          "evidence": [
+            {
+              "id": "static",
+              "text": "Nginx serves static files and the React build directly."
+            },
+            {
+              "id": "proxy",
+              "text": "It forwards API requests to Gunicorn."
+            },
+            {
+              "id": "efficient",
+              "text": "Python never handles static file requests, which is faster."
+            }
+          ],
+          "notEnough": [
+            "Only saying Nginx is a web server."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Cloud Deployment",
+      "question": "You are deploying to a cloud platform and want the simplest setup for static files. Explain how you would prepare and deploy the app.",
+      "followUps": {
+        "collectstatic and WhiteNoise for Static Files": "What do collectstatic and WhiteNoise do?",
+        "Deploying to a Cloud Platform": "What would you weigh when choosing between a platform like Render and AWS?"
+      },
+      "criteria": {
+        "collectstatic and WhiteNoise for Static Files": {
+          "id": "collectstatic-whitenoise",
+          "evidence": [
+            {
+              "id": "collect",
+              "text": "collectstatic gathers all static files into one folder."
+            },
+            {
+              "id": "whitenoise",
+              "text": "WhiteNoise lets Django serve those files efficiently, compressed and cached."
+            },
+            {
+              "id": "simple",
+              "text": "This avoids needing a separate static server or CDN at first."
+            }
+          ],
+          "notEnough": [
+            "Only saying it handles static files."
+          ],
+          "misconceptions": []
+        },
+        "Deploying to a Cloud Platform": {
+          "id": "cloud-platform",
+          "evidence": [
+            {
+              "id": "simple",
+              "text": "Platforms like Railway, Render or Fly.io deploy containers with little setup."
+            },
+            {
+              "id": "aws",
+              "text": "AWS services like ECS, RDS and ElastiCache give more control and scale."
+            },
+            {
+              "id": "trade-off",
+              "text": "The trade-off is simplicity and speed against flexibility and operational work."
+            }
+          ],
+          "notEnough": [
+            "Only naming platforms."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

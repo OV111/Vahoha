@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "django-react-5",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "React Component Model",
+      "question": "You are building the React frontend for your recipe API with a list page, a detail page and a recipe card. Explain how components, state and routing work.",
+      "followUps": {
+        "Components, Props, and Composition": "Why are props read-only, and how do you build complex UIs from small parts?",
+        "State Management with useState and useEffect": "How do useState and useEffect work together to load data?",
+        "Client-Side Routing with React Router": "How does React Router show the detail page for /recipes/5 without reloading?"
+      },
+      "criteria": {
+        "Components, Props, and Composition": {
+          "id": "components-props",
+          "evidence": [
+            {
+              "id": "tree",
+              "text": "A React UI is a tree of components."
+            },
+            {
+              "id": "props",
+              "text": "Props are read-only inputs passed from parent to child."
+            },
+            {
+              "id": "compose",
+              "text": "Small focused components are combined to build larger screens."
+            }
+          ],
+          "notEnough": [
+            "Only saying components use props."
+          ],
+          "misconceptions": []
+        },
+        "State Management with useState and useEffect": {
+          "id": "usestate-useeffect",
+          "evidence": [
+            {
+              "id": "state",
+              "text": "useState stores local values that trigger a re-render when changed."
+            },
+            {
+              "id": "effect",
+              "text": "useEffect synchronises the component with outside systems like an API."
+            },
+            {
+              "id": "deps",
+              "text": "The dependency array decides when the effect runs again and prevents stale values."
+            }
+          ],
+          "notEnough": [
+            "Only saying hooks manage state."
+          ],
+          "misconceptions": []
+        },
+        "Client-Side Routing with React Router": {
+          "id": "react-router",
+          "evidence": [
+            {
+              "id": "map",
+              "text": "React Router maps URL paths to components."
+            },
+            {
+              "id": "no-reload",
+              "text": "Navigation changes the view without a full page reload."
+            },
+            {
+              "id": "params",
+              "text": "useParams reads values like the recipe id from the URL, and useNavigate navigates from code."
+            }
+          ],
+          "notEnough": [
+            "Only saying it handles routes."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Forms and Data Fetching",
+      "question": "You are building a 'new recipe' form and a list that loads recipes from Django. Explain how you would handle form input and fetching.",
+      "followUps": {
+        "Controlled Inputs and Form Handling": "What makes an input controlled, and when would you use an uncontrolled one?",
+        "Fetching API Data with useEffect": "What states must a component handle when fetching data?"
+      },
+      "criteria": {
+        "Controlled Inputs and Form Handling": {
+          "id": "controlled-inputs",
+          "evidence": [
+            {
+              "id": "state",
+              "text": "A controlled input's value is held in React state and updated on change."
+            },
+            {
+              "id": "validate",
+              "text": "That makes validation and submission straightforward."
+            },
+            {
+              "id": "uncontrolled",
+              "text": "Uncontrolled inputs with refs suit cases like file inputs."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use value and onChange."
+          ],
+          "misconceptions": []
+        },
+        "Fetching API Data with useEffect": {
+          "id": "fetch-states",
+          "evidence": [
+            {
+              "id": "fetch",
+              "text": "Data is fetched inside an effect with fetch or Axios."
+            },
+            {
+              "id": "loading",
+              "text": "The component shows a loading state while waiting."
+            },
+            {
+              "id": "error",
+              "text": "Errors are caught and shown to the user."
+            }
+          ],
+          "notEnough": [
+            "Only saying you fetch in useEffect."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Project Structure and Tooling",
+      "question": "You are setting up the React project and the codebase is getting hard to navigate. Explain your tooling and file organisation.",
+      "followUps": {
+        "Scaffolding with Vite or Create React App": "Why choose Vite for a new React project?",
+        "Organising a React Codebase": "How would you organise files as the app grows?"
+      },
+      "criteria": {
+        "Scaffolding with Vite or Create React App": {
+          "id": "vite-scaffold",
+          "evidence": [
+            {
+              "id": "fast",
+              "text": "Vite starts quickly and updates instantly during development."
+            },
+            {
+              "id": "esm",
+              "text": "It serves modules natively in development."
+            },
+            {
+              "id": "cra",
+              "text": "Create React App is older and slower and no longer recommended."
+            }
+          ],
+          "notEnough": [
+            "Only saying Vite is faster."
+          ],
+          "misconceptions": []
+        },
+        "Organising a React Codebase": {
+          "id": "codebase-organisation",
+          "evidence": [
+            {
+              "id": "feature",
+              "text": "Group files by feature instead of by type."
+            },
+            {
+              "id": "colocate",
+              "text": "Keep a component's styles and tests next to it."
+            },
+            {
+              "id": "barrel",
+              "text": "An index file per feature can simplify imports."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use folders."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Developer Experience",
+      "question": "A component shows the wrong data and a teammate keeps forgetting effect dependencies. Explain the tools you would use to debug and prevent this.",
+      "followUps": {
+        "React DevTools Browser Extension": "What can you see with React DevTools?",
+        "ESLint and Prettier for React Projects": "How do ESLint and Prettier help a React team?"
+      },
+      "criteria": {
+        "React DevTools Browser Extension": {
+          "id": "react-devtools",
+          "evidence": [
+            {
+              "id": "tree",
+              "text": "It shows the component tree."
+            },
+            {
+              "id": "props-state",
+              "text": "You can inspect each component's props and state."
+            },
+            {
+              "id": "profile",
+              "text": "The profiler shows which components render and how long they take."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a browser extension."
+          ],
+          "misconceptions": []
+        },
+        "ESLint and Prettier for React Projects": {
+          "id": "eslint-prettier",
+          "evidence": [
+            {
+              "id": "hooks-rule",
+              "text": "The React hooks lint rules catch broken hook rules and missing effect dependencies."
+            },
+            {
+              "id": "format",
+              "text": "Prettier formats code automatically."
+            },
+            {
+              "id": "consistency",
+              "text": "Together they catch bugs early and keep code consistent."
+            }
+          ],
+          "notEnough": [
+            "Only saying they format code."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

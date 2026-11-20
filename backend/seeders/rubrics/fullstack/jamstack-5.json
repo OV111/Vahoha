@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "jamstack-5",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Contentful Data Modelling",
+      "question": "Your marketing team wants to write blog posts in Contentful, preview drafts before publishing and use rich formatting. Explain how you would model the content and render it.",
+      "followUps": {
+        "Content types, fields, and validation in Contentful": "What is a content type in Contentful?",
+        "Preview versus published environments and content workflow": "How do preview and delivery differ in Contentful?",
+        "Rich text field rendering in React components": "Why can't you render a rich text field as plain HTML directly?"
+      },
+      "criteria": {
+        "Content types, fields, and validation in Contentful": {
+          "id": "content-types",
+          "evidence": [
+            {
+              "id": "schema",
+              "text": "A content type defines the structure of entries, like a table schema."
+            },
+            {
+              "id": "fields",
+              "text": "Each field has a type, such as text, date or reference."
+            },
+            {
+              "id": "validations",
+              "text": "Validations like required or unique keep content consistent."
+            }
+          ],
+          "notEnough": [
+            "Only saying content types define content."
+          ],
+          "misconceptions": []
+        },
+        "Preview versus published environments and content workflow": {
+          "id": "preview-vs-published",
+          "evidence": [
+            {
+              "id": "separate-keys",
+              "text": "Contentful has separate APIs and keys for preview and delivery."
+            },
+            {
+              "id": "drafts",
+              "text": "The preview API returns draft entries."
+            },
+            {
+              "id": "workflow",
+              "text": "Editors check drafts on a preview site before they are published to production."
+            }
+          ],
+          "notEnough": [
+            "Only saying you can preview content."
+          ],
+          "misconceptions": []
+        },
+        "Rich text field rendering in React components": {
+          "id": "rich-text-rendering",
+          "evidence": [
+            {
+              "id": "tree",
+              "text": "Rich text is stored as a structured tree of nodes, not HTML."
+            },
+            {
+              "id": "renderer",
+              "text": "A renderer library turns that tree into React elements."
+            },
+            {
+              "id": "custom",
+              "text": "Custom renderers control how embedded entries and assets appear."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use a renderer."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Contentful API Concepts",
+      "question": "Your site reads blog posts from Contentful, and a script needs to create hundreds of entries during a migration. Explain which Contentful APIs you would use.",
+      "followUps": {
+        "Content Delivery API vs Content Management API differences": "When would you use the Content Delivery API and when the Content Management API?",
+        "GraphQL API for typed content queries in Contentful": "What does Contentful's GraphQL API give you?"
+      },
+      "criteria": {
+        "Content Delivery API vs Content Management API differences": {
+          "id": "cda-vs-cma",
+          "evidence": [
+            {
+              "id": "cda",
+              "text": "The Content Delivery API is read-only, CDN-backed and serves published content to the site."
+            },
+            {
+              "id": "cma",
+              "text": "The Content Management API can write content and is used for migrations and tooling."
+            },
+            {
+              "id": "keys",
+              "text": "Management tokens must never be exposed in the frontend."
+            }
+          ],
+          "notEnough": [
+            "Only saying one reads and one writes."
+          ],
+          "misconceptions": []
+        },
+        "GraphQL API for typed content queries in Contentful": {
+          "id": "contentful-graphql",
+          "evidence": [
+            {
+              "id": "typed",
+              "text": "It exposes your content types as typed GraphQL queries."
+            },
+            {
+              "id": "fields",
+              "text": "You request exactly the fields a component needs."
+            },
+            {
+              "id": "colocate",
+              "text": "Queries can sit next to the components that use them."
+            }
+          ],
+          "notEnough": [
+            "Only saying Contentful supports GraphQL."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Querying and Fetching Contentful",
+      "question": "Your blog page fetches posts from Contentful, then makes another request for each author, and pages are slow. Explain how you would fetch entries and linked content efficiently.",
+      "followUps": {
+        "Fetching entries with the Contentful JS SDK": "How would you fetch only blog posts with the fields you need?",
+        "Querying linked assets and nested references from CDA": "How do you get linked authors and images without extra requests?"
+      },
+      "criteria": {
+        "Fetching entries with the Contentful JS SDK": {
+          "id": "contentful-sdk",
+          "evidence": [
+            {
+              "id": "sdk",
+              "text": "The JavaScript SDK wraps the delivery API with methods to get entries."
+            },
+            {
+              "id": "filter",
+              "text": "You filter by content type to get only blog posts."
+            },
+            {
+              "id": "select",
+              "text": "Selecting specific fields reduces the response size."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use the SDK."
+          ],
+          "misconceptions": []
+        },
+        "Querying linked assets and nested references from CDA": {
+          "id": "linked-references",
+          "evidence": [
+            {
+              "id": "references",
+              "text": "Entries can reference other entries and assets."
+            },
+            {
+              "id": "include",
+              "text": "The include parameter resolves linked items in the same response."
+            },
+            {
+              "id": "no-waterfall",
+              "text": "This avoids making a request per linked item."
+            }
+          ],
+          "notEnough": [
+            "Only saying references link content."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Assets, Media and Gatsby Integration",
+      "question": "Your site uses Contentful images that are too large, and you are moving the site to Gatsby. Explain how you would serve images efficiently and connect Contentful to Gatsby.",
+      "followUps": {
+        "Contentful Image API for on-demand image transformation": "How can you resize Contentful images without your own image server?",
+        "gatsby-source-contentful plugin setup and configuration": "How does gatsby-source-contentful get content into a Gatsby site?"
+      },
+      "criteria": {
+        "Contentful Image API for on-demand image transformation": {
+          "id": "contentful-images",
+          "evidence": [
+            {
+              "id": "cdn",
+              "text": "Contentful serves assets through a CDN."
+            },
+            {
+              "id": "params",
+              "text": "URL parameters control width, height, format and quality."
+            },
+            {
+              "id": "responsive",
+              "text": "This lets you request the right size for each screen."
+            }
+          ],
+          "notEnough": [
+            "Only saying Contentful hosts images."
+          ],
+          "misconceptions": []
+        },
+        "gatsby-source-contentful plugin setup and configuration": {
+          "id": "gatsby-source-contentful",
+          "evidence": [
+            {
+              "id": "pull",
+              "text": "The plugin pulls published entries into Gatsby's GraphQL layer at build time."
+            },
+            {
+              "id": "config",
+              "text": "It is configured with the space id and an access token."
+            },
+            {
+              "id": "env",
+              "text": "The token is kept in environment variables, not in the code."
+            }
+          ],
+          "notEnough": [
+            "Only saying it connects Gatsby to Contentful."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

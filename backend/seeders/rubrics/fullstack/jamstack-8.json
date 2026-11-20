@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "jamstack-8",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Core Web Vitals Theory",
+      "question": "Your JAMstack site scores poorly on Core Web Vitals and does not show rich results in search. Explain what the metrics measure, how you would reduce JavaScript, and how structured data helps.",
+      "followUps": {
+        "LCP, CLS, and INP metrics and what affects them": "What do LCP, CLS and INP measure?",
+        "Code splitting and lazy loading to reduce bundle size": "How do code splitting and lazy loading reduce the initial JavaScript?",
+        "SEO structured data with JSON-LD and schema.org markup": "What does JSON-LD structured data do for search results?"
+      },
+      "criteria": {
+        "LCP, CLS, and INP metrics and what affects them": {
+          "id": "web-vitals",
+          "evidence": [
+            {
+              "id": "lcp",
+              "text": "Largest Contentful Paint measures how fast the main content appears."
+            },
+            {
+              "id": "cls",
+              "text": "Cumulative Layout Shift measures how much the page jumps around."
+            },
+            {
+              "id": "inp",
+              "text": "Interaction to Next Paint measures how quickly the page responds to input."
+            }
+          ],
+          "notEnough": [
+            "Only spelling out the names."
+          ],
+          "misconceptions": []
+        },
+        "Code splitting and lazy loading to reduce bundle size": {
+          "id": "code-splitting",
+          "evidence": [
+            {
+              "id": "chunks",
+              "text": "Code splitting breaks the bundle into smaller chunks."
+            },
+            {
+              "id": "on-demand",
+              "text": "Dynamic imports and React.lazy load code only when it is needed."
+            },
+            {
+              "id": "faster",
+              "text": "Less code up front makes the page load and respond faster."
+            }
+          ],
+          "notEnough": [
+            "Only saying it makes the bundle smaller."
+          ],
+          "misconceptions": []
+        },
+        "SEO structured data with JSON-LD and schema.org markup": {
+          "id": "json-ld",
+          "evidence": [
+            {
+              "id": "describe",
+              "text": "JSON-LD describes the page's content in a format search engines understand."
+            },
+            {
+              "id": "schema",
+              "text": "It uses schema.org types like Article or Product."
+            },
+            {
+              "id": "rich",
+              "text": "It can make the page eligible for rich results such as ratings or breadcrumbs."
+            }
+          ],
+          "notEnough": [
+            "Only saying it helps SEO."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "SEO Fundamentals",
+      "question": "Search engines are slow to find your new pages, and shared links show no image. Explain how sitemaps, robots.txt and social tags help.",
+      "followUps": {
+        "Sitemaps and robots.txt for crawl budget management": "What do a sitemap and robots.txt each do?",
+        "Open Graph and Twitter Card meta tags for social sharing": "What controls the preview of a shared link?"
+      },
+      "criteria": {
+        "Sitemaps and robots.txt for crawl budget management": {
+          "id": "sitemap-robots",
+          "evidence": [
+            {
+              "id": "sitemap",
+              "text": "A sitemap lists the URLs you want search engines to find."
+            },
+            {
+              "id": "robots",
+              "text": "robots.txt tells crawlers which paths they may visit."
+            },
+            {
+              "id": "not-security",
+              "text": "robots.txt does not hide pages from people, so it is not a security control."
+            }
+          ],
+          "notEnough": [
+            "Only saying they help SEO."
+          ],
+          "misconceptions": []
+        },
+        "Open Graph and Twitter Card meta tags for social sharing": {
+          "id": "og-twitter",
+          "evidence": [
+            {
+              "id": "og",
+              "text": "Open Graph tags set the title, description and image of link previews."
+            },
+            {
+              "id": "twitter",
+              "text": "Twitter card tags control previews on that platform."
+            },
+            {
+              "id": "image",
+              "text": "A properly sized preview image is required for a good-looking card."
+            }
+          ],
+          "notEnough": [
+            "Only naming Open Graph."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Image and Asset Optimisation",
+      "question": "Your homepage loads large JPEGs and a web font that leaves text invisible for a second. Explain how you would optimise images and fonts.",
+      "followUps": {
+        "Image formats WebP and AVIF for smaller file sizes": "Why use WebP or AVIF instead of JPEG?",
+        "Preloading critical fonts and eliminating render-blocking resources": "How do you stop fonts from blocking or hiding text?"
+      },
+      "criteria": {
+        "Image formats WebP and AVIF for smaller file sizes": {
+          "id": "modern-formats",
+          "evidence": [
+            {
+              "id": "smaller",
+              "text": "WebP and AVIF give smaller files than JPEG at similar quality."
+            },
+            {
+              "id": "auto",
+              "text": "Image components in frameworks can generate these formats automatically."
+            },
+            {
+              "id": "fallback",
+              "text": "Older browsers can be served a fallback format."
+            }
+          ],
+          "notEnough": [
+            "Only saying they are newer formats."
+          ],
+          "misconceptions": []
+        },
+        "Preloading critical fonts and eliminating render-blocking resources": {
+          "id": "font-loading",
+          "evidence": [
+            {
+              "id": "blocking",
+              "text": "Web fonts can delay text rendering while they download."
+            },
+            {
+              "id": "swap",
+              "text": "font-display swap shows a fallback font until the web font is ready."
+            },
+            {
+              "id": "preload",
+              "text": "Preloading critical fonts makes them arrive sooner."
+            }
+          ],
+          "notEnough": [
+            "Only saying you optimise fonts."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Lighthouse and Performance Auditing",
+      "question": "Performance keeps getting worse with each release and nobody notices until users complain, and one page responds slowly to clicks. Explain how you would catch regressions and diagnose the slow page.",
+      "followUps": {
+        "Running Lighthouse CI in GitHub Actions for regressions": "How would Lighthouse CI stop performance from getting worse?",
+        "Chrome DevTools Performance panel for diagnosing bottlenecks": "How would the Performance panel help find why clicks are slow?"
+      },
+      "criteria": {
+        "Running Lighthouse CI in GitHub Actions for regressions": {
+          "id": "lighthouse-ci",
+          "evidence": [
+            {
+              "id": "every-pr",
+              "text": "Lighthouse CI runs audits on every pull request."
+            },
+            {
+              "id": "thresholds",
+              "text": "It fails the build if scores drop below set thresholds."
+            },
+            {
+              "id": "config",
+              "text": "The thresholds and pages to test are kept in a config file in the repo."
+            }
+          ],
+          "notEnough": [
+            "Only saying you run Lighthouse."
+          ],
+          "misconceptions": []
+        },
+        "Chrome DevTools Performance panel for diagnosing bottlenecks": {
+          "id": "performance-panel",
+          "evidence": [
+            {
+              "id": "record",
+              "text": "It records what the main thread does over time."
+            },
+            {
+              "id": "long-tasks",
+              "text": "Long tasks block the page from responding to input."
+            },
+            {
+              "id": "source",
+              "text": "You can see which code caused each long task."
+            }
+          ],
+          "notEnough": [
+            "Only saying you record a profile."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "astro-dev-10",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "End-to-End Testing with Playwright",
+      "question": "You are setting up end-to-end tests for your Astro site across several browsers. Explain how you would configure Playwright and organise tests.",
+      "followUps": {
+        "Playwright Setup and Configuration": "What goes in playwright.config.ts?",
+        "Page Object Model Pattern": "How does the page object model help?"
+      },
+      "criteria": {
+        "Playwright Setup and Configuration": {
+          "id": "playwright-config",
+          "evidence": [
+            {
+              "id": "browsers",
+              "text": "It defines which browsers to test."
+            },
+            {
+              "id": "base-url",
+              "text": "It sets the base URL and timeouts."
+            },
+            {
+              "id": "single-source",
+              "text": "Keeping these in config avoids hard-coding them in tests."
+            }
+          ],
+          "notEnough": [
+            "Only saying it configures Playwright."
+          ],
+          "misconceptions": []
+        },
+        "Page Object Model Pattern": {
+          "id": "pom",
+          "evidence": [
+            {
+              "id": "encapsulate",
+              "text": "Page objects wrap selectors and actions for each page."
+            },
+            {
+              "id": "decouple",
+              "text": "Tests do not depend directly on the DOM structure."
+            },
+            {
+              "id": "one-place",
+              "text": "UI changes only require updating the page object."
+            }
+          ],
+          "notEnough": [
+            "Only saying it organises tests."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Testing Strategy",
+      "question": "A redesign accidentally broke your site's navigation for screen readers and changed the footer layout without anyone noticing. Explain how tests could have caught both.",
+      "followUps": {
+        "Accessibility Testing in Playwright": "How do role-based locators double as accessibility checks?",
+        "Visual Regression Testing": "How does visual regression testing work?"
+      },
+      "criteria": {
+        "Accessibility Testing in Playwright": {
+          "id": "a11y-locators",
+          "evidence": [
+            {
+              "id": "role",
+              "text": "getByRole and getByLabel find elements by their accessible role and name."
+            },
+            {
+              "id": "check",
+              "text": "If they cannot find an element, it is often not accessible."
+            },
+            {
+              "id": "resilient",
+              "text": "They also survive changes to CSS classes."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use getByRole."
+          ],
+          "misconceptions": []
+        },
+        "Visual Regression Testing": {
+          "id": "visual-regression",
+          "evidence": [
+            {
+              "id": "screenshots",
+              "text": "Tests capture screenshots of pages or components."
+            },
+            {
+              "id": "compare",
+              "text": "They compare them with approved baselines."
+            },
+            {
+              "id": "threshold",
+              "text": "Differences above a threshold fail the test so changes are reviewed."
+            }
+          ],
+          "notEnough": [
+            "Only saying you compare screenshots."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Deployment with Netlify",
+      "question": "You are deploying your Astro site with server-rendered pages to Netlify, and reviewers want to see changes before merge. Explain the setup.",
+      "followUps": {
+        "Netlify Adapter and Build Config": "What does the Netlify adapter produce?",
+        "Continuous Deployment and Preview Deploys": "What do preview deploys give the team?"
+      },
+      "criteria": {
+        "Netlify Adapter and Build Config": {
+          "id": "netlify-adapter",
+          "evidence": [
+            {
+              "id": "functions",
+              "text": "It turns server-rendered pages and endpoints into Netlify Functions."
+            },
+            {
+              "id": "edge",
+              "text": "Middleware can run as Edge Functions."
+            },
+            {
+              "id": "config",
+              "text": "The build command and publish folder are set for Netlify."
+            }
+          ],
+          "notEnough": [
+            "Only saying it deploys to Netlify."
+          ],
+          "misconceptions": []
+        },
+        "Continuous Deployment and Preview Deploys": {
+          "id": "preview-deploys",
+          "evidence": [
+            {
+              "id": "per-pr",
+              "text": "Every pull request gets its own preview URL."
+            },
+            {
+              "id": "real",
+              "text": "Changes are reviewed in a production-like environment."
+            },
+            {
+              "id": "catch",
+              "text": "Problems are caught before merging."
+            }
+          ],
+          "notEnough": [
+            "Only saying previews show changes."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "CI/CD Integration",
+      "question": "You want every pull request tested automatically, and the build needs API keys. Explain how you would set up GitHub Actions and secrets.",
+      "followUps": {
+        "GitHub Actions for Astro": "What should the GitHub Actions workflow do?",
+        "Environment Variable Management in CI": "How should secrets be provided in CI?"
+      },
+      "criteria": {
+        "GitHub Actions for Astro": {
+          "id": "github-actions",
+          "evidence": [
+            {
+              "id": "install-build",
+              "text": "It installs dependencies and builds the site."
+            },
+            {
+              "id": "test",
+              "text": "It runs Playwright tests against the built site."
+            },
+            {
+              "id": "block",
+              "text": "Failing tests block merging."
+            }
+          ],
+          "notEnough": [
+            "Only saying CI runs tests."
+          ],
+          "misconceptions": []
+        },
+        "Environment Variable Management in CI": {
+          "id": "ci-secrets",
+          "evidence": [
+            {
+              "id": "secrets",
+              "text": "Secrets are stored as repository or organisation secrets."
+            },
+            {
+              "id": "not-committed",
+              "text": "They are never committed to the code."
+            },
+            {
+              "id": "public",
+              "text": "Only values meant for the browser get the PUBLIC_ prefix."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use secrets."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

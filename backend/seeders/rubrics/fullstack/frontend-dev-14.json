@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "frontend-dev-14",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Strategy",
+      "question": "Your team's tests break every time someone refactors, but real bugs still reach production. Explain how you would decide what to test and where to start.",
+      "followUps": {
+        "What to test": "Why are tests that check implementation details a problem?",
+        "Unit tests with Vitest": "Which code is easiest and most valuable to unit test, and why use Vitest?"
+      },
+      "criteria": {
+        "What to test": {
+          "id": "what-to-test",
+          "evidence": [
+            {
+              "id": "behavior",
+              "text": "Tests should check behavior users rely on, not how the code is written inside."
+            },
+            {
+              "id": "refactor-breaks",
+              "text": "Tests tied to internals break on refactors even when nothing visible changed."
+            },
+            {
+              "id": "cost",
+              "text": "Such tests cost more to maintain than the bugs they catch."
+            }
+          ],
+          "notEnough": [
+            "Only saying to test behavior."
+          ],
+          "misconceptions": []
+        },
+        "Unit tests with Vitest": {
+          "id": "vitest-units",
+          "evidence": [
+            {
+              "id": "pure",
+              "text": "Pure functions like reducers, formatters and validators are easy and valuable to test."
+            },
+            {
+              "id": "fast",
+              "text": "Vitest runs fast and reuses the project's Vite setup."
+            },
+            {
+              "id": "compatible",
+              "text": "Its API is compatible with Jest, so existing knowledge carries over."
+            }
+          ],
+          "notEnough": [
+            "Only saying Vitest is fast."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Components",
+      "question": "You are testing a login form component that shows an error after a failed request. Explain how you would find elements and simulate the user in the test.",
+      "followUps": {
+        "Queries by role": "Why find a button by its role and name instead of a CSS class or test id?",
+        "User events and async UI": "How do you test UI that updates after a request finishes?"
+      },
+      "criteria": {
+        "Queries by role": {
+          "id": "queries-by-role",
+          "evidence": [
+            {
+              "id": "user-view",
+              "text": "Role and name are how users and screen readers identify elements."
+            },
+            {
+              "id": "resilient",
+              "text": "These queries survive changes to class names and markup structure."
+            },
+            {
+              "id": "a11y-check",
+              "text": "If a test cannot find an element by role, it often means the element is not accessible."
+            }
+          ],
+          "notEnough": [
+            "Only saying getByRole is recommended."
+          ],
+          "misconceptions": []
+        },
+        "User events and async UI": {
+          "id": "user-events-async",
+          "evidence": [
+            {
+              "id": "user-event",
+              "text": "user-event simulates real typing and clicking, including focus and keyboard events."
+            },
+            {
+              "id": "wait",
+              "text": "findBy queries and waitFor wait for the UI to update after a promise resolves."
+            },
+            {
+              "id": "no-sleep",
+              "text": "Waiting for the expected result is more reliable than waiting a fixed time."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would use await."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Network",
+      "question": "Your components call a real API, so tests are slow and fail when the API is down, and nobody has ever seen the error screen in a test. Explain how you would test network behavior.",
+      "followUps": {
+        "Mock Service Worker": "How does Mock Service Worker differ from mocking fetch directly?",
+        "Testing loading and error states": "How would you test that the error and empty states actually work?"
+      },
+      "criteria": {
+        "Mock Service Worker": {
+          "id": "msw",
+          "evidence": [
+            {
+              "id": "network-level",
+              "text": "MSW intercepts requests at the network level."
+            },
+            {
+              "id": "real-code",
+              "text": "Components run their real fetching code and only the response is fake."
+            },
+            {
+              "id": "reuse",
+              "text": "The same handlers can be used in tests and during development."
+            }
+          ],
+          "notEnough": [
+            "Only saying MSW mocks APIs."
+          ],
+          "misconceptions": []
+        },
+        "Testing loading and error states": {
+          "id": "test-loading-error",
+          "evidence": [
+            {
+              "id": "handlers",
+              "text": "Special handlers can delay, fail or return empty data for a single test."
+            },
+            {
+              "id": "rare-states",
+              "text": "This checks states users rarely see but notice when they break."
+            },
+            {
+              "id": "assert",
+              "text": "Tests check that the right message and retry option appear in each case."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would test errors."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "End to End",
+      "question": "Your team adds end-to-end tests for checkout, but they fail randomly in CI and people have started ignoring red builds. Explain how you would set up reliable end-to-end tests.",
+      "followUps": {
+        "Playwright": "What does Playwright do to make end-to-end tests less flaky and easier to debug?",
+        "CI and flaky tests": "Why is a flaky test dangerous, and what would you do about one?"
+      },
+      "criteria": {
+        "Playwright": {
+          "id": "playwright",
+          "evidence": [
+            {
+              "id": "real-browsers",
+              "text": "Playwright drives real browsers such as Chromium, Firefox and WebKit."
+            },
+            {
+              "id": "auto-wait",
+              "text": "It waits automatically for elements to be ready before acting."
+            },
+            {
+              "id": "traces",
+              "text": "It records traces of failed runs so you can see exactly what happened."
+            }
+          ],
+          "notEnough": [
+            "Only saying Playwright runs tests in a browser."
+          ],
+          "misconceptions": []
+        },
+        "CI and flaky tests": {
+          "id": "ci-flaky",
+          "evidence": [
+            {
+              "id": "every-push",
+              "text": "Tests should run in CI on every push."
+            },
+            {
+              "id": "ignore",
+              "text": "A flaky test teaches people to ignore failures, so real ones slip through."
+            },
+            {
+              "id": "fix-fast",
+              "text": "Flaky tests should be fixed or removed quickly, and fixed sleeps replaced with waiting for real conditions."
+            }
+          ],
+          "notEnough": [
+            "Only saying to rerun failed tests."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "remix-dev-2",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "File-Based Routing",
+      "question": "You are building a Remix app with a dashboard layout, project pages and settings pages. Explain how file names become routes and how nesting works.",
+      "followUps": {
+        "Route File Naming Conventions": "How do dots and underscores in route file names work?",
+        "Nested Routes and Outlet": "What happens if a parent route forgets to render Outlet?"
+      },
+      "criteria": {
+        "Route File Naming Conventions": {
+          "id": "route-naming",
+          "evidence": [
+            {
+              "id": "dots",
+              "text": "Dots in file names become slashes in the URL."
+            },
+            {
+              "id": "dollar",
+              "text": "A $ prefix marks a dynamic segment."
+            },
+            {
+              "id": "underscore",
+              "text": "A leading underscore creates a layout route that does not add to the URL."
+            }
+          ],
+          "notEnough": [
+            "Only saying routing is file-based."
+          ],
+          "misconceptions": []
+        },
+        "Nested Routes and Outlet": {
+          "id": "nested-outlet",
+          "evidence": [
+            {
+              "id": "map",
+              "text": "Nested routes map URL parts to nested components."
+            },
+            {
+              "id": "outlet",
+              "text": "The parent renders an Outlet where the child route appears."
+            },
+            {
+              "id": "missing",
+              "text": "Without it, child routes do not show up at all."
+            }
+          ],
+          "notEnough": [
+            "Only saying routes nest."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Navigation and Links",
+      "question": "Your navigation sometimes reloads the whole page and you need to redirect after a successful action. Explain Remix's navigation tools.",
+      "followUps": {
+        "Link vs NavLink and Prefetching": "What do Link and NavLink add over a plain anchor, and how does prefetching work?",
+        "useNavigate and Programmatic Navigation": "When should you use useNavigate, and where is a redirect better?"
+      },
+      "criteria": {
+        "Link vs NavLink and Prefetching": {
+          "id": "link-navlink",
+          "evidence": [
+            {
+              "id": "client-nav",
+              "text": "Link navigates without a full reload."
+            },
+            {
+              "id": "navlink",
+              "text": "NavLink also knows whether it is the active route, for styling."
+            },
+            {
+              "id": "prefetch",
+              "text": "Prefetch options load route data early, such as on hover."
+            }
+          ],
+          "notEnough": [
+            "Only saying Link is for navigation."
+          ],
+          "misconceptions": []
+        },
+        "useNavigate and Programmatic Navigation": {
+          "id": "use-navigate",
+          "evidence": [
+            {
+              "id": "imperative",
+              "text": "useNavigate navigates from code in event handlers or effects."
+            },
+            {
+              "id": "not-render",
+              "text": "It should not be called during render."
+            },
+            {
+              "id": "redirect",
+              "text": "After actions, returning a redirect from the server is usually better."
+            }
+          ],
+          "notEnough": [
+            "Only saying useNavigate navigates."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Route Params and Search",
+      "question": "Your user page reads an id from the URL and the search page keeps filters in the query string. Explain how you would read and update route data safely.",
+      "followUps": {
+        "Dynamic Segments and useParams": "How do you read a dynamic segment, and why validate it?",
+        "useSearchParams for Query Strings": "How does useSearchParams handle query strings?"
+      },
+      "criteria": {
+        "Dynamic Segments and useParams": {
+          "id": "dynamic-params",
+          "evidence": [
+            {
+              "id": "segment",
+              "text": "A $userId segment captures that part of the URL."
+            },
+            {
+              "id": "access",
+              "text": "It is available as params in loaders and through useParams in components."
+            },
+            {
+              "id": "validate",
+              "text": "It is user input, so it must be validated before querying the database."
+            }
+          ],
+          "notEnough": [
+            "Only saying params come from the URL."
+          ],
+          "misconceptions": []
+        },
+        "useSearchParams for Query Strings": {
+          "id": "search-params",
+          "evidence": [
+            {
+              "id": "reactive",
+              "text": "useSearchParams reads the current query parameters."
+            },
+            {
+              "id": "setter",
+              "text": "Its setter updates them and triggers a navigation."
+            },
+            {
+              "id": "no-window",
+              "text": "Changing window.location directly bypasses Remix and reloads the page."
+            }
+          ],
+          "notEnough": [
+            "Only saying it reads the query string."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Remix App Structure",
+      "question": "After a refactor, no client-side JavaScript works in your Remix app, and enabling all future flags at once broke several pages. Explain the app shell and configuration.",
+      "followUps": {
+        "root.tsx and App Shell": "What does root.tsx render, and why does removing Scripts break interactivity?",
+        "remix.config.js and vite.config.ts": "How should you adopt future flags?"
+      },
+      "criteria": {
+        "root.tsx and App Shell": {
+          "id": "root-shell",
+          "evidence": [
+            {
+              "id": "shell",
+              "text": "root.tsx renders the HTML document shell for every page."
+            },
+            {
+              "id": "scripts",
+              "text": "The Scripts component loads the client JavaScript."
+            },
+            {
+              "id": "missing",
+              "text": "Without it, pages render but nothing on the client works."
+            }
+          ],
+          "notEnough": [
+            "Only saying root.tsx is the root."
+          ],
+          "misconceptions": []
+        },
+        "remix.config.js and vite.config.ts": {
+          "id": "config-flags",
+          "evidence": [
+            {
+              "id": "config",
+              "text": "The Vite config controls adapters, route settings and future flags."
+            },
+            {
+              "id": "one-at-a-time",
+              "text": "Future flags should be enabled one at a time."
+            },
+            {
+              "id": "test",
+              "text": "Testing after each one makes breakage easy to trace."
+            }
+          ],
+          "notEnough": [
+            "Only saying you change the config."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

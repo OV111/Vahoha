@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "frontend-dev-12",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Rendering Models",
+      "question": "You are choosing how to render a marketing page, a blog, a dashboard behind login and a product page with prices that change daily. Explain the rendering options and what you would pick for each.",
+      "followUps": {
+        "CSR, SSR, SSG and ISR": "What is the trade-off between rendering on the server per request and generating HTML ahead of time?",
+        "Hydration": "What is a hydration mismatch and what usually causes it?"
+      },
+      "criteria": {
+        "CSR, SSR, SSG and ISR": {
+          "id": "rendering-models",
+          "evidence": [
+            {
+              "id": "csr",
+              "text": "Client rendering sends a mostly empty page and builds it in the browser with JavaScript."
+            },
+            {
+              "id": "ssr",
+              "text": "Server rendering builds HTML for each request, so content is fresh and visible quickly."
+            },
+            {
+              "id": "ssg-isr",
+              "text": "Static generation builds HTML ahead of time for speed, and incremental regeneration refreshes it periodically."
+            }
+          ],
+          "notEnough": [
+            "Only spelling out the acronyms."
+          ],
+          "misconceptions": []
+        },
+        "Hydration": {
+          "id": "hydration",
+          "evidence": [
+            {
+              "id": "attach",
+              "text": "Hydration attaches React's event handlers and state to HTML that was rendered on the server."
+            },
+            {
+              "id": "must-match",
+              "text": "The first client render must produce the same output as the server."
+            },
+            {
+              "id": "causes",
+              "text": "Values that differ between server and browser, like the current time or random numbers, cause a mismatch."
+            }
+          ],
+          "notEnough": [
+            "Only saying hydration makes the page interactive."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Server Components",
+      "question": "Your Next.js page shows a product description, reviews from the database and an add-to-cart button. Explain which parts should be server components and which client components.",
+      "followUps": {
+        "Server and client components": "Why can a server component read from the database directly but a client component cannot?",
+        "Composition boundaries": "How do you keep the interactive part of a page small when a client component wraps server content?"
+      },
+      "criteria": {
+        "Server and client components": {
+          "id": "server-client-components",
+          "evidence": [
+            {
+              "id": "server-only",
+              "text": "Server components run only on the server and send no JavaScript to the browser."
+            },
+            {
+              "id": "data-access",
+              "text": "Because they never reach the browser, they can safely read databases and secrets."
+            },
+            {
+              "id": "use-client",
+              "text": "Only parts that need state or event handlers are marked use client."
+            }
+          ],
+          "notEnough": [
+            "Only saying server components render on the server."
+          ],
+          "misconceptions": [
+            {
+              "id": "client-no-ssr",
+              "text": "Says client components are never rendered on the server."
+            }
+          ]
+        },
+        "Composition boundaries": {
+          "id": "composition-boundaries",
+          "evidence": [
+            {
+              "id": "small-client",
+              "text": "Client components should be kept small and placed low in the tree."
+            },
+            {
+              "id": "children",
+              "text": "Server-rendered content can be passed into a client component as children."
+            },
+            {
+              "id": "thin-layer",
+              "text": "That keeps most of the page as server output and only the interactive part as JavaScript."
+            }
+          ],
+          "notEnough": [
+            "Only saying to use fewer client components."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Next.js App Router",
+      "question": "You are building a Next.js blog with a shared header, slow-loading comments and posts that rarely change. Explain how the App Router structures pages and handles data.",
+      "followUps": {
+        "Routing, layouts and loading UI": "How do folders, layouts and loading files work together in the App Router?",
+        "Data fetching and caching": "How would you make a blog post page fast but still update when the author edits it?"
+      },
+      "criteria": {
+        "Routing, layouts and loading UI": {
+          "id": "app-router-layouts",
+          "evidence": [
+            {
+              "id": "folders",
+              "text": "Folders define the URL routes."
+            },
+            {
+              "id": "layouts",
+              "text": "A layout file wraps its child pages and stays in place when navigating between them."
+            },
+            {
+              "id": "loading",
+              "text": "A loading file shows a fallback instantly while that part of the page streams in."
+            }
+          ],
+          "notEnough": [
+            "Only saying folders become routes."
+          ],
+          "misconceptions": []
+        },
+        "Data fetching and caching": {
+          "id": "data-caching",
+          "evidence": [
+            {
+              "id": "server-fetch",
+              "text": "Pages fetch data on the server."
+            },
+            {
+              "id": "cache",
+              "text": "Next.js can cache the result so repeat visits are fast."
+            },
+            {
+              "id": "revalidate",
+              "text": "The cache can be refreshed on a schedule or on demand, for example when the post is edited."
+            }
+          ],
+          "notEnough": [
+            "Only saying Next.js caches fetches."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Search and Sharing",
+      "question": "Your single-page app ranks poorly in search and links shared on social media show no preview. Explain how server rendering and metadata fix this.",
+      "followUps": {
+        "Metadata and SEO": "Why do search engines handle server-rendered pages better than client-rendered ones?",
+        "Open Graph and sitemaps": "What controls how a link to your page looks when shared, and how do crawlers find all your pages?"
+      },
+      "criteria": {
+        "Metadata and SEO": {
+          "id": "metadata-seo",
+          "evidence": [
+            {
+              "id": "content-in-html",
+              "text": "Server rendering puts the real content and metadata in the HTML."
+            },
+            {
+              "id": "empty-shell",
+              "text": "A client-rendered page can start as an empty shell that crawlers may not fully run."
+            },
+            {
+              "id": "tags",
+              "text": "Titles, descriptions and canonical URLs tell search engines what each page is."
+            }
+          ],
+          "notEnough": [
+            "Only saying SSR is good for SEO."
+          ],
+          "misconceptions": []
+        },
+        "Open Graph and sitemaps": {
+          "id": "open-graph-sitemaps",
+          "evidence": [
+            {
+              "id": "og",
+              "text": "Open Graph tags set the title, description and image shown in link previews."
+            },
+            {
+              "id": "sitemap",
+              "text": "A sitemap lists the site's pages so crawlers can find them."
+            },
+            {
+              "id": "server",
+              "text": "These must be in the server-rendered HTML because preview bots usually do not run JavaScript."
+            }
+          ],
+          "notEnough": [
+            "Only naming Open Graph."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

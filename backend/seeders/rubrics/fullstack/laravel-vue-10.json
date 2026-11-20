@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "laravel-vue-10",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Testing in Laravel",
+      "question": "You are writing tests for a Laravel API where tests sometimes pass or fail depending on the order they run. Explain how you would write and isolate them.",
+      "followUps": {
+        "PHPUnit Feature Tests vs Unit Tests": "When would you write a feature test and when a unit test?",
+        "Database Testing with RefreshDatabase and Transactions": "How does RefreshDatabase keep tests independent?"
+      },
+      "criteria": {
+        "PHPUnit Feature Tests vs Unit Tests": {
+          "id": "feature-vs-unit",
+          "evidence": [
+            {
+              "id": "feature",
+              "text": "Feature tests boot the app and test full HTTP requests."
+            },
+            {
+              "id": "unit",
+              "text": "Unit tests check isolated classes without the framework."
+            },
+            {
+              "id": "balance",
+              "text": "Feature tests catch wiring bugs; unit tests are faster for pure logic."
+            }
+          ],
+          "notEnough": [
+            "Only saying there are two kinds."
+          ],
+          "misconceptions": []
+        },
+        "Database Testing with RefreshDatabase and Transactions": {
+          "id": "refresh-database",
+          "evidence": [
+            {
+              "id": "reset",
+              "text": "RefreshDatabase resets the database state between tests."
+            },
+            {
+              "id": "transactions",
+              "text": "It usually wraps each test in a transaction that is rolled back."
+            },
+            {
+              "id": "order",
+              "text": "Tests no longer depend on what other tests left behind."
+            }
+          ],
+          "notEnough": [
+            "Only saying it refreshes the database."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Mocking and Faking in Laravel",
+      "question": "Running your tests sends real emails and real payment calls. Explain how you would fake these in Laravel tests.",
+      "followUps": {
+        "Mail::fake() and Queue::fake() for Side Effects": "What do Mail::fake and Queue::fake do?",
+        "Mockery and Service Container Substitution": "How do you replace a payment service with a mock in a test?"
+      },
+      "criteria": {
+        "Mail::fake() and Queue::fake() for Side Effects": {
+          "id": "fakes",
+          "evidence": [
+            {
+              "id": "replace",
+              "text": "Fakes replace real senders and dispatchers with in-memory recorders."
+            },
+            {
+              "id": "no-side-effects",
+              "text": "Nothing is actually sent or queued."
+            },
+            {
+              "id": "assert",
+              "text": "Tests assert that the right mail or job was sent."
+            }
+          ],
+          "notEnough": [
+            "Only saying fakes stop emails."
+          ],
+          "misconceptions": []
+        },
+        "Mockery and Service Container Substitution": {
+          "id": "mockery",
+          "evidence": [
+            {
+              "id": "mock",
+              "text": "Mockery creates a mock object with expectations."
+            },
+            {
+              "id": "bind",
+              "text": "Laravel's mock helper binds it in the container for the test."
+            },
+            {
+              "id": "inject",
+              "text": "Code that resolves the service gets the mock instead of the real one."
+            }
+          ],
+          "notEnough": [
+            "Only saying you mock it."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Laravel Forge Deployment",
+      "question": "Your deploys briefly break the site while files update, and the production .env file is in the repository. Explain how you would deploy safely.",
+      "followUps": {
+        "Zero-Downtime Deploys with Forge and Envoyer": "How do zero-downtime deploys switch to the new release?",
+        "Environment Variables and Secrets Management": "Where should production secrets live?"
+      },
+      "criteria": {
+        "Zero-Downtime Deploys with Forge and Envoyer": {
+          "id": "zero-downtime",
+          "evidence": [
+            {
+              "id": "new-dir",
+              "text": "Each release is prepared in a new folder."
+            },
+            {
+              "id": "hooks",
+              "text": "Dependencies are installed and migrations run before switching."
+            },
+            {
+              "id": "symlink",
+              "text": "A symlink is switched to the new release only after all steps succeed."
+            }
+          ],
+          "notEnough": [
+            "Only saying Envoyer deploys without downtime."
+          ],
+          "misconceptions": []
+        },
+        "Environment Variables and Secrets Management": {
+          "id": "server-secrets",
+          "evidence": [
+            {
+              "id": "server",
+              "text": "Secrets are set on the server or in the hosting tool."
+            },
+            {
+              "id": "not-repo",
+              "text": ".env files with real secrets are never committed."
+            },
+            {
+              "id": "risk",
+              "text": "Committed secrets are exposed to anyone with repository access, even after deletion."
+            }
+          ],
+          "notEnough": [
+            "Only saying keep secrets safe."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "CI/CD and Automated Quality Gates",
+      "question": "Bugs that a test or type checker would have caught keep reaching production. Explain how you would set up automated checks.",
+      "followUps": {
+        "Running PHPUnit in CI with GitHub Actions": "What should a GitHub Actions workflow for Laravel do?",
+        "PHP Static Analysis with PHPStan or Larastan": "What does Larastan catch that tests might miss?"
+      },
+      "criteria": {
+        "Running PHPUnit in CI with GitHub Actions": {
+          "id": "phpunit-ci",
+          "evidence": [
+            {
+              "id": "php",
+              "text": "It sets up the right PHP version and installs dependencies."
+            },
+            {
+              "id": "db",
+              "text": "It provides a real test database."
+            },
+            {
+              "id": "every-pr",
+              "text": "It runs the test suite on every pull request."
+            }
+          ],
+          "notEnough": [
+            "Only saying CI runs tests."
+          ],
+          "misconceptions": []
+        },
+        "PHP Static Analysis with PHPStan or Larastan": {
+          "id": "larastan",
+          "evidence": [
+            {
+              "id": "static",
+              "text": "Larastan analyses code without running it."
+            },
+            {
+              "id": "types",
+              "text": "It catches type mismatches, undefined properties and wrong method calls."
+            },
+            {
+              "id": "levels",
+              "text": "Its strictness level can be raised over time."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a static analyser."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

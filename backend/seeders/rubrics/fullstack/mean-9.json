@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "mean-9",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Angular Reactive Forms internals",
+      "question": "You are building a task form with a title, due date and a username that must be unique on the server. Explain how Angular's reactive forms represent the form and run validation.",
+      "followUps": {
+        "FormControl, FormGroup, and FormArray: the form model tree": "How do FormControl, FormGroup and FormArray relate?",
+        "Synchronous and async validators: how validation runs": "How do async validators differ from sync validators?"
+      },
+      "criteria": {
+        "FormControl, FormGroup, and FormArray: the form model tree": {
+          "id": "form-model-tree",
+          "evidence": [
+            {
+              "id": "control",
+              "text": "A FormControl tracks one input's value and validity."
+            },
+            {
+              "id": "group",
+              "text": "A FormGroup groups named controls, such as a whole form."
+            },
+            {
+              "id": "array",
+              "text": "A FormArray holds a list of controls whose length can change."
+            }
+          ],
+          "notEnough": [
+            "Only listing the classes."
+          ],
+          "misconceptions": []
+        },
+        "Synchronous and async validators: how validation runs": {
+          "id": "sync-async-validators",
+          "evidence": [
+            {
+              "id": "sync",
+              "text": "Synchronous validators run on every change and return errors or null."
+            },
+            {
+              "id": "async",
+              "text": "Async validators, like checking a username with the server, return an Observable or Promise."
+            },
+            {
+              "id": "order",
+              "text": "Async validators run only after the sync validators pass, and their state is pending while they run."
+            }
+          ],
+          "notEnough": [
+            "Only saying validators check values."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Angular change detection and OnPush strategy",
+      "question": "Your task board slows down as it grows, and the first page load downloads code for every feature. Explain how OnPush change detection and lazy loading help.",
+      "followUps": {
+        "OnPush change detection: only check on new inputs or events": "When does an OnPush component get checked for changes?",
+        "Lazy loading feature modules to reduce the initial bundle": "How does lazy loading reduce the first download?"
+      },
+      "criteria": {
+        "OnPush change detection: only check on new inputs or events": {
+          "id": "onpush",
+          "evidence": [
+            {
+              "id": "default",
+              "text": "By default Angular checks every component after every event."
+            },
+            {
+              "id": "onpush",
+              "text": "OnPush checks a component only when an input reference changes, an event happens inside it or an async pipe emits."
+            },
+            {
+              "id": "immutable",
+              "text": "This requires immutable updates, because changing an object in place keeps the same reference."
+            }
+          ],
+          "notEnough": [
+            "Only saying OnPush is faster."
+          ],
+          "misconceptions": []
+        },
+        "Lazy loading feature modules to reduce the initial bundle": {
+          "id": "lazy-loading",
+          "evidence": [
+            {
+              "id": "defer",
+              "text": "A lazy route loads its feature code only when the route is visited."
+            },
+            {
+              "id": "smaller",
+              "text": "The initial bundle is smaller, so the app starts faster."
+            },
+            {
+              "id": "split",
+              "text": "The build splits each lazy feature into its own file."
+            }
+          ],
+          "notEnough": [
+            "Only saying lazy loading loads later."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Building reactive forms with validation in Angular",
+      "question": "Your task form shows red errors before users have typed anything, and building controls by hand is verbose. Explain how you would build and display the form's validation.",
+      "followUps": {
+        "FormBuilder service for concise form group creation": "What does FormBuilder save you?",
+        "Displaying field errors: touched, dirty, and invalid flags": "When should a field's error message appear?"
+      },
+      "criteria": {
+        "FormBuilder service for concise form group creation": {
+          "id": "formbuilder",
+          "evidence": [
+            {
+              "id": "concise",
+              "text": "FormBuilder creates groups and controls with a short syntax."
+            },
+            {
+              "id": "validators",
+              "text": "Validators are listed with each control's initial value."
+            },
+            {
+              "id": "same-model",
+              "text": "The result is the same form model as building it by hand."
+            }
+          ],
+          "notEnough": [
+            "Only saying it builds forms."
+          ],
+          "misconceptions": []
+        },
+        "Displaying field errors: touched, dirty, and invalid flags": {
+          "id": "touched-dirty-invalid",
+          "evidence": [
+            {
+              "id": "invalid",
+              "text": "Show errors only when the field is invalid."
+            },
+            {
+              "id": "touched",
+              "text": "Wait until the user has touched the field or tried to submit."
+            },
+            {
+              "id": "why",
+              "text": "Showing errors on an untouched form frustrates users before they start."
+            }
+          ],
+          "notEnough": [
+            "Only saying you show errors when invalid."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Dynamic form arrays and state management patterns",
+      "question": "Your task form needs a list of subtasks that users can add and remove, and the selected task must be shared across several components. Explain how you would handle both.",
+      "followUps": {
+        "FormArray for dynamic subtask lists with add/remove controls": "How would you let users add and remove subtask fields?",
+        "NgRx signals or BehaviorSubject for cross-component state": "When is a service with a BehaviorSubject enough and when would you reach for NgRx or signals?"
+      },
+      "criteria": {
+        "FormArray for dynamic subtask lists with add/remove controls": {
+          "id": "form-array",
+          "evidence": [
+            {
+              "id": "push",
+              "text": "New controls are pushed onto a FormArray."
+            },
+            {
+              "id": "remove",
+              "text": "removeAt removes the control at an index."
+            },
+            {
+              "id": "render",
+              "text": "The template loops over the array's controls to show each field."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use a FormArray."
+          ],
+          "misconceptions": []
+        },
+        "NgRx signals or BehaviorSubject for cross-component state": {
+          "id": "shared-state",
+          "evidence": [
+            {
+              "id": "simple",
+              "text": "A service with a BehaviorSubject is the simplest way to share state."
+            },
+            {
+              "id": "complex",
+              "text": "A state library helps when updates become complex and need to be traced."
+            },
+            {
+              "id": "cost",
+              "text": "Such libraries add structure and code, so they should be adopted when the need is real."
+            }
+          ],
+          "notEnough": [
+            "Only saying NgRx is for big apps."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

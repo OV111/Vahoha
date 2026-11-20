@@ -1,0 +1,192 @@
+{
+  "path": "fullstack",
+  "layer": "pern-8",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "How Prisma generates type-safe queries from your schema",
+      "question": "Your PERN backend uses Prisma for data access and runs on a server handling many requests at once. Explain how Prisma knows your types and your database structure, and why opening a new database connection for every request would hurt.",
+      "followUps": {
+        "Prisma schema as the single source of truth for types and migrations": "You add a field to a model in schema.prisma. What do you get from Prisma, and what do you no longer write by hand?",
+        "Connection pooling with node-postgres and why it matters": "What does a connection pool do, and what happens when all its connections are busy?"
+      },
+      "criteria": {
+        "Prisma schema as the single source of truth for types and migrations": {
+          "id": "prisma-schema",
+          "evidence": [
+            {
+              "id": "single-source",
+              "text": "schema.prisma describes the models once, and Prisma generates both the typed client and the migrations from it."
+            },
+            {
+              "id": "typed-client",
+              "text": "The generated client knows every model and field, so a wrong field name is caught while writing code."
+            },
+            {
+              "id": "migration",
+              "text": "Changing the schema produces a migration with the SQL needed to update the database."
+            }
+          ],
+          "notEnough": [
+            "Only saying Prisma is type-safe without explaining where the types come from."
+          ],
+          "misconceptions": []
+        },
+        "Connection pooling with node-postgres and why it matters": {
+          "id": "connection-pooling",
+          "evidence": [
+            {
+              "id": "expensive",
+              "text": "Opening a database connection is slow, and the database allows only a limited number of them."
+            },
+            {
+              "id": "reuse",
+              "text": "A pool keeps a set of open connections, lends one to each query and takes it back afterwards."
+            },
+            {
+              "id": "queue",
+              "text": "When all connections are in use, new queries wait in a queue until one is free."
+            }
+          ],
+          "notEnough": [
+            "Only saying pooling is faster without explaining what is reused."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "SQL injection and parameterized queries",
+      "question": "A search endpoint builds its SQL by inserting the user's search text straight into the query string. Explain what an attacker could do with that, and how you'd fix it in a PERN app.",
+      "followUps": {
+        "Why string interpolation in SQL is a critical security vulnerability": "Why does sending the value as a parameter like $1 stop the attack, even if the text contains quotes or SQL?"
+      },
+      "criteria": {
+        "Why string interpolation in SQL is a critical security vulnerability": {
+          "id": "sql-injection",
+          "evidence": [
+            {
+              "id": "injection",
+              "text": "If user input is pasted into the SQL text, crafted input can change the query itself, for example to read or delete other data."
+            },
+            {
+              "id": "parameters",
+              "text": "Parameterized queries send the SQL and the values separately, so values are always treated as data, never as SQL."
+            },
+            {
+              "id": "orm",
+              "text": "Prisma's query methods and pg placeholders like $1 do this for you, while building raw SQL strings by hand brings the risk back."
+            }
+          ],
+          "notEnough": [
+            "Only saying use parameterized queries without explaining why they're safe."
+          ],
+          "misconceptions": [
+            {
+              "id": "escape-enough",
+              "text": "Says removing quote characters from the input is enough to prevent SQL injection."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Using Prisma in a Node/Express project",
+      "question": "In your blog API you need to list published posts newest first, and to create a post together with its tags in one request. Explain how you'd do both with Prisma, and what happens if creating one of the tags fails.",
+      "followUps": {
+        "Prisma CRUD: findMany, create, update, delete with filters": "How do where and orderBy in findMany turn into SQL, and what does Prisma check for you there?",
+        "Nested writes: creating related records in one operation": "Why is a nested write safer than creating the post and then the tags in separate calls?"
+      },
+      "criteria": {
+        "Prisma CRUD: findMany, create, update, delete with filters": {
+          "id": "prisma-crud",
+          "evidence": [
+            {
+              "id": "methods",
+              "text": "Model methods like findMany, create, update and delete take objects like where and orderBy that Prisma turns into SQL."
+            },
+            {
+              "id": "typed",
+              "text": "Field names and filter options are checked against the schema, so mistakes are caught while writing code."
+            }
+          ],
+          "notEnough": [
+            "Only listing method names without explaining how filtering works."
+          ],
+          "misconceptions": []
+        },
+        "Nested writes: creating related records in one operation": {
+          "id": "nested-writes",
+          "evidence": [
+            {
+              "id": "one-call",
+              "text": "A nested write creates the post and its related records in one Prisma call."
+            },
+            {
+              "id": "transaction",
+              "text": "It runs as one transaction, so if any part fails nothing is saved."
+            }
+          ],
+          "notEnough": [
+            "Only saying you can create related records without saying what happens on failure."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Migrations and seeding in a PERN project",
+      "question": "You changed your Prisma schema locally, and the change needs to reach your teammates' machines and production, plus you want sample data for development. Explain the steps and commands you'd use in each environment.",
+      "followUps": {
+        "prisma migrate dev versus prisma migrate deploy": "Why use migrate dev locally but migrate deploy in production?",
+        "Seeding the database with prisma/seed.ts": "Why use upsert in a seed script instead of create?"
+      },
+      "criteria": {
+        "prisma migrate dev versus prisma migrate deploy": {
+          "id": "migrate-dev-deploy",
+          "evidence": [
+            {
+              "id": "dev",
+              "text": "migrate dev creates a new migration from the schema changes, applies it to the local database and regenerates the client."
+            },
+            {
+              "id": "deploy",
+              "text": "migrate deploy only applies existing, committed migrations, which is what production needs."
+            },
+            {
+              "id": "committed",
+              "text": "Migration files are committed to git, so every environment applies the same changes in the same order."
+            }
+          ],
+          "notEnough": [
+            "Only naming the two commands without explaining the difference."
+          ],
+          "misconceptions": [
+            {
+              "id": "dev-in-prod",
+              "text": "Says migrate dev is fine to run against the production database."
+            }
+          ]
+        },
+        "Seeding the database with prisma/seed.ts": {
+          "id": "seeding",
+          "evidence": [
+            {
+              "id": "script",
+              "text": "A seed script, run with prisma db seed, fills the database with development data."
+            },
+            {
+              "id": "idempotent",
+              "text": "Using upsert lets the seed run many times without creating duplicates or failing."
+            }
+          ],
+          "notEnough": [
+            "Only saying seed the database without saying how, or why upsert."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

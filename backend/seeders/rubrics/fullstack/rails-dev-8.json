@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "rails-dev-8",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "API Design Principles",
+      "question": "A mobile team needs a JSON API from your Rails app that will keep changing for years. Explain how you would set up the API, version it and authenticate clients.",
+      "followUps": {
+        "API-only Rails application architecture": "What does an API-only Rails app leave out?",
+        "API versioning strategies and URL design": "How would you version the API so old clients keep working?",
+        "Token-based authentication for API endpoints": "How would API clients authenticate?"
+      },
+      "criteria": {
+        "API-only Rails application architecture": {
+          "id": "api-only",
+          "evidence": [
+            {
+              "id": "slim",
+              "text": "API mode removes views, cookies and other browser-focused middleware."
+            },
+            {
+              "id": "base",
+              "text": "Controllers inherit from a lighter API base class."
+            },
+            {
+              "id": "json",
+              "text": "Responses are JSON instead of HTML pages."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is for APIs."
+          ],
+          "misconceptions": []
+        },
+        "API versioning strategies and URL design": {
+          "id": "versioning",
+          "evidence": [
+            {
+              "id": "namespace",
+              "text": "Versions can live under URL namespaces like /api/v1, or in headers."
+            },
+            {
+              "id": "folders",
+              "text": "Controllers for each version live in their own namespace folders."
+            },
+            {
+              "id": "no-break",
+              "text": "Old versions keep working while new clients use the new one."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add v1 to URLs."
+          ],
+          "misconceptions": []
+        },
+        "Token-based authentication for API endpoints": {
+          "id": "api-tokens",
+          "evidence": [
+            {
+              "id": "token",
+              "text": "Each client sends a secure random token in the Authorization header."
+            },
+            {
+              "id": "verify",
+              "text": "The server looks up or verifies the token on every request."
+            },
+            {
+              "id": "jwt",
+              "text": "JWTs are a stateless alternative that is verified by signature instead of lookup."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use tokens."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "API Security and Documentation",
+      "question": "Your API will be called from a browser app on another domain, is being hammered by one IP, and partner developers need documentation. Explain how you would handle each.",
+      "followUps": {
+        "CORS configuration and rate limiting": "What do rack-cors and rack-attack each do?",
+        "API documentation with Swagger and rswag": "How does rswag keep documentation accurate?"
+      },
+      "criteria": {
+        "CORS configuration and rate limiting": {
+          "id": "cors-rate-limit",
+          "evidence": [
+            {
+              "id": "cors",
+              "text": "rack-cors adds CORS headers so allowed browser origins can call the API."
+            },
+            {
+              "id": "rack-attack",
+              "text": "rack-attack throttles or blocks requests by IP or other rules."
+            },
+            {
+              "id": "protect",
+              "text": "Rate limits slow down abuse and brute-force attempts."
+            }
+          ],
+          "notEnough": [
+            "Only naming the gems."
+          ],
+          "misconceptions": []
+        },
+        "API documentation with Swagger and rswag": {
+          "id": "rswag",
+          "evidence": [
+            {
+              "id": "from-tests",
+              "text": "rswag generates OpenAPI documentation from request specs."
+            },
+            {
+              "id": "ui",
+              "text": "Swagger UI lets developers explore and try the endpoints."
+            },
+            {
+              "id": "in-sync",
+              "text": "Because docs come from tests, they stay in sync with real behaviour."
+            }
+          ],
+          "notEnough": [
+            "Only saying it generates docs."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "JSON Serialization",
+      "question": "Your API responses expose internal fields and the JSON shape differs between endpoints. Explain how serializers fix this.",
+      "followUps": {
+        "Serializing responses with jsonapi-serializer": "What does jsonapi-serializer give you?",
+        "Active Model Serializers for custom JSON shapes": "When would you use Active Model Serializers instead?"
+      },
+      "criteria": {
+        "Serializing responses with jsonapi-serializer": {
+          "id": "jsonapi-serializer",
+          "evidence": [
+            {
+              "id": "standard",
+              "text": "It produces responses following the JSON:API format."
+            },
+            {
+              "id": "declare",
+              "text": "Attributes and relationships are declared in a serializer class."
+            },
+            {
+              "id": "control",
+              "text": "Only declared fields are exposed, so internal fields stay hidden."
+            }
+          ],
+          "notEnough": [
+            "Only saying it serializes JSON."
+          ],
+          "misconceptions": []
+        },
+        "Active Model Serializers for custom JSON shapes": {
+          "id": "ams",
+          "evidence": [
+            {
+              "id": "custom",
+              "text": "Active Model Serializers allow custom JSON shapes."
+            },
+            {
+              "id": "adapters",
+              "text": "Adapters control the overall format."
+            },
+            {
+              "id": "associations",
+              "text": "Associations can be nested in the output."
+            }
+          ],
+          "notEnough": [
+            "Only naming the gem."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "API Testing and Client Tools",
+      "question": "You need confidence that your API works end to end, and some clients want to fetch exactly the fields they need. Explain how you would test the API and when GraphQL fits.",
+      "followUps": {
+        "Testing APIs with request specs and Postman": "What does a request spec test that a model spec does not?",
+        "GraphQL APIs with graphql-ruby gem": "How does graphql-ruby work, and when is GraphQL worth it?"
+      },
+      "criteria": {
+        "Testing APIs with request specs and Postman": {
+          "id": "request-specs",
+          "evidence": [
+            {
+              "id": "full-stack",
+              "text": "Request specs send real requests through routing, controllers and serializers."
+            },
+            {
+              "id": "assert",
+              "text": "They check status codes and JSON bodies."
+            },
+            {
+              "id": "manual",
+              "text": "Tools like Postman help explore and document endpoints by hand."
+            }
+          ],
+          "notEnough": [
+            "Only saying you test endpoints."
+          ],
+          "misconceptions": []
+        },
+        "GraphQL APIs with graphql-ruby gem": {
+          "id": "graphql-ruby",
+          "evidence": [
+            {
+              "id": "schema",
+              "text": "graphql-ruby defines a typed schema in Ruby."
+            },
+            {
+              "id": "queries",
+              "text": "Clients request exactly the fields they need in one query."
+            },
+            {
+              "id": "trade-off",
+              "text": "It suits clients with varied data needs but adds complexity like N+1 risks and caching."
+            }
+          ],
+          "notEnough": [
+            "Only saying GraphQL is flexible."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "fullstack-engineer-4",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Relational data modeling and normalization",
+      "question": "You are designing tables for a recipe app with users, recipes, ingredients and categories. Explain how you would organize the data and keep it consistent.",
+      "followUps": {
+        "Normalization: splitting data to eliminate redundancy": "What problem does normalization solve, and can it go too far?",
+        "Primary keys, foreign keys, and referential integrity constraints": "What does a foreign key guarantee, and what happens when you delete a parent row?"
+      },
+      "criteria": {
+        "Normalization: splitting data to eliminate redundancy": {
+          "id": "normalization",
+          "evidence": [
+            {
+              "id": "redundancy",
+              "text": "Normalization splits data into tables so each fact is stored once."
+            },
+            {
+              "id": "anomalies",
+              "text": "This avoids update problems where the same data must be changed in many places."
+            },
+            {
+              "id": "balance",
+              "text": "Too much normalization needs many joins for reads, so some duplication can be a deliberate trade-off."
+            }
+          ],
+          "notEnough": [
+            "Only listing the normal forms."
+          ],
+          "misconceptions": []
+        },
+        "Primary keys, foreign keys, and referential integrity constraints": {
+          "id": "keys-integrity",
+          "evidence": [
+            {
+              "id": "exists",
+              "text": "A foreign key guarantees the referenced row exists."
+            },
+            {
+              "id": "cascade",
+              "text": "ON DELETE CASCADE removes child rows when the parent is deleted."
+            },
+            {
+              "id": "restrict",
+              "text": "ON DELETE RESTRICT blocks deleting a parent that still has children."
+            }
+          ],
+          "notEnough": [
+            "Only saying foreign keys link tables."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "SQL query execution model",
+      "question": "You need a report of every category with its number of recipes, including categories with none, but only categories with more than five. Explain how you would write it in SQL.",
+      "followUps": {
+        "How JOIN operations combine rows from multiple tables": "Why would an INNER JOIN drop categories with no recipes, and what would you use instead?",
+        "GROUP BY with aggregate functions and the HAVING clause": "What is the difference between WHERE and HAVING?"
+      },
+      "criteria": {
+        "How JOIN operations combine rows from multiple tables": {
+          "id": "joins",
+          "evidence": [
+            {
+              "id": "inner",
+              "text": "An INNER JOIN returns only rows that have a match in both tables."
+            },
+            {
+              "id": "left",
+              "text": "A LEFT JOIN keeps every row from the left table and fills missing matches with NULL."
+            },
+            {
+              "id": "choice",
+              "text": "For categories with no recipes, a LEFT JOIN from categories is needed."
+            }
+          ],
+          "notEnough": [
+            "Only saying joins combine tables."
+          ],
+          "misconceptions": []
+        },
+        "GROUP BY with aggregate functions and the HAVING clause": {
+          "id": "group-by-having",
+          "evidence": [
+            {
+              "id": "group",
+              "text": "GROUP BY collapses rows with the same value into groups so aggregates like COUNT can be computed."
+            },
+            {
+              "id": "where",
+              "text": "WHERE filters individual rows before grouping."
+            },
+            {
+              "id": "having",
+              "text": "HAVING filters the groups after aggregation, such as keeping counts above five."
+            }
+          ],
+          "notEnough": [
+            "Only saying HAVING is like WHERE for groups."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Writing SQL and connecting to PostgreSQL from Node",
+      "question": "Your Node API builds SQL strings from user input and opens a new database connection for every request. Explain the risks and how you would fix both.",
+      "followUps": {
+        "SELECT, INSERT, UPDATE, DELETE with parameterized queries": "Why must you use parameterized queries instead of building SQL strings?",
+        "Connection pooling with the pg Pool class": "Why use a connection pool instead of a new connection per request?"
+      },
+      "criteria": {
+        "SELECT, INSERT, UPDATE, DELETE with parameterized queries": {
+          "id": "parameterized-queries",
+          "evidence": [
+            {
+              "id": "injection",
+              "text": "Putting user input into SQL strings lets attackers change the query, which is SQL injection."
+            },
+            {
+              "id": "params",
+              "text": "Parameterized queries send values separately from the SQL, so input is never run as code."
+            },
+            {
+              "id": "plans",
+              "text": "They also let the database reuse query plans."
+            }
+          ],
+          "notEnough": [
+            "Only saying parameterized queries are safer."
+          ],
+          "misconceptions": []
+        },
+        "Connection pooling with the pg Pool class": {
+          "id": "connection-pool",
+          "evidence": [
+            {
+              "id": "cost",
+              "text": "Opening a database connection is slow and uses resources on the database."
+            },
+            {
+              "id": "reuse",
+              "text": "A pool keeps connections open and reuses them across requests."
+            },
+            {
+              "id": "limit",
+              "text": "The pool caps the number of connections and queues extra queries."
+            }
+          ],
+          "notEnough": [
+            "Only saying pools are faster."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Indexes and constraints for data integrity",
+      "question": "Filtering recipes by category gets slow as the table grows, and duplicate user emails and negative prices keep appearing in the data. Explain how indexes and constraints help.",
+      "followUps": {
+        "Creating indexes on columns used in WHERE and JOIN clauses": "How would you speed up the category filter and check that it worked?",
+        "UNIQUE and CHECK constraints for data integrity at the database level": "Why enforce unique emails and positive prices in the database, not only in the app?"
+      },
+      "criteria": {
+        "Creating indexes on columns used in WHERE and JOIN clauses": {
+          "id": "indexes",
+          "evidence": [
+            {
+              "id": "full-scan",
+              "text": "Without an index, the database scans every row."
+            },
+            {
+              "id": "index",
+              "text": "An index on the filtered or joined column lets the database find rows quickly."
+            },
+            {
+              "id": "explain",
+              "text": "EXPLAIN ANALYZE shows whether the index is actually used."
+            }
+          ],
+          "notEnough": [
+            "Only saying indexes make queries faster."
+          ],
+          "misconceptions": [
+            {
+              "id": "index-everything",
+              "text": "Says adding an index to every column has no downside."
+            }
+          ]
+        },
+        "UNIQUE and CHECK constraints for data integrity at the database level": {
+          "id": "unique-check",
+          "evidence": [
+            {
+              "id": "unique",
+              "text": "A UNIQUE constraint stops duplicate values like emails."
+            },
+            {
+              "id": "check",
+              "text": "A CHECK constraint enforces rules like price greater than zero."
+            },
+            {
+              "id": "last-line",
+              "text": "Database constraints catch bad data even when application validation is missed or bypassed."
+            }
+          ],
+          "notEnough": [
+            "Only saying constraints keep data valid."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

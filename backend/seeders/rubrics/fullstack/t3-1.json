@@ -1,0 +1,226 @@
+{
+  "path": "fullstack",
+  "layer": "t3-1",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "TypeScript's type system: structural typing and inference",
+      "question": "An API returns either a list of posts or an error, and a teammate passes an object that was never declared as a Post into a function expecting one, and it compiles. Explain how TypeScript decides what is allowed and how you would model the API result.",
+      "followUps": {
+        "Structural typing: assignability is based on shape, not name": "Why does an object that was never declared as a User still pass where a User is expected?",
+        "Discriminated unions and exhaustive type narrowing": "How does a shared kind field plus a never check make sure you handle every case?"
+      },
+      "criteria": {
+        "Structural typing: assignability is based on shape, not name": {
+          "id": "structural-typing",
+          "evidence": [
+            {
+              "id": "shape",
+              "text": "TypeScript checks whether a value has the required properties, not which type name it was declared with."
+            },
+            {
+              "id": "assignable",
+              "text": "Any object with at least the right fields and types is accepted."
+            },
+            {
+              "id": "excess-check",
+              "text": "Object literals written directly get an extra check that rejects unknown properties."
+            }
+          ],
+          "notEnough": [
+            "Only saying TypeScript is structurally typed."
+          ],
+          "misconceptions": [
+            {
+              "id": "nominal",
+              "text": "Says an object must be created from a class or declared with the exact type name to be accepted."
+            }
+          ]
+        },
+        "Discriminated unions and exhaustive type narrowing": {
+          "id": "discriminated-unions",
+          "evidence": [
+            {
+              "id": "shared-literal",
+              "text": "Each variant of the union has a common field with a different literal value."
+            },
+            {
+              "id": "narrow",
+              "text": "Checking that field narrows the type in each branch, so only that variant's properties are available."
+            },
+            {
+              "id": "never",
+              "text": "Assigning the value to never in the default branch makes the compiler complain if a new variant is not handled."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a union with a type field."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Generics, utility types, and async patterns",
+      "question": "You are writing a helper that reads a field from any entity with an id, and an async function that loads data and catches errors. Explain how you would type both safely.",
+      "followUps": {
+        "Generic functions and the extends constraint": "What does extends add to a generic function's type parameter?",
+        "Async/await, Promise types, and error handling with unknown": "Why is a caught error typed as unknown, and what do you do before using it?"
+      },
+      "criteria": {
+        "Generic functions and the extends constraint": {
+          "id": "generic-constraints",
+          "evidence": [
+            {
+              "id": "generic",
+              "text": "A generic lets one function work with many types while keeping the input and output types linked."
+            },
+            {
+              "id": "constraint",
+              "text": "extends restricts which types can be passed, for example only types that have an id."
+            },
+            {
+              "id": "safe-access",
+              "text": "Inside the function you can then safely use the properties the constraint guarantees."
+            }
+          ],
+          "notEnough": [
+            "Only saying generics make functions reusable."
+          ],
+          "misconceptions": []
+        },
+        "Async/await, Promise types, and error handling with unknown": {
+          "id": "async-unknown-errors",
+          "evidence": [
+            {
+              "id": "promise-type",
+              "text": "An async function always returns a Promise of its result type."
+            },
+            {
+              "id": "unknown",
+              "text": "A caught error is unknown because anything can be thrown, not only Error objects."
+            },
+            {
+              "id": "narrow",
+              "text": "You narrow it, for example with instanceof Error, before reading properties like message."
+            }
+          ],
+          "notEnough": [
+            "Only saying you wrap it in try and catch."
+          ],
+          "misconceptions": [
+            {
+              "id": "always-error",
+              "text": "Says a caught value is always an Error object."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "TypeScript tooling and tsconfig for a T3 project",
+      "question": "You are setting up a new T3 project and a teammate asks why the build complains about possibly undefined values and why imports look like @/server/db. Explain the key tsconfig choices and how utility types reduce duplication.",
+      "followUps": {
+        "Key tsconfig options: strict, moduleResolution, and paths": "What does strict mode change, and what are path aliases for?",
+        "Utility types: Partial, Omit, Pick, and ReturnType in practice": "How would you create a public user type without the password hash, and an update type with optional fields?"
+      },
+      "criteria": {
+        "Key tsconfig options: strict, moduleResolution, and paths": {
+          "id": "tsconfig-options",
+          "evidence": [
+            {
+              "id": "strict",
+              "text": "strict turns on checks like strictNullChecks so possibly null or undefined values must be handled."
+            },
+            {
+              "id": "module-resolution",
+              "text": "moduleResolution set to bundler matches how tools like Next.js resolve imports."
+            },
+            {
+              "id": "paths",
+              "text": "Path aliases like @/ replace long relative import paths."
+            }
+          ],
+          "notEnough": [
+            "Only saying tsconfig configures TypeScript."
+          ],
+          "misconceptions": []
+        },
+        "Utility types: Partial, Omit, Pick, and ReturnType in practice": {
+          "id": "utility-types",
+          "evidence": [
+            {
+              "id": "omit",
+              "text": "Omit creates a type without chosen fields, such as removing passwordHash."
+            },
+            {
+              "id": "partial",
+              "text": "Partial makes every field optional, which suits update inputs."
+            },
+            {
+              "id": "derive",
+              "text": "Deriving types from one source means changes to the base type flow through automatically."
+            }
+          ],
+          "notEnough": [
+            "Only listing utility type names."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Modern JavaScript patterns used throughout T3",
+      "question": "A component crashes with 'cannot read property of undefined' while showing a user's avatar, and a new file fails with an import error about require. Explain the modern JavaScript and module features that prevent both.",
+      "followUps": {
+        "ES modules, destructuring, and optional chaining": "How does optional chaining stop a crash when a nested field is missing?",
+        "Node.js module system and package.json type field": "What does setting type to module in package.json change?"
+      },
+      "criteria": {
+        "ES modules, destructuring, and optional chaining": {
+          "id": "esm-destructuring-optional",
+          "evidence": [
+            {
+              "id": "optional-chaining",
+              "text": "Optional chaining returns undefined instead of throwing when a part of the path is null or undefined."
+            },
+            {
+              "id": "destructuring",
+              "text": "Destructuring pulls the needed fields out of objects and props in one step."
+            },
+            {
+              "id": "esm",
+              "text": "ES modules use import and export with explicit dependencies."
+            }
+          ],
+          "notEnough": [
+            "Only naming the syntax without explaining what it prevents."
+          ],
+          "misconceptions": []
+        },
+        "Node.js module system and package.json type field": {
+          "id": "node-module-system",
+          "evidence": [
+            {
+              "id": "esm-default",
+              "text": "With type module, .js files are treated as ES modules."
+            },
+            {
+              "id": "no-require",
+              "text": "That means import and export are used instead of require and module.exports."
+            },
+            {
+              "id": "errors",
+              "text": "Mixing the two systems causes import errors, so the setting must match how files are written."
+            }
+          ],
+          "notEnough": [
+            "Only saying it enables ES modules."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "sveltekit-dev-8",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Svelte Stores",
+      "question": "Your app's theme, cart and filtered product list are shared across many components. Explain how Svelte stores and context share state.",
+      "followUps": {
+        "Writable and readable stores for shared state": "What is the difference between a writable and a readable store?",
+        "Derived stores that compute from other stores": "What does a derived store do?",
+        "Context API for component-tree scoped state": "When would you use context instead of a module-level store?"
+      },
+      "criteria": {
+        "Writable and readable stores for shared state": {
+          "id": "writable-readable",
+          "evidence": [
+            {
+              "id": "subscribe",
+              "text": "Stores hold values that components subscribe to."
+            },
+            {
+              "id": "writable",
+              "text": "Writable stores can be updated from outside."
+            },
+            {
+              "id": "readable",
+              "text": "Readable stores can only be changed by their own logic."
+            }
+          ],
+          "notEnough": [
+            "Only saying stores share state."
+          ],
+          "misconceptions": []
+        },
+        "Derived stores that compute from other stores": {
+          "id": "derived",
+          "evidence": [
+            {
+              "id": "compute",
+              "text": "A derived store computes its value from other stores."
+            },
+            {
+              "id": "auto",
+              "text": "It updates automatically when its sources change."
+            },
+            {
+              "id": "no-manual",
+              "text": "This replaces manual subscriptions and calculations."
+            }
+          ],
+          "notEnough": [
+            "Only saying derived combines stores."
+          ],
+          "misconceptions": []
+        },
+        "Context API for component-tree scoped state": {
+          "id": "context-api",
+          "evidence": [
+            {
+              "id": "context",
+              "text": "setContext and getContext pass values down a component tree."
+            },
+            {
+              "id": "scoped",
+              "text": "Context is local to that tree, while a module store is shared by the whole app."
+            },
+            {
+              "id": "ssr",
+              "text": "On the server, module stores can leak state between users, which context avoids."
+            }
+          ],
+          "notEnough": [
+            "Only saying context avoids prop drilling."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Accessibility Patterns",
+      "question": "Svelte keeps warning about accessibility in your custom dropdown. Explain how you would fix it.",
+      "followUps": {
+        "ARIA attributes and semantic HTML in components": "How do semantic HTML and ARIA make components accessible?"
+      },
+      "criteria": {
+        "ARIA attributes and semantic HTML in components": {
+          "id": "a11y",
+          "evidence": [
+            {
+              "id": "semantic",
+              "text": "Semantic elements like button give roles and keyboard support automatically."
+            },
+            {
+              "id": "aria",
+              "text": "ARIA attributes add meaning where HTML cannot, like aria-expanded."
+            },
+            {
+              "id": "warnings",
+              "text": "Svelte's compile-time warnings point out missing attributes early."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add ARIA."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Transitions and Animations",
+      "question": "Your todo list feels abrupt when items appear, disappear or reorder. Explain Svelte's transitions and animations.",
+      "followUps": {
+        "Built-in transitions like fade and slide": "How do transitions like fade work?",
+        "The animate directive for list reordering": "What does animate:flip do in a list?"
+      },
+      "criteria": {
+        "Built-in transitions like fade and slide": {
+          "id": "transitions",
+          "evidence": [
+            {
+              "id": "module",
+              "text": "svelte/transition provides ready-made transitions like fade and slide."
+            },
+            {
+              "id": "enter-leave",
+              "text": "Adding transition:fade animates elements when they are added and removed."
+            },
+            {
+              "id": "blocks",
+              "text": "They work on elements inside if and each blocks."
+            }
+          ],
+          "notEnough": [
+            "Only saying Svelte has transitions."
+          ],
+          "misconceptions": []
+        },
+        "The animate directive for list reordering": {
+          "id": "animate-flip",
+          "evidence": [
+            {
+              "id": "each",
+              "text": "animate:flip works on keyed each blocks."
+            },
+            {
+              "id": "move",
+              "text": "Items slide smoothly to their new positions when the order changes."
+            },
+            {
+              "id": "no-manual",
+              "text": "No manual DOM measuring is needed."
+            }
+          ],
+          "notEnough": [
+            "Only saying it animates lists."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Actions and Use Directives",
+      "question": "You need to focus an input when it appears, integrate a third-party chart library and build a data table that works with any row type. Explain actions and generic components.",
+      "followUps": {
+        "Custom actions for reusable DOM behavior": "What is a Svelte action and when do you use one?",
+        "Reusable component patterns with generics": "How do generic components keep a reusable table type-safe?"
+      },
+      "criteria": {
+        "Custom actions for reusable DOM behavior": {
+          "id": "actions",
+          "evidence": [
+            {
+              "id": "use",
+              "text": "An action is a function attached to an element with use:."
+            },
+            {
+              "id": "imperative",
+              "text": "It runs imperative DOM code when the element is created."
+            },
+            {
+              "id": "cleanup",
+              "text": "It can return cleanup logic for when the element is removed, which suits third-party libraries."
+            }
+          ],
+          "notEnough": [
+            "Only saying actions add behaviour."
+          ],
+          "misconceptions": []
+        },
+        "Reusable component patterns with generics": {
+          "id": "generic-components",
+          "evidence": [
+            {
+              "id": "generics",
+              "text": "Svelte 5 components can declare a generic type parameter."
+            },
+            {
+              "id": "reuse",
+              "text": "One table component works with any item type."
+            },
+            {
+              "id": "safe",
+              "text": "TypeScript still checks the props for each use."
+            }
+          ],
+          "notEnough": [
+            "Only saying components can be generic."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

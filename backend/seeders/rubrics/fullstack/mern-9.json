@@ -1,0 +1,200 @@
+{
+  "path": "fullstack",
+  "layer": "mern-9",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Testing philosophy: unit, integration, and end-to-end",
+      "question": "Your MERN app has no tests yet, and you want confidence before each deploy without a slow, flaky suite. Explain which kinds of tests you'd write, how many of each, and what you'd fake in them.",
+      "followUps": {
+        "The testing pyramid and where to invest testing effort": "Why have many unit tests, fewer integration tests and only a few end-to-end tests?",
+        "What to mock and what not to mock in unit tests": "What should you mock in a unit test, and what goes wrong if you mock too much?"
+      },
+      "criteria": {
+        "The testing pyramid and where to invest testing effort": {
+          "id": "testing-pyramid",
+          "evidence": [
+            {
+              "id": "levels",
+              "text": "Unit tests check small pieces alone, integration tests check pieces together with real dependencies like the database, and end-to-end tests drive the real app in a browser."
+            },
+            {
+              "id": "tradeoff",
+              "text": "Lower levels are fast and cheap, while higher levels give more confidence but are slower and flakier, so there are fewer of them."
+            }
+          ],
+          "notEnough": [
+            "Only naming unit, integration and end-to-end tests without explaining the trade-off."
+          ],
+          "misconceptions": []
+        },
+        "What to mock and what not to mock in unit tests": {
+          "id": "mocking",
+          "evidence": [
+            {
+              "id": "mock-external",
+              "text": "Unit tests mock external dependencies like HTTP calls and databases, so they're fast and only test your logic."
+            },
+            {
+              "id": "real-in-integration",
+              "text": "Those dependencies are tested for real in integration tests."
+            },
+            {
+              "id": "over-mocking",
+              "text": "Mocking too much makes tests pass even when the real pieces don't work together."
+            }
+          ],
+          "notEnough": [
+            "Only saying mock dependencies without saying which ones or why."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "React Testing Library's guiding principle",
+      "question": "You're testing a React login form with React Testing Library. Explain how your tests should find the email field and the submit button, and why.",
+      "followUps": {
+        "Query hierarchy: getByRole first, test IDs as last resort": "Why prefer getByRole over a test id, and what does that give you for free?"
+      },
+      "criteria": {
+        "Query hierarchy: getByRole first, test IDs as last resort": {
+          "id": "rtl-queries",
+          "evidence": [
+            {
+              "id": "like-users",
+              "text": "Queries mirror how users find things: by role, label or text first, with test ids as a last resort."
+            },
+            {
+              "id": "accessibility",
+              "text": "getByRole only finds elements with the right accessible role and name, so it also catches accessibility problems."
+            },
+            {
+              "id": "refactor-safe",
+              "text": "Tests tied to what users see don't break when the internal markup changes."
+            }
+          ],
+          "notEnough": [
+            "Only saying use getByRole without explaining why it's preferred."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Writing Jest unit and integration tests",
+      "question": "You need tests for a price calculation helper, and for the POST /api/posts endpoint of your Express app, which requires auth. Explain how you'd write both with Jest.",
+      "followUps": {
+        "describe/it blocks, beforeEach setup, and assertion matchers": "How would you organize the helper's tests, and what do beforeEach and matchers like toEqual and toThrow do?",
+        "Supertest for testing Express endpoints without a running server": "How does Supertest call your Express app without starting a server, and what would you check for POST /api/posts?"
+      },
+      "criteria": {
+        "describe/it blocks, beforeEach setup, and assertion matchers": {
+          "id": "jest-basics",
+          "evidence": [
+            {
+              "id": "describe-it",
+              "text": "describe groups related tests and it or test defines each case."
+            },
+            {
+              "id": "before-each",
+              "text": "beforeEach runs setup before every test, so each one starts from a clean state."
+            },
+            {
+              "id": "matchers",
+              "text": "Matchers check results, for example toEqual for deep equality, toThrow for errors and toHaveBeenCalledWith for mocks."
+            }
+          ],
+          "notEnough": [
+            "Only listing Jest functions without saying what they do."
+          ],
+          "misconceptions": [
+            {
+              "id": "tobe-objects",
+              "text": "Says toBe compares two objects by their contents."
+            }
+          ]
+        },
+        "Supertest for testing Express endpoints without a running server": {
+          "id": "supertest",
+          "evidence": [
+            {
+              "id": "in-process",
+              "text": "Supertest takes the Express app and sends real HTTP requests to it inside the test process, without starting a server on a port."
+            },
+            {
+              "id": "full-cycle",
+              "text": "The request goes through routing, middleware like auth and validation, and the handler."
+            },
+            {
+              "id": "assert",
+              "text": "The test checks status codes and response bodies, for example 401 without a token and 201 with valid input."
+            }
+          ],
+          "notEnough": [
+            "Only saying use Supertest without saying what is checked."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Async testing and CI integration",
+      "question": "Your React component loads data and shows it after a moment, and your tests sometimes fail randomly. You also want tests to run on every push. Explain how you'd test async UI reliably and set up the CI run.",
+      "followUps": {
+        "Testing async components with waitFor and findBy queries": "Why use findBy queries or waitFor instead of waiting a fixed number of milliseconds?",
+        "Running jest with --coverage and integrating into GitHub Actions": "What does --coverage report, and how would a GitHub Actions workflow stop a broken pull request?"
+      },
+      "criteria": {
+        "Testing async components with waitFor and findBy queries": {
+          "id": "async-tests",
+          "evidence": [
+            {
+              "id": "findby",
+              "text": "findBy queries return a promise that keeps retrying until the element appears or a timeout passes."
+            },
+            {
+              "id": "waitfor",
+              "text": "waitFor retries an assertion until it passes, for state that changes asynchronously."
+            },
+            {
+              "id": "no-sleep",
+              "text": "Fixed waits are either too short, causing random failures, or too long, slowing the suite."
+            }
+          ],
+          "notEnough": [
+            "Only saying await the test without explaining retrying queries."
+          ],
+          "misconceptions": []
+        },
+        "Running jest with --coverage and integrating into GitHub Actions": {
+          "id": "coverage-ci",
+          "evidence": [
+            {
+              "id": "coverage",
+              "text": "jest --coverage reports which lines and branches the tests ran, showing untested code."
+            },
+            {
+              "id": "ci-run",
+              "text": "A GitHub Actions workflow runs the tests on every push or pull request."
+            },
+            {
+              "id": "fail",
+              "text": "A failing test, or coverage below a set threshold, fails the check so the pull request can't be merged."
+            }
+          ],
+          "notEnough": [
+            "Only saying run tests in CI without explaining what makes it fail."
+          ],
+          "misconceptions": [
+            {
+              "id": "coverage-correct",
+              "text": "Says high test coverage proves the code is correct."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "rails-dev-6",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Hotwire Architecture Concepts",
+      "question": "You want your Rails app to feel like a single-page app, with tabs that switch without reloads and comments that appear live for everyone, without writing a React frontend. Explain how Turbo does this.",
+      "followUps": {
+        "Turbo Drive for fast page navigation": "What does Turbo Drive change about clicking a link?",
+        "Turbo Frames for partial page updates": "How does a Turbo Frame update just part of the page?",
+        "Turbo Streams for server-pushed DOM updates": "How do Turbo Streams update several places on the page?"
+      },
+      "criteria": {
+        "Turbo Drive for fast page navigation": {
+          "id": "turbo-drive",
+          "evidence": [
+            {
+              "id": "intercept",
+              "text": "Turbo Drive intercepts link clicks and form submissions."
+            },
+            {
+              "id": "fetch-body",
+              "text": "It fetches the new page and swaps the body instead of doing a full reload."
+            },
+            {
+              "id": "feel",
+              "text": "This keeps scripts and styles loaded, so navigation feels faster."
+            }
+          ],
+          "notEnough": [
+            "Only saying Turbo makes pages faster."
+          ],
+          "misconceptions": []
+        },
+        "Turbo Frames for partial page updates": {
+          "id": "turbo-frames",
+          "evidence": [
+            {
+              "id": "wrap",
+              "text": "A Turbo Frame wraps a section of the page with an id."
+            },
+            {
+              "id": "scoped",
+              "text": "Links and forms inside it replace only that frame with the matching frame from the response."
+            },
+            {
+              "id": "no-js",
+              "text": "This gives tabs, inline edits and pagination without custom JavaScript."
+            }
+          ],
+          "notEnough": [
+            "Only saying frames update parts of a page."
+          ],
+          "misconceptions": []
+        },
+        "Turbo Streams for server-pushed DOM updates": {
+          "id": "turbo-streams",
+          "evidence": [
+            {
+              "id": "actions",
+              "text": "Turbo Streams send actions like append, replace or remove for specific targets."
+            },
+            {
+              "id": "sources",
+              "text": "They can arrive in an HTTP response or be broadcast over WebSockets."
+            },
+            {
+              "id": "multiple",
+              "text": "One response can update several parts of the page at once."
+            }
+          ],
+          "notEnough": [
+            "Only saying streams update the DOM."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Stimulus and Progressive Enhancement",
+      "question": "You need a dropdown that opens on click and a chat where new messages appear for everyone instantly. Explain how Stimulus and Action Cable help.",
+      "followUps": {
+        "Stimulus controllers and data attributes": "How does Stimulus connect JavaScript to HTML?",
+        "Real-time features with Action Cable WebSockets": "How do Action Cable and Turbo Streams deliver live updates?"
+      },
+      "criteria": {
+        "Stimulus controllers and data attributes": {
+          "id": "stimulus",
+          "evidence": [
+            {
+              "id": "data-attrs",
+              "text": "Controllers are attached to elements with data-controller attributes."
+            },
+            {
+              "id": "actions-targets",
+              "text": "Data attributes also wire up actions and target elements."
+            },
+            {
+              "id": "progressive",
+              "text": "It adds behaviour on top of server-rendered HTML rather than replacing it."
+            }
+          ],
+          "notEnough": [
+            "Only saying Stimulus is a JS framework."
+          ],
+          "misconceptions": []
+        },
+        "Real-time features with Action Cable WebSockets": {
+          "id": "action-cable",
+          "evidence": [
+            {
+              "id": "websockets",
+              "text": "Action Cable adds WebSocket channels to Rails."
+            },
+            {
+              "id": "subscribe",
+              "text": "Clients subscribe to a channel for the data they are viewing."
+            },
+            {
+              "id": "broadcast",
+              "text": "Turbo Stream messages broadcast over it update every connected client."
+            }
+          ],
+          "notEnough": [
+            "Only saying Action Cable uses WebSockets."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Hotwire Setup and Tooling",
+      "question": "You are adding Hotwire to an existing Rails app and creating your first Stimulus controller. Explain the setup.",
+      "followUps": {
+        "Installing Hotwire with turbo-rails gem": "What does the turbo-rails gem provide?",
+        "stimulus-rails gem and controller generation": "How do you add and generate Stimulus controllers?"
+      },
+      "criteria": {
+        "Installing Hotwire with turbo-rails gem": {
+          "id": "turbo-rails",
+          "evidence": [
+            {
+              "id": "library",
+              "text": "It adds the Turbo JavaScript library to the app."
+            },
+            {
+              "id": "helpers",
+              "text": "It provides view helpers for frames and streams."
+            },
+            {
+              "id": "broadcastable",
+              "text": "It adds model helpers for broadcasting updates."
+            }
+          ],
+          "notEnough": [
+            "Only saying it installs Turbo."
+          ],
+          "misconceptions": []
+        },
+        "stimulus-rails gem and controller generation": {
+          "id": "stimulus-rails",
+          "evidence": [
+            {
+              "id": "install",
+              "text": "stimulus-rails adds Stimulus to the import map or bundler setup."
+            },
+            {
+              "id": "generate",
+              "text": "A generator creates new controller files."
+            },
+            {
+              "id": "location",
+              "text": "Controllers live in app/javascript/controllers and are loaded automatically."
+            }
+          ],
+          "notEnough": [
+            "Only saying you install the gem."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Interactive UI Patterns",
+      "question": "You want users to edit a recipe title in place, and everyone viewing the recipe list should see new recipes appear. Explain how you would build both.",
+      "followUps": {
+        "Inline editing with Turbo Frames workflow": "How would you build inline editing with a Turbo Frame?",
+        "Broadcasting live updates from Active Record": "How does a model broadcast changes to everyone viewing the list?"
+      },
+      "criteria": {
+        "Inline editing with Turbo Frames workflow": {
+          "id": "inline-editing",
+          "evidence": [
+            {
+              "id": "frame",
+              "text": "Wrap the title display in a Turbo Frame."
+            },
+            {
+              "id": "edit",
+              "text": "The edit link loads a form into the same frame."
+            },
+            {
+              "id": "save",
+              "text": "Saving returns the updated display in that frame, so only that area changes."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use a frame."
+          ],
+          "misconceptions": []
+        },
+        "Broadcasting live updates from Active Record": {
+          "id": "broadcasting",
+          "evidence": [
+            {
+              "id": "concern",
+              "text": "Models can broadcast Turbo Streams when records are created, updated or destroyed."
+            },
+            {
+              "id": "subscribe",
+              "text": "The page subscribes to the stream for that list."
+            },
+            {
+              "id": "auto",
+              "text": "Every viewer's page updates without polling."
+            }
+          ],
+          "notEnough": [
+            "Only saying the model broadcasts."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

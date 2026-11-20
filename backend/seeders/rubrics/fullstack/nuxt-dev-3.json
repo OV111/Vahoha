@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "nuxt-dev-3",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Nuxt Directory Structure",
+      "question": "A new teammate asks why your Nuxt components have no import statements and where layouts go. Explain Nuxt's conventions.",
+      "followUps": {
+        "Auto-imports and File-based Conventions": "How do Nuxt's auto-imports work?",
+        "Layouts and pages/ Convention": "How do pages and layouts render?"
+      },
+      "criteria": {
+        "Auto-imports and File-based Conventions": {
+          "id": "auto-imports",
+          "evidence": [
+            {
+              "id": "dirs",
+              "text": "Components, composables and utilities in specific folders are imported automatically."
+            },
+            {
+              "id": "no-import",
+              "text": "You can use them without import statements."
+            },
+            {
+              "id": "know",
+              "text": "You need to know which folders are scanned, or code silently does not resolve."
+            }
+          ],
+          "notEnough": [
+            "Only saying Nuxt auto-imports."
+          ],
+          "misconceptions": []
+        },
+        "Layouts and pages/ Convention": {
+          "id": "layouts-pages",
+          "evidence": [
+            {
+              "id": "pages",
+              "text": "The pages folder creates routes from files."
+            },
+            {
+              "id": "layouts",
+              "text": "The layouts folder holds shared page frames."
+            },
+            {
+              "id": "app-vue",
+              "text": "app.vue renders NuxtLayout and NuxtPage to show them."
+            }
+          ],
+          "notEnough": [
+            "Only listing the folders."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "File-based Routing",
+      "question": "You are building product pages by id, docs pages at any depth and a settings section with tabs. Explain how Nuxt's file-based routing handles this.",
+      "followUps": {
+        "Dynamic Routes and Catch-all Segments": "How do [id].vue and [...slug].vue differ, and which wins when both could match?",
+        "Nested Routes with NuxtChild": "How do nested routes render child pages?"
+      },
+      "criteria": {
+        "Dynamic Routes and Catch-all Segments": {
+          "id": "dynamic-routes",
+          "evidence": [
+            {
+              "id": "dynamic",
+              "text": "[id].vue matches one dynamic segment."
+            },
+            {
+              "id": "catch-all",
+              "text": "[...slug].vue matches any number of segments."
+            },
+            {
+              "id": "priority",
+              "text": "More specific routes win over catch-all routes."
+            }
+          ],
+          "notEnough": [
+            "Only saying they are dynamic."
+          ],
+          "misconceptions": []
+        },
+        "Nested Routes with NuxtChild": {
+          "id": "nested-routes",
+          "evidence": [
+            {
+              "id": "folder",
+              "text": "A folder plus a parent file with the same name creates nested routes."
+            },
+            {
+              "id": "nuxtpage",
+              "text": "The parent renders NuxtPage where the child page appears."
+            },
+            {
+              "id": "shared",
+              "text": "The parent keeps shared UI like tabs while the child changes."
+            }
+          ],
+          "notEnough": [
+            "Only saying routes can be nested."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Nuxt Rendering Modes",
+      "question": "Your Nuxt site has a marketing area, a blog and a logged-in dashboard, and some pages show hydration warnings. Explain the rendering modes and hydration.",
+      "followUps": {
+        "SSR vs SSG vs SPA: Choosing the Right Mode": "How would you choose a rendering mode for each area?",
+        "Hydration and Client/Server Mismatch": "What causes a hydration mismatch?"
+      },
+      "criteria": {
+        "SSR vs SSG vs SPA: Choosing the Right Mode": {
+          "id": "rendering-modes",
+          "evidence": [
+            {
+              "id": "ssr",
+              "text": "SSR renders each request on the server, which suits dynamic, SEO-relevant pages."
+            },
+            {
+              "id": "ssg",
+              "text": "SSG builds static pages ahead of time, which suits content that rarely changes."
+            },
+            {
+              "id": "spa",
+              "text": "Client-only rendering suits private dashboards, set per route with routeRules."
+            }
+          ],
+          "notEnough": [
+            "Only listing the modes."
+          ],
+          "misconceptions": []
+        },
+        "Hydration and Client/Server Mismatch": {
+          "id": "hydration",
+          "evidence": [
+            {
+              "id": "hydrate",
+              "text": "Hydration attaches Vue to HTML rendered on the server."
+            },
+            {
+              "id": "must-match",
+              "text": "The client's first render must match the server's HTML."
+            },
+            {
+              "id": "causes",
+              "text": "Things like dates, random values or browser-only APIs during render cause mismatches."
+            }
+          ],
+          "notEnough": [
+            "Only saying hydration makes it interactive."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Nuxt Configuration",
+      "question": "You need to add modules, keep secrets in config and set up a third-party library before the app starts. Explain nuxt.config and plugins.",
+      "followUps": {
+        "nuxt.config.ts Structure and Layers": "What does nuxt.config.ts control, and what are layers?",
+        "Plugins and App Initialization": "What are Nuxt plugins for?"
+      },
+      "criteria": {
+        "nuxt.config.ts Structure and Layers": {
+          "id": "nuxt-config",
+          "evidence": [
+            {
+              "id": "central",
+              "text": "nuxt.config.ts configures modules, runtime config and build settings."
+            },
+            {
+              "id": "runtime",
+              "text": "runtimeConfig holds values that can come from environment variables."
+            },
+            {
+              "id": "layers",
+              "text": "Layers let several projects share configuration and code."
+            }
+          ],
+          "notEnough": [
+            "Only saying it configures Nuxt."
+          ],
+          "misconceptions": []
+        },
+        "Plugins and App Initialization": {
+          "id": "plugins",
+          "evidence": [
+            {
+              "id": "before",
+              "text": "Plugins run before the app mounts."
+            },
+            {
+              "id": "provide",
+              "text": "They can register libraries or provide global helpers."
+            },
+            {
+              "id": "suffix",
+              "text": "Suffixes like .client or .server limit where a plugin runs."
+            }
+          ],
+          "notEnough": [
+            "Only saying plugins add features."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

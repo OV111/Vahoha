@@ -1,0 +1,198 @@
+{
+  "path": "fullstack",
+  "layer": "pern-2",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "TypeScript's type system under the hood",
+      "question": "Your PERN app's API returns either a success object with data or an error object with a message, and you pass plain objects into functions typed with interfaces. Explain how TypeScript decides whether those objects fit the types, and how it knows which result shape you have inside an if statement.",
+      "followUps": {
+        "Structural typing: why TypeScript matches shapes, not names": "An object literal that was never declared as your User type is still accepted where a User is expected. Why does TypeScript allow that?",
+        "Type narrowing with typeof, instanceof, and discriminated unions": "With a result typed as success or error, how does checking result.type let you safely read result.data?"
+      },
+      "criteria": {
+        "Structural typing: why TypeScript matches shapes, not names": {
+          "id": "structural-typing",
+          "evidence": [
+            {
+              "id": "shape",
+              "text": "TypeScript checks whether a value has the required properties with compatible types; the name it was declared with doesn't matter."
+            },
+            {
+              "id": "vs-nominal",
+              "text": "Two types with the same shape are interchangeable, unlike nominal languages such as Java, where the declared class has to match."
+            }
+          ],
+          "notEnough": [
+            "Only saying TypeScript uses structural typing without explaining what is compared."
+          ],
+          "misconceptions": [
+            {
+              "id": "runtime-check",
+              "text": "Says TypeScript checks these types at runtime while the code runs."
+            }
+          ]
+        },
+        "Type narrowing with typeof, instanceof, and discriminated unions": {
+          "id": "type-narrowing",
+          "evidence": [
+            {
+              "id": "branch",
+              "text": "Inside a check like typeof, instanceof or a comparison, TypeScript narrows the variable to the types that check allows."
+            },
+            {
+              "id": "discriminant",
+              "text": "A discriminated union shares a literal field, like type being 'success' or 'error', and checking it tells TypeScript exactly which shape you have."
+            },
+            {
+              "id": "safe-access",
+              "text": "After narrowing, properties that exist only on that shape, like data on success, can be used without errors."
+            }
+          ],
+          "notEnough": [
+            "Only naming typeof or discriminated unions without explaining how a check changes the type."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "The JavaScript event loop and async semantics",
+      "question": "Your Express handler awaits a database query and then sends the response, while the server keeps handling other requests. Explain what await actually does here, and what happens if that query's promise rejects and nobody catches it.",
+      "followUps": {
+        "Promises, async/await, and the microtask queue": "In what order do a console.log after an await, a Promise.then callback and a setTimeout with 0 ms run, and why?"
+      },
+      "criteria": {
+        "Promises, async/await, and the microtask queue": {
+          "id": "async-await",
+          "evidence": [
+            {
+              "id": "sugar",
+              "text": "async and await are built on promises: an async function returns a promise, and await pauses only that function until the promise settles."
+            },
+            {
+              "id": "non-blocking",
+              "text": "While that function is paused, the event loop keeps running other code, so other requests are still served."
+            },
+            {
+              "id": "microtasks",
+              "text": "Promise callbacks and code after an await run as microtasks, which run before timer callbacks like setTimeout."
+            }
+          ],
+          "notEnough": [
+            "Only saying await waits for the promise without explaining that the rest of the program keeps running."
+          ],
+          "misconceptions": [
+            {
+              "id": "await-blocks",
+              "text": "Says await blocks the whole server or thread until the promise finishes."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "TypeScript syntax patterns in PERN projects",
+      "question": "You're typing the frontend's API layer: a User object, a union for request status, and the same paginated response wrapper for posts, users and comments. Explain how you'd define these types and why.",
+      "followUps": {
+        "Interfaces versus type aliases: when to use each": "When would you choose a type alias over an interface, and what can an interface do that a type alias can't?",
+        "Generics for reusable API response and pagination types": "How does a generic PaginatedResult of T save you from writing a separate type for every endpoint, without falling back to any?"
+      },
+      "criteria": {
+        "Interfaces versus type aliases: when to use each": {
+          "id": "interface-vs-type",
+          "evidence": [
+            {
+              "id": "type-union",
+              "text": "Type aliases can name any type, including unions, primitives and tuples, which interfaces cannot."
+            },
+            {
+              "id": "interface-merge",
+              "text": "Interfaces describe object shapes and can be extended or merged by declaring them again, which suits shared object types."
+            }
+          ],
+          "notEnough": [
+            "Only saying both define types or that it's personal preference, without naming a difference."
+          ],
+          "misconceptions": []
+        },
+        "Generics for reusable API response and pagination types": {
+          "id": "generic-types",
+          "evidence": [
+            {
+              "id": "parameter",
+              "text": "A generic type takes a type parameter, like T in ApiResponse<T>, that is filled in where the type is used."
+            },
+            {
+              "id": "reuse",
+              "text": "One wrapper type then works for every endpoint while keeping the exact item type, instead of copying types or using any."
+            }
+          ],
+          "notEnough": [
+            "Only saying generics make code reusable without saying what the type parameter does."
+          ],
+          "misconceptions": [
+            {
+              "id": "generic-any",
+              "text": "Says a generic type is the same as using any."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "tsconfig and TypeScript tooling",
+      "question": "You're setting up TypeScript for a new PERN backend, and you need a safe User type for API responses without the password, plus a type for partial updates. Explain the tsconfig settings you'd care about and how you'd build those two types from the existing User type.",
+      "followUps": {
+        "Key tsconfig options: strict, target, module, and paths": "What does turning on strict actually change, and why would you set paths for imports like @/components?",
+        "Utility types: Partial, Required, Pick, Omit, and Record": "How would you create the update type and the safe user type from User without copying fields by hand?"
+      },
+      "criteria": {
+        "Key tsconfig options: strict, target, module, and paths": {
+          "id": "tsconfig-options",
+          "evidence": [
+            {
+              "id": "strict",
+              "text": "strict turns on the strict checks, including strictNullChecks, so null and undefined have to be handled explicitly."
+            },
+            {
+              "id": "target-module",
+              "text": "target sets which JavaScript version is emitted, and module sets the module system of the output."
+            },
+            {
+              "id": "paths",
+              "text": "paths maps import aliases like @/ to folders to avoid long relative imports, as long as the runtime or bundler is configured the same way."
+            }
+          ],
+          "notEnough": [
+            "Only listing option names without saying what any of them changes."
+          ],
+          "misconceptions": []
+        },
+        "Utility types: Partial, Required, Pick, Omit, and Record": {
+          "id": "utility-types",
+          "evidence": [
+            {
+              "id": "derive",
+              "text": "Utility types build new types from an existing one, so changes to User flow into the derived types automatically."
+            },
+            {
+              "id": "partial-omit",
+              "text": "Partial<User> makes every field optional for updates, and Omit<User, 'password'> removes the password for a safe response type."
+            }
+          ],
+          "notEnough": [
+            "Only listing Partial, Pick and Omit without saying what any of them produces."
+          ],
+          "misconceptions": [
+            {
+              "id": "strips-runtime",
+              "text": "Says Omit removes the password field from the actual object at runtime."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

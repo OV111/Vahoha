@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "sveltekit-dev-7",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Server Hooks",
+      "question": "Every page in your SvelteKit app needs to know the current user. Explain how hooks and locals provide this.",
+      "followUps": {
+        "The handle hook and request interception": "What does the handle hook do?",
+        "event.locals for passing data to load functions": "What is event.locals for?"
+      },
+      "criteria": {
+        "The handle hook and request interception": {
+          "id": "handle-hook",
+          "evidence": [
+            {
+              "id": "intercept",
+              "text": "handle in hooks.server.ts runs for every server request."
+            },
+            {
+              "id": "session",
+              "text": "It reads the session cookie and finds the user."
+            },
+            {
+              "id": "before-load",
+              "text": "It runs before any load function or action."
+            }
+          ],
+          "notEnough": [
+            "Only saying hooks run on requests."
+          ],
+          "misconceptions": []
+        },
+        "event.locals for passing data to load functions": {
+          "id": "locals",
+          "evidence": [
+            {
+              "id": "per-request",
+              "text": "locals is an object that lives for one request."
+            },
+            {
+              "id": "set",
+              "text": "handle stores data like the current user on it."
+            },
+            {
+              "id": "read",
+              "text": "Load functions and actions read it without looking the user up again."
+            }
+          ],
+          "notEnough": [
+            "Only saying locals stores data."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Session and Cookie Concepts",
+      "question": "You are implementing login with sessions, and the account page must only be visible to signed-in users. Explain sessions and route protection.",
+      "followUps": {
+        "Sessions and HTTP cookies for authentication state": "How do sessions and cookies keep a user logged in?",
+        "Protecting routes by checking locals in load": "How would you protect the account page?"
+      },
+      "criteria": {
+        "Sessions and HTTP cookies for authentication state": {
+          "id": "sessions-cookies",
+          "evidence": [
+            {
+              "id": "server",
+              "text": "The server stores session data."
+            },
+            {
+              "id": "cookie",
+              "text": "The browser keeps a cookie with the session id."
+            },
+            {
+              "id": "lookup",
+              "text": "On each request the server uses the id to find the session."
+            }
+          ],
+          "notEnough": [
+            "Only saying sessions use cookies."
+          ],
+          "misconceptions": []
+        },
+        "Protecting routes by checking locals in load": {
+          "id": "protect-routes",
+          "evidence": [
+            {
+              "id": "check",
+              "text": "The page's load function checks locals.user."
+            },
+            {
+              "id": "redirect",
+              "text": "If there is no user, it redirects to login."
+            },
+            {
+              "id": "server",
+              "text": "The check runs on the server, so it cannot be bypassed in the browser."
+            }
+          ],
+          "notEnough": [
+            "Only saying you protect the route."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Auth Flows",
+      "question": "You are writing sign-up, login and logout as SvelteKit form actions. Explain how each should work.",
+      "followUps": {
+        "Login and signup form actions with password hashing": "How should signup and login store and check passwords?",
+        "Logout action that clears session cookies": "What must logout do?"
+      },
+      "criteria": {
+        "Login and signup form actions with password hashing": {
+          "id": "login-signup",
+          "evidence": [
+            {
+              "id": "hash",
+              "text": "Signup hashes the password with bcrypt or a similar slow hash."
+            },
+            {
+              "id": "compare",
+              "text": "Login compares the typed password with the stored hash."
+            },
+            {
+              "id": "session",
+              "text": "On success, a session is created and its cookie set."
+            }
+          ],
+          "notEnough": [
+            "Only saying you hash passwords."
+          ],
+          "misconceptions": []
+        },
+        "Logout action that clears session cookies": {
+          "id": "logout",
+          "evidence": [
+            {
+              "id": "delete",
+              "text": "Logout deletes the session on the server."
+            },
+            {
+              "id": "cookie",
+              "text": "It expires the cookie in the browser."
+            },
+            {
+              "id": "action",
+              "text": "It is a server action, not just a client-side change."
+            }
+          ],
+          "notEnough": [
+            "Only saying logout clears the cookie."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Security Practices",
+      "question": "A security review asks how your app prevents cross-site request forgery and session theft. Explain SvelteKit's protections and cookie flags.",
+      "followUps": {
+        "CSRF protection built into SvelteKit form actions": "How do SvelteKit form actions defend against CSRF?",
+        "Secure and HttpOnly cookie flags explained": "What do HttpOnly and Secure cookie flags do?"
+      },
+      "criteria": {
+        "CSRF protection built into SvelteKit form actions": {
+          "id": "csrf",
+          "evidence": [
+            {
+              "id": "origin",
+              "text": "SvelteKit checks the Origin header of form submissions."
+            },
+            {
+              "id": "reject",
+              "text": "Cross-site form posts are rejected."
+            },
+            {
+              "id": "custom",
+              "text": "Other cross-site mutation paths, like custom endpoints, need their own protection."
+            }
+          ],
+          "notEnough": [
+            "Only saying SvelteKit prevents CSRF."
+          ],
+          "misconceptions": []
+        },
+        "Secure and HttpOnly cookie flags explained": {
+          "id": "cookie-flags",
+          "evidence": [
+            {
+              "id": "httponly",
+              "text": "HttpOnly stops JavaScript from reading the cookie, which limits XSS damage."
+            },
+            {
+              "id": "secure",
+              "text": "Secure sends the cookie only over HTTPS."
+            },
+            {
+              "id": "samesite",
+              "text": "SameSite limits sending the cookie on cross-site requests."
+            }
+          ],
+          "notEnough": [
+            "Only saying flags secure cookies."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

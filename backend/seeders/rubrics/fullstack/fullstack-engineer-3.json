@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "fullstack-engineer-3",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Node.js runtime and the Express request cycle",
+      "question": "Your Express API handles hundreds of requests at once on a single Node process, and a middleware you added seems to stop requests from reaching the routes. Explain how Node and Express process requests.",
+      "followUps": {
+        "Node's event loop: non-blocking I/O on a single thread": "How can one Node process serve thousands of connections at once?",
+        "Express middleware chain: execution order and next()": "Why might a middleware stop requests from reaching your route?"
+      },
+      "criteria": {
+        "Node's event loop: non-blocking I/O on a single thread": {
+          "id": "event-loop",
+          "evidence": [
+            {
+              "id": "non-blocking",
+              "text": "Node hands slow I/O like database and file access to the system and continues with other work."
+            },
+            {
+              "id": "callbacks",
+              "text": "When I/O finishes, its callback is queued and run by the event loop."
+            },
+            {
+              "id": "cpu-blocks",
+              "text": "CPU-heavy code still blocks the single thread and delays every other request."
+            }
+          ],
+          "notEnough": [
+            "Only saying Node is non-blocking."
+          ],
+          "misconceptions": [
+            {
+              "id": "multi-thread",
+              "text": "Says Node runs each request on its own thread."
+            }
+          ]
+        },
+        "Express middleware chain: execution order and next()": {
+          "id": "middleware-chain",
+          "evidence": [
+            {
+              "id": "order",
+              "text": "Middleware runs in the order it is registered."
+            },
+            {
+              "id": "next",
+              "text": "Each middleware must call next to pass control on, or send a response."
+            },
+            {
+              "id": "error",
+              "text": "Calling next with an error skips to error-handling middleware."
+            }
+          ],
+          "notEnough": [
+            "Only saying middleware runs before routes."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "REST API design principles",
+      "question": "You are designing an API for recipes that clients will create, read, update and delete. Explain how you would design the URLs, methods and responses.",
+      "followUps": {
+        "Resource-based URLs, HTTP verbs, and idempotency": "What makes a URL like /recipes/42 better than /getRecipe?",
+        "HTTP status codes: choosing the right code for each response": "Which status codes would you return for creating a recipe, bad input and a missing recipe?"
+      },
+      "criteria": {
+        "Resource-based URLs, HTTP verbs, and idempotency": {
+          "id": "rest-resources",
+          "evidence": [
+            {
+              "id": "nouns",
+              "text": "URLs name resources, and the HTTP method says what to do with them."
+            },
+            {
+              "id": "methods",
+              "text": "GET reads, POST creates, PUT or PATCH updates and DELETE removes."
+            },
+            {
+              "id": "idempotent",
+              "text": "GET, PUT and DELETE are idempotent, so repeating them has the same effect, while POST is not."
+            }
+          ],
+          "notEnough": [
+            "Only listing HTTP methods."
+          ],
+          "misconceptions": []
+        },
+        "HTTP status codes: choosing the right code for each response": {
+          "id": "status-codes",
+          "evidence": [
+            {
+              "id": "success",
+              "text": "201 for a successful create, 200 for reads and 204 for a delete with no body."
+            },
+            {
+              "id": "client-errors",
+              "text": "400 or 422 for invalid input and 404 when the recipe does not exist."
+            },
+            {
+              "id": "auth",
+              "text": "401 when the user is not logged in and 403 when they are but are not allowed."
+            }
+          ],
+          "notEnough": [
+            "Only saying 200 means success and 500 means error."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Structuring an Express API",
+      "question": "Your Express app has all routes in one file, errors are handled differently in each handler, and an async handler that throws crashes or hangs the request. Explain how you would structure the app and its error handling.",
+      "followUps": {
+        "Router modules: separating routes by resource": "How would you split routes and keep route files thin?",
+        "Centralized error middleware with the four-argument signature": "How does one error middleware handle errors from every route?"
+      },
+      "criteria": {
+        "Router modules: separating routes by resource": {
+          "id": "router-modules",
+          "evidence": [
+            {
+              "id": "router",
+              "text": "express.Router creates separate routers for each resource, such as recipes and users."
+            },
+            {
+              "id": "mount",
+              "text": "Each router is mounted on its own path."
+            },
+            {
+              "id": "thin",
+              "text": "Route files call controllers or services instead of holding business logic."
+            }
+          ],
+          "notEnough": [
+            "Only saying you split routes into files."
+          ],
+          "misconceptions": []
+        },
+        "Centralized error middleware with the four-argument signature": {
+          "id": "error-middleware",
+          "evidence": [
+            {
+              "id": "four-args",
+              "text": "Error middleware has four arguments: error, request, response and next."
+            },
+            {
+              "id": "last",
+              "text": "It is registered after all routes."
+            },
+            {
+              "id": "consistent",
+              "text": "Every error reaches it through next, so responses have one consistent format."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add an error handler."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Environment configuration and async error handling",
+      "question": "A new developer cannot run your API because they do not know which environment variables it needs, and a rejected promise in a route leaves the request hanging. Explain how you would fix both.",
+      "followUps": {
+        "dotenv for environment variables with .env.example documentation": "How should secrets and configuration be loaded and documented?",
+        "Wrapping async route handlers to catch rejected promises": "Why doesn't Express catch errors from async handlers, and how do you fix it?"
+      },
+      "criteria": {
+        "dotenv for environment variables with .env.example documentation": {
+          "id": "dotenv-config",
+          "evidence": [
+            {
+              "id": "load-first",
+              "text": "Environment variables are loaded at startup, before the code that uses them runs."
+            },
+            {
+              "id": "not-committed",
+              "text": "The real .env file is never committed."
+            },
+            {
+              "id": "example",
+              "text": "A committed .env.example lists every required variable with placeholder values."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use dotenv."
+          ],
+          "misconceptions": []
+        },
+        "Wrapping async route handlers to catch rejected promises": {
+          "id": "async-wrapper",
+          "evidence": [
+            {
+              "id": "not-caught",
+              "text": "Express does not automatically catch rejected promises from async handlers in older versions."
+            },
+            {
+              "id": "wrapper",
+              "text": "A wrapper function catches the rejection and calls next with the error."
+            },
+            {
+              "id": "central",
+              "text": "The error then reaches the central error middleware instead of hanging or crashing."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add try and catch everywhere."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

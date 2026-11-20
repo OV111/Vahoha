@@ -1,0 +1,226 @@
+{
+  "path": "fullstack",
+  "layer": "frontend-dev-8",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Effects",
+      "question": "Your component subscribes to a chat connection and also computes a filtered list. You notice the connection is opened twice and the list renders twice per change. Explain how effects should be used.",
+      "followUps": {
+        "Synchronizing with useEffect": "Why does a subscription need a cleanup function in useEffect?",
+        "You might not need an effect": "Why shouldn't you use an effect to compute a filtered list from props?"
+      },
+      "criteria": {
+        "Synchronizing with useEffect": {
+          "id": "useeffect-sync",
+          "evidence": [
+            {
+              "id": "sync-outside",
+              "text": "An effect keeps something outside React, like a subscription or the document title, in sync with state."
+            },
+            {
+              "id": "cleanup",
+              "text": "The cleanup runs before the effect runs again and when the component is removed."
+            },
+            {
+              "id": "leak",
+              "text": "Without cleanup, old subscriptions stay open and pile up."
+            }
+          ],
+          "notEnough": [
+            "Only saying useEffect runs after render."
+          ],
+          "misconceptions": [
+            {
+              "id": "mount-only",
+              "text": "Says useEffect with dependencies only ever runs once."
+            }
+          ]
+        },
+        "You might not need an effect": {
+          "id": "no-effect-needed",
+          "evidence": [
+            {
+              "id": "derive",
+              "text": "Values that can be calculated from props or state should be computed during render."
+            },
+            {
+              "id": "extra-render",
+              "text": "Storing them via an effect causes an extra render and can show stale values."
+            },
+            {
+              "id": "events",
+              "text": "Changes caused by user actions belong in event handlers, not effects."
+            }
+          ],
+          "notEnough": [
+            "Only saying effects are overused."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Hooks",
+      "question": "You need to keep track of a timer id, cache an expensive calculation, and reuse the same data-loading logic in three components. Explain which hooks you would use and why.",
+      "followUps": {
+        "useRef and useMemo": "What is the difference between storing a timer id in a ref and in state?",
+        "Custom hooks": "How does a custom hook remove duplicated logic between components?"
+      },
+      "criteria": {
+        "useRef and useMemo": {
+          "id": "useref-usememo",
+          "evidence": [
+            {
+              "id": "ref-no-render",
+              "text": "A ref keeps a value between renders without causing a re-render when it changes."
+            },
+            {
+              "id": "memo-cache",
+              "text": "useMemo caches the result of a calculation until its inputs change."
+            },
+            {
+              "id": "measure",
+              "text": "Memoizing has a cost, so it should be used when the calculation is actually slow."
+            }
+          ],
+          "notEnough": [
+            "Only saying useRef is for DOM elements."
+          ],
+          "misconceptions": []
+        },
+        "Custom hooks": {
+          "id": "custom-hooks",
+          "evidence": [
+            {
+              "id": "function",
+              "text": "A custom hook is a function whose name starts with use and that calls other hooks."
+            },
+            {
+              "id": "share-logic",
+              "text": "It shares stateful logic, not the state itself; each component gets its own copy."
+            },
+            {
+              "id": "no-tree-change",
+              "text": "It removes duplication without adding wrapper components."
+            }
+          ],
+          "notEnough": [
+            "Only saying custom hooks are reusable."
+          ],
+          "misconceptions": [
+            {
+              "id": "shared-state",
+              "text": "Says two components using the same custom hook share the same state."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Shared State",
+      "question": "Your shopping cart has many actions like add, remove and apply coupon, and the current user and theme are needed all over the app. Explain how you would manage this state.",
+      "followUps": {
+        "useReducer": "When does useReducer make more sense than several useState calls?",
+        "Context and its limits": "Why can putting fast-changing data in context slow the app down?"
+      },
+      "criteria": {
+        "useReducer": {
+          "id": "usereducer",
+          "evidence": [
+            {
+              "id": "named-actions",
+              "text": "A reducer handles named actions in one function that returns the next state."
+            },
+            {
+              "id": "central",
+              "text": "All the rules for changing state live in one place instead of scattered handlers."
+            },
+            {
+              "id": "testable",
+              "text": "A reducer is a plain function, so it is easy to test."
+            }
+          ],
+          "notEnough": [
+            "Only saying useReducer is for complex state."
+          ],
+          "misconceptions": []
+        },
+        "Context and its limits": {
+          "id": "context-limits",
+          "evidence": [
+            {
+              "id": "no-drilling",
+              "text": "Context passes data deep into the tree without passing props through every level."
+            },
+            {
+              "id": "rerender",
+              "text": "Every component that uses a context re-renders when its value changes."
+            },
+            {
+              "id": "slow-changing",
+              "text": "It suits data that rarely changes, like theme or the current user."
+            }
+          ],
+          "notEnough": [
+            "Only saying context avoids prop drilling."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "State Libraries",
+      "question": "Your app's global state lives in context and every keystroke re-renders half the page, and you are also storing API data next to UI flags like an open modal. Explain how you would restructure this.",
+      "followUps": {
+        "Zustand": "How does Zustand avoid re-rendering components that do not use the changed data?",
+        "Server state versus client state": "Why treat data from the server differently from UI state like an open modal?"
+      },
+      "criteria": {
+        "Zustand": {
+          "id": "zustand",
+          "evidence": [
+            {
+              "id": "outside-store",
+              "text": "Zustand keeps state in a small store outside React."
+            },
+            {
+              "id": "select",
+              "text": "Components subscribe to just the part of the store they need."
+            },
+            {
+              "id": "fewer-renders",
+              "text": "Only components whose selected part changed re-render."
+            }
+          ],
+          "notEnough": [
+            "Only saying Zustand is a simpler Redux."
+          ],
+          "misconceptions": []
+        },
+        "Server state versus client state": {
+          "id": "server-vs-client-state",
+          "evidence": [
+            {
+              "id": "cache",
+              "text": "Server data is a cached copy of something owned by the server and can become stale."
+            },
+            {
+              "id": "needs",
+              "text": "It needs refetching, caching and invalidation, which UI state does not."
+            },
+            {
+              "id": "separate",
+              "text": "Keeping it separate, for example in a query library, keeps UI state small and simple."
+            }
+          ],
+          "notEnough": [
+            "Only saying server state comes from an API."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

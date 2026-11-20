@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "astro-dev-7",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Server-Side Rendering",
+      "question": "Your Astro site needs a server-rendered account page and must deploy to Netlify. Explain adapters and how pages read the request.",
+      "followUps": {
+        "SSR Adapters": "Why does server rendering need an adapter?",
+        "Request and Response Objects": "How does a server-rendered page read headers and cookies?"
+      },
+      "criteria": {
+        "SSR Adapters": {
+          "id": "ssr-adapters",
+          "evidence": [
+            {
+              "id": "runtime",
+              "text": "An adapter builds the server output for a specific runtime."
+            },
+            {
+              "id": "examples",
+              "text": "There are adapters for Node, Netlify, Vercel and others."
+            },
+            {
+              "id": "required",
+              "text": "Without one, server-rendered pages cannot be deployed."
+            }
+          ],
+          "notEnough": [
+            "Only saying adapters deploy Astro."
+          ],
+          "misconceptions": []
+        },
+        "Request and Response Objects": {
+          "id": "request-response",
+          "evidence": [
+            {
+              "id": "request",
+              "text": "Astro.request gives the standard Request object."
+            },
+            {
+              "id": "access",
+              "text": "It provides headers, URL and other request data."
+            },
+            {
+              "id": "ssr-only",
+              "text": "Request data is only meaningful in server-rendered pages, not static ones."
+            }
+          ],
+          "notEnough": [
+            "Only saying you read the request."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "API Endpoints",
+      "question": "You need a JSON endpoint for a newsletter signup and a check on every request for logged-in users. Explain endpoints and middleware in Astro.",
+      "followUps": {
+        "REST Endpoints in src/pages": "How do you create an API endpoint in Astro?",
+        "Middleware in Astro": "What does middleware do in Astro?"
+      },
+      "criteria": {
+        "REST Endpoints in src/pages": {
+          "id": "endpoints",
+          "evidence": [
+            {
+              "id": "file",
+              "text": "A .ts file in src/pages exports functions named after HTTP methods."
+            },
+            {
+              "id": "response",
+              "text": "Each returns a Response object."
+            },
+            {
+              "id": "server",
+              "text": "Endpoints that handle POST need server rendering."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add a .ts file."
+          ],
+          "misconceptions": []
+        },
+        "Middleware in Astro": {
+          "id": "middleware",
+          "evidence": [
+            {
+              "id": "every",
+              "text": "Middleware runs before every request."
+            },
+            {
+              "id": "onrequest",
+              "text": "It is defined with onRequest in src/middleware.ts."
+            },
+            {
+              "id": "uses",
+              "text": "It suits authentication, logging and adding data to locals."
+            }
+          ],
+          "notEnough": [
+            "Only saying middleware runs first."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Node.js Integration",
+      "question": "Your server-rendered pages are slow to show anything, and a developer used a secret API key in client code. Explain the Node adapter's streaming and environment variables.",
+      "followUps": {
+        "Node.js Adapter and Streaming": "How does streaming improve server-rendered pages?",
+        "Environment Variables and Secrets": "How does Astro keep secrets out of the browser?"
+      },
+      "criteria": {
+        "Node.js Adapter and Streaming": {
+          "id": "node-streaming",
+          "evidence": [
+            {
+              "id": "node",
+              "text": "The Node adapter runs Astro as a Node server."
+            },
+            {
+              "id": "stream",
+              "text": "It streams HTML as it is generated."
+            },
+            {
+              "id": "ttfb",
+              "text": "Users see the first content sooner instead of waiting for the whole page."
+            }
+          ],
+          "notEnough": [
+            "Only saying it streams."
+          ],
+          "misconceptions": []
+        },
+        "Environment Variables and Secrets": {
+          "id": "env-secrets",
+          "evidence": [
+            {
+              "id": "public",
+              "text": "Only variables with the PUBLIC_ prefix are exposed to the browser."
+            },
+            {
+              "id": "private",
+              "text": "Others are server-only."
+            },
+            {
+              "id": "leak",
+              "text": "Secrets must never get the PUBLIC_ prefix."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use env vars."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Cookies and Sessions",
+      "question": "You are adding login to a server-rendered Astro site. Explain how cookies and sessions should work.",
+      "followUps": {
+        "Cookie API in Astro SSR": "What does Astro.cookies give you over raw headers?",
+        "Authentication Patterns": "How would authentication work across requests?"
+      },
+      "criteria": {
+        "Cookie API in Astro SSR": {
+          "id": "cookies-api",
+          "evidence": [
+            {
+              "id": "api",
+              "text": "Astro.cookies reads and sets cookies in pages and endpoints."
+            },
+            {
+              "id": "options",
+              "text": "It lets you set options like HttpOnly, Secure and SameSite."
+            },
+            {
+              "id": "safer",
+              "text": "It is less error-prone than building Set-Cookie headers by hand."
+            }
+          ],
+          "notEnough": [
+            "Only saying it handles cookies."
+          ],
+          "misconceptions": []
+        },
+        "Authentication Patterns": {
+          "id": "auth-patterns",
+          "evidence": [
+            {
+              "id": "session",
+              "text": "A session token is stored in an HttpOnly cookie."
+            },
+            {
+              "id": "middleware",
+              "text": "Middleware validates it on every request."
+            },
+            {
+              "id": "locals",
+              "text": "The user is put on Astro.locals for pages and endpoints to use."
+            }
+          ],
+          "notEnough": [
+            "Only saying you check the cookie."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

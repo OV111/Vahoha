@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "t3-6",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Prisma's schema-first approach and type generation",
+      "question": "You are modeling a blog with users, posts and tags in Prisma, and a teammate asks where all the typed database methods come from. Explain how Prisma turns the schema into a client and how relations are modeled.",
+      "followUps": {
+        "How Prisma generates a typed client from schema.prisma": "Where do the typed methods on the Prisma client come from, and when must you regenerate them?",
+        "Prisma relations: one-to-many and many-to-many in the schema": "How would you model posts that belong to one user, and posts that have many tags?"
+      },
+      "criteria": {
+        "How Prisma generates a typed client from schema.prisma": {
+          "id": "prisma-generate",
+          "evidence": [
+            {
+              "id": "schema-source",
+              "text": "Prisma reads schema.prisma and generates a TypeScript client from it."
+            },
+            {
+              "id": "typed",
+              "text": "Every model, field and relation gets types, so queries are checked and autocompleted."
+            },
+            {
+              "id": "regenerate",
+              "text": "After changing the schema, the client must be regenerated for the types to match."
+            }
+          ],
+          "notEnough": [
+            "Only saying Prisma is a typed ORM."
+          ],
+          "misconceptions": []
+        },
+        "Prisma relations: one-to-many and many-to-many in the schema": {
+          "id": "prisma-relations",
+          "evidence": [
+            {
+              "id": "one-to-many",
+              "text": "A one-to-many relation stores a foreign key on the many side, such as authorId on Post."
+            },
+            {
+              "id": "relation-fields",
+              "text": "Both models get relation fields so you can navigate either way."
+            },
+            {
+              "id": "many-to-many",
+              "text": "Many-to-many relations use a join table, which Prisma can manage implicitly or you can define explicitly when it needs extra fields."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use @relation."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Prisma migrations and the development workflow",
+      "question": "You added a field to a model and your post list page now makes 51 database queries. Explain how you would change the schema safely and fix the slow query.",
+      "followUps": {
+        "prisma migrate dev: generating, naming, and applying migrations": "What does prisma migrate dev do, and why commit the migration files?",
+        "N+1 query problem and how to fix it with Prisma's include": "What is the N+1 problem here and how does include fix it?"
+      },
+      "criteria": {
+        "prisma migrate dev: generating, naming, and applying migrations": {
+          "id": "migrate-dev",
+          "evidence": [
+            {
+              "id": "diff",
+              "text": "It compares the schema with the database and writes a SQL migration for the difference."
+            },
+            {
+              "id": "apply",
+              "text": "It applies the migration and regenerates the client."
+            },
+            {
+              "id": "history",
+              "text": "Migration files are committed so every environment applies the same changes in order."
+            }
+          ],
+          "notEnough": [
+            "Only saying it updates the database."
+          ],
+          "misconceptions": []
+        },
+        "N+1 query problem and how to fix it with Prisma's include": {
+          "id": "n-plus-one",
+          "evidence": [
+            {
+              "id": "pattern",
+              "text": "Loading a list and then querying each item's relation separately makes one query per item."
+            },
+            {
+              "id": "include",
+              "text": "include loads the related data together with the list."
+            },
+            {
+              "id": "fewer-queries",
+              "text": "That turns many queries into one or two, which is much faster."
+            }
+          ],
+          "notEnough": [
+            "Only saying N+1 means too many queries."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Prisma CRUD operations in tRPC procedures",
+      "question": "Your tRPC procedures list posts with paging and create an order that must also reduce stock. Explain how you would write these Prisma queries correctly.",
+      "followUps": {
+        "findMany with where, orderBy, take, and skip for pagination": "How do take and skip paginate, and when is cursor pagination better?",
+        "Prisma transactions for multi-step atomic writes": "Why must creating the order and reducing stock happen in a transaction?"
+      },
+      "criteria": {
+        "findMany with where, orderBy, take, and skip for pagination": {
+          "id": "findmany-pagination",
+          "evidence": [
+            {
+              "id": "filter-order",
+              "text": "findMany uses where to filter and orderBy to sort."
+            },
+            {
+              "id": "take-skip",
+              "text": "take limits the number of rows and skip jumps past earlier pages."
+            },
+            {
+              "id": "cursor",
+              "text": "Cursor pagination continues from the last item and stays fast on large tables, where skipping many rows gets slow."
+            }
+          ],
+          "notEnough": [
+            "Only listing the options."
+          ],
+          "misconceptions": []
+        },
+        "Prisma transactions for multi-step atomic writes": {
+          "id": "prisma-transactions",
+          "evidence": [
+            {
+              "id": "atomic",
+              "text": "A transaction runs several writes so they all succeed or all fail."
+            },
+            {
+              "id": "rollback",
+              "text": "If one step fails, earlier steps are rolled back, leaving no half-finished data."
+            },
+            {
+              "id": "interactive",
+              "text": "Interactive transactions allow logic between steps, such as checking stock before writing."
+            }
+          ],
+          "notEnough": [
+            "Only saying transactions keep data safe."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Prisma Studio and seeding for development",
+      "question": "New developers on your team need realistic data locally and a way to look at the database without writing SQL. Explain the tools you would use and how to make seeding safe to run again.",
+      "followUps": {
+        "Prisma Studio: browsing and editing data visually": "What is Prisma Studio useful for during development?",
+        "Writing an idempotent seed script with upsert": "Why use upsert in a seed script?"
+      },
+      "criteria": {
+        "Prisma Studio: browsing and editing data visually": {
+          "id": "prisma-studio",
+          "evidence": [
+            {
+              "id": "browse",
+              "text": "Prisma Studio opens a web interface to browse tables and records."
+            },
+            {
+              "id": "edit",
+              "text": "You can filter and edit rows without writing SQL."
+            },
+            {
+              "id": "debug",
+              "text": "It helps check what is actually in the database while developing."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a database GUI."
+          ],
+          "misconceptions": []
+        },
+        "Writing an idempotent seed script with upsert": {
+          "id": "idempotent-seed",
+          "evidence": [
+            {
+              "id": "repeatable",
+              "text": "A seed script should be safe to run many times."
+            },
+            {
+              "id": "upsert",
+              "text": "upsert creates a record if it does not exist and leaves or updates it if it does."
+            },
+            {
+              "id": "no-duplicates",
+              "text": "That prevents duplicate records or unique constraint errors on the second run."
+            }
+          ],
+          "notEnough": [
+            "Only saying seeding adds test data."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

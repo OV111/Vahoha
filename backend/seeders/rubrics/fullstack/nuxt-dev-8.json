@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "nuxt-dev-8",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Nuxt Module System",
+      "question": "Your team repeats the same setup across several Nuxt apps and wants to use community modules for auth and images. Explain how modules work and how to choose them.",
+      "followUps": {
+        "Building Custom Nuxt Modules": "What does a custom Nuxt module do and when does it run?",
+        "Using Community Modules Safely": "What should you check before adding a community module?"
+      },
+      "criteria": {
+        "Building Custom Nuxt Modules": {
+          "id": "custom-modules",
+          "evidence": [
+            {
+              "id": "define",
+              "text": "A module is created with defineNuxtModule."
+            },
+            {
+              "id": "helpers",
+              "text": "It can add plugins, components and auto-imports."
+            },
+            {
+              "id": "build-time",
+              "text": "Modules run at build time to configure the app."
+            }
+          ],
+          "notEnough": [
+            "Only saying modules extend Nuxt."
+          ],
+          "misconceptions": []
+        },
+        "Using Community Modules Safely": {
+          "id": "community-modules",
+          "evidence": [
+            {
+              "id": "maintenance",
+              "text": "Check that it is maintained and compatible with your Nuxt version."
+            },
+            {
+              "id": "adds",
+              "text": "Modules add config, plugins and code to your app."
+            },
+            {
+              "id": "cost",
+              "text": "Each one adds dependencies and possible bundle size."
+            }
+          ],
+          "notEnough": [
+            "Only saying you install modules."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Advanced Vue Patterns",
+      "question": "You need a table component that builds its columns from data, and a modal that escapes a parent with overflow hidden. Explain render functions and Teleport.",
+      "followUps": {
+        "Render Functions and JSX in Vue 3": "When would you use a render function instead of a template?",
+        "Teleport for Portal Rendering": "What does Teleport solve for a modal?"
+      },
+      "criteria": {
+        "Render Functions and JSX in Vue 3": {
+          "id": "render-functions",
+          "evidence": [
+            {
+              "id": "h",
+              "text": "Render functions build the UI in JavaScript with h() or JSX."
+            },
+            {
+              "id": "dynamic",
+              "text": "They suit highly dynamic structures that templates express poorly."
+            },
+            {
+              "id": "trade-off",
+              "text": "Templates are easier to read and get compiler optimisations, so render functions are the exception."
+            }
+          ],
+          "notEnough": [
+            "Only saying Vue supports JSX."
+          ],
+          "misconceptions": []
+        },
+        "Teleport for Portal Rendering": {
+          "id": "teleport",
+          "evidence": [
+            {
+              "id": "move",
+              "text": "Teleport renders its content in a different DOM location, like the body."
+            },
+            {
+              "id": "escape",
+              "text": "This escapes parent styles like overflow hidden or z-index stacking."
+            },
+            {
+              "id": "logic",
+              "text": "The component keeps its logical place and state in the tree."
+            }
+          ],
+          "notEnough": [
+            "Only saying Teleport moves content."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "TypeScript Advanced Patterns",
+      "question": "You want your API helper's return type to depend on the endpoint, and a plugin adds a $api helper that TypeScript does not know about. Explain the advanced types you would use.",
+      "followUps": {
+        "Conditional Types and Template Literals": "How do conditional and template literal types make types more precise?",
+        "Declaration Merging and Module Augmentation": "How do you tell TypeScript about a property a plugin adds?"
+      },
+      "criteria": {
+        "Conditional Types and Template Literals": {
+          "id": "conditional-types",
+          "evidence": [
+            {
+              "id": "conditional",
+              "text": "Conditional types choose a type based on another type."
+            },
+            {
+              "id": "template",
+              "text": "Template literal types build string types from patterns."
+            },
+            {
+              "id": "precise",
+              "text": "Together they give precise return types based on inputs, like an endpoint string."
+            }
+          ],
+          "notEnough": [
+            "Only defining conditional types."
+          ],
+          "misconceptions": []
+        },
+        "Declaration Merging and Module Augmentation": {
+          "id": "module-augmentation",
+          "evidence": [
+            {
+              "id": "augment",
+              "text": "Module augmentation extends an existing type declaration."
+            },
+            {
+              "id": "nuxtapp",
+              "text": "Plugins augment the NuxtApp type to add their helpers."
+            },
+            {
+              "id": "safe",
+              "text": "Without it, the helper is untyped or reported as missing."
+            }
+          ],
+          "notEnough": [
+            "Only saying you extend the type."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Nuxt Hooks and Lifecycle",
+      "question": "You want to track page view timing at runtime and modify the build output. Explain Nuxt's hook systems and how code accesses the app instance.",
+      "followUps": {
+        "App Hooks vs Build Hooks": "What is the difference between app hooks and build hooks?",
+        "useNuxtApp for Plugin Communication": "What does useNuxtApp give you?"
+      },
+      "criteria": {
+        "App Hooks vs Build Hooks": {
+          "id": "hooks",
+          "evidence": [
+            {
+              "id": "app",
+              "text": "App hooks run at runtime, like when a page finishes loading."
+            },
+            {
+              "id": "build",
+              "text": "Build hooks run while building the app."
+            },
+            {
+              "id": "use",
+              "text": "Page view tracking uses app hooks; changing build output uses build hooks."
+            }
+          ],
+          "notEnough": [
+            "Only listing hooks."
+          ],
+          "misconceptions": []
+        },
+        "useNuxtApp for Plugin Communication": {
+          "id": "use-nuxt-app",
+          "evidence": [
+            {
+              "id": "instance",
+              "text": "useNuxtApp returns the shared Nuxt app instance."
+            },
+            {
+              "id": "access",
+              "text": "It gives access to provided helpers, hooks and the SSR payload."
+            },
+            {
+              "id": "context",
+              "text": "It must be called within Nuxt's context, like in setup or plugins."
+            }
+          ],
+          "notEnough": [
+            "Only saying it returns the app."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

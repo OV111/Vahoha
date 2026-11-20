@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "nuxt-dev-5",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Nitro Server Engine",
+      "question": "Your team may move the Nuxt app from a Node server to Cloudflare Workers, and every request needs a request id. Explain how Nitro supports this.",
+      "followUps": {
+        "Nitro's Universal Deployment Model": "How does Nitro deploy the same server code to different platforms?",
+        "Nitro Plugins and Server Middleware": "What is the difference between a Nitro plugin and server middleware?"
+      },
+      "criteria": {
+        "Nitro's Universal Deployment Model": {
+          "id": "nitro-deploy",
+          "evidence": [
+            {
+              "id": "compile",
+              "text": "Nitro builds the server into a standalone output."
+            },
+            {
+              "id": "presets",
+              "text": "Presets target platforms like Node, Vercel or Cloudflare."
+            },
+            {
+              "id": "portable",
+              "text": "The same code runs on each, as long as it avoids platform-specific APIs."
+            }
+          ],
+          "notEnough": [
+            "Only saying Nitro is the server engine."
+          ],
+          "misconceptions": []
+        },
+        "Nitro Plugins and Server Middleware": {
+          "id": "plugins-middleware",
+          "evidence": [
+            {
+              "id": "plugins",
+              "text": "Plugins run once at startup, for setup like database connections."
+            },
+            {
+              "id": "middleware",
+              "text": "Middleware runs on every request."
+            },
+            {
+              "id": "example",
+              "text": "A request id belongs in middleware, a database connection in a plugin."
+            }
+          ],
+          "notEnough": [
+            "Only listing both."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Server-Side Caching with Nitro",
+      "question": "A popular API endpoint hits the database for every request, and you need key-value storage that works locally and on Cloudflare. Explain Nitro's caching and storage.",
+      "followUps": {
+        "cachedEventHandler and Route Caching": "What does cachedEventHandler do?",
+        "Storage Layer with unstorage": "What does Nitro's storage layer give you?"
+      },
+      "criteria": {
+        "cachedEventHandler and Route Caching": {
+          "id": "cached-handler",
+          "evidence": [
+            {
+              "id": "wrap",
+              "text": "It wraps a route handler with caching."
+            },
+            {
+              "id": "key",
+              "text": "Results are cached by request details like the URL."
+            },
+            {
+              "id": "backend",
+              "text": "The cache can use memory, Redis or other storage, with an expiry."
+            }
+          ],
+          "notEnough": [
+            "Only saying it caches routes."
+          ],
+          "misconceptions": []
+        },
+        "Storage Layer with unstorage": {
+          "id": "unstorage",
+          "evidence": [
+            {
+              "id": "api",
+              "text": "It offers one key-value API."
+            },
+            {
+              "id": "drivers",
+              "text": "It works with backends like memory, Redis, files or Cloudflare KV."
+            },
+            {
+              "id": "swap",
+              "text": "The backend can change without changing the code."
+            }
+          ],
+          "notEnough": [
+            "Only saying it stores data."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "TypeScript in Server Context",
+      "question": "Your server routes trust whatever body they receive, and a secret API key was found in the browser bundle. Explain how you would type input and handle secrets.",
+      "followUps": {
+        "Typed Request Bodies and Query Params": "Why validate readBody and getQuery results?",
+        "useRuntimeConfig for Server Secrets": "How does runtimeConfig keep secrets on the server?"
+      },
+      "criteria": {
+        "Typed Request Bodies and Query Params": {
+          "id": "typed-input",
+          "evidence": [
+            {
+              "id": "untyped",
+              "text": "readBody and getQuery return untrusted, untyped data."
+            },
+            {
+              "id": "validate",
+              "text": "A Zod schema validates and types it at the start of the route."
+            },
+            {
+              "id": "errors",
+              "text": "Invalid input is rejected with a clear error."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add types."
+          ],
+          "misconceptions": []
+        },
+        "useRuntimeConfig for Server Secrets": {
+          "id": "runtime-config",
+          "evidence": [
+            {
+              "id": "private",
+              "text": "Keys in runtimeConfig outside public are server-only."
+            },
+            {
+              "id": "public",
+              "text": "Only keys under public reach the browser."
+            },
+            {
+              "id": "env",
+              "text": "Values can be overridden by environment variables at runtime."
+            }
+          ],
+          "notEnough": [
+            "Only saying runtimeConfig holds config."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Node.js in Server Routes",
+      "question": "A server route that reads files works on Node but fails on an edge platform, and environment variables are read inconsistently. Explain the right patterns.",
+      "followUps": {
+        "File System Access in Server Routes": "Why does file system code break on edge runtimes?",
+        "Environment Variable Access Patterns": "Why use runtimeConfig instead of process.env everywhere?"
+      },
+      "criteria": {
+        "File System Access in Server Routes": {
+          "id": "fs-access",
+          "evidence": [
+            {
+              "id": "node",
+              "text": "Node server routes can use fs and path."
+            },
+            {
+              "id": "edge",
+              "text": "Edge runtimes do not have those APIs."
+            },
+            {
+              "id": "isolate",
+              "text": "Keeping file access in Node-only code or using the storage layer keeps the app portable."
+            }
+          ],
+          "notEnough": [
+            "Only saying edge has no fs."
+          ],
+          "misconceptions": []
+        },
+        "Environment Variable Access Patterns": {
+          "id": "env-patterns",
+          "evidence": [
+            {
+              "id": "runtime",
+              "text": "runtimeConfig is the standard way to read config in Nuxt."
+            },
+            {
+              "id": "override",
+              "text": "It can be overridden by matching environment variables at runtime."
+            },
+            {
+              "id": "portable",
+              "text": "Reading process.env directly does not work the same on every platform."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use runtimeConfig."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

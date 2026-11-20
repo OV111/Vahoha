@@ -1,0 +1,226 @@
+{
+  "path": "fullstack",
+  "layer": "fullstack-engineer-1",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "How browsers parse and render pages",
+      "question": "Users on slow phones see a blank screen for two seconds, and a screen reader user cannot find the navigation. Explain how the browser turns your HTML and CSS into a page and how your markup affects both problems.",
+      "followUps": {
+        "DOM, CSSOM, and the critical rendering path": "Why can a big stylesheet or a script in the head delay the first paint?",
+        "Semantic HTML and the accessibility tree": "Why does a nav element help a screen reader user more than a div?"
+      },
+      "criteria": {
+        "DOM, CSSOM, and the critical rendering path": {
+          "id": "critical-rendering-path",
+          "evidence": [
+            {
+              "id": "trees",
+              "text": "The browser builds a DOM from HTML and a CSSOM from CSS, then combines them before layout and paint."
+            },
+            {
+              "id": "blocking",
+              "text": "CSS blocks rendering and normal scripts block HTML parsing until they are loaded and run."
+            },
+            {
+              "id": "fix",
+              "text": "Deferring scripts and keeping critical CSS small lets the page appear sooner."
+            }
+          ],
+          "notEnough": [
+            "Only naming DOM and CSSOM without saying what blocks what."
+          ],
+          "misconceptions": [
+            {
+              "id": "css-async",
+              "text": "Says CSS never delays the first paint."
+            }
+          ]
+        },
+        "Semantic HTML and the accessibility tree": {
+          "id": "semantic-a11y-tree",
+          "evidence": [
+            {
+              "id": "roles",
+              "text": "Semantic elements carry built-in roles that appear in the accessibility tree."
+            },
+            {
+              "id": "navigate",
+              "text": "Screen reader users use those roles to jump between regions and controls."
+            },
+            {
+              "id": "div",
+              "text": "A plain div has no role, so assistive tools cannot tell what it is."
+            }
+          ],
+          "notEnough": [
+            "Only saying semantic HTML is better practice."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "CSS layout: box model, flexbox, and grid",
+      "question": "You are laying out a page with a header, sidebar and main content, and inside it a row of buttons, but every box ends up wider than you set. Explain the box model and how you would choose between flexbox and grid.",
+      "followUps": {
+        "The box model and box-sizing: border-box": "Why does a box with width 300px and padding end up wider, and how does border-box fix it?",
+        "Flexbox for one-dimensional layouts, Grid for two-dimensional": "When would you use grid and when flexbox?"
+      },
+      "criteria": {
+        "The box model and box-sizing: border-box": {
+          "id": "box-model",
+          "evidence": [
+            {
+              "id": "layers",
+              "text": "Every element is a box of content, padding, border and margin."
+            },
+            {
+              "id": "content-box",
+              "text": "By default width covers only the content, so padding and border are added on top."
+            },
+            {
+              "id": "border-box",
+              "text": "border-box makes the width include padding and border."
+            }
+          ],
+          "notEnough": [
+            "Only listing the four parts of the box."
+          ],
+          "misconceptions": []
+        },
+        "Flexbox for one-dimensional layouts, Grid for two-dimensional": {
+          "id": "flex-vs-grid",
+          "evidence": [
+            {
+              "id": "flex-one",
+              "text": "Flexbox lays items out in one direction, a row or a column."
+            },
+            {
+              "id": "grid-two",
+              "text": "Grid controls rows and columns at the same time."
+            },
+            {
+              "id": "combine",
+              "text": "A common approach is grid for page layout and flexbox inside components."
+            }
+          ],
+          "notEnough": [
+            "Only saying grid is two-dimensional."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Responsive design and JavaScript DOM manipulation",
+      "question": "Your page must work on phones first, and a menu button should open and close a menu without any framework. Explain how you would write the CSS and JavaScript.",
+      "followUps": {
+        "Mobile-first media queries with min-width breakpoints": "Why write base styles for small screens and add min-width breakpoints?",
+        "DOM manipulation: querySelector, classList, and events": "How would you make the button toggle the menu with plain JavaScript?"
+      },
+      "criteria": {
+        "Mobile-first media queries with min-width breakpoints": {
+          "id": "mobile-first-queries",
+          "evidence": [
+            {
+              "id": "base-small",
+              "text": "Base styles target small screens and larger screens are added with min-width media queries."
+            },
+            {
+              "id": "leaner",
+              "text": "This usually produces less CSS than overriding a desktop design for small screens."
+            },
+            {
+              "id": "users",
+              "text": "Many users browse on phones first, so the default experience is the mobile one."
+            }
+          ],
+          "notEnough": [
+            "Only saying media queries change styles at breakpoints."
+          ],
+          "misconceptions": []
+        },
+        "DOM manipulation: querySelector, classList, and events": {
+          "id": "dom-manipulation",
+          "evidence": [
+            {
+              "id": "select",
+              "text": "querySelector finds the button and menu elements."
+            },
+            {
+              "id": "listen",
+              "text": "addEventListener runs code when the button is clicked."
+            },
+            {
+              "id": "class-toggle",
+              "text": "classList.toggle adds or removes a class that CSS uses to show or hide the menu."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would use JavaScript to change the DOM."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Browser DevTools and the Fetch API",
+      "question": "Your recipes page calls an API, and sometimes the list is empty with no error even though the server returned a 500. Explain how you would debug the request and write the fetch code correctly.",
+      "followUps": {
+        "Network tab: inspecting requests, responses, and status codes": "What would you check in the Network tab for a failing API call?",
+        "fetch() with async/await and proper error handling": "Why didn't fetch throw on the 500, and how should your code handle it?"
+      },
+      "criteria": {
+        "Network tab: inspecting requests, responses, and status codes": {
+          "id": "network-tab",
+          "evidence": [
+            {
+              "id": "list",
+              "text": "The Network tab lists every request the page made."
+            },
+            {
+              "id": "status",
+              "text": "Each request shows its status code, so failures like 404 or 500 stand out."
+            },
+            {
+              "id": "details",
+              "text": "Headers, payload and response show what was sent and what came back, along with timing."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would open DevTools."
+          ],
+          "misconceptions": []
+        },
+        "fetch() with async/await and proper error handling": {
+          "id": "fetch-errors",
+          "evidence": [
+            {
+              "id": "resolves",
+              "text": "fetch only rejects on network failures, so error status codes still resolve."
+            },
+            {
+              "id": "check-ok",
+              "text": "Code must check response.ok and treat bad statuses as errors."
+            },
+            {
+              "id": "both",
+              "text": "Network errors and HTTP errors both need handling and a message for the user."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use try and catch."
+          ],
+          "misconceptions": [
+            {
+              "id": "fetch-throws",
+              "text": "Says fetch throws automatically for 4xx and 5xx responses."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

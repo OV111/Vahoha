@@ -1,0 +1,195 @@
+{
+  "path": "fullstack",
+  "layer": "mern-8",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Server state versus client state: why the distinction matters",
+      "question": "Your React app shows a list of orders from the API that other users and admins can also change. Explain why that data needs different handling from local UI state like an open menu, and how a library like React Query keeps it fresh.",
+      "followUps": {
+        "Why server state is async, shared, and can go stale": "Why can the orders you fetched be wrong a minute later, even if nobody touched them in your browser?",
+        "React Query cache: staleTime, cacheTime, and invalidation": "After a user creates an order, how do you make the list show it, and what's the difference between staleTime and gcTime (formerly cacheTime)?"
+      },
+      "criteria": {
+        "Why server state is async, shared, and can go stale": {
+          "id": "server-state",
+          "evidence": [
+            {
+              "id": "owned-by-server",
+              "text": "Server state lives on the server and is shared, so others can change it; your copy is only a snapshot."
+            },
+            {
+              "id": "stale",
+              "text": "That copy can go out of date at any time, so it needs refetching, caching and loading and error states."
+            },
+            {
+              "id": "vs-client",
+              "text": "Client state, like an open menu, belongs only to this browser and can't go stale."
+            }
+          ],
+          "notEnough": [
+            "Only saying server state comes from the server without explaining why it goes stale."
+          ],
+          "misconceptions": []
+        },
+        "React Query cache: staleTime, cacheTime, and invalidation": {
+          "id": "query-cache",
+          "evidence": [
+            {
+              "id": "stale-time",
+              "text": "staleTime is how long cached data counts as fresh; while fresh it's used without refetching."
+            },
+            {
+              "id": "gc-time",
+              "text": "gcTime, formerly cacheTime, is how long unused cached data stays in memory before it's removed."
+            },
+            {
+              "id": "invalidate",
+              "text": "After a change, invalidating the matching query marks it stale and triggers a refetch, so the list shows the new item."
+            }
+          ],
+          "notEnough": [
+            "Only saying React Query caches data without explaining when it refetches."
+          ],
+          "misconceptions": [
+            {
+              "id": "cachetime-fresh",
+              "text": "Says cacheTime (gcTime) controls how long data counts as fresh."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Zustand's subscription model versus Context re-renders",
+      "question": "Your app keeps the user, theme and cart in one React Context, and every change to the cart re-renders the whole page. Explain why, and how Zustand would avoid it.",
+      "followUps": {
+        "How Zustand avoids the Context re-render problem with selectors": "With Zustand, why doesn't a component that only reads the theme re-render when the cart changes?"
+      },
+      "criteria": {
+        "How Zustand avoids the Context re-render problem with selectors": {
+          "id": "zustand-selectors",
+          "evidence": [
+            {
+              "id": "context-rerender",
+              "text": "When a Context value changes, every component that uses that context re-renders, even if the part it uses didn't change."
+            },
+            {
+              "id": "selector",
+              "text": "A Zustand component subscribes with a selector and re-renders only when the selected slice changes."
+            }
+          ],
+          "notEnough": [
+            "Only saying Zustand is faster than Context without explaining the re-render difference."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Axios setup and interceptors for auth headers",
+      "question": "Every API call in your React app repeats the base URL and the auth header, and when a user likes a post they wait a second before the heart turns red. Explain how you'd centralize the API calls and make the like feel instant.",
+      "followUps": {
+        "Creating an Axios instance with baseURL and interceptors": "What would you put in a shared Axios instance and its interceptors?",
+        "useMutation and optimistic updates in React Query": "How does an optimistic update work with useMutation, and what happens if the request fails?"
+      },
+      "criteria": {
+        "Creating an Axios instance with baseURL and interceptors": {
+          "id": "axios-instance",
+          "evidence": [
+            {
+              "id": "instance",
+              "text": "One Axios instance holds the API's base URL and shared settings, so calls don't repeat them."
+            },
+            {
+              "id": "request-interceptor",
+              "text": "A request interceptor adds the Authorization header to every request."
+            },
+            {
+              "id": "response-interceptor",
+              "text": "A response interceptor handles errors in one place, for example refreshing the token or logging out on 401."
+            }
+          ],
+          "notEnough": [
+            "Only saying use Axios interceptors without saying what they do."
+          ],
+          "misconceptions": []
+        },
+        "useMutation and optimistic updates in React Query": {
+          "id": "optimistic-updates",
+          "evidence": [
+            {
+              "id": "apply-early",
+              "text": "The UI is updated in the cache right away, before the server answers, so it feels instant."
+            },
+            {
+              "id": "snapshot",
+              "text": "Before that, in onMutate, running queries are cancelled and the old data is saved."
+            },
+            {
+              "id": "rollback",
+              "text": "If the request fails, the saved data is put back, and afterwards the query is refetched to match the server."
+            }
+          ],
+          "notEnough": [
+            "Only saying optimistic updates show the change early without explaining the rollback."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Connecting React to Express in development and production",
+      "question": "In development your React app on Vite and your Express API run on different ports, and in production you need the user to stay logged in safely across page reloads. Explain how you'd connect the two and handle the tokens on the client.",
+      "followUps": {
+        "Vite proxy configuration for local development": "What does the Vite proxy do, and why does it avoid CORS problems in development?",
+        "Handling auth tokens: storing and refreshing on the client": "Where would you keep the access token and the refresh token, and how does the app stay logged in after a reload?"
+      },
+      "criteria": {
+        "Vite proxy configuration for local development": {
+          "id": "vite-proxy",
+          "evidence": [
+            {
+              "id": "forward",
+              "text": "The Vite dev server forwards requests like /api to the Express server."
+            },
+            {
+              "id": "same-origin",
+              "text": "The browser only talks to the Vite origin, so the requests count as same-origin and no CORS setup is needed in development."
+            },
+            {
+              "id": "mirrors-prod",
+              "text": "It mirrors production setups where a reverse proxy serves the app and the API from one domain."
+            }
+          ],
+          "notEnough": [
+            "Only saying configure a proxy without explaining what it forwards."
+          ],
+          "misconceptions": []
+        },
+        "Handling auth tokens: storing and refreshing on the client": {
+          "id": "client-tokens",
+          "evidence": [
+            {
+              "id": "memory",
+              "text": "The access token is kept in memory, not localStorage, so injected scripts can't easily read it."
+            },
+            {
+              "id": "refresh-cookie",
+              "text": "The refresh token is in an HTTP-only cookie that JavaScript can't read."
+            },
+            {
+              "id": "reload",
+              "text": "After a reload or when the access token expires, the app calls a refresh endpoint, and the cookie gets it a new access token."
+            }
+          ],
+          "notEnough": [
+            "Only saying store tokens securely without saying where or how refresh works."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

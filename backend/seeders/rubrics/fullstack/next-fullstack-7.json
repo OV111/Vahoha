@@ -1,0 +1,260 @@
+{
+  "path": "fullstack",
+  "layer": "next-fullstack-7",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Tailwind CSS Fundamentals",
+      "question": "You are styling your Next.js app with Tailwind and need a responsive layout and a dark mode toggle. Explain how Tailwind handles these.",
+      "followUps": {
+        "Utility-first CSS and the Tailwind mental model": "What is the idea behind utility-first CSS?",
+        "Responsive design with Tailwind breakpoints": "How do Tailwind breakpoints work?",
+        "Dark mode with Tailwind class strategy": "How does the class strategy for dark mode work?"
+      },
+      "criteria": {
+        "Utility-first CSS and the Tailwind mental model": {
+          "id": "utility-first",
+          "evidence": [
+            {
+              "id": "utilities",
+              "text": "Styles are built from small single-purpose classes in the markup."
+            },
+            {
+              "id": "no-naming",
+              "text": "This removes the need to invent class names."
+            },
+            {
+              "id": "colocated",
+              "text": "Styles live next to the markup they affect, so dead CSS is rare."
+            }
+          ],
+          "notEnough": [
+            "Only saying Tailwind uses classes."
+          ],
+          "misconceptions": []
+        },
+        "Responsive design with Tailwind breakpoints": {
+          "id": "breakpoints",
+          "evidence": [
+            {
+              "id": "mobile-first",
+              "text": "Unprefixed classes apply at all sizes."
+            },
+            {
+              "id": "min-width",
+              "text": "Prefixes like md: apply from that width upward."
+            },
+            {
+              "id": "readable",
+              "text": "Responsive behaviour is visible directly in the class list."
+            }
+          ],
+          "notEnough": [
+            "Only listing breakpoints."
+          ],
+          "misconceptions": []
+        },
+        "Dark mode with Tailwind class strategy": {
+          "id": "dark-mode",
+          "evidence": [
+            {
+              "id": "class",
+              "text": "Dark mode is on when a dark class is on the html element."
+            },
+            {
+              "id": "variant",
+              "text": "dark: classes apply only then."
+            },
+            {
+              "id": "toggle",
+              "text": "Code can toggle the class for a user-controlled theme."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add dark: classes."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Accessible Component Design",
+      "question": "Your UI looks slightly different on every page and screen reader users struggle with your custom components. Explain how you would build accessible, consistent components.",
+      "followUps": {
+        "Semantic HTML and ARIA patterns for accessibility": "Why use semantic HTML before ARIA?",
+        "Design tokens and consistent spacing scales": "How do design tokens and a spacing scale keep the UI consistent?"
+      },
+      "criteria": {
+        "Semantic HTML and ARIA patterns for accessibility": {
+          "id": "semantic-aria",
+          "evidence": [
+            {
+              "id": "semantic",
+              "text": "Semantic elements carry roles and keyboard behaviour that assistive tools understand."
+            },
+            {
+              "id": "aria",
+              "text": "ARIA adds meaning only where HTML cannot express it."
+            },
+            {
+              "id": "early",
+              "text": "Building accessibility in from the start is easier than fixing it later."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add ARIA."
+          ],
+          "misconceptions": []
+        },
+        "Design tokens and consistent spacing scales": {
+          "id": "design-tokens",
+          "evidence": [
+            {
+              "id": "scale",
+              "text": "A fixed spacing scale stops arbitrary values."
+            },
+            {
+              "id": "tokens",
+              "text": "Brand colors and sizes defined once in the config are reused everywhere."
+            },
+            {
+              "id": "consistent",
+              "text": "Using the same tokens everywhere keeps screens consistent."
+            }
+          ],
+          "notEnough": [
+            "Only saying tokens are variables."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "shadcn/ui Component Library",
+      "question": "You are adding a component library with buttons in several sizes, a confirm dialog and toast messages. Explain how shadcn/ui works and how you would build variants.",
+      "followUps": {
+        "Installing and using shadcn/ui components": "How is shadcn/ui different from a normal component library?",
+        "Building reusable UI with variant patterns": "How does cva help define component variants?",
+        "Dialogs, toasts, and sheet components for UX": "When would you use a dialog, a toast or a sheet?"
+      },
+      "criteria": {
+        "Installing and using shadcn/ui components": {
+          "id": "shadcn",
+          "evidence": [
+            {
+              "id": "copied",
+              "text": "shadcn/ui copies component code into your project."
+            },
+            {
+              "id": "radix",
+              "text": "Components are built on accessible Radix primitives and styled with Tailwind."
+            },
+            {
+              "id": "own",
+              "text": "You own the code and can change it, without waiting on a library update."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a component library."
+          ],
+          "misconceptions": []
+        },
+        "Building reusable UI with variant patterns": {
+          "id": "cva-variants",
+          "evidence": [
+            {
+              "id": "declare",
+              "text": "cva declares variants like size and intent as a map to classes."
+            },
+            {
+              "id": "api",
+              "text": "Components expose a small, clear set of variant props."
+            },
+            {
+              "id": "consistent",
+              "text": "The same variants are used everywhere, keeping the design consistent."
+            }
+          ],
+          "notEnough": [
+            "Only saying cva handles variants."
+          ],
+          "misconceptions": []
+        },
+        "Dialogs, toasts, and sheet components for UX": {
+          "id": "dialogs-toasts-sheets",
+          "evidence": [
+            {
+              "id": "dialog",
+              "text": "A dialog asks for a decision and blocks the page until answered."
+            },
+            {
+              "id": "toast",
+              "text": "A toast gives brief feedback without interrupting."
+            },
+            {
+              "id": "sheet",
+              "text": "A sheet slides in from the side for secondary content or forms."
+            }
+          ],
+          "notEnough": [
+            "Only listing components."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Loading and Skeleton States",
+      "question": "Pages show blank areas while loading and conditional classes sometimes conflict. Explain how skeletons and the cn helper help.",
+      "followUps": {
+        "Skeleton screens for perceived performance": "Why show a skeleton instead of a spinner or a blank area?",
+        "cn utility for conditional Tailwind class merging": "What does the cn helper do?"
+      },
+      "criteria": {
+        "Skeleton screens for perceived performance": {
+          "id": "skeletons",
+          "evidence": [
+            {
+              "id": "shape",
+              "text": "A skeleton mimics the layout of the content that is coming."
+            },
+            {
+              "id": "perceived",
+              "text": "It makes the wait feel shorter and prevents layout jumps."
+            },
+            {
+              "id": "suspense",
+              "text": "Skeletons are used as Suspense fallbacks."
+            }
+          ],
+          "notEnough": [
+            "Only saying skeletons show loading."
+          ],
+          "misconceptions": []
+        },
+        "cn utility for conditional Tailwind class merging": {
+          "id": "cn-helper",
+          "evidence": [
+            {
+              "id": "clsx",
+              "text": "It joins class names conditionally."
+            },
+            {
+              "id": "merge",
+              "text": "tailwind-merge removes conflicting Tailwind classes, keeping the last one."
+            },
+            {
+              "id": "overrides",
+              "text": "This lets callers safely override a component's default classes."
+            }
+          ],
+          "notEnough": [
+            "Only saying it combines classes."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

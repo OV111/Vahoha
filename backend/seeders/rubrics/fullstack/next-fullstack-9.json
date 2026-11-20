@@ -1,0 +1,260 @@
+{
+  "path": "fullstack",
+  "layer": "next-fullstack-9",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "API Design Principles",
+      "question": "Your Next.js app exposes an API to partners, uses a paid AI API key and receives payment webhooks. Explain how you would design and secure these endpoints.",
+      "followUps": {
+        "REST conventions for route handler design": "How would you apply REST conventions to your route handlers?",
+        "Securing API keys and secrets on the server": "Where can a secret API key safely be used in a Next.js app?",
+        "Webhook signature verification to prevent spoofing": "Why verify a webhook's signature?"
+      },
+      "criteria": {
+        "REST conventions for route handler design": {
+          "id": "rest-conventions",
+          "evidence": [
+            {
+              "id": "methods",
+              "text": "GET reads, POST creates, PATCH updates and DELETE removes."
+            },
+            {
+              "id": "resources",
+              "text": "URLs name resources, like /api/posts/42."
+            },
+            {
+              "id": "predictable",
+              "text": "Following conventions makes the API predictable for other developers."
+            }
+          ],
+          "notEnough": [
+            "Only listing methods."
+          ],
+          "misconceptions": []
+        },
+        "Securing API keys and secrets on the server": {
+          "id": "secrets-server-side",
+          "evidence": [
+            {
+              "id": "server-only",
+              "text": "Keys are only used in server components, server actions or route handlers."
+            },
+            {
+              "id": "never-client",
+              "text": "Anything in client components ends up in the browser bundle."
+            },
+            {
+              "id": "env",
+              "text": "Keys come from server-side environment variables without a public prefix."
+            }
+          ],
+          "notEnough": [
+            "Only saying keep keys secret."
+          ],
+          "misconceptions": []
+        },
+        "Webhook signature verification to prevent spoofing": {
+          "id": "webhook-signatures",
+          "evidence": [
+            {
+              "id": "signed",
+              "text": "Services like Stripe sign each webhook request."
+            },
+            {
+              "id": "verify",
+              "text": "Verifying the signature proves the request really came from them."
+            },
+            {
+              "id": "spoof",
+              "text": "Without it, attackers could send fake events, such as fake payments."
+            }
+          ],
+          "notEnough": [
+            "Only saying webhooks are signed."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "External Integrations Theory",
+      "question": "You are adding payments and profile photo uploads to your app. Explain how payment intents work and how you would handle large file uploads.",
+      "followUps": {
+        "Stripe payment intents and checkout flow": "How is a payment split between the server and the browser?",
+        "File upload strategies and storage options": "Why upload files directly to storage with a pre-signed URL?"
+      },
+      "criteria": {
+        "Stripe payment intents and checkout flow": {
+          "id": "payment-intents",
+          "evidence": [
+            {
+              "id": "intent",
+              "text": "A payment intent represents one payment attempt and tracks its status."
+            },
+            {
+              "id": "server",
+              "text": "The server creates it with the amount."
+            },
+            {
+              "id": "client",
+              "text": "The browser confirms it with the card details, which go straight to Stripe."
+            }
+          ],
+          "notEnough": [
+            "Only saying Stripe processes payments."
+          ],
+          "misconceptions": []
+        },
+        "File upload strategies and storage options": {
+          "id": "file-uploads",
+          "evidence": [
+            {
+              "id": "direct",
+              "text": "The browser uploads straight to object storage like S3 or R2."
+            },
+            {
+              "id": "presigned",
+              "text": "A pre-signed URL gives temporary permission for that one upload."
+            },
+            {
+              "id": "server-load",
+              "text": "Large files never pass through your server, which saves time and resources."
+            }
+          ],
+          "notEnough": [
+            "Only saying you upload to S3."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Stripe Integration",
+      "question": "You are adding checkout to your Next.js store and must record orders even if the customer closes the browser. Explain the Stripe flow.",
+      "followUps": {
+        "Stripe Checkout and payment link setup": "How does Stripe Checkout work from a server action?",
+        "Handling Stripe webhooks in a route handler": "How should the webhook route handler process payment events?"
+      },
+      "criteria": {
+        "Stripe Checkout and payment link setup": {
+          "id": "stripe-checkout",
+          "evidence": [
+            {
+              "id": "session",
+              "text": "A server action creates a Checkout Session with the items."
+            },
+            {
+              "id": "redirect",
+              "text": "The user is redirected to Stripe's hosted payment page."
+            },
+            {
+              "id": "handles",
+              "text": "Stripe handles card validation and extra verification like 3D Secure."
+            }
+          ],
+          "notEnough": [
+            "Only saying you redirect to Stripe."
+          ],
+          "misconceptions": []
+        },
+        "Handling Stripe webhooks in a route handler": {
+          "id": "stripe-webhook-handler",
+          "evidence": [
+            {
+              "id": "verify",
+              "text": "It verifies the Stripe signature using the raw request body."
+            },
+            {
+              "id": "update",
+              "text": "It updates the order in the database for events like completed checkout."
+            },
+            {
+              "id": "idempotent",
+              "text": "It handles the same event arriving twice without double-processing."
+            }
+          ],
+          "notEnough": [
+            "Only saying it receives events."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Environment Config and External APIs",
+      "question": "Production crashed because an environment variable was missing, external API calls open new connections every time, and a public endpoint is being abused. Explain how you would fix each.",
+      "followUps": {
+        "Typed environment variables with Zod validation": "Why validate environment variables with Zod at startup?",
+        "Calling third-party APIs securely from server components": "How should server code call third-party APIs?",
+        "Rate limiting and CORS for public route handlers": "How would you protect a public route handler from abuse?"
+      },
+      "criteria": {
+        "Typed environment variables with Zod validation": {
+          "id": "typed-env",
+          "evidence": [
+            {
+              "id": "parse",
+              "text": "The environment is parsed against a schema when the app starts."
+            },
+            {
+              "id": "fail-fast",
+              "text": "Missing or malformed values fail immediately with a clear error."
+            },
+            {
+              "id": "typed",
+              "text": "The rest of the code gets typed, trusted config."
+            }
+          ],
+          "notEnough": [
+            "Only saying you validate env vars."
+          ],
+          "misconceptions": []
+        },
+        "Calling third-party APIs securely from server components": {
+          "id": "third-party-calls",
+          "evidence": [
+            {
+              "id": "server",
+              "text": "Calls happen in server components or actions so keys stay private."
+            },
+            {
+              "id": "shared",
+              "text": "A shared SDK client is reused instead of created per request."
+            },
+            {
+              "id": "errors",
+              "text": "Errors and timeouts are handled so one slow API does not hang the page."
+            }
+          ],
+          "notEnough": [
+            "Only saying you call APIs from the server."
+          ],
+          "misconceptions": []
+        },
+        "Rate limiting and CORS for public route handlers": {
+          "id": "rate-limit-cors",
+          "evidence": [
+            {
+              "id": "rate",
+              "text": "Rate limits cap how often a client can call it."
+            },
+            {
+              "id": "store",
+              "text": "Limits use a shared store, like Redis, since serverless instances do not share memory."
+            },
+            {
+              "id": "cors",
+              "text": "CORS headers restrict which browser origins may call it."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add rate limiting."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

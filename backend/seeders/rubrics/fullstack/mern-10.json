@@ -1,0 +1,200 @@
+{
+  "path": "fullstack",
+  "layer": "mern-10",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Docker containers and the image layer model",
+      "question": "Your API's Docker image is 1 GB and rebuilds from scratch every time you change one line of code. Explain how Docker builds images and how you'd make the builds faster and the image smaller.",
+      "followUps": {
+        "How Docker images are built from layered filesystem snapshots": "Why does changing one line of code reinstall all npm packages, and how would you reorder the Dockerfile?",
+        "Multi-stage builds for lean production images": "How does a multi-stage build shrink the final image, and what gets left behind?"
+      },
+      "criteria": {
+        "How Docker images are built from layered filesystem snapshots": {
+          "id": "image-layers",
+          "evidence": [
+            {
+              "id": "layers",
+              "text": "Each Dockerfile instruction creates a layer on top of the previous one."
+            },
+            {
+              "id": "cache",
+              "text": "Layers are cached, but changing one invalidates it and every layer after it."
+            },
+            {
+              "id": "order",
+              "text": "Copying package.json and installing dependencies before copying the source code lets the install layer stay cached when only code changes."
+            }
+          ],
+          "notEnough": [
+            "Only saying Docker uses layers without explaining caching."
+          ],
+          "misconceptions": []
+        },
+        "Multi-stage builds for lean production images": {
+          "id": "multi-stage-builds",
+          "evidence": [
+            {
+              "id": "build-stage",
+              "text": "A build stage installs all dependencies and builds the app."
+            },
+            {
+              "id": "run-stage",
+              "text": "The final stage copies only the built output and production dependencies, leaving build tools and dev dependencies behind."
+            }
+          ],
+          "notEnough": [
+            "Only saying use multi-stage builds without saying what is copied."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "CI/CD pipeline concepts",
+      "question": "Your team merges to main several times a day, and someone asks whether you do CI, CD or both. Explain the difference and what each one gives you.",
+      "followUps": {
+        "Continuous integration versus continuous deployment distinctions": "What's the difference between continuous integration and continuous deployment, and what does each one need to be safe?"
+      },
+      "criteria": {
+        "Continuous integration versus continuous deployment distinctions": {
+          "id": "ci-vs-cd",
+          "evidence": [
+            {
+              "id": "ci",
+              "text": "Continuous integration runs the build and tests automatically on every change, so problems are caught early and main stays working."
+            },
+            {
+              "id": "cd",
+              "text": "Continuous deployment goes further and automatically releases every change that passes."
+            },
+            {
+              "id": "trust",
+              "text": "Automatic deploys are only safe when the tests are trustworthy, because nothing else stops a bad change."
+            }
+          ],
+          "notEnough": [
+            "Only saying CI/CD automates things without separating the two."
+          ],
+          "misconceptions": [
+            {
+              "id": "ci-deploys",
+              "text": "Says continuous integration means every commit is deployed to production."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Deploying MERN apps to cloud platforms",
+      "question": "You're deploying your MERN app: the React frontend to Vercel and the Express API to Railway, with MongoDB on Atlas. Explain how each part is configured and where the environment variables live.",
+      "followUps": {
+        "Vercel deployment: project settings, env vars, and preview URLs": "What happens on Vercel when you push or open a pull request, and why must secrets never be in frontend env vars?",
+        "Railway for deploying Express APIs with managed env vars": "How does your Express app on Railway know which port to listen on and how to reach Atlas?"
+      },
+      "criteria": {
+        "Vercel deployment: project settings, env vars, and preview URLs": {
+          "id": "vercel-deploy",
+          "evidence": [
+            {
+              "id": "git-deploys",
+              "text": "Vercel deploys on every push to the connected repo and creates a preview URL for each pull request."
+            },
+            {
+              "id": "build-time-env",
+              "text": "Frontend environment variables are set in the dashboard and baked into the bundle at build time, so changing one needs a redeploy."
+            },
+            {
+              "id": "public",
+              "text": "Anything in the frontend bundle is visible to users, so it must not contain secrets."
+            }
+          ],
+          "notEnough": [
+            "Only saying deploy to Vercel without explaining previews or environment variables."
+          ],
+          "misconceptions": []
+        },
+        "Railway for deploying Express APIs with managed env vars": {
+          "id": "railway-api",
+          "evidence": [
+            {
+              "id": "port",
+              "text": "The platform sets a PORT environment variable, and the app must listen on process.env.PORT."
+            },
+            {
+              "id": "env-vars",
+              "text": "Secrets like the database connection string are set as environment variables in the platform, not in the code."
+            },
+            {
+              "id": "atlas-access",
+              "text": "Atlas must allow connections from the hosting platform, for example through its network access list."
+            }
+          ],
+          "notEnough": [
+            "Only saying deploy to Railway without explaining the port or the variables."
+          ],
+          "misconceptions": [
+            {
+              "id": "hardcode-port",
+              "text": "Says the app should always listen on a fixed port like 3000 in production."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "GitHub Actions workflow for a MERN project",
+      "question": "You want every merge to main to run the tests and deploy your MERN app automatically, using API keys that must stay secret. Explain how you'd write the workflow and handle the secrets.",
+      "followUps": {
+        "Writing a workflow that tests and deploys on merge to main": "What triggers the workflow, what are the jobs and steps, and what stops a deploy when tests fail?",
+        "Production environment variables and secret management": "Where are the secrets stored, how does the workflow use them, and what must you never do with them?"
+      },
+      "criteria": {
+        "Writing a workflow that tests and deploys on merge to main": {
+          "id": "workflow-yaml",
+          "evidence": [
+            {
+              "id": "trigger",
+              "text": "The workflow file defines a trigger, such as a push to main."
+            },
+            {
+              "id": "jobs-steps",
+              "text": "Jobs contain steps that check out the code, set up Node, install dependencies and run the tests."
+            },
+            {
+              "id": "gate",
+              "text": "The deploy job depends on the test job, so it only runs if the tests pass."
+            }
+          ],
+          "notEnough": [
+            "Only saying use GitHub Actions without describing the steps."
+          ],
+          "misconceptions": []
+        },
+        "Production environment variables and secret management": {
+          "id": "secrets-management",
+          "evidence": [
+            {
+              "id": "store",
+              "text": "Secrets are stored in the repository's Actions secrets, not in the code or the workflow file."
+            },
+            {
+              "id": "reference",
+              "text": "The workflow reads them with the secrets context, for example passing them to steps as environment variables."
+            },
+            {
+              "id": "never-print",
+              "text": "They must never be printed in logs or committed; GitHub masks them in logs, but echoing them is still a risk."
+            }
+          ],
+          "notEnough": [
+            "Only saying keep secrets secret without saying where they live or how they're used."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

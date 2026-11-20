@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "nuxt-dev-7",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Pinia State Management",
+      "question": "Your Nuxt app's cart store refetches on every page load even though the server already loaded it. Explain how Pinia stores are defined and hydrated in SSR.",
+      "followUps": {
+        "Store Definition: Options vs Setup Syntax": "What is the difference between an options store and a setup store?",
+        "Store Hydration in SSR": "How does store state get from the server to the client?"
+      },
+      "criteria": {
+        "Store Definition: Options vs Setup Syntax": {
+          "id": "store-syntax",
+          "evidence": [
+            {
+              "id": "options",
+              "text": "An options store uses state, getters and actions objects."
+            },
+            {
+              "id": "setup",
+              "text": "A setup store uses a function with refs and computed."
+            },
+            {
+              "id": "choice",
+              "text": "Setup stores are more flexible and can use composables inside."
+            }
+          ],
+          "notEnough": [
+            "Only saying there are two syntaxes."
+          ],
+          "misconceptions": []
+        },
+        "Store Hydration in SSR": {
+          "id": "store-hydration",
+          "evidence": [
+            {
+              "id": "serialize",
+              "text": "Store state filled on the server is serialised into the page."
+            },
+            {
+              "id": "hydrate",
+              "text": "The client restores it during hydration."
+            },
+            {
+              "id": "no-refetch",
+              "text": "The data is not fetched again on page load."
+            }
+          ],
+          "notEnough": [
+            "Only saying Pinia supports SSR."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Authentication Patterns",
+      "question": "You are adding login to your Nuxt app and protecting the dashboard. Explain how sessions and route middleware work.",
+      "followUps": {
+        "nuxt-auth-utils Session Model": "How does nuxt-auth-utils store sessions?",
+        "Route Protection with Middleware": "How does route middleware protect pages, and is that enough?"
+      },
+      "criteria": {
+        "nuxt-auth-utils Session Model": {
+          "id": "auth-utils-sessions",
+          "evidence": [
+            {
+              "id": "sealed",
+              "text": "Sessions are stored in an encrypted, sealed cookie."
+            },
+            {
+              "id": "composable",
+              "text": "useUserSession reads the session on both server and client."
+            },
+            {
+              "id": "no-db",
+              "text": "No session database is needed for the basic setup."
+            }
+          ],
+          "notEnough": [
+            "Only saying it handles sessions."
+          ],
+          "misconceptions": []
+        },
+        "Route Protection with Middleware": {
+          "id": "route-middleware",
+          "evidence": [
+            {
+              "id": "before",
+              "text": "Route middleware runs before navigation, on server and client."
+            },
+            {
+              "id": "redirect",
+              "text": "It redirects users who are not logged in."
+            },
+            {
+              "id": "server-check",
+              "text": "Server API routes must still check the session themselves."
+            }
+          ],
+          "notEnough": [
+            "Only saying middleware protects routes."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "TypeScript with Pinia",
+      "question": "Your Pinia store has complex state and you want type errors when components misuse it. Explain how types and getters work in Pinia.",
+      "followUps": {
+        "Typing Store State and Actions": "How does Pinia infer types, and when should you type state explicitly?",
+        "Store Getters as Computed Properties": "What makes getters efficient?"
+      },
+      "criteria": {
+        "Typing Store State and Actions": {
+          "id": "typing-stores",
+          "evidence": [
+            {
+              "id": "infer",
+              "text": "Pinia infers types from the state and actions."
+            },
+            {
+              "id": "interfaces",
+              "text": "Complex or nullable state is typed explicitly with interfaces."
+            },
+            {
+              "id": "benefit",
+              "text": "Components then get type errors for wrong usage."
+            }
+          ],
+          "notEnough": [
+            "Only saying Pinia supports TypeScript."
+          ],
+          "misconceptions": []
+        },
+        "Store Getters as Computed Properties": {
+          "id": "getters",
+          "evidence": [
+            {
+              "id": "computed",
+              "text": "Getters work like computed properties."
+            },
+            {
+              "id": "cached",
+              "text": "They are cached and recompute only when their dependencies change."
+            },
+            {
+              "id": "derived",
+              "text": "They hold derived values, like a cart total."
+            }
+          ],
+          "notEnough": [
+            "Only saying getters return values."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Security Considerations",
+      "question": "A security review asks how your Nuxt app stops cross-site request forgery and how passwords are stored. Explain your protections.",
+      "followUps": {
+        "CSRF Protection in Nuxt": "How do you protect cookie-based sessions from CSRF?",
+        "Password Hashing with bcrypt/argon2": "Why use bcrypt or argon2 instead of MD5 or SHA1?"
+      },
+      "criteria": {
+        "CSRF Protection in Nuxt": {
+          "id": "csrf",
+          "evidence": [
+            {
+              "id": "risk",
+              "text": "Cookies are sent automatically, so other sites can trigger requests with them."
+            },
+            {
+              "id": "samesite",
+              "text": "SameSite cookies stop sending them on most cross-site requests."
+            },
+            {
+              "id": "extra",
+              "text": "For sensitive actions, checking the origin or using tokens adds protection."
+            }
+          ],
+          "notEnough": [
+            "Only saying you prevent CSRF."
+          ],
+          "misconceptions": []
+        },
+        "Password Hashing with bcrypt/argon2": {
+          "id": "password-hashing",
+          "evidence": [
+            {
+              "id": "slow",
+              "text": "bcrypt and argon2 are deliberately slow and salted."
+            },
+            {
+              "id": "fast-bad",
+              "text": "Fast hashes like MD5 or SHA1 can be cracked quickly after a leak."
+            },
+            {
+              "id": "cost",
+              "text": "Their cost setting can be raised over time."
+            }
+          ],
+          "notEnough": [
+            "Only saying you hash passwords."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

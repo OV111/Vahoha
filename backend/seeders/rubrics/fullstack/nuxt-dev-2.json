@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "nuxt-dev-2",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Vue 3 Reactivity System",
+      "question": "A Vue component stops updating after destructuring a reactive object, and a watcher is used where a computed value would do. Explain Vue's reactivity tools.",
+      "followUps": {
+        "ref vs reactive: Choosing the Right Primitive": "When would you use ref and when reactive?",
+        "computed vs watchEffect: Derived State": "When would you use computed and when watchEffect?"
+      },
+      "criteria": {
+        "ref vs reactive: Choosing the Right Primitive": {
+          "id": "ref-vs-reactive",
+          "evidence": [
+            {
+              "id": "ref",
+              "text": "ref wraps any value and is accessed through .value."
+            },
+            {
+              "id": "reactive",
+              "text": "reactive makes an object deeply reactive."
+            },
+            {
+              "id": "destructure",
+              "text": "Destructuring a reactive object loses reactivity unless toRefs is used."
+            }
+          ],
+          "notEnough": [
+            "Only saying both are reactive."
+          ],
+          "misconceptions": []
+        },
+        "computed vs watchEffect: Derived State": {
+          "id": "computed-vs-watcheffect",
+          "evidence": [
+            {
+              "id": "computed",
+              "text": "computed creates cached derived values."
+            },
+            {
+              "id": "watcheffect",
+              "text": "watchEffect runs side effects, like fetching or logging, when dependencies change."
+            },
+            {
+              "id": "choice",
+              "text": "Derived data belongs in computed; watchers are for side effects."
+            }
+          ],
+          "notEnough": [
+            "Only saying both react to changes."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Composition API Patterns",
+      "question": "Several components repeat the same fetching logic, and a listener keeps running after a component is removed. Explain composables and lifecycle hooks.",
+      "followUps": {
+        "Composables for Logic Reuse": "Why are composables better than mixins for reusing logic?",
+        "Lifecycle Hooks in Composition API": "Where must lifecycle hooks be called?"
+      },
+      "criteria": {
+        "Composables for Logic Reuse": {
+          "id": "composables",
+          "evidence": [
+            {
+              "id": "function",
+              "text": "A composable is a function that uses Vue's reactivity to hold logic."
+            },
+            {
+              "id": "explicit",
+              "text": "Its return values make data flow explicit."
+            },
+            {
+              "id": "no-collisions",
+              "text": "Unlike mixins, it avoids hidden name collisions."
+            }
+          ],
+          "notEnough": [
+            "Only saying composables are reusable."
+          ],
+          "misconceptions": []
+        },
+        "Lifecycle Hooks in Composition API": {
+          "id": "lifecycle",
+          "evidence": [
+            {
+              "id": "sync",
+              "text": "Hooks like onMounted must be called synchronously during setup."
+            },
+            {
+              "id": "not-async",
+              "text": "Inside async callbacks or after an await they may not register correctly."
+            },
+            {
+              "id": "cleanup",
+              "text": "onUnmounted cleans up listeners and timers."
+            }
+          ],
+          "notEnough": [
+            "Only listing hooks."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Vue Component Architecture",
+      "question": "A child component edits its props directly and a list component should let parents decide how each row looks. Explain props, emits and slots.",
+      "followUps": {
+        "Props and Emits Contract": "Why shouldn't a component change its props?",
+        "Slots and Render Scoping": "How do scoped slots let a parent customise each row?"
+      },
+      "criteria": {
+        "Props and Emits Contract": {
+          "id": "props-emits",
+          "evidence": [
+            {
+              "id": "one-way",
+              "text": "Props flow from parent to child."
+            },
+            {
+              "id": "emit",
+              "text": "A child tells the parent about changes by emitting events."
+            },
+            {
+              "id": "owner",
+              "text": "The parent owns the data and decides how to update it."
+            }
+          ],
+          "notEnough": [
+            "Only saying props are read-only."
+          ],
+          "misconceptions": []
+        },
+        "Slots and Render Scoping": {
+          "id": "slots",
+          "evidence": [
+            {
+              "id": "slot",
+              "text": "Slots let a parent pass template content into a child."
+            },
+            {
+              "id": "scoped",
+              "text": "Scoped slots expose the child's data, like each row, to that template."
+            },
+            {
+              "id": "flexible",
+              "text": "The child handles the logic while the parent controls the markup."
+            }
+          ],
+          "notEnough": [
+            "Only saying slots pass content."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Vite Build Tooling",
+      "question": "Edits sometimes reset component state during development, and an API key you set is undefined in the browser. Explain how Vite handles HMR and environment variables.",
+      "followUps": {
+        "HMR and Dev Server Architecture": "How does HMR update the page, and when does state reset?",
+        "Environment Variables and Modes": "Why is a variable without the VITE_ prefix undefined in the browser?"
+      },
+      "criteria": {
+        "HMR and Dev Server Architecture": {
+          "id": "hmr",
+          "evidence": [
+            {
+              "id": "native",
+              "text": "Vite serves native ES modules during development."
+            },
+            {
+              "id": "patch",
+              "text": "HMR replaces only the changed module without a full reload."
+            },
+            {
+              "id": "boundaries",
+              "text": "Some changes cannot be patched in place, so the module reloads and its state resets."
+            }
+          ],
+          "notEnough": [
+            "Only saying HMR is fast."
+          ],
+          "misconceptions": []
+        },
+        "Environment Variables and Modes": {
+          "id": "env-modes",
+          "evidence": [
+            {
+              "id": "prefix",
+              "text": "Only variables with the VITE_ prefix are exposed to client code."
+            },
+            {
+              "id": "safety",
+              "text": "This stops secrets from leaking into the bundle by accident."
+            },
+            {
+              "id": "visible",
+              "text": "Anything exposed to the client can be read by users."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add VITE_."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

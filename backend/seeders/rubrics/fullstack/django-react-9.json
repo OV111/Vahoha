@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "django-react-9",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Server State Management",
+      "question": "Your React app's data goes stale after edits, and every like takes a second to show. Explain how TanStack Query manages server data.",
+      "followUps": {
+        "React Query for Server State": "What does TanStack Query handle that manual fetching does not?",
+        "Cache Invalidation and Stale-While-Revalidate": "How do staleTime and invalidation keep data fresh?",
+        "Optimistic Updates for Instant Feedback": "How does an optimistic update work and what happens on failure?"
+      },
+      "criteria": {
+        "React Query for Server State": {
+          "id": "react-query",
+          "evidence": [
+            {
+              "id": "separate",
+              "text": "It treats server data separately from UI state."
+            },
+            {
+              "id": "features",
+              "text": "It handles caching, background refetching and loading and error states."
+            },
+            {
+              "id": "hooks",
+              "text": "useQuery reads data and useMutation changes it."
+            }
+          ],
+          "notEnough": [
+            "Only saying it fetches data."
+          ],
+          "misconceptions": []
+        },
+        "Cache Invalidation and Stale-While-Revalidate": {
+          "id": "invalidation-staleness",
+          "evidence": [
+            {
+              "id": "stale-time",
+              "text": "staleTime is how long cached data counts as fresh."
+            },
+            {
+              "id": "background",
+              "text": "Stale data is shown while a refetch runs in the background."
+            },
+            {
+              "id": "invalidate",
+              "text": "Invalidating a query after a mutation refetches the changed data."
+            }
+          ],
+          "notEnough": [
+            "Only saying data is refetched."
+          ],
+          "misconceptions": []
+        },
+        "Optimistic Updates for Instant Feedback": {
+          "id": "optimistic-updates",
+          "evidence": [
+            {
+              "id": "immediate",
+              "text": "The cache is updated immediately before the server confirms."
+            },
+            {
+              "id": "rollback",
+              "text": "If the request fails, the previous value is restored."
+            },
+            {
+              "id": "perceived",
+              "text": "This makes actions feel instant on slow connections."
+            }
+          ],
+          "notEnough": [
+            "Only saying the UI updates first."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Global State and Forms",
+      "question": "Your app passes the theme and modal state through many layers, and a long recipe form re-renders on every keystroke with hand-written validation. Explain how you would improve both.",
+      "followUps": {
+        "Global State with Zustand or Context": "When would you use Zustand or context for global state?",
+        "Schema Validation with Zod and React Hook Form": "How do React Hook Form and Zod work together?"
+      },
+      "criteria": {
+        "Global State with Zustand or Context": {
+          "id": "global-state",
+          "evidence": [
+            {
+              "id": "ui-state",
+              "text": "UI state shared across routes, like theme or open modals, suits a small store or context."
+            },
+            {
+              "id": "zustand",
+              "text": "Zustand avoids Redux boilerplate and lets components subscribe to just what they use."
+            },
+            {
+              "id": "minimal",
+              "text": "Server data belongs in TanStack Query, keeping global state small."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use Zustand."
+          ],
+          "misconceptions": []
+        },
+        "Schema Validation with Zod and React Hook Form": {
+          "id": "rhf-zod",
+          "evidence": [
+            {
+              "id": "uncontrolled",
+              "text": "React Hook Form uses uncontrolled inputs to avoid re-rendering on every keystroke."
+            },
+            {
+              "id": "zod",
+              "text": "Zod defines the validation rules as a schema."
+            },
+            {
+              "id": "resolver",
+              "text": "A resolver connects them so the form is validated against the schema."
+            }
+          ],
+          "notEnough": [
+            "Only saying they validate forms."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Accessible UI Patterns",
+      "question": "Keyboard users cannot open your custom dropdown, and your modal does not trap focus. Explain how you would make these components accessible.",
+      "followUps": {
+        "ARIA Roles and Keyboard Navigation": "When should you add ARIA roles, and what must every interactive component support?",
+        "Accessible Component Libraries": "Why use a headless library like Radix for modals and dropdowns?"
+      },
+      "criteria": {
+        "ARIA Roles and Keyboard Navigation": {
+          "id": "aria-keyboard",
+          "evidence": [
+            {
+              "id": "semantic-first",
+              "text": "Use semantic HTML first and add ARIA only when needed."
+            },
+            {
+              "id": "keyboard",
+              "text": "Every interactive component must work with the keyboard."
+            },
+            {
+              "id": "focus",
+              "text": "Focus must be visible and move in a logical order."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add ARIA."
+          ],
+          "misconceptions": []
+        },
+        "Accessible Component Libraries": {
+          "id": "accessible-libraries",
+          "evidence": [
+            {
+              "id": "accessible",
+              "text": "Headless libraries give accessible behaviour for complex components."
+            },
+            {
+              "id": "details",
+              "text": "They handle focus management and keyboard support that are easy to get wrong."
+            },
+            {
+              "id": "style",
+              "text": "They are unstyled, so you apply your own design."
+            }
+          ],
+          "notEnough": [
+            "Only saying they save time."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Advanced React Patterns",
+      "question": "Your React bundle is large and a filtered list re-renders slowly. Explain how you would split code and avoid unnecessary work.",
+      "followUps": {
+        "Code Splitting with React.lazy and Suspense": "How do React.lazy and Suspense reduce the first download?",
+        "useMemo and useCallback for Performance": "When do useMemo and useCallback help, and why profile first?"
+      },
+      "criteria": {
+        "Code Splitting with React.lazy and Suspense": {
+          "id": "code-splitting",
+          "evidence": [
+            {
+              "id": "lazy",
+              "text": "React.lazy loads a component's code only when it is needed."
+            },
+            {
+              "id": "suspense",
+              "text": "Suspense shows a fallback while it loads."
+            },
+            {
+              "id": "chunks",
+              "text": "The build creates separate chunks for lazy routes."
+            }
+          ],
+          "notEnough": [
+            "Only saying it lazy loads."
+          ],
+          "misconceptions": []
+        },
+        "useMemo and useCallback for Performance": {
+          "id": "memo-callback",
+          "evidence": [
+            {
+              "id": "usememo",
+              "text": "useMemo caches an expensive computed value."
+            },
+            {
+              "id": "usecallback",
+              "text": "useCallback keeps a function reference stable, which helps memoized children."
+            },
+            {
+              "id": "profile",
+              "text": "Profiling first shows whether the work is actually slow, since memoization has its own cost."
+            }
+          ],
+          "notEnough": [
+            "Only saying they improve performance."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

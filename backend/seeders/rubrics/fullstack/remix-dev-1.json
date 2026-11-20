@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "remix-dev-1",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "TypeScript Core Concepts",
+      "question": "You are typing the data a Remix loader returns and the update form for a user profile. Explain how you would use TypeScript's inference and type tools.",
+      "followUps": {
+        "Type Inference and Annotation": "Where should you write type annotations, and where can you rely on inference?",
+        "Generics and Utility Types": "How do generics and utility types help with loader data and form types?"
+      },
+      "criteria": {
+        "Type Inference and Annotation": {
+          "id": "inference-annotation",
+          "evidence": [
+            {
+              "id": "infer",
+              "text": "TypeScript infers many types from the values you write."
+            },
+            {
+              "id": "boundaries",
+              "text": "Function parameters and API boundaries should be annotated explicitly."
+            },
+            {
+              "id": "risk",
+              "text": "Relying only on inference at boundaries can let wrong data shapes spread unnoticed."
+            }
+          ],
+          "notEnough": [
+            "Only saying TypeScript infers types."
+          ],
+          "misconceptions": []
+        },
+        "Generics and Utility Types": {
+          "id": "generics-utility",
+          "evidence": [
+            {
+              "id": "generic",
+              "text": "Generics reuse logic across data shapes while staying type-safe."
+            },
+            {
+              "id": "utility",
+              "text": "Partial, Pick and Omit build new types from existing ones."
+            },
+            {
+              "id": "example",
+              "text": "An update form can use Partial of the user type instead of a copy."
+            }
+          ],
+          "notEnough": [
+            "Only listing utility types."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "React Fundamentals",
+      "question": "Your Remix component re-renders too often, list items lose their state when reordered, and an effect runs in a loop. Explain how React renders and how hooks should be used.",
+      "followUps": {
+        "Component Rendering and the Virtual DOM": "How does React decide what to change in the DOM, and why do keys matter?",
+        "Hooks: useState, useEffect, useRef": "What do useState, useEffect and useRef each do, and how can useEffect loop?"
+      },
+      "criteria": {
+        "Component Rendering and the Virtual DOM": {
+          "id": "reconciliation",
+          "evidence": [
+            {
+              "id": "compare",
+              "text": "React compares the new UI tree with the previous one."
+            },
+            {
+              "id": "minimal",
+              "text": "It applies only the needed DOM changes."
+            },
+            {
+              "id": "keys",
+              "text": "Stable keys let it match list items correctly between renders."
+            }
+          ],
+          "notEnough": [
+            "Only saying React uses a virtual DOM."
+          ],
+          "misconceptions": []
+        },
+        "Hooks: useState, useEffect, useRef": {
+          "id": "hooks",
+          "evidence": [
+            {
+              "id": "state",
+              "text": "useState holds values that trigger re-renders."
+            },
+            {
+              "id": "ref",
+              "text": "useRef holds values that persist without causing re-renders."
+            },
+            {
+              "id": "effect-loop",
+              "text": "An effect that sets state it depends on, or has wrong dependencies, can loop forever."
+            }
+          ],
+          "notEnough": [
+            "Only listing hooks."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Node.js for Remix",
+      "question": "Your Remix server crashes on an import error and becomes unresponsive when a loader reads a file synchronously. Explain Node's modules and event loop.",
+      "followUps": {
+        "Node.js Module System and ESM": "Why does mixing require and import cause errors?",
+        "Async/Await and the Event Loop": "Why can synchronous work in a loader slow every request?"
+      },
+      "criteria": {
+        "Node.js Module System and ESM": {
+          "id": "esm-vs-cjs",
+          "evidence": [
+            {
+              "id": "two-systems",
+              "text": "Node has CommonJS with require and ES modules with import."
+            },
+            {
+              "id": "not-interchangeable",
+              "text": "They load differently and are not fully interchangeable."
+            },
+            {
+              "id": "consistent",
+              "text": "A project should use one system consistently, with care at the boundaries."
+            }
+          ],
+          "notEnough": [
+            "Only saying ESM is newer."
+          ],
+          "misconceptions": []
+        },
+        "Async/Await and the Event Loop": {
+          "id": "event-loop",
+          "evidence": [
+            {
+              "id": "single",
+              "text": "Node runs JavaScript on a single thread."
+            },
+            {
+              "id": "blocking",
+              "text": "Synchronous I/O or heavy computation blocks all other requests."
+            },
+            {
+              "id": "async",
+              "text": "Async I/O lets the server handle other requests while waiting."
+            }
+          ],
+          "notEnough": [
+            "Only saying Node is async."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Development Tooling",
+      "question": "A null value crashed a Remix page in production, and server-only code accidentally ended up in the browser bundle. Explain your TypeScript and Vite setup.",
+      "followUps": {
+        "tsconfig.json and Strict Mode": "Why enable strict mode?",
+        "Vite and HMR in Remix": "How does Vite separate server and client code in Remix?"
+      },
+      "criteria": {
+        "tsconfig.json and Strict Mode": {
+          "id": "strict-mode",
+          "evidence": [
+            {
+              "id": "null-checks",
+              "text": "Strict mode makes TypeScript check for possibly null or undefined values."
+            },
+            {
+              "id": "catch",
+              "text": "Those bugs are caught before the code runs."
+            },
+            {
+              "id": "paths",
+              "text": "tsconfig path settings also help resolve route modules cleanly."
+            }
+          ],
+          "notEnough": [
+            "Only saying strict is stricter."
+          ],
+          "misconceptions": []
+        },
+        "Vite and HMR in Remix": {
+          "id": "vite-bundles",
+          "evidence": [
+            {
+              "id": "hmr",
+              "text": "Vite gives fast hot module replacement in development."
+            },
+            {
+              "id": "two-bundles",
+              "text": "It builds separate server and client bundles."
+            },
+            {
+              "id": "server-only",
+              "text": "Server-only code must stay in loaders, actions or .server files so it does not leak to the client."
+            }
+          ],
+          "notEnough": [
+            "Only saying Vite builds Remix."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

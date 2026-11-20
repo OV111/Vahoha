@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "frontend-dev-3",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Flexbox",
+      "question": "You are building a navigation bar where items sit in a row, one item should take up the leftover space, and long text keeps overflowing. Explain how flexbox handles this.",
+      "followUps": {
+        "Main axis and cross axis": "You switch flex-direction to column and justify-content now moves things vertically. Why?",
+        "flex-grow, shrink and basis": "A flex item with long text refuses to shrink and overflows. What is happening and how do you fix it?"
+      },
+      "criteria": {
+        "Main axis and cross axis": {
+          "id": "flex-axes",
+          "evidence": [
+            {
+              "id": "two-axes",
+              "text": "Flexbox lays items along a main axis and aligns them on a cross axis."
+            },
+            {
+              "id": "justify-align",
+              "text": "justify-content works along the main axis and align-items along the cross axis."
+            },
+            {
+              "id": "direction-swaps",
+              "text": "Changing the direction to column swaps which way the main axis runs, so the two properties swap effect."
+            }
+          ],
+          "notEnough": [
+            "Only saying justify is horizontal and align is vertical."
+          ],
+          "misconceptions": [
+            {
+              "id": "justify-horizontal",
+              "text": "Says justify-content always aligns horizontally."
+            }
+          ]
+        },
+        "flex-grow, shrink and basis": {
+          "id": "flex-sizing",
+          "evidence": [
+            {
+              "id": "share-space",
+              "text": "flex-grow decides how free space is shared, flex-shrink how items give up space, and flex-basis the starting size."
+            },
+            {
+              "id": "flex-one",
+              "text": "flex: 1 makes items share the available space evenly."
+            },
+            {
+              "id": "min-width",
+              "text": "Flex items will not shrink below their content size by default, and setting min-width to 0 lets them shrink."
+            }
+          ],
+          "notEnough": [
+            "Only listing the three properties without saying what each controls."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Grid",
+      "question": "You need a page layout with a header, sidebar and main area, plus a product grid that adds columns on wider screens. Explain how CSS Grid handles both.",
+      "followUps": {
+        "Tracks and areas": "When would you choose grid over flexbox for a layout?",
+        "auto-fit, minmax and fr": "How does a grid add or remove columns as the screen gets wider, without media queries?"
+      },
+      "criteria": {
+        "Tracks and areas": {
+          "id": "grid-tracks",
+          "evidence": [
+            {
+              "id": "two-dimensions",
+              "text": "Grid controls rows and columns at the same time, while flexbox works in one direction."
+            },
+            {
+              "id": "placement",
+              "text": "Items can be placed by line numbers or by named areas, which makes page layouts readable."
+            },
+            {
+              "id": "page-layout",
+              "text": "Grid suits whole-page layouts and anything arranged in rows and columns."
+            }
+          ],
+          "notEnough": [
+            "Only saying grid is for two dimensions without an example of when it helps."
+          ],
+          "misconceptions": []
+        },
+        "auto-fit, minmax and fr": {
+          "id": "auto-fit-minmax",
+          "evidence": [
+            {
+              "id": "minmax",
+              "text": "minmax sets a minimum and maximum size for each column."
+            },
+            {
+              "id": "auto-fit",
+              "text": "auto-fit fits as many columns as there is room for at that minimum size."
+            },
+            {
+              "id": "fr",
+              "text": "The fr unit shares leftover space between columns, so they stretch to fill the row."
+            }
+          ],
+          "notEnough": [
+            "Only reciting the repeat auto-fit minmax line without explaining what each part does."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Responsive Design",
+      "question": "Your site looks fine on your laptop but is cramped on phones, and buttons are hard to tap. Explain how you would make it responsive.",
+      "followUps": {
+        "Mobile-first and media queries": "Why start with the mobile layout and add styles for larger screens, instead of the other way round?",
+        "The viewport and touch targets": "Why can a menu that opens on hover be a problem on phones?"
+      },
+      "criteria": {
+        "Mobile-first and media queries": {
+          "id": "mobile-first",
+          "evidence": [
+            {
+              "id": "start-small",
+              "text": "Mobile-first starts with the simplest small-screen layout and adds complexity with min-width media queries."
+            },
+            {
+              "id": "content-breakpoints",
+              "text": "Breakpoints should be placed where the content starts to look broken, not at specific device sizes."
+            },
+            {
+              "id": "less-override",
+              "text": "Building up from small screens usually means less CSS to undo than shrinking a desktop design."
+            }
+          ],
+          "notEnough": [
+            "Only saying media queries change styles at screen sizes."
+          ],
+          "misconceptions": []
+        },
+        "The viewport and touch targets": {
+          "id": "viewport-touch",
+          "evidence": [
+            {
+              "id": "viewport",
+              "text": "The viewport meta tag makes mobile browsers use the device width instead of pretending to be a desktop."
+            },
+            {
+              "id": "tap-size",
+              "text": "Buttons and links need to be big enough to tap with a finger without hitting the wrong one."
+            },
+            {
+              "id": "no-hover",
+              "text": "Touch screens have no hover, so anything that only appears on hover can be unreachable."
+            }
+          ],
+          "notEnough": [
+            "Only saying the site should work on mobile without naming what breaks."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Modern Layout",
+      "question": "A product card is used both in a narrow sidebar and in a wide main column, and your site will also be translated to Arabic, which reads right to left. Explain how modern CSS handles both.",
+      "followUps": {
+        "Container queries": "Why can't a media query alone make the same card look right in both the sidebar and the main column?",
+        "Logical properties and intrinsic sizing": "How do logical properties help when the page switches to a right-to-left language?"
+      },
+      "criteria": {
+        "Container queries": {
+          "id": "container-queries",
+          "evidence": [
+            {
+              "id": "viewport-only",
+              "text": "Media queries respond to the size of the whole screen, not the space a component actually has."
+            },
+            {
+              "id": "container",
+              "text": "Container queries style a component based on the size of its parent container."
+            },
+            {
+              "id": "reuse",
+              "text": "That lets the same component adapt wherever it is placed."
+            }
+          ],
+          "notEnough": [
+            "Only saying container queries are newer media queries."
+          ],
+          "misconceptions": []
+        },
+        "Logical properties and intrinsic sizing": {
+          "id": "logical-intrinsic",
+          "evidence": [
+            {
+              "id": "direction",
+              "text": "Logical properties like margin-inline-start follow the writing direction instead of a fixed left or right."
+            },
+            {
+              "id": "rtl",
+              "text": "In a right-to-left language, they flip automatically without separate CSS."
+            },
+            {
+              "id": "intrinsic",
+              "text": "Intrinsic sizing keywords like min-content and fit-content let an element size itself to its content."
+            }
+          ],
+          "notEnough": [
+            "Only saying logical properties are the new names for margins."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

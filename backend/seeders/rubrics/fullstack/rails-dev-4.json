@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "rails-dev-4",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Template and Layout Architecture",
+      "question": "Your recipe pages repeat the same card markup and formatting logic everywhere, and users get no feedback after saving. Explain how views, partials and helpers keep this clean.",
+      "followUps": {
+        "ERB syntax and view rendering lifecycle": "What is the difference between <%= %> and <% %> in ERB?",
+        "Partials and view helpers for reuse": "When would you use a partial and when a helper?",
+        "Flash messages and user feedback patterns": "Where should flash messages be rendered and why?"
+      },
+      "criteria": {
+        "ERB syntax and view rendering lifecycle": {
+          "id": "erb-rendering",
+          "evidence": [
+            {
+              "id": "output",
+              "text": "<%= %> runs Ruby and outputs the result into the HTML."
+            },
+            {
+              "id": "logic",
+              "text": "<% %> runs Ruby without outputting, for loops and conditions."
+            },
+            {
+              "id": "layout",
+              "text": "The action's template is rendered first and then inserted into the layout."
+            }
+          ],
+          "notEnough": [
+            "Only saying ERB embeds Ruby."
+          ],
+          "misconceptions": []
+        },
+        "Partials and view helpers for reuse": {
+          "id": "partials-helpers",
+          "evidence": [
+            {
+              "id": "partial",
+              "text": "Partials are reusable chunks of markup, named with a leading underscore."
+            },
+            {
+              "id": "helper",
+              "text": "Helpers are Ruby methods for view logic like formatting."
+            },
+            {
+              "id": "testable",
+              "text": "Moving logic out of templates into helpers makes it easier to test."
+            }
+          ],
+          "notEnough": [
+            "Only saying both are for reuse."
+          ],
+          "misconceptions": []
+        },
+        "Flash messages and user feedback patterns": {
+          "id": "flash-feedback",
+          "evidence": [
+            {
+              "id": "one-request",
+              "text": "Flash messages last for one request after a redirect."
+            },
+            {
+              "id": "layout",
+              "text": "Rendering them in the layout makes them show on any page."
+            },
+            {
+              "id": "types",
+              "text": "Notices and alerts distinguish success from errors."
+            }
+          ],
+          "notEnough": [
+            "Only saying flash shows messages."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Forms and Parameters",
+      "question": "A user edits their profile and manages to make themselves an admin through the form, and a recipe form must also create its ingredients. Explain how Rails forms and parameters should work.",
+      "followUps": {
+        "Form helpers and strong parameters security": "What do strong parameters prevent?",
+        "Nested forms and complex data submission": "How do nested attributes let one form save a recipe and its ingredients?"
+      },
+      "criteria": {
+        "Form helpers and strong parameters security": {
+          "id": "form-strong-params",
+          "evidence": [
+            {
+              "id": "form-with",
+              "text": "form_with builds forms tied to a model, including the security token."
+            },
+            {
+              "id": "permit",
+              "text": "Strong parameters require you to list which fields may be assigned."
+            },
+            {
+              "id": "mass-assignment",
+              "text": "This stops users from setting fields like admin by adding them to the request."
+            }
+          ],
+          "notEnough": [
+            "Only saying strong parameters are required."
+          ],
+          "misconceptions": []
+        },
+        "Nested forms and complex data submission": {
+          "id": "nested-forms",
+          "evidence": [
+            {
+              "id": "accepts",
+              "text": "accepts_nested_attributes_for lets a model save associated records."
+            },
+            {
+              "id": "fields-for",
+              "text": "fields_for renders the fields for the associated records."
+            },
+            {
+              "id": "permit",
+              "text": "The nested fields must also be permitted in strong parameters."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use nested forms."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Asset Management",
+      "question": "Your CSS and JavaScript are not cached properly by browsers and you want to use Tailwind. Explain how Rails handles assets and CSS builds.",
+      "followUps": {
+        "Rails asset pipeline with Sprockets": "What does the asset pipeline do to your files?",
+        "Importing CSS with cssbundling-rails": "How does cssbundling-rails add Tailwind or Sass?"
+      },
+      "criteria": {
+        "Rails asset pipeline with Sprockets": {
+          "id": "asset-pipeline",
+          "evidence": [
+            {
+              "id": "process",
+              "text": "It combines and minifies CSS and JavaScript."
+            },
+            {
+              "id": "fingerprint",
+              "text": "It adds a fingerprint to file names based on their contents."
+            },
+            {
+              "id": "cache",
+              "text": "Fingerprints let browsers cache files for a long time and fetch new ones after changes."
+            }
+          ],
+          "notEnough": [
+            "Only saying it manages assets."
+          ],
+          "misconceptions": []
+        },
+        "Importing CSS with cssbundling-rails": {
+          "id": "cssbundling",
+          "evidence": [
+            {
+              "id": "node-step",
+              "text": "It runs a Node-based build step for the CSS tool."
+            },
+            {
+              "id": "tools",
+              "text": "It supports Tailwind, Sass and PostCSS."
+            },
+            {
+              "id": "output",
+              "text": "The built CSS is written to app/assets/builds for the asset pipeline to serve."
+            }
+          ],
+          "notEnough": [
+            "Only saying it bundles CSS."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Frontend Integration",
+      "question": "You want to add a little JavaScript to your Rails app, and later you need a few npm packages. Explain the two approaches.",
+      "followUps": {
+        "importmap-rails for JavaScript modules": "How do import maps load JavaScript without a bundler?",
+        "jsbundling-rails with esbuild or webpack": "When would you switch to jsbundling with esbuild?"
+      },
+      "criteria": {
+        "importmap-rails for JavaScript modules": {
+          "id": "importmap",
+          "evidence": [
+            {
+              "id": "native",
+              "text": "Import maps use the browser's built-in module loading."
+            },
+            {
+              "id": "pin",
+              "text": "Packages are pinned to URLs, locally or from a CDN."
+            },
+            {
+              "id": "no-build",
+              "text": "There is no bundling step, which keeps setup simple."
+            }
+          ],
+          "notEnough": [
+            "Only saying importmap loads JS."
+          ],
+          "misconceptions": []
+        },
+        "jsbundling-rails with esbuild or webpack": {
+          "id": "jsbundling",
+          "evidence": [
+            {
+              "id": "bundle",
+              "text": "jsbundling adds a JavaScript bundling step."
+            },
+            {
+              "id": "npm",
+              "text": "It suits apps that need many npm packages or a build step."
+            },
+            {
+              "id": "esbuild",
+              "text": "esbuild is very fast, while webpack offers more configuration."
+            }
+          ],
+          "notEnough": [
+            "Only naming esbuild."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

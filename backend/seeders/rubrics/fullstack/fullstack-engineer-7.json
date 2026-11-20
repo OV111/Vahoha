@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "fullstack-engineer-7",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "API design: layered architecture and validation",
+      "question": "Your Express routes contain SQL, validation and business rules all mixed together, and bad data sometimes reaches the database. Explain how you would structure the backend and validate input.",
+      "followUps": {
+        "Service and repository layers for separation of concerns": "What does each layer do: route, controller, service and repository?",
+        "Input validation at the API boundary prevents invalid data propagation": "Why validate at the API boundary instead of deep in the code?"
+      },
+      "criteria": {
+        "Service and repository layers for separation of concerns": {
+          "id": "layered-architecture",
+          "evidence": [
+            {
+              "id": "roles",
+              "text": "Routes map URLs, controllers handle the request and response, services hold business rules and repositories run database queries."
+            },
+            {
+              "id": "direction",
+              "text": "Each layer depends only on the one below it."
+            },
+            {
+              "id": "change",
+              "text": "This lets you change the database code or reuse business rules without rewriting everything."
+            }
+          ],
+          "notEnough": [
+            "Only listing the layer names."
+          ],
+          "misconceptions": []
+        },
+        "Input validation at the API boundary prevents invalid data propagation": {
+          "id": "boundary-validation",
+          "evidence": [
+            {
+              "id": "early",
+              "text": "All incoming data is checked as soon as it enters the API."
+            },
+            {
+              "id": "clear-errors",
+              "text": "A validation error there gives a clear message about which field is wrong."
+            },
+            {
+              "id": "protect",
+              "text": "Business logic and the database only ever see valid data."
+            }
+          ],
+          "notEnough": [
+            "Only saying you validate input."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Caching and query optimization",
+      "question": "Your recipe API is slow under load: clients re-download the same lists and one endpoint makes a query per recipe. Explain how caching and query optimization help.",
+      "followUps": {
+        "HTTP caching: Cache-Control, ETag, and conditional requests": "How do Cache-Control and ETags reduce work for clients and the server?",
+        "Database query optimization: indexes, EXPLAIN, and N+1 avoidance": "How would you find and fix a slow query?"
+      },
+      "criteria": {
+        "HTTP caching: Cache-Control, ETag, and conditional requests": {
+          "id": "http-caching",
+          "evidence": [
+            {
+              "id": "cache-control",
+              "text": "Cache-Control tells clients and proxies how long they may reuse a response."
+            },
+            {
+              "id": "etag",
+              "text": "An ETag identifies a version of a resource."
+            },
+            {
+              "id": "conditional",
+              "text": "Clients send the ETag back, and if nothing changed the server replies 304 without the body."
+            }
+          ],
+          "notEnough": [
+            "Only saying caching makes things faster."
+          ],
+          "misconceptions": []
+        },
+        "Database query optimization: indexes, EXPLAIN, and N+1 avoidance": {
+          "id": "query-optimization",
+          "evidence": [
+            {
+              "id": "explain",
+              "text": "EXPLAIN ANALYZE shows how the database runs a query, such as scanning the whole table."
+            },
+            {
+              "id": "index",
+              "text": "Adding indexes on filtered and joined columns speeds them up."
+            },
+            {
+              "id": "n-plus-one",
+              "text": "Loading related data in one query instead of one per row removes the N+1 problem."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add indexes."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Input validation, rate limiting, and security headers",
+      "question": "Your login endpoint is being hit by thousands of password guesses, and a security scan flags missing headers and unvalidated fields. Explain how you would harden the API.",
+      "followUps": {
+        "express-validator for chained field validation on routes": "How does express-validator check fields, and what should the route return when they fail?",
+        "Helmet for security headers and express-rate-limit for brute-force protection": "What do Helmet and a rate limiter protect against?"
+      },
+      "criteria": {
+        "express-validator for chained field validation on routes": {
+          "id": "express-validator",
+          "evidence": [
+            {
+              "id": "chain",
+              "text": "Validators are chained per field, such as checking an email is valid."
+            },
+            {
+              "id": "result",
+              "text": "The handler checks the validation result before doing any work."
+            },
+            {
+              "id": "status",
+              "text": "If there are errors, it returns 400 or 422 with the list of problems."
+            }
+          ],
+          "notEnough": [
+            "Only saying you validate with a library."
+          ],
+          "misconceptions": []
+        },
+        "Helmet for security headers and express-rate-limit for brute-force protection": {
+          "id": "helmet-rate-limit",
+          "evidence": [
+            {
+              "id": "headers",
+              "text": "Helmet sets security headers that protect against attacks like clickjacking and some injection."
+            },
+            {
+              "id": "rate-limit",
+              "text": "A rate limiter caps how many requests a client can make in a time window."
+            },
+            {
+              "id": "login",
+              "text": "Strict limits on login slow down password-guessing attacks."
+            }
+          ],
+          "notEnough": [
+            "Only saying they add security."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Logging and monitoring basics",
+      "question": "Your API crashed overnight and the only logs are scattered console.log lines with no context. Explain how you would log and handle process-level errors.",
+      "followUps": {
+        "Structured logging with pino or morgan": "Why use structured JSON logs instead of plain text?",
+        "Process error handlers: uncaughtException and unhandledRejection": "What should happen on an uncaught exception or unhandled rejection?"
+      },
+      "criteria": {
+        "Structured logging with pino or morgan": {
+          "id": "structured-logging",
+          "evidence": [
+            {
+              "id": "json",
+              "text": "Structured logs write each entry as JSON with named fields."
+            },
+            {
+              "id": "search",
+              "text": "Log tools can search, filter and graph by fields like request id, user and status."
+            },
+            {
+              "id": "fast",
+              "text": "Libraries like pino are built for fast logging in production."
+            }
+          ],
+          "notEnough": [
+            "Only saying logs help debugging."
+          ],
+          "misconceptions": []
+        },
+        "Process error handlers: uncaughtException and unhandledRejection": {
+          "id": "process-handlers",
+          "evidence": [
+            {
+              "id": "listen",
+              "text": "The process listens for uncaught exceptions and unhandled promise rejections."
+            },
+            {
+              "id": "log-exit",
+              "text": "It logs the error and shuts down cleanly."
+            },
+            {
+              "id": "no-resume",
+              "text": "The app should not keep running after an uncaught exception, because its state may be broken, and a process manager restarts it."
+            }
+          ],
+          "notEnough": [
+            "Only saying you catch all errors."
+          ],
+          "misconceptions": [
+            {
+              "id": "keep-running",
+              "text": "Says the app should log the uncaught exception and keep running."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

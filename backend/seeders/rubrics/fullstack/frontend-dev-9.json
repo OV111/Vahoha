@@ -1,0 +1,226 @@
+{
+  "path": "fullstack",
+  "layer": "frontend-dev-9",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Routing",
+      "question": "You are building a product list with filters, pagination and an admin area that only signed-in users can open. Explain how you would set up routing so pages can be shared, refreshed and load quickly.",
+      "followUps": {
+        "Nested routes and URL state": "Why should filters and the current page number live in the URL instead of only in component state?",
+        "Lazy routes and guards": "How would you stop a signed-out user from seeing the admin page, and keep its code out of the first download?"
+      },
+      "criteria": {
+        "Nested routes and URL state": {
+          "id": "nested-routes-url-state",
+          "evidence": [
+            {
+              "id": "map",
+              "text": "Routes map URLs to components, and nested routes share a parent layout."
+            },
+            {
+              "id": "url-state",
+              "text": "Putting filters and pagination in the URL lets users share links and refresh without losing their place."
+            },
+            {
+              "id": "back-button",
+              "text": "URL state also makes the back button return to the previous filter or page."
+            }
+          ],
+          "notEnough": [
+            "Only saying routes map paths to pages."
+          ],
+          "misconceptions": []
+        },
+        "Lazy routes and guards": {
+          "id": "lazy-routes-guards",
+          "evidence": [
+            {
+              "id": "lazy",
+              "text": "Each route's code can be loaded only when the route is visited."
+            },
+            {
+              "id": "smaller-start",
+              "text": "That makes the first load smaller and faster."
+            },
+            {
+              "id": "guard",
+              "text": "A route guard checks if the user is signed in and redirects them before the page renders."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would protect the route."
+          ],
+          "misconceptions": [
+            {
+              "id": "guard-security",
+              "text": "Says a frontend route guard is enough to keep admin data secure."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Forms",
+      "question": "You are building a checkout form with an email, a card number and an address. Explain how you would validate it so errors are clear and the rules are not duplicated.",
+      "followUps": {
+        "Validation and error states": "If the client already validates the form, why must the server validate it again?",
+        "Schema-based validation": "How can one schema both validate the form and give you its TypeScript type?"
+      },
+      "criteria": {
+        "Validation and error states": {
+          "id": "validation-errors",
+          "evidence": [
+            {
+              "id": "client-fast",
+              "text": "Client-side validation gives quick feedback before submitting."
+            },
+            {
+              "id": "server-safe",
+              "text": "Server-side validation is still required because anyone can bypass the browser and send requests directly."
+            },
+            {
+              "id": "linked-errors",
+              "text": "Each error message should be linked to its field, for example with aria-describedby, so screen readers announce it."
+            }
+          ],
+          "notEnough": [
+            "Only saying you validate on both sides."
+          ],
+          "misconceptions": [
+            {
+              "id": "client-enough",
+              "text": "Says client-side validation alone protects the server."
+            }
+          ]
+        },
+        "Schema-based validation": {
+          "id": "schema-validation",
+          "evidence": [
+            {
+              "id": "one-place",
+              "text": "A schema like Zod defines the rules in one place."
+            },
+            {
+              "id": "validate",
+              "text": "The same schema checks the form values at runtime."
+            },
+            {
+              "id": "type",
+              "text": "The TypeScript type of the form is generated from the schema, so rules and types never drift apart."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would use Zod."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Server State",
+      "question": "Three components on the same page fetch the same user data, each with its own loading and error code, and the data goes stale after edits. Explain how a server-state library improves this.",
+      "followUps": {
+        "Queries and caching": "How does TanStack Query avoid sending the same request three times?",
+        "Stale time and invalidation": "After the user edits their profile, how does the profile page get the new data?"
+      },
+      "criteria": {
+        "Queries and caching": {
+          "id": "queries-caching",
+          "evidence": [
+            {
+              "id": "key-cache",
+              "text": "Responses are cached by a query key."
+            },
+            {
+              "id": "dedupe",
+              "text": "Components asking for the same key at the same time share one request."
+            },
+            {
+              "id": "background",
+              "text": "Stale data is shown immediately and refetched in the background, which replaces hand-written loading and error state."
+            }
+          ],
+          "notEnough": [
+            "Only saying it caches requests."
+          ],
+          "misconceptions": []
+        },
+        "Stale time and invalidation": {
+          "id": "stale-invalidation",
+          "evidence": [
+            {
+              "id": "stale-time",
+              "text": "staleTime decides how long cached data counts as fresh before it is refetched."
+            },
+            {
+              "id": "invalidate",
+              "text": "After a change, invalidating the related query key tells the cache that data is outdated."
+            },
+            {
+              "id": "refetch",
+              "text": "Invalidated queries are refetched so the page shows the new data."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would refetch."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Mutations",
+      "question": "Users click 'like' and wait half a second for the heart to fill in, and some screens show a blank area when the list is empty. Explain how you would make updates feel instant and handle every state of a data view.",
+      "followUps": {
+        "Mutations and optimistic updates": "What is an optimistic update and what must happen if the request fails?",
+        "Loading, empty and error states": "Why is designing only the success state not enough for a list of orders?"
+      },
+      "criteria": {
+        "Mutations and optimistic updates": {
+          "id": "optimistic-updates",
+          "evidence": [
+            {
+              "id": "instant",
+              "text": "An optimistic update changes the UI immediately, before the server confirms."
+            },
+            {
+              "id": "rollback",
+              "text": "If the request fails, the UI is rolled back to the previous value."
+            },
+            {
+              "id": "tell-user",
+              "text": "The user should be told the action failed instead of silently losing the change."
+            }
+          ],
+          "notEnough": [
+            "Only saying the UI updates before the server responds."
+          ],
+          "misconceptions": []
+        },
+        "Loading, empty and error states": {
+          "id": "four-states",
+          "evidence": [
+            {
+              "id": "four",
+              "text": "Every data view has loading, empty, error and success states."
+            },
+            {
+              "id": "empty",
+              "text": "An empty state should explain that there is nothing yet and what to do next."
+            },
+            {
+              "id": "error",
+              "text": "An error state should say what went wrong and offer a way to retry."
+            }
+          ],
+          "notEnough": [
+            "Only saying you would add a spinner."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

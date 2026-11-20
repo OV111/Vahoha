@@ -1,0 +1,226 @@
+{
+  "path": "fullstack",
+  "layer": "mean-1",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "JavaScript language internals used throughout MEAN",
+      "question": "A teammate is surprised that a Promise callback runs before a setTimeout of zero, and that a click handler still remembers a variable from a function that already returned. Explain how JavaScript schedules work and keeps variables alive.",
+      "followUps": {
+        "The event loop: call stack, microtasks, and the task queue": "Why does a resolved Promise's callback run before a setTimeout with zero delay?",
+        "Closures and lexical scoping in JavaScript": "How does a handler keep access to a variable after its outer function returned?"
+      },
+      "criteria": {
+        "The event loop: call stack, microtasks, and the task queue": {
+          "id": "event-loop-microtasks",
+          "evidence": [
+            {
+              "id": "call-stack",
+              "text": "JavaScript runs the current code on the call stack until it finishes."
+            },
+            {
+              "id": "microtasks-first",
+              "text": "Then it runs all queued microtasks, such as Promise callbacks."
+            },
+            {
+              "id": "one-task",
+              "text": "Only after that does it take the next task, such as a timer callback."
+            }
+          ],
+          "notEnough": [
+            "Only saying JavaScript is single-threaded."
+          ],
+          "misconceptions": [
+            {
+              "id": "timer-immediate",
+              "text": "Says setTimeout with zero delay runs immediately."
+            }
+          ]
+        },
+        "Closures and lexical scoping in JavaScript": {
+          "id": "closures-scope",
+          "evidence": [
+            {
+              "id": "retain",
+              "text": "A closure is a function that keeps access to the variables of the scope where it was created."
+            },
+            {
+              "id": "lexical",
+              "text": "Which variables it can see is decided by where it is written, not where it is called."
+            },
+            {
+              "id": "uses",
+              "text": "Callbacks, services and RxJS operators all rely on closures."
+            }
+          ],
+          "notEnough": [
+            "Only defining a closure as a function inside a function."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Async patterns: Promises and async/await",
+      "question": "Your Node code loads a user, then their tasks and then their team, and one failure crashes the process. Explain how you would write this async code with Promises and async/await.",
+      "followUps": {
+        "Promises: .then chaining, .catch, and Promise.all": "What happens to a Promise chain when one step fails, and when would you use Promise.all?",
+        "async/await: syntactic sugar over Promises with try/catch": "How do you handle errors with async/await, and what happens if you do not?"
+      },
+      "criteria": {
+        "Promises: .then chaining, .catch, and Promise.all": {
+          "id": "promise-chains",
+          "evidence": [
+            {
+              "id": "chain",
+              "text": "then returns a new Promise, so steps can be chained."
+            },
+            {
+              "id": "catch",
+              "text": "A catch at the end handles a failure from any earlier step."
+            },
+            {
+              "id": "all",
+              "text": "Promise.all runs independent work in parallel and rejects as soon as one input rejects."
+            }
+          ],
+          "notEnough": [
+            "Only saying Promises handle async code."
+          ],
+          "misconceptions": [
+            {
+              "id": "all-waits",
+              "text": "Says Promise.all waits for every Promise even when one fails."
+            }
+          ]
+        },
+        "async/await: syntactic sugar over Promises with try/catch": {
+          "id": "async-await-errors",
+          "evidence": [
+            {
+              "id": "returns-promise",
+              "text": "An async function always returns a Promise."
+            },
+            {
+              "id": "await",
+              "text": "await pauses that function until the Promise settles."
+            },
+            {
+              "id": "try-catch",
+              "text": "Errors are caught with try and catch; an unhandled rejection can crash a Node process."
+            }
+          ],
+          "notEnough": [
+            "Only saying async/await is cleaner syntax."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "ES6+ syntax used across the MEAN stack",
+      "question": "You are reading Angular and Node code full of destructuring, spread and imports, and a Node file fails with an error about require in an ES module. Explain these syntax features and the two module systems.",
+      "followUps": {
+        "Destructuring, spread, and rest in function arguments": "How are destructuring, spread and rest different?",
+        "ES modules: import/export and their differences from CommonJS": "How do ES modules differ from CommonJS?"
+      },
+      "criteria": {
+        "Destructuring, spread, and rest in function arguments": {
+          "id": "destructuring-spread-rest",
+          "evidence": [
+            {
+              "id": "destructuring",
+              "text": "Destructuring pulls values out of objects and arrays into variables."
+            },
+            {
+              "id": "spread",
+              "text": "Spread copies or merges arrays and objects into a new one."
+            },
+            {
+              "id": "rest",
+              "text": "Rest collects the remaining arguments or properties into one variable."
+            }
+          ],
+          "notEnough": [
+            "Only naming the three features."
+          ],
+          "misconceptions": []
+        },
+        "ES modules: import/export and their differences from CommonJS": {
+          "id": "esm-vs-commonjs",
+          "evidence": [
+            {
+              "id": "syntax",
+              "text": "ES modules use import and export, while CommonJS uses require and module.exports."
+            },
+            {
+              "id": "static",
+              "text": "ES module imports are analyzed before the code runs, while require runs at runtime."
+            },
+            {
+              "id": "interop",
+              "text": "Mixing the two causes errors, so a project must know which system each file uses."
+            }
+          ],
+          "notEnough": [
+            "Only saying ES modules are newer."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "DOM manipulation and responsive layout basics",
+      "question": "Before using Angular, you build a small task list with plain JavaScript that toggles a 'done' style on click and works on phones. Explain how you would handle the DOM and the layout.",
+      "followUps": {
+        "DOM events, querySelector, and classList": "How would you toggle a task's done state with plain JavaScript?",
+        "Flexbox and responsive layout with media queries": "How would you lay out the list for phones first and wider screens later?"
+      },
+      "criteria": {
+        "DOM events, querySelector, and classList": {
+          "id": "dom-events",
+          "evidence": [
+            {
+              "id": "select",
+              "text": "querySelector or querySelectorAll finds the elements."
+            },
+            {
+              "id": "listen",
+              "text": "addEventListener runs code on a click."
+            },
+            {
+              "id": "classlist",
+              "text": "classList.toggle adds or removes a class that CSS uses to style the done state."
+            }
+          ],
+          "notEnough": [
+            "Only saying you change the DOM."
+          ],
+          "misconceptions": []
+        },
+        "Flexbox and responsive layout with media queries": {
+          "id": "flexbox-responsive",
+          "evidence": [
+            {
+              "id": "flex",
+              "text": "Flexbox aligns items in a row or column, such as a task's text and its button."
+            },
+            {
+              "id": "mobile-first",
+              "text": "Base styles target small screens."
+            },
+            {
+              "id": "min-width",
+              "text": "min-width media queries add layout changes for larger screens."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use media queries."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

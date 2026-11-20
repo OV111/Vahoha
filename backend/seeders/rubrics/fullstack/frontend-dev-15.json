@@ -1,0 +1,231 @@
+{
+  "path": "fullstack",
+  "layer": "frontend-dev-15",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Browser Security",
+      "question": "Your app shows user comments with formatting, and you find that someone posted a comment that ran a script in other users' browsers. Explain how this happened and how you would protect forms that change data too.",
+      "followUps": {
+        "Cross-site scripting": "React escapes text by default, so how can an XSS bug still happen?",
+        "CSRF and SameSite cookies": "What is a CSRF attack, and how do SameSite cookies help?"
+      },
+      "criteria": {
+        "Cross-site scripting": {
+          "id": "xss",
+          "evidence": [
+            {
+              "id": "what",
+              "text": "Cross-site scripting runs an attacker's script on your page with your users' permissions."
+            },
+            {
+              "id": "react-gaps",
+              "text": "React escapes text, but dangerouslySetInnerHTML, unsafe links like javascript URLs and third-party scripts bypass it."
+            },
+            {
+              "id": "sanitize",
+              "text": "Any HTML from users must be sanitized before it is rendered."
+            }
+          ],
+          "notEnough": [
+            "Only saying to sanitize input."
+          ],
+          "misconceptions": [
+            {
+              "id": "react-immune",
+              "text": "Says React apps cannot have XSS."
+            }
+          ]
+        },
+        "CSRF and SameSite cookies": {
+          "id": "csrf-samesite",
+          "evidence": [
+            {
+              "id": "forged",
+              "text": "In CSRF, another site makes the user's browser send a request that carries their logged-in cookies."
+            },
+            {
+              "id": "samesite",
+              "text": "SameSite cookies are not sent on most cross-site requests."
+            },
+            {
+              "id": "tokens",
+              "text": "Anti-forgery tokens prove that the request came from your own page."
+            }
+          ],
+          "notEnough": [
+            "Only saying CSRF is a forged request."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Headers and Policies",
+      "question": "Your security team asks for a Content Security Policy, and a developer says CORS already protects the API. Explain what each of these does and what it does not do.",
+      "followUps": {
+        "Content Security Policy": "How does a Content Security Policy limit the damage of an XSS bug?",
+        "CORS": "Why is CORS not a replacement for checking who is allowed to use your API?"
+      },
+      "criteria": {
+        "Content Security Policy": {
+          "id": "csp",
+          "evidence": [
+            {
+              "id": "allowlist",
+              "text": "A CSP header lists where scripts, styles and connections are allowed to come from."
+            },
+            {
+              "id": "blocks",
+              "text": "Injected scripts from other sources or inline scripts are blocked by the browser."
+            },
+            {
+              "id": "defense",
+              "text": "It reduces the impact of an XSS bug even when one exists."
+            }
+          ],
+          "notEnough": [
+            "Only saying CSP is a security header."
+          ],
+          "misconceptions": []
+        },
+        "CORS": {
+          "id": "cors",
+          "evidence": [
+            {
+              "id": "browser-rule",
+              "text": "CORS lets a server tell browsers which other origins may read its responses."
+            },
+            {
+              "id": "browser-only",
+              "text": "It is enforced by browsers, so tools like curl or other servers ignore it."
+            },
+            {
+              "id": "not-auth",
+              "text": "The API must still check authentication and permissions on every request."
+            }
+          ],
+          "notEnough": [
+            "Only saying CORS controls cross-origin requests."
+          ],
+          "misconceptions": [
+            {
+              "id": "cors-protects",
+              "text": "Says CORS stops attackers from calling your API."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Auth and Dependencies",
+      "question": "Your app stores a long-lived token in localStorage and uses 300 npm packages nobody has reviewed. Explain the risks and what you would change.",
+      "followUps": {
+        "Storing tokens": "Why is a long-lived token in localStorage risky, and where should it go instead?",
+        "Dependency risk": "Why is every npm package a security risk, and how do you manage it?"
+      },
+      "criteria": {
+        "Storing tokens": {
+          "id": "storing-tokens",
+          "evidence": [
+            {
+              "id": "readable",
+              "text": "Any script on the page can read localStorage."
+            },
+            {
+              "id": "one-bug",
+              "text": "A single XSS bug can steal the token and give the attacker the session."
+            },
+            {
+              "id": "cookies",
+              "text": "HttpOnly, Secure, SameSite cookies keep session credentials out of JavaScript's reach."
+            }
+          ],
+          "notEnough": [
+            "Only saying localStorage is insecure."
+          ],
+          "misconceptions": []
+        },
+        "Dependency risk": {
+          "id": "dependency-risk",
+          "evidence": [
+            {
+              "id": "same-privilege",
+              "text": "Each package runs with the same access as your own code."
+            },
+            {
+              "id": "review-pin",
+              "text": "Review what you add and pin versions with a lockfile."
+            },
+            {
+              "id": "updates",
+              "text": "Automated audits and security updates catch known vulnerable versions."
+            }
+          ],
+          "notEnough": [
+            "Only saying to run npm audit."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Build and Ship",
+      "question": "A developer put an API secret in a VITE_ environment variable, and releases are deployed by hand from a laptop. Explain how the build works and how you would ship safely.",
+      "followUps": {
+        "What Vite does": "Why must a secret never be stored in a VITE_ variable?",
+        "CI/CD and monitoring": "What should a pipeline do between a push and a production deploy, and how do you learn about errors afterwards?"
+      },
+      "criteria": {
+        "What Vite does": {
+          "id": "vite",
+          "evidence": [
+            {
+              "id": "dev-modules",
+              "text": "In development Vite serves source files as native modules, and for production it bundles them."
+            },
+            {
+              "id": "exposed",
+              "text": "Variables starting with VITE_ are written into the browser bundle."
+            },
+            {
+              "id": "public",
+              "text": "Anything in the bundle can be read by any user, so secrets must stay on the server."
+            }
+          ],
+          "notEnough": [
+            "Only saying not to commit secrets."
+          ],
+          "misconceptions": [
+            {
+              "id": "env-hidden",
+              "text": "Says environment variables are hidden from users because they are not in the source code."
+            }
+          ]
+        },
+        "CI/CD and monitoring": {
+          "id": "ci-cd-monitoring",
+          "evidence": [
+            {
+              "id": "checks",
+              "text": "The pipeline runs lint, tests and a build on every push."
+            },
+            {
+              "id": "preview",
+              "text": "A preview deploy lets the change be reviewed before it is merged and deployed."
+            },
+            {
+              "id": "monitoring",
+              "text": "Error monitoring reports failures real users hit after release."
+            }
+          ],
+          "notEnough": [
+            "Only saying to use CI/CD."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

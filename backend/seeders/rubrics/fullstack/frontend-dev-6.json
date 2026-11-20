@@ -1,0 +1,226 @@
+{
+  "path": "fullstack",
+  "layer": "frontend-dev-6",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Everyday Types",
+      "question": "You are adding TypeScript to a component that shows a request's status: idle, loading, success or error. Explain how you would type it and how much you need to annotate.",
+      "followUps": {
+        "Inference and annotations": "Where should you write type annotations, and where can you let TypeScript work them out?",
+        "Unions and literal types": "Why is a union of string literals better than a plain string for a status?"
+      },
+      "criteria": {
+        "Inference and annotations": {
+          "id": "inference-annotations",
+          "evidence": [
+            {
+              "id": "infer",
+              "text": "TypeScript infers many types from the values you assign."
+            },
+            {
+              "id": "boundaries",
+              "text": "Function parameters and public boundaries should be annotated because they cannot be inferred from usage."
+            },
+            {
+              "id": "less-noise",
+              "text": "Letting inference handle the rest keeps code shorter without losing safety."
+            }
+          ],
+          "notEnough": [
+            "Only saying you should add types everywhere."
+          ],
+          "misconceptions": []
+        },
+        "Unions and literal types": {
+          "id": "unions-literals",
+          "evidence": [
+            {
+              "id": "exact-values",
+              "text": "A union of literal values limits a variable to an exact set of allowed values."
+            },
+            {
+              "id": "typos",
+              "text": "The compiler rejects typos and values that are not in the list."
+            },
+            {
+              "id": "exhaustive",
+              "text": "The compiler can check that every possible value is handled."
+            }
+          ],
+          "notEnough": [
+            "Only saying unions mean one type or another."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Narrowing",
+      "question": "Data from an API can be a success with data or an error with a message, and some fields come in as unknown values. Explain how you would make TypeScript understand which case you are in.",
+      "followUps": {
+        "Type guards and discriminated unions": "How does a shared status field let TypeScript know which properties exist in each branch of a switch?",
+        "unknown instead of any": "Why use unknown instead of any for data you did not create?"
+      },
+      "criteria": {
+        "Type guards and discriminated unions": {
+          "id": "discriminated-unions",
+          "evidence": [
+            {
+              "id": "shared-field",
+              "text": "Each case of the union has a common field with a different literal value."
+            },
+            {
+              "id": "narrow",
+              "text": "Checking that field narrows the type inside each branch."
+            },
+            {
+              "id": "safe-access",
+              "text": "Inside a branch you can only use properties that exist for that case."
+            }
+          ],
+          "notEnough": [
+            "Only saying type guards check types."
+          ],
+          "misconceptions": []
+        },
+        "unknown instead of any": {
+          "id": "unknown-vs-any",
+          "evidence": [
+            {
+              "id": "any-off",
+              "text": "any switches off type checking for that value."
+            },
+            {
+              "id": "unknown-check",
+              "text": "unknown forces you to check the value before using it."
+            },
+            {
+              "id": "outside-data",
+              "text": "This suits API responses and user input, which you cannot trust."
+            }
+          ],
+          "notEnough": [
+            "Only saying any is bad practice."
+          ],
+          "misconceptions": [
+            {
+              "id": "unknown-same",
+              "text": "Says unknown and any behave the same."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Generics",
+      "question": "You are writing one helper that fetches any kind of data from your API and keeps the right type, and several types that are small variations of a User type. Explain how you would do this without copy-pasting.",
+      "followUps": {
+        "Generic functions and types": "How does a generic keep the link between what you put in and what you get out?",
+        "Utility types": "How would you build a type for a user form where every field is optional?"
+      },
+      "criteria": {
+        "Generic functions and types": {
+          "id": "generics",
+          "evidence": [
+            {
+              "id": "placeholder",
+              "text": "A generic is a type parameter, a placeholder filled in when the function or type is used."
+            },
+            {
+              "id": "link",
+              "text": "It keeps the relationship between input and output types, such as fetching users and getting a User list back."
+            },
+            {
+              "id": "reuse",
+              "text": "One generic function can work with many types while staying type-safe."
+            }
+          ],
+          "notEnough": [
+            "Only saying generics make code reusable."
+          ],
+          "misconceptions": []
+        },
+        "Utility types": {
+          "id": "utility-types",
+          "evidence": [
+            {
+              "id": "derive",
+              "text": "Utility types build new types from existing ones."
+            },
+            {
+              "id": "examples",
+              "text": "Partial makes all fields optional, Pick keeps some fields and Omit removes some."
+            },
+            {
+              "id": "single-source",
+              "text": "Deriving types means a change to the original type flows to all derived types."
+            }
+          ],
+          "notEnough": [
+            "Only listing utility type names without saying what they do."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Typing the Boundary",
+      "question": "Your API changed a field from a number to a string and your typed app crashed in production anyway. Explain why types did not catch it and how you would protect the app.",
+      "followUps": {
+        "Runtime validation with Zod": "Why didn't TypeScript catch the bad API data?",
+        "tsconfig and strict mode": "Why is turning on strict mode later in a big project painful?"
+      },
+      "criteria": {
+        "Runtime validation with Zod": {
+          "id": "runtime-validation",
+          "evidence": [
+            {
+              "id": "erased",
+              "text": "TypeScript types are removed when the code is compiled, so they do not exist at runtime."
+            },
+            {
+              "id": "validate",
+              "text": "Data from outside, like API responses, must be checked at runtime."
+            },
+            {
+              "id": "schema",
+              "text": "A schema library like Zod validates the data and gives you a matching TypeScript type from one definition."
+            }
+          ],
+          "notEnough": [
+            "Only saying you should use Zod."
+          ],
+          "misconceptions": [
+            {
+              "id": "runtime-types",
+              "text": "Says TypeScript checks types while the app runs in the browser."
+            }
+          ]
+        },
+        "tsconfig and strict mode": {
+          "id": "strict-mode",
+          "evidence": [
+            {
+              "id": "strict-checks",
+              "text": "Strict mode turns on checks such as catching values that might be null or undefined."
+            },
+            {
+              "id": "trust",
+              "text": "Without it, types can claim safety the code does not have."
+            },
+            {
+              "id": "start-early",
+              "text": "Turning it on later surfaces many errors at once, so it is easiest to enable from the start."
+            }
+          ],
+          "notEnough": [
+            "Only saying strict mode is stricter."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

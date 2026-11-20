@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "laravel-vue-5",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Vue 3 Reactivity System",
+      "question": "A Vue component stops updating after you destructure a reactive object, and a filtered list recalculates on every render. Explain Vue 3's reactivity tools.",
+      "followUps": {
+        "ref vs reactive — Choosing the Right Primitive": "When would you use ref and when reactive, and why can destructuring break reactivity?",
+        "computed Properties and Side-Effect-Free Getters": "Why use a computed property instead of a method for a filtered list?"
+      },
+      "criteria": {
+        "ref vs reactive — Choosing the Right Primitive": {
+          "id": "ref-vs-reactive",
+          "evidence": [
+            {
+              "id": "ref",
+              "text": "ref wraps any value and is read and written through .value."
+            },
+            {
+              "id": "reactive",
+              "text": "reactive makes an object deeply reactive through a proxy."
+            },
+            {
+              "id": "destructure",
+              "text": "Destructuring a reactive object copies plain values and loses reactivity, unless toRefs is used."
+            }
+          ],
+          "notEnough": [
+            "Only saying both are reactive."
+          ],
+          "misconceptions": []
+        },
+        "computed Properties and Side-Effect-Free Getters": {
+          "id": "computed",
+          "evidence": [
+            {
+              "id": "cached",
+              "text": "A computed property caches its result."
+            },
+            {
+              "id": "deps",
+              "text": "It recalculates only when its reactive dependencies change."
+            },
+            {
+              "id": "pure",
+              "text": "Computed getters should not have side effects."
+            }
+          ],
+          "notEnough": [
+            "Only saying computed is cached."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Composition API",
+      "question": "Three components repeat the same fetching and debouncing logic, and a subscription keeps running after a component is gone. Explain composables and lifecycle hooks.",
+      "followUps": {
+        "Composables — Encapsulating Stateful Logic": "What is a composable and what problem does it solve?",
+        "Lifecycle Hooks in the Composition API": "Where must lifecycle hooks be called, and what should onUnmounted do?"
+      },
+      "criteria": {
+        "Composables — Encapsulating Stateful Logic": {
+          "id": "composables",
+          "evidence": [
+            {
+              "id": "function",
+              "text": "A composable is a function that uses the Composition API to hold stateful logic."
+            },
+            {
+              "id": "reuse",
+              "text": "Components call it to reuse logic like fetching or debouncing."
+            },
+            {
+              "id": "own-state",
+              "text": "Each call gets its own state unless the composable deliberately shares it."
+            }
+          ],
+          "notEnough": [
+            "Only saying composables are reusable."
+          ],
+          "misconceptions": []
+        },
+        "Lifecycle Hooks in the Composition API": {
+          "id": "lifecycle-hooks",
+          "evidence": [
+            {
+              "id": "sync",
+              "text": "Hooks like onMounted must be called synchronously during setup."
+            },
+            {
+              "id": "not-async",
+              "text": "Calling them inside async callbacks or conditions means they are not registered properly."
+            },
+            {
+              "id": "cleanup",
+              "text": "onUnmounted stops subscriptions and timers."
+            }
+          ],
+          "notEnough": [
+            "Only listing hooks."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Vite Build Tooling",
+      "question": "Your Laravel app's frontend assets are built with Vite. Explain why development is fast and how Laravel loads the right files.",
+      "followUps": {
+        "Vite Dev Server and Hot Module Replacement": "Why does Vite's dev server start quickly even in large projects?",
+        "Vite + Laravel Integration via laravel-vite-plugin": "How does the @vite directive load the right assets in development and production?"
+      },
+      "criteria": {
+        "Vite Dev Server and Hot Module Replacement": {
+          "id": "vite-hmr",
+          "evidence": [
+            {
+              "id": "native",
+              "text": "Vite serves source files as native ES modules without bundling first."
+            },
+            {
+              "id": "hmr",
+              "text": "Hot module replacement updates only the changed module."
+            },
+            {
+              "id": "state",
+              "text": "Changes appear without a full reload, often keeping component state."
+            }
+          ],
+          "notEnough": [
+            "Only saying Vite is fast."
+          ],
+          "misconceptions": []
+        },
+        "Vite + Laravel Integration via laravel-vite-plugin": {
+          "id": "laravel-vite-plugin",
+          "evidence": [
+            {
+              "id": "plugin",
+              "text": "laravel-vite-plugin connects Vite to Laravel."
+            },
+            {
+              "id": "dev",
+              "text": "In development it points to the Vite dev server."
+            },
+            {
+              "id": "prod",
+              "text": "In production it reads Vite's manifest to load the built, fingerprinted files."
+            }
+          ],
+          "notEnough": [
+            "Only saying it includes assets."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Vue Router",
+      "question": "Refreshing /orders/5 in your Vue SPA shows a 404, and signed-out users can open the account page. Explain how Vue Router handles history mode and guards.",
+      "followUps": {
+        "History Mode and Server-Side Fallback": "Why does refreshing a history-mode URL return 404, and how do you fix it?",
+        "Navigation Guards and Auth Protection": "How do navigation guards protect pages, and what do they not protect?"
+      },
+      "criteria": {
+        "History Mode and Server-Side Fallback": {
+          "id": "history-mode",
+          "evidence": [
+            {
+              "id": "clean",
+              "text": "History mode uses clean URLs without hash fragments."
+            },
+            {
+              "id": "server",
+              "text": "On refresh the browser asks the server for that path directly."
+            },
+            {
+              "id": "fallback",
+              "text": "The server must return index.html for unknown paths so the Vue router can handle them."
+            }
+          ],
+          "notEnough": [
+            "Only saying you configure history mode."
+          ],
+          "misconceptions": []
+        },
+        "Navigation Guards and Auth Protection": {
+          "id": "nav-guards",
+          "evidence": [
+            {
+              "id": "before",
+              "text": "Guards like beforeEach run before a route is shown."
+            },
+            {
+              "id": "redirect",
+              "text": "They redirect signed-out users to login."
+            },
+            {
+              "id": "server",
+              "text": "The API must still check permissions, because guards only run in the browser."
+            }
+          ],
+          "notEnough": [
+            "Only saying guards protect routes."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

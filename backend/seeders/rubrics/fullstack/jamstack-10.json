@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "jamstack-10",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Continuous Delivery Concepts",
+      "question": "Your team deploys a JAMstack site from Git, reviewers want to see changes before merge, and the site must rebuild when editors publish in the CMS. Explain how you would set up delivery.",
+      "followUps": {
+        "Git-based deployments and trunk-based development workflow": "How do Git-based deployments and trunk-based development work together?",
+        "Deploy previews for pull request review and testing": "What does a deploy preview give reviewers?",
+        "Build hooks for triggering deploys from CMS content changes": "How does a build hook connect the CMS to deploys?"
+      },
+      "criteria": {
+        "Git-based deployments and trunk-based development workflow": {
+          "id": "git-deploys",
+          "evidence": [
+            {
+              "id": "auto",
+              "text": "Pushing to the configured branch deploys automatically."
+            },
+            {
+              "id": "trunk",
+              "text": "Trunk-based development keeps main always deployable with short-lived branches."
+            },
+            {
+              "id": "small",
+              "text": "Small, frequent merges keep each deploy low-risk."
+            }
+          ],
+          "notEnough": [
+            "Only saying deploys happen on push."
+          ],
+          "misconceptions": []
+        },
+        "Deploy previews for pull request review and testing": {
+          "id": "deploy-previews",
+          "evidence": [
+            {
+              "id": "url",
+              "text": "Each pull request gets its own preview URL."
+            },
+            {
+              "id": "full-build",
+              "text": "The preview runs the full build in an isolated environment."
+            },
+            {
+              "id": "review",
+              "text": "Reviewers can test the real change before it is merged."
+            }
+          ],
+          "notEnough": [
+            "Only saying previews show changes."
+          ],
+          "misconceptions": []
+        },
+        "Build hooks for triggering deploys from CMS content changes": {
+          "id": "build-hooks",
+          "evidence": [
+            {
+              "id": "url",
+              "text": "A build hook is a unique URL that starts a deploy when called."
+            },
+            {
+              "id": "webhook",
+              "text": "The CMS calls it through a webhook when content is published."
+            },
+            {
+              "id": "fresh",
+              "text": "The site is rebuilt with the new content automatically."
+            }
+          ],
+          "notEnough": [
+            "Only saying hooks trigger builds."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Monitoring and Rollbacks",
+      "question": "A deploy broke the checkout page in production, and you only found out from a customer email. Explain how you would recover quickly and catch errors earlier.",
+      "followUps": {
+        "Instant rollbacks to previous deploys on Netlify": "How do instant rollbacks work on Netlify?",
+        "Error monitoring with Sentry for production JAMstack apps": "What does Sentry give you, and why upload source maps?"
+      },
+      "criteria": {
+        "Instant rollbacks to previous deploys on Netlify": {
+          "id": "rollbacks",
+          "evidence": [
+            {
+              "id": "kept",
+              "text": "Netlify keeps every previous deploy."
+            },
+            {
+              "id": "restore",
+              "text": "You can restore an earlier deploy in one step."
+            },
+            {
+              "id": "fast",
+              "text": "That restores a working site in seconds while the bug is fixed."
+            }
+          ],
+          "notEnough": [
+            "Only saying you can roll back."
+          ],
+          "misconceptions": []
+        },
+        "Error monitoring with Sentry for production JAMstack apps": {
+          "id": "sentry",
+          "evidence": [
+            {
+              "id": "capture",
+              "text": "Sentry captures errors from the browser and functions with stack traces and context."
+            },
+            {
+              "id": "alerts",
+              "text": "It alerts you when errors happen, before users report them."
+            },
+            {
+              "id": "source-maps",
+              "text": "Source maps show the original code location instead of the minified one."
+            }
+          ],
+          "notEnough": [
+            "Only saying Sentry tracks errors."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Netlify Configuration and Build",
+      "question": "You are configuring Netlify so production uses the live CMS and previews use a staging one. Explain how the build is configured.",
+      "followUps": {
+        "netlify.toml build commands, publish directory, and plugins": "What goes in netlify.toml?",
+        "Managing build environment variables per deploy context": "How can production and preview deploys use different environment values?"
+      },
+      "criteria": {
+        "netlify.toml build commands, publish directory, and plugins": {
+          "id": "netlify-toml",
+          "evidence": [
+            {
+              "id": "build",
+              "text": "netlify.toml sets the build command and the folder to publish."
+            },
+            {
+              "id": "contexts",
+              "text": "It can override settings per environment."
+            },
+            {
+              "id": "plugins",
+              "text": "Build plugins add steps to the build, such as checks before or after it."
+            }
+          ],
+          "notEnough": [
+            "Only saying it configures Netlify."
+          ],
+          "misconceptions": []
+        },
+        "Managing build environment variables per deploy context": {
+          "id": "env-per-context",
+          "evidence": [
+            {
+              "id": "contexts",
+              "text": "Netlify supports different variable values for production, previews and branch deploys."
+            },
+            {
+              "id": "staging",
+              "text": "Previews can point to a staging CMS environment."
+            },
+            {
+              "id": "safe",
+              "text": "This keeps test changes from touching production data."
+            }
+          ],
+          "notEnough": [
+            "Only saying you set environment variables."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Custom Domains and HTTPS",
+      "question": "You are moving your site to a custom domain with HTTPS and old URLs must keep working. Explain how you would set this up on Netlify.",
+      "followUps": {
+        "Configuring a custom domain and automatic TLS on Netlify": "How does a custom domain get HTTPS on Netlify?",
+        "Netlify redirect rules and _redirects file configuration": "How do you keep old URLs working after restructuring the site?"
+      },
+      "criteria": {
+        "Configuring a custom domain and automatic TLS on Netlify": {
+          "id": "custom-domain-tls",
+          "evidence": [
+            {
+              "id": "dns",
+              "text": "You add a DNS record that points the domain to Netlify."
+            },
+            {
+              "id": "cert",
+              "text": "Netlify automatically gets a free TLS certificate."
+            },
+            {
+              "id": "renew",
+              "text": "The certificate is renewed automatically."
+            }
+          ],
+          "notEnough": [
+            "Only saying Netlify supports HTTPS."
+          ],
+          "misconceptions": []
+        },
+        "Netlify redirect rules and _redirects file configuration": {
+          "id": "redirects",
+          "evidence": [
+            {
+              "id": "file",
+              "text": "A _redirects file maps old URLs to new ones."
+            },
+            {
+              "id": "status",
+              "text": "Permanent moves use a 301 status so search engines update their index."
+            },
+            {
+              "id": "wildcards",
+              "text": "Wildcards and splats redirect whole sections in one rule."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add redirects."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

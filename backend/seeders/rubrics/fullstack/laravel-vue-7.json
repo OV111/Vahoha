@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "laravel-vue-7",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Axios HTTP Client in Vue",
+      "question": "Your Vue SPA talks to Laravel with Sanctum cookies, and every component handles 401 errors differently. Explain how you would set up Axios.",
+      "followUps": {
+        "Axios Interceptors for Global Auth and Error Handling": "What can Axios interceptors centralise?",
+        "CSRF Token Injection from Laravel Cookie": "How does the CSRF token reach Laravel when using Sanctum cookies?"
+      },
+      "criteria": {
+        "Axios Interceptors for Global Auth and Error Handling": {
+          "id": "axios-interceptors",
+          "evidence": [
+            {
+              "id": "request",
+              "text": "Request interceptors add headers to every outgoing request."
+            },
+            {
+              "id": "response",
+              "text": "Response interceptors handle errors like 401 and 403 in one place."
+            },
+            {
+              "id": "redirect",
+              "text": "A 401 can trigger a single redirect to the login page."
+            }
+          ],
+          "notEnough": [
+            "Only saying interceptors modify requests."
+          ],
+          "misconceptions": []
+        },
+        "CSRF Token Injection from Laravel Cookie": {
+          "id": "xsrf-cookie",
+          "evidence": [
+            {
+              "id": "csrf-cookie",
+              "text": "The SPA first calls Sanctum's csrf-cookie endpoint, which sets an XSRF-TOKEN cookie."
+            },
+            {
+              "id": "header",
+              "text": "Axios reads that cookie and sends it in the X-XSRF-TOKEN header."
+            },
+            {
+              "id": "credentials",
+              "text": "Requests must be sent with credentials so the session cookie is included."
+            }
+          ],
+          "notEnough": [
+            "Only saying you send the CSRF token."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "State Management with Pinia",
+      "question": "The cart, current user and notifications are needed across many Vue components. Explain how you would manage this with Pinia.",
+      "followUps": {
+        "Pinia Stores — Actions, Getters, and State": "How are state, getters and actions organised in a Pinia store?",
+        "Pinia vs Vuex — Why Pinia Wins for Vue 3": "Why choose Pinia over Vuex for Vue 3?"
+      },
+      "criteria": {
+        "Pinia Stores — Actions, Getters, and State": {
+          "id": "pinia-stores",
+          "evidence": [
+            {
+              "id": "state",
+              "text": "State holds the reactive data."
+            },
+            {
+              "id": "getters",
+              "text": "Getters are computed values derived from state."
+            },
+            {
+              "id": "actions",
+              "text": "Actions change state and can call the API."
+            }
+          ],
+          "notEnough": [
+            "Only saying Pinia stores state."
+          ],
+          "misconceptions": []
+        },
+        "Pinia vs Vuex — Why Pinia Wins for Vue 3": {
+          "id": "pinia-vs-vuex",
+          "evidence": [
+            {
+              "id": "simpler",
+              "text": "Pinia has no mutations, so the API is simpler."
+            },
+            {
+              "id": "typescript",
+              "text": "It has good TypeScript support."
+            },
+            {
+              "id": "modular",
+              "text": "Stores are separate modules without nesting, and it works with Vue Devtools."
+            }
+          ],
+          "notEnough": [
+            "Only saying Pinia is newer."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Inertia.js for Full-Stack Integration",
+      "question": "Your team is tired of building and maintaining a separate JSON API just for its own Vue frontend. Explain how Inertia.js changes this.",
+      "followUps": {
+        "Inertia's Page Component Model": "How does Inertia let a controller render a Vue page without an API?",
+        "Shared Data and Partial Reloads": "What are shared data and partial reloads?"
+      },
+      "criteria": {
+        "Inertia's Page Component Model": {
+          "id": "inertia-pages",
+          "evidence": [
+            {
+              "id": "controller",
+              "text": "Laravel controllers return Inertia responses naming a Vue page."
+            },
+            {
+              "id": "props",
+              "text": "Data is passed as props to that page component."
+            },
+            {
+              "id": "no-api",
+              "text": "No separate JSON API or client-side fetching is needed for those pages."
+            }
+          ],
+          "notEnough": [
+            "Only saying Inertia connects Laravel and Vue."
+          ],
+          "misconceptions": []
+        },
+        "Shared Data and Partial Reloads": {
+          "id": "shared-partial",
+          "evidence": [
+            {
+              "id": "shared",
+              "text": "Shared data, like the logged-in user, is added to every page automatically."
+            },
+            {
+              "id": "partial",
+              "text": "Partial reloads request only some props again."
+            },
+            {
+              "id": "efficient",
+              "text": "This avoids repeating queries and reloading data that did not change."
+            }
+          ],
+          "notEnough": [
+            "Only saying data is shared."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "CORS Configuration",
+      "question": "Your Vue app on another domain gets CORS errors, and a teammate wants to set allowed origins to '*'. Explain how CORS should be configured.",
+      "followUps": {
+        "Laravel CORS Middleware and the fruitcake/cors Package": "How is CORS configured in Laravel, and why not use '*'?",
+        "Preflight Requests and OPTIONS Method Handling": "What is a preflight request and what must the server answer?"
+      },
+      "criteria": {
+        "Laravel CORS Middleware and the fruitcake/cors Package": {
+          "id": "laravel-cors",
+          "evidence": [
+            {
+              "id": "config",
+              "text": "CORS settings live in config/cors.php and are applied by middleware."
+            },
+            {
+              "id": "origins",
+              "text": "Allowed origins should list the exact frontend domains."
+            },
+            {
+              "id": "credentials",
+              "text": "A wildcard cannot be used with credentials and would allow any site."
+            }
+          ],
+          "notEnough": [
+            "Only saying you enable CORS."
+          ],
+          "misconceptions": []
+        },
+        "Preflight Requests and OPTIONS Method Handling": {
+          "id": "preflight",
+          "evidence": [
+            {
+              "id": "options",
+              "text": "The browser sends an OPTIONS request first for non-simple requests."
+            },
+            {
+              "id": "headers",
+              "text": "The server must answer with CORS headers allowing the method and headers."
+            },
+            {
+              "id": "blocked",
+              "text": "If the preflight fails, the real request is never sent."
+            }
+          ],
+          "notEnough": [
+            "Only saying browsers send OPTIONS."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

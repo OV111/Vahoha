@@ -1,0 +1,194 @@
+{
+  "path": "fullstack",
+  "layer": "fullstack-engineer-9",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Testing philosophy and the testing pyramid",
+      "question": "Your team has no tests and wants to start. Explain which kinds of tests to write for a full-stack app and what to fake versus run for real.",
+      "followUps": {
+        "Unit, integration, and E2E tests: cost versus confidence trade-offs": "What are the trade-offs between unit, integration and end-to-end tests?",
+        "What to mock and what to test for real": "Why mock an email service but use a real database in integration tests?"
+      },
+      "criteria": {
+        "Unit, integration, and E2E tests: cost versus confidence trade-offs": {
+          "id": "test-pyramid",
+          "evidence": [
+            {
+              "id": "unit",
+              "text": "Unit tests are fast and cheap but test pieces in isolation."
+            },
+            {
+              "id": "integration",
+              "text": "Integration tests use real parts like the database and give more confidence."
+            },
+            {
+              "id": "e2e",
+              "text": "End-to-end tests drive a real browser through the app and catch the most but are slow, so there should be few."
+            }
+          ],
+          "notEnough": [
+            "Only listing the three types."
+          ],
+          "misconceptions": []
+        },
+        "What to mock and what to test for real": {
+          "id": "what-to-mock",
+          "evidence": [
+            {
+              "id": "external",
+              "text": "External services like email or payment APIs are mocked because they are slow, cost money or are outside your control."
+            },
+            {
+              "id": "real-db",
+              "text": "A real test database catches SQL and ORM bugs that a mock would hide."
+            },
+            {
+              "id": "confidence",
+              "text": "Mocking too much makes tests pass while the real system fails."
+            }
+          ],
+          "notEnough": [
+            "Only saying you mock dependencies."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Playwright's browser automation model",
+      "question": "Your browser tests fail randomly because they click buttons before they appear, and someone added sleep calls to fix it. Explain how Playwright avoids this.",
+      "followUps": {
+        "Playwright's auto-wait: how it retries assertions until stable": "How does Playwright's auto-waiting make tests less flaky than fixed sleeps?"
+      },
+      "criteria": {
+        "Playwright's auto-wait: how it retries assertions until stable": {
+          "id": "playwright-autowait",
+          "evidence": [
+            {
+              "id": "auto-wait",
+              "text": "Playwright waits for an element to be visible, enabled and stable before acting on it."
+            },
+            {
+              "id": "retry-assertions",
+              "text": "Its assertions retry until they pass or time out."
+            },
+            {
+              "id": "no-sleep",
+              "text": "This removes the need for fixed sleeps, which are both slow and unreliable."
+            }
+          ],
+          "notEnough": [
+            "Only saying Playwright waits automatically."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Writing tests for the full stack",
+      "question": "You are writing tests for a recipe service function and for the POST /recipes endpoint with validation and auth. Explain how you would structure and write them.",
+      "followUps": {
+        "Jest unit tests: describe, it, beforeEach, and matchers": "How do describe, beforeEach and matchers help organize unit tests?",
+        "Supertest for Express endpoint integration tests": "What does Supertest let you test that a unit test does not?"
+      },
+      "criteria": {
+        "Jest unit tests: describe, it, beforeEach, and matchers": {
+          "id": "jest-structure",
+          "evidence": [
+            {
+              "id": "describe",
+              "text": "describe groups related tests together."
+            },
+            {
+              "id": "before-each",
+              "text": "beforeEach sets up fresh state before each test, so tests do not affect each other."
+            },
+            {
+              "id": "matchers",
+              "text": "Matchers like toEqual and toThrow state exactly what is expected."
+            }
+          ],
+          "notEnough": [
+            "Only listing Jest functions."
+          ],
+          "misconceptions": []
+        },
+        "Supertest for Express endpoint integration tests": {
+          "id": "supertest",
+          "evidence": [
+            {
+              "id": "in-process",
+              "text": "Supertest sends real HTTP requests to the Express app in the same process."
+            },
+            {
+              "id": "pipeline",
+              "text": "The whole request pipeline runs, including validation, auth middleware and database writes."
+            },
+            {
+              "id": "assert",
+              "text": "Tests check the status code and response body, such as 401 without a token and 201 when valid."
+            }
+          ],
+          "notEnough": [
+            "Only saying it tests endpoints."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "React component testing and E2E with Playwright",
+      "question": "You need tests for a recipe form component and for the login-and-create-recipe flow in a real browser, without tests breaking on every UI tweak. Explain how you would write them.",
+      "followUps": {
+        "React Testing Library: query by role, interact with userEvent": "Why query by role and use userEvent in component tests?",
+        "Playwright page object model for maintainable E2E tests": "What is a page object and why use one in end-to-end tests?"
+      },
+      "criteria": {
+        "React Testing Library: query by role, interact with userEvent": {
+          "id": "rtl-role-userevent",
+          "evidence": [
+            {
+              "id": "role",
+              "text": "Queries by role and name find elements the way users and screen readers do."
+            },
+            {
+              "id": "user-event",
+              "text": "userEvent simulates realistic typing and clicking, including focus and keyboard events."
+            },
+            {
+              "id": "resilient",
+              "text": "Tests written this way survive refactors of markup and class names."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use Testing Library."
+          ],
+          "misconceptions": []
+        },
+        "Playwright page object model for maintainable E2E tests": {
+          "id": "page-object-model",
+          "evidence": [
+            {
+              "id": "encapsulate",
+              "text": "A page object wraps the selectors and actions of one page in a class."
+            },
+            {
+              "id": "readable",
+              "text": "Tests read like steps, such as logging in and creating a recipe."
+            },
+            {
+              "id": "one-place",
+              "text": "When the UI changes, selectors are updated in one place."
+            }
+          ],
+          "notEnough": [
+            "Only saying it organizes tests."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

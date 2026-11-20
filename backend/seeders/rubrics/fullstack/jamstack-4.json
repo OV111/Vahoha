@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "jamstack-4",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Gatsby Architecture Concepts",
+      "question": "You are building a Gatsby blog that pulls posts from Markdown files and a CMS. Explain how Gatsby builds the site and how pages get their data.",
+      "followUps": {
+        "Gatsby build process and the data layer overview": "What does Gatsby's data layer do during the build?",
+        "Static queries versus page queries and their scope": "When would you use a page query and when useStaticQuery?",
+        "Programmatic page creation with createPages API": "How does createPages generate one page per blog post?"
+      },
+      "criteria": {
+        "Gatsby build process and the data layer overview": {
+          "id": "gatsby-data-layer",
+          "evidence": [
+            {
+              "id": "sources",
+              "text": "At build time Gatsby pulls data from files, CMSs and APIs."
+            },
+            {
+              "id": "graphql",
+              "text": "It puts that data into a single GraphQL layer."
+            },
+            {
+              "id": "prerender",
+              "text": "Pages query this layer and are pre-rendered into static HTML."
+            }
+          ],
+          "notEnough": [
+            "Only saying Gatsby uses GraphQL."
+          ],
+          "misconceptions": []
+        },
+        "Static queries versus page queries and their scope": {
+          "id": "static-vs-page-query",
+          "evidence": [
+            {
+              "id": "page-query",
+              "text": "Page queries can use variables from the page context, which suits pages like individual posts."
+            },
+            {
+              "id": "static-query",
+              "text": "useStaticQuery works in any component."
+            },
+            {
+              "id": "no-variables",
+              "text": "Static queries cannot take variables, so they suit fixed data like site metadata."
+            }
+          ],
+          "notEnough": [
+            "Only saying there are two kinds of queries."
+          ],
+          "misconceptions": []
+        },
+        "Programmatic page creation with createPages API": {
+          "id": "create-pages",
+          "evidence": [
+            {
+              "id": "build-time",
+              "text": "createPages runs at build time in gatsby-node."
+            },
+            {
+              "id": "template",
+              "text": "For each item, it creates a page from a template component."
+            },
+            {
+              "id": "context",
+              "text": "It passes context, like the slug, which the template's query uses."
+            }
+          ],
+          "notEnough": [
+            "Only saying createPages creates pages."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Source Plugins and Data Sourcing",
+      "question": "Your Gatsby site needs content from WordPress and local files, and you are not sure how to write the queries. Explain how data gets in and how you find the right query.",
+      "followUps": {
+        "How source plugins pull external data into Gatsby GraphQL": "What do source plugins do?",
+        "Writing GraphQL queries with Gatsby GraphiQL explorer": "How does GraphiQL help you write queries?"
+      },
+      "criteria": {
+        "How source plugins pull external data into Gatsby GraphQL": {
+          "id": "source-plugins",
+          "evidence": [
+            {
+              "id": "fetch",
+              "text": "Source plugins fetch data from services like CMSs or the file system."
+            },
+            {
+              "id": "nodes",
+              "text": "They turn that data into nodes in Gatsby's GraphQL layer."
+            },
+            {
+              "id": "official",
+              "text": "Official plugins exist for common sources such as Contentful, WordPress and files."
+            }
+          ],
+          "notEnough": [
+            "Only saying plugins add data."
+          ],
+          "misconceptions": []
+        },
+        "Writing GraphQL queries with Gatsby GraphiQL explorer": {
+          "id": "graphiql",
+          "evidence": [
+            {
+              "id": "explorer",
+              "text": "GraphiQL is an in-browser tool available while developing."
+            },
+            {
+              "id": "schema",
+              "text": "It shows the available data and fields."
+            },
+            {
+              "id": "autocomplete",
+              "text": "Autocomplete and instant results help you build correct queries before using them in code."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a GraphQL IDE."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Gatsby Image and Build Tooling",
+      "question": "Your Gatsby site has slow-loading images and a plugin that does not see the data it needs. Explain how images are processed and how plugins are configured.",
+      "followUps": {
+        "gatsby-plugin-image for responsive image processing": "What does gatsby-plugin-image do at build time?",
+        "Gatsby configuration with gatsby-config.js and plugins": "Why does plugin order matter in gatsby-config?"
+      },
+      "criteria": {
+        "gatsby-plugin-image for responsive image processing": {
+          "id": "gatsby-image",
+          "evidence": [
+            {
+              "id": "variants",
+              "text": "It generates several sizes and formats of each image at build time."
+            },
+            {
+              "id": "components",
+              "text": "StaticImage and GatsbyImage components pick the right one for the screen."
+            },
+            {
+              "id": "lazy-placeholder",
+              "text": "Images are lazy-loaded with a placeholder while they load."
+            }
+          ],
+          "notEnough": [
+            "Only saying it optimises images."
+          ],
+          "misconceptions": []
+        },
+        "Gatsby configuration with gatsby-config.js and plugins": {
+          "id": "gatsby-config",
+          "evidence": [
+            {
+              "id": "config",
+              "text": "gatsby-config defines site metadata and the list of plugins with their options."
+            },
+            {
+              "id": "order",
+              "text": "Transformer plugins depend on data created by source plugins."
+            },
+            {
+              "id": "consequence",
+              "text": "Wrong order or missing options mean data does not appear in the GraphQL layer."
+            }
+          ],
+          "notEnough": [
+            "Only saying you list plugins there."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Templates and Dynamic Routes",
+      "question": "You have a folder of Markdown blog posts and need a page for each with highlighted code blocks. Explain how you would set this up in Gatsby.",
+      "followUps": {
+        "Creating blog post templates with dynamic slug routing": "How would you create one page per Markdown post?",
+        "gatsby-transformer-remark for Markdown content parsing": "What does gatsby-transformer-remark do with your Markdown files?"
+      },
+      "criteria": {
+        "Creating blog post templates with dynamic slug routing": {
+          "id": "post-templates",
+          "evidence": [
+            {
+              "id": "template",
+              "text": "You write a blog post template component."
+            },
+            {
+              "id": "loop",
+              "text": "In gatsby-node, you query all posts and create a page for each."
+            },
+            {
+              "id": "slug",
+              "text": "Each page's URL comes from a slug, often built from the file path."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use templates."
+          ],
+          "misconceptions": []
+        },
+        "gatsby-transformer-remark for Markdown content parsing": {
+          "id": "transformer-remark",
+          "evidence": [
+            {
+              "id": "source",
+              "text": "gatsby-source-filesystem finds the Markdown files."
+            },
+            {
+              "id": "transform",
+              "text": "The transformer turns them into GraphQL nodes with HTML and frontmatter."
+            },
+            {
+              "id": "plugins",
+              "text": "Remark plugins add features like syntax highlighting."
+            }
+          ],
+          "notEnough": [
+            "Only saying it parses Markdown."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

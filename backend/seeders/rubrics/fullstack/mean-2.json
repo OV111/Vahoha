@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "mean-2",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "TypeScript's type system for Angular development",
+      "question": "A teammate passes a plain object into an Angular service that expects a Task interface, and it compiles. They also ask what @Component actually does. Explain both.",
+      "followUps": {
+        "Structural typing and why shape matters more than name": "Why does a plain object satisfy an interface it was never declared as?",
+        "Decorators: how Angular uses them to attach metadata": "What does a decorator like @Component do?"
+      },
+      "criteria": {
+        "Structural typing and why shape matters more than name": {
+          "id": "structural-typing",
+          "evidence": [
+            {
+              "id": "shape",
+              "text": "TypeScript checks whether a value has the required properties and types, not its declared name."
+            },
+            {
+              "id": "any-source",
+              "text": "An object from anywhere that matches the shape is accepted."
+            },
+            {
+              "id": "api-data",
+              "text": "This is why API response objects can be typed with interfaces without classes."
+            }
+          ],
+          "notEnough": [
+            "Only saying TypeScript is structurally typed."
+          ],
+          "misconceptions": []
+        },
+        "Decorators: how Angular uses them to attach metadata": {
+          "id": "decorators-metadata",
+          "evidence": [
+            {
+              "id": "function",
+              "text": "A decorator is a function applied to a class or member."
+            },
+            {
+              "id": "metadata",
+              "text": "Angular's decorators attach metadata, such as a component's selector and template."
+            },
+            {
+              "id": "framework-reads",
+              "text": "Angular reads that metadata to create and wire up the class."
+            }
+          ],
+          "notEnough": [
+            "Only saying decorators start with @."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Classes and access modifiers in TypeScript",
+      "question": "You are writing an Angular service that injects HttpClient and returns typed task lists. Explain how access modifiers and generics help.",
+      "followUps": {
+        "Public, private, protected, and readonly modifiers": "Why mark injected dependencies private and some fields readonly?",
+        "Generics in TypeScript: type-safe reusable code": "What does the type parameter in http.get<Task[]>() give you?"
+      },
+      "criteria": {
+        "Public, private, protected, and readonly modifiers": {
+          "id": "access-modifiers",
+          "evidence": [
+            {
+              "id": "private",
+              "text": "private stops code outside the class from using a member."
+            },
+            {
+              "id": "readonly",
+              "text": "readonly stops a value from being reassigned after construction."
+            },
+            {
+              "id": "compile-time",
+              "text": "These checks happen at compile time and do not exist in the output JavaScript."
+            }
+          ],
+          "notEnough": [
+            "Only listing the modifiers."
+          ],
+          "misconceptions": []
+        },
+        "Generics in TypeScript: type-safe reusable code": {
+          "id": "generics",
+          "evidence": [
+            {
+              "id": "reusable",
+              "text": "Generics let one function work with many types."
+            },
+            {
+              "id": "typed-result",
+              "text": "The type parameter tells TypeScript what the response will contain."
+            },
+            {
+              "id": "no-cast",
+              "text": "You get typed results without casting, though the data is not checked at runtime."
+            }
+          ],
+          "notEnough": [
+            "Only saying generics make code reusable."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "TypeScript tooling for an Angular project",
+      "question": "A new Angular project fails to compile with errors about possibly undefined values, and you need update and public versions of a User type. Explain the tsconfig settings and the utility types you would use.",
+      "followUps": {
+        "tsconfig.json: strict, target, and Angular-specific options": "What do strict, target and experimentalDecorators control in an Angular project?",
+        "Utility types: Partial, Required, Pick, Omit, Record": "How would you build an update type and a public type from User?"
+      },
+      "criteria": {
+        "tsconfig.json: strict, target, and Angular-specific options": {
+          "id": "tsconfig-angular",
+          "evidence": [
+            {
+              "id": "strict",
+              "text": "strict turns on checks like catching possibly null or undefined values."
+            },
+            {
+              "id": "target",
+              "text": "target sets which JavaScript version the compiler outputs."
+            },
+            {
+              "id": "decorators",
+              "text": "Decorator settings let the compiler process Angular's decorators."
+            }
+          ],
+          "notEnough": [
+            "Only saying tsconfig configures the compiler."
+          ],
+          "misconceptions": []
+        },
+        "Utility types: Partial, Required, Pick, Omit, Record": {
+          "id": "utility-types",
+          "evidence": [
+            {
+              "id": "partial",
+              "text": "Partial makes every field optional, which suits update requests."
+            },
+            {
+              "id": "omit-pick",
+              "text": "Omit removes fields like password and Pick keeps only chosen fields."
+            },
+            {
+              "id": "record",
+              "text": "Record describes objects used as dictionaries."
+            }
+          ],
+          "notEnough": [
+            "Only listing the type names."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Enums, interfaces, and module organization",
+      "question": "Your app needs a Task shape from the API, a fixed set of task statuses, and an extra property added to a library's existing type. Explain how you would model each.",
+      "followUps": {
+        "Interfaces for data shapes, enums for fixed value sets": "When would you use an interface and when an enum?",
+        "TypeScript module augmentation and declaration merging": "How can you add a property to a type defined in a library without editing it?"
+      },
+      "criteria": {
+        "Interfaces for data shapes, enums for fixed value sets": {
+          "id": "interfaces-enums",
+          "evidence": [
+            {
+              "id": "interface",
+              "text": "Interfaces describe the shape of objects like API responses."
+            },
+            {
+              "id": "enum",
+              "text": "Enums or literal unions describe a fixed set of values like task statuses."
+            },
+            {
+              "id": "no-runtime",
+              "text": "Interfaces vanish at runtime, while regular enums produce JavaScript objects."
+            }
+          ],
+          "notEnough": [
+            "Only saying interfaces describe objects."
+          ],
+          "misconceptions": []
+        },
+        "TypeScript module augmentation and declaration merging": {
+          "id": "declaration-merging",
+          "evidence": [
+            {
+              "id": "merge",
+              "text": "Interfaces with the same name in the same scope merge their properties."
+            },
+            {
+              "id": "augment",
+              "text": "Module augmentation adds properties to a library's types from your own file."
+            },
+            {
+              "id": "example",
+              "text": "This is how you add a user property to Express's Request type."
+            }
+          ],
+          "notEnough": [
+            "Only saying you can extend interfaces."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

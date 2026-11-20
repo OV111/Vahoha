@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "remix-dev-3",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Loader Fundamentals",
+      "question": "Your Remix loader returns a database model with dates and methods, and the page receives something different. Explain what a loader must return.",
+      "followUps": {
+        "The loader Function Contract": "What does a loader receive and what can it return?",
+        "json() Helper and Response Objects": "What does a Response helper like json() give you?"
+      },
+      "criteria": {
+        "The loader Function Contract": {
+          "id": "loader-contract",
+          "evidence": [
+            {
+              "id": "args",
+              "text": "A loader receives the request, params and context."
+            },
+            {
+              "id": "return",
+              "text": "It returns a Response or data that can be serialised."
+            },
+            {
+              "id": "serializable",
+              "text": "Class instances, functions or circular data do not survive the trip to the browser."
+            }
+          ],
+          "notEnough": [
+            "Only saying loaders return data."
+          ],
+          "misconceptions": []
+        },
+        "json() Helper and Response Objects": {
+          "id": "json-response",
+          "evidence": [
+            {
+              "id": "response",
+              "text": "It creates a Response with the right content type."
+            },
+            {
+              "id": "headers",
+              "text": "It lets you set status codes and headers like caching."
+            },
+            {
+              "id": "control",
+              "text": "Returning a Response gives full control over the HTTP reply."
+            }
+          ],
+          "notEnough": [
+            "Only saying json() returns JSON."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Parallel and Dependent Loading",
+      "question": "Your dashboard's nested routes each need data, and one slow widget delays the whole page. Explain how Remix loads data across routes.",
+      "followUps": {
+        "Parallel Loaders Across Nested Routes": "How does Remix run loaders for nested routes?",
+        "Deferred Data with defer() and Await": "How can a loader let the page render before slow data is ready?"
+      },
+      "criteria": {
+        "Parallel Loaders Across Nested Routes": {
+          "id": "parallel-loaders",
+          "evidence": [
+            {
+              "id": "parallel",
+              "text": "Remix runs all matching route loaders at the same time."
+            },
+            {
+              "id": "no-waterfall",
+              "text": "This avoids waiting for parent data before child data loads."
+            },
+            {
+              "id": "shared",
+              "text": "Shared data like the user session belongs in a parent loader."
+            }
+          ],
+          "notEnough": [
+            "Only saying loaders run in parallel."
+          ],
+          "misconceptions": []
+        },
+        "Deferred Data with defer() and Await": {
+          "id": "deferred-data",
+          "evidence": [
+            {
+              "id": "defer",
+              "text": "A loader can return slow data as an unresolved promise."
+            },
+            {
+              "id": "shell",
+              "text": "The page renders immediately with the fast data."
+            },
+            {
+              "id": "await",
+              "text": "The Await component shows the slow part when it arrives, with a fallback meanwhile."
+            }
+          ],
+          "notEnough": [
+            "Only saying data can be deferred."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Type-Safe Data Loading",
+      "question": "Your component's loader types drift from what the loader actually returns, and every request hits the origin even for public data. Explain typing and caching loader data.",
+      "followUps": {
+        "Typing useLoaderData with TypeOf": "How does useLoaderData<typeof loader> keep types in sync?",
+        "Loader Caching and HTTP Cache Headers": "How can loader responses be cached by a CDN?"
+      },
+      "criteria": {
+        "Typing useLoaderData with TypeOf": {
+          "id": "typeof-loader",
+          "evidence": [
+            {
+              "id": "infer",
+              "text": "Passing typeof loader infers the component's data type from the loader."
+            },
+            {
+              "id": "no-duplicate",
+              "text": "There is no separate type to keep in sync."
+            },
+            {
+              "id": "serialized",
+              "text": "The inferred type reflects the serialised data the page receives."
+            }
+          ],
+          "notEnough": [
+            "Only saying it types the data."
+          ],
+          "misconceptions": []
+        },
+        "Loader Caching and HTTP Cache Headers": {
+          "id": "cache-headers",
+          "evidence": [
+            {
+              "id": "headers",
+              "text": "Loaders can set Cache-Control headers on their Response."
+            },
+            {
+              "id": "cdn",
+              "text": "A CDN can then serve cached copies close to users."
+            },
+            {
+              "id": "private",
+              "text": "Personalised data must not be cached publicly."
+            }
+          ],
+          "notEnough": [
+            "Only saying you cache responses."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Request and URL Access",
+      "question": "Your search loader parses the query string with regex, and protected pages briefly render before kicking users out. Explain how loaders should read requests and guard routes.",
+      "followUps": {
+        "Accessing request.url and URLSearchParams": "How should a loader read query parameters?",
+        "throw redirect() for Authorization Guards": "Why throw redirect() from a loader to protect a route?"
+      },
+      "criteria": {
+        "Accessing request.url and URLSearchParams": {
+          "id": "url-searchparams",
+          "evidence": [
+            {
+              "id": "request",
+              "text": "Loaders receive the full Request, including URL, headers and cookies."
+            },
+            {
+              "id": "url",
+              "text": "new URL(request.url) and searchParams read query values reliably."
+            },
+            {
+              "id": "no-regex",
+              "text": "Manual string parsing breaks on encoding and edge cases."
+            }
+          ],
+          "notEnough": [
+            "Only saying you read the URL."
+          ],
+          "misconceptions": []
+        },
+        "throw redirect() for Authorization Guards": {
+          "id": "throw-redirect",
+          "evidence": [
+            {
+              "id": "throw",
+              "text": "Throwing redirect stops the loader immediately."
+            },
+            {
+              "id": "server",
+              "text": "The redirect happens on the server before any page renders."
+            },
+            {
+              "id": "secure",
+              "text": "Protected data and markup never reach users who are not allowed."
+            }
+          ],
+          "notEnough": [
+            "Only saying you redirect."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

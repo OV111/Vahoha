@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "pern-1",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "How browsers render HTML, CSS, and JavaScript",
+      "question": "A user opens your PERN app's homepage on a slow phone and sees a blank screen for two seconds. Walk through what the browser does with your HTML, CSS and scripts before anything appears, and how your markup choices affect people who use screen readers.",
+      "followUps": {
+        "The critical rendering path and render-blocking resources": "Why can a script tag in the head or a large stylesheet delay the first paint, and what would you change?",
+        "Semantic HTML elements and the accessibility tree": "A screen reader user can't find the navigation on your site built only from divs. Why, and what would fix it?"
+      },
+      "criteria": {
+        "The critical rendering path and render-blocking resources": {
+          "id": "critical-rendering-path",
+          "evidence": [
+            {
+              "id": "dom-cssom",
+              "text": "The browser builds a DOM from the HTML and a CSSOM from the CSS, and combines them before it can lay out and paint the page."
+            },
+            {
+              "id": "blocking",
+              "text": "CSS blocks rendering and a plain script blocks HTML parsing until it is downloaded and run, so both delay the first paint."
+            },
+            {
+              "id": "fix",
+              "text": "Putting scripts at the end of the body or marking them defer or async, and keeping critical CSS small, lets the page appear sooner."
+            }
+          ],
+          "notEnough": [
+            "Only naming DOM, CSSOM or render-blocking without explaining what blocks what and why."
+          ],
+          "misconceptions": [
+            {
+              "id": "css-nonblocking",
+              "text": "Says CSS never delays rendering because it only changes how things look after the page appears."
+            }
+          ]
+        },
+        "Semantic HTML elements and the accessibility tree": {
+          "id": "semantic-html-a11y",
+          "evidence": [
+            {
+              "id": "roles",
+              "text": "Semantic elements like nav, main and button carry built-in roles that end up in the accessibility tree."
+            },
+            {
+              "id": "assistive",
+              "text": "Screen readers and keyboard users rely on those roles to jump between regions and operate controls, which plain divs don't provide."
+            }
+          ],
+          "notEnough": [
+            "Only saying semantic HTML is better or cleaner without saying who uses the roles and how."
+          ],
+          "misconceptions": [
+            {
+              "id": "looks-only",
+              "text": "Says semantic elements only change how the page looks."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "CSS layout: the box model, flexbox, and grid",
+      "question": "You're building the dashboard page of your PERN app: a header, sidebar, main content and footer, with cards inside the main area. Explain how you'd lay it out, and why widths often come out wrong without one particular CSS setting.",
+      "followUps": {
+        "box-sizing: border-box and why it simplifies layout math": "You set a box to width 300px with 20px padding and a border, and it overflows its column. Why, and how does border-box change that?",
+        "CSS Grid for two-dimensional page layouts": "Why would you use grid for the page skeleton but flexbox for a row of buttons inside a card?"
+      },
+      "criteria": {
+        "box-sizing: border-box and why it simplifies layout math": {
+          "id": "box-sizing",
+          "evidence": [
+            {
+              "id": "content-box",
+              "text": "By default the width covers only the content, so padding and border are added on top and the element ends up wider than the number you wrote."
+            },
+            {
+              "id": "border-box",
+              "text": "With border-box, padding and border are included in the width, so the element is exactly as wide as you set it."
+            }
+          ],
+          "notEnough": [
+            "Only saying use border-box or naming the box model parts without explaining how the width is calculated."
+          ],
+          "misconceptions": [
+            {
+              "id": "margin-included",
+              "text": "Says border-box also includes the margin in the element's width."
+            }
+          ]
+        },
+        "CSS Grid for two-dimensional page layouts": {
+          "id": "css-grid-layout",
+          "evidence": [
+            {
+              "id": "two-dimensional",
+              "text": "Grid controls rows and columns at the same time, which suits a whole-page layout."
+            },
+            {
+              "id": "flex-inside",
+              "text": "Flexbox lays items out along one direction, so it fits the components inside a grid area, like a row of buttons."
+            }
+          ],
+          "notEnough": [
+            "Only saying grid is for layouts or more powerful than flexbox."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "JavaScript DOM manipulation and events",
+      "question": "Without React, you need a dark mode button that switches the page's theme, and the page must stay readable from a phone to a wide monitor. Explain how you'd make the button work and how you'd make the layout adapt to the screen size.",
+      "followUps": {
+        "querySelector, textContent, and classList for DOM updates": "Why toggle a CSS class with classList instead of setting styles from JavaScript, and why textContent instead of innerHTML for user text?",
+        "Responsive design with media queries and relative units": "Why use rem for font sizes and min-width media queries instead of fixed pixel sizes everywhere?"
+      },
+      "criteria": {
+        "querySelector, textContent, and classList for DOM updates": {
+          "id": "dom-updates",
+          "evidence": [
+            {
+              "id": "select",
+              "text": "You first find the element, for example with querySelector, and then change it through the DOM."
+            },
+            {
+              "id": "classlist",
+              "text": "Toggling a class with classList keeps the styling in CSS, and JavaScript only switches the state."
+            },
+            {
+              "id": "textcontent",
+              "text": "textContent sets plain text, so user-provided text is not parsed as HTML the way it is with innerHTML."
+            }
+          ],
+          "notEnough": [
+            "Only listing querySelector, textContent and classList without saying what each one does."
+          ],
+          "misconceptions": [
+            {
+              "id": "innerhtml-safe",
+              "text": "Says innerHTML is safe for inserting text that users typed."
+            }
+          ]
+        },
+        "Responsive design with media queries and relative units": {
+          "id": "responsive-units",
+          "evidence": [
+            {
+              "id": "relative-units",
+              "text": "Relative units like rem scale with the user's font settings, and percentages or vw and vh scale with the container or the screen."
+            },
+            {
+              "id": "media-queries",
+              "text": "Media queries apply different styles at breakpoints; with min-width you start from the small-screen layout and add rules as the screen grows."
+            }
+          ],
+          "notEnough": [
+            "Only saying use media queries or make it responsive without explaining how the styles change with the screen size."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Browser DevTools for debugging HTML, CSS, and network",
+      "question": "A button on your page has the wrong color, and the list under it loads slowly from your API. Walk through how you'd use the browser's DevTools to find the cause of both problems.",
+      "followUps": {
+        "Inspecting and live-editing styles in the Styles panel": "Two CSS rules set the button's color. How do you use DevTools to see which one wins, and why?",
+        "Network tab: reading request/response headers and timing": "Your API call returns but the list is empty. What would you look at in the Network tab to find out why?"
+      },
+      "criteria": {
+        "Inspecting and live-editing styles in the Styles panel": {
+          "id": "devtools-styles",
+          "evidence": [
+            {
+              "id": "cascade",
+              "text": "The Styles panel shows every rule that matches the element, with overridden declarations crossed out, so you can see which rule wins the cascade."
+            },
+            {
+              "id": "live-edit",
+              "text": "You can toggle or edit declarations live to test a fix before changing the code, and the Computed panel shows the final value."
+            }
+          ],
+          "notEnough": [
+            "Only saying open DevTools and inspect without saying what you look at."
+          ],
+          "misconceptions": [
+            {
+              "id": "edits-persist",
+              "text": "Says changes made in the Styles panel are still there after reloading the page."
+            }
+          ]
+        },
+        "Network tab: reading request/response headers and timing": {
+          "id": "devtools-network",
+          "evidence": [
+            {
+              "id": "status-headers",
+              "text": "Each request shows its status code and its request and response headers, which tell you whether the API failed, refused the request or returned something unexpected."
+            },
+            {
+              "id": "response",
+              "text": "You can open the response body to see exactly what data came back."
+            },
+            {
+              "id": "timing",
+              "text": "The timing waterfall shows where a slow request spends its time, for example waiting for the server versus downloading."
+            }
+          ],
+          "notEnough": [
+            "Only saying check the Network tab without saying what to look at."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

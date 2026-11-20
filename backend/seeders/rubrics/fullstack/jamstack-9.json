@@ -1,0 +1,238 @@
+{
+  "path": "fullstack",
+  "layer": "jamstack-9",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "E-commerce Architecture Concepts",
+      "question": "You are building a JAMstack shop with products in a CMS, a cart and Stripe payments. Explain how you would model products, keep the cart and take payment.",
+      "followUps": {
+        "Product catalogue modelling in a headless CMS": "How would you model products and their variants in a CMS?",
+        "Cart state management with Context API or Zustand": "Where should cart state live so it survives page changes and reloads?",
+        "Stripe payment intents and the checkout session flow": "How does a Stripe Checkout Session work?"
+      },
+      "criteria": {
+        "Product catalogue modelling in a headless CMS": {
+          "id": "product-modelling",
+          "evidence": [
+            {
+              "id": "fields",
+              "text": "Products are content types with fields like name, description, price and images."
+            },
+            {
+              "id": "variants",
+              "text": "Variants like size or colour are modelled as linked entries or structured fields."
+            },
+            {
+              "id": "source-of-truth",
+              "text": "Prices used for payment should come from a trusted source, not from the browser."
+            }
+          ],
+          "notEnough": [
+            "Only saying you add products to the CMS."
+          ],
+          "misconceptions": []
+        },
+        "Cart state management with Context API or Zustand": {
+          "id": "cart-state",
+          "evidence": [
+            {
+              "id": "above-router",
+              "text": "The cart lives in a context or store above the routes so it survives navigation."
+            },
+            {
+              "id": "persist",
+              "text": "Saving it to localStorage restores it after a reload."
+            },
+            {
+              "id": "store",
+              "text": "A small store like Zustand avoids re-rendering everything when the cart changes."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use context."
+          ],
+          "misconceptions": []
+        },
+        "Stripe payment intents and the checkout session flow": {
+          "id": "checkout-session",
+          "evidence": [
+            {
+              "id": "server-create",
+              "text": "The server creates a Checkout Session with the items to pay for."
+            },
+            {
+              "id": "hosted",
+              "text": "Stripe returns a URL to a hosted payment page."
+            },
+            {
+              "id": "redirect-back",
+              "text": "After payment, Stripe redirects to your success page with the session id."
+            }
+          ],
+          "notEnough": [
+            "Only saying Stripe handles payment."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Webhooks and Order Processing",
+      "question": "Customers sometimes close the browser right after paying and never reach the success page, so orders go unrecorded. Explain how you would process orders reliably.",
+      "followUps": {
+        "Stripe webhooks for reliable post-payment event processing": "Why use a webhook instead of the success page to record orders?",
+        "Order confirmation emails with serverless and SendGrid": "How would you send an order confirmation email after payment?"
+      },
+      "criteria": {
+        "Stripe webhooks for reliable post-payment event processing": {
+          "id": "stripe-webhooks",
+          "evidence": [
+            {
+              "id": "server-event",
+              "text": "Stripe sends a signed request to your function when a payment completes."
+            },
+            {
+              "id": "reliable",
+              "text": "It arrives even if the customer closes the browser."
+            },
+            {
+              "id": "verify",
+              "text": "Verifying the signature proves the request really came from Stripe."
+            }
+          ],
+          "notEnough": [
+            "Only saying webhooks notify you."
+          ],
+          "misconceptions": []
+        },
+        "Order confirmation emails with serverless and SendGrid": {
+          "id": "order-emails",
+          "evidence": [
+            {
+              "id": "trigger",
+              "text": "The webhook handler triggers the email after a successful payment."
+            },
+            {
+              "id": "service",
+              "text": "An email service like SendGrid or Resend sends it."
+            },
+            {
+              "id": "once",
+              "text": "The handler should avoid sending the same email twice if the webhook is retried."
+            }
+          ],
+          "notEnough": [
+            "Only saying you send an email."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Stripe Integration Tooling",
+      "question": "You are integrating Stripe in the browser and testing payments locally. Explain how to load Stripe on the client and test webhooks without real payments.",
+      "followUps": {
+        "Stripe JS SDK and stripe-js client-side integration": "Why load Stripe.js from Stripe's own servers?",
+        "Stripe CLI for local webhook testing and event replay": "How does the Stripe CLI help you test webhooks locally?"
+      },
+      "criteria": {
+        "Stripe JS SDK and stripe-js client-side integration": {
+          "id": "stripe-js",
+          "evidence": [
+            {
+              "id": "load",
+              "text": "The stripe-js package loads Stripe.js asynchronously."
+            },
+            {
+              "id": "elements",
+              "text": "Stripe.js provides payment elements where customers enter card details."
+            },
+            {
+              "id": "pci",
+              "text": "Card details go directly to Stripe, which keeps your site out of most PCI requirements."
+            }
+          ],
+          "notEnough": [
+            "Only saying you install the package."
+          ],
+          "misconceptions": []
+        },
+        "Stripe CLI for local webhook testing and event replay": {
+          "id": "stripe-cli",
+          "evidence": [
+            {
+              "id": "listen",
+              "text": "stripe listen forwards webhook events to your local function."
+            },
+            {
+              "id": "trigger",
+              "text": "stripe trigger sends test events on demand."
+            },
+            {
+              "id": "no-real",
+              "text": "You can test the full flow without real payments."
+            }
+          ],
+          "notEnough": [
+            "Only saying it is a command-line tool."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Dynamic Data and Serverless Checkout",
+      "question": "Your checkout function builds a Stripe session from the cart, and the success page should show the order details. Explain how both work securely.",
+      "followUps": {
+        "Creating Stripe Checkout Sessions in serverless functions": "Why must the function build line items from your own prices, not prices from the browser?",
+        "Reading Stripe session data on the success page": "How does the success page show the confirmed order?"
+      },
+      "criteria": {
+        "Creating Stripe Checkout Sessions in serverless functions": {
+          "id": "create-session",
+          "evidence": [
+            {
+              "id": "function",
+              "text": "A serverless function uses the Stripe SDK to create the session."
+            },
+            {
+              "id": "trusted-prices",
+              "text": "Prices must come from your product data, because the browser can be tampered with."
+            },
+            {
+              "id": "return-url",
+              "text": "The function returns the session URL for the client to redirect to."
+            }
+          ],
+          "notEnough": [
+            "Only saying the function creates a session."
+          ],
+          "misconceptions": []
+        },
+        "Reading Stripe session data on the success page": {
+          "id": "success-page",
+          "evidence": [
+            {
+              "id": "session-id",
+              "text": "Stripe adds the session id to the success URL."
+            },
+            {
+              "id": "fetch",
+              "text": "The page asks a serverless function to retrieve that session from Stripe."
+            },
+            {
+              "id": "display",
+              "text": "It shows the confirmed order details from Stripe's data, not from the client."
+            }
+          ],
+          "notEnough": [
+            "Only saying it reads the URL."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

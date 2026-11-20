@@ -1,0 +1,216 @@
+{
+  "path": "fullstack",
+  "layer": "laravel-vue-3",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Eloquent ORM Core",
+      "question": "A user changes their role to admin by adding a field to the profile form, and your orders page runs hundreds of queries. Explain how Eloquent handles both.",
+      "followUps": {
+        "Mass Assignment and the fillable/guarded Properties": "How do $fillable and $guarded stop users from setting fields they should not?",
+        "Eloquent Relationships and Lazy vs Eager Loading": "What is the N+1 problem and how does eager loading fix it?"
+      },
+      "criteria": {
+        "Mass Assignment and the fillable/guarded Properties": {
+          "id": "mass-assignment",
+          "evidence": [
+            {
+              "id": "mass",
+              "text": "Mass assignment fills many attributes from request data at once."
+            },
+            {
+              "id": "fillable",
+              "text": "$fillable lists the fields that may be mass-assigned."
+            },
+            {
+              "id": "risk",
+              "text": "Without it, a user could set fields like is_admin by adding them to the form."
+            }
+          ],
+          "notEnough": [
+            "Only saying fillable protects models."
+          ],
+          "misconceptions": []
+        },
+        "Eloquent Relationships and Lazy vs Eager Loading": {
+          "id": "eager-loading",
+          "evidence": [
+            {
+              "id": "lazy",
+              "text": "Accessing a relationship in a loop runs a new query for each item."
+            },
+            {
+              "id": "with",
+              "text": "Eager loading with with() loads the relationship for all items in one extra query."
+            },
+            {
+              "id": "detect",
+              "text": "Laravel can be set to throw on lazy loading in development to catch this."
+            }
+          ],
+          "notEnough": [
+            "Only saying eager loading is faster."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Database Migrations",
+      "question": "A rollback broke your database because a migration's down method did not undo its up method, and order lookups by customer are slow. Explain how migrations and indexes should be written.",
+      "followUps": {
+        "Migration Versioning and the up/down Contract": "Why must down() reverse up() exactly?",
+        "Column Modifiers and Index Strategy": "How do column modifiers and indexes affect the schema and performance?"
+      },
+      "criteria": {
+        "Migration Versioning and the up/down Contract": {
+          "id": "migration-up-down",
+          "evidence": [
+            {
+              "id": "versioned",
+              "text": "Migrations are versioned changes applied in order."
+            },
+            {
+              "id": "inverse",
+              "text": "down() must undo exactly what up() did."
+            },
+            {
+              "id": "rollback",
+              "text": "Otherwise rolling back leaves the database broken or inconsistent."
+            }
+          ],
+          "notEnough": [
+            "Only saying migrations have up and down."
+          ],
+          "misconceptions": []
+        },
+        "Column Modifiers and Index Strategy": {
+          "id": "modifiers-indexes",
+          "evidence": [
+            {
+              "id": "modifiers",
+              "text": "Modifiers like nullable, default and unsigned define column rules."
+            },
+            {
+              "id": "index",
+              "text": "Indexes on foreign keys and filtered columns speed up lookups."
+            },
+            {
+              "id": "missing",
+              "text": "A missing index makes queries scan the whole table as data grows."
+            }
+          ],
+          "notEnough": [
+            "Only saying indexes make queries faster."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Query Builder and Raw Queries",
+      "question": "You need to update 100,000 rows in a batch job and a report uses a complex query with user input. Explain when you would use the query builder and how you stay safe from SQL injection.",
+      "followUps": {
+        "Query Builder vs Eloquent Trade-offs": "When is the query builder better than Eloquent?",
+        "Preventing SQL Injection with Parameter Binding": "How does parameter binding prevent SQL injection, and where can you lose it?"
+      },
+      "criteria": {
+        "Query Builder vs Eloquent Trade-offs": {
+          "id": "builder-vs-eloquent",
+          "evidence": [
+            {
+              "id": "builder",
+              "text": "The query builder returns plain results and is faster for bulk work."
+            },
+            {
+              "id": "eloquent",
+              "text": "Eloquent returns model objects with events, casts and relationships."
+            },
+            {
+              "id": "trade-off",
+              "text": "Bulk updates through the builder skip model events, which may matter."
+            }
+          ],
+          "notEnough": [
+            "Only saying the builder is faster."
+          ],
+          "misconceptions": []
+        },
+        "Preventing SQL Injection with Parameter Binding": {
+          "id": "parameter-binding",
+          "evidence": [
+            {
+              "id": "bind",
+              "text": "The query builder and Eloquent send values separately from the SQL."
+            },
+            {
+              "id": "safe",
+              "text": "User input is treated as data, never as SQL."
+            },
+            {
+              "id": "raw",
+              "text": "Raw methods that concatenate user input into SQL lose that protection."
+            }
+          ],
+          "notEnough": [
+            "Only saying Laravel prevents SQL injection."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Database Seeders and Factories",
+      "question": "Your tests depend on records someone created by hand, and new developers start with an empty database. Explain how factories and seeders fix this.",
+      "followUps": {
+        "Model Factories for Realistic Test Data": "How do model factories help tests?",
+        "Seeders and Environment-Specific Data": "Why separate seeders for reference data and development data?"
+      },
+      "criteria": {
+        "Model Factories for Realistic Test Data": {
+          "id": "factories",
+          "evidence": [
+            {
+              "id": "fake-data",
+              "text": "Factories generate realistic fake data for each model."
+            },
+            {
+              "id": "isolated",
+              "text": "Each test creates exactly the records it needs."
+            },
+            {
+              "id": "states",
+              "text": "Factory states create variations, like an unverified user."
+            }
+          ],
+          "notEnough": [
+            "Only saying factories create data."
+          ],
+          "misconceptions": []
+        },
+        "Seeders and Environment-Specific Data": {
+          "id": "seeders",
+          "evidence": [
+            {
+              "id": "reference",
+              "text": "Some data, like roles and permissions, is needed in every environment."
+            },
+            {
+              "id": "dev",
+              "text": "Sample data is only for development and must not reach production."
+            },
+            {
+              "id": "split",
+              "text": "Splitting seeders lets each environment run only what it needs."
+            }
+          ],
+          "notEnough": [
+            "Only saying seeders fill the database."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,221 @@
+{
+  "path": "fullstack",
+  "layer": "mean-10",
+  "reviewed": true,
+  "criteriaReviewed": true,
+  "groups": [
+    {
+      "title": "Testing Angular applications",
+      "question": "You are writing unit tests for a task list component that depends on TaskService. Explain how Angular's testing setup isolates the component.",
+      "followUps": {
+        "TestBed: Angular's testing module for component and service isolation": "What does TestBed do in an Angular test?",
+        "Jasmine spy objects for mocking Angular service dependencies": "How would you mock TaskService with a spy object?"
+      },
+      "criteria": {
+        "TestBed: Angular's testing module for component and service isolation": {
+          "id": "testbed",
+          "evidence": [
+            {
+              "id": "module",
+              "text": "TestBed sets up a small Angular testing module for each test."
+            },
+            {
+              "id": "providers",
+              "text": "It provides the component's dependencies, often replaced by mocks."
+            },
+            {
+              "id": "di",
+              "text": "Components are created through real dependency injection, as in the app."
+            }
+          ],
+          "notEnough": [
+            "Only saying TestBed configures tests."
+          ],
+          "misconceptions": []
+        },
+        "Jasmine spy objects for mocking Angular service dependencies": {
+          "id": "jasmine-spies",
+          "evidence": [
+            {
+              "id": "spy",
+              "text": "createSpyObj creates an object whose methods are spies."
+            },
+            {
+              "id": "return",
+              "text": "Each spy can return test data, such as an Observable of tasks."
+            },
+            {
+              "id": "verify",
+              "text": "Tests can check that methods were called with the expected arguments."
+            }
+          ],
+          "notEnough": [
+            "Only saying you mock the service."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Deploying MEAN apps to production",
+      "question": "You are ready to deploy your MEAN app with the database on MongoDB Atlas. Explain what the Angular production build produces and how you would set up Atlas safely.",
+      "followUps": {
+        "Angular production build: ng build and the dist/ output": "What does a production Angular build do differently?",
+        "MongoDB Atlas: managed clusters, IP allowlists, and connection strings": "How would you connect the API to Atlas without exposing the database?"
+      },
+      "criteria": {
+        "Angular production build: ng build and the dist/ output": {
+          "id": "prod-build",
+          "evidence": [
+            {
+              "id": "aot",
+              "text": "It compiles templates ahead of time."
+            },
+            {
+              "id": "optimize",
+              "text": "It removes unused code and minifies the output."
+            },
+            {
+              "id": "static",
+              "text": "The dist folder contains static files that any web server can serve."
+            }
+          ],
+          "notEnough": [
+            "Only saying it builds the app."
+          ],
+          "misconceptions": []
+        },
+        "MongoDB Atlas: managed clusters, IP allowlists, and connection strings": {
+          "id": "atlas",
+          "evidence": [
+            {
+              "id": "managed",
+              "text": "Atlas runs the database for you, with backups and scaling."
+            },
+            {
+              "id": "allowlist",
+              "text": "Network access is limited to the server's addresses rather than open to everyone where possible."
+            },
+            {
+              "id": "secret",
+              "text": "The connection string is kept in a server environment variable and never committed."
+            }
+          ],
+          "notEnough": [
+            "Only saying you use Atlas."
+          ],
+          "misconceptions": [
+            {
+              "id": "open-safe",
+              "text": "Says allowing every IP address is safe because the database has a password."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Writing Angular unit and integration tests",
+      "question": "You are testing that the task list shows tasks loaded over HTTP. Explain how you would test the template and the HTTP call without a real server.",
+      "followUps": {
+        "Testing components: fixture, debugElement, and detectChanges": "Why call fixture.detectChanges, and how do you check the rendered output?",
+        "HttpClientTestingModule and HttpTestingController for HTTP mocks": "How does HttpTestingController let you test HTTP calls?"
+      },
+      "criteria": {
+        "Testing components: fixture, debugElement, and detectChanges": {
+          "id": "fixture-detectchanges",
+          "evidence": [
+            {
+              "id": "detect",
+              "text": "detectChanges runs change detection so the template reflects the component's state."
+            },
+            {
+              "id": "query",
+              "text": "debugElement queries find elements in the rendered template."
+            },
+            {
+              "id": "assert",
+              "text": "The test checks what the user would see, such as the number of task rows."
+            }
+          ],
+          "notEnough": [
+            "Only saying you render the component."
+          ],
+          "misconceptions": []
+        },
+        "HttpClientTestingModule and HttpTestingController for HTTP mocks": {
+          "id": "http-testing",
+          "evidence": [
+            {
+              "id": "no-server",
+              "text": "The testing module replaces the real backend, so no requests leave the test."
+            },
+            {
+              "id": "expect",
+              "text": "The controller checks that the expected request was made."
+            },
+            {
+              "id": "flush",
+              "text": "flush sends fake response data back, and verify checks no unexpected requests remain."
+            }
+          ],
+          "notEnough": [
+            "Only saying you mock HTTP."
+          ],
+          "misconceptions": []
+        }
+      }
+    },
+    {
+      "title": "Deploying Node and Angular to production",
+      "question": "You plan to serve the Angular app from Express on one server, and the Node process occasionally crashes at night. Explain how you would serve the app and keep Node running.",
+      "followUps": {
+        "Serving the Angular dist/ from Express as a static SPA": "Why does refreshing /tasks return 404 unless Express has a catch-all route?",
+        "PM2 for Node process management in production": "What does PM2 do for a Node app in production?"
+      },
+      "criteria": {
+        "Serving the Angular dist/ from Express as a static SPA": {
+          "id": "serve-spa",
+          "evidence": [
+            {
+              "id": "static",
+              "text": "Express serves the built Angular files as static files."
+            },
+            {
+              "id": "fallback",
+              "text": "Any unknown path must return index.html so Angular's router can handle it."
+            },
+            {
+              "id": "api-first",
+              "text": "API routes are registered before the fallback so they still work."
+            }
+          ],
+          "notEnough": [
+            "Only saying you serve the dist folder."
+          ],
+          "misconceptions": []
+        },
+        "PM2 for Node process management in production": {
+          "id": "pm2",
+          "evidence": [
+            {
+              "id": "restart",
+              "text": "PM2 restarts the app automatically when it crashes."
+            },
+            {
+              "id": "reload",
+              "text": "It can reload the app without downtime."
+            },
+            {
+              "id": "logs",
+              "text": "It manages logs and is configured through an ecosystem file."
+            }
+          ],
+          "notEnough": [
+            "Only saying PM2 runs Node."
+          ],
+          "misconceptions": []
+        }
+      }
+    }
+  ]
+}
