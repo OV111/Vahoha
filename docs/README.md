@@ -4,7 +4,7 @@ Start with [`PILOT_STATUS.md`](PILOT_STATUS.md): what is done, what is left befo
 
 ## What Vahoha is
 
-A learning platform for developers. A learner picks a roadmap track and works through ordered layers. Each layer stays locked until a server-graded test is passed. Around that loop: coding challenges, labs, a mentor that knows the learner's weak spots, capstone projects (AI repo review plus a timed defense), and Build Teams that turn merged pull requests into public evidence. Pre-pilot: no real users yet.
+A learning platform for developers. A learner picks a roadmap track and works through ordered layers. Each layer stays locked until a server-graded test is passed. Around that loop: coding challenges, labs, a mentor that knows the learner's weak spots, spoken voice exams graded against rubrics, a judgment simulator, capstone projects (AI repo review plus a timed defense), and Build Teams that turn merged pull requests into public evidence. Pre-pilot: no real users yet.
 
 ## Stack
 
@@ -78,4 +78,5 @@ Founder-skill outputs (skills write here, keep the path) plus the outreach kit.
 | [`challenge-prompts/`](challenge-prompts/) | Prompts and outputs for authoring coding challenges |
 | [`exam-prompts/`](exam-prompts/) | Prompts and outputs for exam question banks, one folder per track group |
 | [`capstone-prompts/`](capstone-prompts/) | Prompts and outputs for generating capstone briefs (`backend/scripts/capstonePrompt.js` writes here) |
+| [`rubric-prompts/`](rubric-prompts/) | Prompts and outputs for voice-exam rubrics (`npm run prompts:rubrics`, `npm run import:rubrics`) |
 | [`brand/`](brand/) | Brand assets, such as the Google sign-in logo |

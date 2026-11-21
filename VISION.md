@@ -1,7 +1,8 @@
 # Vahoha (formerly DevsWebs) — Vision
 
 > Living document. Business/product framing only — build status, phase plans, and architecture detail live in `docs/PILOT_STATUS.md`, `docs/engineering/ARCHITECTURE.md` and `docs/founder/business-model.md`.
-> Last updated: 2026-11-02. Added the roadmap UX fixes from a side-by-side review against roadmap.sh.
+> Last updated: 2026-11-21. AI-era positioning, judgment simulator (stage 1) and the built voice exam added.
+> Earlier (2026-11-02): Added the roadmap UX fixes from a side-by-side review against roadmap.sh.
 > Earlier (2026-10-21): Synced with the code and `docs/PILOT_STATUS.md`: lessons and labs, the pilot-track question, product docs and founder docs added; the deleted build plan is no longer cited. Earlier (2026-10-11): Positioning sharpened by the competitor matrix (`docs/founder/competitor-matrix.md`): the difference is defended, reviewed evidence, not gating or an AI tutor. Traction, XP and Build Teams updated to match the code.
 > Earlier (2026-10-02): corrected against the code; exam-integrity and "no competitor" claims were overstated.
 
@@ -10,6 +11,8 @@
 ## 1. One-liner
 
 Vahoha is a learning platform for developers who want proof, not a completion badge: roadmaps you *earn* through graded exams, a mentor that knows your weak spots, and a capstone and team project you have to **defend**, which become a public record of what you can actually do.
+
+**The AI-era bet (2026-11-17):** AI is shrinking junior coding work. The developers who stay needed are the ones with judgment (system design, debugging, trade-offs, reviewing AI-written code) and proof they understand what they ship. Vahoha is built around four pillars: **teach judgment** (the judgment simulator), **prove understanding** (spoken voice exams and Verified badges), **build to earn** (capstones that become real shipped products) and **new-era roadmaps** (AI engineer, agents, how LLMs work).
 
 **Positioning in one line:** "You finished the courses. Now prove you can build and defend it." Roadmaps, AI tutors and certificates are table stakes in this market (roadmap.sh, Boot.dev, Codecademy all have them). What no competitor found in October 2026 offers is a learner defending their own code under time limits, plus team evidence from merged PRs (`docs/founder/competitor-matrix.md`).
 
@@ -41,6 +44,8 @@ Pick a path → study a layer (curated posts/library) → take the layer exam
    → PASS → next layer unlocks
    → FAIL → weak spots recorded → ask the mentor → targeted review → retry
 ```
+
+On top of the gate: a **voice exam** per layer (explain it out loud, graded against a rubric, earns a Verified badge) and the **judgment simulator** (run a realistic scenario, make calls under pressure, see the consequences, get a debrief).
 
 The mentor is not a bolt-on chat widget — it has live tools into your actual progress, exam history, and weak spots, so its answers are grounded in what you specifically struggled with, not a canned response to your question text alone.
 
@@ -82,7 +87,7 @@ Since 2026-10-10 these are connected, not separate features: capstone and team r
 ## 5. Why now
 
 - **LLMs make a real 1:1 mentor economically possible for the first time.** A tool-use agent with live access to a learner's actual data (not a static prompt) was not affordable or buildable as a solo project even two years ago; API pricing and tool-calling maturity make it viable now.
-- **The credential trust problem is getting worse, not better.** As AI makes it trivially easy to generate a polished resume, project, or cover letter, the market signal that actually differentiates candidates shifts toward *verified, hard-to-fake proof of understanding* — which is what a graded exam record can provide and a GitHub repo or a resume bullet does not. **Caveat (2026-10-02):** today's exam is multiple choice, which an LLM can answer, and it has no proctoring, so it works as practice and self-diagnosis, not as proof. The strongest proof that exists today is the capstone defense: timed, typed questions about the learner's own repository, graded against a rubric. It is AI-reviewed and not proctored, so the honest word is "defended", never "verified" or "hard to fake" (`docs/product/EXAM_INTEGRITY.md`). A spoken teach-back exam is the planned stronger credential.
+- **The credential trust problem is getting worse, not better.** As AI makes it trivially easy to generate a polished resume, project, or cover letter, the market signal that actually differentiates candidates shifts toward *verified, hard-to-fake proof of understanding* — which is what a graded exam record can provide and a GitHub repo or a resume bullet does not. **Caveat (2026-10-02):** today's exam is multiple choice, which an LLM can answer, and it has no proctoring, so it works as practice and self-diagnosis, not as proof. The strongest proof that exists today is the capstone defense: timed, typed questions about the learner's own repository, graded against a rubric. It is AI-reviewed and not proctored, so the honest word is "defended", never "verified" or "hard to fake" (`docs/product/EXAM_INTEGRITY.md`). The spoken voice exam (built 2026-11-17, rubric-graded with quoted evidence) is the stronger credential; it is still AI-graded and not proctored.
 - **Existing free platforms (freeCodeCamp, The Odin Project) have enormous audiences but no accountability layer**, leaving room for a product that adds verification on top of a familiar "structured path" mental model. **The lane is narrower than it looked in September:** roadmap.sh sells AI courses and quizzes, and Boot.dev sells gamified backend learning with an AI tutor and is profitable (see section 9). The open lane is proof, not teaching.
 
 ---
@@ -194,7 +199,7 @@ XP detail is in `docs/product/XP_SYSTEM.md`. Both stay frozen until pilot data s
 
 **XP.** Since 2026-10-10 every source goes through one ledger (`awardXp`, once per user and source): 50 XP for a first layer-exam pass (+25 at 90%+), each challenge's own XP on its first solve, 300 for a capstone, 300 for the first passed defense on a team. Hints still spend XP. Everything beyond that stays frozen. One rule governs every idea: **XP measures effort, never proof.** It can't unlock layers, skip exams, buy attempts or be bought with money, and mastery and verified results stay a separate number. Levels, XP decay, XP in mentor answers and an XP headline on public profiles are rejected. Streaks are the remaining candidate, and only if the pilot shows people don't return for Layer 2. Boot.dev already sells XP in this niche, so it is not a differentiator.
 
-**Voice review and voice exam (plan updated 2026-11-01; a UI prototype on a mock API, no backend).** Voice is the interface; the idea is that the learner explains what they learned and an AI asks follow-ups on what they missed. MCQ tests recognition, explaining tests recall and reasoning, which is what interviews ask for.
+**Voice review and voice exam (voice exam built 2026-11-17: Whisper transcription, rubric grading with evidence points, Verified badges; rubrics seeded for the 15 fullstack paths. The plan below is the original design).** Voice is the interface; the idea is that the learner explains what they learned and an AI asks follow-ups on what they missed. MCQ tests recognition, explaining tests recall and reasoning, which is what interviews ask for.
 
 - **One engine, three uses, in order:** (1) a weekly 2–3 minute voice review, ungraded, built from the weak spots the mentor already tracks, which tests cheaply whether learners want this at all; (2) a graded voice exam per layer, piloted on one layer (Authentication & Security); (3) "defend your own code", explaining choices in their own capstone or PR, the hardest version to fake.
 - **What the learner explains:** one topic when practising, the whole layer in the exam, never single subtopics.
@@ -245,6 +250,21 @@ Most of the problems are wording and layout. The progress data itself is correct
 **How to know it worked (PostHog):** time from picking a track to opening the first lesson; how many opened lessons get finished; how many test starts come from the layer card versus the drawer; and how often Back to the roadmap is followed by a long scroll (a sign the learner got lost).
 
 **Order:** first the quick wins (#1 wording and counts, #2 the test button on the card, #4 Back going to the right layer), then #3 lesson steps and the finish screen, #5 mobile and auto-scroll, and per-track URLs. After that: the sticky progress bar, the minimap and splitting the mentor button.
+
+---
+
+## Judgment simulator (stage 1 built 2026-11-20)
+
+The main way Vahoha teaches judgment: decide, see the consequences, get a debrief. Rules code decides events and consequences so runs are fair and repeatable; the AI only writes event text, grades the spoken "why" and writes the debrief. Standard scenarios stay hand-written so scores can be compared.
+
+1. Core engine plus one backend scenario (built).
+2. Investigation actions that cost time, plus a spoken "why" graded like the voice exam.
+3. Your-project mode on top of Project Map.
+4. Judgment score and growth over runs, shown on the recruiter scorecard.
+5. More paths, Junior/Senior/Lead levels, real postmortems.
+6. Team mode and B2B recruiter accounts.
+
+Next: test stage 1 with about 5 learners and 3 recruiters before stage 2.
 
 ---
 
