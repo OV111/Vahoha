@@ -15,7 +15,7 @@ Checked 2026-10-21 against the code, `docs/PILOT_STATUS.md` and `VISION.md`. "TO
 - **Exam banks:** the frontend bank is written (900 questions, none hand-checked). Backend banks written by agents have length bias: do not import. About 135 questions for the pilot track still need a hand check.
 - **Deployment:** target is Render + Vercel + Atlas. TODO: confirm whether production is live and which URL.
 - **Not safe yet:** email sending (no password reset or magic link for real users), production GitHub OAuth app, Groq paid tier. See `docs/PILOT_STATUS.md` "Left before the first user".
-- **Frozen until pilot data:** voice exam, Arena features, new paths, awards, group chat, employer tiers.
+- **Frozen until pilot data:** Arena features, awards, group chat, employer tiers. The voice exam (2026-11-17) and judgment simulator stage 1 (2026-11-20) were built anyway, by the founder's call.
 
 ## Metrics
 | Metric | Value | Source |

@@ -16,7 +16,7 @@ Updated 2026-10-21. Most of this is already built; the MVP is "what a pilot user
 | **In** | Event funnel and admin view | Built | |
 | **In** | $15 payment test | Built (Polar) | Create the product in Polar |
 | **Out (now)** | Enforcing Free/Pro gates | Built, inert | Turn on only after payers appear |
-| **Out (now)** | Voice exam, Arena extras, new paths, awards, group chat | Built or spec | Frozen (`PILOT_STATUS.md`) |
+| **Out (now)** | Arena extras, awards, group chat | Built or spec | Frozen (`PILOT_STATUS.md`) |
 | **Out (now)** | Employer tiers, company Teams, sponsored projects | Not built | No demand signal |
 | **Later** | Build Teams with real people | Built, never run | After capstone passers exist |
 | **Later** | Recruiter scorecard open to recruiters | Built, closed | After a hiring manager says it matters |

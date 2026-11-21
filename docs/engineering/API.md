@@ -1,10 +1,10 @@
 # API Reference
 
-> **Updated:** 2026-10-21. Built from the route files in `backend/modules/*/routes/` and the mounts in `backend/app.js`.
+> **Updated:** 2026-11-21. Built from the route files in `backend/modules/*/routes/` and the mounts in `backend/app.js`.
 > The generated Swagger UI is at `/api-docs` and covers part of this. Where a request or response shape is not confirmed here it says `TODO: confirm`.
 > See also: [Architecture](ARCHITECTURE.md) · [Security](SECURITY.md) · [Data model](DATA_MODEL.md)
 
-**Contents:** [Conventions](#conventions) · [Auth](#auth) · [Account and profile](#account-and-profile) · [Chat](#chat-http-and-websocket) · [Blogs and library](#blogs-library-and-search) · [Roadmap](#roadmap) · [Exams](#exams) · [Mentor](#mentor) · [Challenges](#coding-challenges) · [Capstone](#capstone) · [Teams](#build-teams) · [Billing](#billing) · [Other](#recruiter-readiness-mastery-onboarding-contact-admin)
+**Contents:** [Conventions](#conventions) · [Auth](#auth) · [Account and profile](#account-and-profile) · [Chat](#chat-http-and-websocket) · [Blogs and library](#blogs-library-and-search) · [Roadmap](#roadmap) · [Exams](#exams) · [Mentor](#mentor) · [Challenges](#coding-challenges) · [Capstone](#capstone) · [Teams](#build-teams) · [Voice exam](#voice-exam) · [Judgment simulator](#judgment-simulator) · [Billing](#billing) · [Other](#recruiter-readiness-mastery-onboarding-contact-admin)
 
 ---
 
@@ -195,6 +195,31 @@ Server emits: `message_history`, `joined_room`, `sended_message`, `message_react
 | POST | `/:teamId/members`, `/:teamId/sync`, `/:teamId/evidence` | Admin | Add member `{ userId, githubLogin }`, sync merged PRs, issue evidence |
 | DELETE | `/:teamId/members/:userId` | Admin | |
 
+## Voice exam
+
+Source: `modules/voice-exam/routes/voiceExam.routes.js`.
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET | `/api/voice-exam/verified` | Bearer | The learner's Verified layers |
+| GET | `/api/voice-exam/layers/:layerId/eligibility` | Bearer | V. Can this layer be taken now (rubric exists, MCQ passed, cooldown) |
+| GET | `/api/voice-exam/layers/:layerId/attempt` | Bearer | V. The live attempt for a layer, to resume |
+| POST | `/api/voice-exam/attempts` | Bearer | V, AI. Start an attempt |
+| POST | `/api/voice-exam/attempts/:id/turns` | Bearer | V, AI. Typed answer |
+| POST | `/api/voice-exam/attempts/:id/audio-turns` | Bearer | V, AI. Spoken answer, transcribed by Whisper (own concurrency gate) |
+| POST | `/api/voice-exam/attempts/:id/abandon` | Bearer | V |
+
+## Judgment simulator
+
+Source: `modules/judgment/routes/judgment.routes.js`.
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET | `/api/judgment/scenarios` | Bearer | Hand-written scenarios (stage 1: one backend scenario) |
+| POST | `/api/judgment/runs` | Bearer | V. Start a run |
+| GET | `/api/judgment/runs/:id` | Bearer | V. Run state, meters and debrief when finished |
+| POST | `/api/judgment/runs/:id/decisions` | Bearer | V, AI. Rules code applies the decision; the AI writes event text and the debrief |
+
 ## Billing
 
 `/api/billing`. Details in [Billing](BILLING.md).
@@ -219,6 +244,6 @@ Server emits: `message_history`, `joined_room`, `sended_message`, `message_react
 | PUT | `/api/onboarding/:tourId/seen` | Bearer | V |
 | POST | `/api/contact` | - | V (name, email, topic, message, website), limiter |
 | GET | `/api/admin/funnel?days=30` | Admin | Signup-to-team-defense funnel |
-| `*` | `/api/voice-review/...` | Bearer | `voice-review` module has routes (`POST /sessions`, `GET /sessions/:id`, `GET /history`), but `TODO: confirm` they are mounted: they are not in `app.js` |
+| `*` | `/api/voice-review/...` | Bearer | `voice-review` module has routes (`POST /sessions`, `GET /sessions/:id`, `GET /history`), but they are not mounted in `app.js` |
 
 `/api-docs` serves Swagger UI with no auth, in production too (see [Security](SECURITY.md)).

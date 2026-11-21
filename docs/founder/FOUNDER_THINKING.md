@@ -100,7 +100,7 @@ Grounded in `docs/founder/facts.md`. Vahoha is in the build stage: the platform 
 ### 5. Validation and experimentation
 - **Today:** nothing to validate yet. The MVP has to work end to end first, so there is something real to put in front of people.
 - **Best next step:** after the MVP works, the cheapest experiments in order: a demo, interviews, a refundable $15 checkout, the first 20 users' funnel (`OUTREACH_KIT.md`).
-- **Future advantage:** a habit of testing before building more. Every frozen feature (voice exam, employer tiers, group chat) stays frozen until a test unfreezes it.
+- **Future advantage:** a habit of testing before building more. Every frozen feature (employer tiers, group chat) stays frozen until a test unfreezes it.
 
 ### 6. Technology and market timing
 - **What changed:** AI can now review code and run a defense at low cost per learner, which was impossible to do for thousands of learners before. At the same time AI-written code makes "I built this" claims weaker.

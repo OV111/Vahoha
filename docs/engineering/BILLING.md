@@ -26,9 +26,9 @@ Three different mechanisms exist. Only the first one is about billing.
 
 What the pricing page promises but the code does not do yet:
 
-- **"Higher daily mentor limit" for Pro:** the mentor cap is 30 for everyone. It is not plan-aware.
+- **"Higher daily mentor limit" for Pro:** plan-aware since 2026-11-16 (30 Free / 300 Pro), but only once `BILLING_ENFORCED=true`; until then everyone gets 30.
 - **"First 2 roadmap layers" for Free and "More test attempts" for Pro:** not enforced anywhere.
-- Features marked "Soon" on the page (voice teach-back, verified profile) are not built, and the page labels them so.
+- Features marked "Soon" on the page are not built, and the page labels them so. The voice exam itself is built (2026-11-17).
 
 ## When would a user be billed for usage? (not built)
 

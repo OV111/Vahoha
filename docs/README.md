@@ -41,6 +41,8 @@ docs/              this folder
 | [`DEPLOYMENT.md`](engineering/DEPLOYMENT.md) | Hosting, env vars, build and deploy, CI, seeding, pre-deploy checklist |
 | [`AI.md`](engineering/AI.md) | Models, prompts, cost controls, guardrails, evals |
 | [`BILLING.md`](engineering/BILLING.md) | Polar billing setup, plan gates and usage limits |
+| [`FRONTEND_ENV.md`](engineering/FRONTEND_ENV.md) | Frontend build variables and the build-time check |
+| [`voice-exam-rubric-review.md`](engineering/voice-exam-rubric-review.md) | Voice exam grading design: rubric-level judge, evidence points, evals |
 | [`adr/`](engineering/adr/) | Architecture decision records (template plus four inferred decisions) |
 
 ## product/ — how features should behave
@@ -53,6 +55,7 @@ docs/              this folder
 | [`FOUNDATIONS_LESSON_GUIDE.md`](product/FOUNDATIONS_LESSON_GUIDE.md) | How to write Foundations lessons |
 | [`ROADMAP_LAYER_AUTHORING.md`](product/ROADMAP_LAYER_AUTHORING.md) | How to author roadmap layers |
 | [`XP_SYSTEM.md`](product/XP_SYSTEM.md) | XP rules, current ledger, ideas with critiques |
+| [`BUILD_TEAMS_SPEC.md`](product/BUILD_TEAMS_SPEC.md) | Build Teams: matching, PR sync, defense, evidence |
 
 ## founder/ — why, for whom, and how to find users
 

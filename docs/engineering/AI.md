@@ -123,7 +123,7 @@ The limiters are in memory (reset on restart, not shared across instances). No u
 
 ## Not built or unused
 
-- **Speech to text:** `transcriptionService.js` is a scaffold that throws "Not implemented". The plan is browser speech recognition for free users.
+- **Mentor speech to text:** `mentor/services/transcriptionService.js` is a scaffold that throws "Not implemented". The voice exam has its own working transcription (Groq Whisper, `voice-exam/services/transcribeService.js`).
 - **Gemini:** `config/gemini.js` exists, but nothing imports it (`TODO: confirm` and remove the package and `GEMINI_API_KEY` if unused).
-- **Voice teach-back exam**, proactive mentor nudges, mentor modes: specs and ideas only (`docs/product/`).
+- Proactive mentor nudges and mentor modes: ideas only. The voice exam (rubric judge, `docs/engineering/voice-exam-rubric-review.md`) and the judgment simulator debrief are built.
 - **Token metering and usage-based billing:** none.

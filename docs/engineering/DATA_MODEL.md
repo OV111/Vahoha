@@ -113,6 +113,14 @@ erDiagram
 | `teams` | `name`, `trackId`, `status` (`forming`, …), `repo`, `members[]`, timestamps. Max 6 members |
 | `team_contributions`, `team_defenses`, `team_ratings`, `team_evidence` | Merged PRs per member, per-member defense, peer ratings, public evidence snapshot (`publicId`) |
 
+### Voice exam and judgment
+
+| Collection | Notes |
+|---|---|
+| `voice_exam_rubrics` | One per layer (unique `layer`). Imported with `npm run import:rubrics`; per-criterion grading only when the rubric has `criteriaReviewed: true` |
+| `voice_exam_attempts` | `userId`, `layer`, turns with transcripts (audio is deleted after transcription), grade, `startedAt`, `finishedAt`. Deleted with the account |
+| `judgment_runs` | One run of a scenario per learner: decisions, meters, events and the debrief |
+
 ### Billing and analytics
 
 | Collection | Key fields | Notes |

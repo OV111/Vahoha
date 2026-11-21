@@ -134,9 +134,8 @@ Open: walk a failed test on production to check the copy and next action; decide
 | 11 | Production env for capstones | You | Separate production GitHub OAuth app (prod callback URL) with `GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET`, plus `GITHUB_TOKEN` on Render. No `GROQ_TPM_LIMIT` in production; move Groq to a paid tier first. Regenerate the dev client secret (it was pasted in a chat) |
 | 12 | Try Project Map for real on production | You | Needs `GITHUB_TOKEN` (the repo scan uses it; without one GitHub allows 60 requests an hour) and a Groq key. The first start creates 5 indexes on Atlas (`system_maps` x4, `system_map_checks`). Scan a real repo with each lens, run the understanding check, share a map and open the link logged out. Everything AI-related has only been tested with mocks |
 | 13 | Before the next deploy, check the production settings against the new startup check | You | On Render: `JWT_Secret` and `JWT_REFRESH_SECRET` must differ, `FRONTEND_URL` must be an https URL with no trailing slash or path. On Vercel: `VITE_GOOGLE_CLIENT_ID` is only in `.env.development`, so set it in the project settings or Google sign-in breaks. A failed boot never replaces the running service (Render keeps the old one) |
-| 14 | **Fix mobile logouts: move the API to `api.vahoha.com`** | You, then me | Confirmed on an iPhone in production: the login cookie is third-party (site on vahoha.com, API on onrender.com), and iOS blocks those, so a reload logs the user out. Render custom domain + DNS CNAME first, verify `/healthz`, then change `VITE_API_BASE_URL` and `VITE_WS_URL`, the GitHub OAuth callback and the Polar webhook. Order matters: `docs/engineering/API_DOMAIN_MIGRATION.md` |
-| 15 | Seed the rewritten challenges | You | `npm run seed:challenges`, so the 21 api-dev / node-dev / javascript challenges rewritten on 2026-11-04 reach Atlas |
-| 16 | Run Build Teams once end to end on a test repo | You | See the Build Teams decision below |
+| 14 | Seed the rewritten challenges | You | `npm run seed:challenges`, so the 21 api-dev / node-dev / javascript challenges rewritten on 2026-11-04 reach Atlas |
+| 15 | Run Build Teams once end to end on a test repo | You | See the Build Teams decision below |
 
 Open question: which track is the pilot track (backend, MERN or frontend)?
 
@@ -151,12 +150,12 @@ Open question: which track is the pilot track (backend, MERN or frontend)?
 - Fix the top 3 problems seen in demos.
 - Save lesson progress server-side (lesson stage 3 in `product/LEARNING_SYSTEM.md`).
 - More MERN lessons and labs for layers 1-3 (today: 2 lessons, 1 lab).
-- Enforce Free/Pro gates only if payers appear; make the mentor limit plan-aware.
+- Turn on `BILLING_ENFORCED` only if payers appear (plan caps for mentor and capstone are already wired).
 - Open security items M4, M5, M7 and the remaining Lows.
 
 ## Later: only if the pilot supports it
 
-Voice exam backend (after a hand-run oral exam test), more XP changes, blog SEO prerender, more tracks and capstones, employer-side features.
+Judgment simulator stage 2, voice-exam rubrics beyond fullstack, more XP changes, blog SEO prerender, more tracks and capstones, employer-side features.
 
 **Not doing:** webcam proctoring, XP that unlocks layers or buys retries, new paths or awards before data.
 
@@ -194,4 +193,4 @@ Against the "no new features until pilot data" rule and the validate-idea verdic
 
 ## Frozen until pilot data says otherwise
 
-Voice exam, Arena features, new paths, awards, further XP changes (`docs/product/XP_SYSTEM.md`; the founder unfroze two on 2026-10-10: challenge XP through the ledger, and 300 XP per passed team defense), group chat, further Teams work beyond the MVP above, and employer tiers.
+Arena features, awards, further XP changes (`docs/product/XP_SYSTEM.md`; the founder unfroze two on 2026-10-10: challenge XP through the ledger, and 300 XP per passed team defense), group chat, further Teams work beyond the MVP above, and employer tiers.
