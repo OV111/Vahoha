@@ -1,19 +1,24 @@
 <div align="center">
 
+<img src="public/favicon-192.png" alt="Vahoha logo" width="96">
+
 # Vahoha
 
-**Developer learning that won't let you fake it.**
+### Developer learning that won't let you fake it.
 
-Roadmaps you have to *earn*: server-graded exams gate every layer, spoken exams prove you understood it, and a judgment simulator trains the calls AI can't make for you.
+Earn every roadmap layer by passing a server-graded exam, prove you understood it in a spoken exam,<br>
+and train the engineering calls AI can't make for you in the judgment simulator.
 
-[vahoha.com](https://vahoha.com) · [@vahoha_](https://x.com/vahoha_)
+<br>
 
-![React](https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB)
-![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite_7-646CFF?style=flat-square&logo=vite&logoColor=white)
+[![Website](https://img.shields.io/badge/vahoha.com-7C3AED?style=for-the-badge&logo=googlechrome&logoColor=white)](https://vahoha.com)
+[![X](https://img.shields.io/badge/@vahoha__-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/vahoha_)
+
+![Status](https://img.shields.io/badge/status-pre--pilot-F59E0B?style=flat-square)
+![Built](https://img.shields.io/badge/built-solo-7C3AED?style=flat-square)
+![License](https://img.shields.io/badge/license-proprietary-555555?style=flat-square)
+
+[What it is](#what-is-vahoha) · [How it works](#how-it-works) · [Tech stack](#tech-stack) · [Features](#features) · [Status](#status)
 
 </div>
 
