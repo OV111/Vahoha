@@ -162,8 +162,11 @@ const BlogCard = ({ card }) => {
     // The whole card opens the post: the title link stretches over it
     // (after:absolute after:inset-0), and the action buttons sit above that
     // layer with z-10 so they stay clickable on their own.
-    <article className="group relative flex h-full flex-col sm:min-h-[478px] overflow-hidden rounded-2xl border border-neutral-200 bg-white transition-colors hover:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-neutral-700">
-      <div className="relative h-44 shrink-0 sm:h-56 overflow-hidden bg-neutral-100 dark:bg-neutral-900">
+    // No overflow-hidden here (the image clips its own corners), so an open
+    // comments/share box is never cut off; and while one is open the card
+    // rises above its neighbours so their pictures can't cover it.
+    <article className={`group relative flex h-full flex-col sm:min-h-[478px] rounded-2xl ${shareOpen || commentOpen ? "z-30" : ""} border border-neutral-200 bg-white transition-colors hover:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-neutral-700`}>
+      <div className="relative h-44 shrink-0 overflow-hidden rounded-t-[15px] bg-neutral-100 sm:h-56 dark:bg-neutral-900">
         {resolvedCover && (
           <img
             src={resolvedCover}
@@ -271,7 +274,7 @@ const BlogCard = ({ card }) => {
             {likesCount > 0 && <span className="text-xs">{likesCount}</span>}
           </button>
 
-          <div className="z-10 md:relative">
+          <div className="z-20 md:relative">
             <button
               type="button"
               onClick={() => {
@@ -294,7 +297,7 @@ const BlogCard = ({ card }) => {
             )}
           </div>
 
-          <div className="z-10 md:relative">
+          <div className="z-20 md:relative">
             <button
               type="button"
               onClick={() => {
