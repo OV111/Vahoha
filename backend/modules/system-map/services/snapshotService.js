@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { MAPS as COLLECTION } from "./systemMapData.js";
+import { upcastGraph } from "../lib/graphVersions.js";
 const MAX_SHARED_MAPS = 20;
 
 /*
@@ -29,7 +30,8 @@ export async function getTeamMapSnapshot(db, teamId) {
     .collection(COLLECTION)
     .findOne({ ownerType: "team", ownerId: String(teamId) }, { sort: { updatedAt: -1 } });
   if (!doc?.graph) return null;
-  return { title: doc.title, lens: doc.graph.lens ?? "software", graph: publicGraph(doc.graph), updatedAt: doc.updatedAt };
+  const graph = upcastGraph(doc.graph);
+  return { title: doc.title, lens: graph.lens ?? "software", graph: publicGraph(graph), updatedAt: doc.updatedAt };
 }
 
 /**

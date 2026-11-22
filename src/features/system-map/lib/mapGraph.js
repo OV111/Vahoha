@@ -14,8 +14,7 @@
 
 import { DEFAULT_LENS, isLens } from "./lenses";
 import { isKind, kindInfo } from "./nodeKinds";
-
-export const GRAPH_VERSION = 1;
+import { GRAPH_VERSION, upcastGraph } from "./graphVersions";
 export const MAX_NODES = 80;
 export const MAX_EVIDENCE = 5;
 export const MAX_NOTE = 1000; // mirrors MAX_NOTE in the backend's systemMap.schemas.js
@@ -50,12 +49,13 @@ export function toGraph(nodes, edges, repo = null, lens = DEFAULT_LENS) {
       return {
         id: n.id,
         kind: n.data.kind,
-        title: n.data.title,
-        sub: n.data.sub,
+        // Trimmed like the server stores them, so a trailing space mid-typing never reads as a change.
+        title: (n.data.title ?? "").trim(),
+        sub: (n.data.sub ?? "").trim(),
         x: Math.round(n.position.x),
         y: Math.round(n.position.y),
         ...(evidence.length ? { evidence } : {}),
-        ...(n.data.note?.trim() ? { note: n.data.note } : {}),
+        ...(n.data.note?.trim() ? { note: n.data.note.trim() } : {}),
       };
     }),
     edges: edges.map((e) => ({
@@ -66,7 +66,7 @@ export function toGraph(nodes, edges, repo = null, lens = DEFAULT_LENS) {
       // re-picks the sides it draws from where the parts are (lib/edgeRouting.js).
       sourceHandle: ["r", "b"].includes(e.sourceHandle) ? e.sourceHandle : "r",
       targetHandle: ["l", "t"].includes(e.targetHandle) ? e.targetHandle : "l",
-      label: typeof e.label === "string" ? e.label : "",
+      label: typeof e.label === "string" ? e.label.trim() : "",
     })),
     ...(scanned ? { repo: scanned } : {}),
     ...(isLens(lens) && lens !== DEFAULT_LENS ? { lens } : {}),
@@ -80,8 +80,9 @@ const text = (value, max) => (typeof value === "string" ? value.slice(0, max) : 
  * Defensive on purpose: the input is a file the learner imported or text read
  * back from localStorage, so nothing in it is trusted.
  */
-export function fromGraph(graph) {
-  if (!graph || graph.v !== GRAPH_VERSION || !Array.isArray(graph.nodes) || !Array.isArray(graph.edges)) return null;
+export function fromGraph(input) {
+  const graph = upcastGraph(input);
+  if (!graph || !Array.isArray(graph.nodes) || !Array.isArray(graph.edges)) return null;
 
   const nodes = graph.nodes.slice(0, MAX_NODES).flatMap((n) => {
     if (!n || typeof n.id !== "string" || !n.id) return [];

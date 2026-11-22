@@ -8,6 +8,7 @@ import { validate } from "../../../middleware/validate.js";
 import {
   createBodySchema,
   mapParamSchema,
+  opsBodySchema,
   publicParamSchema,
   scanBodySchema,
   sharingBodySchema,
@@ -22,6 +23,7 @@ import {
   getOwnerMap,
   getPublicMap,
   listMine,
+  saveOps,
   scanRepo,
   setSharing,
   updateMap,
@@ -70,6 +72,9 @@ router.get("/:id", authenticate, validate({ params: mapParamSchema }), getMap);
 
 // PUT /api/system-maps/:id: save; 409 when `revision` is out of date
 router.put("/:id", authenticate, mapWriteLimiter, validate({ params: mapParamSchema, body: updateBodySchema }), updateMap);
+
+// PATCH /api/system-maps/:id/ops: save edits; merged onto a newer revision when nobody touched the same things, else 409
+router.patch("/:id/ops", authenticate, mapWriteLimiter, validate({ params: mapParamSchema, body: opsBodySchema }), saveOps);
 
 // PUT /api/system-maps/:id/sharing: turn the public link on (new link) or off
 router.put("/:id/sharing", authenticate, mapWriteLimiter, validate({ params: mapParamSchema, body: sharingBodySchema }), setSharing);

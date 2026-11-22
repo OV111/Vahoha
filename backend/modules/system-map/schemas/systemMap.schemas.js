@@ -55,8 +55,15 @@ const edgeSchema = z.object({
 
 const hasUnique = (items) => new Set(items.map((i) => i.id)).size === items.length;
 
+// The repo commit the evidence paths were read from (stage 4 scan).
+const repoSchema = z.object({
+  fullName: z.string().regex(/^[A-Za-z0-9-]{1,39}\/[A-Za-z0-9._-]{1,100}$/, "Invalid repo"),
+  sha: z.string().regex(/^[a-f0-9]{7,40}$/, "Invalid commit"),
+});
+
 // The saved graph, exactly as the editor's toGraph() produces it. Wires must
 // point at parts that exist, so a stored map can never render with a dangling wire.
+// `v` is GRAPH_VERSION in lib/graphVersions.js.
 export const graphSchema = z
   .object({
     v: z.literal(1),
@@ -64,13 +71,7 @@ export const graphSchema = z
     edges: z.array(edgeSchema).max(MAX_EDGES),
     // Which vocabulary the map is drawn in (lib/lenses.js). A map without one is a software map.
     lens: z.enum(LENSES).optional(),
-    // The repo commit the evidence paths were read from (stage 4 scan).
-    repo: z
-      .object({
-        fullName: z.string().regex(/^[A-Za-z0-9-]{1,39}\/[A-Za-z0-9._-]{1,100}$/, "Invalid repo"),
-        sha: z.string().regex(/^[a-f0-9]{7,40}$/, "Invalid commit"),
-      })
-      .optional(),
+    repo: repoSchema.optional(),
   })
   .refine((g) => hasUnique(g.nodes), { message: "Part ids must be unique", path: ["nodes"] })
   .refine((g) => hasUnique(g.edges), { message: "Wire ids must be unique", path: ["edges"] })
@@ -109,3 +110,41 @@ export const updateBodySchema = z.object({
   graph: graphSchema,
   revision: z.number().int().min(1),
 });
+
+// Enough to replace a full map (80 parts and 200 wires out, the same back in).
+export const MAX_OPS = 600;
+
+// One edit (lib/graphOps.js). Each op's fields are checked here; the graph they
+// produce is checked again with graphSchema after they are applied.
+const opSchema = z.discriminatedUnion("op", [
+  z.object({ op: z.literal("addNode"), node: nodeSchema }),
+  z.object({ op: z.literal("removeNode"), id: localId }),
+  z.object({
+    op: z.literal("updateNode"),
+    id: localId,
+    set: nodeSchema.omit({ id: true }).partial().strict(),
+    unset: z.array(z.enum(["evidence", "note"])).max(2).optional(),
+  }),
+  z.object({ op: z.literal("addEdge"), edge: edgeSchema }),
+  z.object({ op: z.literal("removeEdge"), id: localId }),
+  z.object({ op: z.literal("updateEdge"), id: localId, set: edgeSchema.omit({ id: true }).partial().strict() }),
+  z.object({
+    op: z.literal("setMeta"),
+    set: z.object({ lens: z.enum(LENSES), repo: repoSchema }).partial().strict(),
+    unset: z.array(z.enum(["lens", "repo"])).max(2).optional(),
+  }),
+]);
+
+// Saves that jump a long way. The map as it was just before is kept as a version.
+export const SAVE_REASONS = ["scan", "import", "reset", "restore"];
+
+// PATCH /api/system-maps/:id/ops. `revision` is the version the ops were diffed
+// against: when it is old, the server merges them unless someone touched the same thing.
+export const opsBodySchema = z.object({
+  revision: z.number().int().min(1),
+  ops: z.array(opSchema).min(1).max(MAX_OPS),
+  reason: z.enum(SAVE_REASONS).optional(),
+});
+
+// GET /api/system-maps/:id/versions/:versionId
+export const versionParamSchema = z.object({ id: objectId, versionId: objectId });

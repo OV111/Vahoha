@@ -6,6 +6,7 @@ import { gradeOutputSchema, questionsOutputSchema } from "../schemas/understandi
 
 import { CHECKS, MAPS } from "./systemMapData.js";
 import { fail } from "../../../utils/httpErrors.js";
+import { upcastGraph } from "../lib/graphVersions.js";
 
 // Same model family as capstone review and teach-back grading.
 const MODEL = "openai/gpt-oss-120b";
@@ -69,11 +70,12 @@ const publicQuestion = (q) => ({ id: q.id, q: q.q, focus: q.focus });
 async function createQuestions(db, mapId, userId) {
   const map = await db.collection(MAPS).findOne({ _id: new ObjectId(mapId), userId }, { projection: { graph: 1 } });
   if (!map) fail(404, "Map not found");
-  if (map.graph.nodes.length < 2 || map.graph.edges.length < 1) fail(422, "Add at least two parts and a wire first.");
+  const graph = upcastGraph(map.graph);
+  if (graph.nodes.length < 2 || graph.edges.length < 1) fail(422, "Add at least two parts and a wire first.");
 
-  const lens = resolveLens(map.graph.lens); // maps saved before lenses existed have none
-  const { questions: raw } = await complete(questionMessages(map.graph, lens), QUESTIONS_JSON_SCHEMA, "map_questions", questionsOutputSchema);
-  const partIds = new Set(map.graph.nodes.map((n) => n.id));
+  const lens = resolveLens(graph.lens); // maps saved before lenses existed have none
+  const { questions: raw } = await complete(questionMessages(graph, lens), QUESTIONS_JSON_SCHEMA, "map_questions", questionsOutputSchema);
+  const partIds = new Set(graph.nodes.map((n) => n.id));
   const questions = raw.map((q, i) => ({
     id: `q${i + 1}`,
     q: q.q,
@@ -127,8 +129,9 @@ async function submitAnswers(db, checkId, userId, answers) {
   try {
     const map = await db.collection(MAPS).findOne({ _id: check.mapId, userId }, { projection: { graph: 1 } });
     if (!map) throw modelFailure(new Error("map deleted"));
-    const lens = resolveLens(check.lens ?? map.graph.lens);
-    graded = await complete(gradeMessages(map.graph, check.questions, answers, lens), GRADE_JSON_SCHEMA, "map_grading", gradeOutputSchema);
+    const graph = upcastGraph(map.graph);
+    const lens = resolveLens(check.lens ?? graph.lens);
+    graded = await complete(gradeMessages(graph, check.questions, answers, lens), GRADE_JSON_SCHEMA, "map_grading", gradeOutputSchema);
     if (!ids.every((id) => graded.results.some((r) => r.id === id))) throw modelFailure(new Error("missing results"));
   } catch (err) {
     await checks.updateOne({ _id, gradingAt: now }, { $unset: { gradingAt: "" } });

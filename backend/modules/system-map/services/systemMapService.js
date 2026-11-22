@@ -2,7 +2,11 @@ import { randomBytes } from "node:crypto";
 import { ObjectId } from "mongodb";
 import { canAccessMap, isEligibleForOwner, ownerTypeOf } from "./ownerAccess.js";
 import { deleteMapComments } from "./commentService.js";
-import { MAPS as COLLECTION } from "./systemMapData.js";
+import { keepVersionBefore } from "./versionService.js";
+import { EDITS, MAPS as COLLECTION, VERSIONS } from "./systemMapData.js";
+import { EVERYTHING, OpError, applyOps, overlaps, touchedKeys } from "../lib/graphOps.js";
+import { upcastGraph } from "../lib/graphVersions.js";
+import { graphSchema } from "../schemas/systemMap.schemas.js";
 import { fail } from "../../../utils/httpErrors.js";
 
 /** Per-learner cap on personal maps, so a script can't fill the collection. Capstone and team maps don't count. */
@@ -14,8 +18,8 @@ const PERSONAL = { $in: [null, "personal"] };
 /*
  * system_maps: one document per diagram.
  *   { userId, ownerType, ownerId, title, graph: { v, nodes, edges }, revision, shared, publicId,
- *     drift, createdAt, updatedAt }
- * userId is the creator. ownerType is "personal" (ownerId null), "capstone"
+ *     drift, createdAt, updatedAt, updatedBy }
+ * userId is the creator, updatedBy the last one to save. ownerType is "personal" (ownerId null), "capstone"
  * (ownerId = track id, one per learner and track) or "team" (ownerId = team id,
  * one per team, open to every active member: see ownerAccess.js). Maps from
  * before stage 5 have neither field and count as personal.
@@ -27,7 +31,7 @@ const PERSONAL = { $in: [null, "personal"] };
 const toClient = (doc) => ({
   id: doc._id.toString(),
   title: doc.title,
-  graph: doc.graph,
+  graph: upcastGraph(doc.graph),
   ownerType: ownerTypeOf(doc),
   ownerId: doc.ownerId ?? null,
   revision: doc.revision,
@@ -91,28 +95,98 @@ export async function createMapService(db, userId, { title, graph }) {
   return toClient({ ...doc, _id: insertedId });
 }
 
+const conflict = (doc) => fail(409, "This map was changed somewhere else.", { code: "conflict", data: toClient(doc) });
+
 /**
- * Saves a map if the client's `revision` is still current. 404 when it isn't
+ * Writes `graph` over `current` if nobody saved in between (null if someone
+ * did). Keeps the old state as a version when this save starts a session or is
+ * a big jump, and logs what the save touched for later merges.
+ */
+async function commitGraph(db, current, graph, { userId, keys, reason, title }) {
+  await keepVersionBefore(db, current, reason);
+  const updated = await db.collection(COLLECTION).findOneAndUpdate(
+    { _id: current._id, revision: current.revision },
+    { $set: { graph, ...(title ? { title } : {}), updatedAt: new Date(), updatedBy: userId }, $inc: { revision: 1 } },
+    { returnDocument: "after" },
+  );
+  if (updated) {
+    await db.collection(EDITS).insertOne({ mapId: updated._id, revision: updated.revision, userId, keys, createdAt: new Date() });
+  }
+  return updated;
+}
+
+/**
+ * Saves a whole map if the client's `revision` is still current. 404 when it isn't
  * this user's; 409 { code: "conflict", data } with the server's version when
  * the revision is old. Team maps are saved by any active member, so two
- * members can conflict too.
+ * members can conflict too. The editor saves with applyOpsService instead.
  */
 export async function updateMapService(db, id, userId, { title, graph, revision }) {
-  const maps = db.collection(COLLECTION);
   const current = await findAccessible(db, id, userId);
   if (!current) fail(404, NOT_FOUND);
 
-  const updated = await maps.findOneAndUpdate(
-    { _id: current._id, revision },
-    { $set: { graph, ...(title ? { title } : {}), updatedAt: new Date() }, $inc: { revision: 1 } },
-    { returnDocument: "after" },
-  );
-  if (updated) return toClient(updated);
+  if (current.revision === revision) {
+    const updated = await commitGraph(db, current, graph, { userId, keys: [EVERYTHING], title });
+    if (updated) return toClient(updated);
+  }
 
   // The client's revision is old, or someone saved between our read and the update.
-  const latest = await maps.findOne({ _id: current._id });
+  const latest = await db.collection(COLLECTION).findOne({ _id: current._id });
   if (!latest) fail(404, NOT_FOUND);
-  fail(409, "This map was changed somewhere else.", { code: "conflict", data: toClient(latest) });
+  conflict(latest);
+}
+
+/**
+ * Whether ops diffed against `base` can go on top of `current` (a later
+ * revision): every save in between is logged, and none touched what these ops touch.
+ */
+async function canMerge(db, current, base, mine) {
+  if (base > current.revision) return false;
+  const between = await db
+    .collection(EDITS)
+    .find({ mapId: current._id, revision: { $gt: base, $lte: current.revision } }, { projection: { keys: 1 } })
+    .toArray();
+  // A missing entry (older than the log keeps, or saved before it existed) means we can't tell.
+  if (between.length !== current.revision - base) return false;
+  return !overlaps(mine, between.flatMap((e) => e.keys));
+}
+
+// Retries when another save lands between our read and our write.
+const MAX_ATTEMPTS = 3;
+
+/**
+ * Saves a map as edits (lib/graphOps.js) made against `revision`. When that
+ * revision is old, the edits are merged onto the latest map if nobody touched
+ * the same parts, wires or fields since; otherwise 409 { code: "conflict", data }.
+ * The reply is the whole merged map, so the editor can pick up teammates' edits.
+ */
+export async function applyOpsService(db, id, userId, { revision, ops, reason }) {
+  const mine = touchedKeys(ops);
+  let current;
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+    current = await findAccessible(db, id, userId);
+    if (!current) fail(404, NOT_FOUND);
+    const stale = current.revision !== revision;
+    if (stale && !(await canMerge(db, current, revision, mine))) conflict(current);
+
+    let parsed = null;
+    try {
+      parsed = graphSchema.safeParse(applyOps(upcastGraph(current.graph), ops));
+    } catch (err) {
+      if (!(err instanceof OpError)) throw err;
+    }
+    // On a stale base this is a real clash (a wire to a part someone removed); on a current one, a bad request.
+    if (!parsed?.success) {
+      if (stale) conflict(current);
+      fail(400, "These changes don't fit the map.");
+    }
+
+    const updated = await commitGraph(db, current, parsed.data, { userId, keys: mine, reason });
+    if (updated) return toClient(updated);
+  }
+  const latest = await db.collection(COLLECTION).findOne({ _id: current._id });
+  if (!latest) fail(404, NOT_FOUND);
+  conflict(latest);
 }
 
 /** A team map can only be deleted by the member who created it: the others rely on it. 404 otherwise. */
@@ -121,7 +195,11 @@ export async function deleteMapService(db, id, userId) {
   if (!doc || !doc.userId.equals(userId)) fail(404, NOT_FOUND);
   const { deletedCount } = await db.collection(COLLECTION).deleteOne({ _id: doc._id });
   if (deletedCount !== 1) fail(404, NOT_FOUND);
-  await deleteMapComments(db, doc._id);
+  await Promise.all([
+    deleteMapComments(db, doc._id),
+    db.collection(VERSIONS).deleteMany({ mapId: doc._id }),
+    db.collection(EDITS).deleteMany({ mapId: doc._id }),
+  ]);
   return true;
 }
 
@@ -203,7 +281,7 @@ export async function getPublicMapService(db, publicId) {
 
   return {
     title: doc.title,
-    graph: doc.graph,
+    graph: upcastGraph(doc.graph),
     updatedAt: doc.updatedAt,
     owner: { username: user?.username ?? null, name: displayName(user) ?? null, avatar: stats?.profileImage ?? null },
   };

@@ -1,5 +1,6 @@
 import { scanRepoService } from "../services/scanService.js";
 import {
+  applyOpsService,
   createMapService,
   createOwnerMapService,
   deleteMapService,
@@ -19,6 +20,7 @@ export const listMine = respond((req) => listMapsService(dbOf(req), me(req)));
 export const getMap = respond((req) => getMapService(dbOf(req), req.params.id, me(req)));
 export const createMap = respond((req) => createMapService(dbOf(req), me(req), req.body), created);
 export const updateMap = respond((req) => updateMapService(dbOf(req), req.params.id, me(req), req.body));
+export const saveOps = respond((req) => applyOpsService(dbOf(req), req.params.id, me(req), req.body));
 export const deleteMap = respond(async (req) => {
   await deleteMapService(dbOf(req), req.params.id, me(req));
 });

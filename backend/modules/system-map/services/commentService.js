@@ -33,7 +33,7 @@ const teamMapOrFail = (map) => {
   return map;
 };
 
-const authorName = (u) => {
+export const authorName = (u) => {
   if (!u) return "Former member";
   const full = [u.firstName, u.lastName].filter(Boolean).join(" ").trim();
   return full || u.username || "Team member";

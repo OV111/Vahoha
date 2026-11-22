@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import { findHints } from "../lib/driftRules.js";
 import { canAccessMap } from "./ownerAccess.js";
 import { MAPS as COLLECTION } from "./systemMapData.js";
+import { upcastGraph } from "../lib/graphVersions.js";
 
 /** Newest hints win when a map has been ignored for a long time. */
 export const MAX_DRIFT_HINTS = 20;
@@ -24,7 +25,7 @@ export async function flagMapDrift(db, teamId, contributions) {
   let flagged = 0;
 
   for (const doc of docs) {
-    const incoming = contributions.flatMap((c) => findHints(c.changedFiles, doc.graph).map((h) => ({ prNumber: c.prNumber, ...h })));
+    const incoming = contributions.flatMap((c) => findHints(c.changedFiles, upcastGraph(doc.graph)).map((h) => ({ prNumber: c.prNumber, ...h })));
     const existing = doc.drift?.hints ?? [];
     const seen = new Set(existing.map(hintKey));
     const fresh = incoming.filter((h) => !seen.has(hintKey(h)) && seen.add(hintKey(h)));

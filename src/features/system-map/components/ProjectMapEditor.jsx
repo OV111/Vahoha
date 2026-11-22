@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { addEdge, ReactFlowProvider, reconnectEdge, useEdgesState, useNodesState, useReactFlow } from "@xyflow/react";
-import { Redo2, RotateCcw, ScanSearch, Undo2, Upload } from "lucide-react";
+import { History, Redo2, RotateCcw, ScanSearch, Undo2, Upload } from "lucide-react";
 import SystemCanvas from "./SystemCanvas";
 import NodePalette, { DRAG_TYPE } from "./NodePalette";
 import Inspector from "./Inspector";
@@ -11,13 +11,15 @@ import UnderstandingCheck from "./UnderstandingCheck";
 import DriftBanner from "./DriftBanner";
 import ExportMenu from "./ExportMenu";
 import PartComments from "./PartComments";
+import VersionHistory from "./VersionHistory";
 import useMapComments from "../hooks/useMapComments";
-import { saveMap } from "../systemMapApi";
+import { saveOps } from "../systemMapApi";
 import { EXAMPLE_GRAPH, MAX_NODES, freeSpot, fromGraph, toGraph, withArrow } from "../lib/mapGraph";
 import { isKind, kindInfo } from "../lib/nodeKinds";
 import { fitOptions } from "../lib/viewport";
 import { applyScan } from "../lib/applyScan";
 import { canRedo, canUndo, record, redo, startHistory, undo } from "../lib/history";
+import { applyOpsLenient, diffGraph } from "../lib/graphOps";
 import { toMermaid } from "../lib/mermaid";
 import { downloadUrl, renderMapImage } from "../lib/exportImage";
 
@@ -62,49 +64,92 @@ function Editor({ initial }) {
   const copy = OWNER_COPY[ownerType] ?? OWNER_COPY.personal;
   const [saveState, setSaveState] = useState("saved");
   const remoteRef = useRef(initial.remote);
-  const lastSavedRef = useRef(JSON.stringify(toGraph(initial.graph.nodes, initial.graph.edges, initial.graph.repo, initial.graph.lens)));
+  const [initialSaved] = useState(() => toGraph(initial.graph.nodes, initial.graph.edges, initial.graph.repo, initial.graph.lens));
+  const savedRef = useRef(initialSaved); // the map as the server has it: the base each save is diffed against
+  const reasonRef = useRef(null); // set by a big jump (scan, import, reset, restore), sent with the next save
+  const liveRef = useRef({ nodes, edges, repo, lens }); // the canvas right now, for merging edits that arrive after an await
   const queueRef = useRef(Promise.resolve()); // saves run one at a time, so each sees the latest revision
   const stoppedRef = useRef(false); // set after a conflict: saving again would overwrite the other copy
   const [notice, setNotice] = useState(null);
   const [info, setInfo] = useState(null); // a short success message, e.g. after copying Mermaid
   const [exporting, setExporting] = useState(false);
-  const historyRef = useRef(startHistory(lastSavedRef.current));
+  const historyRef = useRef(startHistory(JSON.stringify(initialSaved)));
   const [history, setHistory] = useState({ undo: false, redo: false }); // what the buttons can do
   // Parts on the server's copy: comments can only go on those.
   const [savedIds, setSavedIds] = useState(() => new Set(initial.graph.nodes.map((n) => n.id)));
   const [confirmReset, setConfirmReset] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const { screenToFlowPosition, fitView } = useReactFlow();
   const canvasRef = useRef(null);
   const fileRef = useRef(null);
 
   useEffect(() => {
+    liveRef.current = { nodes, edges, repo, lens };
+  });
+
+  useEffect(() => {
+    // Puts edits saved elsewhere (another tab, a teammate) onto the canvas.
+    // Parts and wires they didn't touch keep their React Flow objects, so a drag
+    // or a selection in progress isn't interrupted.
+    const mergeIn = (theirs) => {
+      const live = liveRef.current;
+      const merged = fromGraph(applyOpsLenient(toGraph(live.nodes, live.edges, live.repo, live.lens), theirs));
+      if (!merged) return;
+      const touched = new Set(theirs.map((op) => op.id ?? (op.node ?? op.edge)?.id));
+      const keep = (list, mine) => {
+        const byId = new Map(mine.map((item) => [item.id, item]));
+        return list.map((item) =>
+          touched.has(item.id) || !byId.has(item.id) ? { ...item, selected: byId.get(item.id)?.selected ?? false } : byId.get(item.id),
+        );
+      };
+      setNodes(keep(merged.nodes, live.nodes));
+      setEdges(keep(merged.edges, live.edges));
+      setRepo(merged.repo ?? null);
+      setLens(merged.lens);
+      setInfo(isTeam ? "A teammate's changes were added to your map." : "Changes from another tab were added to your map.");
+    };
+
     const id = setTimeout(() => {
       const graph = toGraph(nodes, edges, repo, lens);
-      const json = JSON.stringify(graph);
       // Selecting or measuring a part changes `nodes` but not the map.
-      if (stoppedRef.current || json === lastSavedRef.current) return;
+      if (stoppedRef.current || diffGraph(savedRef.current, graph).length === 0) return;
 
       setSaveState("saving");
       queueRef.current = queueRef.current.then(async () => {
-        if (stoppedRef.current) return;
+        // Diffed here, not above: an earlier save in the queue may have moved the base.
+        const ops = diffGraph(savedRef.current, graph);
+        if (stoppedRef.current || ops.length === 0) {
+          if (!stoppedRef.current) setSaveState("saved");
+          return;
+        }
+        const reason = reasonRef.current;
+        reasonRef.current = null;
+        const revision = remoteRef.current.revision;
         try {
-          const result = await saveMap(remoteRef.current.id, { graph, revision: remoteRef.current.revision });
+          const result = await saveOps(remoteRef.current.id, { revision, ops, reason });
           if (result.conflict) {
             stoppedRef.current = true;
             setSaveState("conflict");
             return;
           }
           remoteRef.current = { ...remoteRef.current, revision: result.map.revision };
-          lastSavedRef.current = json;
-          setSavedIds(new Set(graph.nodes.map((n) => n.id)));
+          // More than one step up: someone else's save landed first and the server merged ours onto it.
+          if (result.map.revision > revision + 1) {
+            savedRef.current = result.map.graph;
+            mergeIn(diffGraph(graph, result.map.graph));
+          } else {
+            savedRef.current = graph;
+          }
+          setSavedIds(new Set(savedRef.current.nodes.map((n) => n.id)));
           setSaveState("saved");
         } catch {
+          if (reason) reasonRef.current = reason;
           setSaveState("error");
         }
       });
     }, SAVE_DEBOUNCE_MS);
     return () => clearTimeout(id);
-  }, [nodes, edges, repo, lens]);
+  }, [nodes, edges, repo, lens, isTeam, setNodes, setEdges]);
 
   // One undo step per finished change: never mid-drag, and only once edits
   // pause, so typing a name or dragging a part is a single step.
@@ -222,6 +267,7 @@ function Editor({ initial }) {
   /** Adds the scan parts the learner accepted; returns how many were added. */
   const applyRepoScan = (scan, acceptedKeys) => {
     const result = applyScan(nodes, edges, scan, acceptedKeys);
+    reasonRef.current = "scan";
     setNodes(result.nodes);
     setEdges(result.edges);
     setRepo(result.repo);
@@ -266,9 +312,19 @@ function Editor({ initial }) {
   });
 
   const resetToExample = () => {
+    reasonRef.current = "reset";
     load(fromGraph(EXAMPLE_GRAPH));
     setConfirmReset(false);
     setNotice(null);
+  };
+
+  /** Puts an earlier version on the canvas. It saves like any edit, and undo brings the map back. */
+  const restoreVersion = (graph, when) => {
+    reasonRef.current = "restore";
+    load(graph);
+    setHistoryOpen(false);
+    setNotice(null);
+    setInfo(`Restored the map from ${when}. Undo (Ctrl+Z) brings back what you had.`);
   };
 
   const downloadText = (text, type, filename) => {
@@ -314,6 +370,7 @@ function Editor({ initial }) {
     try {
       const graph = fromGraph(JSON.parse(await file.text()));
       if (!graph) throw new Error("not a map");
+      reasonRef.current = "import";
       load(graph);
       setNotice(null);
     } catch {
@@ -349,6 +406,18 @@ function Editor({ initial }) {
           </button>
           {initial.remote && !isTeam && (
             <ShareControl mapId={initial.remote.id} initialShared={initial.remote.shared} initialPublicId={initial.remote.publicId} />
+          )}
+          {initial.remote && (
+            <button
+              type="button"
+              className={`${button} ${iconOnPhone}`}
+              aria-expanded={historyOpen}
+              onClick={() => setHistoryOpen((open) => !open)}
+              aria-label="History"
+              title="History"
+            >
+              <History size={14} aria-hidden="true" /> <span className="max-sm:hidden">History</span>
+            </button>
           )}
           <button
             type="button"
@@ -396,7 +465,7 @@ function Editor({ initial }) {
 
       {saveState === "conflict" && (
         <p role="alert" className="mt-3 flex flex-wrap items-center gap-3 rounded-lg bg-amber-500/10 px-3 py-2 text-sm text-amber-300">
-          This map was changed in another tab or device, so your edits here are no longer being saved.
+          {isTeam ? "A teammate changed the same part you did" : "This map was changed in another tab or device"}, so your edits here are no longer being saved.
           <button type="button" onClick={() => window.location.reload()} className="min-h-11 cursor-pointer rounded-lg border border-amber-500/40 px-3 hover:bg-amber-500/10">
             Reload the latest
           </button>
@@ -417,6 +486,10 @@ function Editor({ initial }) {
 
       {scanOpen && (
         <RepoScanPanel signedIn={Boolean(initial.remote)} lens={lens} repo={repo} nodes={nodes} onApply={applyRepoScan} onClose={() => setScanOpen(false)} />
+      )}
+
+      {historyOpen && (
+        <VersionHistory mapId={initial.remote.id} isTeam={isTeam} onRestore={restoreVersion} onClose={() => setHistoryOpen(false)} />
       )}
 
       {drift && <DriftBanner mapId={initial.remote.id} drift={drift} onDismissed={() => setDrift(null)} />}

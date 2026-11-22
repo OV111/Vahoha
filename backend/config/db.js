@@ -73,6 +73,12 @@ const connectDB = async () => {
       db.collection("system_map_checks").createIndex({ userId: 1, mapId: 1, createdAt: -1 }),
       // A team map's comments, oldest first (commentService list, count and delete-with-map).
       db.collection("system_map_comments").createIndex({ mapId: 1, createdAt: 1 }),
+      // One version per map revision (keepVersionBefore relies on the 11000), listed newest first.
+      db.collection("system_map_versions").createIndex({ mapId: 1, revision: -1 }, { unique: true }),
+      // What each save touched, read by revision range when merging; dropped after a week,
+      // after which a save that old is a conflict instead of a merge.
+      db.collection("system_map_edits").createIndex({ mapId: 1, revision: 1 }, { unique: true }),
+      db.collection("system_map_edits").createIndex({ createdAt: 1 }, { expireAfterSeconds: 7 * 24 * 60 * 60 }),
       // One capstone map per learner per track, one map per team (the 409 "exists" in createOwnerMapService).
       db.collection("system_maps").createIndex(
         { ownerType: 1, ownerId: 1, userId: 1 },

@@ -14,7 +14,7 @@ import profileRoutes from "./modules/profile/index.js";
 import userRoutes from "./modules/users/index.js";
 import searchRoutes from "./modules/search/index.js";
 import accountRoutes from "./modules/account/index.js";
-import systemMapRoutes, { commentRoutes, driftRoutes, understandingRoutes } from "./modules/system-map/index.js";
+import systemMapRoutes, { commentRoutes, driftRoutes, understandingRoutes, versionRoutes } from "./modules/system-map/index.js";
 import libraryRoutes, { adminLibraryRoutes, digestRoutes } from "./modules/library/index.js";
 import mentorRoutes from "./modules/mentor/index.js";
 import roadmapRoutes from "./modules/roadmap/index.js";
@@ -137,6 +137,7 @@ export function createApp(db) {
   app.use("/api/system-maps", understandingRoutes);
   app.use("/api/system-maps", driftRoutes);
   app.use("/api/system-maps", commentRoutes);
+  app.use("/api/system-maps", versionRoutes);
   app.use("/api/recruiter", recruiterRoutes);
   app.use("/api/readiness", readinessRoutes);
   app.use("/api/onboarding", onboardingRoutes);

@@ -78,3 +78,23 @@ export async function fetchPublicMap(publicId) {
  */
 export const scanRepo = async (repoUrl, lens) =>
   data(await request("/scan", { method: "POST", body: { repoUrl, ...(lens ? { lens } : {}) } }), "Couldn't read that repo.");
+
+/**
+ * Saves a map as edits made against `revision` (lib/graphOps.js). The server
+ * merges them onto a newer revision when nobody touched the same things; when
+ * someone did, it comes back as { conflict: serverMap }, like saveMap.
+ * `reason` marks a big jump (scan, import, reset, restore): the map as it was is kept as a version.
+ * @returns {Promise<{ map: object } | { conflict: object }>}
+ */
+export async function saveOps(id, { revision, ops, reason }) {
+  const result = await request(`/${id}/ops`, { method: "PATCH", body: { revision, ops, ...(reason ? { reason } : {}) } });
+  if (result.res.status === 409 && result.json?.code === "conflict") return { conflict: result.json.data };
+  return { map: data(result, "Couldn't save your map.") };
+}
+
+/** Earlier states of a map, newest first, without their graphs. */
+export const fetchVersions = async (id) => data(await request(`/${id}/versions`), "Couldn't load this map's history.");
+
+/** One earlier state with its graph. */
+export const fetchVersion = async (id, versionId) =>
+  data(await request(`/${id}/versions/${versionId}`), "Couldn't load that version.");
