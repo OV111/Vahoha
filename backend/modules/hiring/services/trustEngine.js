@@ -120,6 +120,35 @@ const checkWebsite = async (website, companyName) => {
 };
 
 /**
+ * The published rules, with no network involved (see the file header). Pure,
+ * so every branch can be tested directly.
+ */
+export const decideTrust = ({ disposable, mailRecords, emailVerified, checks }) => {
+  const reasons = [];
+  let level;
+  if (disposable) {
+    level = "rejected";
+    reasons.push("Throwaway email address.");
+  } else if (!mailRecords) {
+    level = "rejected";
+    reasons.push("The email domain can't receive mail.");
+  } else if (!emailVerified) {
+    level = "unverified";
+    reasons.push("Enter the code we emailed you.");
+  } else if (checks.workEmail && checks.domainMatch && checks.websiteLive && checks.domainNotNew) {
+    level = "verified";
+  } else {
+    level = "limited";
+    if (!checks.workEmail) reasons.push("A personal email can't prove where you work.");
+    else if (!checks.domainMatch) reasons.push("Your email domain doesn't match the website.");
+    if (!checks.websiteLive) reasons.push("We couldn't open the website.");
+    if (!checks.domainNotNew) reasons.push(`The website's domain is under ${NEW_DOMAIN_DAYS} days old.`);
+  }
+
+  return { level, reasons };
+};
+
+/**
  * @param {{ email: string, website: string, name: string }} company
  * @param {{ emailVerified: boolean }} state
  */
@@ -150,27 +179,7 @@ export const runTrustChecks = async (company, { emailVerified }) => {
     domainNotNew: ageDays === null || ageDays >= NEW_DOMAIN_DAYS,
   };
 
-  const reasons = [];
-  let level;
-  if (disposable) {
-    level = "rejected";
-    reasons.push("Throwaway email address.");
-  } else if (!mailRecords) {
-    level = "rejected";
-    reasons.push("The email domain can't receive mail.");
-  } else if (!emailVerified) {
-    level = "unverified";
-    reasons.push("Enter the code we emailed you.");
-  } else if (checks.workEmail && checks.domainMatch && checks.websiteLive && checks.domainNotNew) {
-    level = "verified";
-  } else {
-    level = "limited";
-    if (!checks.workEmail) reasons.push("A personal email can't prove where you work.");
-    else if (!checks.domainMatch) reasons.push("Your email domain doesn't match the website.");
-    if (!checks.websiteLive) reasons.push("We couldn't open the website.");
-    if (!checks.domainNotNew) reasons.push(`The website's domain is under ${NEW_DOMAIN_DAYS} days old.`);
-  }
-
+  const { level, reasons } = decideTrust({ disposable, mailRecords, emailVerified, checks });
   return { level, checks, reasons, checkedAt: new Date(), ...(site.error ? { siteError: site.error } : {}) };
 };
 
