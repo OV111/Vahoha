@@ -3,3 +3,4 @@
  * router at /api/judgment. Stage 1: hand-written scenarios, typed reasons.
  */
 export { default } from "./routes/judgment.routes.js";
+export { judgmentSummary } from "./services/runService.js";

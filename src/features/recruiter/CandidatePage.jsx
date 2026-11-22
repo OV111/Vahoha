@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { BadgeCheck, ExternalLink, GitPullRequest, Layers, ShieldCheck, Sparkles, Trophy, Users, Workflow } from "lucide-react";
+import { BadgeCheck, Code2, Compass, ExternalLink, GitPullRequest, Layers, Mic, ShieldCheck, Sparkles, Trophy, Users, Workflow } from "lucide-react";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { recruiterApi } from "./recruiterApi";
 import HireCta from "../hiring/components/HireCta";
@@ -57,6 +57,31 @@ function ScoreBar({ score }) {
   );
 }
 
+const DIFFICULTY = [
+  { key: "easy", label: "Easy", tone: "bg-emerald-400" },
+  { key: "med", label: "Medium", tone: "bg-amber-400" },
+  { key: "hard", label: "Hard", tone: "bg-rose-400" },
+];
+
+function DifficultyBars({ byDifficulty, total }) {
+  return (
+    <ul className="flex flex-col gap-2.5">
+      {DIFFICULTY.map(({ key, label, tone }) => {
+        const n = byDifficulty[key] ?? 0;
+        return (
+          <li key={key} className="grid grid-cols-[4.5rem_1fr_2rem] items-center gap-3 text-sm">
+            <span className="text-neutral-400">{label}</span>
+            <div className="h-1.5 overflow-hidden rounded-full bg-white/10" aria-hidden="true">
+              <div className={`h-full rounded-full ${tone}`} style={{ width: total ? `${(n / total) * 100}%` : 0 }} />
+            </div>
+            <span className="text-right font-mono text-neutral-200 tabular-nums">{n}</span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 const initialOf = (name) => (name?.trim()?.[0] ?? "?").toUpperCase();
 
 export default function CandidatePage() {
@@ -106,10 +131,12 @@ export default function CandidatePage() {
         </div>
       </header>
 
-      {/* The four numbers that matter */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      {/* The numbers that matter, strongest proof first */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         <Stat label="Layers passed" value={card.exams?.length} hint="Server-graded tests" />
         <Stat label="Avg test score" value={avgScore == null ? null : `${avgScore}%`} hint="Pass mark is 80%" />
+        <Stat label="Verified" value={card.verified?.length} hint="Explained out loud" />
+        <Stat label="Challenges" value={card.challenges?.solved} hint="Solved in the sandbox" />
         <Stat label="Capstones" value={card.capstones?.length} hint="Reviewed and defended" />
         <Stat label="Team projects" value={card.teams?.length} hint="Merged pull requests" />
       </div>
@@ -144,6 +171,28 @@ export default function CandidatePage() {
             </Section>
           )}
 
+          {card.verified && (
+            <Section title="Verified layers" icon={Mic} count={card.verified.length}>
+              {card.verified.length === 0 ? (
+                <Empty>No spoken exam passed yet.</Empty>
+              ) : (
+                <>
+                  <p className="mb-3 text-[13px] text-neutral-500">
+                    Explained out loud and graded against a rubric, with quoted evidence.
+                  </p>
+                  <ul className="flex flex-wrap gap-2">
+                    {card.verified.map((v) => (
+                      <li key={v.layer} className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[13px] text-emerald-200">
+                        <BadgeCheck size={13} aria-hidden="true" /> {v.title}
+                        <span className="text-emerald-300/60">· {formatDate(v.verifiedAt)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </Section>
+          )}
+
           {card.exams && (
             <Section title="Layers passed" icon={Layers} count={card.exams.length}>
               {card.exams.length === 0 ? (
@@ -154,6 +203,38 @@ export default function CandidatePage() {
                     <li key={`${e.path}:${e.layer}`} className="flex items-center justify-between gap-4 py-2.5">
                       <span className="min-w-0 truncate text-sm text-neutral-200">{e.layerTitle ?? e.layer}</span>
                       <ScoreBar score={e.bestScore} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Section>
+          )}
+
+          {card.challenges && (
+            <Section title="Coding challenges" icon={Code2} count={card.challenges.solved}>
+              {card.challenges.solved === 0 ? (
+                <Empty>No challenge solved yet.</Empty>
+              ) : (
+                <>
+                  <DifficultyBars byDifficulty={card.challenges.byDifficulty} total={card.challenges.solved} />
+                  {card.challenges.lastSolvedAt && (
+                    <p className="mt-3 text-[13px] text-neutral-500">Last solved {formatDate(card.challenges.lastSolvedAt)}</p>
+                  )}
+                </>
+              )}
+            </Section>
+          )}
+
+          {card.judgment && (
+            <Section title="Judgment simulator" icon={Compass} count={card.judgment.runs}>
+              {card.judgment.runs === 0 ? (
+                <Empty>No simulation finished yet.</Empty>
+              ) : (
+                <ul className="flex flex-col divide-y divide-white/5">
+                  {card.judgment.scenarios.map((s) => (
+                    <li key={s.title} className="flex items-center justify-between gap-4 py-2.5">
+                      <span className="min-w-0 truncate text-sm text-neutral-200">{s.title}</span>
+                      <ScoreBar score={s.best} />
                     </li>
                   ))}
                 </ul>

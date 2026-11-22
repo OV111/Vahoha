@@ -6,7 +6,8 @@
  * collection (not on `users`) so they can never leak through a user projection
  * and the allow-list in userService.js stays untouched.
  *
- * recruiter_settings: { userId, enabled, openToWork, show: { exams, capstone, teams, strengths },
+ * recruiter_settings: { userId, enabled, openToWork,
+ *                       show: { exams, capstone, teams, strengths, challenges, verified, judgment },
  *                       createdAt, updatedAt }
  *   - `enabled: false` (the default, and the state of anyone with no document)
  *     means the scorecard answers 404, exactly like an unknown username.
@@ -18,13 +19,14 @@
 
 export const RECRUITER_SETTINGS = "recruiter_settings";
 
-export const RECRUITER_SCORECARD_SECTIONS = Object.freeze(["exams", "capstone", "teams", "strengths"]);
+export const RECRUITER_SCORECARD_SECTIONS = Object.freeze(["exams", "capstone", "teams", "strengths", "challenges", "verified", "judgment"]);
 
 /** What a developer with no document (or a new opt-in) gets. */
 export const DEFAULT_RECRUITER_SETTINGS = Object.freeze({
   enabled: false,
   openToWork: false, // an explicit signal from the developer; never inferred
-  show: Object.freeze({ exams: true, capstone: true, teams: true, strengths: false }),
+  // judgment starts off: with one scenario a single score says little yet.
+  show: Object.freeze({ exams: true, capstone: true, teams: true, strengths: false, challenges: true, verified: true, judgment: false }),
 });
 
 let indexesReady = null;

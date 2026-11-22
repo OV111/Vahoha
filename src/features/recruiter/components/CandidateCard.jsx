@@ -66,6 +66,8 @@ export default function CandidateCard({ c, trackTitle, saved = false }) {
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
             <Stat value={c.layersPassed} label="layers passed" />
             <Stat value={c.avgExamScore == null ? null : `${c.avgExamScore}%`} label="avg test" />
+            <Stat value={c.verifiedLayers || null} label="verified" />
+            <Stat value={c.challengesSolved || null} label={c.challengesSolved === 1 ? "challenge" : "challenges"} />
             <Stat value={c.capstones} label={c.capstones === 1 ? "capstone" : "capstones"} />
             <Stat value={c.teamProjects} label={c.teamProjects === 1 ? "team project" : "team projects"} />
           </div>

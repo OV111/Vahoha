@@ -119,6 +119,7 @@ export default function CandidatesPage() {
 
         <Toggle on={filters.openToWork} onChange={c.setOpenToWork}>Open to work</Toggle>
         <Toggle on={filters.hasCapstone} onChange={c.setHasCapstone}>Has capstone</Toggle>
+        <Toggle on={filters.hasVerified} onChange={c.setHasVerified}>Verified</Toggle>
 
         <Dropdown
           label="Sort by"

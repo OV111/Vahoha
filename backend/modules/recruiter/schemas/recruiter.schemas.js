@@ -9,6 +9,10 @@ export const settingsSchema = z.object({
     capstone: z.boolean(),
     teams: z.boolean(),
     strengths: z.boolean(),
+    // Newer sections: optional so an older client that doesn't send them keeps working.
+    challenges: z.boolean().optional(),
+    verified: z.boolean().optional(),
+    judgment: z.boolean().optional(),
   }),
 });
 
@@ -25,6 +29,7 @@ export const candidatesQuerySchema = z.object({
   track: z.string().trim().min(1).max(60).regex(/^[a-z0-9-]+$/i, "Invalid track").optional(),
   openToWork: flag.optional(),
   hasCapstone: flag.optional(),
+  hasVerified: flag.optional(),
   minLayers: z.coerce.number().int().min(0).max(50).optional(),
   q: z.string().trim().min(1).max(60).optional(),
   sort: z.enum(["score", "layers", "active"]).default("score"),

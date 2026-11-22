@@ -79,8 +79,8 @@ describe('toCandidateRow', () => {
   it('has no field that exposes XP or the raw scorecard sections', () => {
     const row = toCandidateRow(card({ exams: [exam('l1', 80)] }))
     expect(Object.keys(row).sort()).toEqual([
-      'avgExamScore', 'capstones', 'evidence', 'headline', 'lastActiveAt', 'layersPassed',
-      'name', 'openToWork', 'strengths', 'teamProjects', 'tracks', 'username',
+      'avgExamScore', 'capstones', 'challengesSolved', 'evidence', 'headline', 'lastActiveAt', 'layersPassed',
+      'name', 'openToWork', 'strengths', 'teamProjects', 'tracks', 'username', 'verifiedLayers',
     ])
   })
 })
