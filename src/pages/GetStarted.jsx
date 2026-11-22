@@ -11,6 +11,8 @@ import PasswordField from "../features/auth/components/PasswordField";
 import SocialSignIn from "../features/auth/components/SocialSignIn";
 import { tapArea } from "../features/auth/authStyles";
 import { logIn, signUp } from "../services/authApi";
+import PixelBackground from "../components/home/PixelBackground";
+import { SURFACE } from "../components/ui/surface";
 
 
 const nameRules = (label) => ({
@@ -30,7 +32,7 @@ const generateUsername = (firstName = "", lastName = "") =>
   `${firstName}${lastName}`.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 20) || "dev";
 
 const linkClass =
-  "relative text-purple-600 hover:underline dark:text-purple-400 max-md:after:absolute max-md:after:-inset-x-1 max-md:after:-inset-y-3";
+  "relative text-purple-600 hover:underline dark:text-purple-500 max-md:after:absolute max-md:after:-inset-x-1 max-md:after:-inset-y-3";
 
 const GetStarted = () => {
   const navigate = useNavigate();
@@ -90,8 +92,10 @@ const GetStarted = () => {
   };
 
   return (
-    <div className="flex min-h-dvh items-center justify-center px-4 py-8 sm:py-12">
-      <div className="w-full max-w-[520px] rounded-xl bg-white px-5 py-8 sm:px-8 sm:py-10 dark:bg-neutral-800/60 dark:backdrop-blur-sm">
+    <div className="relative isolate flex min-h-dvh items-center justify-center px-4 py-8 sm:py-12">
+      {/* The home page's pixel clusters, so the login feels like the same product. */}
+      <PixelBackground sideDensity={3} centerDensity={1} contentWidth={560} />
+      <div className={`w-full max-w-[520px] px-5 py-8 sm:px-8 sm:py-10 ${SURFACE}`}>
         <h1 className="mb-1 flex justify-center text-[22px] leading-tight font-semibold text-[#1a1f36] sm:text-[24px] dark:text-white">
           {isSignedUp ? "Create your account" : "Sign in to your account"}
         </h1>
@@ -200,9 +204,9 @@ const GetStarted = () => {
         </form>
 
         <div className="my-5 flex items-center">
-          <div className="grow border-t border-[#e0e0e0] dark:border-zinc-700" />
+          <div className="grow border-t border-[#e0e0e0] dark:border-white/10" />
           <span className="mx-3 text-[13px] text-[#697386] dark:text-zinc-500">or</span>
-          <div className="grow border-t border-[#e0e0e0] dark:border-zinc-700" />
+          <div className="grow border-t border-[#e0e0e0] dark:border-white/10" />
         </div>
 
         <SocialSignIn />

@@ -61,7 +61,7 @@ export default function ForgotPassword() {
                   is registered, you'll receive a reset link shortly.
                 </p>
                 <Link
-                  to="/get-started"
+                  to="/get-started?mode=login"
                   className="text-sm text-purple-600 dark:text-purple-400 hover:underline font-medium"
                 >
                   Back to login
@@ -110,7 +110,7 @@ export default function ForgotPassword() {
                 <p className="mt-6 text-center text-[13.5px] text-[#697386] dark:text-zinc-400">
                   Remember your password?{" "}
                   <Link
-                    to="/get-started"
+                    to="/get-started?mode=login"
                     className="text-purple-600 dark:text-purple-400 font-medium hover:underline"
                   >
                     Sign in
