@@ -21,3 +21,34 @@ export const HIRING_CODE_LENGTH = 6;
 // (that would be login details, e.g. "https://me@site.com"), no spaces, no port.
 export const WEBSITE_PATTERN = /^https?:\/\/[a-z0-9-]+(\.[a-z0-9-]+)+(\/[^\s@]*)?$/i;
 export const WEBSITE_MESSAGE = "Enter the site address, like https://acme.com.";
+
+// ── Jobs (private to the company for now; a public board comes later) ──────
+export const JOB_LEVELS = Object.freeze(["junior", "mid", "senior"]);
+export const JOB_TYPES = Object.freeze(["full-time", "part-time", "contract", "internship"]);
+export const WORKPLACES = Object.freeze(["remote", "hybrid", "onsite"]);
+export const JOB_STATUSES = Object.freeze(["draft", "open", "closed"]);
+export const SALARY_CURRENCIES = Object.freeze(["USD", "EUR", "GBP", "AMD", "RUB"]);
+export const SALARY_PERIODS = Object.freeze(["year", "month", "hour"]);
+export const JOB_LIMITS = Object.freeze({
+  titleMax: 100,
+  locationMax: 100,
+  descriptionMax: 3000,
+  stackMax: 15,
+  stackItemMax: 30,
+  requiredLayersMax: 10,
+  openJobsPerCompany: 25,
+});
+
+// ── Intro requests ──────────────────────────────────────────────────────────
+// One place for every number, so they're easy to tune after the pilot.
+export const INTRO_RULES = Object.freeze({
+  expiryDays: 14, // pending → expired
+  declineCooldownDays: 90, // same company can't ask the same developer again
+  perCompanyDaily: 20,
+  perAgencyDaily: 5,
+  maxPendingPerDeveloper: 5, // across all companies, so nobody gets flooded
+  messageMax: 600,
+  reportsToLimit: 3, // reports in reportsWindowDays move a company to "limited"
+  reportsWindowDays: 30,
+});
+export const INTRO_STATUSES = Object.freeze(["pending", "accepted", "declined", "expired", "withdrawn"]);

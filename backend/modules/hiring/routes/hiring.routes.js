@@ -11,6 +11,11 @@ import {
   companyIdParamSchema,
   hiringSignupSchema,
   overrideSchema,
+  jobIdParamSchema,
+  jobListQuerySchema,
+  jobSchema,
+  jobStatusSchema,
+  layerSearchSchema,
   saveCandidateSchema,
   usernameParamSchema,
   updateCompanySchema,
@@ -21,6 +26,12 @@ import {
   adminOverride,
   me,
   recheck,
+  jobCreate,
+  jobGet,
+  jobStatus,
+  jobUpdate,
+  jobsList,
+  layerSearch,
   savedDelete,
   savedList,
   savedPut,
@@ -54,6 +65,15 @@ router.get("/saved", ...recruiter, savedList);
 router.get("/saved/:username", ...recruiter, byUsername, savedStatus);
 router.put("/saved/:username", ...recruiter, byUsername, validate({ body: saveCandidateSchema }), savedPut);
 router.delete("/saved/:username", ...recruiter, byUsername, savedDelete);
+
+// The company's jobs (private to the company). Limited companies may prepare them.
+const byJob = validate({ params: jobIdParamSchema });
+router.get("/jobs", ...recruiter, validate({ query: jobListQuerySchema }), jobsList);
+router.post("/jobs", ...recruiter, validate({ body: jobSchema }), jobCreate);
+router.get("/jobs/:id", ...recruiter, byJob, jobGet);
+router.put("/jobs/:id", ...recruiter, byJob, validate({ body: jobSchema }), jobUpdate);
+router.post("/jobs/:id/status", ...recruiter, byJob, validate({ body: jobStatusSchema }), jobStatus);
+router.get("/layers", ...recruiter, validate({ query: layerSearchSchema }), layerSearch);
 
 // The exceptions page (admins only; requireAdmin answers 404 to everyone else).
 router.get("/admin/companies", authenticate, requireAdmin, ...adminLimits, validate({ query: adminListQuerySchema }), adminList);

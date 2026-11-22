@@ -98,6 +98,7 @@ const connectDB = async () => {
       db.collection("hiring_email_codes").createIndex({ userId: 1 }, { unique: true }),
       db.collection("saved_candidates").createIndex({ companyId: 1, candidateId: 1 }, { unique: true }),
       db.collection("saved_candidates").createIndex({ companyId: 1, updatedAt: -1 }),
+      db.collection("jobs").createIndex({ companyId: 1, status: 1, updatedAt: -1 }),
       db.collection("hiring_email_codes").createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 }),
       db.collection("voice_exam_rubrics").createIndex({ layer: 1 }, { unique: true }),
       db.collection("voice_exam_attempts").createIndex({ userId: 1, startedAt: -1 }),

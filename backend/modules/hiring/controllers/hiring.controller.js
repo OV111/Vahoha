@@ -10,6 +10,7 @@ import {
 } from "../services/hiringService.js";
 import { listCompanies, overrideCompany } from "../services/adminService.js";
 import { getSavedStatus, listSaved, saveCandidate, unsaveCandidate } from "../services/savedService.js";
+import { createJob, getJobPublic, listJobs, searchLayers, setJobStatus, updateJob } from "../services/jobService.js";
 
 const uid = (req) => req.user._id.toString();
 
@@ -38,6 +39,13 @@ export const savedPut = respond((req) =>
   saveCandidate(dbOf(req), company(req), req.user._id, req.params.username, req.body.note),
 );
 export const savedDelete = respond((req) => unsaveCandidate(dbOf(req), company(req), req.params.username));
+
+export const jobsList = respond((req) => listJobs(dbOf(req), company(req), req.query));
+export const jobGet = respond((req) => getJobPublic(dbOf(req), company(req), req.params.id));
+export const jobCreate = respond((req) => createJob(dbOf(req), company(req), req.user._id, req.body), { status: 201 });
+export const jobUpdate = respond((req) => updateJob(dbOf(req), company(req), req.params.id, req.body));
+export const jobStatus = respond((req) => setJobStatus(dbOf(req), company(req), req.params.id, req.body.status));
+export const layerSearch = respond((req) => searchLayers(dbOf(req), req.query.q));
 
 export const adminList = respond((req) => listCompanies(dbOf(req), req.query));
 export const adminOverride = respond((req) => overrideCompany(dbOf(req), uid(req), req.params.id, req.body));

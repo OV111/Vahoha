@@ -7,6 +7,13 @@ import {
   TEAM_SIZES,
   WEBSITE_MESSAGE,
   WEBSITE_PATTERN,
+  JOB_LEVELS,
+  JOB_LIMITS,
+  JOB_STATUSES,
+  JOB_TYPES,
+  SALARY_CURRENCIES,
+  SALARY_PERIODS,
+  WORKPLACES,
 } from "../../../../constants/hiringRules.js";
 
 // POST /api/hiring/signup. Mirrors the 4-step form in src/features/hiring, but
@@ -65,6 +72,35 @@ export const usernameParamSchema = z.object({
   username: z.string().trim().min(1).max(40).regex(/^[A-Za-z0-9._-]+$/, "Invalid username"),
 });
 export const saveCandidateSchema = z.object({ note: z.string().trim().max(500).default("") });
+
+// Jobs. Salary is optional, but both ends are needed when it's given.
+const salarySchema = z
+  .object({
+    min: z.number().int().min(0).max(10_000_000),
+    max: z.number().int().min(0).max(10_000_000),
+    currency: z.enum(SALARY_CURRENCIES),
+    period: z.enum(SALARY_PERIODS),
+  })
+  .nullable()
+  .default(null);
+
+export const jobSchema = z.object({
+  title: z.string().trim().min(2, "At least 2 characters.").max(JOB_LIMITS.titleMax),
+  level: z.enum(JOB_LEVELS),
+  type: z.enum(JOB_TYPES),
+  workplace: z.enum(WORKPLACES),
+  location: z.string().trim().max(JOB_LIMITS.locationMax).default(""),
+  salary: salarySchema,
+  stack: z.array(z.string().trim().min(1).max(JOB_LIMITS.stackItemMax)).max(JOB_LIMITS.stackMax).default([]),
+  requiredLayers: z.array(z.string().trim().min(1).max(80)).max(JOB_LIMITS.requiredLayersMax).default([]),
+  description: z.string().trim().max(JOB_LIMITS.descriptionMax).default(""),
+  status: z.enum(JOB_STATUSES).default("draft"),
+});
+
+export const jobIdParamSchema = z.object({ id: z.string().regex(/^[a-f0-9]{24}$/i, "Invalid id") });
+export const jobStatusSchema = z.object({ status: z.enum(JOB_STATUSES) });
+export const jobListQuerySchema = z.object({ status: z.enum(JOB_STATUSES).optional() });
+export const layerSearchSchema = z.object({ q: z.string().trim().min(2).max(60) });
 
 export const verifyCodeSchema = z.object({
   code: z.string().trim().regex(new RegExp(`^\\d{${HIRING_CODE_LENGTH}}$`), "Enter the 6-digit code."),

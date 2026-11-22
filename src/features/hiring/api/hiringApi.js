@@ -60,3 +60,14 @@ export const saveCandidate = (username, note = "") =>
   request(`/saved/${encodeURIComponent(username)}`, { method: "PUT", body: { note } }, "Couldn't save this candidate.");
 export const unsaveCandidate = (username) =>
   request(`/saved/${encodeURIComponent(username)}`, { method: "DELETE" }, "Couldn't remove this candidate.");
+
+// Jobs (private to the company).
+export const fetchJobs = (status) =>
+  request(`/jobs${status ? `?status=${encodeURIComponent(status)}` : ""}`, {}, "Couldn't load your jobs.");
+export const fetchJob = (id) => request(`/jobs/${id}`, {}, "Couldn't load this job.");
+export const createJob = (body) => request("/jobs", { method: "POST", body }, "Couldn't create the job.");
+export const updateJob = (id, body) => request(`/jobs/${id}`, { method: "PUT", body }, "Couldn't save the job.");
+export const setJobStatus = (id, status) =>
+  request(`/jobs/${id}/status`, { method: "POST", body: { status } }, "Couldn't change the job's status.");
+export const searchLayers = (q) =>
+  request(`/layers?q=${encodeURIComponent(q)}`, {}, "Couldn't search layers.");

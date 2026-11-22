@@ -101,3 +101,18 @@ export const HIRE_CTA = {
   body: (name) => `Create a free hiring account to contact ${name || "this developer"} and see more candidates like them.`,
   create: "Create hiring account",
 };
+
+// Labels for the job fields (the allowed values live in constants/hiringRules.js).
+export const JOB_LEVEL_LABELS = { junior: "Junior", mid: "Mid-level", senior: "Senior" };
+export const JOB_TYPE_LABELS = { "full-time": "Full-time", "part-time": "Part-time", contract: "Contract", internship: "Internship" };
+export const WORKPLACE_LABELS = { remote: "Remote", hybrid: "Hybrid", onsite: "On-site" };
+export const JOB_STATUS_LABELS = { draft: "Draft", open: "Open", closed: "Closed" };
+export const SALARY_PERIOD_LABELS = { year: "per year", month: "per month", hour: "per hour" };
+
+export const JOBS_COPY = {
+  title: "Jobs",
+  intro: "Jobs stay private to your company. They give your intro requests their context: what the role is, what it pays and which Vahoha layers it expects.",
+  empty: "No jobs yet. Create one, then attach it when you reach out to a developer.",
+  requiredLayersHint: "Developers prove these by passing the layer's test. Candidates then show how many they match.",
+  salaryHint: "Optional, but jobs with a salary get a “Salary shown” badge that developers notice.",
+};
