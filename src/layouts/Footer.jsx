@@ -116,9 +116,16 @@ const Footer = () => {
             mobileLimit={6}
             className="col-span-2 sm:col-span-1"
           />
-          <LinkColumn title="In the AI era" links={AI_LINKS} />
-          <LinkColumn title="Product" links={PRODUCT_LINKS} />
-          <LinkColumn title="Company" links={COMPANY_LINKS} />
+          {/* Phones: the long Product list spans both columns, and the two short
+              lists move below it side by side, so no column hangs half empty. */}
+          <LinkColumn title="In the AI era" links={AI_LINKS} className="max-sm:order-1" />
+          <LinkColumn
+            title="Product"
+            links={PRODUCT_LINKS}
+            twoColumns
+            className="col-span-2 sm:col-span-1"
+          />
+          <LinkColumn title="Company" links={COMPANY_LINKS} className="max-sm:order-1" />
         </div>
 
         <div className="mx-auto mt-8 max-w-7xl border-t border-white/10 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-center text-sm text-[#A1A0AB] sm:mt-12">
