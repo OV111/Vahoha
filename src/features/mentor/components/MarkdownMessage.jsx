@@ -55,7 +55,7 @@ const components = {
     if (!isBlock) {
       return (
         <code
-          className="px-1.5 py-0.5 rounded text-[13px] bg-white/8 text-purple-300 font-mono"
+          className="px-1.5 py-0.5 rounded text-[0.875em] bg-white/8 text-purple-300 font-mono"
           {...props}
         >
           {children}
@@ -74,10 +74,10 @@ const components = {
 
   p: ({ children }) => <p className="mb-3 last:mb-0 leading-relaxed">{children}</p>,
 
-  h1: ({ children }) => <h1 className="text-[18px] font-semibold mt-4 mb-2 text-white">{children}</h1>,
-  h2: ({ children }) => <h2 className="text-[16px] font-semibold mt-4 mb-2 text-white">{children}</h2>,
-  h3: ({ children }) => <h3 className="text-[15px] font-semibold mt-3 mb-1.5 text-white">{children}</h3>,
-  h4: ({ children }) => <h4 className="text-[14px] font-semibold mt-3 mb-1.5 text-white">{children}</h4>,
+  h1: ({ children }) => <h1 className="text-[1.3em] leading-snug font-semibold mt-5 mb-2 text-white">{children}</h1>,
+  h2: ({ children }) => <h2 className="text-[1.15em] leading-snug font-semibold mt-5 mb-2 text-white">{children}</h2>,
+  h3: ({ children }) => <h3 className="text-[1.05em] leading-snug font-semibold mt-4 mb-1.5 text-white">{children}</h3>,
+  h4: ({ children }) => <h4 className="text-[1em] leading-snug font-semibold mt-4 mb-1.5 text-white">{children}</h4>,
 
   ul: ({ children }) => <ul className="list-disc pl-5 mb-3 space-y-1">{children}</ul>,
   ol: ({ children }) => <ol className="list-decimal pl-5 mb-3 space-y-1">{children}</ol>,
@@ -112,7 +112,7 @@ const components = {
   // the whole chat pane scroll sideways.
   table: ({ children }) => (
     <div className="my-3 overflow-x-auto rounded-lg border border-white/10">
-      <table className="w-full text-[13px] border-collapse">{children}</table>
+      <table className="w-full text-[0.875em] border-collapse">{children}</table>
     </div>
   ),
   thead: ({ children }) => <thead className="bg-white/5">{children}</thead>,
