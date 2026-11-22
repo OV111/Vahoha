@@ -33,6 +33,7 @@ import onboardingRoutes from "./modules/onboarding/index.js";
 import voiceExamRoutes from "./modules/voice-exam/index.js";
 import judgmentRoutes from "./modules/judgment/index.js";
 import hiringRoutes from "./modules/hiring/index.js";
+import introsRoutes from "./modules/intros/index.js";
 import { blockRecruiters } from "./middleware/blockRecruiters.js";
 import { notFound } from "./middleware/notFound.js";
 import { globalIpLimiter } from "./middleware/rateLimits.js";
@@ -152,6 +153,7 @@ export function createApp(db) {
   app.use("/api/voice-exam", noAccess, voiceExamRoutes);
   app.use("/api/judgment", noAccess, judgmentRoutes);
   app.use("/api/hiring", hiringRoutes);
+  app.use("/api/intros", noAccess, introsRoutes);
   app.use("/api/admin", analyticsRoutes);
 
   // Catches 5xx errors from routes that have no module error handler of their own.

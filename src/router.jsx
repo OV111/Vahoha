@@ -37,6 +37,7 @@ const EditBlog = lazy(() => import("./features/profile/pages/EditBlog"));
 const Notifications = lazy(() => import("./features/profile/pages/Notifications"));
 const Settings = lazy(() => import("./features/profile/pages/Settings"));
 const BlockedUsers = lazy(() => import("./features/profile/pages/BlockedUsers"));
+const IntroInbox = lazy(() => import("./features/profile/pages/IntroInbox"));
 const ConnectedAccounts = lazy(() => import("./features/profile/pages/ConnectedAccounts"));
 const Followers = lazy(() => import("./features/connections/pages/Followers"));
 const Chats = lazy(() => import("./features/chat/pages/Chats"));
@@ -83,6 +84,7 @@ const HiringAdminPage = lazy(() => import("./features/hiring/HiringAdminPage"));
 const RecruiterOnly = lazy(() => import("./features/hiring/components/RecruiterOnly"));
 const JobsPage = lazy(() => import("./features/hiring/JobsPage"));
 const JobFormPage = lazy(() => import("./features/hiring/JobFormPage"));
+const IntrosPage = lazy(() => import("./features/hiring/IntrosPage"));
 
 const PricingPage = lazy(() => import("./features/billing/PricingPage"));
 const BillingPage = lazy(() => import("./features/billing/BillingPage"));
@@ -185,6 +187,7 @@ const protectedRoutes = [
         { path: "hiring/jobs", element: <RecruiterOnly><JobsPage /></RecruiterOnly> },
         { path: "hiring/jobs/new", element: <RecruiterOnly><JobFormPage /></RecruiterOnly> },
         { path: "hiring/jobs/:id", element: <RecruiterOnly><JobFormPage /></RecruiterOnly> },
+        { path: "hiring/intros", element: <RecruiterOnly><IntrosPage /></RecruiterOnly> },
       ]
     : FEATURES.candidates
       ? [{ path: "candidates", element: <CandidatesPage /> }]
@@ -207,6 +210,7 @@ const protectedRoutes = [
       { path: "favourites", element: redirect("/my-profile/favorites") },
       { path: "connected-accounts", element: <ConnectedAccounts /> },
       { path: "blocked", element: <BlockedUsers /> },
+      ...(FEATURES.hiring ? [{ path: "intros", element: <IntroInbox /> }] : []),
     ],
   },
 ];

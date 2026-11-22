@@ -53,9 +53,13 @@ export const overrideCompany = async (db, adminId, companyId, { level, note }) =
         },
       }
     : {
-        $set: { "trust.level": computedLevel, updatedAt: new Date() },
+        // Clearing goes back to the checks, still capped by developer reports.
+        $set: {
+          "trust.level": company.trust?.reportLimit && computedLevel === "verified" ? "limited" : computedLevel,
+          updatedAt: new Date(),
+        },
         $unset: { "trust.override": "", "trust.computedLevel": "" },
       };
   await db.collection(COMPANIES).updateOne({ _id }, update);
-  return { id: companyId, level: level ?? computedLevel };
+  return { id: companyId, level: level ?? update.$set["trust.level"] };
 };

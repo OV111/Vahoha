@@ -10,6 +10,7 @@ import {
 } from "../services/hiringService.js";
 import { listCompanies, overrideCompany } from "../services/adminService.js";
 import { getSavedStatus, listSaved, saveCandidate, unsaveCandidate } from "../services/savedService.js";
+import { checkIntro, companyIntroSummary, listCompanyIntros, sendIntro, withdrawIntro } from "../services/introService.js";
 import { createJob, getJobPublic, listJobs, searchLayers, setJobStatus, updateJob } from "../services/jobService.js";
 
 const uid = (req) => req.user._id.toString();
@@ -46,6 +47,12 @@ export const jobCreate = respond((req) => createJob(dbOf(req), company(req), req
 export const jobUpdate = respond((req) => updateJob(dbOf(req), company(req), req.params.id, req.body));
 export const jobStatus = respond((req) => setJobStatus(dbOf(req), company(req), req.params.id, req.body.status));
 export const layerSearch = respond((req) => searchLayers(dbOf(req), req.query.q));
+
+export const introCheck = respond((req) => checkIntro(dbOf(req), company(req), req.params.username));
+export const introSend = respond((req) => sendIntro(dbOf(req), company(req), req.user._id, req.body), { status: 201 });
+export const introList = respond((req) => listCompanyIntros(dbOf(req), company(req), req.query));
+export const introSummary = respond((req) => companyIntroSummary(dbOf(req), company(req)));
+export const introWithdraw = respond((req) => withdrawIntro(dbOf(req), company(req), req.params.id));
 
 export const adminList = respond((req) => listCompanies(dbOf(req), req.query));
 export const adminOverride = respond((req) => overrideCompany(dbOf(req), uid(req), req.params.id, req.body));

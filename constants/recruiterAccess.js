@@ -24,6 +24,7 @@ export const RECRUITER_BLOCKED_PATHS = Object.freeze([
   "/my-profile/chats",
   "/my-profile/add-blog",
   "/my-profile/edit-blog",
+  "/my-profile/intros",
 ]);
 
 export const isRecruiterBlockedPath = (pathname) =>

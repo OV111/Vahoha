@@ -1,9 +1,10 @@
 import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
 
 const BASE = `${API_BASE_URL}/api/hiring`;
+const INTROS_BASE = `${API_BASE_URL}/api/intros`;
 
 // Errors carry the server's message and status; a network failure has no status.
-async function request(path, { method = "GET", body, auth = true } = {}, fallback) {
+async function send(url, { method = "GET", body, auth = true } = {}, fallback) {
   let res;
   try {
     const init = {
@@ -12,7 +13,7 @@ async function request(path, { method = "GET", body, auth = true } = {}, fallbac
       credentials: "include",
       ...(body ? { body: JSON.stringify(body) } : {}),
     };
-    res = auth ? await apiFetch(`${BASE}${path}`, init) : await fetch(`${BASE}${path}`, init);
+    res = auth ? await apiFetch(url, init) : await fetch(url, init);
   } catch {
     throw new Error("Couldn't reach the server. Check your connection.");
   }
@@ -21,6 +22,10 @@ async function request(path, { method = "GET", body, auth = true } = {}, fallbac
     throw Object.assign(new Error(json?.message ?? fallback), { status: res.status, trustLevel: json?.trustLevel });
   return json.data;
 }
+
+const request = (path, opts, fallback) => send(`${BASE}${path}`, opts, fallback);
+const inboxRequest = (path, opts, fallback) => send(`${INTROS_BASE}${path}`, opts, fallback);
+const statusQuery = (status) => (status ? `?status=${encodeURIComponent(status)}` : "");
 
 /** Creates the recruiter account and company. { accessToken, trust: { level, reasons } } */
 export const signUpRecruiter = (payload) =>
@@ -71,3 +76,26 @@ export const setJobStatus = (id, status) =>
   request(`/jobs/${id}/status`, { method: "POST", body: { status } }, "Couldn't change the job's status.");
 export const searchLayers = (q) =>
   request(`/layers?q=${encodeURIComponent(q)}`, {}, "Couldn't search layers.");
+
+// Intro requests, recruiter side.
+/** { canSend, reason, existing, jobs: [{ id, title, level, type, workplace, match: { met, total } }] } */
+export const checkIntro = (username) =>
+  request(`/intros/check/${encodeURIComponent(username)}`, {}, "Couldn't check this candidate.");
+export const sendIntro = ({ username, jobId, message }) =>
+  request("/intros", { method: "POST", body: { username, jobId, message } }, "Couldn't send the intro request.");
+export const fetchSentIntros = (status) =>
+  request(`/intros${statusQuery(status)}`, {}, "Couldn't load your intro requests.");
+/** { pending, accepted, declined, sentToday, dailyLimit } */
+export const fetchSentIntrosSummary = () => request("/intros/summary", {}, "Couldn't load your intro requests.");
+export const withdrawIntro = (id) =>
+  request(`/intros/${id}/withdraw`, { method: "POST" }, "Couldn't withdraw the request.");
+
+// Intro requests, developer side (the server refuses hiring accounts).
+export const fetchInbox = (status) => inboxRequest(statusQuery(status), {}, "Couldn't load your intro requests.");
+/** { pending } */
+export const fetchInboxSummary = () => inboxRequest("/summary", {}, "Couldn't load your intro requests.");
+/** action: "accept" | "decline" | "block" */
+export const answerIntro = (id, action) =>
+  inboxRequest(`/${id}/${action}`, { method: "POST" }, "Couldn't save your answer.");
+export const reportIntro = (id, { reason, details }) =>
+  inboxRequest(`/${id}/report`, { method: "POST", body: { reason, details } }, "Couldn't send the report.");

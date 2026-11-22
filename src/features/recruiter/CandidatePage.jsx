@@ -5,6 +5,7 @@ import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { recruiterApi } from "./recruiterApi";
 import HireCta from "../hiring/components/HireCta";
 import RecruiterActions from "../hiring/components/RecruiterActions";
+import RequestIntro from "../hiring/components/intros/RequestIntro";
 
 /**
  * Public candidate scorecard: /candidate/:username. No account needed.
@@ -289,6 +290,7 @@ export default function CandidatePage() {
         {/* The recruiter's side */}
         <aside className="flex flex-col gap-6 lg:sticky lg:top-[calc(var(--navbar-h,64px)+16px)]">
           <HireCta name={firstName} />
+          <RequestIntro username={card.username} name={firstName} />
           <RecruiterActions username={card.username} name={firstName} />
 
           {card.strengths && (

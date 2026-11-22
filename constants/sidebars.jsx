@@ -2,6 +2,7 @@ import {
   Bell,
   Bookmark,
   Highlighter,
+  Inbox,
   Link2,
   MessageSquare,
   TrendingUp,
@@ -9,6 +10,7 @@ import {
   UserX,
   Users,
 } from "lucide-react";
+import { FEATURES } from "./features";
 
 // One icon size and stroke for every sidebar item, so the set reads as one.
 const icon = (Icon) => <Icon size={20} strokeWidth={1.75} aria-hidden="true" />;
@@ -39,6 +41,10 @@ export const sidebarArr = [
         icon: icon(Bell),
         label: "Notifications",
       },
+      // `badge: "intros"` shows the count of unanswered intro requests.
+      ...(FEATURES.hiring
+        ? [{ to: "/my-profile/intros", icon: icon(Inbox), label: "Intros", badge: "intros" }]
+        : []),
     ],
   },
   {

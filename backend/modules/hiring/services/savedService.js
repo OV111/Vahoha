@@ -17,7 +17,7 @@ import { RECRUITER_SETTINGS } from "../../recruiter/services/recruiterData.js";
 const SAVED = "saved_candidates";
 export const NOTE_MAX = 500;
 
-const optedInIds = async (db, ids) => {
+export const optedInIds = async (db, ids) => {
   if (!ids.length) return new Set();
   const rows = await db
     .collection(RECRUITER_SETTINGS)

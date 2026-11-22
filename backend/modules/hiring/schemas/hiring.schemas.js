@@ -7,6 +7,9 @@ import {
   TEAM_SIZES,
   WEBSITE_MESSAGE,
   WEBSITE_PATTERN,
+  INTRO_REPORT_REASONS,
+  INTRO_RULES,
+  INTRO_STATUSES,
   JOB_LEVELS,
   JOB_LIMITS,
   JOB_STATUSES,
@@ -104,4 +107,22 @@ export const layerSearchSchema = z.object({ q: z.string().trim().min(2).max(60) 
 
 export const verifyCodeSchema = z.object({
   code: z.string().trim().regex(new RegExp(`^\\d{${HIRING_CODE_LENGTH}}$`), "Enter the 6-digit code."),
+});
+
+// Intro requests. /check and send take the developer's username, like the scorecard.
+const objectId = z.string().regex(/^[a-f0-9]{24}$/i, "Invalid id");
+export const introIdParamSchema = z.object({ id: objectId });
+export const introListQuerySchema = z.object({ status: z.enum(INTRO_STATUSES).optional() });
+export const introSendSchema = z.object({
+  username: usernameParamSchema.shape.username,
+  jobId: objectId,
+  message: z
+    .string()
+    .trim()
+    .min(20, "Write at least 20 characters.")
+    .max(INTRO_RULES.messageMax, `Keep it under ${INTRO_RULES.messageMax} characters.`),
+});
+export const introReportSchema = z.object({
+  reason: z.enum(INTRO_REPORT_REASONS),
+  details: z.string().trim().max(500).default(""),
 });

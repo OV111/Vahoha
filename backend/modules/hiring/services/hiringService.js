@@ -102,7 +102,7 @@ const recheck = async (db, user, company) => {
     { email: user.email, website: company.website, name: company.name },
     { emailVerified: user.emailVerified === true },
   );
-  const trust = applyOverride(computed, company.trust?.override);
+  const trust = applyOverride(computed, company.trust?.override, company.trust?.reportLimit);
   await db.collection(COMPANIES).updateOne({ _id: company._id }, { $set: { trust, updatedAt: new Date() } });
   return { ...company, trust };
 };

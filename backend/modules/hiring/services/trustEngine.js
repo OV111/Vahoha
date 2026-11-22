@@ -178,6 +178,16 @@ export const runTrustChecks = async (company, { emailVerified }) => {
  * An admin's decision on the exceptions page beats the computed level, so a
  * re-check can't silently undo it. The computed level stays stored next to it,
  * so clearing the override falls back to what the checks say.
+ *
+ * `reportLimit` is set when developers reported the company's intro requests
+ * (introReplyService). Below an override, it caps the level at "limited", so a
+ * re-check can't lift it either. It only ever lowers "verified".
  */
-export const applyOverride = (trust, override) =>
-  override ? { ...trust, computedLevel: trust.level, level: override.level, override } : trust;
+export const applyOverride = (trust, override, reportLimit = null) => {
+  const kept = reportLimit ? { reportLimit } : {};
+  if (override) return { ...trust, ...kept, computedLevel: trust.level, level: override.level, override };
+  if (reportLimit && trust.level === "verified") {
+    return { ...trust, ...kept, level: "limited", reasons: [...trust.reasons, reportLimit.reason] };
+  }
+  return { ...trust, ...kept };
+};

@@ -100,6 +100,20 @@ const connectDB = async () => {
       db.collection("saved_candidates").createIndex({ companyId: 1, updatedAt: -1 }),
       db.collection("jobs").createIndex({ companyId: 1, status: 1, updatedAt: -1 }),
       db.collection("hiring_email_codes").createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 }),
+      // Intro requests: one open request per company and developer (two sends at
+      // once can't both land), the company's list, the developer's inbox, and the
+      // recent-reports count that can limit a company.
+      db.collection("intro_requests").createIndex(
+        { companyId: 1, candidateId: 1 },
+        { unique: true, partialFilterExpression: { status: "pending" }, name: "one_pending_intro" },
+      ),
+      db.collection("intro_requests").createIndex({ companyId: 1, createdAt: -1 }),
+      db.collection("intro_requests").createIndex({ candidateId: 1, status: 1, createdAt: -1 }),
+      db.collection("intro_requests").createIndex(
+        { companyId: 1, "reported.at": -1 },
+        { partialFilterExpression: { "reported.at": { $exists: true } } },
+      ),
+      db.collection("intro_blocks").createIndex({ candidateId: 1, companyId: 1 }, { unique: true }),
       db.collection("voice_exam_rubrics").createIndex({ layer: 1 }, { unique: true }),
       db.collection("voice_exam_attempts").createIndex({ userId: 1, startedAt: -1 }),
       db.collection("voice_exam_attempts").createIndex({ startedAt: -1 }),

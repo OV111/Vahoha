@@ -27,5 +27,15 @@ export const saveSettingsService = async (db, userId, { enabled, openToWork, sho
     { upsert: true, returnDocument: "after" },
   );
   clearCandidatePool(); // opting out, or hiding a section, must show on the list at once
+  // Opting out closes open intro requests: companies can't reach someone who
+  // left, and the developer can't be held to answering them.
+  if (!enabled) {
+    await db
+      .collection("intro_requests")
+      .updateMany(
+        { candidateId: new ObjectId(userId), status: "pending" },
+        { $set: { status: "withdrawn", closedBy: "opt_out", updatedAt: now } },
+      );
+  }
   return toView(doc);
 };

@@ -25,7 +25,7 @@ const toId = (id) => {
 };
 
 /** Layer ids that really exist, with their titles and track names, in the order given. */
-const describeLayers = async (db, layerIds) => {
+export const describeLayers = async (db, layerIds) => {
   const layers = await getLayers(db, layerIds);
   const tracks = await getTracks(db, [...layers.values()].map((l) => l.trackId));
   return layerIds

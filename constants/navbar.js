@@ -19,6 +19,7 @@ import {
   Briefcase,
   Building2,
   BriefcaseBusiness,
+  Send,
 } from "lucide-react";
 import { CATEGORY_OPTIONS, categoryHref } from "./categories";
 import { FEATURES } from "./features";
@@ -113,6 +114,7 @@ export const NAV_GROUPS_RECRUITER = [
       { label: "Hiring home", to: "/hiring/home", icon: Briefcase, description: "Your company, trust level and shortlist" },
       { label: "Candidates", to: "/candidates", icon: UserSearch, description: "Developers who chose to be found" },
       { label: "Jobs", to: "/hiring/jobs", icon: BriefcaseBusiness, description: "Your roles, with the layers they expect" },
+      { label: "Intros", to: "/hiring/intros", icon: Send, description: "Requests you sent and who accepted" },
     ],
   },
   {

@@ -52,3 +52,4 @@ export const INTRO_RULES = Object.freeze({
   reportsWindowDays: 30,
 });
 export const INTRO_STATUSES = Object.freeze(["pending", "accepted", "declined", "expired", "withdrawn"]);
+export const INTRO_REPORT_REASONS = Object.freeze(["spam", "scam", "inappropriate", "other"]);

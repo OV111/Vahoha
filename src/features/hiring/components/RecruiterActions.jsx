@@ -8,7 +8,7 @@ const NOTE_MAX = 500;
 
 // On a candidate's scorecard, for hiring accounts: save them to the company's
 // shortlist with a private note. Teammates see the same list; the developer and
-// other companies never do. Intro requests come next to this.
+// other companies never do. Intro requests sit above this (RequestIntro).
 const RecruiterActions = ({ username, name }) => {
   const isRecruiter = useViewOnly();
   const [state, setState] = useState(null); // { saved, note } once loaded

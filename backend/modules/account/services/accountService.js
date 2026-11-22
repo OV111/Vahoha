@@ -220,5 +220,9 @@ async function deleteLearningAndActivityData(db, userId, email) {
       { $pull: { members: userId.toString() } },
     ),
     db.collection("contact_messages").deleteMany({ email }),
+    // Intro requests sent to the user and the companies they blocked. A report
+    // has already done its work on the company's trust level by now.
+    db.collection("intro_requests").deleteMany({ candidateId: userId }),
+    db.collection("intro_blocks").deleteMany({ candidateId: userId }),
   ]);
 }

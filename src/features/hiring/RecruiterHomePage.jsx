@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Bookmark, Search } from "lucide-react";
 import TrustBanner from "./components/TrustBanner";
+import IntrosSummaryCard from "./components/intros/IntrosSummaryCard";
 import { fetchRecruiterMe, fetchSaved } from "./api/hiringApi";
 import useProfileStore from "../../stores/useProfileStore";
 import { COMPANY_ROLES } from "../../../constants/hiring";
@@ -27,7 +28,7 @@ const SavedRow = ({ s }) => (
 );
 
 // /hiring/home: the recruiter's start page. Company and trust level, then the
-// company's shortlist, with the way into the candidate list.
+// company's intro requests and shortlist, with the way into the candidate list.
 const RecruiterHomePage = () => {
   const [me, setMe] = useState(null);
   const [saved, setSaved] = useState(null);
@@ -79,6 +80,8 @@ const RecruiterHomePage = () => {
           </Link>
         )}
       </div>
+
+      {canBrowse && <IntrosSummaryCard className="mt-8" />}
 
       <section className={`mt-8 ${CARD}`}>
         <div className="flex items-baseline justify-between gap-3">

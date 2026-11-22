@@ -55,4 +55,12 @@ export const recheckLimits = [
 // Saving and noting: generous for people, tight enough to stop a script copying everyone.
 export const savedLimits = [limit("saved.user", MINUTE, 60, "Slow down a little.", byUser)];
 
+// Intro requests. The daily cap per company lives in the service (it's a rule,
+// not a rate); these only stop a script hammering the endpoints.
+export const introLimits = [limit("intros.user", MINUTE, 60, "Slow down a little.", byUser)];
+export const introSendLimits = [
+  limit("intros.send.ip", HOUR, 60, "Too many requests sent. Try again in an hour."),
+  limit("intros.send.user", MINUTE, 5, "Slow down a little.", byUser),
+];
+
 export const adminLimits = [limit("admin.user", MINUTE, 120, "Slow down a little.", byUser)];

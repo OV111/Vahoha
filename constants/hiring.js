@@ -1,4 +1,5 @@
-import { Building2, Briefcase, Users, UserCog, Rocket, BadgeCheck, Mic, Compass, ShieldCheck, GraduationCap } from "lucide-react";
+import { Building2, Briefcase, Users, UserCog, Rocket, BadgeCheck, Mic, Compass, ShieldCheck, GraduationCap, Ban, AlertTriangle, Flag, HelpCircle } from "lucide-react";
+import { INTRO_RULES } from "./hiringRules";
 
 // Content for the hiring side (/hiring, /hiring/join, /hiring/home).
 
@@ -116,3 +117,92 @@ export const JOBS_COPY = {
   requiredLayersHint: "Developers prove these by passing the layer's test. Candidates then show how many they match.",
   salaryHint: "Optional, but jobs with a salary get a “Salary shown” badge that developers notice.",
 };
+
+// ── Intro requests ──────────────────────────────────────────────────────────
+// The server counts the same limits (INTRO_RULES); the minimum length lives
+// only in the API contract, so it is repeated here.
+export const INTRO_MESSAGE = { min: 20, max: INTRO_RULES.messageMax };
+
+export const INTRO_STATUS_LABELS = {
+  pending: "Pending",
+  accepted: "Accepted",
+  declined: "Declined",
+  expired: "Expired",
+  withdrawn: "Withdrawn",
+};
+
+export const INTRO_FILTERS = [
+  { id: "", label: "All" },
+  ...Object.entries(INTRO_STATUS_LABELS).map(([id, label]) => ({ id, label })),
+];
+
+export const INTRO_REQUEST_COPY = {
+  open: "Request intro",
+  title: (name) => `Request an intro to ${name || "this developer"}`,
+  hint: "Pick the job you're hiring for and say why you're reaching out.",
+  jobLabel: "Which job?",
+  messageLabel: "Your message",
+  placeholder:
+    "Hi! We're building … and your verified API layers and the capstone defense stood out. We'd like a 30-minute call about the role.",
+  preview: `They'll see your company, the job and this message. Requests expire after ${INTRO_RULES.expiryDays} days.`,
+  send: "Send request",
+  sent: "Intro requested",
+  noJobs: "You need an open job to request an intro.",
+  createJob: "Create a job",
+  verifiedOnly: "Only verified companies can request intros.",
+  tooShort: (n) => `${n} more characters to go`,
+};
+
+export const INTROS_PAGE_COPY = {
+  title: "Intros",
+  intro: `Developers see your company, the job and your message. They have ${INTRO_RULES.expiryDays} days to answer; if they decline, you can ask again after ${INTRO_RULES.declineCooldownDays} days. Their email shows here once they accept.`,
+  empty: "No intro requests here yet. Open a candidate and press “Request intro”.",
+  emptyFiltered: "No requests with this status.",
+  withdraw: "Withdraw",
+  withdrawn: "Request withdrawn",
+};
+
+export const INTROS_SUMMARY_COPY = {
+  title: "Intro requests",
+  link: "See all",
+  sentToday: (sent, limit) => `${sent} of ${limit} sent today`,
+};
+
+// Developer inbox (/my-profile/intros).
+export const INBOX_COPY = {
+  title: "Intros",
+  subtitle: (pending) => (pending > 0 ? `${pending} waiting for your answer` : "Companies that want to talk to you"),
+  empty: "No intro requests yet. When a verified company wants to talk to you about a job, it shows up here.",
+  accept: "Accept",
+  decline: "Decline",
+  block: "Block company",
+  report: "Report",
+  accepted: "Accepted. We shared your email with them.",
+  declined: `Declined. This company can't ask you again for ${INTRO_RULES.declineCooldownDays} days.`,
+  blocked: "Company blocked. They can't contact you again.",
+  reported: "Thanks. We'll look into it.",
+  sharedEmail: "We shared your email with them",
+  salaryHidden: "Salary not shown",
+  matchLine: (met, total) => `You match ${met} of ${total}`,
+  blockConfirm: {
+    title: "Block this company?",
+    body: "They won't be able to send you intro requests again, and this request is declined.",
+    confirm: "Block company",
+  },
+  reportTitle: "What's wrong with this request?",
+  reportDetails: "Anything we should know? (optional)",
+  reportSend: "Send report",
+};
+
+export const TRUST_BADGES = {
+  verified: { label: "Verified company", tone: "bg-emerald-500/15 text-emerald-300" },
+  limited: { label: "Limited checks", tone: "bg-amber-500/15 text-amber-300" },
+};
+
+export const REPORT_REASONS = [
+  { id: "spam", Icon: Ban, title: "Spam", body: "Mass message, nothing to do with me." },
+  { id: "scam", Icon: AlertTriangle, title: "Scam", body: "Asks for money, personal data or looks fake." },
+  { id: "inappropriate", Icon: Flag, title: "Inappropriate", body: "Rude, offensive or harassing." },
+  { id: "other", Icon: HelpCircle, title: "Something else", body: "Tell us in the details below." },
+];
+export const REPORT_DETAILS_MAX = 500;
