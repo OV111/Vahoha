@@ -55,8 +55,8 @@ export const NAV_GROUPS_AUTH = [
     items: [
       { label: "Challenges", to: "/coding-challenges", icon: Code2, description: "Graded problems in the browser" },
       { label: "Tests", to: "/roadmaps", match: "/roadmaps/exam", icon: GraduationCap, description: "Pass a layer to unlock the next" },
-      { label: "Mentor", to: "/mentor", icon: Bot, description: "Get unstuck with a mentor that knows your progress" },
       { label: "Judgment", to: "/judgment", icon: Compass, description: "Make real engineering calls and live with them" },
+      { label: "Mentor", to: "/mentor", icon: Bot, description: "Get unstuck with a mentor that knows your progress" },
     ],
   },
   {
