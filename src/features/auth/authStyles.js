@@ -15,7 +15,7 @@ export const eyeBtnClass =
   "absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-md text-[#a3acb9] dark:text-zinc-500 hover:text-[#697386] dark:hover:text-zinc-400 focus-visible:outline-none focus-visible:text-fuchsia-500 cursor-pointer transition-colors max-md:after:absolute max-md:after:-inset-y-0.5 max-md:after:inset-x-0";
 
 // "Continue with Google / GitHub" buttons. One place, so every sign-in screen
-// shows the same button.
+// (learner login, hiring login, hiring sign-up) shows the same button.
 export const socialButtonBase = `relative flex min-h-10 w-full cursor-pointer items-center justify-center gap-2.5 rounded-md border py-2 px-4 text-sm font-medium transition ${tapArea}`;
 export const googleButtonClass = `${socialButtonBase} border-[#e0e0e0] bg-white text-[#30313d] hover:bg-gray-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-neutral-200 dark:hover:bg-white/[0.08]`;
 export const githubButtonClass = `${socialButtonBase} border-[#30363d] bg-[#24292e] text-white hover:bg-[#2f363d] dark:border-white/10 dark:bg-white/[0.04] dark:text-neutral-200 dark:hover:bg-white/[0.08]`;

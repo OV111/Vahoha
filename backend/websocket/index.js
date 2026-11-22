@@ -3,6 +3,7 @@ import { joinRoom, loadLastMessages, sendMessage, reactToMessage, setTyping, cle
 import { bindIo, countUserSockets, userRoom } from "./connectionRegistry.js";
 import { verifyToken } from "../utils/jwtToken.js";
 import { isOriginAllowed } from "./origin.js";
+import { RECRUITER_VIEW_ONLY, roleOf } from "../middleware/blockRecruiters.js";
 import { createMessageLimiter } from "./messageLimiter.js";
 import { AUTH_DEADLINE_MS, MAX_SOCKETS_PER_USER, clientIp, createPendingTracker } from "./connectionLimits.js";
 
@@ -40,11 +41,16 @@ export default function initWebSocketServer(server) {
 
   io.engine.on("connection", (conn) => pending.track(conn, clientIp(conn.request)));
 
-  io.use((socket, next) => {
+  io.use(async (socket, next) => {
     const decoded = verifyToken(socket.handshake.auth?.token);
     if (!decoded) return next(new Error(CONNECT_UNAUTHORIZED));
     if (countUserSockets(decoded.id) >= MAX_SOCKETS_PER_USER) return next(new Error(CONNECT_TOO_MANY));
     socket.data.userId = decoded.id;
+    try {
+      socket.data.role = await roleOf(decoded.id);
+    } catch {
+      socket.data.role = "user";
+    }
     next();
   });
 
@@ -54,7 +60,12 @@ export default function initWebSocketServer(server) {
     socket.on("disconnecting", () => clearTyping(socket));
 
     const checkRate = createMessageLimiter();
-    socket.use((_packet, next) => {
+    socket.use((packet, next) => {
+      // Hiring accounts keep the socket for their notifications, but can't chat:
+      // contacting a developer goes through an intro request they accept first.
+      if (socket.data.role === "recruiter" && packet[0] in HANDLERS) {
+        return socket.emit("chat_error", { code: RECRUITER_VIEW_ONLY, message: "Hiring accounts can't use chat." });
+      }
       const rate = checkRate();
       if (rate === "close") return socket.disconnect(true);
       if (rate === "limited") {

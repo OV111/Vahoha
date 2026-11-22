@@ -2,6 +2,7 @@ import { Github, Instagram, Mail } from "lucide-react";
 import XLogo from "../src/components/ui/XLogo";
 import { SITE } from "./site";
 import { CATEGORY_OPTIONS, categoryHref } from "./categories";
+import { FEATURES } from "./features";
 
 // Footer link columns and social icons (rendered by src/layouts/Footer.jsx).
 
@@ -24,6 +25,7 @@ export const AI_LINKS = [
 ];
 export const COMPANY_LINKS = [
   { title: "About", to: "/about" },
+  ...(FEATURES.hiring ? [{ title: "For companies", to: "/hiring" }] : []),
   { title: "Blog", to: "/blogs" },
   { title: "Contact", to: "/contact" },
   { title: "Privacy Policy", to: "/privacy" },

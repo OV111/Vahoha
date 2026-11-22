@@ -1,5 +1,9 @@
 // Single source for brand + contact details. Footer, Contact and About all
 // read from here, so changing an address or handle is a one-line edit.
+// Sign-up for learners. Pages that are clearly for learners link here, so they
+// skip the "Join as developer or hiring" choice on /get-started.
+export const DEVELOPER_SIGNUP_PATH = "/get-started?as=developer";
+
 export const SITE = {
   name: "Vahoha",
   url: "https://vahoha.com",

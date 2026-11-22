@@ -11,8 +11,12 @@ import PasswordField from "../features/auth/components/PasswordField";
 import SocialSignIn from "../features/auth/components/SocialSignIn";
 import { tapArea } from "../features/auth/authStyles";
 import { logIn, signUp } from "../services/authApi";
+import { landingPath } from "../features/hiring/lib/landingPath";
+import { HIRING_LOGIN, JOIN_AS } from "../../constants/hiring";
+import JoinAsChoice from "../features/hiring/components/JoinAsChoice";
 import PixelBackground from "../components/home/PixelBackground";
 import { SURFACE } from "../components/ui/surface";
+import { FEATURES } from "../../constants/features";
 
 
 const nameRules = (label) => ({
@@ -43,6 +47,11 @@ const GetStarted = () => {
   // "Start free" links switch the form even while this page is mounted.
   const [searchParams, setSearchParams] = useSearchParams();
   const isSignedUp = searchParams.get("mode") !== "login";
+  // ?for=hiring: the same login, worded for recruiters. Where the user lands
+  // after it is decided by their account (landingPath), not by this flag.
+  const isHiring = FEATURES.hiring && searchParams.get("for") === "hiring" && !isSignedUp;
+  // Sign-up starts with "developer or hiring?" unless the link already said developer.
+  const showJoinAs = FEATURES.hiring && isSignedUp && searchParams.get("as") !== "developer";
 
   const {
     register,
@@ -69,7 +78,7 @@ const GetStarted = () => {
       login(result.accessToken);
       reset();
       // A new account starts at the roadmap, where the first tour is.
-      navigate(isSignedUp ? "/roadmaps" : "/");
+      navigate(isSignedUp ? "/roadmaps" : await landingPath("/"));
     } catch (err) {
       if (err.status === 429) {
         showError(err.message || "Too many attempts. Please try again later.");
@@ -97,10 +106,16 @@ const GetStarted = () => {
       <PixelBackground sideDensity={3} centerDensity={1} contentWidth={560} />
       <div className={`w-full max-w-[520px] px-5 py-8 sm:px-8 sm:py-10 ${SURFACE}`}>
         <h1 className="mb-1 flex justify-center text-[22px] leading-tight font-semibold text-[#1a1f36] sm:text-[24px] dark:text-white">
-          {isSignedUp ? "Create your account" : "Sign in to your account"}
+          {showJoinAs ? JOIN_AS.title : isSignedUp ? "Create your account" : isHiring ? HIRING_LOGIN.title : "Sign in to your account"}
         </h1>
         <p className="mb-6 flex justify-center text-center text-[13.5px] text-[#697386] dark:text-zinc-400">
-          {isSignedUp ? "Join Vahoha and start building today." : "Welcome back! Enter your details below."}
+          {showJoinAs
+            ? JOIN_AS.subtitle
+            : isSignedUp
+            ? "Join Vahoha and start building today."
+            : isHiring
+              ? HIRING_LOGIN.subtitle
+              : "Welcome back! Enter your details below."}
         </p>
 
         {authUiMessage && (
@@ -109,6 +124,10 @@ const GetStarted = () => {
           </div>
         )}
 
+        {showJoinAs ? (
+          <JoinAsChoice onDeveloper={() => setSearchParams({ mode: "signup", as: "developer" }, { replace: true })} />
+        ) : (
+        <>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {isSignedUp && (
             <div className="flex flex-col gap-3 sm:flex-row">
@@ -142,7 +161,7 @@ const GetStarted = () => {
             autoComplete="email"
             inputMode="email"
             maxLength={254}
-            placeholder="johndoe@example.com"
+            placeholder={isHiring ? HIRING_LOGIN.emailPlaceholder : "johndoe@example.com"}
             registration={register("email", {
               required: "Email is required.",
               maxLength: { value: 254, message: "Max 254 characters." },
@@ -209,14 +228,28 @@ const GetStarted = () => {
           <div className="grow border-t border-[#e0e0e0] dark:border-white/10" />
         </div>
 
-        <SocialSignIn />
+        <SocialSignIn github={!isHiring} />
+        </>
+        )}
 
         <p className="mt-5 text-center text-[13.5px] text-[#697386] dark:text-zinc-400">
-          {isSignedUp ? "Already have an account? " : "Don't have an account? "}
-          <button type="button" onClick={toggleMode} className={`${linkClass} cursor-pointer px-1 font-medium`}>
-            {isSignedUp ? "Sign in" : "Create account"}
-          </button>
+          {isHiring ? (
+            <>
+              {HIRING_LOGIN.newHere}
+              <Link to="/hiring/join" className={`${linkClass} px-1 font-medium`}>
+                {HIRING_LOGIN.createLink}
+              </Link>
+            </>
+          ) : (
+            <>
+              {isSignedUp ? "Already have an account? " : "Don't have an account? "}
+              <button type="button" onClick={toggleMode} className={`${linkClass} cursor-pointer px-1 font-medium`}>
+                {isSignedUp ? "Sign in" : "Create account"}
+              </button>
+            </>
+          )}
         </p>
+
       </div>
     </div>
   );

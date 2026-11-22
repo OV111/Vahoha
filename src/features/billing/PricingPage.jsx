@@ -4,6 +4,7 @@ import useAuthStore from "../../stores/useAuthStore";
 import useBilling from "./hooks/useBilling";
 import PlanCard from "./components/PlanCard";
 import { PLANS } from "./plans";
+import { DEVELOPER_SIGNUP_PATH } from "../../../constants/site";
 
 const PricingPage = () => {
   const { auth: isAuthed } = useAuthStore();
@@ -30,14 +31,14 @@ const PricingPage = () => {
   // and handed to the presentational PlanCard as plain data.
   const ctaFor = (plan) => {
     if (plan.id === "free") {
-      if (!isAuthed) return { label: "Get started free", to: "/get-started" };
+      if (!isAuthed) return { label: "Get started free", to: DEVELOPER_SIGNUP_PATH };
       return { label: isPro ? "Included in Pro" : "Current plan", disabled: true };
     }
     if (plan.id === "teams") {
       return { label: "Contact sales", to: "/contact" };
     }
     // Pro
-    if (!isAuthed) return { label: "Get started", to: "/get-started" };
+    if (!isAuthed) return { label: "Get started", to: DEVELOPER_SIGNUP_PATH };
     if (isPro) return { label: "Manage plan", to: "/billing" };
     return {
       label: busy === "checkout" ? "Redirecting…" : "Upgrade to Pro",

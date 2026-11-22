@@ -10,7 +10,7 @@ import useAuthStore from "./stores/useAuthStore";
 import useNotificationStore from "./stores/useNotificationStore";
 import useBlogInteractionsStore from "./stores/useBlogInteractionsStore";
 import useProfileStore from "./stores/useProfileStore";
-import { setPlanRequiredHandler } from "./lib/session";
+import { setPlanRequiredHandler, setViewOnlyHandler } from "./lib/session";
 
 // The server decides; this only explains the decision. A fixed toast id, so a
 // burst of refused requests shows one toast, not a stack.
@@ -19,6 +19,12 @@ setPlanRequiredHandler(({ message }) => {
     id: "plan-required",
     action: { label: "See Pro", onClick: () => router.navigate("/pricing") },
   });
+});
+
+// A hiring account pressed something on the learner side: one calm explanation,
+// whatever button it was (the specific buttons are disabled too, this is the net).
+setViewOnlyHandler(({ message }) => {
+  toast(message ?? "Hiring accounts can view this, not take part.", { id: "recruiter-view-only" });
 });
 
 

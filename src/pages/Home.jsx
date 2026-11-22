@@ -5,6 +5,7 @@ import RiseText from "../components/home/RiseText";
 import PixelBackground from "../components/home/PixelBackground";
 import Divider from "../components/ui/Divider";
 import vahohaMark from "@/assets/brand/vahoha-mark-96.webp";
+import { DEVELOPER_SIGNUP_PATH } from "../../constants/site";
 
 const HowItWorks = lazy(() => import("../components/home/HowItWorks"));
 
@@ -57,7 +58,7 @@ const Home = () => {
           style={{ "--delay": "800ms" }}
         >
           <Link
-            to={auth ? "/roadmaps" : "/get-started"}
+            to={auth ? "/roadmaps" : DEVELOPER_SIGNUP_PATH}
             className="flex min-h-9 items-center justify-center rounded-full sm:min-h-11 bg-white px-4 py-1.5 text-[13px] sm:px-5 sm:py-2.5 sm:text-[14px] leading-[20px] font-medium text-black transition hover:bg-neutral-200"
           >
             {/* The label fits who is looking: a signed-in user is already on a path. */}

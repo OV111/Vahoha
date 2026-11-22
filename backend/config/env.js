@@ -396,6 +396,15 @@ export const ENV_SPECS = [
     effect: "the candidates API stays closed",
   },
   {
+    name: "HIRING_ENABLED",
+    group: "flags",
+    requirement: "optional",
+    kind: "flag",
+    description: "true opens the hiring sign-up API (recruiter accounts and the company trust engine).",
+    example: "false",
+    effect: "the hiring API answers 404",
+  },
+  {
     name: "MAINTENANCE_MODE",
     group: "flags",
     requirement: "optional",

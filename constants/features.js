@@ -6,7 +6,11 @@
  * item and no route, so the URL is a plain 404. The API side has its own
  * switch, CANDIDATES_ENABLED=true, so closing only one half can never leave
  * a working page over a dead endpoint or the other way round by accident.
+ *
+ * hiring: the recruiter side (/hiring, /hiring/join, /hiring/home). UI only, no
+ * backend yet, so it is on in local dev and off in every build.
  */
 export const FEATURES = Object.freeze({
   candidates: false,
+  hiring: import.meta.env.DEV,
 });

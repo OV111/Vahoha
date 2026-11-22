@@ -16,9 +16,12 @@ import {
   FlaskConical,
   Workflow,
   Compass,
+  Briefcase,
+  Building2,
 } from "lucide-react";
 import { CATEGORY_OPTIONS, categoryHref } from "./categories";
 import { FEATURES } from "./features";
+import { DEVELOPER_SIGNUP_PATH } from "./site";
 
 // Career-track pages, shared by the Learn menu and the guests' Tracks menu.
 export const TRACK_LINKS = CATEGORY_OPTIONS.map((category) => ({
@@ -83,7 +86,7 @@ export const NAV_GROUPS_GUEST = NAV_GROUPS_AUTH.map((group) => ({
   ...group,
   to: group.public ? group.to : undefined,
   items: group.items.map((item) =>
-    item.public ? item : { ...item, to: "/get-started", locked: true },
+    item.public ? item : { ...item, to: DEVELOPER_SIGNUP_PATH, locked: true },
   ),
 }));
 
@@ -96,5 +99,37 @@ export const AVATAR_MENU_ITEMS = [
   { label: "My Profile", to: "/my-profile", icon: User },
   { label: "Notifications", to: "/my-profile/notifications", icon: Bell },
   { label: "Billing", to: "/billing", icon: CreditCard },
+  { label: "Settings", to: "/my-profile/settings", icon: SettingsIcon },
+];
+
+// Hiring accounts get their own, shorter map: the hiring side first, then the
+// learning side they may look at (view-only; see constants/recruiterAccess.js).
+export const NAV_GROUPS_RECRUITER = [
+  {
+    label: "Hiring",
+    to: "/hiring/home",
+    items: [
+      { label: "Hiring home", to: "/hiring/home", icon: Briefcase, description: "Your company, trust level and activity" },
+      ...(FEATURES.candidates
+        ? [{ label: "Candidates", to: "/candidates", icon: UserSearch, description: "Developers who chose to be found" }]
+        : []),
+    ],
+  },
+  {
+    label: "Learning",
+    to: "/roadmaps",
+    items: [
+      { label: "Roadmaps", to: "/roadmaps", icon: Map, description: "See what each layer and test covers" },
+      { label: "Challenges", to: "/coding-challenges", icon: Code2, description: "The problems developers solve" },
+      { label: "Labs", to: "/labs", icon: FlaskConical, description: "The hands-on practice behind each lesson" },
+      { label: "Code Library", to: "/libs", icon: Library, description: "Books, docs and guides" },
+      { label: "Blog", to: "/blogs", icon: Newspaper, description: "Posts from the community" },
+    ],
+  },
+];
+
+export const AVATAR_MENU_ITEMS_RECRUITER = [
+  { label: "Hiring home", to: "/hiring/home", icon: Building2 },
+  { label: "Notifications", to: "/my-profile/notifications", icon: Bell },
   { label: "Settings", to: "/my-profile/settings", icon: SettingsIcon },
 ];

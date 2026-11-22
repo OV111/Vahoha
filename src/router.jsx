@@ -76,6 +76,10 @@ const EvidencePage = lazy(() => import("./features/teams/EvidencePage"));
 
 const CandidatePage = lazy(() => import("./features/recruiter/CandidatePage"));
 const CandidatesPage = lazy(() => import("./features/recruiter/CandidatesPage"));
+const HiringLandingPage = lazy(() => import("./features/hiring/HiringLandingPage"));
+const HiringJoinPage = lazy(() => import("./features/hiring/HiringJoinPage"));
+const RecruiterHomePage = lazy(() => import("./features/hiring/RecruiterHomePage"));
+const HiringAdminPage = lazy(() => import("./features/hiring/HiringAdminPage"));
 
 const PricingPage = lazy(() => import("./features/billing/PricingPage"));
 const BillingPage = lazy(() => import("./features/billing/BillingPage"));
@@ -98,6 +102,13 @@ const publicRoutes = [
   { path: "pricing", element: <PricingPage /> },
   { path: "roadmaps", element: <RoadmapPage /> },
   { path: "posts/:id", element: <ReadMore /> },
+  ...(FEATURES.hiring
+    ? [
+        { path: "hiring", element: <HiringLandingPage /> },
+        { path: "hiring/join", element: <HiringJoinPage /> },
+        { path: "hiring/home", element: <RecruiterHomePage /> },
+      ]
+    : []),
 ];
 
 const authRoutes = [
@@ -165,6 +176,7 @@ const protectedRoutes = [
   { path: "team/:teamId", element: <TeamPage /> },
 
   ...(FEATURES.candidates ? [{ path: "candidates", element: <CandidatesPage /> }] : []),
+  ...(FEATURES.hiring ? [{ path: "hiring/admin", element: <HiringAdminPage /> }] : []),
 
   { path: "users/:username", element: <UserProfile /> },
   {

@@ -5,6 +5,7 @@ import { BadgeCheck, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { recruiterApi } from "./recruiterApi";
 import { PAGE } from "../../../constants/layout";
+import HireCta from "../hiring/components/HireCta";
 
 /**
  * Public candidate scorecard: /candidate/:username. No account needed.
@@ -79,6 +80,8 @@ export default function CandidatePage() {
           merged pull requests.
         </p>
       </header>
+
+      <HireCta name={card.name?.split(" ")[0]} />
 
       {card.capstones && (
         <Section title="Capstones">

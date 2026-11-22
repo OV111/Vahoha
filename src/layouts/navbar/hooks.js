@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import useAuthStore from "@/stores/useAuthStore";
+import useProfileStore from "@/stores/useProfileStore";
+import { FEATURES } from "../../../constants/features";
 
 /**
  * Open/closed state for every navbar menu, plus the rules that close them.
@@ -81,3 +84,11 @@ export function useNavbarHeightVar(navRef) {
     return () => observer.disconnect();
   }, [navRef]);
 }
+
+// Signed-in hiring account? Unknown (false) until the profile has loaded, so the
+// learner menus show for a moment at most; the server and RecruiterGate cover that.
+export const useIsRecruiter = () => {
+  const auth = useAuthStore((s) => s.auth);
+  const role = useProfileStore((s) => s.user?.role);
+  return Boolean(FEATURES.hiring && auth && role === "recruiter");
+};

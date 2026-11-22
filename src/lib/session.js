@@ -183,11 +183,19 @@ export const setPlanRequiredHandler = (fn) => {
   onPlanRequired = fn;
 };
 
+// Called with { message } when the server refuses a hiring account on the learner
+// side (403, reason "recruiter_view_only"; see backend/middleware/blockRecruiters.js).
+let onViewOnly = () => {};
+export const setViewOnlyHandler = (fn) => {
+  onViewOnly = fn;
+};
+
 const reportPlanRequired = async (res) => {
   if (res.status !== 403) return;
   // clone(): the caller still reads the body itself.
   const body = await res.clone().json().catch(() => ({}));
   if (body.code === "PLAN_REQUIRED") onPlanRequired({ message: body.message, requiredPlan: body.requiredPlan });
+  if (body.reason === "recruiter_view_only") onViewOnly({ message: body.message });
 };
 
 const READ_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);

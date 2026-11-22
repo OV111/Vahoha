@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useAuthStore from "../../stores/useAuthStore";
+import { landingPath } from "../../features/hiring/lib/landingPath";
 
 const OAuthSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -18,7 +19,7 @@ const OAuthSuccess = () => {
       await init();
       const { auth } = useAuthStore.getState();
       if (auth) {
-        navigate(linked ? "/my-profile/connected-accounts" : "/");
+        navigate(linked ? "/my-profile/connected-accounts" : await landingPath("/"));
       } else {
         navigate("/get-started");
       }
