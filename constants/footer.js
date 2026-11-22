@@ -20,6 +20,9 @@ export const PRODUCT_LINKS = [
   { title: "Pricing", to: "/pricing" },
 ];
 export const AI_LINKS = [
+  { title: "Judgment Simulator", to: "/judgment" },
+  // Exams start from a roadmap layer; there is no standalone exam page yet.
+  { title: "Voice exams", to: "/roadmaps" },
   { title: "Foundations", to: "/labs/foundations" },
   { title: "Mentor", to: "/mentor" },
 ];
