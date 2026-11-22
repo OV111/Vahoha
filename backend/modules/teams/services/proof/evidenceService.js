@@ -24,7 +24,7 @@ const newPublicId = () => randomBytes(9).toString("base64url"); // 12 chars, 72 
 
 const displayName = (u) => [u?.firstName, u?.lastName].filter(Boolean).join(" ") || u?.username || "Member";
 
-const buildSnapshot = async (db, team) => {
+export const buildSnapshot = async (db, team) => {
   const memberIds = team.members.map((m) => m.userId);
   const [users, contributions, defenses, ratings, map] = await Promise.all([
     db

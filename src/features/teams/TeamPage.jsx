@@ -82,7 +82,7 @@ export default function TeamPage() {
   return shell(
     <>
       <header className="flex flex-col gap-2">
-        <Link to="/teams" className="t-link inline-flex w-fit items-center gap-1 t-caption">
+        <Link to="/teams" className="t-back">
           <ArrowLeft size={12} aria-hidden="true" />
           All teams
         </Link>

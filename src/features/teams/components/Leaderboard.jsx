@@ -28,19 +28,18 @@ function ScoreBar({ value, mine }) {
 
 function Breakdown({ row }) {
   return (
-    <div className="flex flex-col gap-3 px-4 pb-4 sm:pl-14">
-      <dl className="grid gap-2 sm:grid-cols-5">
+    // Left edge lines up with the team name: row padding + rank column + gap.
+    <div className="flex flex-col gap-3 px-4 pb-4 sm:pl-[68px] sm:pr-4">
+      <dl className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
         {SIGNALS.map((s) => (
-          <div key={s.key} className="flex flex-col gap-1" title={s.help}>
-            <dt className="t-caption">{s.label}</dt>
-            <dd className="flex items-center gap-2">
-              <span className="t-bar t-bar-thin flex-1" aria-hidden="true">
-                <span style={{ width: `${pct(row.breakdown[s.key])}%` }} />
-              </span>
-              <span className="t-mono w-8 text-right tabular-nums text-[var(--t-mist)]">
-                {pct(row.breakdown[s.key])}
-              </span>
-            </dd>
+          <div key={s.key} className="t-card-subtle flex flex-col gap-2 !px-3 !py-2.5" title={s.help}>
+            <span className="flex items-baseline justify-between gap-2">
+              <dt className="truncate text-xs text-[var(--t-fog)]">{s.label}</dt>
+              <dd className="text-sm font-[510] tabular-nums text-[var(--t-paper)]">{pct(row.breakdown[s.key])}</dd>
+            </span>
+            <span className="t-bar t-bar-thin" aria-hidden="true">
+              <span style={{ width: `${pct(row.breakdown[s.key])}%` }} />
+            </span>
           </div>
         ))}
       </dl>
@@ -48,7 +47,7 @@ function Breakdown({ row }) {
         href={row.evidencePath}
         target="_blank"
         rel="noopener noreferrer"
-        className="t-link inline-flex w-fit items-center gap-1.5"
+        className="t-btn t-btn-ghost t-btn-sm w-fit"
       >
         View evidence page
         <ExternalLink size={12} aria-hidden="true" />

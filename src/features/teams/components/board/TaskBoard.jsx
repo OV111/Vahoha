@@ -163,7 +163,7 @@ export default function TaskBoard({ team, members }) {
           {team.repo && (
             <button
               type="button"
-              className="t-btn t-btn-ghost inline-flex items-center gap-1.5"
+              className="t-btn t-btn-ghost t-btn-sm inline-flex items-center gap-1.5"
               onClick={() => syncWithGithub()}
               disabled={syncing}
             >
@@ -176,7 +176,7 @@ export default function TaskBoard({ team, members }) {
             <button type="button" aria-pressed={mine} onClick={() => setMine(true)}>My tasks</button>
           </div>
           {canWrite && (
-            <button type="button" className="t-btn t-btn-primary inline-flex items-center gap-1.5" onClick={() => setDialog({ key: null })}>
+            <button type="button" className="t-btn t-btn-primary t-btn-sm inline-flex items-center gap-1.5" onClick={() => setDialog({ key: null })}>
               <Plus size={14} aria-hidden="true" />
               New task
             </button>

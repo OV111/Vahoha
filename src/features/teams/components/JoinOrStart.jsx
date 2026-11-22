@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Github, Users } from "lucide-react";
 import { ROADMAP_DOMAINS } from "../../../../constants/categories";
 import { teamsApi } from "../teamsApi";
+import TSelect from "./TSelect";
 
 /**
  * For a signed-in learner who isn't on a team: start one, or join one that is
@@ -32,6 +33,11 @@ function StartForm({ tracks, passedTracks, onStart, busy }) {
   const domains = groupByDomain(others);
   const [name, setName] = useState("");
   const [trackId, setTrackId] = useState(mine[0]?.trackId ?? others[0]?.trackId ?? "");
+  const asOptions = (list) => list.map((t) => ({ value: t.trackId, label: t.trackTitle }));
+  const trackGroups = [
+    ...(mine.length > 0 ? [{ label: "Your capstones", options: asOptions(mine) }] : []),
+    ...domains.map((d) => ({ label: d.label, options: asOptions(d.items) })),
+  ];
 
   return (
     <form
@@ -50,25 +56,10 @@ function StartForm({ tracks, passedTracks, onStart, busy }) {
           Team name
           <input className="t-input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Task Arena" minLength={2} maxLength={60} required />
         </label>
-        <label className="flex flex-col gap-1 t-caption">
+        <div className="flex flex-col gap-1 t-caption">
           Track
-          <select className="t-input" value={trackId} onChange={(e) => setTrackId(e.target.value)}>
-            {mine.length > 0 && (
-              <optgroup label="Your capstones">
-                {mine.map((t) => (
-                  <option key={t.trackId} value={t.trackId}>{t.trackTitle}</option>
-                ))}
-              </optgroup>
-            )}
-            {domains.map((d) => (
-              <optgroup key={d.id} label={d.label}>
-                {d.items.map((t) => (
-                  <option key={t.trackId} value={t.trackId}>{t.trackTitle}</option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
-        </label>
+          <TSelect label="Track" value={trackId} onChange={setTrackId} groups={trackGroups} />
+        </div>
       </div>
       <button type="submit" className="t-btn t-btn-primary w-fit" disabled={busy || name.trim().length < 2 || !trackId}>
         Start team

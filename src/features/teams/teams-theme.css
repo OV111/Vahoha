@@ -5,7 +5,9 @@
  * Linear gives to acid lime): one filled purple button per view, never decoration.
  */
 
-.teams-theme {
+/* Dropdown lists render in a portal outside .teams-theme, so they carry the tokens too. */
+.teams-theme,
+.teams-theme-popover {
   /* Surfaces: void -> carbon -> obsidian -> slate */
   --t-void: #000000; /* matches MainLayout bg-black so there is no seam */
   --t-carbon: #0f1011;
@@ -38,6 +40,10 @@
   --t-mono: "Geist Mono Variable", "JetBrains Mono", ui-monospace,
     SFMono-Regular, Menlo, Consolas, monospace;
 
+  font-family: var(--t-font);
+}
+
+.teams-theme {
   min-height: 100vh;
   background: var(--t-void);
   color: var(--t-mist);
@@ -45,6 +51,8 @@
   font-size: 16px;
   line-height: 1.5;
 }
+/* A nested theme (the task dialog) only needs the tokens, not a full-screen height */
+.teams-theme .teams-theme { min-height: 0; }
 
 /* Headings: weight 510, tight tracking, never bold */
 .teams-theme .t-h1 {
@@ -84,6 +92,19 @@
 .teams-theme .t-link:hover {
   color: var(--t-paper);
 }
+/* Back link: navigation, not an action, so neutral instead of the accent */
+.teams-theme .t-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+  color: var(--t-fog);
+  font-size: 13px;
+  transition: color 120ms;
+}
+.teams-theme .t-back:hover {
+  color: var(--t-paper);
+}
 
 /* Section separator: hairline, not shadow */
 .teams-theme .t-section {
@@ -118,15 +139,30 @@
   font-size: 14px;
   font-weight: 510;
   letter-spacing: -0.011em;
-  padding: 10px 16px;
+  min-height: 40px;
+  padding: 0 16px;
+  /* Plain .t-btn is the secondary button: hairline edge, faint fill */
+  border: 1px solid var(--t-border-strong);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--t-paper);
   cursor: pointer;
   transition: background 120ms, border-color 120ms, color 120ms;
+}
+.teams-theme .t-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
 }
 .teams-theme .t-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
+/* Toolbar size: buttons, segmented controls and dropdowns in one row share 36px */
+.teams-theme .t-btn.t-btn-sm {
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 13px;
+}
 .teams-theme .t-btn-primary {
+  border-color: transparent;
   background: var(--t-accent);
   color: var(--t-paper);
 }
@@ -476,11 +512,81 @@
 .teams-theme .t-task:focus-visible { outline: 2px solid var(--t-accent); outline-offset: 2px; }
 .teams-theme .t-task[draggable="true"] { cursor: grab; }
 
-/* Native dropdowns: the open list follows the dark theme instead of the OS default white */
-.teams-theme select.t-input { color-scheme: dark; }
-.teams-theme select.t-input option,
-.teams-theme select.t-input optgroup {
-  background: var(--t-carbon);
+/* ---- Dropdown (TSelect) ---- */
+
+.teams-theme .t-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 12px 0 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
   color: var(--t-mist);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 120ms, background 120ms;
 }
-.teams-theme select.t-input optgroup { color: var(--t-fog); font-weight: 600; }
+.teams-theme .t-select:hover:not([data-disabled]) { border-color: var(--t-border-strong); }
+.teams-theme .t-select[data-open] {
+  border-color: var(--t-accent-text);
+  background: rgba(255, 255, 255, 0.04);
+}
+.teams-theme .t-select[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+.teams-theme .t-select.t-select-sm { min-height: 36px; font-size: 13px; padding: 0 10px 0 12px; }
+.teams-theme .t-select-chevron {
+  flex-shrink: 0;
+  color: var(--t-fog);
+  transition: transform 150ms;
+}
+.teams-theme .t-select[data-open] .t-select-chevron { transform: rotate(180deg); }
+
+.t-select-list {
+  z-index: 60;
+  width: var(--button-width);
+  min-width: 180px;
+  /* Headless UI writes max-height inline from this variable, so a plain max-height is ignored */
+  --anchor-max-height: 288px;
+  overflow-y: auto;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--t-obsidian);
+  box-shadow: inset 0 0 0 1px var(--t-border-strong), 0 12px 32px rgba(0, 0, 0, 0.6);
+  outline: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--t-slate) transparent;
+  --anchor-gap: 6px;
+  transition: opacity 100ms ease-out, transform 100ms ease-out;
+}
+.t-select-list[data-closed] { opacity: 0; transform: translateY(-4px); }
+.t-select-group {
+  padding: 10px 10px 4px;
+  color: var(--t-ash);
+  font-size: 11px;
+  font-weight: 510;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.t-select-group:first-child { padding-top: 6px; }
+.t-select-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: var(--t-mist);
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+}
+.t-select-option[data-focus] { background: var(--t-slate); color: var(--t-paper); }
+.t-select-option[data-selected] { color: var(--t-accent-text); }
+.t-select-option[data-disabled] { opacity: 0.4; cursor: not-allowed; }
+.t-select-check { flex-shrink: 0; visibility: hidden; color: var(--t-accent-text); }
+.t-select-option[data-selected] .t-select-check { visibility: visible; }
+@media (prefers-reduced-motion: reduce) {
+  .t-select-list, .teams-theme .t-select-chevron { transition: none; }
+}

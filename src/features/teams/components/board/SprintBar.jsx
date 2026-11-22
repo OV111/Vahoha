@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import TSelect from "../TSelect";
 
 /**
  * Sprint picker, progress for the picked sprint, and (lead / co-lead only)
@@ -58,31 +59,32 @@ export default function SprintBar({ sprints, selected, onSelect, canPlan, onCrea
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2">
-        <label className="flex items-center gap-2 t-caption">
-          <span className="sr-only">Show</span>
-          <select className="t-input w-auto" value={selected} onChange={(e) => onSelect(e.target.value)}>
-            <option value="all">All tasks</option>
-            <option value="none">Not in a sprint</option>
-            {sprints.map((s) => (
-              <option key={s._id} value={s._id}>
-                {s.name}
-                {s.status === "active" ? " (active)" : s.status === "closed" ? " (closed)" : ""}
-              </option>
-            ))}
-          </select>
-        </label>
+        <TSelect
+          label="Show"
+          className="t-select-sm w-52"
+          value={selected}
+          onChange={onSelect}
+          options={[
+            { value: "all", label: "All tasks" },
+            { value: "none", label: "Not in a sprint" },
+            ...sprints.map((s) => ({
+              value: s._id,
+              label: `${s.name}${s.status === "active" ? " (active)" : s.status === "closed" ? " (closed)" : ""}`,
+            })),
+          ]}
+        />
         {canPlan && sprint?.status === "planned" && (
-          <button type="button" className="t-btn" disabled={busy} onClick={() => onSetStatus(sprint, "active")}>
+          <button type="button" className="t-btn t-btn-sm" disabled={busy} onClick={() => onSetStatus(sprint, "active")}>
             Start sprint
           </button>
         )}
         {canPlan && sprint?.status === "active" && (
-          <button type="button" className="t-btn" disabled={busy} onClick={() => setClosing(sprint)}>
+          <button type="button" className="t-btn t-btn-sm" disabled={busy} onClick={() => setClosing(sprint)}>
             Close sprint
           </button>
         )}
         {canPlan && !creating && (
-          <button type="button" className="t-btn t-btn-ghost" onClick={() => setCreating(true)}>
+          <button type="button" className="t-btn t-btn-ghost t-btn-sm" onClick={() => setCreating(true)}>
             New sprint
           </button>
         )}

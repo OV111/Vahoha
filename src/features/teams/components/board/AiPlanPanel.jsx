@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Bot } from "lucide-react";
 import { AI_LEAD } from "../../../../../constants/teams";
 import { teamsApi } from "../../teamsApi";
+import TSelect from "../TSelect";
 
 /**
  * The AI lead's sprint plan: ask for a draft, review it task by task (keep or
@@ -25,22 +26,18 @@ function PlanRequestForm({ sprints, defaultSprintId, onSubmit, onCancel, busy })
       }}
     >
       <div className="grid gap-3 sm:grid-cols-2">
-        <label className="flex flex-col gap-1 t-caption">
+        <div className="flex flex-col gap-1 t-caption">
           Sprint
-          <select
-            className="t-input"
+          <TSelect
+            label="Sprint"
             value={sprintId}
-            onChange={(e) => {
-              setSprintId(e.target.value);
-              setGoal(open.find((s) => s._id === e.target.value)?.goal ?? goal);
+            onChange={(id) => {
+              setSprintId(id);
+              setGoal(open.find((s) => s._id === id)?.goal ?? goal);
             }}
-          >
-            <option value="">Not in a sprint</option>
-            {open.map((s) => (
-              <option key={s._id} value={s._id}>{s.name}</option>
-            ))}
-          </select>
-        </label>
+            options={[{ value: "", label: "Not in a sprint" }, ...open.map((s) => ({ value: s._id, label: s.name }))]}
+          />
+        </div>
         <label className="flex flex-col gap-1 t-caption">
           Goal
           <input className="t-input" value={goal} onChange={(e) => setGoal(e.target.value)} placeholder="Users can sign up, log in and reset a password" maxLength={300} required minLength={5} />
@@ -103,17 +100,13 @@ function PlanReview({ plan, members, canPlan, busy, onAccept, onDiscard }) {
               {t.description && <p className="t-caption">{t.description}</p>}
               <span className="flex flex-wrap items-center gap-2 t-caption">
                 {canPlan ? (
-                  <select
-                    className="t-input w-auto"
+                  <TSelect
+                    label={`Who takes "${t.title}"`}
+                    className="t-select-sm w-48"
                     value={assignees[i]}
-                    onChange={(e) => setAssignees((cur) => cur.map((v, j) => (j === i ? e.target.value : v)))}
-                    aria-label={`Who takes "${t.title}"`}
-                  >
-                    <option value="">Unassigned</option>
-                    {members.map((m) => (
-                      <option key={m.userId} value={m.userId}>@{m.githubLogin}</option>
-                    ))}
-                  </select>
+                    onChange={(id) => setAssignees((cur) => cur.map((v, j) => (j === i ? id : v)))}
+                    options={[{ value: "", label: "Unassigned" }, ...members.map((m) => ({ value: m.userId, label: `@${m.githubLogin}` }))]}
+                  />
                 ) : (
                   <span className="t-mono">{t.assigneeLogin ? `@${t.assigneeLogin}` : "Unassigned"}</span>
                 )}

@@ -9,6 +9,7 @@ import {
   TASK_STATUS_LABELS,
 } from "../../../../../constants/teams";
 import { teamsApi } from "../../teamsApi";
+import TSelect from "../TSelect";
 
 /**
  * Create or edit one task, and read or add its comments. The server repeats
@@ -50,6 +51,16 @@ function Field({ label, children }) {
       {label}
       {children}
     </label>
+  );
+}
+
+// A div, not a <label>: the Listbox button carries its own accessible name.
+function SelectField({ label, ...props }) {
+  return (
+    <div className="flex flex-col gap-1 t-caption">
+      {label}
+      <TSelect label={label} {...props} />
+    </div>
   );
 }
 
@@ -123,6 +134,7 @@ export default function TaskDialog({ team, taskKey, sprints, defaultSprintId, me
   }, [onClose, confirmDelete]);
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+  const pick = (key) => (value) => setForm((f) => ({ ...f, [key]: value }));
   const loginOf = (userId) => members.find((m) => m.userId === userId)?.githubLogin;
   const viewer = team.viewerId;
   const isDone = task?.status === "done";
@@ -214,41 +226,51 @@ export default function TaskDialog({ team, taskKey, sprints, defaultSprintId, me
               </Field>
   
               <div className="grid gap-3 sm:grid-cols-3">
-                <Field label="Status">
-                  <select className="t-input" value={form.status} onChange={set("status")} disabled={!editable && !isNew}>
-                    {(isNew ? ["backlog", "in_progress"] : MANUAL_TASK_STATUSES).map((s) => (
-                      <option key={s} value={s}>{TASK_STATUS_LABELS[s]}</option>
-                    ))}
-                    {isDone && <option value="done">{TASK_STATUS_LABELS.done}</option>}
-                  </select>
-                </Field>
-                <Field label="Assignee">
-                  <select className="t-input" value={form.assigneeId} onChange={set("assigneeId")} disabled={!editable && !isNew}>
-                    <option value="" disabled={!canUnassign}>Unassigned</option>
-                    {members.map((m) => (
-                      <option key={m.userId} value={m.userId} disabled={!canPick(m.userId)}>
-                        @{m.githubLogin}{m.userId === viewer ? " (you)" : ""}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-                <Field label="Size">
-                  <select className="t-input" value={form.size} onChange={set("size")} disabled={!editable && !isNew}>
-                    {TASK_SIZES.map((s) => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                </Field>
-                <Field label="Area">
-                  <select className="t-input" value={form.area} onChange={set("area")} disabled={!editable && !isNew}>
-                    <option value="">None</option>
-                    {TASK_AREAS.map((a) => <option key={a} value={a}>{a}</option>)}
-                  </select>
-                </Field>
-                <Field label="Sprint">
-                  <select className="t-input" value={form.sprintId} onChange={set("sprintId")} disabled={!editable && !isNew}>
-                    <option value="">Not in a sprint</option>
-                    {openSprints.map((s) => <option key={s._id} value={s._id}>{s.name}</option>)}
-                  </select>
-                </Field>
+                <SelectField
+                  label="Status"
+                  value={form.status}
+                  onChange={pick("status")}
+                  disabled={!editable && !isNew}
+                  options={[
+                    ...(isNew ? ["backlog", "in_progress"] : MANUAL_TASK_STATUSES).map((s) => ({ value: s, label: TASK_STATUS_LABELS[s] })),
+                    ...(isDone ? [{ value: "done", label: TASK_STATUS_LABELS.done }] : []),
+                  ]}
+                />
+                <SelectField
+                  label="Assignee"
+                  value={form.assigneeId}
+                  onChange={pick("assigneeId")}
+                  disabled={!editable && !isNew}
+                  options={[
+                    { value: "", label: "Unassigned", disabled: !canUnassign },
+                    ...members.map((m) => ({
+                      value: m.userId,
+                      label: `@${m.githubLogin}${m.userId === viewer ? " (you)" : ""}`,
+                      disabled: !canPick(m.userId),
+                    })),
+                  ]}
+                />
+                <SelectField
+                  label="Size"
+                  value={form.size}
+                  onChange={pick("size")}
+                  disabled={!editable && !isNew}
+                  options={TASK_SIZES.map((s) => ({ value: s, label: s }))}
+                />
+                <SelectField
+                  label="Area"
+                  value={form.area}
+                  onChange={pick("area")}
+                  disabled={!editable && !isNew}
+                  options={[{ value: "", label: "None" }, ...TASK_AREAS.map((a) => ({ value: a, label: a }))]}
+                />
+                <SelectField
+                  label="Sprint"
+                  value={form.sprintId}
+                  onChange={pick("sprintId")}
+                  disabled={!editable && !isNew}
+                  options={[{ value: "", label: "Not in a sprint" }, ...openSprints.map((s) => ({ value: s._id, label: s.name }))]}
+                />
                 <Field label="Due">
                   <input type="date" className="t-input" value={form.dueAt} onChange={set("dueAt")} disabled={!editable && !isNew} />
                 </Field>
