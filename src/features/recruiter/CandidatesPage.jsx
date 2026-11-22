@@ -1,5 +1,6 @@
 import { Search, X } from "lucide-react";
 import Seo from "@/seo/Seo";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import Dropdown from "@/components/ui/Dropdown";
 import CandidateCard from "./components/CandidateCard";
 import useSavedUsernames from "../hiring/useSavedUsernames";
@@ -46,22 +47,6 @@ function Toggle({ on, onChange, children }) {
   );
 }
 
-function Skeleton() {
-  return (
-    <ul className="flex flex-col gap-3" aria-hidden="true">
-      {[0, 1, 2].map((i) => (
-        <li key={i} className="flex animate-pulse gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4">
-          <div className="h-11 w-11 rounded-full bg-white/10" />
-          <div className="flex-1 space-y-2">
-            <div className="h-4 w-1/3 rounded bg-white/10" />
-            <div className="h-3 w-2/3 rounded bg-white/10" />
-            <div className="h-3 w-1/2 rounded bg-white/10" />
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
-}
 
 function ScoreRules({ rules }) {
   if (!rules) return null;
@@ -160,7 +145,7 @@ export default function CandidatesPage() {
           <button type="button" onClick={c.retry} className="font-medium underline underline-offset-2">Try again</button>
         </div>
       ) : loading && !data ? (
-        <Skeleton />
+        <div className="flex min-h-[50vh]"><LoadingSuspense fill /></div>
       ) : data.facets.totalOptedIn === 0 ? (
         <p className="rounded-xl border border-dashed border-white/10 p-8 text-center text-[14px] text-neutral-400">
           No developers have opted in yet. They appear here after switching on “Show me to recruiters” in their settings.

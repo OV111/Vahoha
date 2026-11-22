@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Banknote, Layers, Loader2, MapPin, Plus } from "lucide-react";
+import { Banknote, Layers, MapPin, Plus } from "lucide-react";
 import { fetchJobs, setJobStatus } from "./api/hiringApi";
 import { salaryText } from "./lib/salary";
 import {
@@ -11,6 +11,7 @@ import {
   JOB_TYPE_LABELS,
   WORKPLACE_LABELS,
 } from "../../../constants/hiring";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 
 const STATUS_TONE = {
   open: "bg-emerald-500/15 text-emerald-300",
@@ -110,9 +111,7 @@ const JobsPage = () => {
       </div>
 
       {!sorted ? (
-        <div className="flex justify-center py-16 text-neutral-500">
-          <Loader2 size={20} className="animate-spin" aria-label="Loading" />
-        </div>
+        <div className="flex min-h-[50vh]"><LoadingSuspense fill /></div>
       ) : sorted.length === 0 ? (
         <p className="mt-10 rounded-2xl border border-dashed border-white/10 p-8 text-center text-sm text-neutral-400">{JOBS_COPY.empty}</p>
       ) : (

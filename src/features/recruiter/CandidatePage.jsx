@@ -72,7 +72,7 @@ export default function CandidatePage() {
   }, [username]);
 
   if (error) return <p className="p-8 text-sm text-red-400">{error}</p>;
-  if (!card) return <div className="flex min-h-[60vh]"><LoadingSuspense fill /></div>;
+  if (!card) return <LoadingSuspense />;
 
   const firstName = card.name?.split(" ")[0];
   const avgScore = card.exams?.length

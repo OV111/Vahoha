@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Dropdown from "@/components/ui/Dropdown";
 import LayerPicker from "./components/LayerPicker";
 import ChipInput from "./components/ChipInput";
@@ -21,6 +21,7 @@ import {
   SALARY_PERIOD_LABELS,
   WORKPLACE_LABELS,
 } from "../../../constants/hiring";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 
 const INPUT =
   "w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-neutral-500 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/30";
@@ -92,11 +93,7 @@ const JobFormPage = () => {
   }, [id, navigate]);
 
   if (!form)
-    return (
-      <div className="flex justify-center py-24 text-neutral-500">
-        <Loader2 size={20} className="animate-spin" aria-label="Loading" />
-      </div>
-    );
+    return <LoadingSuspense />;
 
   const set = (key) => (value) => setForm((f) => ({ ...f, [key]: value }));
   const setSalary = (key) => (value) => setForm((f) => ({ ...f, salary: { ...f.salary, [key]: value } }));

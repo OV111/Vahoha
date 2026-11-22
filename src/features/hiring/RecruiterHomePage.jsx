@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Bookmark, Loader2, Search } from "lucide-react";
+import { ArrowRight, Bookmark, Search } from "lucide-react";
 import TrustBanner from "./components/TrustBanner";
 import { fetchRecruiterMe, fetchSaved } from "./api/hiringApi";
 import useProfileStore from "../../stores/useProfileStore";
 import { COMPANY_ROLES } from "../../../constants/hiring";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 
 const CARD = "rounded-2xl border border-white/10 bg-white/[0.02] p-5";
 const SHORTLIST_PREVIEW = 5;
@@ -56,11 +57,7 @@ const RecruiterHomePage = () => {
       </div>
     );
   if (!me)
-    return (
-      <div className="flex justify-center py-24 text-neutral-500">
-        <Loader2 size={20} className="animate-spin" aria-label="Loading" />
-      </div>
-    );
+    return <LoadingSuspense />;
 
   const roleLabel = me.company.type === "agency"
     ? "Recruiting agency"
@@ -93,9 +90,7 @@ const RecruiterHomePage = () => {
         </div>
 
         {saved === null ? (
-          <div className="flex justify-center py-8 text-neutral-500">
-            <Loader2 size={18} className="animate-spin" aria-label="Loading" />
-          </div>
+          <div className="flex min-h-40"><LoadingSuspense fill size={32} /></div>
         ) : saved.length === 0 ? (
           <p className="mt-3 text-sm text-neutral-400">
             Nobody saved yet. Open a candidate and press <span className="text-white">Save candidate</span> to start your shortlist.

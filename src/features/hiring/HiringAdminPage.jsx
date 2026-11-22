@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Check, ExternalLink, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import { adminListCompanies, adminOverrideCompany } from "./api/hiringApi";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 
 const FILTERS = [
   { id: "attention", label: "Needs a look" },
@@ -158,9 +159,7 @@ const HiringAdminPage = () => {
 
       {error && <p className="mt-8 text-sm text-red-400">{error}</p>}
       {!rows && !error && (
-        <div className="flex justify-center py-16 text-neutral-500">
-          <Loader2 size={20} className="animate-spin" aria-label="Loading" />
-        </div>
+        <div className="flex min-h-[50vh]"><LoadingSuspense fill /></div>
       )}
       {rows && rows.length === 0 && <p className="mt-8 text-sm text-neutral-500">Nothing here.</p>}
       {rows && rows.length > 0 && (
