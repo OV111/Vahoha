@@ -49,3 +49,14 @@ export const adminListCompanies = (level = "attention") =>
 /** level: "limited" | "verified" | "rejected", or null to clear the override. */
 export const adminOverrideCompany = (id, { level, note }) =>
   request(`/admin/companies/${id}/override`, { method: "POST", body: { level, note } }, "Couldn't save the decision.");
+
+// The company's shortlist. Shared by teammates, never visible to other companies.
+/** [{ username, name, note, savedAt, updatedAt }] */
+export const fetchSaved = () => request("/saved", {}, "Couldn't load your saved candidates.");
+/** { saved, note } */
+export const fetchSavedStatus = (username) =>
+  request(`/saved/${encodeURIComponent(username)}`, {}, "Couldn't load this candidate.");
+export const saveCandidate = (username, note = "") =>
+  request(`/saved/${encodeURIComponent(username)}`, { method: "PUT", body: { note } }, "Couldn't save this candidate.");
+export const unsaveCandidate = (username) =>
+  request(`/saved/${encodeURIComponent(username)}`, { method: "DELETE" }, "Couldn't remove this candidate.");

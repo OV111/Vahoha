@@ -2,7 +2,8 @@ import process from "node:process";
 import { Router } from "express";
 import { authenticate } from "../../../middleware/authenticate.js";
 import { requireAdmin } from "../../../middleware/requireAdmin.js";
-import { adminLimits, recheckLimits, resendLimits, signupLimits, verifyLimits } from "../lib/limits.js";
+import { adminLimits, recheckLimits, resendLimits, savedLimits, signupLimits, verifyLimits } from "../lib/limits.js";
+import { requireRecruiter } from "../../../middleware/requireRecruiter.js";
 import { validate } from "../../../middleware/validate.js";
 import { makeErrorHandler } from "../../../utils/respond.js";
 import {
@@ -10,6 +11,8 @@ import {
   companyIdParamSchema,
   hiringSignupSchema,
   overrideSchema,
+  saveCandidateSchema,
+  usernameParamSchema,
   updateCompanySchema,
   verifyCodeSchema,
 } from "../schemas/hiring.schemas.js";
@@ -18,6 +21,10 @@ import {
   adminOverride,
   me,
   recheck,
+  savedDelete,
+  savedList,
+  savedPut,
+  savedStatus,
   resendCode,
   signup,
   updateCompany,
@@ -39,6 +46,14 @@ router.post("/resend-code", authenticate, ...resendLimits, resendCode);
 router.get("/me", authenticate, me);
 router.post("/recheck", authenticate, ...recheckLimits, recheck);
 router.patch("/company", authenticate, ...recheckLimits, validate({ body: updateCompanySchema }), updateCompany);
+
+// The company's shortlist. "limited" may already save; contacting needs "verified" (later).
+const recruiter = [authenticate, requireRecruiter("limited"), ...savedLimits];
+const byUsername = validate({ params: usernameParamSchema });
+router.get("/saved", ...recruiter, savedList);
+router.get("/saved/:username", ...recruiter, byUsername, savedStatus);
+router.put("/saved/:username", ...recruiter, byUsername, validate({ body: saveCandidateSchema }), savedPut);
+router.delete("/saved/:username", ...recruiter, byUsername, savedDelete);
 
 // The exceptions page (admins only; requireAdmin answers 404 to everyone else).
 router.get("/admin/companies", authenticate, requireAdmin, ...adminLimits, validate({ query: adminListQuerySchema }), adminList);

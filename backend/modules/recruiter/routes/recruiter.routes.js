@@ -34,11 +34,12 @@ const candidatesLimiter = sharedRateLimit("recruiter.candidates", {
   message: { message: "Too many requests. Please wait a minute.", code: 429 },
 });
 
-// Closed until CANDIDATES_ENABLED=true. Read per request, not at import: the
+// Closed until CANDIDATES_ENABLED=true or HIRING_ENABLED=true (the hiring side
+// opens it for recruiters). Read per request, not at import: the
 // env is loaded after modules are imported. Answers exactly like an unknown
 // route, so a closed feature cannot be told apart from one that never existed.
 const candidatesOpen = (req, res, next) =>
-  process.env.CANDIDATES_ENABLED === "true"
+  process.env.CANDIDATES_ENABLED === "true" || process.env.HIRING_ENABLED === "true"
     ? next()
     : res.status(404).json({ success: false, message: "Not found" });
 

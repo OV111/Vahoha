@@ -1,6 +1,8 @@
 import { Search, X } from "lucide-react";
 import Seo from "@/seo/Seo";
+import Dropdown from "@/components/ui/Dropdown";
 import CandidateCard from "./components/CandidateCard";
+import useSavedUsernames from "../hiring/useSavedUsernames";
 import useCandidates from "./hooks/useCandidates";
 import { PAGE } from "../../../constants/layout";
 
@@ -84,6 +86,7 @@ function ScoreRules({ rules }) {
 export default function CandidatesPage() {
   const c = useCandidates();
   const { data, loading, error, filters } = c;
+  const saved = useSavedUsernames();
   const trackTitle = (ids) => data?.facets.tracks.find((t) => t.trackId === ids[0])?.title ?? null;
 
   return (
@@ -110,29 +113,36 @@ export default function CandidatesPage() {
           />
         </label>
 
-        <select aria-label="Track" value={filters.track} onChange={(e) => c.setTrack(e.target.value)} className={FIELD}>
-          <option value="">All tracks</option>
-          {(data?.facets.tracks ?? []).map((t) => (
-            <option key={t.trackId} value={t.trackId}>
-              {t.title} ({t.count})
-            </option>
-          ))}
-        </select>
+        <Dropdown
+          label="Track"
+          value={filters.track}
+          onChange={c.setTrack}
+          className="min-w-[160px]"
+          options={[
+            { value: "", label: "All tracks" },
+            ...(data?.facets.tracks ?? []).map((t) => ({ value: t.trackId, label: `${t.title} (${t.count})` })),
+          ]}
+        />
 
-        <select aria-label="Minimum layers passed" value={filters.minLayers} onChange={(e) => c.setMinLayers(e.target.value)} className={FIELD}>
-          {MIN_LAYERS.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
+        <Dropdown
+          label="Minimum layers passed"
+          value={filters.minLayers}
+          onChange={c.setMinLayers}
+          className="min-w-[130px]"
+          options={MIN_LAYERS}
+        />
 
         <Toggle on={filters.openToWork} onChange={c.setOpenToWork}>Open to work</Toggle>
         <Toggle on={filters.hasCapstone} onChange={c.setHasCapstone}>Has capstone</Toggle>
 
-        <select aria-label="Sort by" value={filters.sort} onChange={(e) => c.setSort(e.target.value)} className={`${FIELD} ml-auto`}>
-          {SORTS.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
+        <Dropdown
+          label="Sort by"
+          value={filters.sort}
+          onChange={c.setSort}
+          className="ml-auto min-w-[160px]"
+          align="right"
+          options={SORTS}
+        />
       </div>
 
       <div className="flex min-h-5 items-center justify-between text-[13px] text-neutral-400" aria-live="polite">
@@ -163,7 +173,7 @@ export default function CandidatesPage() {
       ) : (
         <ul className={`flex flex-col gap-3 transition-opacity ${loading ? "opacity-60" : ""}`} aria-busy={loading}>
           {data.items.map((row) => (
-            <CandidateCard key={row.username} c={row} trackTitle={trackTitle(row.tracks)} />
+            <CandidateCard key={row.username} c={row} trackTitle={trackTitle(row.tracks)} saved={saved.has(row.username)} />
           ))}
         </ul>
       )}

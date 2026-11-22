@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Clock } from "lucide-react";
+import { Bookmark, Clock } from "lucide-react";
 
 const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
 
@@ -23,7 +23,7 @@ const Stat = ({ value, label }) =>
     </span>
   );
 
-export default function CandidateCard({ c, trackTitle }) {
+export default function CandidateCard({ c, trackTitle, saved = false }) {
   const { score, parts } = c.evidence;
   const ago = activeAgo(c.lastActiveAt);
   const breakdown = `Layers ${parts.layers} · Test quality ${parts.quality} · Capstone ${parts.capstone} · Team projects ${parts.teams}`;
@@ -45,6 +45,11 @@ export default function CandidateCard({ c, trackTitle }) {
           <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
             <p className="text-[15px] font-semibold text-neutral-100">{c.name}</p>
             <span className="text-[13px] text-neutral-500">@{c.username}</span>
+            {saved && (
+              <span className="inline-flex items-center gap-1 rounded-full border border-purple-500/30 bg-purple-500/10 px-2 py-0.5 text-[12px] font-medium text-purple-300">
+                <Bookmark size={11} className="fill-current" aria-hidden="true" /> Saved
+              </span>
+            )}
             {c.openToWork && (
               <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[12px] font-medium text-emerald-300">
                 Open to work

@@ -109,10 +109,8 @@ export const NAV_GROUPS_RECRUITER = [
     label: "Hiring",
     to: "/hiring/home",
     items: [
-      { label: "Hiring home", to: "/hiring/home", icon: Briefcase, description: "Your company, trust level and activity" },
-      ...(FEATURES.candidates
-        ? [{ label: "Candidates", to: "/candidates", icon: UserSearch, description: "Developers who chose to be found" }]
-        : []),
+      { label: "Hiring home", to: "/hiring/home", icon: Briefcase, description: "Your company, trust level and shortlist" },
+      { label: "Candidates", to: "/candidates", icon: UserSearch, description: "Developers who chose to be found" },
     ],
   },
   {

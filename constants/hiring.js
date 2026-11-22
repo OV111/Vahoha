@@ -101,10 +101,3 @@ export const HIRE_CTA = {
   body: (name) => `Create a free hiring account to contact ${name || "this developer"} and see more candidates like them.`,
   create: "Create hiring account",
 };
-
-// Example rows for the recruiter home preview. Clearly marked as examples in the UI.
-export const EXAMPLE_CANDIDATES = [
-  { name: "Example candidate A", track: "Backend Developer", layers: 7, verified: 3, capstone: true, openToWork: true, score: 82 },
-  { name: "Example candidate B", track: "Full Stack (MERN)", layers: 5, verified: 1, capstone: false, openToWork: true, score: 61 },
-  { name: "Example candidate C", track: "Frontend Developer", layers: 4, verified: 0, capstone: false, openToWork: false, score: 44 },
-];

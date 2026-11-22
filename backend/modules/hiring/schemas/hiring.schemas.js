@@ -60,6 +60,12 @@ export const overrideSchema = z.object({
   note: z.string().trim().max(300).default(""),
 });
 
+// /api/hiring/saved/:username
+export const usernameParamSchema = z.object({
+  username: z.string().trim().min(1).max(40).regex(/^[A-Za-z0-9._-]+$/, "Invalid username"),
+});
+export const saveCandidateSchema = z.object({ note: z.string().trim().max(500).default("") });
+
 export const verifyCodeSchema = z.object({
   code: z.string().trim().regex(new RegExp(`^\\d{${HIRING_CODE_LENGTH}}$`), "Enter the 6-digit code."),
 });

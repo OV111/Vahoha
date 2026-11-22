@@ -52,4 +52,7 @@ export const recheckLimits = [
   limit("recheck.user", HOUR, 10, "Too many re-checks. Try again in an hour.", byUser),
 ];
 
+// Saving and noting: generous for people, tight enough to stop a script copying everyone.
+export const savedLimits = [limit("saved.user", MINUTE, 60, "Slow down a little.", byUser)];
+
 export const adminLimits = [limit("admin.user", MINUTE, 120, "Slow down a little.", byUser)];

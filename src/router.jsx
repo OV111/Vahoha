@@ -80,6 +80,7 @@ const HiringLandingPage = lazy(() => import("./features/hiring/HiringLandingPage
 const HiringJoinPage = lazy(() => import("./features/hiring/HiringJoinPage"));
 const RecruiterHomePage = lazy(() => import("./features/hiring/RecruiterHomePage"));
 const HiringAdminPage = lazy(() => import("./features/hiring/HiringAdminPage"));
+const RecruiterOnly = lazy(() => import("./features/hiring/components/RecruiterOnly"));
 
 const PricingPage = lazy(() => import("./features/billing/PricingPage"));
 const BillingPage = lazy(() => import("./features/billing/BillingPage"));
@@ -175,7 +176,12 @@ const protectedRoutes = [
   { path: "team/admin", element: <TeamAdminPage /> },
   { path: "team/:teamId", element: <TeamPage /> },
 
-  ...(FEATURES.candidates ? [{ path: "candidates", element: <CandidatesPage /> }] : []),
+  // With the hiring side on, the list is for hiring accounts only (the API agrees).
+  ...(FEATURES.hiring
+    ? [{ path: "candidates", element: <RecruiterOnly><CandidatesPage /></RecruiterOnly> }]
+    : FEATURES.candidates
+      ? [{ path: "candidates", element: <CandidatesPage /> }]
+      : []),
   ...(FEATURES.hiring ? [{ path: "hiring/admin", element: <HiringAdminPage /> }] : []),
 
   { path: "users/:username", element: <UserProfile /> },

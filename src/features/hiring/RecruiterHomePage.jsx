@@ -1,50 +1,35 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BadgeCheck, Loader2, Mic, UserPlus } from "lucide-react";
+import { ArrowRight, Bookmark, Loader2, Search } from "lucide-react";
 import TrustBanner from "./components/TrustBanner";
-import { fetchRecruiterMe } from "./api/hiringApi";
+import { fetchRecruiterMe, fetchSaved } from "./api/hiringApi";
 import useProfileStore from "../../stores/useProfileStore";
-import { COMPANY_ROLES, EXAMPLE_CANDIDATES } from "../../../constants/hiring";
+import { COMPANY_ROLES } from "../../../constants/hiring";
 
-const CARD = "rounded-2xl border border-neutral-800 bg-neutral-950 p-5";
+const CARD = "rounded-2xl border border-white/10 bg-white/[0.02] p-5";
+const SHORTLIST_PREVIEW = 5;
 
-const CandidateRow = ({ c }) => (
-  <li className="flex flex-wrap items-center justify-between gap-3 border-t border-neutral-800 py-4 first:border-t-0">
-    <div className="min-w-0">
-      <p className="font-medium text-white">{c.name}</p>
-      <p className="mt-0.5 text-sm text-neutral-400">
-        {c.track} · {c.layers} layers passed
-      </p>
-      <div className="mt-2 flex flex-wrap gap-2 text-xs">
-        {c.verified > 0 && (
-          <span className="flex items-center gap-1 rounded-full bg-purple-500/15 px-2 py-0.5 text-purple-300">
-            <Mic size={12} aria-hidden="true" /> {c.verified} verified
-          </span>
-        )}
-        {c.capstone && (
-          <span className="flex items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-emerald-300">
-            <BadgeCheck size={12} aria-hidden="true" /> Capstone defended
-          </span>
-        )}
-        {c.openToWork && <span className="rounded-full bg-sky-500/15 px-2 py-0.5 text-sky-300">Open to work</span>}
-      </div>
-    </div>
-    <div className="flex items-center gap-4">
-      <span className="text-right">
-        <span className="block text-xl font-semibold text-white tabular-nums">{c.score}</span>
-        <span className="text-xs text-neutral-500">evidence</span>
+const SavedRow = ({ s }) => (
+  <li className="border-t border-white/10 first:border-t-0">
+    <Link
+      to={`/candidate/${s.username}`}
+      className="flex items-start justify-between gap-3 py-3.5 transition-colors hover:text-purple-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
+    >
+      <span className="min-w-0">
+        <span className="block font-medium text-white">{s.name}</span>
+        <span className="block text-sm text-neutral-500">@{s.username}</span>
+        {s.note && <span className="mt-1 block line-clamp-2 text-sm text-neutral-400">{s.note}</span>}
       </span>
-      <button type="button" disabled className="rounded-md border border-neutral-700 px-3 py-1.5 text-sm text-neutral-400">
-        Request intro
-      </button>
-    </div>
+      <ArrowRight size={16} className="mt-1 shrink-0 text-neutral-600" aria-hidden="true" />
+    </Link>
   </li>
 );
 
-// /hiring/home: the recruiter's start page. Company and trust level are real;
-// the candidate rows stay examples until the candidates list is wired in.
+// /hiring/home: the recruiter's start page. Company and trust level, then the
+// company's shortlist, with the way into the candidate list.
 const RecruiterHomePage = () => {
   const [me, setMe] = useState(null);
+  const [saved, setSaved] = useState(null);
   const [error, setError] = useState(null);
   const email = useProfileStore((st) => st.user?.email);
 
@@ -53,6 +38,9 @@ const RecruiterHomePage = () => {
     fetchRecruiterMe()
       .then((d) => !cancelled && setMe(d))
       .catch((err) => !cancelled && setError(err));
+    fetchSaved()
+      .then((rows) => !cancelled && setSaved(rows))
+      .catch(() => !cancelled && setSaved([]));
     return () => {
       cancelled = true;
     };
@@ -77,41 +65,48 @@ const RecruiterHomePage = () => {
   const roleLabel = me.company.type === "agency"
     ? "Recruiting agency"
     : COMPANY_ROLES.find((r) => r.id === me.companyRole)?.title;
+  const canBrowse = ["limited", "verified"].includes(me.company.trust.level);
 
   return (
-  <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-12">
-    <TrustBanner company={me.company} email={email} onUpdated={(company) => setMe({ ...me, emailVerified: true, company })} />
+    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-12">
+      <TrustBanner company={me.company} email={email} onUpdated={(company) => setMe({ ...me, emailVerified: true, company })} />
 
-    <h1 className="mt-8 text-2xl font-semibold text-white">Hiring home</h1>
-    <p className="mt-1 text-sm text-neutral-400">{me.company.name}{roleLabel ? ` · ${roleLabel}` : ""}</p>
-    <div className="mt-8 grid gap-3 sm:grid-cols-3">
-      <div className={CARD}>
-        <p className="text-2xl font-semibold text-white tabular-nums">0</p>
-        <p className="text-sm text-neutral-400">Saved candidates</p>
+      <div className="mt-8 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-white">Hiring home</h1>
+          <p className="mt-1 text-sm text-neutral-400">{me.company.name}{roleLabel ? ` · ${roleLabel}` : ""}</p>
+        </div>
+        {canBrowse && (
+          <Link to="/candidates" className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-purple-700">
+            <Search size={15} aria-hidden="true" /> Browse candidates
+          </Link>
+        )}
       </div>
-      <div className={CARD}>
-        <p className="text-2xl font-semibold text-white tabular-nums">0</p>
-        <p className="text-sm text-neutral-400">Intro requests sent</p>
-      </div>
-      <div className={CARD}>
-        <p className="text-2xl font-semibold text-white tabular-nums">1</p>
-        <p className="text-sm text-neutral-400">Teammates</p>
-        <button type="button" disabled className="mt-3 flex items-center gap-1.5 text-sm text-purple-400 disabled:opacity-60">
-          <UserPlus size={14} aria-hidden="true" /> Invite a teammate
-        </button>
-      </div>
+
+      <section className={`mt-8 ${CARD}`}>
+        <div className="flex items-baseline justify-between gap-3">
+          <h2 className="flex items-center gap-2 font-semibold text-white">
+            <Bookmark size={16} className="text-purple-400" aria-hidden="true" /> Your shortlist
+            {saved?.length > 0 && <span className="text-sm font-normal text-neutral-500 tabular-nums">{saved.length}</span>}
+          </h2>
+          <span className="text-xs text-neutral-500">Shared with your teammates</span>
+        </div>
+
+        {saved === null ? (
+          <div className="flex justify-center py-8 text-neutral-500">
+            <Loader2 size={18} className="animate-spin" aria-label="Loading" />
+          </div>
+        ) : saved.length === 0 ? (
+          <p className="mt-3 text-sm text-neutral-400">
+            Nobody saved yet. Open a candidate and press <span className="text-white">Save candidate</span> to start your shortlist.
+          </p>
+        ) : (
+          <ul className="mt-2">
+            {saved.slice(0, SHORTLIST_PREVIEW).map((s) => <SavedRow key={s.username} s={s} />)}
+          </ul>
+        )}
+      </section>
     </div>
-
-    <section className={`mt-8 ${CARD}`}>
-      <div className="flex items-baseline justify-between">
-        <h2 className="font-semibold text-white">Candidates</h2>
-        <span className="text-xs text-neutral-500">Example rows: real candidates appear after approval</span>
-      </div>
-      <ul className="mt-3">
-        {EXAMPLE_CANDIDATES.map((c) => <CandidateRow key={c.name} c={c} />)}
-      </ul>
-    </section>
-  </div>
   );
 };
 
