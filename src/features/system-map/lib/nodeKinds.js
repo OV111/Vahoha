@@ -103,5 +103,54 @@ export const KIND_ICONS = {
   dns: Earth,
 };
 
-export const isKind = (kind) => NODE_KINDS.some((k) => k.kind === kind);
+// One colour per family, so a part's job reads at a glance: orange routes
+// traffic, blue runs code, green keeps data, and so on.
+const FAMILY_COLORS = {
+  people: "#a78bfa",
+  traffic: "#fb923c",
+  compute: "#60a5fa",
+  data: "#34d399",
+  fast: "#fbbf24",
+  async: "#f472b6",
+  ai: "#e879f9",
+  security: "#f87171",
+  outside: "#a3a3a3",
+};
+
+const KIND_FAMILY = {
+  client: "people",
+  loadbalancer: "traffic",
+  dns: "traffic",
+  entry: "traffic",
+  firewall: "traffic",
+  server: "compute",
+  worker: "compute",
+  container: "compute",
+  cluster: "compute",
+  endpoint: "compute",
+  cicd: "compute",
+  database: "data",
+  primary: "data",
+  replica: "data",
+  shard: "data",
+  backup: "data",
+  migration: "data",
+  storage: "data",
+  disk: "data",
+  cache: "fast",
+  memory: "fast",
+  queue: "async",
+  pipeline: "async",
+  datasource: "async",
+  featurestore: "async",
+  model: "ai",
+  evaluation: "ai",
+  auth: "security",
+  secrets: "security",
+  external: "outside",
+};
+
+export const kindColor = (kind) => FAMILY_COLORS[KIND_FAMILY[kind]] ?? FAMILY_COLORS.outside;
+
+export const isKind =(kind) => NODE_KINDS.some((k) => k.kind === kind);
 export const kindInfo = (kind) => NODE_KINDS.find((k) => k.kind === kind);

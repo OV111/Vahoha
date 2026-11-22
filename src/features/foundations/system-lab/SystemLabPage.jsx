@@ -107,6 +107,7 @@ function SystemLab({ stage }) {
         <div className="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-neutral-800 bg-[#050505] lg:sticky lg:top-20 lg:self-start">
           <div className="h-[320px] sm:h-[420px] lg:h-[calc(100vh-14rem)] lg:min-h-[420px]">
             <SystemCanvas
+              flowAll={false}
               nodes={shownNodes}
               edges={shownEdges}
               onNodesChange={onNodesChange}
