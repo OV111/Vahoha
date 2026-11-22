@@ -21,7 +21,6 @@ export const PRODUCT_LINKS = [
 export const AI_LINKS = [
   { title: "Foundations", to: "/labs/foundations" },
   { title: "Mentor", to: "/mentor" },
-  { title: "Explain it back (soon)", to: "/voice-review" },
 ];
 export const COMPANY_LINKS = [
   { title: "About", to: "/about" },

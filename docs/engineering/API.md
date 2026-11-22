@@ -244,6 +244,5 @@ Source: `modules/judgment/routes/judgment.routes.js`.
 | PUT | `/api/onboarding/:tourId/seen` | Bearer | V |
 | POST | `/api/contact` | - | V (name, email, topic, message, website), limiter |
 | GET | `/api/admin/funnel?days=30` | Admin | Signup-to-team-defense funnel |
-| `*` | `/api/voice-review/...` | Bearer | `voice-review` module has routes (`POST /sessions`, `GET /sessions/:id`, `GET /history`), but they are not mounted in `app.js` |
 
 `/api-docs` serves Swagger UI with no auth, in production too (see [Security](SECURITY.md)).

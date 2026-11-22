@@ -80,7 +80,6 @@ export const PRIVATE_PREFIXES = [
   "/blogs",
   "/libs",
   "/coding-challenges",
-  "/voice-review",
   "/roadmaps/exam",
 ];
 

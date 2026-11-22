@@ -8,7 +8,7 @@ export const TO = {
   study: "/roadmaps",
   practice: "/coding-challenges",
   library: "/libs",
-  voice: "/voice-review",
+  voice: "/roadmaps",
   test: "/roadmaps",
   exam: "/roadmaps",
   mentor: "/mentor",

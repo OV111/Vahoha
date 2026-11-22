@@ -64,7 +64,7 @@ routes/  controllers/  services/  schemas/ (Zod)  lib/ (pure logic)  index.js
 
 `index.js` is the module's only public entry point. `app.js` mounts routers from it. Other modules should import only what it exports. A few deep imports still exist (teams to capstone, account to billing, chat to profile). Treat them as cleanup, not as a pattern.
 
-**23 modules:** account, mentor, analytics, auth, billing, blogs, capstone, chat, coding-challenges, contact, exams, library, mastery, notifications, onboarding, profile, readiness, recruiter, roadmap, search, teams, users, voice-review.
+**25 modules:** account, mentor, analytics, auth, billing, blogs, capstone, chat, coding-challenges, contact, exams, library, mastery, notifications, onboarding, profile, readiness, recruiter, roadmap, search, teams users, voice-exam, judgment, system-map.
 
 **Outside `modules/`:**
 
@@ -108,7 +108,7 @@ routes/  controllers/  services/  schemas/ (Zod)  lib/ (pure logic)  index.js
 |---|---|
 | Learning | `roadmap`, `learn` (step-by-step lessons with a live code panel), `foundations`, `labs`, `coding-challenges`, `mastery`, `coding-libs` |
 | Proof | `capstone`, `teams` (`/team`, public `/evidence/:publicId`), `recruiter` |
-| AI | `mentor`, `voice-exam`, `voice-review` (unfinished shell) |
+| AI | `mentor`, `voice-exam`, `judgment` |
 | People | `profile` (profile, settings, notifications, blog editor, public profile), `chat`, `connections` (followers), `blogs` |
 | Money | `billing` |
 

@@ -35,7 +35,6 @@ The technical prep for the pilot is mostly done. What's left is mostly yours: co
 | Project Map | `/project-map`, `/map/:publicId` | `system-map` | Partial | AI parts tested with mocks only (item 12) |
 | Voice exam | `/voice-exam/:layerId` | `voice-exam` | Live | Whisper transcription + rubric grading, Verified badges. Rubrics seeded for the 15 fullstack paths only |
 | Judgment simulator | `/judgment`, `/judgment/run/:runId` | `judgment` | Partial | Stage 1: one backend scenario. Not tested with users yet |
-| Voice review | `/voice-review` | scaffold | Prototype | Empty |
 
 ### Community and account
 
