@@ -50,7 +50,6 @@ const DeleteAccount = () => {
         hasPassword ? { password } : { confirmation: confirmation.trim() },
       );
       toast.success(response?.message || "Account deleted successfully");
-      localStorage.removeItem("JWT");
       logout();
       navigate("/get-started");
     } catch (error) {
