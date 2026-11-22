@@ -18,14 +18,16 @@ function BannerImage({ url }) {
   const tiny = url.replace("/upload/", "/upload/w_40,h_10,c_fill,g_auto,e_blur:300,q_30/");
   return (
     <div
-      className="h-40 w-full bg-gray-900 bg-cover bg-center sm:h-56"
+      className="relative h-40 w-full bg-gray-900 bg-cover bg-center sm:h-56"
       style={{ backgroundImage: `url(${tiny})` }}
     >
+      {/* Pulses until the full photo arrives, so a slow connection reads as loading, not broken. */}
+      {!loaded && <div aria-hidden="true" className="absolute inset-0 animate-pulse bg-white/[0.06]" />}
       <img
         src={full}
         alt="Banner"
         onLoad={() => setLoaded(true)}
-        className={`h-full w-full object-cover transition-opacity duration-500 ${
+        className={`relative h-full w-full object-cover transition-opacity duration-500 ${
           loaded ? "opacity-100" : "opacity-0"
         }`}
       />
@@ -37,10 +39,14 @@ function BannerImage({ url }) {
  * Banner strip shared by the owner's profile and public profiles, so the two
  * pages can't drift apart. `children` render on top (edit buttons, avatar).
  */
-export default function ProfileBanner({ url, children }) {
+export default function ProfileBanner({ url, loading = false, children }) {
   return (
     <div className="relative group">
-      {url ? (
+      {loading ? (
+        // Profile not here yet: a neutral pulsing strip, so the empty-banner
+        // state (and its "Add a banner" button) never flashes for someone who has one.
+        <div aria-hidden="true" className="h-40 w-full animate-pulse bg-white/[0.05] sm:h-56" />
+      ) : url ? (
         <BannerImage url={url} />
       ) : (
         // No banner set: a brand-color gradient with a faint grid reads as an

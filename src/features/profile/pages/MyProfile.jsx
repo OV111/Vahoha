@@ -27,6 +27,7 @@ import {
 } from "@/features/profile/components/ProfileProgress";
 import { BlogCardSkeletonGrid } from "@/features/blogs/components/BlogCardSkeleton";
 import ProfileBanner from "@/features/profile/components/ProfileBanner";
+import ProfileAvatar from "@/features/profile/components/ProfileAvatar";
 
 const TRACKS_PREVIEW = 3;
 
@@ -148,8 +149,8 @@ const MyProfile = () => {
 
       <div className="flex-1 min-w-0">
         {/* Banner */}
-        <ProfileBanner url={stats?.bannerImage}>
-          {stats?.bannerImage ? (
+        <ProfileBanner url={stats?.bannerImage} loading={!stats}>
+          {!stats ? null : stats.bannerImage ? (
             // Banner already set — a quiet, hover-only edit affordance so it
             // doesn't compete with the photo.
             <Link
@@ -178,21 +179,12 @@ const MyProfile = () => {
               aria-label="Edit profile photo"
               className="group/avatar relative block w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden border-3 border-white dark:border-gray-900 shadow-sm"
             >
-              {stats?.profileImage ? (
-                <img
-                  src={stats.profileImage.replace(
-                    "/upload/",
-                    "/upload/w_112,h_112,c_fill,f_auto,q_auto/",
-                  )}
-                  alt="User"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-purple-100 dark:bg-purple-700 text-purple-700 dark:text-white text-2xl sm:text-3xl font-bold">
-                  {user?.firstName?.[0]?.toUpperCase()}
-                  {user?.lastName?.[0]?.toUpperCase()}
-                </div>
-              )}
+              <ProfileAvatar
+                url={stats?.profileImage}
+                firstName={user?.firstName}
+                lastName={user?.lastName}
+                loading={!stats}
+              />
               <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover/avatar:opacity-100">
                 <Pencil size={18} className="text-white" />
               </div>
