@@ -24,6 +24,7 @@ import {
   isJudgeLanguage,
   languagesOf,
 } from "../../../constants/challengeLanguages";
+import useViewOnly from "../hiring/useViewOnly";
 
 const MOBILE_TABS = [
   { key: "problem", label: "Problem" },
@@ -53,11 +54,14 @@ export default function ChallengeArena() {
     window.scrollTo(0, 0);
   }, [slug]);
 
+  // A hiring account reads the problem only: starting an attempt is a write the
+  // server refuses, so it isn't sent.
+  const isViewOnly = useViewOnly();
   useEffect(() => {
     loadChallenge(slug);
-    startAttempt(slug);
+    if (!isViewOnly) startAttempt(slug);
     return clearChallenge;
-  }, [slug, loadChallenge, clearChallenge, startAttempt]);
+  }, [slug, loadChallenge, clearChallenge, startAttempt, isViewOnly]);
 
   // The preferred language, remembered across challenges. Storage can throw
   // (private mode), so it is only ever a convenience.
@@ -329,10 +333,11 @@ export default function ChallengeArena() {
         verdict={verdict}
         onViewSolution={verdict?.passed ? () => setShowSolved(true) : null}
         onAskMentor={askMentor}
+        viewOnly={isViewOnly}
       />
 
       {/* First-visit tour; renders nothing once dismissed. */}
-      <ArenaTour setMobileTab={setMobileTab} />
+      {!isViewOnly && <ArenaTour setMobileTab={setMobileTab} />}
 
       {/* Responsive: below 1100px the columns become tabs */}
       <style>{`

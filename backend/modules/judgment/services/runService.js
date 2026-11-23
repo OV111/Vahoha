@@ -185,3 +185,26 @@ export const submitDecision = async (db, userId, id, { eventId, optionId, why, c
   }
   return toView(saved, scenario);
 };
+
+/**
+ * For the recruiter scorecard: finished runs and the best judgment score per
+ * scenario. Scored the same way as the learner's own list (scoreRun).
+ */
+export const judgmentSummary = async (db, userId) => {
+  const finished = await runs(db)
+    .find({ userId: new ObjectId(userId), state: RUN_STATES.FINISHED }, { projection: { scenarioId: 1, decisions: 1, review: 1 } })
+    .limit(100)
+    .toArray();
+  if (!finished.length) return { runs: 0, best: null, scenarios: [] };
+  const best = new Map();
+  for (const r of finished) {
+    const scenario = getScenario(r.scenarioId);
+    if (!scenario) continue;
+    const reasoning = r.review ? Object.fromEntries(r.review.decisions.map((d) => [d.eventId, d.reasoning])) : null;
+    const score = scoreRun(scenario, r.decisions, reasoning).judgment;
+    const prev = best.get(scenario.id);
+    if (!prev || score > prev.best) best.set(scenario.id, { title: scenario.title, best: score });
+  }
+  const scenarios = [...best.values()];
+  return { runs: finished.length, best: scenarios.length ? Math.max(...scenarios.map((s) => s.best)) : null, scenarios };
+};

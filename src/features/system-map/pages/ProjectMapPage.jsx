@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import NotFound from "../../../components/feedback/NotFound";
 import useInitialMap from "../hooks/useInitialMap";
+import { DEVELOPER_SIGNUP_PATH } from "../../../../constants/site";
 
 // Only signed-in learners reach the editor; guests stop at the sign-in screen,
 // so the heavy canvas/export code stays out of the page's own chunk.
@@ -29,7 +30,7 @@ function ProjectMapLoader({ owner }) {
         <p className="text-lg font-semibold text-white">Sign in to use Project Map</p>
         <p className="mt-2 text-sm text-neutral-400">Draw how your project works, scan your repo for parts, and keep the map in your account.</p>
         <Link
-          to="/get-started"
+          to={DEVELOPER_SIGNUP_PATH}
           className="mt-4 inline-flex min-h-11 items-center rounded-lg border border-neutral-700 px-4 text-sm text-neutral-200 hover:border-neutral-500 hover:text-white"
         >
           Sign in

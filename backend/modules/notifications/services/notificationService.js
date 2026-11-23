@@ -5,7 +5,9 @@ import { ObjectId } from "mongodb";
 // the `notifications` collection.
 
 // Sent by the platform about the user's own work, so there is no actor.
-export const SYSTEM_TYPES = new Set(["capstone_review"]);
+// Intro notifications carry no actor either: the company, not one person, is
+// the sender, and meta holds the text and link the inbox shows.
+export const SYSTEM_TYPES = new Set(["capstone_review", "intro_request", "intro_accepted", "intro_declined"]);
 
 const plainObject = (v) => (v && typeof v === "object" && !Array.isArray(v) ? v : undefined);
 

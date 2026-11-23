@@ -147,7 +147,9 @@ const buildDefaultUserStats = (userId) => ({
   lastActive: new Date(),
 });
 
-const signUp = async (data) => {
+// `extraFields` lets another module (hiring) add its own fields to the new
+// user, such as role, without copying the sign-up logic.
+const signUp = async (data, extraFields = {}) => {
   try {
     let db = await connectDB();
     const { firstName, lastName, email, password, username } = data;
@@ -171,7 +173,7 @@ const signUp = async (data) => {
     try {
       result = await insertUser(
         users,
-        { firstName, lastName, email, password: await hashPassword(password) },
+        { firstName, lastName, email, password: await hashPassword(password), ...extraFields },
         baseUsername,
       );
     } catch (err) {
@@ -192,6 +194,7 @@ const signUp = async (data) => {
     return {
       status: 201,
       message: "Account created Successfully",
+      userId: result.insertedId,
       accessToken,
       refreshToken,
     };

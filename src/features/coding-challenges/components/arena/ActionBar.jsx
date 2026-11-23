@@ -1,7 +1,9 @@
 import { Play, RotateCcw, Sparkles } from "lucide-react";
 import { C, FONT_MONO } from "../../lib/arenaTheme";
 
-export default function ActionBar({ testResults, onRun, running, onSubmit, submitting, lastRunAt, verdict, onViewSolution, onAskMentor }) {
+// `viewOnly` (a hiring account): the problem stays readable, the actions are
+// replaced by a note, since the server refuses them anyway.
+export default function ActionBar({ testResults, onRun, running, onSubmit, submitting, lastRunAt, verdict, onViewSolution, onAskMentor, viewOnly = false }) {
   const passed = testResults.filter((r) => r.passed).length;
   const total = testResults.length;
 
@@ -29,6 +31,11 @@ export default function ActionBar({ testResults, onRun, running, onSubmit, submi
         </span>
       </div>
 
+      {viewOnly ? (
+        <span className="text-[12px]" style={{ color: C.muted, fontFamily: FONT_MONO }}>
+          Hiring view · developers run, submit and earn XP here
+        </span>
+      ) : (
       <div className="flex items-center gap-2">
         <span className={`text-[11px] mr-1 ${verdict ? "" : "max-sm:hidden"}`} style={{ color: C.faint, fontFamily: FONT_MONO }}>
           {verdict?.error
@@ -90,6 +97,7 @@ export default function ActionBar({ testResults, onRun, running, onSubmit, submi
           {submitting ? "Grading…" : "Submit"}
         </button>
       </div>
+      )}
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { FaGithub } from "react-icons/fa";
 import useAuthStore from "../../../stores/useAuthStore";
 import { githubButtonClass, googleButtonClass } from "../authStyles";
 import { googleAuth, GITHUB_AUTH_URL } from "../../../services/authApi";
+import { landingPath } from "../../hiring/lib/landingPath";
 
 
 
@@ -14,7 +15,7 @@ import { googleAuth, GITHUB_AUTH_URL } from "../../../services/authApi";
  * "Continue with Google / GitHub". Google's own button can't be styled, so it
  * is rendered hidden and our button clicks it. Needs a GoogleOAuthProvider above.
  */
-const SocialSignIn = () => {
+const SocialSignIn = ({ github = true }) => {
   const navigate = useNavigate();
   const { login } = useAuthStore();
   const googleBtnRef = useRef(null);
@@ -24,7 +25,7 @@ const SocialSignIn = () => {
       const result = await googleAuth(credentialResponse.credential);
       toast.success("Google login successful");
       login(result.accessToken);
-      navigate("/");
+      navigate(await landingPath("/"));
     } catch (err) {
       if (!err.status) console.error(err);
       toast.error(err.message || "Google auth failed");
@@ -46,7 +47,7 @@ const SocialSignIn = () => {
         Continue with Google
       </button>
 
-      <button
+      {github && <button
         type="button"
         onClick={() => {
           window.location.href = GITHUB_AUTH_URL;
@@ -55,7 +56,7 @@ const SocialSignIn = () => {
       >
         <FaGithub size={18} />
         Continue with GitHub
-      </button>
+      </button>}
     </div>
   );
 };

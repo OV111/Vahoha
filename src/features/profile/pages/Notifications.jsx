@@ -33,12 +33,16 @@ const GROUP_ORDER = ["Today", "This week", "Earlier"];
 
 /** Where a notification leads, if anywhere. */
 const hrefFor = (n) => {
+  const link = n.link ?? n.meta?.link;
+  if (typeof link === "string" && link.startsWith("/")) return link;
   if (n.type === "follow" && n.senderUsername)
     return `/users/${n.senderUsername}`;
   if (n.type === "new_message") return "/my-profile/chats";
   if (n.type === "message_request") return "/my-profile/chats?tab=requests";
   if (n.type === "post_comment" && n.ref?.id) return `/posts/blog_${n.ref.id}`;
   if (n.type === "capstone_review" && n.ref?.id) return `/capstone/${n.ref.id}`;
+  if (n.type === "intro_request") return "/my-profile/intros";
+  if (n.type === "intro_accepted" || n.type === "intro_declined") return "/hiring/intros";
   return null;
 };
 

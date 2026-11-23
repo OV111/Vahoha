@@ -1,11 +1,13 @@
 import { NavLink } from "react-router-dom";
 import { LogOut } from "lucide-react";
-import { AVATAR_MENU_ITEMS } from "../../../constants/navbar";
+import { AVATAR_MENU_ITEMS, AVATAR_MENU_ITEMS_RECRUITER } from "../../../constants/navbar";
+import { useIsRecruiter } from "./hooks";
 import { focusRing, DropdownPanel, AvatarImage, UserSummary, UnreadBadge } from "./parts";
 
 
 // Desktop avatar button and its dropdown (profile links + logout).
 export default function AvatarMenu({ isOpen, onOpen, onClose, onTriggerClick, onLogout }) {
+  const items = useIsRecruiter() ? AVATAR_MENU_ITEMS_RECRUITER : AVATAR_MENU_ITEMS;
   return (
     <div className="relative ml-1 hidden md:block" onMouseEnter={onOpen} onMouseLeave={onClose}>
       <button
@@ -22,7 +24,7 @@ export default function AvatarMenu({ isOpen, onOpen, onClose, onTriggerClick, on
 
       <DropdownPanel open={isOpen} id="avatar-dropdown" className="right-0 w-52">
         <UserSummary inDropdown className="border-b border-white/10 px-4 py-2" />
-        {AVATAR_MENU_ITEMS.map(({ label, to, icon: Icon }) => (
+        {items.map(({ label, to, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}

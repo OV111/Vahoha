@@ -37,6 +37,7 @@ const EditBlog = lazy(() => import("./features/profile/pages/EditBlog"));
 const Notifications = lazy(() => import("./features/profile/pages/Notifications"));
 const Settings = lazy(() => import("./features/profile/pages/Settings"));
 const BlockedUsers = lazy(() => import("./features/profile/pages/BlockedUsers"));
+const IntroInbox = lazy(() => import("./features/profile/pages/IntroInbox"));
 const ConnectedAccounts = lazy(() => import("./features/profile/pages/ConnectedAccounts"));
 const Followers = lazy(() => import("./features/connections/pages/Followers"));
 const Chats = lazy(() => import("./features/chat/pages/Chats"));
@@ -76,6 +77,14 @@ const EvidencePage = lazy(() => import("./features/teams/EvidencePage"));
 
 const CandidatePage = lazy(() => import("./features/recruiter/CandidatePage"));
 const CandidatesPage = lazy(() => import("./features/recruiter/CandidatesPage"));
+const HiringLandingPage = lazy(() => import("./features/hiring/HiringLandingPage"));
+const HiringJoinPage = lazy(() => import("./features/hiring/HiringJoinPage"));
+const RecruiterHomePage = lazy(() => import("./features/hiring/RecruiterHomePage"));
+const HiringAdminPage = lazy(() => import("./features/hiring/HiringAdminPage"));
+const RecruiterOnly = lazy(() => import("./features/hiring/components/RecruiterOnly"));
+const JobsPage = lazy(() => import("./features/hiring/JobsPage"));
+const JobFormPage = lazy(() => import("./features/hiring/JobFormPage"));
+const IntrosPage = lazy(() => import("./features/hiring/IntrosPage"));
 
 const PricingPage = lazy(() => import("./features/billing/PricingPage"));
 const BillingPage = lazy(() => import("./features/billing/BillingPage"));
@@ -98,6 +107,13 @@ const publicRoutes = [
   { path: "pricing", element: <PricingPage /> },
   { path: "roadmaps", element: <RoadmapPage /> },
   { path: "posts/:id", element: <ReadMore /> },
+  ...(FEATURES.hiring
+    ? [
+        { path: "hiring", element: <HiringLandingPage /> },
+        { path: "hiring/join", element: <HiringJoinPage /> },
+        { path: "hiring/home", element: <RecruiterHomePage /> },
+      ]
+    : []),
 ];
 
 const authRoutes = [
@@ -164,7 +180,19 @@ const protectedRoutes = [
   { path: "team/admin", element: <TeamAdminPage /> },
   { path: "team/:teamId", element: <TeamPage /> },
 
-  ...(FEATURES.candidates ? [{ path: "candidates", element: <CandidatesPage /> }] : []),
+  // With the hiring side on, the list is for hiring accounts only (the API agrees).
+  ...(FEATURES.hiring
+    ? [
+        { path: "candidates", element: <RecruiterOnly><CandidatesPage /></RecruiterOnly> },
+        { path: "hiring/jobs", element: <RecruiterOnly><JobsPage /></RecruiterOnly> },
+        { path: "hiring/jobs/new", element: <RecruiterOnly><JobFormPage /></RecruiterOnly> },
+        { path: "hiring/jobs/:id", element: <RecruiterOnly><JobFormPage /></RecruiterOnly> },
+        { path: "hiring/intros", element: <RecruiterOnly><IntrosPage /></RecruiterOnly> },
+      ]
+    : FEATURES.candidates
+      ? [{ path: "candidates", element: <CandidatesPage /> }]
+      : []),
+  ...(FEATURES.hiring ? [{ path: "hiring/admin", element: <HiringAdminPage /> }] : []),
 
   { path: "users/:username", element: <UserProfile /> },
   {
@@ -182,6 +210,7 @@ const protectedRoutes = [
       { path: "favourites", element: redirect("/my-profile/favorites") },
       { path: "connected-accounts", element: <ConnectedAccounts /> },
       { path: "blocked", element: <BlockedUsers /> },
+      ...(FEATURES.hiring ? [{ path: "intros", element: <IntroInbox /> }] : []),
     ],
   },
 ];

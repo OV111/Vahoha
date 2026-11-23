@@ -3,9 +3,11 @@ import { findActiveNavPath, isNavLinkActive } from "@/utils/navigation";
 import {
   NAV_GROUPS_AUTH,
   NAV_GROUPS_GUEST,
+  NAV_GROUPS_RECRUITER,
   NAV_LINKS_GUEST,
   TRACK_LINKS,
 } from "../../../constants/navbar";
+import { useIsRecruiter } from "./hooks";
 import NavGroupMenu from "./NavGroupMenu";
 import { Sparkles } from "lucide-react";
 import "./mentor-button.css";
@@ -26,7 +28,8 @@ const MentorButton = ({ className = "" }) => (
 
 export default function DesktopNav({ auth, openDropdown, setOpenDropdown, closeDropdown, handleTriggerClick }) {
   const location = useLocation();
-  const navGroups = auth ? NAV_GROUPS_AUTH : NAV_GROUPS_GUEST;
+  const isRecruiter = useIsRecruiter();
+  const navGroups = isRecruiter ? NAV_GROUPS_RECRUITER : auth ? NAV_GROUPS_AUTH : NAV_GROUPS_GUEST;
   // One winner across every menu, so two items sharing a page can't both light up.
   const activePath = findActiveNavPath(
     location.pathname,
@@ -50,7 +53,7 @@ export default function DesktopNav({ auth, openDropdown, setOpenDropdown, closeD
         />
       ))}
 
-      {auth ? (
+      {isRecruiter ? null : auth ? (
         <li className="px-1.5 py-1">
           <MentorButton />
         </li>

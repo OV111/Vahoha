@@ -19,6 +19,9 @@ import LayerPosts from "./LayerPosts";
 import LayerLibrary from "./LayerLibrary";
 import { hasVoiceExam } from "@/features/voice-exam/lib/pilotLayers";
 import { useVerifiedLayers } from "@/features/voice-exam/hooks/useVerifiedLayers";
+import { DEVELOPER_SIGNUP_PATH } from "../../../../constants/site";
+import useViewOnly from "../../hiring/useViewOnly";
+import ViewOnlyNotice from "../../hiring/components/ViewOnlyNotice";
 
 const resourceTypeColor = {
   docs: "bg-blue-900/30 text-blue-400 border border-blue-800/50",
@@ -31,6 +34,7 @@ const resourceTypeColor = {
 
 const LayerDetail = () => {
   const navigate = useNavigate();
+  const isViewOnly = useViewOnly();
   const {
     activeLayer,
     closePanel,
@@ -183,8 +187,16 @@ const LayerDetail = () => {
         </div>
 
         {/* Footer actions — guests can read everything above, but tracking
-            progress and taking the exam need an account. */}
-        {!auth ? (
+            progress and taking the exam need an account. Hiring accounts
+            look only: they get what a developer does here instead. */}
+        {isViewOnly ? (
+          <div className="px-6 py-4 border-t border-neutral-800">
+            <ViewOnlyNotice>
+              Developers pass this layer's test (80% or more) to unlock the next one.
+              {hasVoiceExam(activeLayer.id) && " A spoken exam here earns a Verified badge."}
+            </ViewOnlyNotice>
+          </div>
+        ) : !auth ? (
           <div className="px-6 py-4 border-t border-neutral-800 flex items-center justify-between gap-3">
             {/* min-w-0 lets the hint wrap instead of squeezing the button. */}
             <span className="flex min-w-0 items-start gap-2 text-[13px] leading-snug text-neutral-400">
@@ -194,7 +206,7 @@ const LayerDetail = () => {
             {/* shrink-0 + nowrap: the call to action never breaks onto two lines;
                 min-h-11 is the 44px touch target. */}
             <Link
-              to="/get-started"
+              to={DEVELOPER_SIGNUP_PATH}
               onClick={closePanel}
               className="flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-purple-600 px-4 text-sm font-medium text-white transition-colors duration-200 hover:bg-purple-500"
             >

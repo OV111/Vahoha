@@ -2,6 +2,7 @@ import { Github, Instagram, Mail } from "lucide-react";
 import XLogo from "../src/components/ui/XLogo";
 import { SITE } from "./site";
 import { CATEGORY_OPTIONS, categoryHref } from "./categories";
+import { FEATURES } from "./features";
 
 // Footer link columns and social icons (rendered by src/layouts/Footer.jsx).
 
@@ -19,11 +20,15 @@ export const PRODUCT_LINKS = [
   { title: "Pricing", to: "/pricing" },
 ];
 export const AI_LINKS = [
+  { title: "Judgment Simulator", to: "/judgment" },
+  // Exams start from a roadmap layer; there is no standalone exam page yet.
+  { title: "Voice exams", to: "/roadmaps" },
   { title: "Foundations", to: "/labs/foundations" },
   { title: "Mentor", to: "/mentor" },
 ];
 export const COMPANY_LINKS = [
   { title: "About", to: "/about" },
+  ...(FEATURES.hiring ? [{ title: "For companies", to: "/hiring" }] : []),
   { title: "Blog", to: "/blogs" },
   { title: "Contact", to: "/contact" },
   { title: "Privacy Policy", to: "/privacy" },

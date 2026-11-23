@@ -63,6 +63,8 @@ services:
         sync: false
       - key: CANDIDATES_ENABLED     # recruiter candidates list API; leave unset (closed) until the page is switched on
         sync: false
+      - key: HIRING_ENABLED         # hiring sign-up API (recruiter accounts); leave unset (closed) until the pages are switched on
+        sync: false
       - key: CLOUDINARY_CLOUD_NAME
         sync: false
       - key: CLOUDINARY_API_KEY

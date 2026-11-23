@@ -8,12 +8,13 @@
 // "delete your account" promise. Keep the terms in step with the policy.
 
 // Privacy items are [label, text]; label may be null.
-export const PRIVACY_EFFECTIVE_DATE = "November 16, 2026";
+export const PRIVACY_EFFECTIVE_DATE = "November 22, 2026";
 
 export const PRIVACY_SUMMARY = [
   "We collect what's needed to run your account and track your learning.",
   "We never sell your data or show you ads.",
   "Your mentor messages are processed by an AI provider to generate replies.",
+  "Companies see your email only if you accept their intro request.",
   "Deleting your account deletes your data.",
 ];
 
@@ -29,8 +30,11 @@ export const PRIVACY_SECTIONS = [
       ["Mentor", "Your conversations with the mentor and how many messages you send per day (used for usage limits)."],
       ["Capstones", "The repository link you submit, the review of your code, your defense answers and, when you pass, a certificate with your name on it."],
       ["Project maps", "The maps you draw or generate from a repository scan, the notes on their parts, your answers to the understanding check, and comments you leave on team maps."],
+      ["Judgment simulator", "The decisions you make in a simulation, the reasons you type for them, and your score."],
       ["Teams", "The teams you join, your GitHub username, the pull requests you contribute to the team repository, your defense answers and the ratings you give and receive."],
-      ["Recruiter visibility", "Only if you turn it on: the settings for your public candidate page."],
+      ["Recruiter visibility", "Only if you turn it on: the settings for your public candidate page and which sections it shows."],
+      ["Intro requests", "If a company asks to talk to you: the company, the job, its message, your answer (accept, decline, block) and any report you make. Your email is shared with that company only if you accept."],
+      ["Hiring accounts", "If you sign up to hire: your name, work email, role, and your company's name, website, type and team size; a one-time email code (stored only as a hash); the results of our automatic company checks; the jobs you create, the candidates you save with your private notes, and the intro requests you send."],
       ["Community", "Posts, comments, likes, saved items, follows, notifications, and chat messages, including voice notes and files you send."],
       ["Billing", "Your plan and subscription status. Card details are handled entirely by our payment provider and never reach our servers."],
       ["Usage", "Product events such as signing up, starting a path or submitting a test, used to understand which features help people learn."],
@@ -46,6 +50,8 @@ export const PRIVACY_SECTIONS = [
       [null, "To give the mentor context about your path, test history and weak spots, so its guidance fits you."],
       [null, "To show your profile and posts to other users, as you choose."],
       [null, "To publish the pages you choose to share: a project map link, a certificate's verification page, your team's evidence page, and your candidate page if you turn recruiter visibility on."],
+      [null, "To check hiring accounts automatically, so developers only hear from real companies. We look up the mail records of the work email's domain, open the company's website, and read the public registration date of its domain. Companies that don't pass get limited access, and repeated reports from developers limit a company too."],
+      [null, "To let a company contact you only through an intro request you can accept, decline or report. Companies never see your email unless you accept."],
       [null, "To reply when you contact us, and to fix bugs and improve the product."],
     ],
   },
@@ -54,11 +60,12 @@ export const PRIVACY_SECTIONS = [
     title: "Services we rely on",
     items: [
       ["MongoDB Atlas", "Database where your data is stored."],
-      ["Groq", "Runs the AI models. Your mentor messages and the learning context sent with them, teach-back answers, capstone code under review, and project map understanding-check answers are sent to Groq to generate a response. For voice exams, your recording is sent to Groq to be turned into text, and the text is sent to grade it."],
+      ["Groq", "Runs the AI models. Your mentor messages and the learning context sent with them, teach-back answers, capstone code under review, and project map understanding-check answers are sent to Groq to generate a response. For voice exams, your recording is sent to Groq to be turned into text, and the text is sent to grade it. Judgment simulator reasons are sent to write your debrief."],
       ["GitHub", "Optional sign-in. When you submit a capstone, scan a repository for a project map or sync a team repository, we read that public repository and its pull requests from GitHub."],
       ["Polar", "Handles payments as merchant of record, including tax. It processes your payment details, not us."],
       ["Cloudinary", "Stores and serves the images, voice notes and files you upload."],
-      ["Resend", "Sends emails such as password resets and contact-form notifications."],
+      ["Resend", "Sends emails such as password resets, contact-form notifications, hiring sign-up codes and intro request emails."],
+      ["Domain registries and DNS", "For hiring accounts only: we send the company's domain name to public DNS and to its domain registry (RDAP) to check that it receives mail and when it was registered. Nothing about you is sent."],
       ["PostHog", "Product analytics: which pages and features are used, and unhandled errors in the app. It receives an anonymous identifier and your usage events, not your passwords or the content you write."],
       ["Google", "Optional sign-in."],
     ],
@@ -77,7 +84,7 @@ export const PRIVACY_SECTIONS = [
     title: "Your choices",
     items: [
       [null, "Edit your profile at any time in settings."],
-      [null, "Delete your account in settings. This permanently removes your account, profile, posts, comments, learning progress, test history, weak spots, mentor conversations, challenge submissions, voice exam answers and results, capstones and certificates, project maps and the comments you left on team maps, your team memberships and ratings, chat messages you sent, and usage events. Your certificate links stop working, and your name is removed from team evidence pages."],
+      [null, "Delete your account in settings. This permanently removes your account, profile, posts, comments, learning progress, test history, weak spots, mentor conversations, challenge submissions, voice exam answers and results, judgment simulator runs, capstones and certificates, project maps and the comments you left on team maps, your team memberships and ratings, chat messages you sent, and usage events. Your certificate links stop working, and your name is removed from team evidence pages. Intro requests you received, companies you blocked, and any company's saved notes about you are deleted too. For a hiring account, your company and its jobs, shortlist and intro requests are deleted with its last member; if teammates remain, the company stays with them."],
       [null, "Ask for a copy of your data, or ask what we hold, by emailing us."],
     ],
   },
@@ -85,7 +92,8 @@ export const PRIVACY_SECTIONS = [
     id: "retention",
     title: "How long we keep data",
     items: [
-      [null, "For as long as your account exists. Password reset links expire after 1 hour."],
+      [null, "For as long as your account exists. Password reset links expire after 1 hour, and hiring sign-up codes after 15 minutes."],
+      [null, "Unanswered intro requests expire after 14 days. A declined request stays on record so the same company can't ask again for 90 days."],
       [null, "Payment records may be kept by Polar as required by tax and accounting law."],
     ],
   },
@@ -99,14 +107,14 @@ export const PRIVACY_SECTIONS = [
 ];
 
 // Terms items are plain strings.
-export const TERMS_EFFECTIVE_DATE = "November 16, 2026";
+export const TERMS_EFFECTIVE_DATE = "November 22, 2026";
 
 export const TERMS_SECTIONS = [
   {
     id: "using",
     title: "Using Vahoha",
     items: [
-      "Vahoha is a learning platform for developers: roadmaps, tests, a mentor, coding challenges, labs, project maps, capstone projects and team projects.",
+      "Vahoha is a learning platform for developers: roadmaps, tests, a mentor, coding challenges, labs, project maps, capstone projects and team projects. Companies can open hiring accounts to find developers who chose to be found.",
       "By creating an account or using the site, you agree to these terms. If you don't agree, don't use the service.",
       "You must provide accurate account details and keep your password secure. You are responsible for activity under your account.",
     ],
@@ -119,6 +127,7 @@ export const TERMS_SECTIONS = [
       "Don't cheat the test, challenge, capstone or team systems, for example by automating submissions, sharing answers to bypass grading, or submitting someone else's work as your own.",
       "Only submit or scan repositories you have the right to share with us.",
       "Don't post unlawful, harassing, hateful or spammy content, or content you don't have the right to share.",
+      "Hiring accounts: give accurate company details, contact developers only through intro requests, and don't copy, scrape or resell candidate data. Use what you learn only to recruit for the role you named.",
       "We may remove content or suspend accounts that break these rules.",
     ],
   },

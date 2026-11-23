@@ -1,6 +1,10 @@
-import { UserPlus, MessageCircle, Heart, FileText, MessageSquare, Inbox, GraduationCap } from "lucide-react";
+import { UserPlus, MessageCircle, Heart, FileText, MessageSquare, Inbox, GraduationCap, Briefcase, Handshake, CircleX } from "lucide-react";
 
 export const FILTERS = ["All", "Unread", "Follows", "Messages", "Comments", "Likes", "Posts"];
+
+// Intro requests carry their own sentence and link (`message`, `link`, or the
+// same keys under `meta`); the label is only a fallback.
+const introText = (fallback) => (n) => n.message ?? n.meta?.message ?? fallback;
 
 // `label` is a string shown after the sender's name, or a function of the
 // notification. `system` types come from Vahoha itself and have no sender.
@@ -50,6 +54,27 @@ export const TYPE_META = {
     color: "text-fuchsia-500",
     bg: "bg-fuchsia-100 dark:bg-fuchsia-950/40",
     label: "published a new post",
+  },
+  intro_request: {
+    icon: Briefcase,
+    color: "text-purple-500",
+    bg: "bg-purple-100 dark:bg-purple-950/40",
+    system: true,
+    label: introText("A company wants to talk to you about a job."),
+  },
+  intro_accepted: {
+    icon: Handshake,
+    color: "text-emerald-500",
+    bg: "bg-emerald-100 dark:bg-emerald-950/40",
+    system: true,
+    label: introText("A developer accepted your intro request."),
+  },
+  intro_declined: {
+    icon: CircleX,
+    color: "text-neutral-400",
+    bg: "bg-neutral-100 dark:bg-neutral-800/60",
+    system: true,
+    label: introText("A developer declined your intro request."),
   },
 };
 

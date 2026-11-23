@@ -31,6 +31,9 @@ const SECTIONS = [
   { key: "capstone", label: "Capstone certificates and scores" },
   { key: "teams", label: "Team projects (merged PRs, defense, peer rating)" },
   { key: "strengths", label: "Strong topics (only topics you know well)" },
+  { key: "verified", label: "Verified layers (spoken exams you passed)" },
+  { key: "challenges", label: "Coding challenges solved, by difficulty" },
+  { key: "judgment", label: "Judgment simulator best score" },
 ];
 
 /**

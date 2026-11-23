@@ -17,7 +17,7 @@ const PER_USER = [
   'usernameHistory', 'userEvents', 'refreshTokens', 'passwordResets',
   'capstone_attempts', 'capstone_submissions', 'submission_usage', 'certificates',
   'system_maps', 'system_map_checks', 'system_map_comments',
-  'team_defenses', 'xpAwards', 'recruiter_settings',
+  'team_defenses', 'xpAwards', 'recruiter_settings', 'voice_exam_attempts', 'judgment_runs', 'hiring_email_codes',
 ]
 
 let mongod
@@ -74,6 +74,55 @@ describe('deleteAccountService', () => {
 
     const room = await db.collection('rooms').findOne({})
     expect(room.members).toEqual([keeper.toString()])
+  })
+})
+
+describe('deleteAccountService: hiring data', () => {
+  const seedCompany = async (members) => {
+    const _id = new ObjectId()
+    await db.collection('companies').insertOne({ _id, name: 'Acme', members, createdBy: members[0], trust: { level: 'verified' } })
+    await db.collection('jobs').insertOne({ companyId: _id, title: 'Backend', status: 'open' })
+    return _id
+  }
+
+  it('removes what a developer left in companies: shortlist notes, intros and blocks', async () => {
+    const dev = await seedUser('dev-hire@example.com')
+    const companyId = await seedCompany([new ObjectId()])
+    await db.collection('saved_candidates').insertOne({ companyId, candidateId: dev, note: 'private' })
+    await db.collection('intro_requests').insertOne({ companyId, candidateId: dev, status: 'pending' })
+    await db.collection('intro_blocks').insertOne({ companyId, candidateId: dev })
+
+    await deleteAccountService(db, dev, 'dev-hire@example.com', 'pw-123456')
+
+    for (const name of ['saved_candidates', 'intro_requests', 'intro_blocks']) {
+      expect(await db.collection(name).countDocuments({ candidateId: dev }), name).toBe(0)
+    }
+    expect(await db.collection('companies').countDocuments({ _id: companyId })).toBe(1)
+  })
+
+  it("deletes a recruiter's company with its last member, jobs and intros included", async () => {
+    const rec = await seedUser('solo-rec@example.com')
+    const companyId = await seedCompany([rec])
+    await db.collection('intro_requests').insertOne({ companyId, candidateId: new ObjectId(), status: 'pending' })
+
+    await deleteAccountService(db, rec, 'solo-rec@example.com', 'pw-123456')
+
+    expect(await db.collection('companies').countDocuments({ _id: companyId })).toBe(0)
+    expect(await db.collection('jobs').countDocuments({ companyId })).toBe(0)
+    expect(await db.collection('intro_requests').countDocuments({ companyId })).toBe(0)
+  })
+
+  it('keeps a shared company for the teammates and hands over ownership', async () => {
+    const rec = await seedUser('owner-rec@example.com')
+    const mate = new ObjectId()
+    const companyId = await seedCompany([rec, mate])
+
+    await deleteAccountService(db, rec, 'owner-rec@example.com', 'pw-123456')
+
+    const company = await db.collection('companies').findOne({ _id: companyId })
+    expect(company.members.map(String)).toEqual([String(mate)])
+    expect(company.createdBy.equals(mate)).toBe(true)
+    expect(await db.collection('jobs').countDocuments({ companyId })).toBe(1)
   })
 })
 

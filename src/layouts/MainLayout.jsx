@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import LoadingSuspense from "../components/feedback/LoadingSuspense";
 import RouteSeo from "../seo/RouteSeo";
 import PrerenderHandoff from "../seo/PrerenderHandoff";
+import RecruiterGate from "../features/hiring/components/RecruiterGate";
 const MainLayout = () => {
   // A route marked `handle: { appShell: true }` is a full-screen tool (the mentor
   // chat): it sizes itself to the space under the navbar, so a footer or a
@@ -18,7 +19,9 @@ const MainLayout = () => {
       <Navbar />
       <main className={appShell ? "" : "min-h-dvh"}>
         <Suspense fallback={<LoadingSuspense />}>
-          <Outlet />
+          <RecruiterGate>
+            <Outlet />
+          </RecruiterGate>
           <PrerenderHandoff />
         </Suspense>
       </main>

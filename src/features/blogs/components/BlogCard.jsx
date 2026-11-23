@@ -21,6 +21,7 @@ import DmitryPetrov from "../assets/authors/dmitry-petrov.webp";
 import AliceKeyes  from "../assets/authors/alice-keyes.webp";
 import WilliamChen from "../assets/authors/william-chen.webp";
 import GraceHopper from "../assets/authors/grace-hopper.webp";
+import useViewOnly from "../../hiring/useViewOnly";
 
 const blogImgMap = {
   "fs1React.jpg":          fs1React,
@@ -152,7 +153,9 @@ const BlogCard = ({ card }) => {
     month: "short",
     day: "numeric",
   });
-  const canInteract = auth && !post.isDefault;
+  // Hiring accounts read blogs only (the server refuses likes, saves and comments).
+  const isViewOnly = useViewOnly();
+  const canInteract = auth && !post.isDefault && !isViewOnly;
   const iconBtn = (active, activeClass) =>
     `relative z-10 flex items-center gap-1 rounded-full p-1.5 transition-colors max-md:after:absolute max-md:after:-inset-2 ${
       canInteract ? "cursor-pointer" : "cursor-not-allowed opacity-60"

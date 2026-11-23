@@ -32,6 +32,9 @@ import readinessRoutes from "./modules/readiness/index.js";
 import onboardingRoutes from "./modules/onboarding/index.js";
 import voiceExamRoutes from "./modules/voice-exam/index.js";
 import judgmentRoutes from "./modules/judgment/index.js";
+import hiringRoutes from "./modules/hiring/index.js";
+import introsRoutes from "./modules/intros/index.js";
+import { blockRecruiters } from "./middleware/blockRecruiters.js";
 import { notFound } from "./middleware/notFound.js";
 import { globalIpLimiter } from "./middleware/rateLimits.js";
 
@@ -113,36 +116,45 @@ export function createApp(db) {
     next();
   });
 
-  app.use("/blogs", blogRoutes);
+  // Hiring accounts: view-only on learning content, shut out of taking part.
+  // (blockRecruiters reads the token itself; each router still runs its own auth.)
+  const viewOnly = blockRecruiters({ allowReads: true });
+  const noAccess = blockRecruiters();
+
+  app.use("/blogs", viewOnly, blogRoutes);
   app.use("/library", libraryRoutes);
   app.use("/api/library/admin", adminLibraryRoutes);
   app.use("/api/library", digestRoutes);
 
   app.use(authRoutes);
+  app.use("/my-profile/chats", noAccess);
   app.use("/my-profile", profileRoutes);
   app.use(userRoutes);
   app.use("/search", searchRoutes);
   app.use(accountRoutes);
-  app.use("/api/mentor", mentorRoutes);
-  app.use("/api/roadmaps", roadmapRoutes);
-  app.use("/api/exams", examRoutes);
-  app.use("/api/challenges", codingChallengeRoutes);
-  app.use("/api/billing", billingRoutes);
-  app.use("/api/mastery", masteryRoutes);
+  app.use("/api/mentor", noAccess, mentorRoutes);
+  app.use("/api/roadmaps", viewOnly, roadmapRoutes);
+  app.use("/api/exams", noAccess, examRoutes);
+  app.use("/api/challenges", viewOnly, codingChallengeRoutes);
+  app.use("/api/billing", viewOnly, billingRoutes);
+  app.use("/api/mastery", noAccess, masteryRoutes);
   app.use("/api/contact", contactRoutes);
   app.use("/api/email", emailRoutes);
-  app.use("/api/capstone", capstoneRoutes);
-  app.use("/api/teams", teamsRoutes);
+  app.use("/api/capstone", noAccess, capstoneRoutes);
+  app.use("/api/teams", noAccess, teamsRoutes);
+  app.use("/api/system-maps", noAccess);
   app.use("/api/system-maps", systemMapRoutes);
   app.use("/api/system-maps", understandingRoutes);
   app.use("/api/system-maps", driftRoutes);
   app.use("/api/system-maps", commentRoutes);
   app.use("/api/system-maps", versionRoutes);
   app.use("/api/recruiter", recruiterRoutes);
-  app.use("/api/readiness", readinessRoutes);
+  app.use("/api/readiness", noAccess, readinessRoutes);
   app.use("/api/onboarding", onboardingRoutes);
-  app.use("/api/voice-exam", voiceExamRoutes);
-  app.use("/api/judgment", judgmentRoutes);
+  app.use("/api/voice-exam", noAccess, voiceExamRoutes);
+  app.use("/api/judgment", noAccess, judgmentRoutes);
+  app.use("/api/hiring", hiringRoutes);
+  app.use("/api/intros", noAccess, introsRoutes);
   app.use("/api/admin", analyticsRoutes);
 
   // Catches 5xx errors from routes that have no module error handler of their own.

@@ -7,6 +7,7 @@ import { DEFAULT_LENS, lensInfo } from "../lib/lenses";
 import { KIND_ICONS } from "../lib/nodeKinds";
 import useMyRepos from "../hooks/useMyRepos";
 import EvidenceList from "./EvidenceList";
+import { DEVELOPER_SIGNUP_PATH } from "../../../../constants/site";
 
 const button =
   "inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-neutral-700 px-3 text-sm text-neutral-200 transition-colors hover:border-neutral-500 hover:text-white focus-visible:outline-2 focus-visible:outline-purple-400 disabled:cursor-not-allowed disabled:opacity-50";
@@ -136,7 +137,7 @@ export default function RepoScanPanel({ signedIn, repo, nodes, lens = DEFAULT_LE
 
       {!signedIn ? (
         <p className="mt-4 text-sm text-neutral-300">
-          <Link to="/get-started" className="text-purple-300 underline-offset-2 hover:underline">
+          <Link to={DEVELOPER_SIGNUP_PATH} className="text-purple-300 underline-offset-2 hover:underline">
             Sign in
           </Link>{" "}
           to scan your repo.

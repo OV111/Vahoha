@@ -42,7 +42,7 @@ const sendError = makeErrorHandler("auth");
 // the caller, never in a body a script on the page could read.
 const respondWithoutRefreshToken = (res, result) => {
   // eslint-disable-next-line no-unused-vars -- intentionally discarded
-  const { refreshToken, ...safeResult } = result;
+  const { refreshToken, userId, ...safeResult } = result;
   res.status(result.status ?? result.code ?? 500).json(safeResult);
 };
 

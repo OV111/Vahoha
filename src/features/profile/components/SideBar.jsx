@@ -1,13 +1,34 @@
+import { useEffect } from "react";
 import { sidebarArr } from "../../../../constants/sidebars";
+import { isRecruiterBlockedPath } from "../../../../constants/recruiterAccess";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useAuthStore from "../../../stores/useAuthStore.js";
+import useIntroStore from "../../../stores/useIntroStore.js";
+import useViewOnly from "../../hiring/useViewOnly";
 import { toast } from "sonner";
 import { LogOut } from "lucide-react";
+
+const hasIntros = sidebarArr.some((g) => g.items.some((i) => i.badge === "intros"));
 
 export default function SideBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { logout } = useAuthStore();
+  const isRecruiter = useViewOnly();
+  const introsPending = useIntroStore((s) => s.pending);
+  const loadIntrosPending = useIntroStore((s) => s.loadPending);
+
+  useEffect(() => {
+    if (hasIntros && !isRecruiter) loadIntrosPending();
+  }, [isRecruiter, loadIntrosPending]);
+
+  // Hiring accounts don't get links to learner-only pages they'd be sent away from.
+  const groups = isRecruiter
+    ? sidebarArr
+        .map((g) => ({ ...g, items: g.items.filter((i) => !isRecruiterBlockedPath(i.to)) }))
+        .filter((g) => g.items.length > 0)
+    : sidebarArr;
+  const badgeFor = (item) => (item.badge === "intros" ? introsPending : 0);
 
   const handleLogOut = async () => {
     // useAuthStore.logout() now owns the DELETE /log-out call (it revokes
@@ -24,7 +45,7 @@ export default function SideBar() {
           from lg up it opens into the labelled sidebar. */}
       <aside className="flex min-h-screen w-14 shrink-0 flex-col border-r border-white/10 bg-black transition-all duration-300 lg:sticky lg:top-0 lg:w-56">
         <nav aria-label="Profile" className="flex min-h-0 flex-1 flex-col items-center py-3 lg:items-stretch lg:px-2 lg:py-2">
-          {sidebarArr.map((group, gi) => (
+          {groups.map((group, gi) => (
             <div
               key={group.section}
               className={`flex w-full flex-col items-center gap-1 lg:items-stretch lg:pt-2 ${
@@ -39,7 +60,7 @@ export default function SideBar() {
                   key={`${item.to}-${item.label}`}
                   to={item.to}
                   end={item.end}
-                  aria-label={item.label}
+                  aria-label={badgeFor(item) > 0 ? `${item.label}, ${badgeFor(item)} waiting` : item.label}
                   title={item.label}
                   className={({ isActive }) => {
                     const active = isActive || item.activePaths?.includes(location.pathname);
@@ -50,8 +71,18 @@ export default function SideBar() {
                     }`;
                   }}
                 >
-                  <span className="flex items-center">{item.icon}</span>
+                  <span className="relative flex items-center">
+                    {item.icon}
+                    {badgeFor(item) > 0 && (
+                      <span aria-hidden="true" className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-purple-500 lg:hidden" />
+                    )}
+                  </span>
                   <span className="hidden text-[14px] lg:block">{item.label}</span>
+                  {badgeFor(item) > 0 && (
+                    <span aria-hidden="true" className="ml-auto hidden rounded-full bg-purple-600 px-1.5 py-0.5 font-mono text-xs leading-none text-white lg:block">
+                      {badgeFor(item)}
+                    </span>
+                  )}
                 </NavLink>
               ))}
             </div>

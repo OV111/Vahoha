@@ -3,6 +3,8 @@ import { NavLink } from "react-router-dom";
 import { ChevronDown, Lock, LogOut } from "lucide-react";
 import {
   AVATAR_MENU_ITEMS,
+  AVATAR_MENU_ITEMS_RECRUITER,
+  NAV_GROUPS_RECRUITER,
   NAV_GROUPS_AUTH,
   NAV_GROUPS_GUEST,
   NAV_LINKS_GUEST,
@@ -11,6 +13,7 @@ import {
 import SearchBar from "../../components/search/SearchBar";
 import { NavSearchResults } from "./NavSearch";
 import { GuestActions, UserSummary, UnreadBadge } from "./parts";
+import { useIsRecruiter } from "./hooks";
 
 const MobileNavLink = ({ to, children, className = "" }) => (
   <li className="text-base font-medium transition hover:text-purple-300">
@@ -60,7 +63,9 @@ const MobileTracks = ({ label }) => {
 
 // Full-width menu under the navbar on small screens, with a backdrop that closes it.
 export default function MobileMenu({ auth, showSearch, searchValue, onSearchChange, onClose, onLogout }) {
-  const navGroups = auth ? NAV_GROUPS_AUTH : NAV_GROUPS_GUEST;
+  const isRecruiter = useIsRecruiter();
+  const navGroups = isRecruiter ? NAV_GROUPS_RECRUITER : auth ? NAV_GROUPS_AUTH : NAV_GROUPS_GUEST;
+  const avatarItems = isRecruiter ? AVATAR_MENU_ITEMS_RECRUITER : AVATAR_MENU_ITEMS;
 
   return (
     <>
@@ -119,7 +124,7 @@ export default function MobileMenu({ auth, showSearch, searchValue, onSearchChan
             <li className="mt-2 border-t border-white/20 pt-3">
               <UserSummary />
             </li>
-            {AVATAR_MENU_ITEMS.map(({ label, to, icon: Icon }) => (
+            {avatarItems.map(({ label, to, icon: Icon }) => (
               <MobileNavLink key={to} to={to} className="flex items-center gap-2">
                 <Icon size={14} />
                 {label}

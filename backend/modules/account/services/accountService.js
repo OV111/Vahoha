@@ -155,7 +155,52 @@ const USER_KEYED_COLLECTIONS = [
   "weeklySummaries",
   // Voice exam transcripts and results (the audio itself is never stored).
   "voice_exam_attempts",
+  // Judgment simulator runs: decisions and typed reasons.
+  "judgment_runs",
+  // Hiring sign-up codes (recruiters).
+  "hiring_email_codes",
 ];
+
+/**
+ * Hiring data. A recruiter's company is shared with teammates, so it is only
+ * deleted with its last member; otherwise the person just leaves it (and hands
+ * ownership to a remaining member). Intros a recruiter sent stay with the
+ * company: they are the company's record, and the sender shows as nameless.
+ * For a developer: shortlist rows and private notes about them go, as do the
+ * intros they received and the companies they blocked.
+ */
+async function deleteHiringData(db, userId) {
+  const companies = db.collection("companies");
+  await Promise.all([
+    db.collection("saved_candidates").deleteMany({ candidateId: userId }),
+    db.collection("intro_requests").deleteMany({ candidateId: userId }),
+    db.collection("intro_blocks").deleteMany({ candidateId: userId }),
+  ]);
+
+  // Normally one company per recruiter, but every membership is handled so none is left behind.
+  const memberships = await companies.find({ members: userId }, { projection: { members: 1, createdBy: 1 } }).toArray();
+  for (const company of memberships) {
+    const rest = company.members.filter((m) => !m.equals(userId));
+    if (rest.length === 0) {
+      const companyId = company._id;
+      await Promise.all([
+        db.collection("jobs").deleteMany({ companyId }),
+        db.collection("saved_candidates").deleteMany({ companyId }),
+        db.collection("intro_requests").deleteMany({ companyId }),
+        db.collection("intro_blocks").deleteMany({ companyId }),
+      ]);
+      await companies.deleteOne({ _id: companyId });
+    } else {
+      await companies.updateOne(
+        { _id: company._id },
+        {
+          $pull: { members: userId },
+          $set: { updatedAt: new Date(), ...(company.createdBy?.equals(userId) ? { createdBy: rest[0] } : {}) },
+        },
+      );
+    }
+  }
+}
 
 /**
  * Team data is not keyed by `userId` alone: ratings point at the user as rater
@@ -197,6 +242,7 @@ async function deleteLearningAndActivityData(db, userId, email) {
   ).map((a) => a._id);
 
   await deleteTeamData(db, userId);
+  await deleteHiringData(db, userId);
 
   await Promise.all([
     ...(attemptIds.length

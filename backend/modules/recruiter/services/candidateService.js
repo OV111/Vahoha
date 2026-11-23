@@ -71,6 +71,8 @@ export const toCandidateRow = (sc) => {
     avgExamScore: sc.exams?.length ? Math.round(average(sc.exams.map((e) => e.bestScore ?? 0))) : null,
     capstones: sc.capstones ? sc.capstones.length : null,
     teamProjects: sc.teams ? sc.teams.length : null,
+    verifiedLayers: sc.verified ? sc.verified.length : null,
+    challengesSolved: sc.challenges ? sc.challenges.solved : null,
     strengths: sc.strengths,
     tracks: [...trackIds],
     evidence: evidenceScore(sc),
@@ -85,13 +87,14 @@ const SORTS = {
 };
 
 /** Filter, sort and page the rows (pure). Ties fall back to username so order is stable. */
-export const applyCandidateQuery = (rows, { track, openToWork, minLayers, hasCapstone, q, sort = "score", page = 1, limit = 20 }) => {
+export const applyCandidateQuery = (rows, { track, openToWork, minLayers, hasCapstone, hasVerified, q, sort = "score", page = 1, limit = 20 }) => {
   const needle = q?.toLowerCase();
   const filtered = rows
     .filter((r) => !track || r.tracks.includes(track))
     .filter((r) => !openToWork || r.openToWork)
     .filter((r) => !minLayers || (r.layersPassed ?? 0) >= minLayers)
     .filter((r) => !hasCapstone || (r.capstones ?? 0) > 0)
+    .filter((r) => !hasVerified || (r.verifiedLayers ?? 0) > 0)
     .filter((r) => !needle || r.name.toLowerCase().includes(needle) || r.username.toLowerCase().includes(needle))
     .sort((a, b) => SORTS[sort](a, b) || a.username.localeCompare(b.username));
 

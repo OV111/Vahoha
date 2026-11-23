@@ -8,6 +8,9 @@ import MessageActions from "./MessageActions";
 import ContextCard from "./ContextCard";
 import TeachBackCard from "./TeachBackCard";
 
+// Chat-reading size, in line with Claude and ChatGPT: 16px with roomy line height for long answers.
+const RESPONSE_TEXT = "text-[16px] leading-7 text-white";
+
 // How close to the bottom (px) still counts as "following along". If the user
 // has scrolled further up than this, we leave their scroll position alone.
 const STICK_THRESHOLD = 120;
@@ -46,7 +49,7 @@ const UserMessage = memo(function UserMessage({ msg }) {
     <div className="flex flex-col items-end">
       <AttachmentChips attachments={msg.attachments} align="right" />
       <div className="max-w-[88%] sm:max-w-[80%] rounded-2xl rounded-br-md px-4 py-2.5 bg-white/8">
-        <p className="text-[14px] whitespace-pre-wrap break-words text-white">{msg.content}</p>
+        <p className="text-[16px] leading-7 whitespace-pre-wrap break-words text-white">{msg.content}</p>
       </div>
     </div>
   );
@@ -61,7 +64,7 @@ const UserMessage = memo(function UserMessage({ msg }) {
 const AssistantMessage = memo(function AssistantMessage({ msg }) {
   return (
     <div className="group">
-      <MarkdownMessage content={msg.content} />
+      <MarkdownMessage content={msg.content} className={RESPONSE_TEXT} />
       <MessageActions content={msg.content} messageId={msg.id} feedback={msg.feedback} />
     </div>
   );
@@ -80,8 +83,8 @@ function StreamingAnswer({ onGrow }) {
 
   return (
     <div>
-      <MarkdownMessage content={content} />
-      <span className="animate-pulse text-[14px] text-white">▊</span>
+      <MarkdownMessage content={content} className={RESPONSE_TEXT} />
+      <span className="animate-pulse text-[16px] text-white">▊</span>
     </div>
   );
 }

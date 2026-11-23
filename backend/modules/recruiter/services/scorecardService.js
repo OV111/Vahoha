@@ -20,6 +20,9 @@ import { getMastery } from "../../../services/learnerMasteryService.js";
 import { listPublicCertificatesForUser } from "../../capstone/index.js";
 import { listPublicTeamEvidenceForUser } from "../../teams/index.js";
 import { listSharedCapstoneMaps } from "../../system-map/index.js";
+import { listVerifiedLayers } from "../../voice-exam/index.js";
+import { judgmentSummary } from "../../judgment/index.js";
+import { getLayers } from "../../../services/roadmapCache.js";
 import { DEFAULT_RECRUITER_SETTINGS, RECRUITER_SETTINGS, ensureIndexes, fail } from "./recruiterData.js";
 
 const MAX_STRENGTHS = 8;
@@ -70,6 +73,37 @@ export const buildHeadline = ({ exams, capstones, teams }) => {
   return parts.length ? parts.join(" · ") : null;
 };
 
+/**
+ * Solved coding challenges: how many, split by difficulty. Only "solved" rows
+ * count (graded in the sandbox); attempts and drafts never show.
+ */
+const summarizeChallenges = async (db, userId) => {
+  const solved = await db
+    .collection("challengeResults")
+    .find({ userId, status: "solved" }, { projection: { challengeId: 1, solvedAt: 1 } })
+    .toArray();
+  const slugs = solved.map((r) => r.challengeId);
+  const meta = slugs.length
+    ? await db.collection("challenges").find({ slug: { $in: slugs } }, { projection: { _id: 0, slug: 1, difficulty: 1 } }).toArray()
+    : [];
+  const byDifficulty = { easy: 0, med: 0, hard: 0 };
+  for (const m of meta) if (m.difficulty in byDifficulty) byDifficulty[m.difficulty] += 1;
+  const last = solved.reduce((a, r) => (r.solvedAt && (!a || r.solvedAt > a) ? r.solvedAt : a), null);
+  return { solved: solved.length, byDifficulty, lastSolvedAt: last };
+};
+
+/** Layers passed in a spoken (or typed) voice exam graded against a rubric. */
+const summarizeVerified = async (db, userId) => {
+  const rows = await listVerifiedLayers(db, userId);
+  const titles = await getLayers(db, rows.map((r) => r.layer));
+  return rows.map((r) => ({
+    layer: r.layer,
+    title: titles.get(r.layer)?.title ?? r.layer,
+    spoken: r.spoken,
+    verifiedAt: r.verifiedAt,
+  }));
+};
+
 const summarizeStrengths = (mastery) =>
   mastery
     .filter((t) => t.status === "solid")
@@ -87,7 +121,19 @@ const summarizeStrengths = (mastery) =>
  * @param {object[]} [input.maps]  shared capstone maps [{ trackId, title, publicId, updatedAt }]
  * @param {object[]} input.mastery
  */
-export const buildScorecard = ({ user, settings, progress, exams, certificates, teams, mastery, maps = [] }) => {
+export const buildScorecard = ({
+  user,
+  settings,
+  progress,
+  exams,
+  certificates,
+  teams,
+  mastery,
+  maps = [],
+  challenges = null,
+  verified = [],
+  judgment = null,
+}) => {
   const show = settings.show;
   // Sections the developer hid are null, not empty: the page must not
   // suggest "nothing here" when the truth is "not shared".
@@ -98,6 +144,9 @@ export const buildScorecard = ({ user, settings, progress, exams, certificates, 
     // Capstone maps travel with the capstone section: hiding it hides them too.
     maps: show.capstone ? maps : null,
     strengths: show.strengths ? summarizeStrengths(mastery) : null,
+    challenges: show.challenges ? challenges : null,
+    verified: show.verified ? verified : null,
+    judgment: show.judgment ? judgment : null,
   };
   return {
     username: user.username,
@@ -122,7 +171,7 @@ export const loadScorecard = async (db, user, stored, { maps: withMaps = true } 
   const settings = { ...DEFAULT_RECRUITER_SETTINGS, ...stored, show: { ...DEFAULT_RECRUITER_SETTINGS.show, ...stored.show } };
   const { show } = settings;
 
-  const [progress, exams, certificates, teams, mastery, maps] = await Promise.all([
+  const [progress, exams, certificates, teams, mastery, maps, challenges, verified, judgment] = await Promise.all([
     db.collection("userProgress").findOne({ userId: user._id }),
     show.exams
       ? db
@@ -137,9 +186,12 @@ export const loadScorecard = async (db, user, stored, { maps: withMaps = true } 
     show.teams ? listPublicTeamEvidenceForUser(db, user._id) : [],
     show.strengths ? getMastery(db, user._id) : [],
     show.capstone && withMaps ? listSharedCapstoneMaps(db, user._id) : [], // the candidates list shows no maps, so it skips the query
+    show.challenges ? summarizeChallenges(db, user._id) : null,
+    show.verified ? summarizeVerified(db, user._id) : [],
+    show.judgment ? judgmentSummary(db, user._id) : null,
   ]);
 
-  return buildScorecard({ user, settings, progress, exams, certificates, teams, mastery, maps });
+  return buildScorecard({ user, settings, progress, exams, certificates, teams, mastery, maps, challenges, verified, judgment });
 };
 
 export const getScorecardService = async (db, username) => {

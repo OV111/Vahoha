@@ -11,7 +11,7 @@ import { recruiterApi } from "../recruiterApi";
  * Search is typed locally and only reaches the URL (and the request) once the
  * person pauses.
  */
-const KEYS = ["track", "openToWork", "hasCapstone", "minLayers", "q", "sort", "page"];
+const KEYS = ["track", "openToWork", "hasCapstone", "hasVerified", "minLayers", "q", "sort", "page"];
 
 export default function useCandidates() {
   const [params, setParams] = useSearchParams();
@@ -65,6 +65,7 @@ export default function useCandidates() {
     track: params.get("track") ?? "",
     openToWork: params.get("openToWork") === "true",
     hasCapstone: params.get("hasCapstone") === "true",
+    hasVerified: params.get("hasVerified") === "true",
     minLayers: params.get("minLayers") ?? "",
     sort: params.get("sort") ?? "score",
     page: Number(params.get("page") ?? 1),
@@ -73,6 +74,7 @@ export default function useCandidates() {
     Number(Boolean(filters.track)) +
     Number(filters.openToWork) +
     Number(filters.hasCapstone) +
+    Number(filters.hasVerified) +
     Number(Boolean(filters.minLayers)) +
     Number(Boolean(urlQ));
 
@@ -85,11 +87,12 @@ export default function useCandidates() {
     setTrack: (track) => update({ track }),
     setOpenToWork: (on) => update({ openToWork: on ? "true" : null }),
     setHasCapstone: (on) => update({ hasCapstone: on ? "true" : null }),
+    setHasVerified: (on) => update({ hasVerified: on ? "true" : null }),
     setMinLayers: (minLayers) => update({ minLayers }),
     setSort: (sort) => update({ sort: sort === "score" ? null : sort }),
     setPage: (page) => update({ page: page > 1 ? page : null }),
     clearAll: () =>
-      update({ track: null, openToWork: null, hasCapstone: null, minLayers: null, q: null }),
+      update({ track: null, openToWork: null, hasCapstone: null, hasVerified: null, minLayers: null, q: null }),
     retry: () => setAttempt((n) => n + 1),
   };
 }

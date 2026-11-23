@@ -5,6 +5,7 @@ import RiseText from "../components/home/RiseText";
 import PixelBackground from "../components/home/PixelBackground";
 import Divider from "../components/ui/Divider";
 import vahohaMark from "@/assets/brand/vahoha-mark-96.webp";
+import { DEVELOPER_SIGNUP_PATH } from "../../constants/site";
 
 const HowItWorks = lazy(() => import("../components/home/HowItWorks"));
 
@@ -20,8 +21,10 @@ const Home = () => {
 
   return (
     <>
-      <section className="relative isolate flex min-h-[85dvh] flex-col items-center justify-center px-4 text-center sm:px-6">
-        <PixelBackground topOffset={150} sideDensity={3} centerDensity={2} />
+      {/* Phones get a full first screen (svh: the height with the browser bars showing),
+          so "How it works" only appears once the user scrolls. */}
+      <section className="relative isolate flex min-h-[calc(100svh-var(--navbar-h,56px))] md:min-h-[85dvh] flex-col items-center justify-center px-4 text-center sm:px-6">
+        <PixelBackground topOffset={150} sideDensity={3} centerDensity={2} interactive />
         <div
           className="rt-fade mb-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1"
           style={{ "--delay": "0ms" }}
@@ -57,7 +60,7 @@ const Home = () => {
           style={{ "--delay": "800ms" }}
         >
           <Link
-            to={auth ? "/roadmaps" : "/get-started"}
+            to={auth ? "/roadmaps" : DEVELOPER_SIGNUP_PATH}
             className="flex min-h-9 items-center justify-center rounded-full sm:min-h-11 bg-white px-4 py-1.5 text-[13px] sm:px-5 sm:py-2.5 sm:text-[14px] leading-[20px] font-medium text-black transition hover:bg-neutral-200"
           >
             {/* The label fits who is looking: a signed-in user is already on a path. */}
@@ -76,7 +79,7 @@ const Home = () => {
 
       {/* Full-width wrapper so the pixels sit on the screen edges, not the max-w-6xl column. */}
       <div className="relative isolate">
-        <PixelBackground sideDensity={3} centerDensity={1} contentWidth={1152} />
+        <PixelBackground sideDensity={3} centerDensity={1} contentWidth={1152} interactive />
         <HowItWorks />
       </div>
     </>

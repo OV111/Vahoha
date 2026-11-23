@@ -258,3 +258,100 @@ export async function sendContactNotification({ name, email, topic, message }) {
     `,
   });
 }
+
+/**
+ * Hiring sign-up: the 6-digit code that proves the recruiter owns their work
+ * inbox. A code (typed back into the page) rather than a link, so mail scanners
+ * that open links can't use it up.
+ */
+export async function sendHiringCodeEmail(toEmail, { code, firstName, expiresInMinutes }) {
+  const name = firstName ? escapeHtml(firstName) : "there";
+  const safeCode = escapeHtml(code);
+  const html = `<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Your Vahoha code</title></head>
+  <body style="margin:0;padding:0;background:#f4f4f5;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;">
+      <tr><td align="center" style="padding:32px 16px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#ffffff;border:1px solid #e4e4e7;border-radius:12px;">
+          <tr><td style="padding:32px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#3f3f46;font-size:15px;line-height:24px;">
+            <div style="font-size:20px;font-weight:700;color:#18181b;">Vahoha</div>
+            <p style="margin:24px 0 8px;">Hi ${name}, here is the code to confirm your work email:</p>
+            <div style="margin:16px 0;font-size:32px;font-weight:700;letter-spacing:8px;color:${BRAND};">${safeCode}</div>
+            <p style="margin:0;color:#71717a;font-size:13px;">It expires in ${expiresInMinutes} minutes. If you didn't sign up for a hiring account, ignore this email.</p>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </body>
+</html>`;
+  const text = `Hi ${firstName || "there"},\n\nYour Vahoha code: ${code}\n\nIt expires in ${expiresInMinutes} minutes. If you didn't sign up for a hiring account, ignore this email.`;
+  return sendEmail({ to: toEmail, subject: `${code} is your Vahoha code`, html, text });
+}
+
+// Names come from users; a line break in a subject would be a broken header.
+const oneLine = (s) => s.replace(/\s+/g, " ");
+
+/** Shared frame for the intro emails: a heading, a few lines and one button. */
+const introEmailHtml = ({ title, lines, buttonUrl, buttonLabel, footer }) => `<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>${title}</title></head>
+  <body style="margin:0;padding:0;background:#f4f4f5;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;">
+      <tr><td align="center" style="padding:32px 16px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#ffffff;border:1px solid #e4e4e7;border-radius:12px;">
+          <tr><td style="padding:32px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#3f3f46;font-size:15px;line-height:24px;">
+            <div style="font-size:20px;font-weight:700;color:#18181b;">Vahoha</div>
+            <h1 style="margin:24px 0 12px;font-size:20px;line-height:28px;color:#18181b;font-weight:600;">${title}</h1>
+            ${lines.map((line) => `<p style="margin:0 0 12px;">${line}</p>`).join("")}
+            <table role="presentation" cellpadding="0" cellspacing="0" style="margin:12px 0 20px;">
+              <tr><td style="background:${BRAND};border-radius:8px;">
+                <a href="${buttonUrl}" target="_blank" style="display:inline-block;padding:12px 28px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:8px;">${buttonLabel}</a>
+              </td></tr>
+            </table>
+            <p style="margin:0;color:#71717a;font-size:13px;">${footer}</p>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </body>
+</html>`;
+
+/**
+ * A company asked a developer for an intro. The recruiter's message is left out
+ * on purpose: it is unchecked text, and in an email from us a scam link would
+ * borrow our name. The developer reads it on the site, next to "Report".
+ */
+export async function sendIntroRequestEmail(toEmail, { firstName, company, jobTitle, url }) {
+  const title = `${escapeHtml(company)} wants to talk about ${escapeHtml(jobTitle)}`;
+  const html = introEmailHtml({
+    title,
+    lines: [
+      `Hi ${firstName ? escapeHtml(firstName) : "there"},`,
+      `${escapeHtml(company)} saw your Vahoha profile and would like to talk about their ${escapeHtml(jobTitle)} role.`,
+      "Your email stays hidden unless you accept.",
+    ],
+    buttonUrl: escapeHtml(url),
+    buttonLabel: "See the request",
+    footer: "You get these because recruiters can see your profile. You can turn that off in your settings.",
+  });
+  const text = `Hi ${firstName || "there"},\n\n${company} saw your Vahoha profile and would like to talk about their ${jobTitle} role.\nYour email stays hidden unless you accept.\n\nSee the request: ${url}`;
+  return sendEmail({ to: toEmail, subject: oneLine(`${company} wants to talk about ${jobTitle}`), html, text });
+}
+
+/** The developer accepted: the recruiter gets their email to take it from here. */
+export async function sendIntroAcceptedEmail(toEmail, { firstName, developerName, developerEmail, jobTitle, url }) {
+  const html = introEmailHtml({
+    title: `${escapeHtml(developerName)} accepted your request`,
+    lines: [
+      `Hi ${firstName ? escapeHtml(firstName) : "there"},`,
+      `${escapeHtml(developerName)} is happy to talk about ${escapeHtml(jobTitle)}.`,
+      `Reach them at <a href="mailto:${escapeHtml(developerEmail)}" style="color:${BRAND};">${escapeHtml(developerEmail)}</a>.`,
+    ],
+    buttonUrl: escapeHtml(url),
+    buttonLabel: "Open your requests",
+    footer: "Only write to them about this role.",
+  });
+  const text = `Hi ${firstName || "there"},\n\n${developerName} is happy to talk about ${jobTitle}.\nReach them at ${developerEmail}.\n\nYour requests: ${url}`;
+  return sendEmail({ to: toEmail, subject: oneLine(`${developerName} accepted your intro request`), html, text });
+}
