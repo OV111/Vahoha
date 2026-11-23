@@ -23,13 +23,6 @@ const GAP = { x: 240, y: 110 };
 const randomId = (prefix) => `${prefix}-${Math.random().toString(36).slice(2, 8)}`;
 const paths = (part) => part.evidence.map((e) => e.path);
 
-/**
- * @param {object[]} nodes  React Flow nodes
- * @param {object[]} edges  React Flow edges
- * @param {{ repo: object, parts: object[], wires: { source: string, target: string, label?: string }[] }} scan
- * @param {Set<string>} acceptedKeys  keys of new parts the learner accepted
- * @returns {{ nodes: object[], edges: object[], repo: object | null, added: number }}
- */
 export function applyScan(nodes, edges, scan, acceptedKeys, makeId = randomId) {
   const { newParts, matched } = compareScan(nodes, scan);
   const nodeOf = new Map(matched.map((m) => [m.part.key, m.nodeId]));

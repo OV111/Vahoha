@@ -5,9 +5,9 @@ import {
   BaseEdge,
   ConnectionMode,
   EdgeLabelRenderer,
-  getBezierPath,
   Handle,
   Panel,
+  getSmoothStepPath,
   Position,
   ReactFlow,
   useNodesData,
@@ -28,7 +28,11 @@ const TONE_CLASS = {
 
 // The visible dot is small; the handle around it is the 44px hit area.
 const handleStyle = { width: 44, height: 44, background: "transparent", border: 0 };
-const Dot = () => <span className="pointer-events-none block size-2.5 rounded-full border border-purple-300 bg-black" />;
+// Only on the hovered or selected part, so a busy map isn't covered in dots.
+// Touch screens can't hover, so they always show.
+const Dot = () => (
+  <span className="pointer-events-none block size-2.5 rounded-full border border-purple-300 bg-black opacity-0 transition-opacity group-hover:opacity-100 group-[.is-selected]:opacity-100 pointer-coarse:opacity-100" />
+);
 
 const mix = (color, pct, base = "#0a0a0a") => `color-mix(in oklab, ${color} ${pct}%, ${base})`;
 
@@ -49,20 +53,9 @@ function SystemNode({ id, data, selected }) {
   const color = kindColor(data.kind);
   const statusBorder = STATUS_BORDER[status?.tone];
   return (
-    <div className="relative w-44">
-      {/* A raised block: the card is the front face, these two skewed strips are its top and right side. */}
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 -top-2.5 h-2.5 origin-bottom-left -skew-x-45"
-        style={{ background: mix(color, 50) }}
-      />
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 -right-2.5 w-2.5 origin-top-left -skew-y-45"
-        style={{ background: mix(color, 26, "#000") }}
-      />
+    <div className={`group relative w-44 ${selected ? "is-selected" : ""}`}>
       <div
-        className={`relative rounded-[3px] border p-3 transition-colors duration-300 ${statusBorder ?? ""} ${selected ? "outline-2 outline-offset-6 outline-purple-400" : ""}`}
+        className={`relative rounded-xl border p-3 transition-colors duration-300 ${statusBorder ?? ""} ${selected ? "outline-2 outline-offset-6 outline-purple-400" : ""}`}
         style={{ background: mix(color, 13), ...(statusBorder ? {} : { borderColor: mix(color, 55) }) }}
       >
       {selected && onDelete && (
@@ -140,7 +133,8 @@ function TripDot({ path, step, steps }) {
 function FlowEdge({ id, source, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, markerEnd, style, label, animated, selected }) {
   const trip = useContext(FlowContext);
   const color = kindColor(useNodesData(source)?.data?.kind);
-  const [path, labelX, labelY] = getBezierPath({ sourceX, sourceY, sourcePosition, targetX, targetY, targetPosition });
+  // Right-angle wires, like the 3D view: a busy map reads cleaner than with curves.
+  const [path, labelX, labelY] = getSmoothStepPath({ sourceX, sourceY, sourcePosition, targetX, targetY, targetPosition, borderRadius: 10 });
   const step = trip?.hops.get(id);
   return (
     <>
@@ -211,13 +205,7 @@ function ZoomControls() {
   );
 }
 const notSelf = (c) => c.source !== c.target;
-/**
- * The free-form canvas shared by the system labs and the Project Map editor:
- * drag nodes, draw wires between them, select a wire and press Backspace to
- * remove it. State lives in the page, so what the learner built is what the
- * page uses. Extra props (onDrop, onInit, ...) pass straight to ReactFlow.
- */
-export default function SystemCanvas({ nodes, edges, onNodesChange, onEdgesChange, onConnect, onDeleteNode, commentCounts = null, flowAll = true, ...flowProps }) {
+export default function SystemCanvas({ nodes, edges, onNodesChange, onEdgesChange, onConnect, onDeleteNode, commentCounts = null, flowAll = true, gridGap = 28, ...flowProps }) {
   // Drawn between the sides that face each other, so a wire to a part on the left points left.
   const routed = useMemo(() => routeEdges(nodes, edges), [nodes, edges]);
   const trip = useMemo(() => (flowAll ? flowTiming(nodes, edges) : null), [flowAll, nodes, edges]);
@@ -243,7 +231,7 @@ export default function SystemCanvas({ nodes, edges, onNodesChange, onEdgesChang
         proOptions={{ hideAttribution: true }}
         {...flowProps}
       >
-        <Background variant={BackgroundVariant.Lines} gap={28} lineWidth={1} color="#141414" />
+        <Background variant={BackgroundVariant.Lines} gap={gridGap} lineWidth={1} color="#141414" />
         <ZoomControls />
       </ReactFlow>
     </DeleteNodeContext.Provider>

@@ -1,3 +1,5 @@
+import { isDown } from "../../../../constants/isoShapes";
+
 // When a request crosses each wire, from the way the learner wired the map.
 // Requests start at parts nothing points to (usually the client) and move one
 // hop per step, so client -> API lights up before API -> database. Wires no
@@ -37,4 +39,20 @@ export function flowTiming(nodes, edges) {
     last = Math.max(last, step);
   }
   return { hops, steps: last + 1 };
+}
+
+// The numbers on the stage's metric strip, the same in the flat and 3D views.
+export function mapMetrics(nodes, edges) {
+  const ids = new Set(nodes.map((n) => n.id));
+  const wired = edges.filter((e) => ids.has(e.source) && ids.has(e.target));
+  const trip = flowTiming(nodes, wired);
+  const onFlow = new Set(wired.filter((e) => trip.hops.has(e.id)).flatMap((e) => [e.source, e.target]));
+  return {
+    parts: nodes.length,
+    wires: wired.length,
+    steps: trip.hops.size ? trip.steps : 0,
+    offFlow: nodes.filter((n) => !onFlow.has(n.id)).length,
+    found: nodes.filter((n) => n.data.evidence?.length > 0).length,
+    down: nodes.filter(isDown).length,
+  };
 }

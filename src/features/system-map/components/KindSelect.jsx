@@ -2,15 +2,6 @@ import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headless
 import { Box, Check, ChevronDown } from "lucide-react";
 import { KIND_ICONS } from "../lib/nodeKinds";
 
-/**
- * The part-type picker in the Inspector. Headless UI's Listbox (the same
- * library as profile/components/SearchSelect) gives the keyboard handling,
- * ARIA roles and a popup anchored outside the panel, so the list is never
- * clipped by the canvas; the look is ours and shows each type's icon and
- * one-line meaning.
- *
- * @param {{ id?: string, options: { kind: string, label: string, sub: string }[], value: string, onChange: (kind: string) => void }} props
- */
 export default function KindSelect({ id, options, value, onChange }) {
   const selected = options.find((o) => o.kind === value) ?? options[0];
   const Icon = KIND_ICONS[selected?.kind] ?? Box;

@@ -62,15 +62,7 @@ function Viewer({ graph, className, children }) {
   );
 }
 
-/**
- * A map nobody can change: pan, zoom and click a part to read about it.
- * Used wherever a map is shown to someone other than its owner.
- *
- * @param {object} props
- * @param {object} props.graph      the SAVED shape ({ v, nodes, edges, lens?, repo? }), as the API returns it
- * @param {string} [props.className] sizes the canvas box; replaces the tall default
- * @param {import("react").ReactNode} [props.children] extra content under the part details
- */
+
 export default function ReadOnlyMap({ graph, className = TALL, children }) {
   const parsed = useMemo(() => fromGraph(graph), [graph]);
   if (!parsed) return <p className="text-sm text-neutral-400">This map&apos;s data can&apos;t be shown.</p>;

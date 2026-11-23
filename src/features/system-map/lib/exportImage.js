@@ -44,6 +44,29 @@ export async function renderMapImage(container, nodes, format) {
   return format === "svg" ? toSvg(viewport, options) : toPng(viewport, { ...options, pixelRatio: 2 });
 }
 
+/**
+ * Draws the 3D view's svg, framed on the whole map rather than what's on screen.
+ * html-to-image copies computed styles, so Tailwind colours survive in the file.
+ * @param {SVGSVGElement} svg
+ * @param {{ x: number, y: number, w: number, h: number }} box the map's bounds in svg units
+ */
+export async function renderIsoImage(svg, box, format) {
+  if (!svg) throw new Error("nothing to export");
+  const scale = Math.min(2, MAX_SIDE / box.w, MAX_SIDE / box.h);
+  const width = Math.ceil(box.w * scale);
+  const height = Math.ceil(box.h * scale);
+  const onScreen = svg.getAttribute("viewBox");
+  const whole = `${box.x} ${box.y} ${box.w} ${box.h}`;
+  svg.setAttribute("viewBox", whole);
+  const options = { backgroundColor: BACKGROUND, width, height, style: { width: `${width}px`, height: `${height}px` } };
+  try {
+    return format === "svg" ? await toSvg(svg, options) : await toPng(svg, options);
+  } finally {
+    // Only if React hasn't re-rendered it meanwhile (a pan during the export).
+    if (svg.getAttribute("viewBox") === whole) svg.setAttribute("viewBox", onScreen);
+  }
+}
+
 /** Saves a data URL or blob URL under `filename`. */
 export function downloadUrl(url, filename) {
   Object.assign(document.createElement("a"), { href: url, download: filename }).click();

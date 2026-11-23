@@ -1,0 +1,38 @@
+.pm-theme {
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.pm-theme h1,
+.pm-theme h2,
+.pm-theme h3 {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.pm-metric {
+  border-left: 3px solid #404040;
+  padding: 0.1rem 0 0.1rem 0.6rem;
+}
+.pm-metric--ok { border-left-color: #34d399; }
+.pm-metric--bad { border-left-color: #f87171; }
+.pm-metric__value { display: inline-block; animation: pm-value-in 0.3s var(--ease); }
+
+@keyframes pm-value-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pm-held {
+  0%, 100% { stroke-width: 1.5px; }
+  50% { stroke-width: 3.4px; }
+}
+
+.pm-held { animation: pm-held 1.6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pm-theme *,
+  .pm-theme *::before,
+  .pm-theme *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

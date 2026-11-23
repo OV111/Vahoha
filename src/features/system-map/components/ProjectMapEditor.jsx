@@ -1,17 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { addEdge, ReactFlowProvider, reconnectEdge, useEdgesState, useNodesState, useReactFlow } from "@xyflow/react";
-import { History, Redo2, RotateCcw, ScanSearch, Undo2, Upload } from "lucide-react";
+import "../project-map-theme.css";
 import SystemCanvas from "./SystemCanvas";
+import IsoView from "./IsoView";
 import NodePalette, { DRAG_TYPE } from "./NodePalette";
-import Inspector from "./Inspector";
-import ShareControl from "./ShareControl";
 import RepoScanPanel from "./RepoScanPanel";
 import LensPicker from "./LensPicker";
 import UnderstandingCheck from "./UnderstandingCheck";
 import DriftBanner from "./DriftBanner";
-import ExportMenu from "./ExportMenu";
-import PartComments from "./PartComments";
 import VersionHistory from "./VersionHistory";
+import ProjectMapTour from "./ProjectMapTour";
+import MapToolbar from "./MapToolbar";
+import MapAlerts from "./MapAlerts";
+import EditSheet from "./EditSheet";
+import { MetricStrip, StageControls } from "./StageChrome";
 import useMapComments from "../hooks/useMapComments";
 import { saveOps } from "../systemMapApi";
 import { EXAMPLE_GRAPH, MAX_NODES, freeSpot, fromGraph, toGraph, withArrow } from "../lib/mapGraph";
@@ -22,6 +24,8 @@ import { canRedo, canUndo, record, redo, startHistory, undo } from "../lib/histo
 import { applyOpsLenient, diffGraph } from "../lib/graphOps";
 import { toMermaid } from "../lib/mermaid";
 import { downloadUrl, renderMapImage } from "../lib/exportImage";
+import { mapMetrics } from "../lib/flow";
+import { PX_PER_TILE } from "../lib/isoGeometry";
 
 // The editor and everything only it uses live here, so the page can lazy-load
 // them: guests never get past the sign-in screen and shouldn't download this.
@@ -31,6 +35,7 @@ const HISTORY_PAUSE_MS = 350; // edits closer together than this (typing a name)
 const INFO_MS = 4000;
 const NODE_HALF = { x: 88, y: 30 }; // drop point is the node's centre, not its corner
 const DELETE_KEYS = ["Backspace", "Delete"]; // removes the selected part or wire
+const SNAP = [PX_PER_TILE, PX_PER_TILE]; // one 3D floor tile, so a flat layout lands neatly on the 3D floor
 
 const graphJson = (nodes, edges, repo, lens) => JSON.stringify(toGraph(nodes, edges, repo, lens));
 
@@ -38,7 +43,6 @@ const graphJson = (nodes, edges, repo, lens) => JSON.stringify(toGraph(nodes, ed
 const isTextField = (el) => Boolean(el?.closest?.("input, textarea, select, [contenteditable='true']"));
 
 const newId = () => `n-${Math.random().toString(36).slice(2, 8)}`;
-
 
 const OWNER_COPY = {
   personal: { eyebrow: "Project map", title: "Draw how your project works" },
@@ -77,11 +81,11 @@ function Editor({ initial }) {
   const [history, setHistory] = useState({ undo: false, redo: false }); // what the buttons can do
   // Parts on the server's copy: comments can only go on those.
   const [savedIds, setSavedIds] = useState(() => new Set(initial.graph.nodes.map((n) => n.id)));
-  const [confirmReset, setConfirmReset] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [view3d, setView3d] = useState(true); // opens in 3D; the flat canvas is one click away
   const { screenToFlowPosition, fitView } = useReactFlow();
   const canvasRef = useRef(null);
-  const fileRef = useRef(null);
+  const isoRef = useRef(null);
 
   useEffect(() => {
     liveRef.current = { nodes, edges, repo, lens };
@@ -172,6 +176,16 @@ function Editor({ initial }) {
   const selectedNode = nodes.find((n) => n.selected) ?? null;
   const selectedEdge = selectedNode ? null : (edges.find((e) => e.selected) ?? null);
   const full = nodes.length >= MAX_NODES;
+  const metrics = useMemo(() => mapMetrics(nodes, edges), [nodes, edges]);
+  const [flatPaused, setFlatPaused] = useState(false);
+
+  // The flat view's request dots are SVG (SMIL) animations, so they pause and rewind through the svg elements.
+  const flatSvgs = () => canvasRef.current?.querySelectorAll("svg") ?? [];
+  const toggleFlatPause = () => {
+    flatSvgs().forEach((svg) => (flatPaused ? svg.unpauseAnimations() : svg.pauseAnimations()));
+    setFlatPaused(!flatPaused);
+  };
+  const replayFlat = () => flatSvgs().forEach((svg) => svg.setCurrentTime(0));
 
   // Team maps only. Re-read whenever another part is selected, so teammates' new comments show up.
   const comments = useMapComments(isTeam ? initial.remote.id : null, selectedNode?.id);
@@ -180,8 +194,10 @@ function Editor({ initial }) {
     [comments.enabled, comments.byNode],
   );
   // Comments whose part was deleted stay on the server; undo brings the part (and them) back.
-  const onIds = new Set(nodes.map((n) => n.id));
-  const orphanComments = [...comments.byNode].filter(([id]) => !onIds.has(id)).reduce((sum, [, list]) => sum + list.length, 0);
+  const orphanComments = useMemo(() => {
+    const onMap = new Set(nodes.map((n) => n.id));
+    return [...comments.byNode].filter(([id]) => !onMap.has(id)).reduce((sum, [, list]) => sum + list.length, 0);
+  }, [nodes, comments.byNode]);
 
   const addNode = useCallback(
     (kind, position) => {
@@ -193,11 +209,14 @@ function Editor({ initial }) {
     [setNodes],
   );
 
-  const addToMiddle = (kind) => {
+  const flatMiddle = () => {
     const rect = canvasRef.current.getBoundingClientRect();
-    const middle = screenToFlowPosition({ x: rect.left + rect.width / 2 - NODE_HALF.x, y: rect.top + rect.height / 2 - NODE_HALF.y });
-    addNode(kind, freeSpot(nodes, middle));
+    return screenToFlowPosition({ x: rect.left + rect.width / 2 - NODE_HALF.x, y: rect.top + rect.height / 2 - NODE_HALF.y });
   };
+  const addToMiddle = (kind) => addNode(kind, freeSpot(nodes, isoRef.current ? isoRef.current.middle() : flatMiddle()));
+
+  // Whichever view is on screen frames the map; React Flow's fitView only reaches the flat one.
+  const fitMap = () => (isoRef.current ? isoRef.current.fit() : fitView(fitOptions()));
 
   const onDrop = (e) => {
     e.preventDefault();
@@ -233,10 +252,8 @@ function Editor({ initial }) {
     [setEdges],
   );
 
-  const patchNode = (data) =>
-    setNodes((ns) => ns.map((n) => (n.id === selectedNode.id ? { ...n, data: { ...n.data, ...data } } : n)));
-  const patchEdge = ({ label }) =>
-    setEdges((es) => es.map((e) => (e.id === selectedEdge.id ? { ...e, label: label || undefined } : e)));
+  const patchNode = (data) => setNodes((ns) => ns.map((n) => (n.id === selectedNode.id ? { ...n, data: { ...n.data, ...data } } : n)));
+  const patchEdge = ({ label }) => setEdges((es) => es.map((e) => (e.id === selectedEdge.id ? { ...e, label: label || undefined } : e)));
   const deleteNode = useCallback(
     (id) => {
       setNodes((ns) => ns.filter((n) => n.id !== id));
@@ -253,7 +270,8 @@ function Editor({ initial }) {
   // "Show on map" in the understanding check: select the parts a question is about and zoom to them.
   const focusParts = (ids) => {
     setNodes((ns) => ns.map((n) => ({ ...n, selected: ids.includes(n.id) })));
-    fitView({ nodes: ids.map((id) => ({ id })), padding: 0.6, duration: 300 });
+    if (isoRef.current) isoRef.current.focus(ids);
+    else fitView({ nodes: ids.map((id) => ({ id })), padding: 0.6, duration: 300 });
   };
 
   const load = (graph) => {
@@ -261,17 +279,16 @@ function Editor({ initial }) {
     setEdges(graph.edges);
     setRepo(graph.repo ?? null);
     setLens(graph.lens);
-    requestAnimationFrame(() => fitView(fitOptions()));
+    requestAnimationFrame(fitMap);
   };
 
-  /** Adds the scan parts the learner accepted; returns how many were added. */
   const applyRepoScan = (scan, acceptedKeys) => {
     const result = applyScan(nodes, edges, scan, acceptedKeys);
     reasonRef.current = "scan";
     setNodes(result.nodes);
     setEdges(result.edges);
     setRepo(result.repo);
-    requestAnimationFrame(() => fitView(fitOptions()));
+    requestAnimationFrame(fitMap);
     return result.added;
   };
 
@@ -289,12 +306,19 @@ function Editor({ initial }) {
     setLens(graph.lens);
   };
 
-  // Re-subscribed every render, so the handler always sees the current map.
+  // Subscribed once; the ref always holds a handler that sees the current map.
+  const onKeyRef = useRef(null);
   useEffect(() => {
-    const onKey = (e) => {
+    onKeyRef.current = (e) => {
       if (isTextField(e.target)) return;
       if (e.key === "Escape") {
         clearSelection();
+        return;
+      }
+      // The flat canvas deletes on its own (deleteKeyCode); the 3D view needs it here.
+      if (view3d && DELETE_KEYS.includes(e.key)) {
+        if (selectedNode) deleteNode(selectedNode.id);
+        else if (selectedEdge) deleteEdge();
         return;
       }
       if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
@@ -307,18 +331,19 @@ function Editor({ initial }) {
         travel("redo");
       }
     };
+  });
+  useEffect(() => {
+    const onKey = (e) => onKeyRef.current(e);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  });
+  }, []);
 
   const resetToExample = () => {
     reasonRef.current = "reset";
     load(fromGraph(EXAMPLE_GRAPH));
-    setConfirmReset(false);
     setNotice(null);
   };
 
-  /** Puts an earlier version on the canvas. It saves like any edit, and undo brings the map back. */
   const restoreVersion = (graph, when) => {
     reasonRef.current = "restore";
     load(graph);
@@ -355,7 +380,8 @@ function Editor({ initial }) {
     }
     setExporting(true);
     try {
-      downloadUrl(await renderMapImage(canvasRef.current, nodes, format), `project-map.${format}`);
+      const image = isoRef.current ? isoRef.current.image(format) : renderMapImage(canvasRef.current, nodes, format);
+      downloadUrl(await image, `project-map.${format}`);
     } catch {
       setNotice("Couldn't draw the image. Try again, or export the map file instead.");
     } finally {
@@ -378,19 +404,13 @@ function Editor({ initial }) {
     }
   };
 
-  const button =
-    "inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-neutral-700 px-3 text-sm text-neutral-200 transition-colors hover:border-neutral-500 hover:text-white focus-visible:outline-2 focus-visible:outline-purple-400";
-
-  // Phones get a 44px square with just the icon; the text comes back from sm up.
-  const iconOnPhone = "max-sm:w-11 max-sm:justify-center max-sm:px-0";
-
   return (
     // While the edit sheet is open on a phone, extra room at the bottom lets the page scroll the canvas up above it.
-    <section className={`mx-auto max-w-[1500px] px-4 pt-6 pb-16 sm:px-6 ${selectedNode || selectedEdge ? "max-lg:pb-[60svh]" : ""}`}>
-      <div className="flex flex-wrap items-end justify-between gap-3">
+    <section className={`pm-theme mx-auto max-w-[1500px] px-4 pt-6 pb-16 sm:px-6 ${selectedNode || selectedEdge ? "max-lg:pb-[60svh]" : ""}`}>
+      <div className="flex flex-col gap-4">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-widest text-amber-300">{copy.eyebrow}</p>
-          <h1 className="mt-1 text-2xl font-bold text-white">{copy.title}</h1>
+          <h1 className="mt-1 text-3xl font-extrabold text-white">{copy.title}</h1>
           <p className="mt-1 text-sm text-neutral-400" role="status">
             {SAVE_STATUS[saveState]}
           </p>
@@ -398,91 +418,32 @@ function Editor({ initial }) {
             <p className="mt-1 text-sm text-neutral-500">Team maps appear on your team&apos;s public evidence page once an admin publishes it.</p>
           )}
         </div>
-        <div className="flex flex-wrap gap-2">
-          <button type="button" className={button} aria-expanded={scanOpen} onClick={() => setScanOpen((open) => !open)}>
-            <ScanSearch size={14} aria-hidden="true" />
-            <span className="sm:hidden">Scan repo</span>
-            <span className="hidden sm:inline">Suggest from my repo</span>
-          </button>
-          {initial.remote && !isTeam && (
-            <ShareControl mapId={initial.remote.id} initialShared={initial.remote.shared} initialPublicId={initial.remote.publicId} />
-          )}
-          {initial.remote && (
-            <button
-              type="button"
-              className={`${button} ${iconOnPhone}`}
-              aria-expanded={historyOpen}
-              onClick={() => setHistoryOpen((open) => !open)}
-              aria-label="History"
-              title="History"
-            >
-              <History size={14} aria-hidden="true" /> <span className="max-sm:hidden">History</span>
-            </button>
-          )}
-          <button
-            type="button"
-            className={`${button} w-11 justify-center px-0 disabled:cursor-default disabled:opacity-40`}
-            onClick={() => travel("undo")}
-            disabled={!history.undo}
-            aria-label="Undo"
-            title="Undo (Ctrl+Z)"
-          >
-            <Undo2 size={14} aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            className={`${button} w-11 justify-center px-0 disabled:cursor-default disabled:opacity-40`}
-            onClick={() => travel("redo")}
-            disabled={!history.redo}
-            aria-label="Redo"
-            title="Redo (Ctrl+Shift+Z)"
-          >
-            <Redo2 size={14} aria-hidden="true" />
-          </button>
-          <ExportMenu onExport={exportAs} disabled={exporting} buttonClass={`${button} ${iconOnPhone} disabled:cursor-wait disabled:opacity-60`} />
-          <button type="button" className={`${button} ${iconOnPhone}`} onClick={() => fileRef.current.click()} aria-label="Import" title="Import">
-            <Upload size={14} aria-hidden="true" /> <span className="max-sm:hidden">Import</span>
-          </button>
-          <input ref={fileRef} type="file" accept="application/json,.json" className="hidden" onChange={importJson} />
-          {confirmReset ? (
-            <>
-              <button type="button" className={`${button} border-red-500/50 text-red-300`} onClick={resetToExample}>
-                Replace my map
-              </button>
-              <button type="button" className={button} onClick={() => setConfirmReset(false)}>
-                Cancel
-              </button>
-            </>
-          ) : (
-            <button type="button" className={`${button} ${iconOnPhone}`} onClick={() => setConfirmReset(true)} aria-label="Start over" title="Start over">
-              <RotateCcw size={14} aria-hidden="true" /> <span className="max-sm:hidden">Start over</span>
-            </button>
-          )}
-        </div>
+        <MapToolbar
+          remote={initial.remote}
+          isTeam={isTeam}
+          scanOpen={scanOpen}
+          onToggleScan={() => setScanOpen((open) => !open)}
+          view3d={view3d}
+          onToggle3d={() => {
+            setView3d((on) => !on);
+            setFlatPaused(false);
+          }}
+          history={history}
+          onTravel={travel}
+          historyOpen={historyOpen}
+          onToggleHistory={() => setHistoryOpen((open) => !open)}
+          onImport={importJson}
+          onExport={exportAs}
+          exporting={exporting}
+          onReset={resetToExample}
+        />
       </div>
 
-      <LensPicker lens={lens} onChange={setLens} />
+      <div data-tour="map-lens">
+        <LensPicker lens={lens} onChange={setLens} />
+      </div>
 
-      {saveState === "conflict" && (
-        <p role="alert" className="mt-3 flex flex-wrap items-center gap-3 rounded-lg bg-amber-500/10 px-3 py-2 text-sm text-amber-300">
-          {isTeam ? "A teammate changed the same part you did" : "This map was changed in another tab or device"}, so your edits here are no longer being saved.
-          <button type="button" onClick={() => window.location.reload()} className="min-h-11 cursor-pointer rounded-lg border border-amber-500/40 px-3 hover:bg-amber-500/10">
-            Reload the latest
-          </button>
-        </p>
-      )}
-
-      {notice && (
-        <p role="alert" className="mt-3 rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-300">
-          {notice}
-        </p>
-      )}
-
-      {info && (
-        <p role="status" className="mt-3 rounded-lg bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
-          {info}
-        </p>
-      )}
+      <MapAlerts conflict={saveState === "conflict"} isTeam={isTeam} notice={notice} info={info} />
 
       {scanOpen && (
         <RepoScanPanel signedIn={Boolean(initial.remote)} lens={lens} repo={repo} nodes={nodes} onApply={applyRepoScan} onClose={() => setScanOpen(false)} />
@@ -496,29 +457,46 @@ function Editor({ initial }) {
 
       {/* The explicit minmax(0, 1fr) column matters on phones: without it the palette's scroll row sets the column's minimum width and the canvas runs off the right edge. */}
       <div className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-4 sm:mt-5 lg:grid-cols-[13rem_minmax(0,1fr)]">
-        <div>
+        <div data-tour="map-palette">
           <NodePalette lens={lens} onAdd={addToMiddle} disabled={full} />
           {full && <p className="mt-3 text-sm text-amber-300">This map is full ({MAX_NODES} parts). Delete one to add another.</p>}
         </div>
 
         <div className="relative min-w-0">
-          <div ref={canvasRef} className="h-[max(360px,min(62svh,520px))] overflow-hidden rounded-2xl border border-neutral-800 bg-[#050505] sm:h-[480px] lg:h-[calc(100vh-14rem)] lg:min-h-[480px]">
-            <SystemCanvas
-              nodes={nodes}
-              edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              onDeleteNode={deleteNode}
-              onDrop={onDrop}
-              onDragOver={onDragOver}
-              deleteKeyCode={DELETE_KEYS}
-              commentCounts={commentCounts}
-              onReconnect={onReconnect}
-              onReconnectStart={onReconnectStart}
-              onReconnectEnd={onReconnectEnd}
-              reconnectRadius={20}
-            />
+          <div
+            ref={canvasRef}
+            data-tour="map-canvas"
+            className="relative h-[max(360px,min(62svh,520px))] overflow-hidden rounded-2xl border border-neutral-800 bg-[#050505] sm:h-[480px] lg:h-[calc(100vh-14rem)] lg:min-h-[480px]"
+          >
+            {view3d ? (
+              <IsoView ref={isoRef} nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} />
+            ) : (
+              <SystemCanvas
+                nodes={nodes}
+                edges={edges}
+                onNodesChange={onNodesChange}
+                onEdgesChange={onEdgesChange}
+                onConnect={onConnect}
+                onDeleteNode={deleteNode}
+                onDrop={onDrop}
+                onDragOver={onDragOver}
+                deleteKeyCode={DELETE_KEYS}
+                commentCounts={commentCounts}
+                onReconnect={onReconnect}
+                onReconnectStart={onReconnectStart}
+                onReconnectEnd={onReconnectEnd}
+                reconnectRadius={20}
+                snapToGrid
+                snapGrid={SNAP}
+                gridGap={PX_PER_TILE}
+              />
+            )}
+            {!view3d && (
+              <>
+                <MetricStrip metrics={metrics} />
+                <StageControls onReplay={replayFlat} paused={flatPaused} onTogglePause={toggleFlatPause} />
+              </>
+            )}
           </div>
           {comments.error && <p className="mt-2 text-sm text-red-300">{comments.error}</p>}
           {orphanComments > 0 && (
@@ -528,45 +506,31 @@ function Editor({ initial }) {
             </p>
           )}
 
-          {/* Only while something is selected. Below lg it is a sheet pinned to the bottom of the screen (so it is never off-screen under a tall canvas); from lg it floats over the canvas, which keeps its full width. */}
           {(selectedNode || selectedEdge) && (
-            <aside
-              aria-label="Edit the selected item"
-              className="thin-scrollbar fixed inset-x-0 bottom-0 z-40 max-h-[50svh] overflow-auto rounded-t-2xl border-t border-neutral-700 bg-neutral-950 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-2xl shadow-black lg:absolute lg:inset-x-auto lg:top-3 lg:right-3 lg:bottom-auto lg:z-10 lg:max-h-[calc(100%-1.5rem)] lg:w-72 lg:rounded-2xl lg:border lg:border-neutral-800 lg:bg-neutral-950/95 lg:pb-4 lg:shadow-xl lg:shadow-black/50"
-            >
-              <Inspector
-                node={selectedNode}
-                edge={selectedEdge}
-                repo={repo}
-                lens={lens}
-                onNode={patchNode}
-                onEdge={patchEdge}
-                onDeleteNode={() => deleteNode(selectedNode.id)}
-                onDeleteEdge={deleteEdge}
-                onClose={clearSelection}
-                nodeExtra={
-                  comments.enabled && selectedNode ? (
-                    <PartComments
-                      key={selectedNode.id}
-                      comments={comments.byNode.get(selectedNode.id) ?? []}
-                      saved={savedIds.has(selectedNode.id)}
-                      onAdd={(text) => comments.add(selectedNode.id, text)}
-                      onDelete={comments.remove}
-                    />
-                  ) : null
-                }
-              />
-            </aside>
+            <EditSheet
+              node={selectedNode}
+              edge={selectedEdge}
+              repo={repo}
+              lens={lens}
+              onNode={patchNode}
+              onEdge={patchEdge}
+              onDeleteNode={() => deleteNode(selectedNode.id)}
+              onDeleteEdge={deleteEdge}
+              onClose={clearSelection}
+              comments={comments}
+              savedIds={savedIds}
+            />
           )}
         </div>
       </div>
 
       {/* The questions come from the saved copy, so they need an account. Not for team maps: no single member owns the answers. */}
       {initial.remote && !isTeam && (
-        <div className="mt-6">
+        <div className="mt-6" data-tour="map-check">
           <UnderstandingCheck mapId={initial.remote.id} onFocus={focusParts} />
         </div>
       )}
+      <ProjectMapTour />
     </section>
   );
 }

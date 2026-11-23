@@ -15,10 +15,6 @@ const REASON_LABEL = {
 const formatWhen = (date) =>
   new Date(date).toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
 
-/**
- * Earlier states of the map, newest first. Restoring puts one on the canvas
- * through `onRestore(graph, when)`; the editor saves it like any edit.
- */
 export default function VersionHistory({ mapId, isTeam, onRestore, onClose }) {
   const [state, setState] = useState({ status: "loading" });
   const [restoring, setRestoring] = useState(null);

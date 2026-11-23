@@ -1,11 +1,6 @@
 import { LENSES } from "../lib/lenses";
 import { SCROLL_ROW } from "../lib/scrollRow";
 
-/**
- * Picks the vocabulary a map is drawn in. Switching keeps every part already on
- * the map; it only changes which parts the palette offers (and what the repo
- * scan and the questions look for).
- */
 export default function LensPicker({ lens, onChange }) {
   return (
     <div className="mt-4 sm:mt-5">

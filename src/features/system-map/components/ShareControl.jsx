@@ -9,10 +9,6 @@ const button =
 
 const publicMapUrl =(publicId) => `${window.location.origin}/map/${publicId}`;
 
-/**
- * Share switch for a map saved in the account. Turning sharing on always makes
- * a new link, so "stop, then share again" is also how a leaked link is replaced.
- */
 export default function ShareControl({ mapId, initialShared, initialPublicId }) {
   const [sharing, setSharingState] = useState({ shared: initialShared, publicId: initialPublicId });
   const [busy, setBusy] = useState(false);

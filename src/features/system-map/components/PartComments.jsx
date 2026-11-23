@@ -6,11 +6,6 @@ const MAX_LENGTH = 500; // mirrors MAX_COMMENT_LENGTH in the backend schema
 const when = (date) =>
   new Date(date).toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 
-/**
- * The discussion on one part of a team map, shown under the part's fields.
- * `saved` is false while the part exists only in this tab (not saved yet):
- * the server only takes comments on parts of the saved map.
- */
 export default function PartComments({ comments, saved, onAdd, onDelete }) {
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);

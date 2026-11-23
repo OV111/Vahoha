@@ -56,9 +56,6 @@ async function loadPersonalMap() {
  *                       shared computer can't see it.
  *   with an `owner`  -> that capstone's or team's map; a learner who isn't
  *                       eligible gets the server's reason as the error.
- *
- * @param {{ ownerType: "capstone" | "team", ownerId: string } | null} [owner]
- * @returns {{ status: "loading" | "ready" | "error" | "signin", graph?: object, remote?: { id: string, title: string, revision: number, shared: boolean, publicId: string | null, ownerType: string, ownerId: string | null, drift: object | null } | null, error?: string }}
  */
 export default function useInitialMap(owner = null) {
   const auth = useAuthStore((s) => s.auth);

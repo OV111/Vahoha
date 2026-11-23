@@ -60,10 +60,6 @@ const typeOptions = (lens, current) => {
   return options.some((k) => k.kind === current) ? options : [kindInfo(current), ...options];
 };
 
-/**
- * Edits whatever is selected on the canvas: one node, one wire, or nothing.
- * A part's repo evidence is read-only: it comes from a scan, not from typing.
- */
 export default function Inspector({ node, edge, repo, lens, onNode, onEdge, onDeleteNode, onDeleteEdge, onClose, nodeExtra = null }) {
   if (node) {
     return (

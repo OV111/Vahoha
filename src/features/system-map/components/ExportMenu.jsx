@@ -8,10 +8,6 @@ const ITEMS = [
   { id: "json", label: "Map file (JSON)", hint: "to import again later", Icon: FileJson },
 ];
 
-/**
- * The Export button and its menu. `onExport(id)` does the work and may return
- * a promise; the menu closes as soon as an item is picked.
- */
 export default function ExportMenu({ onExport, buttonClass, disabled }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);

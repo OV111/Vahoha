@@ -65,13 +65,6 @@ function ResultItem({ question, result, index }) {
   );
 }
 
-/**
- * "Can you explain your system?" Three questions about the learner's own map,
- * graded by the server. Drafts live here only; a failed grading keeps them so
- * the learner can send again without retyping.
- *
- * @param {{ mapId: string, onFocus?: (nodeIds: string[]) => void }} props
- */
 export default function UnderstandingCheck({ mapId, onFocus }) {
   const [phase, setPhase] = useState("intro"); // intro | loading | questions | grading | results
   const [check, setCheck] = useState(null);

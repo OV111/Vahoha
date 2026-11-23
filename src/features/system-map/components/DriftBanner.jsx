@@ -4,11 +4,6 @@ import { dismissDrift } from "../driftApi";
 
 const SHOWN = 5;
 
-/**
- * "Your project changed since you drew this map": the files merged PRs touched
- * that the map depends on. Advice only: it never edits the map. Renders nothing
- * when there is no drift. `onDismissed` lets the page drop it from its state.
- */
 export default function DriftBanner({ mapId, drift, onDismissed }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);

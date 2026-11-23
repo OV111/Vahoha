@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Box, Check, ExternalLink, ScanSearch, X } from "lucide-react";
+import { Box, Check, ExternalLink, GitBranch, ScanSearch, X } from "lucide-react";
 import { scanRepo } from "../systemMapApi";
 import { compareScan } from "../lib/drift";
 import { DEFAULT_LENS, lensInfo } from "../lib/lenses";
 import { KIND_ICONS } from "../lib/nodeKinds";
+import useMyRepos from "../hooks/useMyRepos";
 import EvidenceList from "./EvidenceList";
 
 const button =
@@ -62,16 +63,12 @@ function PartRow({ part, repo, decision, onDecide }) {
   );
 }
 
-/**
- * "Suggest from my repo": scan a public GitHub repo, review what it proves,
- * and add only what the learner accepts. Re-scanning shows drift: parts the
- * map has that the repo no longer shows.
- */
 export default function RepoScanPanel({ signedIn, repo, nodes, lens = DEFAULT_LENS, onApply, onClose }) {
   const [url, setUrl] = useState(() => repoUrlOf(repo));
   const [state, setState] = useState({ status: "idle" });
   const [decisions, setDecisions] = useState({});
   const [seenLens, setSeenLens] = useState(lens);
+  const { repos: myRepos } = useMyRepos(signedIn);
 
   // A scan reads the repo for one lens's parts. After the learner switches lens its
   // results (and what they ticked) no longer fit the map, so start again. Adjusting
@@ -87,16 +84,25 @@ export default function RepoScanPanel({ signedIn, repo, nodes, lens = DEFAULT_LE
   const drift = useMemo(() => (scan ? compareScan(nodes, scan) : null), [nodes, scan]);
   const titleOf = (id) => nodes.find((n) => n.id === id)?.data.title ?? "a part";
 
-  const run = async (e) => {
-    e.preventDefault();
-    if (!url.trim()) return;
+  const scanUrl = async (target) => {
+    if (!target.trim()) return;
     setState({ status: "loading" });
     setDecisions({});
     try {
-      setState({ status: "done", scan: await scanRepo(url.trim(), lens) });
+      setState({ status: "done", scan: await scanRepo(target.trim(), lens) });
     } catch (err) {
       setState({ status: "error", message: err.message });
     }
+  };
+
+  const run = (e) => {
+    e.preventDefault();
+    scanUrl(url);
+  };
+
+  const pickRepo = (repoUrl) => {
+    setUrl(repoUrl);
+    scanUrl(repoUrl);
   };
 
   const accepted = drift ? drift.newParts.filter((p) => decisions[p.key] === true) : [];
@@ -151,6 +157,26 @@ export default function RepoScanPanel({ signedIn, repo, nodes, lens = DEFAULT_LE
             <ScanSearch size={14} aria-hidden="true" /> {state.status === "loading" ? "Reading the repo…" : "Scan"}
           </button>
         </form>
+      )}
+
+      {signedIn && myRepos.length > 0 && (
+        <div className="mt-3">
+          <p className="text-xs font-medium text-neutral-400">Your repos</p>
+          <div className="mt-1.5 flex flex-wrap gap-2">
+            {myRepos.map((r) => (
+              <button
+                key={r.fullName}
+                type="button"
+                disabled={state.status === "loading"}
+                onClick={() => pickRepo(r.htmlUrl)}
+                aria-pressed={url.trim() === r.htmlUrl}
+                className={`${button} ${url.trim() === r.htmlUrl ? "border-purple-500/60 text-purple-200" : ""}`}
+              >
+                <GitBranch size={13} aria-hidden="true" /> {r.name}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       <div aria-live="polite">

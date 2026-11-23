@@ -26,14 +26,8 @@ export const fetchMyMaps = async () => data(await request("/mine"), "Couldn't lo
 
 export const fetchMap = async (id) => data(await request(`/${id}`), "Couldn't load your map.");
 
-/** @param {{ title: string, graph: object }} map */
 export const createMap = async (map) => data(await request("", { method: "POST", body: map }), "Couldn't save your map.");
 
-/**
- * Saves a map. A stale `revision` is not an error here: it comes back as
- * { conflict: serverMap } so the page can tell the learner instead of failing.
- * @returns {Promise<{ map: object } | { conflict: object }>}
- */
 export async function saveMap(id, { graph, revision }) {
   const result = await request(`/${id}`, { method: "PUT", body: { graph, revision } });
   if (result.res.status === 409 && result.json?.code === "conflict") return { conflict: result.json.data };
@@ -42,59 +36,34 @@ export async function saveMap(id, { graph, revision }) {
 
 const ownerPath = (ownerType, ownerId) => `/for/${encodeURIComponent(ownerType)}/${encodeURIComponent(ownerId)}`;
 
-/**
- * The map that belongs to a capstone or a team, or null when it has none yet.
- * A learner who isn't eligible gets the server's reason as the error message.
- */
 export const fetchOwnerMap = async (ownerType, ownerId) =>
   data(await request(ownerPath(ownerType, ownerId)), "Couldn't load this map.");
 
-/**
- * Creates the capstone or team map. Two members opening it at once is not an
- * error: the loser gets the map that already exists (409 "exists").
- * @param {{ title: string, graph: object }} map
- */
 export async function createOwnerMap(ownerType, ownerId, map) {
   const result = await request(ownerPath(ownerType, ownerId), { method: "POST", body: map });
   if (result.res.status === 409 && result.json?.code === "exists") return result.json.data;
   return data(result, "Couldn't create this map.");
 }
 
-/** Turns the public link on (always a fresh link) or off. Returns the updated map. */
 export const setSharing = async (id, shared) =>
   data(await request(`/${id}/sharing`, { method: "PUT", body: { shared } }), "Couldn't change sharing.");
 
-/** A shared map for anyone with the link. No login, so no Authorization header. */
 export async function fetchPublicMap(publicId) {
   const result = await request(`/public/${encodeURIComponent(publicId)}`, { auth: false });
   if (result.res.status === 404) throw new Error("This map isn't shared, or the link has changed.");
   return data(result, "Couldn't load this map.");
 }
 
-/**
- * Reads a public GitHub repo and suggests the parts and wires it proves.
- * Nothing is saved: the learner picks what goes on the map.
- * @returns {Promise<{ repo: { fullName, sha, htmlUrl }, parts: object[], wires: object[], ai: boolean }>}
- */
 export const scanRepo = async (repoUrl, lens) =>
   data(await request("/scan", { method: "POST", body: { repoUrl, ...(lens ? { lens } : {}) } }), "Couldn't read that repo.");
 
-/**
- * Saves a map as edits made against `revision` (lib/graphOps.js). The server
- * merges them onto a newer revision when nobody touched the same things; when
- * someone did, it comes back as { conflict: serverMap }, like saveMap.
- * `reason` marks a big jump (scan, import, reset, restore): the map as it was is kept as a version.
- * @returns {Promise<{ map: object } | { conflict: object }>}
- */
 export async function saveOps(id, { revision, ops, reason }) {
   const result = await request(`/${id}/ops`, { method: "PATCH", body: { revision, ops, ...(reason ? { reason } : {}) } });
   if (result.res.status === 409 && result.json?.code === "conflict") return { conflict: result.json.data };
   return { map: data(result, "Couldn't save your map.") };
 }
 
-/** Earlier states of a map, newest first, without their graphs. */
 export const fetchVersions = async (id) => data(await request(`/${id}/versions`), "Couldn't load this map's history.");
 
-/** One earlier state with its graph. */
 export const fetchVersion = async (id, versionId) =>
   data(await request(`/${id}/versions/${versionId}`), "Couldn't load that version.");

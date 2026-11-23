@@ -4,10 +4,6 @@ import { SCROLL_ROW } from "../lib/scrollRow";
 
 export const DRAG_TYPE = "application/x-vahoha-node";
 
-/**
- * Parts a learner can add, as offered by the map's lens. Drag one onto the
- * canvas, or tap it to drop it in the middle (touch screens and keyboards can't drag).
- */
 export default function NodePalette({ lens, onAdd, disabled }) {
   return (
     <div>

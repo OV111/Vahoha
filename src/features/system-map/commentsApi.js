@@ -19,10 +19,8 @@ async function request(path, { method = "GET", body } = {}, fallback) {
   return json.data;
 }
 
-/** Every comment on a team map, oldest first: [{ id, nodeId, text, author, mine, createdAt }]. */
 export const fetchComments = (mapId) => request(`/${mapId}/comments`, {}, "Couldn't load the comments.");
 
-/** @returns the new comment */
 export const addComment = (mapId, nodeId, text) =>
   request(`/${mapId}/comments`, { method: "POST", body: { nodeId, text } }, "Couldn't post your comment.");
 

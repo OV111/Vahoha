@@ -1,11 +1,6 @@
 import { FileCode2 } from "lucide-react";
 import { evidenceUrl } from "../lib/mapGraph";
 
-/**
- * Repo files that prove a part exists. Links open the file on GitHub at the
- * scanned commit; without a known repo the paths are shown as plain text.
- * `items` are paths, or { path, reason } from a fresh scan.
- */
 export default function EvidenceList({ repo, items }) {
   if (!items?.length) return null;
   return (

@@ -6,7 +6,7 @@ import { z } from "zod";
  * in the client would otherwise write junk into the user document. To show a
  * tour again after a redesign, add a new id (e.g. "roadmap-v2").
  */
-export const TOUR_IDS = ["roadmap", "arena", "capstone"];
+export const TOUR_IDS = ["roadmap", "arena", "capstone", "project-map"];
 
 export const tourParamsSchema = z
   .object({
