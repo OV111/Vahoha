@@ -2,7 +2,7 @@ import { useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from
 import { kindColor } from "../lib/nodeKinds";
 import { DEFAULT_SIZE } from "../lib/edgeRouting";
 import { flowTiming, mapMetrics } from "../lib/flow";
-import { renderIsoImage } from "../lib/exportImage";
+import { renderIsoImage, renderShareCard } from "../lib/exportImage";
 import { PX_PER_TILE, TILE_H, TILE_W, fitBox, iso, isoWire, screenToTiles, worldOf } from "../lib/isoGeometry";
 import { DEAD_COLOR, isDown, shapeOf } from "../../../../constants/isoShapes";
 import { Gradients, IsoShape, Labels } from "./IsoShapes";
@@ -21,7 +21,7 @@ const CLICK_SLOP = 4; // px of movement before a press on a part counts as a dra
 
 const isPad = (node) => shapeOf(node.data.kind).floor === true;
 
-export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, onConnect, ref }) {
+export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, onConnect, readOnly = false, ref }) {
   const uid = `iso${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   const [paused, setPaused] = useState(false);
   const pausedRef = useRef(false);
@@ -128,8 +128,6 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
   const vh = box.h / view.zoom;
   const viewBox = `${cx - vw / 2 + view.dx} ${cy - vh / 2 + view.dy} ${vw} ${vh}`;
 
-  // Where the middle of what's on screen is, as a flat-canvas position, so a part
-  // added from the palette while in 3D lands in view (the flat canvas isn't mounted).
   // Svg units per screen pixel (the svg letterboxes, so the larger ratio wins).
   const unitsPerPx = () => {
     const el = svgRef.current;
@@ -201,6 +199,7 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
       setView({ ...d.view, dx: d.view.dx - dx, dy: d.view.dy - dy });
       return;
     }
+    if (readOnly) return;
     const t = screenToTiles(dx, dy);
     // The floor is turned (see worldOf): floor y is minus the saved x, floor x is the saved y.
     const to = { x: d.from.x - t.y * PX_PER_TILE, y: d.from.y + t.x * PX_PER_TILE };
@@ -226,6 +225,7 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
       return;
     }
     if (d.moved) {
+      if (readOnly) return;
       // dragging: false closes the move as one undo step, like a drag on the flat canvas.
       onNodesChange([{ type: "position", id: d.id, position: d.to, dragging: false }]);
     } else {
@@ -266,6 +266,7 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
     fit: refit,
     focus: (ids) => frame(nodes.filter((n) => ids.includes(n.id))),
     image: (format) => renderIsoImage(svgRef.current, fitBox(nodes), format),
+    card: (info) => renderShareCard(svgRef.current, fitBox(nodes), info),
   }));
 
   // Wheel zoom needs a non-passive listener to stop the page scrolling.

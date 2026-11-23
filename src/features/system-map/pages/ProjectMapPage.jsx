@@ -27,8 +27,8 @@ function ProjectMapLoader({ owner }) {
   if (initial.status === "signin") {
     return (
       <section className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-6 text-center">
-        <p className="text-lg font-semibold text-white">Sign in to use Project Map</p>
-        <p className="mt-2 text-sm text-neutral-400">Draw how your project works, scan your repo for parts, and keep the map in your account.</p>
+        <p className="text-lg font-semibold text-white">Prove you understand what you built</p>
+        <p className="mt-2 text-sm text-neutral-400">Map your project in 3D, verify it against your repo, and share one link that shows it. Sign in to start.</p>
         <Link
           to={DEVELOPER_SIGNUP_PATH}
           className="mt-4 inline-flex min-h-11 items-center rounded-lg border border-neutral-700 px-4 text-sm text-neutral-200 hover:border-neutral-500 hover:text-white"

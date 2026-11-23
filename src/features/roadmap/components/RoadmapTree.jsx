@@ -13,6 +13,7 @@ import { ConnectorProvider } from "./tree/ConnectorContext";
 import DesktopTreeRow from "./tree/DesktopTreeRow";
 import MobileTreeRow from "./tree/MobileTreeRow";
 import CapstoneRoadmapNode from "@/features/capstone/components/CapstoneRoadmapNode";
+import RoadmapMapNudge from "@/features/system-map/components/RoadmapMapNudge";
 
 const ETA_MAP = {
   mern: "~6 months",
@@ -142,6 +143,7 @@ const RoadmapTree = () => {
                   isPrevDone={prereqsDone(layer, index, layers, layerProgress)}
                 />
               ))}
+              <RoadmapMapNudge done={doneCount} total={totalLayers} />
               {/* The track's final step; renders nothing if it has no capstone. */}
               <CapstoneRoadmapNode trackId={selectedTrack.id} />
             </div>
@@ -157,6 +159,7 @@ const RoadmapTree = () => {
                 status={layerStatus(layer, index, layers, layerProgress)}
               />
             ))}
+            <RoadmapMapNudge done={doneCount} total={totalLayers} />
             <CapstoneRoadmapNode trackId={selectedTrack.id} />
           </div>
         )}

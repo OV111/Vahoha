@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Download, FileCode2, FileImage, FileJson, Share2 } from "lucide-react";
+import { ChevronDown, Download, FileCode2, FileImage, FileJson, Share2, Sparkles } from "lucide-react";
 
 const ITEMS = [
+  { id: "card", label: "Share image (3D)", hint: "for LinkedIn and X", Icon: Sparkles },
   { id: "png", label: "Image (PNG)", hint: "for slides and docs", Icon: FileImage },
   { id: "svg", label: "Vector (SVG)", hint: "sharp at any size", Icon: FileCode2 },
   { id: "mermaid", label: "Copy as Mermaid", hint: "GitHub draws it in a README", Icon: Share2 },

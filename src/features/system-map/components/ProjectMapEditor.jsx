@@ -26,6 +26,7 @@ import { toMermaid } from "../lib/mermaid";
 import { downloadUrl, renderMapImage } from "../lib/exportImage";
 import { mapMetrics } from "../lib/flow";
 import { PX_PER_TILE } from "../lib/isoGeometry";
+import { SITE } from "../../../../constants/site";
 
 // The editor and everything only it uses live here, so the page can lazy-load
 // them: guests never get past the sign-in screen and shouldn't download this.
@@ -42,12 +43,27 @@ const graphJson = (nodes, edges, repo, lens) => JSON.stringify(toGraph(nodes, ed
 // Ctrl/Cmd+Z in a text field undoes the typing, not the map.
 const isTextField = (el) => Boolean(el?.closest?.("input, textarea, select, [contenteditable='true']"));
 
+const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
+
 const newId = () => `n-${Math.random().toString(36).slice(2, 8)}`;
 
+// Leads with what the learner gets (proof), not with the drawing tool.
 const OWNER_COPY = {
-  personal: { eyebrow: "Project map", title: "Draw how your project works" },
-  capstone: { eyebrow: "Capstone map", title: "Draw how your capstone works" },
-  team: { eyebrow: "Team map", title: "Draw how your team's project works" },
+  personal: {
+    eyebrow: "Project map",
+    title: "Prove you understand what you built",
+    pitch: "Map your project, verify the parts against your repo, and pass a short check. Share one link that shows it.",
+  },
+  capstone: {
+    eyebrow: "Capstone map",
+    title: "Show how your capstone works",
+    pitch: "Map the parts of your capstone and verify them against your repo, so reviewers see how it fits together.",
+  },
+  team: {
+    eyebrow: "Team map",
+    title: "Show how your team's project works",
+    pitch: "Map the project together and verify the parts against your repo, so everyone sees how it fits together.",
+  },
 };
 
 const SAVE_STATUS = {
@@ -380,6 +396,18 @@ function Editor({ initial }) {
     }
     setExporting(true);
     try {
+      if (format === "card") {
+        // The card is drawn from the 3D view, so it is put on screen first when the flat one is showing.
+        if (!isoRef.current) {
+          setView3d(true);
+          await nextFrame();
+          await nextFrame();
+        }
+        const title = initial.remote?.title || "My project";
+        downloadUrl(await isoRef.current.card({ title, site: new URL(SITE.url).host }), "project-map-share.png");
+        setInfo("Saved your share image. Post it with your map's public link so people can open it in 3D.");
+        return;
+      }
       const image = isoRef.current ? isoRef.current.image(format) : renderMapImage(canvasRef.current, nodes, format);
       downloadUrl(await image, `project-map.${format}`);
     } catch {
@@ -411,7 +439,8 @@ function Editor({ initial }) {
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-widest text-amber-300">{copy.eyebrow}</p>
           <h1 className="mt-1 text-3xl font-extrabold text-white">{copy.title}</h1>
-          <p className="mt-1 text-sm text-neutral-400" role="status">
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-neutral-300">{copy.pitch}</p>
+          <p className="mt-1 text-xs text-neutral-500" role="status">
             {SAVE_STATUS[saveState]}
           </p>
           {isTeam && (

@@ -80,9 +80,15 @@ function Viewer({ map, graph }) {
 
       <div className="mt-5">
         <ReadOnlyMap graph={map.graph}>
-          <Link to="/project-map" className="mt-5 inline-flex min-h-11 items-center text-sm text-purple-300 hover:text-purple-200">
-            Draw a map of your own project
-          </Link>
+          <div className="mt-5 border-t border-neutral-800 pt-4">
+            <p className="text-sm text-neutral-300">Map your own project in 3D and prove you understand how it works.</p>
+            <Link
+              to="/project-map"
+              className="mt-3 inline-flex min-h-11 items-center rounded-lg bg-purple-600 px-4 text-sm font-medium text-white transition-colors hover:bg-purple-500"
+            >
+              Map your own project
+            </Link>
+          </div>
         </ReadOnlyMap>
       </div>
     </section>

@@ -67,6 +67,64 @@ export async function renderIsoImage(svg, box, format) {
   }
 }
 
+const CARD = { w: 1200, h: 630, pad: 56 }; // the size LinkedIn and X show link and image previews at
+
+const loadImage = (src) =>
+  new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+
+// The 3D map as a social image: the project name on top, the map in the middle,
+// and where it was made at the bottom, so every share points back to the site.
+export async function renderShareCard(svg, box, { title, by, site }) {
+  const map = await loadImage(await renderIsoImage(svg, box, "png"));
+  const canvas = Object.assign(document.createElement("canvas"), { width: CARD.w, height: CARD.h });
+  const ctx = canvas.getContext("2d");
+  const font = (weight, size) => `${weight} ${size}px "Geist Variable", ui-sans-serif, system-ui, sans-serif`;
+
+  ctx.fillStyle = BACKGROUND;
+  ctx.fillRect(0, 0, CARD.w, CARD.h);
+  const glow = ctx.createRadialGradient(CARD.w / 2, CARD.h / 2, 0, CARD.w / 2, CARD.h / 2, CARD.w / 1.6);
+  glow.addColorStop(0, "rgb(147 51 234 / 0.18)");
+  glow.addColorStop(1, "rgb(147 51 234 / 0)");
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, CARD.w, CARD.h);
+
+  const top = 130;
+  const bottom = CARD.h - 80;
+  const scale = Math.min((CARD.w - CARD.pad * 2) / map.width, (bottom - top) / map.height);
+  const w = map.width * scale;
+  const h = map.height * scale;
+  ctx.drawImage(map, (CARD.w - w) / 2, top + (bottom - top - h) / 2, w, h);
+
+  ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = "#fcd34d";
+  ctx.font = font(600, 18);
+  ctx.fillText("PROJECT MAP", CARD.pad, 62);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = font(800, 40);
+  ctx.fillText(title, CARD.pad, 108, CARD.w - CARD.pad * 2);
+  if (by) {
+    ctx.fillStyle = "#a3a3a3";
+    ctx.font = font(500, 20);
+    ctx.textAlign = "right";
+    ctx.fillText(by, CARD.w - CARD.pad, 62);
+    ctx.textAlign = "left";
+  }
+
+  ctx.fillStyle = "#a3a3a3";
+  ctx.font = font(500, 20);
+  ctx.fillText("Mapped and verified on", CARD.pad, CARD.h - 36);
+  const lead = ctx.measureText("Mapped and verified on ").width;
+  ctx.fillStyle = "#c084fc";
+  ctx.font = font(700, 20);
+  ctx.fillText(site, CARD.pad + lead, CARD.h - 36);
+  return canvas.toDataURL("image/png");
+}
+
 /** Saves a data URL or blob URL under `filename`. */
 export function downloadUrl(url, filename) {
   Object.assign(document.createElement("a"), { href: url, download: filename }).click();
