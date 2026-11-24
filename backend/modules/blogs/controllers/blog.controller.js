@@ -3,6 +3,22 @@ import { ObjectId } from "mongodb";
 import { uploadImage } from "../../../utils/uploadImage.js";
 import { makeErrorHandler } from "../../../utils/respond.js";
 import { verifyAccessToken } from "../../../utils/jwtToken.js";
+import { ValidationError } from "../../../utils/httpErrors.js";
+import {
+  getBlogsService,
+  getBlogByIdService,
+  getBlogBySlugService,
+  getUserBlogsService,
+  getUserAllBlogsService,
+  createBlogService,
+  updateBlogService,
+  deleteBlogService,
+  toggleLikeService,
+  getLikedIdsService,
+  toggleFavouriteService,
+  getSavedIdsService,
+  getFavouritesService,
+} from "../services/blogService.js";
 
 const ALLOWED_IMAGE_MIME_TYPES = new Set([
   "image/jpeg",
@@ -12,86 +28,59 @@ const ALLOWED_IMAGE_MIME_TYPES = new Set([
   "image/webp",
 ]);
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
-import {
-  createBlogService,
-  getBlogsService,
-  getBlogBySlugService,
-  getBlogByIdService,
-  getUserBlogsService,
-  toggleLikeService,
-  toggleFavouriteService,
-  getFavouritesService,
-  getSavedIdsService,
-  getLikedIdsService,
-  updateBlogService,
-  getUserAllBlogsService,
-  deleteBlogService,
-} from "../services/blogService.js";
 
 // Errors with a status (utils/httpErrors.js) go to the user as-is; anything
 // else is logged and answered with a generic 500.
 const sendError = makeErrorHandler("blogs");
 
-export const createBlog = async (req, res) => {
-  const busboy = Busboy({ headers: req.headers, limits: { fileSize: MAX_IMAGE_SIZE } });
+// Reads the blog form (text fields plus an optional cover image) and uploads the image.
+const readBlogForm = (req) =>
+  new Promise((resolve, reject) => {
+    const badForm = () => reject(new ValidationError("Invalid request body"));
 
-  let body = {};
-  let fileUploadPromise = null;
-  let fileTooLarge = false;
-  let invalidMime = false;
-
-  busboy.on("field", (name, value) => {
-    body[name] = value;
-  });
-
-  busboy.on("file", (name, file, info) => {
-    const { filename, mimeType } = info;
-    if (!filename) {
-      file.resume();
-      return;
-    }
-    if (!ALLOWED_IMAGE_MIME_TYPES.has(mimeType)) {
-      invalidMime = true;
-      file.resume();
-      return;
-    }
-    file.on("limit", () => {
-      fileTooLarge = true;
-      file.resume();
-    });
-    fileUploadPromise = uploadImage(file, "blogs");
-  });
-
-  busboy.on("finish", async () => {
-    if (invalidMime)
-      return res.status(400).json({ success: false, message: "Invalid file type. Allowed: JPEG, PNG, GIF, WebP." });
-    if (fileTooLarge)
-      return res.status(400).json({ success: false, message: "Image exceeds the 5 MB size limit." });
+    let busboy;
     try {
-      const db = req.app.locals.db;
-      const user = req.user;
-
-      let coverImage = null;
-      if (fileUploadPromise) {
-        coverImage = await fileUploadPromise;
-      }
-
-      const blog = await createBlogService(db, body, user, {
-        path: coverImage?.url ?? null,
-      });
-
-      res.status(201).json({ success: true, data: blog });
-    } catch (err) {
-      sendError(err, req, res);
+      busboy = Busboy({ headers: req.headers, limits: { fileSize: MAX_IMAGE_SIZE } });
+    } catch {
+      return badForm(); // not a form at all (missing or wrong content type)
     }
-  });
 
-  busboy.on("error", () => {
-    res.status(400).json({ success: false, message: "Invalid request body" });
-  });
+    const fields = {};
+    let upload = null;
+    let imageError = null;
 
-  req.pipe(busboy);
-};
+    busboy.on("field", (name, value) => {
+      fields[name] = value;
+    });
+
+    busboy.on("file", (name, file, { filename, mimeType }) => {
+      if (!filename) return file.resume();
+      if (!ALLOWED_IMAGE_MIME_TYPES.has(mimeType)) {
+        imageError = "Invalid file type. Allowed: JPEG, PNG, GIF, WebP.";
+        return file.resume();
+      }
+      file.on("limit", () => {
+        imageError ??= "Image exceeds the 5 MB size limit.";
+        file.resume();
+      });
+      upload = uploadImage(file, "blogs");
+      // It can fail before "finish" awaits it; without this Node sees an unhandled rejection.
+      upload.catch(() => {});
+    });
+
+    busboy.on("finish", async () => {
+      if (imageError) return reject(new ValidationError(imageError));
+      try {
+        const image = await upload;
+        resolve({ fields, file: { path: image?.url ?? null } });
+      } catch (err) {
+        reject(err);
+      }
+    });
+
+    busboy.on("error", badForm);
+    req.pipe(busboy);
+  });
 
 export const getBlogs = async (req, res) => {
   try {
@@ -119,6 +108,16 @@ export const getBlogById = async (req, res) => {
   }
 };
 
+export const getBlogBySlug = async (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const blog = await getBlogBySlugService(db, req.params.slug);
+    res.json({ success: true, data: blog });
+  } catch (err) {
+    sendError(err, req, res);
+  }
+};
+
 export const getUserBlogs = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -135,6 +134,55 @@ export const getUserBlogs = async (req, res) => {
   }
 };
 
+export const getMyBlogs = async (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const blogs = await getUserAllBlogsService(db, req.user._id);
+    res.json({ success: true, data: blogs });
+  } catch (err) {
+    sendError(err, req, res);
+  }
+};
+
+export const createBlog = async (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const { fields, file } = await readBlogForm(req);
+    const blog = await createBlogService(db, fields, req.user, file);
+    res.status(201).json({ success: true, data: blog });
+  } catch (err) {
+    sendError(err, req, res);
+  }
+};
+
+export const updateBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!ObjectId.isValid(id))
+      return res.status(400).json({ success: false, message: "Invalid blog id" });
+
+    const db = req.app.locals.db;
+    const { fields, file } = await readBlogForm(req);
+    const blog = await updateBlogService(db, id, req.user._id, fields, file);
+    res.json({ success: true, data: blog });
+  } catch (err) {
+    sendError(err, req, res);
+  }
+};
+
+export const deleteBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!ObjectId.isValid(id))
+      return res.status(400).json({ success: false, message: "Invalid blog id" });
+    const db = req.app.locals.db;
+    await deleteBlogService(db, id, req.user._id);
+    res.json({ success: true });
+  } catch (err) {
+    sendError(err, req, res);
+  }
+};
+
 export const toggleLike = async (req, res) => {
   try {
     const { id } = req.params;
@@ -146,26 +194,6 @@ export const toggleLike = async (req, res) => {
     const db = req.app.locals.db;
     const result = await toggleLikeService(db, id, req.user._id);
     res.json({ success: true, ...result });
-  } catch (err) {
-    sendError(err, req, res);
-  }
-};
-
-export const getBlogBySlug = async (req, res) => {
-  try {
-    const db = req.app.locals.db;
-    const blog = await getBlogBySlugService(db, req.params.slug);
-    res.json({ success: true, data: blog });
-  } catch (err) {
-    sendError(err, req, res);
-  }
-};
-
-export const getSavedIds = async (req, res) => {
-  try {
-    const db = req.app.locals.db;
-    const ids = await getSavedIdsService(db, req.user._id);
-    res.json({ success: true, ids });
   } catch (err) {
     sendError(err, req, res);
   }
@@ -197,74 +225,11 @@ export const toggleFavourite = async (req, res) => {
   }
 };
 
-export const updateBlog = async (req, res) => {
-  const busboy = Busboy({ headers: req.headers, limits: { fileSize: MAX_IMAGE_SIZE } });
-  let body = {};
-  let fileUploadPromise = null;
-  let fileTooLarge = false;
-  let invalidMime = false;
-
-  busboy.on("field", (name, value) => { body[name] = value; });
-  busboy.on("file", (name, file, info) => {
-    const { filename, mimeType } = info;
-    if (!filename) { file.resume(); return; }
-    if (!ALLOWED_IMAGE_MIME_TYPES.has(mimeType)) {
-      invalidMime = true;
-      file.resume();
-      return;
-    }
-    file.on("limit", () => { fileTooLarge = true; file.resume(); });
-    fileUploadPromise = uploadImage(file, "blogs");
-  });
-
-  busboy.on("finish", async () => {
-    if (invalidMime)
-      return res.status(400).json({ success: false, message: "Invalid file type. Allowed: JPEG, PNG, GIF, WebP." });
-    if (fileTooLarge)
-      return res.status(400).json({ success: false, message: "Image exceeds the 5 MB size limit." });
-    try {
-      const { id } = req.params;
-      if (!ObjectId.isValid(id))
-        return res.status(400).json({ success: false, message: "Invalid blog id" });
-
-      const db = req.app.locals.db;
-      let coverImage = null;
-      if (fileUploadPromise) coverImage = await fileUploadPromise;
-
-      const blog = await updateBlogService(db, id, req.user._id, body, {
-        path: coverImage?.url ?? null,
-      });
-      res.json({ success: true, data: blog });
-    } catch (err) {
-      sendError(err, req, res);
-    }
-  });
-
-  busboy.on("error", () => {
-    res.status(400).json({ success: false, message: "Invalid request body" });
-  });
-
-  req.pipe(busboy);
-};
-
-export const getMyBlogs = async (req, res) => {
+export const getSavedIds = async (req, res) => {
   try {
     const db = req.app.locals.db;
-    const blogs = await getUserAllBlogsService(db, req.user._id);
-    res.json({ success: true, data: blogs });
-  } catch (err) {
-    sendError(err, req, res);
-  }
-};
-
-export const deleteBlog = async (req, res) => {
-  try {
-    const { id } = req.params;
-    if (!ObjectId.isValid(id))
-      return res.status(400).json({ success: false, message: "Invalid blog id" });
-    const db = req.app.locals.db;
-    await deleteBlogService(db, id, req.user._id);
-    res.json({ success: true });
+    const ids = await getSavedIdsService(db, req.user._id);
+    res.json({ success: true, ids });
   } catch (err) {
     sendError(err, req, res);
   }

@@ -1,9 +1,9 @@
 import { ObjectId } from "mongodb";
-import { clearBlogListCache } from "./blogService.js";
+import { clearBlogListCache, visibleTo } from "./blogService.js";
 import { notify } from "../../../queues/notify.js";
 import { ForbiddenError, NotFoundError } from "../../../utils/httpErrors.js";
 
-const authorLookup = [
+const commentAuthorLookup = [
   {
     $lookup: {
       from: "users",
@@ -38,12 +38,13 @@ export const getCommentsService = async (db, blogId) => {
     .aggregate([
       { $match: { blogId: new ObjectId(blogId) } },
       { $sort: { createdAt: -1 } },
-      ...authorLookup,
+      ...commentAuthorLookup,
     ])
     .toArray();
 };
 
 export const postCommentService = async (db, blogId, userId, text) => {
+  const blogs = db.collection("blogs");
   const comments = db.collection("comments");
   const users = db.collection("users");
   const stats = db.collection("usersStats");
@@ -55,14 +56,16 @@ export const postCommentService = async (db, blogId, userId, text) => {
     createdAt: new Date(),
   };
 
-  const blogs = db.collection("blogs");
+  const post = await blogs.findOne({ _id: doc.blogId, ...visibleTo(userId) }, { projection: { _id: 1 } });
+  if (!post) throw new NotFoundError("Blog not found");
+
   const { insertedId } = await comments.insertOne(doc);
 
   const [user, userStats, blog] = await Promise.all([
     users.findOne({ _id: doc.author }, { projection: { firstName: 1, lastName: 1 } }),
     stats.findOne({ userId: doc.author }, { projection: { profileImage: 1 } }),
     blogs.findOneAndUpdate(
-      { _id: new ObjectId(blogId) },
+      { _id: doc.blogId },
       { $push: { comments: insertedId } },
       { returnDocument: "after", projection: { comments: 1, author: 1, title: 1 } },
     ),
@@ -94,6 +97,7 @@ export const postCommentService = async (db, blogId, userId, text) => {
 };
 
 export const deleteCommentService = async (db, blogId, commentId, userId) => {
+  const blogs = db.collection("blogs");
   const comments = db.collection("comments");
   const id = new ObjectId(commentId);
   const uid = new ObjectId(userId);
@@ -102,7 +106,6 @@ export const deleteCommentService = async (db, blogId, commentId, userId) => {
   if (!comment) throw new NotFoundError("Comment not found");
   if (comment.author.toString() !== uid.toString()) throw new ForbiddenError("You can only delete your own comments");
 
-  const blogs = db.collection("blogs");
   const [, updatedBlog] = await Promise.all([
     comments.deleteOne({ _id: id }),
     blogs.findOneAndUpdate(

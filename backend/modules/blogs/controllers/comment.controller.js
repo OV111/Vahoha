@@ -1,14 +1,21 @@
+import { ObjectId } from "mongodb";
 import {
   getCommentsService,
   postCommentService,
   deleteCommentService,
 } from "../services/commentService.js";
 import { makeErrorHandler } from "../../../utils/respond.js";
+import { ValidationError } from "../../../utils/httpErrors.js";
 
 const sendError = makeErrorHandler("blogs");
 
+const checkId = (id, name) => {
+  if (!ObjectId.isValid(id)) throw new ValidationError(`Invalid ${name} id`);
+};
+
 export const getComments = async (req, res) => {
   try {
+    checkId(req.params.id, "blog");
     const db = req.app.locals.db;
     const comments = await getCommentsService(db, req.params.id);
     res.json({ success: true, comments });
@@ -19,8 +26,9 @@ export const getComments = async (req, res) => {
 
 export const postComment = async (req, res) => {
   try {
+    checkId(req.params.id, "blog");
     const { text } = req.body;
-    if (!text?.trim()) {
+    if (typeof text !== "string" || !text.trim()) {
       return res.status(400).json({ success: false, message: "Comment text is required" });
     }
     const db = req.app.locals.db;
@@ -33,6 +41,8 @@ export const postComment = async (req, res) => {
 
 export const deleteComment = async (req, res) => {
   try {
+    checkId(req.params.id, "blog");
+    checkId(req.params.commentId, "comment");
     const db = req.app.locals.db;
     const commentsCount = await deleteCommentService(db, req.params.id, req.params.commentId, req.user._id);
     res.json({ success: true, commentsCount });

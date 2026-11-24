@@ -3,9 +3,13 @@ import { createTtlCache } from "../../../utils/ttlCache.js";
 import { ForbiddenError, NotFoundError, ValidationError } from "../../../utils/httpErrors.js";
 
 const MAX_LAYER_IDS = 10;
-// Roadmap layer ids look like "api-dev-3": lowercase slug, short. Anything
-// else is rejected rather than stored, so a tag can't carry markup or operators.
 const LAYER_ID_PATTERN = /^[a-z0-9][a-z0-9-]{0,59}$/;
+
+const SORT_KEYS = { Popular: "popular", Oldest: "oldest", "Most Viewed": "views", Trending: "views" };
+const READ_TIMES = new Set(["< 5 min", "5–10 min", "10+ min"]);
+const MAX_KEY_LENGTH = 300;
+const MAX_PAGE = 100_000;
+const STATUSES = new Set(["draft", "published"]);
 
 /**
  * Cleans the `layerIds` a post is tagged with. Accepts an array or a JSON
@@ -28,6 +32,61 @@ export const normalizeLayerIds = (raw) => {
     .map((id) => id.trim().toLowerCase())
     .filter((id) => LAYER_ID_PATTERN.test(id));
   return [...new Set(clean)].slice(0, MAX_LAYER_IDS);
+};
+
+// Tags arrive as an array or a JSON string, like layerIds; anything else becomes no tags.
+const parseTags = (raw) => {
+  let tags = raw;
+  if (typeof raw === "string") {
+    try {
+      tags = JSON.parse(raw);
+    } catch {
+      return [];
+    }
+  }
+  return Array.isArray(tags) ? tags.filter((tag) => typeof tag === "string") : [];
+};
+
+const checkStatus = (status) => {
+  if (status && !STATUSES.has(status)) throw new ValidationError("Status must be draft or published");
+};
+
+// Keeps letters of every alphabet, so Armenian and Russian titles get a real slug.
+const slugify = (title) => {
+  const slug = title
+    .normalize("NFC")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\p{L}\p{M}\p{N}_-]/gu, "");
+  return /[\p{L}\p{N}]/u.test(slug) ? slug : "post";
+};
+
+// `ownId` is the post being edited, which may keep its own slug.
+const makeUniqueSlug = async (blogs, title, ownId = null) => {
+  const baseSlug = slugify(title);
+  let slug = baseSlug;
+  let counter = 1;
+  while (await blogs.findOne({ slug, _id: { $ne: ownId } })) {
+    slug = `${baseSlug}-${counter++}`;
+  }
+  return slug;
+};
+
+const clampInt = (raw, fallback, max) => {
+  const number = Number.parseInt(raw, 10);
+  return Number.isNaN(number) ? fallback : Math.min(max, Math.max(1, number));
+};
+
+const readPaging = ({ page, limit }) => ({
+  pageNumber: clampInt(page, 1, MAX_PAGE),
+  limitNumber: clampInt(limit, 10, 100),
+});
+
+/** Mongo filter for posts this viewer may open: a draft is visible only to its author. */
+export const visibleTo = (viewerId) => {
+  const notDraft = { status: { $ne: "draft" } };
+  return viewerId ? { $or: [notDraft, { author: new ObjectId(viewerId) }] } : notDraft;
 };
 
 export const buildBlogDocument = ({
@@ -131,91 +190,18 @@ export const authorLookup = [
   },
 ];
 
-export const createBlogService = async (db, body, user, file) => {
-  const blogs = db.collection("blogs");
-  const users = db.collection("users");
-  const statsCollection = db.collection("usersStats");
-
-  if (!body.title || !body.content || !body.category) {
-    throw new ValidationError("Title, content and category are required");
-  }
-  let parsedTags = [];
-  try {
-    parsedTags = Array.isArray(body.tags)
-      ? body.tags
-      : JSON.parse(body.tags || "[]");
-  } catch {
-    parsedTags = [];
-  }
-  const baseSlug = body.title
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/[^\w-]/g, "");
-
-  let slug = baseSlug;
-  let counter = 1;
-  while (await blogs.findOne({ slug })) {
-    slug = `${baseSlug}-${counter++}`;
-  }
-  const authorId =
-    user._id instanceof ObjectId ? user._id : new ObjectId(String(user._id));
-
-  const doc = buildBlogDocument({
-    ...body,
-    slug,
-    tags: parsedTags,
-    layerIds: normalizeLayerIds(body.layerIds),
-    coverImage: file?.path ?? null,
-    author: authorId,
-  });
-  const result = await blogs.insertOne(doc);
-  clearBlogListCache();
-  const [authorData, statsData] = await Promise.all([
-    users.findOne(
-      { _id: authorId },
-      {
-        projection: {
-          firstName: 1,
-          lastName: 1,
-          username: 1,
-          pictures: 1,
-        },
-      },
-    ),
-    statsCollection.findOne({ userId: authorId }),
-  ]);
-  return {
-    ...doc,
-    _id: result.insertedId,
-    author: authorData
-      ? {
-          _id: authorData._id,
-          firstName: authorData.firstName,
-          lastName: authorData.lastName,
-          userName: authorData.username,
-          pictures: statsData?.profileImage ?? null,
-        }
-      : null,
-  };
-};
-
 // The public list is the same for everyone (like and save state come from their
 // own signed-in endpoints). Writes here clear it, so thirty seconds only bounds
 // what this process can't see: view counts (which feed "Most Viewed") and other instances.
 const blogListCache = createTtlCache({ name: "blogList", ttlMs: 30_000, maxEntries: 200 });
 export const clearBlogListCache = () => blogListCache.clear("list:");
 
-// "Most Viewed" and "Trending" sort the same way; anything unknown is the default order.
-const SORT_KEYS = { Popular: "popular", Oldest: "oldest", "Most Viewed": "views", Trending: "views" };
-const READ_TIMES = new Set(["< 5 min", "5–10 min", "10+ min"]);
-const MAX_KEY_LENGTH = 300;
-
 // The list can be cached only when every input has the plain shape the key assumes.
 const isPlain = (v) => v === undefined || typeof v === "string" || (Array.isArray(v) && v.every((x) => typeof x === "string"));
 
-const blogListKey = ({ category, tag, layer, page = 1, limit = 10, difficulty, readTime, sort, filter }) => {
+const blogListKey = ({ category, tag, layer, page, limit, difficulty, readTime, sort, filter }) => {
   const by = sort || filter;
+  const { pageNumber, limitNumber } = readPaging({ page, limit });
   return [
     "list:",
     JSON.stringify(category || ""),
@@ -224,25 +210,15 @@ const blogListKey = ({ category, tag, layer, page = 1, limit = 10, difficulty, r
     typeof layer === "string" && LAYER_ID_PATTERN.test(layer) ? layer : "",
     READ_TIMES.has(readTime) ? readTime : "",
     typeof by === "string" && Object.hasOwn(SORT_KEYS, by) ? SORT_KEYS[by] : "latest",
-    Math.max(1, +page),
-    Math.min(100, Math.max(1, +limit)),
+    pageNumber,
+    limitNumber,
   ].join("|");
 };
 
-export const getBlogsService = (db, query) => {
-  const { q, category, tag, difficulty } = query;
-  // A title search is open-ended (every typed word is a new key): always ask the database.
-  const searching = typeof q === "string" && q.trim() !== "";
-  if (searching || ![category, tag, difficulty].every(isPlain)) return loadBlogs(db, query);
-  const key = blogListKey(query);
-  return key.length > MAX_KEY_LENGTH ? loadBlogs(db, query) : blogListCache.wrap(key, () => loadBlogs(db, query));
-};
-
 const loadBlogs = async (db, query) => {
-  const { category, tag, layer, page = 1, limit = 10, difficulty, readTime, sort, filter, q } = query;
+  const { category, tag, layer, difficulty, readTime, sort, filter, q } = query;
+  const { pageNumber, limitNumber } = readPaging(query);
 
-  const pageNumber = Math.max(1, +page);
-  const limitNumber = Math.min(100, Math.max(1, +limit));
   const matchFilter = { status: "published" };
   if (category) matchFilter.category = category;
   if (tag) matchFilter.tags = { $in: Array.isArray(tag) ? tag : [tag] };
@@ -304,14 +280,18 @@ const loadBlogs = async (db, query) => {
   };
 };
 
-// A draft is visible only to its author; anyone else gets the same 404 as a missing id.
+export const getBlogsService = (db, query) => {
+  const { q, category, tag, difficulty } = query;
+  // A title search is open-ended (every typed word is a new key): always ask the database.
+  const searching = typeof q === "string" && q.trim() !== "";
+  if (searching || ![category, tag, difficulty].every(isPlain)) return loadBlogs(db, query);
+  const key = blogListKey(query);
+  return key.length > MAX_KEY_LENGTH ? loadBlogs(db, query) : blogListCache.wrap(key, () => loadBlogs(db, query));
+};
+
 export const getBlogByIdService = async (db, rawId, viewerId = null) => {
   const blogs = db.collection("blogs");
-  const visible = { status: { $ne: "draft" } };
-  const match = {
-    _id: new ObjectId(rawId),
-    ...(viewerId ? { $or: [visible, { author: new ObjectId(viewerId) }] } : visible),
-  };
+  const match = { _id: new ObjectId(rawId), ...visibleTo(viewerId) };
   const [blog] = await blogs.aggregate([{ $match: match }, ...authorLookup]).toArray();
 
   if (!blog) throw new NotFoundError("Blog not found");
@@ -334,12 +314,140 @@ export const getBlogBySlugService = async (db, slug) => {
   return blog;
 };
 
+export const getUserBlogsService = async (db, userId) => {
+  const blogsCollection = db.collection("blogs");
+  const blogs = await blogsCollection
+    .aggregate([
+      { $match: { author: new ObjectId(userId), status: "published" } },
+      { $sort: { createdAt: -1 } },
+      ...authorLookup,
+    ])
+    .toArray();
+  return blogs;
+};
+
+export const getUserAllBlogsService = async (db, userId) => {
+  const blogsCollection = db.collection("blogs");
+  const uid = userId instanceof ObjectId ? userId : new ObjectId(String(userId));
+  return blogsCollection.find({ author: uid }).sort({ createdAt: -1 }).toArray();
+};
+
+export const createBlogService = async (db, body, user, file) => {
+  const blogs = db.collection("blogs");
+  const users = db.collection("users");
+  const statsCollection = db.collection("usersStats");
+
+  if (!body.title || !body.content || !body.category) {
+    throw new ValidationError("Title, content and category are required");
+  }
+  checkStatus(body.status);
+
+  const slug = await makeUniqueSlug(blogs, body.title);
+  const authorId =
+    user._id instanceof ObjectId ? user._id : new ObjectId(String(user._id));
+
+  const doc = buildBlogDocument({
+    ...body,
+    slug,
+    tags: parseTags(body.tags),
+    layerIds: normalizeLayerIds(body.layerIds),
+    coverImage: file?.path ?? null,
+    author: authorId,
+  });
+  const result = await blogs.insertOne(doc);
+  clearBlogListCache();
+  const [authorData, statsData] = await Promise.all([
+    users.findOne(
+      { _id: authorId },
+      {
+        projection: {
+          firstName: 1,
+          lastName: 1,
+          username: 1,
+          pictures: 1,
+        },
+      },
+    ),
+    statsCollection.findOne({ userId: authorId }),
+  ]);
+  return {
+    ...doc,
+    _id: result.insertedId,
+    author: authorData
+      ? {
+        _id: authorData._id,
+        firstName: authorData.firstName,
+        lastName: authorData.lastName,
+        userName: authorData.username,
+        pictures: statsData?.profileImage ?? null,
+      }
+      : null,
+  };
+};
+
+export const updateBlogService = async (db, blogId, userId, body, file) => {
+  const blogs = db.collection("blogs");
+  const id = new ObjectId(blogId);
+  const uid = userId instanceof ObjectId ? userId : new ObjectId(String(userId));
+
+  const existing = await blogs.findOne({ _id: id });
+  if (!existing) throw new NotFoundError("Blog not found");
+  if (existing.author.toString() !== uid.toString()) throw new ForbiddenError("You can only change your own posts");
+
+  checkStatus(body.status);
+
+  const content = body.content ?? existing.content;
+  const words = content.trim().split(/\s+/).filter(Boolean).length;
+
+  const titleChanged = body.title && body.title !== existing.title;
+  const slug = titleChanged ? await makeUniqueSlug(blogs, body.title, id) : existing.slug;
+
+  const setFields = {
+    title: body.title ?? existing.title,
+    slug,
+    description: body.description ?? existing.description,
+    content,
+    tags: body.tags !== undefined ? parseTags(body.tags) : existing.tags,
+    category: body.category ?? existing.category,
+    difficulty: body.difficulty ?? existing.difficulty,
+    layerIds: body.layerIds !== undefined ? normalizeLayerIds(body.layerIds) : (existing.layerIds ?? []),
+    status: body.status || existing.status,
+    readTime: Math.max(1, Math.ceil(words / 200)),
+    wordCount: words,
+    updatedAt: new Date(),
+  };
+  if (file?.path) setFields.coverImage = file.path;
+
+  await blogs.updateOne({ _id: id }, { $set: setFields });
+  clearBlogListCache();
+  return { ...existing, ...setFields, _id: id };
+};
+
+export const deleteBlogService = async (db, blogId, userId) => {
+  const blogs = db.collection("blogs");
+  const id = new ObjectId(blogId);
+  const uid = userId instanceof ObjectId ? userId : new ObjectId(String(userId));
+
+  const existing = await blogs.findOne({ _id: id });
+  if (!existing) throw new NotFoundError("Blog not found");
+  if (existing.author.toString() !== uid.toString()) throw new ForbiddenError("You can only change your own posts");
+
+  // The post goes last: if a step before it fails, the author can retry.
+  await Promise.all([
+    db.collection("comments").deleteMany({ blogId: id }),
+    db.collection("favouriteBlogs").deleteMany({ blogId: id }),
+  ]);
+  await blogs.deleteOne({ _id: id });
+  clearBlogListCache();
+  return { deleted: true };
+};
+
 export const toggleLikeService = async (db, blogId, userId) => {
   const blogs = db.collection("blogs");
   const id = new ObjectId(blogId);
   const uid = new ObjectId(userId);
 
-  const blog = await blogs.findOne({ _id: id }, { projection: { likes: 1 } });
+  const blog = await blogs.findOne({ _id: id, ...visibleTo(userId) }, { projection: { likes: 1 } });
   if (!blog) throw new NotFoundError("Blog not found");
 
   const alreadyLiked = blog.likes.some((l) => l.toString() === uid.toString());
@@ -354,26 +462,6 @@ export const toggleLikeService = async (db, blogId, userId) => {
     liked: !alreadyLiked,
     likesCount: alreadyLiked ? blog.likes.length - 1 : blog.likes.length + 1,
   };
-};
-
-export const getUserBlogsService = async (db, userId) => {
-  const blogsCollection = db.collection("blogs");
-  const blogs = await blogsCollection
-    .aggregate([
-      { $match: { author: new ObjectId(userId), status: "published" } },
-      { $sort: { createdAt: -1 } },
-      ...authorLookup,
-    ])
-    .toArray();
-  return blogs;
-};
-
-export const getSavedIdsService = async (db, userId) => {
-  const favourites = db.collection("favouriteBlogs");
-  const docs = await favourites
-    .find({ userId: new ObjectId(userId) }, { projection: { blogId: 1 } })
-    .toArray();
-  return docs.map((d) => d.blogId.toString());
 };
 
 export const getLikedIdsService = async (db, userId) => {
@@ -405,74 +493,12 @@ export const toggleFavouriteService = async (db, blogId, userId) => {
   }
 };
 
-export const updateBlogService = async (db, blogId, userId, body, file) => {
-  const blogs = db.collection("blogs");
-  const id = new ObjectId(blogId);
-  const uid = userId instanceof ObjectId ? userId : new ObjectId(String(userId));
-
-  const existing = await blogs.findOne({ _id: id });
-  if (!existing) throw new NotFoundError("Blog not found");
-  if (existing.author.toString() !== uid.toString()) throw new ForbiddenError("You can only change your own posts");
-
-  let parsedTags = existing.tags;
-  if (body.tags !== undefined) {
-    try {
-      parsedTags = Array.isArray(body.tags) ? body.tags : JSON.parse(body.tags || "[]");
-    } catch { parsedTags = []; }
-  }
-
-  const content = body.content ?? existing.content;
-  const words = content.trim().split(/\s+/).filter(Boolean).length;
-
-  let slug = existing.slug;
-  if (body.title && body.title !== existing.title) {
-    const baseSlug = body.title.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
-    slug = baseSlug;
-    let counter = 1;
-    while (await blogs.findOne({ slug, _id: { $ne: id } })) {
-      slug = `${baseSlug}-${counter++}`;
-    }
-  }
-
-  const setFields = {
-    title: body.title ?? existing.title,
-    slug,
-    description: body.description ?? existing.description,
-    content,
-    tags: parsedTags,
-    category: body.category ?? existing.category,
-    difficulty: body.difficulty ?? existing.difficulty,
-    layerIds: body.layerIds !== undefined ? normalizeLayerIds(body.layerIds) : (existing.layerIds ?? []),
-    status: body.status ?? existing.status,
-    readTime: Math.max(1, Math.ceil(words / 200)),
-    wordCount: words,
-    updatedAt: new Date(),
-  };
-  if (file?.path) setFields.coverImage = file.path;
-
-  await blogs.updateOne({ _id: id }, { $set: setFields });
-  clearBlogListCache();
-  return { ...existing, ...setFields, _id: id };
-};
-
-export const getUserAllBlogsService = async (db, userId) => {
-  const blogsCollection = db.collection("blogs");
-  const uid = userId instanceof ObjectId ? userId : new ObjectId(String(userId));
-  return blogsCollection.find({ author: uid }).sort({ createdAt: -1 }).toArray();
-};
-
-export const deleteBlogService = async (db, blogId, userId) => {
-  const blogs = db.collection("blogs");
-  const id = new ObjectId(blogId);
-  const uid = userId instanceof ObjectId ? userId : new ObjectId(String(userId));
-
-  const existing = await blogs.findOne({ _id: id });
-  if (!existing) throw new NotFoundError("Blog not found");
-  if (existing.author.toString() !== uid.toString()) throw new ForbiddenError("You can only change your own posts");
-
-  await blogs.deleteOne({ _id: id });
-  clearBlogListCache();
-  return { deleted: true };
+export const getSavedIdsService = async (db, userId) => {
+  const favourites = db.collection("favouriteBlogs");
+  const docs = await favourites
+    .find({ userId: new ObjectId(userId) }, { projection: { blogId: 1 } })
+    .toArray();
+  return docs.map((d) => d.blogId.toString());
 };
 
 export const getFavouritesService = async (db, userId) => {
