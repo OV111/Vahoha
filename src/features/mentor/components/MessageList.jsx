@@ -8,6 +8,7 @@ import MessageSkeleton from "./MessageSkeleton";
 import MessageActions from "./MessageActions";
 import ContextCard from "./ContextCard";
 import TeachBackCard from "./TeachBackCard";
+import { STOPPED_NOTICE } from "../../../../constants/mentor";
 
 // Chat-reading size, in line with Claude and ChatGPT: 16px with roomy line height for long answers.
 const RESPONSE_TEXT = "text-[16px] leading-7 text-white";
@@ -220,6 +221,14 @@ export default function MessageList({
               </div>
             ) : (
               <TeachBackCard key={i} data={msg.data} error={msg.error} onAnswerFollowUp={onAnswerFollowUp} />
+            );
+          }
+
+          if (msg.role === "stopped") {
+            return (
+              <p key={i} role="status" className="text-[13px] text-white/60">
+                {STOPPED_NOTICE}
+              </p>
             );
           }
 

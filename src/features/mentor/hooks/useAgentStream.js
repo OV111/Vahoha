@@ -188,8 +188,10 @@ export default function useAgentStream() {
         // matches this one. Only for a plain cancel; when a newer send replaced
         // this request its user message is already in the list, and appending
         // here would put this reply after it.
-        if (assistantContent && abortRef.current === controller) {
-          useMentorStore.getState().appendMessage({ role: "assistant", content: assistantContent });
+        if (abortRef.current === controller) {
+          const { appendMessage } = useMentorStore.getState();
+          if (assistantContent) appendMessage({ role: "assistant", content: assistantContent });
+          appendMessage({ role: "stopped" });
         }
         return;
       }

@@ -333,21 +333,21 @@ export const stream = async (req, res) => {
 
     // An empty reply is never saved: replayed into the next turn it would be an
     // assistant message with no content, which providers can reject. A stopped
-    // answer keeps whatever had streamed.
-    if (assistantContent) {
+    // answer keeps whatever had streamed, or just the question if nothing had.
+    if (assistantContent || aborted) {
       // Persist the COMPOSED message (message + file content), not the bare text,
       // so follow-up turns like "now refactor that file" still see the content.
       // The total-size cap keeps 20 such turns inside the model's context window.
       const userContent = composeUserMessage(message, attachments);
-      assistantId = new ObjectId().toHexString();
-      await appendMessages(db, session._id.toString(), userContent, assistantContent, usage, assistantId);
+      if (assistantContent) assistantId = new ObjectId().toHexString();
+      await appendMessages(db, session._id.toString(), userContent, assistantContent, usage, assistantId, aborted);
 
       // Not awaited: folding old turns into notes is for the NEXT message and
       // must not hold this stream open.
       void foldConversation(db, session, [
         ...live,
         { role: "user", content: userContent },
-        { role: "assistant", content: assistantContent },
+        ...(assistantContent ? [{ role: "assistant", content: assistantContent }] : []),
       ]);
     }
     await recordUsageEvent(db, userId, session._id.toString(), usage, tz, reservation.date);

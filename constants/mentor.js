@@ -55,6 +55,9 @@ export const SESSIONS_PAGE_SIZE = 30;
 export const SESSION_SEARCH_DEBOUNCE_MS = 250;
 export const SIDEBAR_OPEN_STORAGE_KEY = "mentor.sidebarOpen";
 
+// Shown in the transcript where the learner pressed Stop.
+export const STOPPED_NOTICE = "You stopped the Mentor's response";
+
 export const SESSIONS_COPY = {
   title: "Sessions",
   historyNav: "Chat history",

@@ -200,7 +200,7 @@ const messageUsage = (usage) => ({
 });
 
 /**
- * Append a user + assistant pair and keep the last MAX_TURNS turns.
+ * Append one turn (user + assistant) and keep the last MAX_TURNS turns.
  *
  * One atomic update ($push with $slice), not read-modify-write: two tabs or two
  * quick sends on the same chat used to read the same messages array and the
@@ -208,7 +208,11 @@ const messageUsage = (usage) => ({
  * exists (deleted while the answer streamed).
  */
 // `assistantId` names the answer so the learner can rate it (feedbackService).
-export const appendMessages = async (db, sessionId, userMsg, assistantMsg, usage = null, assistantId = null) => {
+// `stopped` marks the turn's last message. A turn stopped before any text has no
+// assistant entry: an empty one, replayed later, can be rejected by the provider.
+export const appendMessages = async (
+  db, sessionId, userMsg, assistantMsg, usage = null, assistantId = null, stopped = false,
+) => {
   const now = new Date();
 
   const result = await db.collection("agent_sessions").updateOne(
@@ -217,14 +221,19 @@ export const appendMessages = async (db, sessionId, userMsg, assistantMsg, usage
       $push: {
         messages: {
           $each: [
-            { role: "user", content: userMsg, at: now },
-            {
-              role: "assistant",
-              content: assistantMsg,
-              at: now,
-              ...(assistantId && { id: assistantId }),
-              ...(usage && { usage: messageUsage(usage) }),
-            },
+            { role: "user", content: userMsg, at: now, ...(stopped && !assistantMsg && { stopped: true }) },
+            ...(assistantMsg
+              ? [
+                  {
+                    role: "assistant",
+                    content: assistantMsg,
+                    at: now,
+                    ...(assistantId && { id: assistantId }),
+                    ...(usage && { usage: messageUsage(usage) }),
+                    ...(stopped && { stopped: true }),
+                  },
+                ]
+              : []),
           ],
           // each turn = user + assistant = 2 entries
           $slice: -(MAX_TURNS * 2),
