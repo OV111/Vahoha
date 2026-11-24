@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "../../../constants/api";
+import { API_BASE_URL, netFetch } from "../../../constants/api";
 
 /**
  * Public certificate lookup — no auth header: anyone with the link (a
@@ -8,7 +8,7 @@ import { API_BASE_URL } from "../../../constants/api";
 export const fetchCertificate = async (publicId) => {
   let res;
   try {
-    res = await fetch(
+    res = await netFetch(
       `${API_BASE_URL}/api/capstone/certificates/${encodeURIComponent(publicId)}`,
     );
   } catch {

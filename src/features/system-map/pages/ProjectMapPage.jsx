@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
+import ServerDown from "@/components/feedback/ServerDown";
 import NotFound from "../../../components/feedback/NotFound";
 import useAuthStore from "@/stores/useAuthStore";
 import MapSkeleton from "../components/MapSkeleton";
@@ -34,6 +35,7 @@ function ProjectMapLoader({ owner }) {
     if (returning) loadEditor();
   }, [returning]);
 
+  if (initial.status === "unreachable") return <ServerDown />;
   if (initial.status === "signin") {
     return (
       <section className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-6 text-center">

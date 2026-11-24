@@ -11,7 +11,7 @@ export const fetchUserProfile = async (username) => {
       err.redirect = body.redirect;
       throw err;
     }
-    throw new Error("User not found");
+    throw Object.assign(new Error(body?.message ?? "Couldn't load this profile."), { status: res.status });
   }
   return res.json();
 };

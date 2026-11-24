@@ -3,6 +3,7 @@ import { Outlet, ScrollRestoration, useMatches } from "react-router-dom";
 import Navbar from "./navbar/Navbar";
 import Footer from "./Footer";
 import LoadingSuspense from "../components/feedback/LoadingSuspense";
+import ServerBanner from "../components/feedback/ServerBanner";
 import RouteSeo from "../seo/RouteSeo";
 import PrerenderHandoff from "../seo/PrerenderHandoff";
 import RecruiterGate from "../features/hiring/components/RecruiterGate";
@@ -26,6 +27,7 @@ const MainLayout = () => {
         </Suspense>
       </main>
       {!appShell && <Footer />}
+      <ServerBanner />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch, netFetch } from "../../constants/api";
 
 // `signal` lets the caller cancel a request that's no longer wanted (the user
 // changed a filter mid-flight), so a slow old response can't overwrite a newer one.
@@ -106,7 +106,7 @@ export const fetchBlogById = async (id) => {
 // Public read of a blog or a legacy post; throws with the HTTP status so callers can show "not found".
 export const fetchPublicPost = async (type, id, { signal } = {}) => {
   const path = type === "blog" ? `blogs/id/${id}` : `posts/${id}`;
-  const res = await fetch(`${API_BASE_URL}/${path}`, { signal });
+  const res = await netFetch(`${API_BASE_URL}/${path}`, { signal });
   if (!res.ok) {
     const err = new Error("Failed to fetch post");
     err.status = res.status;

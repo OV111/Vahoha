@@ -1,11 +1,11 @@
-import { API_BASE_URL } from "../../constants/api";
+import { API_BASE_URL, netFetch } from "../../constants/api";
 
 export const fetchUserData = async (query, isAuthenticated = false) => {
   const trimmedQuery = query?.trim() || "";
   if (!trimmedQuery || !isAuthenticated) return [];
 
   try {
-    const request = await fetch(
+    const request = await netFetch(
       `${API_BASE_URL}/search/users?q=${encodeURIComponent(trimmedQuery)}`,
       {
         method: "GET",
@@ -33,7 +33,7 @@ export const fetchCategoryData = async (query) => {
   if (!trimmedQuery) return [];
 
   try {
-    const res = await fetch(
+    const res = await netFetch(
       `${API_BASE_URL}/search/categories?q=${encodeURIComponent(trimmedQuery)}`,
     );
 

@@ -54,6 +54,8 @@ export default function UserProfile() {
   const [verifiedLayers, setVerifiedLayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [loadError, setLoadError] = useState(null);
+  const [attempt, setAttempt] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false);
   const [isFollower, setIsFollower] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
@@ -90,6 +92,7 @@ export default function UserProfile() {
       try {
         setLoading(true);
         setNotFound(false);
+        setLoadError(null);
         const response = await fetchUserProfile(username);
         const fetchedStats = response.stats ?? {};
         setUser(response.targetUser ?? null);
@@ -109,13 +112,14 @@ export default function UserProfile() {
           navigate(`/users/${err.redirect}`, { replace: true });
           return;
         }
-        setNotFound(true);
+        if (err.status === 404) setNotFound(true);
+        else setLoadError(err.message);
       } finally {
         setLoading(false);
       }
     };
     fetchUser();
-  }, [username, navigate]);
+  }, [username, navigate, attempt]);
 
   const handleFollowToggle = async () => {
     if (followLoading) return;
@@ -143,6 +147,15 @@ export default function UserProfile() {
   };
 
   if (loading) return <ProfileSkeleton />;
+  if (loadError)
+    return (
+      <section role="alert" className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center px-6 text-center">
+        <p className="text-neutral-200">{loadError}</p>
+        <button type="button" onClick={() => setAttempt((n) => n + 1)} className={`${OUTLINE_BUTTON} mt-4 cursor-pointer`}>
+          Try again
+        </button>
+      </section>
+    );
   if (notFound || !user) return <UserNotFound />;
 
   const lastActive = formatLastActive(stats?.lastActive);

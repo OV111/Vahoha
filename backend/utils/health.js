@@ -68,9 +68,12 @@ export const healthHandler = (db, { redis } = {}) => {
 
   return async (req, res) => {
     const { ok, body } = await checkHealth(db, { redis: await redisOf() });
+    if (process.env.MAINTENANCE_MODE === "true") body.maintenance = true;
     res.writeHead(ok ? 200 : 503, {
       "Content-Type": "application/json",
       "Cache-Control": "no-store",
+      // The web app asks too, to tell "server down" from "your request failed".
+      "Access-Control-Allow-Origin": "*",
     });
     res.end(req.method === "HEAD" ? undefined : JSON.stringify(body));
   };

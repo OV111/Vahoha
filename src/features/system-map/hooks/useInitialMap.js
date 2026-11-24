@@ -54,6 +54,7 @@ async function loadPersonalMap() {
  *                       example) is uploaded as their first one, then the
  *                       browser copy is removed so the next account on a
  *                       shared computer can't see it.
+ *   no answer        -> "unreachable": signed in last time, but the server can't say.
  *   with an `owner`  -> that capstone's or team's map; a learner who isn't
  *                       eligible gets the server's reason as the error.
  */
@@ -61,6 +62,7 @@ export default function useInitialMap(owner = null) {
   const auth = useAuthStore((s) => s.auth);
   const authLoading = useAuthStore((s) => s.isLoading);
   const session = useAuthStore((s) => s.session);
+  const hasSession = useAuthStore((s) => s.sessionHint); // without auth: the session check got no answer
   const [loaded, setLoaded] = useState(null);
   const ownerType = owner?.ownerType ?? null;
   const ownerId = owner?.ownerId ?? null;
@@ -80,7 +82,7 @@ export default function useInitialMap(owner = null) {
   }, [auth, authLoading, session, key, ownerType, ownerId]);
 
   if (authLoading) return { status: "loading" };
-  if (!auth) return { status: "signin" };
+  if (!auth) return { status: hasSession ? "unreachable" : "signin" };
   // A result from an earlier session or another map (sign out, sign in as someone else) is not ours.
   return loaded?.session === session && loaded.key === key ? loaded : { status: "loading" };
 }

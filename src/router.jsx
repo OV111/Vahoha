@@ -3,6 +3,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import MainLayout from "./layouts/MainLayout";
 import ProtectedLayout from "./layouts/ProtectedLayout";
+import RouteError from "./components/feedback/RouteError";
 import PublicOnlyRoute from "./layouts/PublicOnlyRoute";
 import Home from "./pages/Home";
 import OAuthSuccess from "./components/feedback/OAuthSuccess";
@@ -218,7 +219,7 @@ const protectedRoutes = [
 export const routes = [
   {
     element: <MainLayout />,
-    errorElement: <NotFound />,
+    errorElement: <RouteError />,
     children: [
       ...publicRoutes,
       ...authRoutes,

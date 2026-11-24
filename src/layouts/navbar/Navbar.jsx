@@ -18,11 +18,11 @@ const HIDE_SEARCH_ROUTES = new Set(["/get-started", "/forgot-password", "/reset-
 const Navbar = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { auth, isLoading, sessionHint, logout } = useAuthStore();
+  const { auth, sessionHint, logout } = useAuthStore();
   // Wait for the session check only if this browser had a session last time.
   // Everyone else gets the guest layout immediately, matching the prerendered HTML.
-  const authPending = isLoading && sessionHint;
-  // While the check runs, a returning user already sees the signed-in layout.
+  const authPending = !auth && sessionHint;
+  // While the check runs (or the server can't answer it), a returning user already sees the signed-in layout.
   const authLayout = auth || authPending;
 
   const navRef = useRef(null);

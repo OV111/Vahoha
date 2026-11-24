@@ -111,7 +111,7 @@ export function createApp(db) {
   app.use((req, res, next) => {
     const maintenance = process.env.MAINTENANCE_MODE === "true";
     if (maintenance) {
-      return res.status(503).json({ message: "Server is under Maintenance" });
+      return res.status(503).json({ code: "MAINTENANCE", message: "Vahoha is under maintenance. Please try again soon." });
     }
     next();
   });

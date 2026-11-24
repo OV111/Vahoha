@@ -8,6 +8,8 @@
 //   3. apiFetch() catches any 401 that still slips through, refreshes once and
 //      retries. If the refresh cookie is dead too, the session ends.
 
+import { UNREACHABLE_MESSAGE } from "../../constants/serverStatus.js";
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const REFRESH_EARLY_MS = 60 * 1000;
 const RETRY_MS = 30 * 1000;
@@ -17,6 +19,10 @@ const REFRESH_TIMEOUT_MS = 10 * 1000;
 // Floor for the refresh timer, so a token that is somehow already stale on
 // arrival can never turn the timer into a tight loop.
 const MIN_DELAY_MS = 5 * 1000;
+// A read still unanswered after this is worth a health check; it is not cancelled.
+const SLOW_MS = 10 * 1000;
+const READ_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
+const GATEWAY_ERRORS = new Set([502, 503, 504]);
 const LOCK_NAME = "vahoha-refresh";
 
 let accessToken = null;
@@ -69,6 +75,33 @@ export const tokenLifetimeMs = (token) => {
   }
 };
 
+// Called when a request hints that the API may be unreachable (see useServerStatus).
+let onServerTrouble = () => {};
+export const setServerTroubleHandler = (fn) => {
+  onServerTrouble = fn;
+};
+
+/**
+ * fetch() for the API: reports trouble, and turns the browser's "Failed to fetch"
+ * into a message a person can read. Cancelled requests pass through untouched.
+ */
+export const netFetch = async (input, init = {}) => {
+  const isRead = READ_METHODS.has((init.method ?? "GET").toUpperCase());
+  const slow = isRead ? setTimeout(onServerTrouble, SLOW_MS) : null;
+  try {
+    const res = await fetch(input, init);
+    if (GATEWAY_ERRORS.has(res.status)) onServerTrouble();
+    return res;
+  } catch (cause) {
+    if (cause?.name === "AbortError") throw cause;
+    onServerTrouble();
+    if (!(cause instanceof TypeError)) throw cause;
+    throw Object.assign(new Error(UNREACHABLE_MESSAGE, { cause }), { network: true });
+  } finally {
+    clearTimeout(slow);
+  }
+};
+
 const isStale = () => Boolean(accessToken && expiresAt) && expiresAt - Date.now() < REFRESH_EARLY_MS;
 
 /**
@@ -81,7 +114,7 @@ const isStale = () => Boolean(accessToken && expiresAt) && expiresAt - Date.now(
 const requestRefresh = async () => {
   let res;
   try {
-    res = await fetch(`${API_BASE_URL}/refresh`, {
+    res = await netFetch(`${API_BASE_URL}/refresh`, {
       method: "POST",
       credentials: "include",
       signal: AbortSignal.timeout(REFRESH_TIMEOUT_MS),
@@ -107,6 +140,12 @@ const requestRefresh = async () => {
   }
 };
 
+/** Runs alone across tabs. Logging out takes it too, so a refresh can't hand out a new cookie mid-logout. */
+export const withSessionLock = async (run) =>
+  typeof navigator !== "undefined" && navigator.locks
+    ? navigator.locks.request(LOCK_NAME, () => run())
+    : run();
+
 /**
  * Refresh tokens rotate: each one works once. Two refreshes with the same
  * cookie look like token reuse, the second gets a 401 and its response clears
@@ -117,11 +156,7 @@ const requestRefresh = async () => {
  */
 export const refreshSession = () => {
   if (!inFlight) {
-    const run = () => requestRefresh();
-    const locked = typeof navigator !== "undefined" && navigator.locks
-      ? navigator.locks.request(LOCK_NAME, run)
-      : run();
-    inFlight = locked.finally(() => {
+    inFlight = withSessionLock(requestRefresh).finally(() => {
       inFlight = null;
     });
   }
@@ -198,8 +233,6 @@ const reportPlanRequired = async (res) => {
   if (body.reason === "recruiter_view_only") onViewOnly({ message: body.message });
 };
 
-const READ_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
-
 /**
  * Drop-in for fetch() on authenticated requests. Requests that carry no
  * Bearer header go straight through. Requests that do always get the current
@@ -217,12 +250,12 @@ export const apiFetch = async (input, init = {}) => {
 
 const authedFetch = async (input, init) => {
   const headers = new Headers(init.headers);
-  if (!headers.get("Authorization")?.startsWith("Bearer")) return fetch(input, init);
+  if (!headers.get("Authorization")?.startsWith("Bearer")) return netFetch(input, init);
 
   await ensureFreshToken();
   const send = () => {
     headers.set("Authorization", `Bearer ${accessToken ?? ""}`);
-    return fetch(input, { ...init, headers });
+    return netFetch(input, { ...init, headers });
   };
 
   const sentToken = accessToken;
