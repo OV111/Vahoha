@@ -13,6 +13,10 @@ export const NODE_KINDS = [
   "entry", "auth", "secrets", "firewall",
   // infrastructure
   "loadbalancer", "container", "cicd", "cluster", "dns",
+  // traffic and messaging
+  "mobile", "cdn", "gateway", "ratelimiter", "websocket", "eventbus", "scheduler",
+  // finding and watching
+  "search", "vectordb", "warehouse", "monitoring", "registry",
 ];
 export const MAX_NODES = 80;
 export const MAX_EDGES = 200;
@@ -51,6 +55,9 @@ const edgeSchema = z.object({
   sourceHandle: z.enum(["r", "b"]),
   targetHandle: z.enum(["l", "t"]),
   label: z.string().trim().max(30),
+  // How sure the repo scan is of this wire. A wire the learner drew or confirmed has none.
+  level: z.enum(["proven", "likely", "guessed"]).optional(),
+  evidence: z.array(evidencePath).max(MAX_EVIDENCE).optional(),
 });
 
 const hasUnique = (items) => new Set(items.map((i) => i.id)).size === items.length;
@@ -127,7 +134,12 @@ const opSchema = z.discriminatedUnion("op", [
   }),
   z.object({ op: z.literal("addEdge"), edge: edgeSchema }),
   z.object({ op: z.literal("removeEdge"), id: localId }),
-  z.object({ op: z.literal("updateEdge"), id: localId, set: edgeSchema.omit({ id: true }).partial().strict() }),
+  z.object({
+    op: z.literal("updateEdge"),
+    id: localId,
+    set: edgeSchema.omit({ id: true }).partial().strict(),
+    unset: z.array(z.enum(["level", "evidence"])).max(2).optional(),
+  }),
   z.object({
     op: z.literal("setMeta"),
     set: z.object({ lens: z.enum(LENSES), repo: repoSchema }).partial().strict(),

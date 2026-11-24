@@ -1,3 +1,4 @@
+import { Bone, BoneControl, BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
 import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import MentorPanel from "@/features/mentor/components/MentorPanel";
@@ -28,7 +29,37 @@ const LoadError = ({ error, onRetry }) => (
   </div>
 );
 
-const Skeleton = ({ className }) => <div className={`animate-pulse rounded-xl bg-zinc-100 dark:bg-zinc-900 ${className}`} />;
+const NextStepSkeleton = () => (
+  <BonePanel className="rounded-xl p-5 sm:p-6">
+    <p className={`text-sm font-medium ${MUTED}`}>{COPY.nextStep}</p>
+    <Bone className="mt-2 h-6 w-1/2" />
+    <Bone soft className="mt-2.5 h-3.5 w-3/4" />
+    <div className="mt-5 flex gap-3">
+      <BoneControl className="h-9 w-32" />
+      <BoneControl className="h-9 w-32" />
+    </div>
+  </BonePanel>
+);
+
+const TOPIC_WIDTHS = ["w-1/2", "w-2/3", "w-2/5", "w-3/5"];
+
+const TopicsSkeleton = () => (
+  <div className="space-y-3">
+    {TOPIC_WIDTHS.map((width) => (
+      <BonePanel key={width} className="rounded-xl p-5">
+        <BoneLines widths={[width, "w-1/4"]} />
+      </BonePanel>
+    ))}
+  </div>
+);
+
+const PathSkeleton = () => (
+  <BonePanel className="rounded-xl p-5">
+    <Bone className="my-1 h-4 w-1/2" />
+    <Bone className="mt-5 h-2.5 w-full" />
+    <BoneLines className="mt-4" widths={["w-2/5", "w-3/5", "w-1/3"]} />
+  </BonePanel>
+);
 
 const NoTopics = () => (
   <section className={`rounded-xl border border-dashed px-6 py-8 ${BORDER}`}>
@@ -73,10 +104,10 @@ const ProgressPage = () => {
       <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="min-w-0 space-y-12 lg:order-1">
           {mastery.loading && (
-            <div className="space-y-4" aria-busy="true" aria-label="Loading progress">
-              <Skeleton className="h-36" />
-              <Skeleton className="h-64" />
-            </div>
+            <SkeletonRegion label="Loading progress" className="space-y-12">
+              <NextStepSkeleton />
+              <TopicsSkeleton />
+            </SkeletonRegion>
           )}
           {mastery.error && <LoadError error={mastery.error} onRetry={mastery.reload} />}
 
@@ -91,7 +122,11 @@ const ProgressPage = () => {
         </div>
 
         <aside className="order-first space-y-6 lg:order-2" aria-label="Your path and activity">
-          {journey.loading && <Skeleton className="h-64" />}
+          {journey.loading && (
+            <SkeletonRegion label="Loading your path">
+              <PathSkeleton />
+            </SkeletonRegion>
+          )}
           {journey.error && <LoadError error={journey.error} onRetry={journey.reload} />}
           {journey.data && <PathCard journey={journey.data} />}
           {journey.data && <ActivityCard journey={journey.data} />}

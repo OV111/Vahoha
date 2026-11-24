@@ -1,3 +1,4 @@
+import { Bone, BoneControl, BonePanel } from "@/components/ui/Skeleton";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useBlocker } from "react-router-dom";
 import DeleteAccount from "@/features/profile/components/DeleteAccount";
@@ -5,9 +6,6 @@ import { toast } from "sonner";
 import PageShell from "../components/PageShell";
 import SaveBar from "../components/SaveBar";
 import useProfileStore from "@/stores/useProfileStore";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import useThemeStore from "@/stores/useThemeStore";
 import ImageDropZone from "../components/ImageDropZone";
 import { saveSettings, checkUsernameAvailable } from "@/services/profileApi";
 import { Loader2, Check, X } from "lucide-react";
@@ -28,7 +26,6 @@ const TextField = ({
   id,
   label,
   loading,
-  skeletonProps,
   as: Control = "input",
   className = "",
   children,
@@ -42,7 +39,7 @@ const TextField = ({
         {label}
       </label>
       {loading ? (
-        <Skeleton height={Control === "textarea" ? 84 : 38} {...skeletonProps} />
+        <BoneControl className={Control === "textarea" ? "h-21 items-start pt-3" : "h-[38px]"} bar="w-1/3" />
       ) : (
         <Control id={id} name={id} className={INPUT_CLASS} {...extra} {...controlProps}>
           {children}
@@ -98,13 +95,6 @@ const withScheme = (value) =>
 const Settings = () => {
   const { user, stats, isLoading, fetchProfile, updateStats, updateUser } =
     useProfileStore();
-  const theme = useThemeStore((s) => s.theme);
-  const isDarkMode = theme === "dark";
-  const skeletonProps = {
-    borderRadius: 8,
-    baseColor: isDarkMode ? "#1f2937" : "#ebebeb",
-    highlightColor: isDarkMode ? "#374151" : "#f5f5f5",
-  };
   const [formData, setFormData] = useState({
     fname: "",
     lname: "",
@@ -306,12 +296,12 @@ const Settings = () => {
               <div className="flex flex-col gap-6 sm:flex-row max-w-[880px]">
                 {isLoading ? (
                   <>
-                    <div className="flex-1">
-                      <Skeleton height={120} {...skeletonProps} />
-                    </div>
-                    <div className="flex-1">
-                      <Skeleton height={120} {...skeletonProps} />
-                    </div>
+                    <BonePanel className="flex min-h-30 flex-1 items-center justify-center rounded-lg">
+                      <Bone className="h-3 w-1/3" />
+                    </BonePanel>
+                    <BonePanel className="flex min-h-30 flex-1 items-center justify-center rounded-lg">
+                      <Bone className="h-3 w-1/3" />
+                    </BonePanel>
                   </>
                 ) : (
                   <>
@@ -338,7 +328,6 @@ const Settings = () => {
                   id="fname"
                   label="First name"
                   loading={isLoading}
-                  skeletonProps={skeletonProps}
                   value={formData.fname}
                   placeholder="First name"
                   onChange={(e) => handleChange("fname", e.target.value)}
@@ -347,7 +336,6 @@ const Settings = () => {
                   id="lname"
                   label="Last name"
                   loading={isLoading}
-                  skeletonProps={skeletonProps}
                   value={formData.lname}
                   placeholder="Last name"
                   onChange={(e) => handleChange("lname", e.target.value)}
@@ -360,7 +348,7 @@ const Settings = () => {
                     Username
                   </label>
                   {isLoading ? (
-                    <Skeleton height={38} {...skeletonProps} />
+                    <BoneControl className="h-[38px]" bar="w-1/3" />
                   ) : (
                     <div className="relative">
                       <input
@@ -432,7 +420,6 @@ const Settings = () => {
                   id="bio"
                   label="Bio"
                   loading={isLoading}
-                  skeletonProps={skeletonProps}
                   as="textarea"
                   className="sm:col-span-2"
                   value={formData.bio}
@@ -447,7 +434,7 @@ const Settings = () => {
                     Time zone
                   </label>
                   {isLoading ? (
-                    <Skeleton height={38} {...skeletonProps} />
+                    <BoneControl className="h-[38px]" bar="w-1/3" />
                   ) : (
                     <SearchSelect
                       id="timezone"
@@ -462,7 +449,6 @@ const Settings = () => {
                   id="location"
                   label="Location"
                   loading={isLoading}
-                  skeletonProps={skeletonProps}
                   value={formData.location}
                   placeholder="City, Country"
                   onChange={(e) => handleChange("location", e.target.value)}
@@ -474,7 +460,6 @@ const Settings = () => {
                   id="githubLink"
                   label="GitHub"
                   loading={isLoading}
-                  skeletonProps={skeletonProps}
                   value={formData.githubLink}
                   placeholder="Enter URL"
                   inputMode="url"
@@ -485,7 +470,6 @@ const Settings = () => {
                   id="linkedinLink"
                   label="LinkedIn"
                   loading={isLoading}
-                  skeletonProps={skeletonProps}
                   value={formData.linkedinLink}
                   placeholder="Enter URL"
                   inputMode="url"
@@ -499,7 +483,6 @@ const Settings = () => {
                   id="twitterLink"
                   label="Twitter"
                   loading={isLoading}
-                  skeletonProps={skeletonProps}
                   value={formData.twitterLink}
                   placeholder="Enter URL"
                   inputMode="url"
@@ -510,7 +493,6 @@ const Settings = () => {
                   id="mediumLink"
                   label="Medium"
                   loading={isLoading}
-                  skeletonProps={skeletonProps}
                   value={formData.mediumLink}
                   placeholder="Enter URL"
                   inputMode="url"

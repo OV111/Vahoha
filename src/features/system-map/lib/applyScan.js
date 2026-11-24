@@ -3,17 +3,17 @@
 // and the scan's wires between them. Pure, so the layout rules are tested.
 
 import { compareScan } from "./drift";
-import { MAX_NODES, cleanEvidence, cleanRepo, freeSpot, withArrow } from "./mapGraph";
+import { MAX_NODES, WIRE_LEVELS, cleanEvidence, cleanRepo, freeSpot, withArrow } from "./mapGraph";
 
 // Left to right in the order things flow: what comes in, what guards it, what
 // does the work, what the work leans on, and where it ends up. Covers every
 // lens; a kind not listed lands in the last column instead of breaking the layout.
 const COLUMNS = [
-  ["client", "entry", "datasource", "dns", "cicd"],
-  ["firewall", "loadbalancer", "auth"],
-  ["server", "endpoint", "pipeline", "container", "cluster"],
-  ["worker", "queue", "model", "featurestore", "migration", "cache", "secrets"],
-  ["database", "primary", "replica", "shard", "backup", "storage", "evaluation", "external", "memory", "disk"],
+  ["client", "mobile", "entry", "datasource", "dns", "cdn", "cicd", "scheduler"],
+  ["firewall", "ratelimiter", "loadbalancer", "gateway", "auth", "registry"],
+  ["server", "websocket", "endpoint", "pipeline", "container", "cluster"],
+  ["worker", "queue", "eventbus", "model", "featurestore", "migration", "cache", "secrets"],
+  ["database", "search", "vectordb", "warehouse", "monitoring", "primary", "replica", "shard", "backup", "storage", "evaluation", "external", "memory", "disk"],
 ];
 const LAST_COLUMN = COLUMNS.length - 1;
 const COLUMN = Object.fromEntries(COLUMNS.flatMap((kinds, column) => kinds.map((kind) => [kind, column])));
@@ -68,7 +68,15 @@ export function applyScan(nodes, edges, scan, acceptedKeys, makeId = randomId) {
     const source = nodeOf.get(wire.source);
     const target = nodeOf.get(wire.target);
     if (!source || !target || source === target) continue;
-    if (nextEdges.some((e) => e.source === source && e.target === target)) continue;
+    const proof = { ...(wire.level ? { level: wire.level } : {}), evidence: cleanEvidence((wire.evidence ?? []).map((e) => e.path)) };
+    const existing = nextEdges.find((e) => e.source === source && e.target === target);
+    if (existing) {
+      // A wire the learner drew or confirmed stays theirs; an unsure one can only get surer.
+      if (existing.data?.level && WIRE_LEVELS.indexOf(wire.level) > WIRE_LEVELS.indexOf(existing.data.level)) {
+        nextEdges = nextEdges.map((e) => (e === existing ? { ...e, data: proof } : e));
+      }
+      continue;
+    }
     nextEdges = [
       ...nextEdges,
       withArrow({
@@ -78,6 +86,7 @@ export function applyScan(nodes, edges, scan, acceptedKeys, makeId = randomId) {
         sourceHandle: "r",
         targetHandle: "l",
         ...(wire.label ? { label: wire.label.slice(0, 30) } : {}),
+        data: proof,
       }),
     ];
   }

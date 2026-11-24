@@ -1,4 +1,4 @@
-import { useRef, useCallback } from "react";
+import { useCallback } from "react";
 import useMentorStore from "@/stores/useMentorStore";
 import { apiFetch } from "@/lib/session";
 
@@ -10,15 +10,20 @@ const nextFrame =
 const cancelFrame =
   typeof cancelAnimationFrame === "function" ? (id) => cancelAnimationFrame(id) : (id) => clearTimeout(id);
 
-export default function useAgentStream() {
-  const abortRef = useRef(null);
+// Shared by every mounted chat, like the store: a reply keeps streaming after you
+// leave the page, and whichever chat is open next must be able to stop it.
+const abortRef = { current: null };
+// The last request, kept whole so a retry resends its files too.
+let lastRequest = null;
 
-  const sendMessage = useCallback(async ({ sessionId, content, token, attachments = [], activity = null }) => {
+export default function useAgentStream() {
+  const sendMessage = useCallback(async (request) => {
+    const { sessionId, content, token, attachments = [], activity = null } = request;
+    lastRequest = request;
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
 
-    
     const {
       appendMessage: append,
       setStreaming,
@@ -164,7 +169,7 @@ export default function useAgentStream() {
           } else if (event.type === "done") {
             break;
           } else if (event.type === "error") {
-            throw new Error(event.message ?? "stream error");
+            throw Object.assign(new Error(event.message ?? "stream error"), { fromServer: true });
           }
         }
       }
@@ -188,9 +193,9 @@ export default function useAgentStream() {
         }
         return;
       }
-      useMentorStore
-        .getState()
-        .setError({ type: "network", message: err.message });
+      // A discarded request belongs to a chat that is no longer open.
+      if (abortRef.current !== controller) return;
+      useMentorStore.getState().setError({ type: "network", message: err.fromServer ? err.message : null });
     } finally {
       // Always, even for a replaced request: a frame that fires late would write
       // this stream's text into the newer one's answer.
@@ -209,5 +214,27 @@ export default function useAgentStream() {
     abortRef.current?.abort();
   }, []);
 
-  return { sendMessage, cancel };
+  // Leaving a conversation: stop its reply without writing any of it into the next
+  // one. The server saves what had streamed, so it is there on return.
+  const discard = useCallback(() => {
+    const controller = abortRef.current;
+    abortRef.current = null;
+    controller?.abort();
+    useMentorStore.getState().setStreaming(false);
+    useMentorStore.getState().clearStream();
+  }, []);
+
+  // A failed turn is not saved server-side, so its messages go before it is resent.
+  const retry = useCallback(
+    (token) => {
+      if (!lastRequest) return;
+      const { messages, setMessages } = useMentorStore.getState();
+      const at = messages.findLastIndex((m) => m.role === "user");
+      if (at !== -1) setMessages(messages.slice(0, at));
+      sendMessage({ ...lastRequest, token });
+    },
+    [sendMessage],
+  );
+
+  return { sendMessage, cancel, discard, retry };
 }

@@ -2,7 +2,7 @@
 // (selection, measured size, replay status). Stage 2 sends this same object to
 // the server, so keep it plain JSON.
 //
-//   { v: 1, nodes: [{ id, kind, title, sub, x, y, evidence?, note? }], edges: [{ id, source, target, sourceHandle, targetHandle, label }], repo?, lens? }
+//   { v: 1, nodes: [{ id, kind, title, sub, x, y, evidence?, note? }], edges: [{ id, source, target, sourceHandle, targetHandle, label, level?, evidence? }], repo?, lens? }
 //
 // `note` is the learner's explanation of the part (what it is, why it's there),
 // shown only when the part is selected. Left out when blank, like `evidence`.
@@ -18,6 +18,13 @@ import { GRAPH_VERSION, upcastGraph } from "./graphVersions";
 export const MAX_NODES = 80;
 export const MAX_EVIDENCE = 5;
 export const MAX_NOTE = 1000; // mirrors MAX_NOTE in the backend's systemMap.schemas.js
+
+// How sure the repo scan is of a wire. A wire the learner drew or confirmed has no level.
+export const WIRE_LEVELS = ["guessed", "likely", "proven"]; // weakest first
+const cleanLevel = (level) => (WIRE_LEVELS.includes(level) ? level : null);
+
+/** A wire the scan is not sure of, waiting for the learner to confirm or delete it. */
+export const isUnconfirmed = (edge) => edge.data?.level === "likely" || edge.data?.level === "guessed";
 
 const STORAGE_KEY = "vahoha.projectMap.v1";
 // "arrowclosed" is xyflow's MarkerType.ArrowClosed; the literal keeps xyflow out of the guest bundle.
@@ -38,6 +45,13 @@ export const cleanRepo = (repo) =>
 
 /** Link to one evidence file on GitHub, at the commit that was scanned. */
 export const evidenceUrl = (repo, path) => `https://github.com/${repo.fullName}/blob/${repo.sha}/${path}`;
+
+// A wire's level and evidence, each left out when there is none.
+function edgeProof(from) {
+  const level = cleanLevel(from?.level);
+  const evidence = cleanEvidence(from?.evidence);
+  return { ...(level ? { level } : {}), ...(evidence.length ? { evidence } : {}) };
+}
 
 /** React Flow state -> the saved shape. */
 export function toGraph(nodes, edges, repo = null, lens = DEFAULT_LENS) {
@@ -67,6 +81,7 @@ export function toGraph(nodes, edges, repo = null, lens = DEFAULT_LENS) {
       sourceHandle: ["r", "b"].includes(e.sourceHandle) ? e.sourceHandle : "r",
       targetHandle: ["l", "t"].includes(e.targetHandle) ? e.targetHandle : "l",
       label: typeof e.label === "string" ? e.label.trim() : "",
+      ...edgeProof(e.data),
     })),
     ...(scanned ? { repo: scanned } : {}),
     ...(isLens(lens) && lens !== DEFAULT_LENS ? { lens } : {}),
@@ -115,6 +130,7 @@ export function fromGraph(input) {
         sourceHandle: ["r", "b"].includes(e.sourceHandle) ? e.sourceHandle : "r",
         targetHandle: ["l", "t"].includes(e.targetHandle) ? e.targetHandle : "l",
         ...(text(e.label, 30) ? { label: text(e.label, 30) } : {}),
+        data: edgeProof(e),
       }),
     ];
   });
@@ -140,21 +156,63 @@ export function freeSpot(nodes, center) {
   return center;
 }
 
-/** The map a learner starts with, so the canvas is never empty. */
+/**
+ * The map a learner starts with, so the canvas is never empty: traffic filtered
+ * and spread over two servers, reads cached, slow work handed to a queue. withoutExample knows these
+ * parts by id, title and sub, so changing one leaves it on maps saved before.
+ */
 export const EXAMPLE_GRAPH = {
   v: GRAPH_VERSION,
   nodes: [
-    { id: "client", kind: "client", title: "Web app", sub: "React", x: 0, y: 90 },
-    { id: "api", kind: "server", title: "API server", sub: "Express", x: 280, y: 90 },
-    { id: "db", kind: "database", title: "Database", sub: "MongoDB", x: 560, y: 0 },
-    { id: "cache", kind: "cache", title: "Cache", sub: "Redis", x: 560, y: 190 },
+    { id: "client", kind: "client", title: "Web app", sub: "React", x: 0, y: 165 },
+    { id: "firewall", kind: "firewall", title: "Firewall", sub: "blocks bad requests", x: 240, y: 165 },
+    { id: "lb", kind: "loadbalancer", title: "Load balancer", sub: "spreads traffic", x: 480, y: 165 },
+    { id: "api", kind: "server", title: "API server", sub: "Express", x: 720, y: 90 },
+    { id: "api2", kind: "server", title: "API server 2", sub: "Express", x: 720, y: 240 },
+    { id: "cache", kind: "cache", title: "Cache", sub: "Redis", x: 960, y: 0 },
+    { id: "db", kind: "database", title: "Database", sub: "MongoDB", x: 960, y: 165 },
+    { id: "queue", kind: "queue", title: "Queue", sub: "BullMQ", x: 960, y: 330 },
+    { id: "worker", kind: "worker", title: "Worker", sub: "runs jobs", x: 1200, y: 330 },
+    { id: "email", kind: "external", title: "Email service", sub: "sends emails", x: 1440, y: 220 },
+    { id: "files", kind: "storage", title: "File storage", sub: "images, uploads", x: 1440, y: 440 },
   ],
   edges: [
-    { id: "e-client-api", source: "client", target: "api", sourceHandle: "r", targetHandle: "l", label: "HTTP" },
-    { id: "e-api-db", source: "api", target: "db", sourceHandle: "r", targetHandle: "l", label: "queries" },
+    { id: "e-client-firewall", source: "client", target: "firewall", sourceHandle: "r", targetHandle: "l", label: "HTTPS" },
+    { id: "e-firewall-lb", source: "firewall", target: "lb", sourceHandle: "r", targetHandle: "l", label: "allowed" },
+    { id: "e-lb-api", source: "lb", target: "api", sourceHandle: "r", targetHandle: "l", label: "HTTP" },
+    { id: "e-lb-api2", source: "lb", target: "api2", sourceHandle: "r", targetHandle: "l", label: "HTTP" },
     { id: "e-api-cache", source: "api", target: "cache", sourceHandle: "r", targetHandle: "l", label: "hot reads" },
+    { id: "e-api2-cache", source: "api2", target: "cache", sourceHandle: "r", targetHandle: "l", label: "" },
+    { id: "e-api-db", source: "api", target: "db", sourceHandle: "r", targetHandle: "l", label: "queries" },
+    { id: "e-api2-db", source: "api2", target: "db", sourceHandle: "r", targetHandle: "l", label: "" },
+    { id: "e-api-queue", source: "api", target: "queue", sourceHandle: "r", targetHandle: "l", label: "jobs" },
+    { id: "e-api2-queue", source: "api2", target: "queue", sourceHandle: "r", targetHandle: "l", label: "" },
+    { id: "e-queue-worker", source: "queue", target: "worker", sourceHandle: "r", targetHandle: "l", label: "jobs" },
+    { id: "e-worker-email", source: "worker", target: "email", sourceHandle: "r", targetHandle: "l", label: "sends" },
+    { id: "e-worker-files", source: "worker", target: "files", sourceHandle: "r", targetHandle: "l", label: "saves" },
   ],
 };
+
+/**
+ * The map without the starter parts the learner never made their own: not
+ * renamed, retyped or explained, and not wired by hand to a part of theirs.
+ * A repo scan replaces those, so only the repo's parts are left.
+ */
+export function withoutExample(nodes, edges) {
+  const starter = new Map(EXAMPLE_GRAPH.nodes.map((n) => [n.id, n]));
+  const untouched = ({ id, data }) => {
+    const s = starter.get(id);
+    return Boolean(s) && data.kind === s.kind && data.title === s.title && data.sub === s.sub && !data.note?.trim();
+  };
+  const candidates = new Set(nodes.filter(untouched).map((n) => n.id));
+  // Wires with a level came from a scan, so they don't make a starter part the learner's.
+  const handWired = edges.filter((e) => !e.data?.level && candidates.has(e.source) !== candidates.has(e.target)).flatMap((e) => [e.source, e.target]);
+  for (const id of handWired) candidates.delete(id);
+  return {
+    nodes: nodes.filter((n) => !candidates.has(n.id)),
+    edges: edges.filter((e) => !candidates.has(e.source) && !candidates.has(e.target)),
+  };
+}
 
 /** Reads the saved map from the browser, or null when there is none. */
 export function loadSaved(storage = globalThis.localStorage) {

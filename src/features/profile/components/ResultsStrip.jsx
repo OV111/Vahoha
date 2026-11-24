@@ -1,5 +1,4 @@
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import { Bone, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
 
 /**
  * The verified-results strip at the top of the profile: what a visitor (or a
@@ -22,17 +21,17 @@ function Tile({ label, value, muted = false }) {
 // Same grid, spacing and tile height as the real strip (py-3 + a 2rem number +
 // a 1rem label = 72px), so nothing jumps when the numbers arrive.
 const GRID = "grid grid-cols-[1.3fr_1fr_1fr] gap-2 sm:max-w-md sm:grid-cols-3 sm:gap-3";
-const TILE_HEIGHT = 72;
 
 function StripSkeleton() {
   return (
-    <SkeletonTheme baseColor="#1f1f23" highlightColor="#2b2b31" borderRadius={12}>
-      <div className={GRID} role="status" aria-label="Loading verified results">
-        {[0, 1, 2].map((i) => (
-          <Skeleton key={i} height={TILE_HEIGHT} />
-        ))}
-      </div>
-    </SkeletonTheme>
+    <SkeletonRegion label="Loading verified results" className={GRID}>
+      {[0, 1, 2].map((i) => (
+        <BonePanel key={i} className="flex h-18 flex-col justify-center gap-2 rounded-xl px-3 sm:px-4">
+          <Bone className="h-5 w-8" />
+          <Bone soft className="h-3 w-2/3" />
+        </BonePanel>
+      ))}
+    </SkeletonRegion>
   );
 }
 

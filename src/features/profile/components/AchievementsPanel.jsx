@@ -1,5 +1,4 @@
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import { Bone, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
 
 // Full class strings so Tailwind can see them.
 const TONES = {
@@ -19,21 +18,16 @@ const LOCKED = "border-neutral-700 bg-neutral-900 text-neutral-500 opacity-60";
 export default function AchievementsPanel({ achievements, loading }) {
   if (loading) {
     return (
-      <SkeletonTheme baseColor="#171717" highlightColor="#262626">
-        <div
-          role="status"
-          aria-busy="true"
-          aria-label="Loading achievements"
-          className="rounded-2xl border border-white/10 px-4 py-4"
-        >
-          <Skeleton width={110} height={14} className="mb-4" />
+      <SkeletonRegion label="Loading achievements">
+        <BonePanel className="p-4">
+          <Bone className="mb-4 h-3.5 w-28" />
           <div className="grid grid-cols-4 gap-3 sm:grid-cols-6 xl:grid-cols-4">
             {Array.from({ length: 7 }, (_, i) => (
-              <Skeleton key={i} circle width={44} height={44} />
+              <Bone key={i} className="size-11 rounded-full" />
             ))}
           </div>
-        </div>
-      </SkeletonTheme>
+        </BonePanel>
+      </SkeletonRegion>
     );
   }
 

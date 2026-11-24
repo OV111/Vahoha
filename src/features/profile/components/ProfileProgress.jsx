@@ -1,6 +1,5 @@
+import { BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
 import { Link } from "react-router-dom";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import { ArrowUpRight, Github } from "lucide-react";
 import { SURFACE } from "@/components/ui/surface";
 
@@ -79,21 +78,13 @@ function SectionError({ error, onRetry }) {
 
 function RowsSkeleton({ rows }) {
   return (
-    <SkeletonTheme baseColor="#171717" highlightColor="#262626">
-      <div
-        role="status"
-        aria-busy="true"
-        aria-label="Loading"
-        className="space-y-3"
-      >
-        {Array.from({ length: rows }, (_, i) => (
-          <div key={i} className={`${SURFACE} p-5`}>
-            <Skeleton width="45%" height={16} />
-            <Skeleton width="30%" height={12} className="mt-2" />
-          </div>
-        ))}
-      </div>
-    </SkeletonTheme>
+    <SkeletonRegion label="Loading" className="space-y-3">
+      {Array.from({ length: rows }, (_, i) => (
+        <BonePanel key={i} className="p-5">
+          <BoneLines widths={["w-[45%]", "w-[30%]"]} />
+        </BonePanel>
+      ))}
+    </SkeletonRegion>
   );
 }
 

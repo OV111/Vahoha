@@ -45,26 +45,44 @@ export async function renderMapImage(container, nodes, format) {
 }
 
 /**
- * Draws the 3D view's svg, framed on the whole map rather than what's on screen.
+ * Draws the 3D view, framed on the whole map rather than what's on screen. Its
+ * layers are drawn one by one and stacked, like on the page.
  * html-to-image copies computed styles, so Tailwind colours survive in the file.
- * @param {SVGSVGElement} svg
+ * @param {HTMLElement} stage the element that holds the layers
  * @param {{ x: number, y: number, w: number, h: number }} box the map's bounds in svg units
  */
-export async function renderIsoImage(svg, box, format) {
-  if (!svg) throw new Error("nothing to export");
+export async function renderIsoImage(stage, box, format) {
+  const layers = [...(stage?.querySelectorAll(":scope > svg") ?? [])];
+  if (!layers.length) throw new Error("nothing to export");
   const scale = Math.min(2, MAX_SIDE / box.w, MAX_SIDE / box.h);
   const width = Math.ceil(box.w * scale);
   const height = Math.ceil(box.h * scale);
-  const onScreen = svg.getAttribute("viewBox");
+  const onScreen = layers[0].getAttribute("viewBox");
   const whole = `${box.x} ${box.y} ${box.w} ${box.h}`;
-  svg.setAttribute("viewBox", whole);
-  const options = { backgroundColor: BACKGROUND, width, height, style: { width: `${width}px`, height: `${height}px` } };
+  const options = { width, height, style: { width: `${width}px`, height: `${height}px`, position: "static" } };
+  const draw = format === "svg" ? toSvg : toPng;
+  layers.forEach((svg) => svg.setAttribute("viewBox", whole));
+  let urls;
   try {
-    return format === "svg" ? await toSvg(svg, options) : await toPng(svg, options);
+    urls = [];
+    for (const svg of layers) urls.push(await draw(svg, { ...options, pixelRatio: 2 }));
   } finally {
-    // Only if React hasn't re-rendered it meanwhile (a pan during the export).
-    if (svg.getAttribute("viewBox") === whole) svg.setAttribute("viewBox", onScreen);
+    // Only where React hasn't re-rendered it meanwhile (a pan during the export).
+    layers.forEach((svg) => svg.getAttribute("viewBox") === whole && svg.setAttribute("viewBox", onScreen));
   }
+
+  if (format === "svg") {
+    const images = urls.map((url) => `<image href="${url}" width="${width}" height="${height}"/>`).join("");
+    const text = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="${BACKGROUND}"/>${images}</svg>`;
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(text)}`;
+  }
+  const pictures = await Promise.all(urls.map(loadImage));
+  const canvas = Object.assign(document.createElement("canvas"), { width: pictures[0].width, height: pictures[0].height });
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = BACKGROUND;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  for (const picture of pictures) ctx.drawImage(picture, 0, 0);
+  return canvas.toDataURL("image/png");
 }
 
 const CARD = { w: 1200, h: 630, pad: 56 }; // the size LinkedIn and X show link and image previews at
@@ -79,8 +97,8 @@ const loadImage = (src) =>
 
 // The 3D map as a social image: the project name on top, the map in the middle,
 // and where it was made at the bottom, so every share points back to the site.
-export async function renderShareCard(svg, box, { title, by, site }) {
-  const map = await loadImage(await renderIsoImage(svg, box, "png"));
+export async function renderShareCard(stage, box, { title, by, site }) {
+  const map = await loadImage(await renderIsoImage(stage, box, "png"));
   const canvas = Object.assign(document.createElement("canvas"), { width: CARD.w, height: CARD.h });
   const ctx = canvas.getContext("2d");
   const font = (weight, size) => `${weight} ${size}px "Geist Variable", ui-sans-serif, system-ui, sans-serif`;

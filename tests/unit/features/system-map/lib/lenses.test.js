@@ -27,7 +27,7 @@ describe("lenses", () => {
   });
 
   it("returns the palette in the lens's order, and falls back to software", () => {
-    expect(paletteFor("security").map((k) => k.kind)).toEqual(["client", "entry", "firewall", "auth", "server", "database", "secrets", "external"]);
+    expect(paletteFor("security").map((k) => k.kind)).toEqual(["client", "mobile", "entry", "firewall", "ratelimiter", "gateway", "auth", "server", "database", "secrets", "external"]);
     expect(lensInfo("nope").id).toBe("software");
   });
 });

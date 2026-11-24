@@ -78,7 +78,7 @@ export default function VersionHistory({ mapId, isTeam, onRestore, onClose }) {
             <li key={v.id} className="flex flex-wrap items-center justify-between gap-3 py-2">
               <div className="min-w-0 text-sm">
                 <p className="text-neutral-200">{formatWhen(v.savedAt)}</p>
-                <p className="text-neutral-500">
+                <p className="text-neutral-400">
                   {REASON_LABEL[v.reason] ?? "Earlier version"} · {v.parts} part{v.parts === 1 ? "" : "s"}
                   {isTeam && v.by ? ` · ${v.by}` : ""}
                 </p>

@@ -1,19 +1,20 @@
+import { Bone, SkeletonRegion } from "@/components/ui/Skeleton";
 import { Fragment } from "react";
 import { Trophy } from "lucide-react";
 
 const RANGE_LABEL = { "7d": "this week", "30d": "this month", all: "all time" };
 
 const LeaderboardSkeleton = () => (
-  <div className="flex flex-col gap-1 animate-pulse">
+  <SkeletonRegion label="Loading leaderboard" className="flex flex-col gap-1">
     {[0, 1, 2, 3, 4].map((i) => (
       <div key={i} className="flex items-center gap-2 px-2 py-2">
-        <div className="h-3 w-5 shrink-0 rounded-sm bg-[#1a1a1a]" />
-        <div className="h-6 w-6 shrink-0 rounded-full bg-[#1a1a1a]" />
-        <div className="h-3 flex-1 rounded-sm bg-[#1a1a1a]" />
-        <div className="h-3 w-8 shrink-0 rounded-sm bg-[#1a1a1a]" />
+        <Bone className="h-3 w-5 shrink-0" />
+        <Bone className="size-6 shrink-0 rounded-full" />
+        <Bone className="h-3 flex-1" />
+        <Bone className="h-3 w-8 shrink-0" />
       </div>
     ))}
-  </div>
+  </SkeletonRegion>
 );
 
 const Avatar = ({ initial, profileImage, you }) => (

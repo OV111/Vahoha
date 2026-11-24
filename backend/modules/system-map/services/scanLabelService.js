@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import process from "process";
 import { z } from "zod";
 // Known cross-module deep import (like teams -> capstone): the capstone owns the
@@ -5,7 +6,8 @@ import { z } from "zod";
 import { runStructured } from "../../capstone/index.js";
 
 const LABEL_TIMEOUT_MS = 20_000;
-const MAX_PATHS = 150;
+const MAX_PATHS = 30; // file paths are most of the prompt, and the parts' own evidence says the most
+const MAX_CACHED = 200;
 const LIMITS = { title: 40, sub: 60, why: 200, label: 30 };
 
 // Strict JSON Schema the API enforces on the output.
@@ -60,6 +62,25 @@ const withTimeout = (promise, ms) => {
   ]).finally(() => clearTimeout(timer));
 };
 
+/** Remembers the model's answer for the same question, so scanning a repo again costs no tokens. */
+export function createLabelCache(max = MAX_CACHED) {
+  const answers = new Map();
+  return {
+    get: (key) => answers.get(key),
+    set: (key, value) => {
+      answers.set(key, value);
+      if (answers.size > max) answers.delete(answers.keys().next().value);
+    },
+  };
+}
+
+// The files the parts were found in first, then the shallowest of the rest.
+function pathsFor(parts, paths) {
+  const proof = parts.flatMap((p) => p.evidence.map((e) => e.path));
+  const rest = [...paths].sort((a, b) => a.split("/").length - b.split("/").length);
+  return [...new Set([...proof, ...rest])].slice(0, MAX_PATHS);
+}
+
 /**
  * Lets the LLM name and explain what the scan detected. It can only relabel:
  * parts and wires it invents are ignored, and any failure falls back to the
@@ -71,8 +92,9 @@ const withTimeout = (promise, ms) => {
  *
  * @param {{ fullName: string, parts: object[], wires: object[], paths: string[], lens?: string }} scan
  * @param {typeof runStructured} [run]  injectable for tests
+ * @param {ReturnType<typeof createLabelCache>} [cache]
  */
-export async function labelScan({ fullName, parts, wires, paths, lens = "software" }, run = runStructured) {
+export async function labelScan({ fullName, parts, wires, paths, lens = "software" }, run = runStructured, cache = null) {
   const plain = { parts, wires, ai: false };
   if (!process.env.GROQ_API_KEY) return plain;
 
@@ -81,11 +103,13 @@ export async function labelScan({ fullName, parts, wires, paths, lens = "softwar
     lens,
     parts: parts.map((p) => ({ key: p.key, kind: p.kind, detected: `${p.title} (${p.sub})` })),
     wires: wires.map((w) => ({ source: w.source, target: w.target })),
-    files: paths.slice(0, MAX_PATHS),
+    files: pathsFor(parts, paths),
   };
+  const key = createHash("sha256").update(JSON.stringify(input)).digest("hex");
 
   try {
-    const { content } = await withTimeout(
+    const known = cache?.get(key);
+    const { content } = known ?? await withTimeout(
       run(
         [
           { role: "system", content: SYSTEM_PROMPT },
@@ -99,6 +123,7 @@ export async function labelScan({ fullName, parts, wires, paths, lens = "softwar
       LABEL_TIMEOUT_MS,
     );
     const out = outputSchema.parse(JSON.parse(content));
+    cache?.set(key, { content });
 
     const partLabels = new Map(out.parts.map((p) => [p.key, p]));
     const wireLabels = new Map(out.wires.map((w) => [`${w.source}>${w.target}`, w.label]));

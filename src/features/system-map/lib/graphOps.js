@@ -5,7 +5,8 @@
 
 const NODE_FIELDS = ["kind", "title", "sub", "x", "y", "evidence", "note"];
 const NODE_OPTIONAL = ["evidence", "note"];
-const EDGE_FIELDS = ["source", "target", "sourceHandle", "targetHandle", "label"];
+const EDGE_FIELDS = ["source", "target", "sourceHandle", "targetHandle", "label", "level", "evidence"];
+const EDGE_OPTIONAL = ["level", "evidence"];
 const META_FIELDS = ["lens", "repo"];
 
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -52,8 +53,8 @@ export function diffGraph(base, next) {
       ops.push({ op: "addEdge", edge });
       continue;
     }
-    const { set } = fieldChanges(before, edge, EDGE_FIELDS, []);
-    if (Object.keys(set).length) ops.push({ op: "updateEdge", id: edge.id, set });
+    const change = fieldChanges(before, edge, EDGE_FIELDS, EDGE_OPTIONAL);
+    if (hasChanges(change)) ops.push({ op: "updateEdge", id: edge.id, set: change.set, ...(change.unset.length ? { unset: change.unset } : {}) });
   }
 
   const meta = fieldChanges(base, next, META_FIELDS, META_FIELDS);

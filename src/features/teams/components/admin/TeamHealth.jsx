@@ -1,3 +1,4 @@
+import { BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { teamsApi } from "../../teamsApi";
@@ -136,7 +137,15 @@ export default function TeamHealth({ version, selectedId, onSelect }) {
     setSort((s) => (s.key === key ? { key, dir: s.dir === "desc" ? "asc" : "desc" } : { key, dir: "desc" }));
 
   if (error) return <p className="text-sm text-[var(--t-red)]">{error}</p>;
-  if (!data) return <div className="h-[88px] animate-pulse rounded-xl bg-[var(--t-carbon)] motion-reduce:animate-none" />;
+  if (!data) {
+    return (
+      <SkeletonRegion label="Loading team health">
+        <BonePanel className="flex h-[88px] flex-col justify-center rounded-xl px-5">
+          <BoneLines widths={["w-1/4", "w-1/2"]} />
+        </BonePanel>
+      </SkeletonRegion>
+    );
+  }
   if (!data.rows.length) return null;
 
   return (

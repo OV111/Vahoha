@@ -17,7 +17,7 @@ export default function RoadmapMapNudge({ done, total }) {
         to="/project-map"
         className="group w-full max-w-md rounded-2xl border border-purple-500/40 bg-purple-950/15 px-5 py-4 transition-colors hover:border-purple-400 focus-visible:outline-2 focus-visible:outline-purple-400"
       >
-        <span className="mb-2 block font-mono text-[10px] tracking-wider text-neutral-500">next · project map</span>
+        <span className="mb-2 block font-mono text-[10px] tracking-wider text-neutral-400">next · project map</span>
         <span className="flex items-start gap-3">
           <Box size={18} className="mt-0.5 shrink-0 text-purple-300" aria-hidden="true" />
           <span className="flex flex-col gap-1">

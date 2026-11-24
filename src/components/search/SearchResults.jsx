@@ -1,3 +1,4 @@
+import { Bone, SkeletonRegion } from "@/components/ui/Skeleton";
 import React, { useEffect, useState } from "react";
 import { fetchCategoryData, fetchUserData } from "../../services/searchApi";
 import useAuthStore from "@/stores/useAuthStore";
@@ -22,10 +23,10 @@ function SectionLabel({ children }) {
 function SkeletonRow() {
   return (
     <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl">
-      <div className="h-8 w-8 rounded-full bg-white/10 animate-pulse shrink-0" />
+      <Bone className="size-8 shrink-0 rounded-full" />
       <div className="flex-1 space-y-1.5">
-        <div className="h-2.5 w-3/5 rounded-full bg-white/10 animate-pulse" />
-        <div className="h-2 w-2/5 rounded-full bg-white/5 animate-pulse" />
+        <Bone className="h-2.5 w-3/5" />
+        <Bone soft className="h-2 w-2/5" />
       </div>
     </div>
   );
@@ -104,11 +105,11 @@ export default function SearchResults({ query = "", onSelect, boundaryRef }) {
         aria-busy={isLoading}
       >
         {isLoading ? (
-          <div className="space-y-0.5 p-2">
+          <SkeletonRegion label="Searching" className="space-y-0.5 p-2">
             <SkeletonRow />
             <SkeletonRow />
             <SkeletonRow />
-          </div>
+          </SkeletonRegion>
         ) : (
           <div className="p-1.5">
             {users.length > 0 && (

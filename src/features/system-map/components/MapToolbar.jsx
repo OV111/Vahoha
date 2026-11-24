@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
-import { Box, History, Redo2, RotateCcw, ScanSearch, Undo2, Upload } from "lucide-react";
+import { Box, Ellipsis, History, Redo2, RotateCcw, ScanSearch, Undo2, Upload } from "lucide-react";
 import ExportMenu from "./ExportMenu";
 import ShareControl from "./ShareControl";
+import { isPhone } from "../lib/viewport";
 
 const button =
   "inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-neutral-700 px-3 text-sm text-neutral-200 transition-colors hover:border-neutral-500 hover:text-white focus-visible:outline-2 focus-visible:outline-purple-400";
@@ -10,16 +11,18 @@ const button =
 const iconOnPhone = "max-sm:w-11 max-sm:justify-center max-sm:px-0";
 const iconOnly = `${button} w-11 justify-center px-0 disabled:cursor-default disabled:opacity-40`;
 
-const Divider = () => <span aria-hidden="true" className="mx-1 h-6 w-px bg-neutral-800" />;
+const Divider = () => <span aria-hidden="true" className="mx-1 h-6 w-px bg-neutral-800 max-sm:hidden" />;
 
 // Ordered by how often each is used: building the map on the left, then
 // editing; keeping and sharing it on the right; the destructive reset last.
 export default function MapToolbar({ remote, isTeam, scanOpen, onToggleScan, view3d, onToggle3d, history, onTravel, historyOpen, onToggleHistory, onImport, onExport, exporting, onReset }) {
   const fileRef = useRef(null);
   const [confirmReset, setConfirmReset] = useState(false);
+  const [more, setMore] = useState(false); // phones only: the second group is always shown from sm up
+  const [phone] = useState(isPhone); // the tour points at what is on screen
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2 max-[359px]:gap-1.5">
       <button
         type="button"
         className={`${button} border-purple-500/60 bg-purple-600 text-white hover:border-purple-400 hover:bg-purple-500`}
@@ -28,18 +31,18 @@ export default function MapToolbar({ remote, isTeam, scanOpen, onToggleScan, vie
         onClick={onToggleScan}
       >
         <ScanSearch size={14} aria-hidden="true" />
-        <span className="sm:hidden">Scan repo</span>
+        <span className="sm:hidden">Scan<span className="max-[359px]:hidden"> repo</span></span>
         <span className="hidden sm:inline">Suggest from my repo</span>
       </button>
       <button
         type="button"
-        className={`${button} ${iconOnPhone} ${view3d ? "border-purple-400 text-white" : ""}`}
+        className={`${button} ${view3d ? "border-purple-400 text-white" : ""}`}
         onClick={onToggle3d}
         aria-pressed={view3d}
         data-tour="map-3d"
         title={view3d ? "Switch to the flat view" : "Switch to the 3D view"}
       >
-        <Box size={14} aria-hidden="true" /> <span className="max-sm:hidden">3D view</span>
+        <Box size={14} aria-hidden="true" className="max-[359px]:hidden" /> <span>3D<span className="max-sm:hidden"> view</span></span>
       </button>
 
       <Divider />
@@ -51,7 +54,19 @@ export default function MapToolbar({ remote, isTeam, scanOpen, onToggleScan, vie
         <Redo2 size={14} aria-hidden="true" />
       </button>
 
-      <div className="flex flex-wrap items-center gap-2 sm:ml-auto" data-tour="map-keep">
+      <div className="flex flex-wrap items-center gap-2 max-sm:contents sm:ml-auto">
+        <button
+          type="button"
+          className={`${iconOnly} sm:hidden ${more ? "border-purple-400 text-white" : ""}`}
+          onClick={() => setMore((m) => !m)}
+          aria-expanded={more}
+          aria-label="More: history, import, export, share"
+          title="More"
+          data-tour={phone ? "map-keep" : undefined}
+        >
+          <Ellipsis size={16} aria-hidden="true" />
+        </button>
+        <div className={`flex flex-wrap items-center gap-2 max-sm:w-full ${more ? "" : "max-sm:hidden"}`} data-tour={phone ? undefined : "map-keep"}>
         {remote && (
           <button
             type="button"
@@ -100,6 +115,7 @@ export default function MapToolbar({ remote, isTeam, scanOpen, onToggleScan, vie
             <RotateCcw size={14} aria-hidden="true" /> <span className="max-sm:hidden">Start over</span>
           </button>
         )}
+        </div>
       </div>
     </div>
   );

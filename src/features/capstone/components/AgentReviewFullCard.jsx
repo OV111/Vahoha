@@ -1,3 +1,4 @@
+import { Bone } from "@/components/ui/Skeleton";
 import { motion as Motion } from "framer-motion";
 import ReviewCriterion from "./ReviewCriterion";
 import DefenseQuestions from "./DefenseQuestions";
@@ -54,14 +55,16 @@ function ScoreRing({ score, passed }) {
   );
 }
 
+const REVIEW_WIDTHS = ["w-2/5", "w-3/5", "w-1/2", "w-2/3"];
+
 /** Placeholder rows while the agent is reviewing. */
 function ReviewingRows({ count = 6 }) {
   return (
     <ul className="divide-y divide-white/[0.06]" aria-hidden="true">
       {Array.from({ length: count }, (_, i) => (
         <li key={i} className="flex items-center gap-4 px-6 py-4 sm:px-7">
-          <span className="h-4 flex-1 animate-pulse rounded bg-neutral-800/80 motion-reduce:animate-none" style={{ maxWidth: `${40 + ((i * 17) % 35)}%` }} />
-          <span className="h-5 w-24 animate-pulse rounded-full bg-neutral-800/80 motion-reduce:animate-none" />
+          <Bone className={`h-4 ${REVIEW_WIDTHS[i % REVIEW_WIDTHS.length]}`} />
+          <Bone className="ml-auto h-5 w-24 rounded-full" />
         </li>
       ))}
     </ul>

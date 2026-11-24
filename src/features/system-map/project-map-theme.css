@@ -21,12 +21,8 @@
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: none; }
 }
-@keyframes pm-held {
-  0%, 100% { stroke-width: 1.5px; }
-  50% { stroke-width: 3.4px; }
-}
-
-.pm-held { animation: pm-held 1.6s ease-in-out infinite; }
+/* A steady width, not a pulse: animating it redraws the whole floor every frame. */
+.pm-held { stroke-width: 3px; }
 
 @media (prefers-reduced-motion: reduce) {
   .pm-theme *,

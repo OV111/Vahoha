@@ -1,3 +1,4 @@
+import { Bone, BoneLines, SkeletonRegion } from "@/components/ui/Skeleton";
 import { useEffect, useState } from "react";
 import { ChevronDown, ExternalLink } from "lucide-react";
 import { teamsApi } from "../teamsApi";
@@ -103,11 +104,15 @@ function Row({ row, open, onToggle }) {
 
 function Skeleton() {
   return (
-    <ol className="t-lb" aria-hidden="true">
+    <SkeletonRegion label="Loading top teams" className="t-lb">
       {[0, 1, 2].map((i) => (
-        <li key={i} className="t-lb-row h-[62px] animate-pulse motion-reduce:animate-none" />
+        <div key={i} className="t-lb-row flex h-[62px] items-center gap-3 px-4">
+          <Bone className="h-4 w-5 shrink-0" />
+          <BoneLines className="min-w-0 flex-1" widths={["w-1/3", "w-1/2"]} />
+          <Bone className="h-5 w-10 shrink-0" />
+        </div>
       ))}
-    </ol>
+    </SkeletonRegion>
   );
 }
 

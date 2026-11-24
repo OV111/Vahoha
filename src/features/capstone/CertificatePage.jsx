@@ -1,3 +1,4 @@
+import { Bone, BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
@@ -112,14 +113,18 @@ export default function CertificatePage() {
   return (
     <div className="mx-auto max-w-3xl px-5 py-16 pt-28 sm:px-8">
       {loading && (
-        <div
-          className="space-y-4"
-          aria-busy="true"
-          aria-label="Loading certificate"
-        >
-          <div className="h-48 animate-pulse rounded-2xl bg-zinc-900" />
-          <div className="h-40 animate-pulse rounded-2xl bg-zinc-900" />
-        </div>
+        <SkeletonRegion label="Loading certificate" className="space-y-6">
+          <BonePanel className="flex items-center justify-between gap-3 rounded-xl px-5 py-4">
+            <Bone className="h-4 w-56" />
+            <Bone className="h-4 w-20" />
+          </BonePanel>
+          <BonePanel className="p-7 sm:p-9">
+            <Bone soft className="h-3 w-48 max-w-full" />
+            <Bone className="mt-5 h-9 w-2/3" />
+            <Bone soft className="mt-3 h-3.5 w-24" />
+            <BoneLines className="mt-6" widths={["w-full", "w-3/5"]} />
+          </BonePanel>
+        </SkeletonRegion>
       )}
 
       {!loading && error && (

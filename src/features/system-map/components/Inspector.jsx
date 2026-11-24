@@ -1,8 +1,8 @@
 import { useLayoutEffect, useRef } from "react";
-import { Trash2, X } from "lucide-react";
+import { Check, Trash2, X } from "lucide-react";
 import { kindInfo } from "../lib/nodeKinds";
 import { paletteFor } from "../lib/lenses";
-import { MAX_NOTE } from "../lib/mapGraph";
+import { MAX_NOTE, isUnconfirmed } from "../lib/mapGraph";
 import EvidenceList from "./EvidenceList";
 import KindSelect from "./KindSelect";
 
@@ -18,7 +18,7 @@ function GrowingTextarea({ value, className = "", ...props }) {
 }
 
 const field =
-  "mt-1 min-h-11 w-full rounded-lg border border-neutral-700 bg-black px-3 text-sm text-white placeholder:text-neutral-600 focus-visible:outline-2 focus-visible:outline-purple-400";
+  "mt-1 min-h-11 w-full rounded-lg border border-neutral-700 bg-black px-3 text-base sm:text-sm text-white placeholder:text-neutral-600 focus-visible:outline-2 focus-visible:outline-purple-400";
 
 function Field({ label, children }) {
   return (
@@ -60,7 +60,39 @@ const typeOptions = (lens, current) => {
   return options.some((k) => k.kind === current) ? options : [kindInfo(current), ...options];
 };
 
-export default function Inspector({ node, edge, repo, lens, onNode, onEdge, onDeleteNode, onDeleteEdge, onClose, nodeExtra = null }) {
+const LEVEL_TEXT = {
+  proven: "Proven: the repo's config names this connection.",
+  likely: "Likely: the repo suggests this connection but doesn't prove it.",
+  guessed: "A guess: parts like these are usually connected.",
+};
+
+// What the repo scan knows about a wire, and the learner's say when it isn't sure.
+function WireProof({ edge, repo, ends, onConfirm }) {
+  const { level, evidence } = edge.data ?? {};
+  if (!level && !evidence?.length) return null;
+  return (
+    <div className="mt-4">
+      {level && <p className={`text-xs font-medium ${level === "proven" ? "text-emerald-300" : "text-amber-300"}`}>{LEVEL_TEXT[level]}</p>}
+      <EvidenceList repo={repo} items={evidence} />
+      {isUnconfirmed(edge) && (
+        <>
+          <p className="mt-2 text-sm leading-relaxed text-neutral-200">
+            Does {ends.source} really use {ends.target}? Confirm it to see requests on it, or delete the wire.
+          </p>
+          <button
+            type="button"
+            onClick={onConfirm}
+            className="mt-2 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-emerald-500/60 bg-emerald-500/10 px-3 text-sm text-emerald-300 transition-colors hover:bg-emerald-500/20 focus-visible:outline-2 focus-visible:outline-purple-400"
+          >
+            <Check size={14} aria-hidden="true" /> Confirm this wire
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
+export default function Inspector({ node, edge, edgeEnds, repo, lens, onNode, onEdge, onConfirmEdge, onDeleteNode, onDeleteEdge, onClose, nodeExtra = null }) {
   if (node) {
     return (
       <div>
@@ -86,7 +118,7 @@ export default function Inspector({ node, edge, repo, lens, onNode, onEdge, onDe
             onChange={(e) => onNode({ note: e.target.value })}
           />
           {(node.data.note?.length ?? 0) > MAX_NOTE - 100 && (
-            <span className="mt-1 block text-right text-[11px] text-neutral-500">
+            <span className="mt-1 block text-right text-[11px] text-neutral-400">
               {node.data.note.length}/{MAX_NOTE}
             </span>
           )}
@@ -115,7 +147,8 @@ export default function Inspector({ node, edge, repo, lens, onNode, onEdge, onDe
             onChange={(e) => onEdge({ label: e.target.value })}
           />
         </Field>
-        <p className="mt-3 text-xs leading-relaxed text-neutral-500">
+        <WireProof edge={edge} repo={repo} ends={edgeEnds} onConfirm={onConfirmEdge} />
+        <p className="mt-3 text-xs leading-relaxed text-neutral-400">
           To move this wire, drag either end onto another part. Drop an end on empty space to remove the wire.
         </p>
       </div>

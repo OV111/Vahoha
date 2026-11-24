@@ -1,3 +1,4 @@
+import { SkeletonRegion } from "@/components/ui/Skeleton";
 import { useNavigate } from "react-router-dom";
 import ChallengeCard from "./ChallengeCard";
 import ChallengeCardSkeleton from "./ChallengeCardSkeleton";
@@ -22,10 +23,12 @@ export default function ChallengeGrid({
 
   if (!error && loading && challenges.length === 0) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 flex-1 content-start">
-        {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
-          <ChallengeCardSkeleton key={i} />
-        ))}
+      <div className="flex-1">
+        <SkeletonRegion label="Loading challenges" className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+            <ChallengeCardSkeleton key={i} />
+          ))}
+        </SkeletonRegion>
       </div>
     );
   }

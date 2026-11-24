@@ -1,13 +1,16 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import NotFound from "../../../components/feedback/NotFound";
+import useAuthStore from "@/stores/useAuthStore";
+import MapSkeleton from "../components/MapSkeleton";
 import useInitialMap from "../hooks/useInitialMap";
 import { DEVELOPER_SIGNUP_PATH } from "../../../../constants/site";
 
 // Only signed-in learners reach the editor; guests stop at the sign-in screen,
 // so the heavy canvas/export code stays out of the page's own chunk.
-const ProjectMapEditor = lazy(() => import("../components/ProjectMapEditor"));
+const loadEditor = () => import("../components/ProjectMapEditor");
+const ProjectMapEditor = lazy(loadEditor);
 
 // /project-map — a free editor for the system diagram of your own project.
 // Guests keep their map in this browser (localStorage). Signed-in learners keep
@@ -23,6 +26,13 @@ const OWNER_TYPES = ["capstone", "team"];
 
 function ProjectMapLoader({ owner }) {
   const initial = useInitialMap(owner);
+  const returning = useAuthStore((s) => s.auth || s.sessionHint);
+  const skeleton = returning ? <MapSkeleton ownerType={owner?.ownerType} /> : <LoadingSuspense />;
+
+  // The editor downloads while the map does, not after it.
+  useEffect(() => {
+    if (returning) loadEditor();
+  }, [returning]);
 
   if (initial.status === "signin") {
     return (
@@ -39,9 +49,9 @@ function ProjectMapLoader({ owner }) {
     );
   }
   if (initial.status === "loading") {
-    // Same element as the route's Suspense fallback, so the lazy-load and the
-    // map fetch read as one loader instead of two circles in different spots.
-    return <LoadingSuspense />;
+    // Same element as the editor's Suspense fallback, so loading the map and the
+    // editor read as one wait. A guest is about to see the sign-in screen instead.
+    return skeleton;
   }
   if (initial.status === "error") {
     return (
@@ -59,7 +69,7 @@ function ProjectMapLoader({ owner }) {
   }
 
   return (
-    <Suspense fallback={<LoadingSuspense />}>
+    <Suspense fallback={skeleton}>
       <ProjectMapEditor key={initial.remote?.id ?? "guest"} initial={initial} />
     </Suspense>
   );

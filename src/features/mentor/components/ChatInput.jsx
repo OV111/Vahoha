@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { ArrowUp, Mic, MicOff, AudioLines, FileText, X } from "lucide-react";
+import { ArrowUp, Mic, MicOff, AudioLines, FileText, Square, X } from "lucide-react";
 import {
   DROPDOWN_ITEMS,
   ATTACHMENT_ACCEPTED_EXTENSIONS,
@@ -23,6 +23,7 @@ const ACCEPT_ATTR = ATTACHMENT_ACCEPTED_EXTENSIONS.map((e) => `.${e}`).join(
 export default function ChatInput({
   isStreaming,
   onSend,
+  onStop,
   value,
   onValueChange,
   focusToken = 0,
@@ -233,7 +234,7 @@ export default function ChatInput({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={
-              spacious ? "How I can help you today?" : "Write a message..."
+              spacious ? "How can I help you today?" : "Write a message..."
             }
             disabled={isStreaming}
             className={`flex-1 min-w-0 bg-transparent outline-none resize-none leading-6 text-white placeholder:text-[#555] disabled:opacity-40 max-h-40 overflow-y-auto ${
@@ -295,6 +296,18 @@ export default function ChatInput({
               >
                 <AudioLines size={18} strokeWidth={1.5} />
               </button>
+
+              {isStreaming && onStop && (
+                <button
+                  type="button"
+                  onClick={onStop}
+                  aria-label="Stop answer"
+                  title="Stop"
+                  className="w-8 h-8 relative max-md:after:absolute max-md:after:-inset-1 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer ml-0.5"
+                >
+                  <Square size={13} fill="currentColor" aria-hidden="true" />
+                </button>
+              )}
 
               {/* Send only appears once there's something to send, so the resting
                 state stays uncluttered. */}

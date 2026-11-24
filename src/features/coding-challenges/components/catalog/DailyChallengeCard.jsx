@@ -1,3 +1,4 @@
+import { Bone } from "@/components/ui/Skeleton";
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock, Zap } from "lucide-react";
 import { formatTitle } from "../../lib/formatTitle";
@@ -63,16 +64,16 @@ export default function DailyChallengeCard({ daily, loading, fadeUp }) {
       ) : loading ? (
         // Bars sized to the title, two summary lines, the meta row and the tags,
         // so the card doesn't grow when the real challenge arrives.
-        <div className="flex flex-col gap-3 animate-pulse" aria-hidden="true">
-          <div className="h-[18px] w-4/5 rounded-sm bg-white/20" />
+        <div className="flex flex-col gap-3">
+          <Bone className="h-[18px] w-4/5 bg-white/20" />
           <div className="flex flex-col gap-1.5">
-            <div className="h-3 w-full rounded-sm bg-white/15" />
-            <div className="h-3 w-2/3 rounded-sm bg-white/15" />
+            <Bone className="h-3 w-full bg-white/15" />
+            <Bone className="h-3 w-2/3 bg-white/15" />
           </div>
-          <div className="h-3 w-1/2 rounded-sm bg-white/15" />
+          <Bone className="h-3 w-1/2 bg-white/15" />
           <div className="flex gap-1.5">
-            <div className="h-4 w-12 rounded-xl bg-black/25" />
-            <div className="h-4 w-16 rounded-xl bg-black/25" />
+            <Bone className="h-4 w-12 rounded-xl bg-black/25" />
+            <Bone className="h-4 w-16 rounded-xl bg-black/25" />
           </div>
         </div>
       ) : (

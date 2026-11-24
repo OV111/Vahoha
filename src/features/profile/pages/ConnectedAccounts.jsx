@@ -1,12 +1,10 @@
+import { BoneControl } from "@/components/ui/Skeleton";
 import { useState, useEffect } from "react";
 import SideBar from "../components/SideBar";
 import useProfileStore from "@/stores/useProfileStore";
-import useThemeStore from "@/stores/useThemeStore";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import XLogo from "@/components/ui/XLogo";
 import { toast } from "sonner";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import { saveSettings } from "../../../services/profileApi";
 import { disconnectGitHub as requestGitHubDisconnect, GITHUB_LINK_URL } from "../../../services/authApi";
 
@@ -41,8 +39,6 @@ const SOCIAL_FIELDS = [
 const ConnectedAccounts = () => {
   const { user, stats, isLoading, fetchProfile, updateStats } =
     useProfileStore();
-  const theme = useThemeStore((s) => s.theme);
-  const isDarkMode = theme === "dark";
 
   const [links, setLinks] = useState({
     githubLink: "",
@@ -101,12 +97,6 @@ const ConnectedAccounts = () => {
     }
   };
 
-  const skeletonProps = {
-    borderRadius: 8,
-    baseColor: isDarkMode ? "#1f2937" : "#ebebeb",
-    highlightColor: isDarkMode ? "#374151" : "#f5f5f5",
-  };
-
   return (
     <div className="flex min-h-dvh">
       <SideBar />
@@ -147,7 +137,7 @@ const ConnectedAccounts = () => {
                       {label}
                     </label>
                     {isLoading ? (
-                      <Skeleton height={34} {...skeletonProps} />
+                      <BoneControl className="h-[34px]" bar="w-1/3" />
                     ) : (
                       <input
                         type="url"

@@ -1,3 +1,4 @@
+import { Bone, SkeletonRegion } from "@/components/ui/Skeleton";
 import { Loader2 } from "lucide-react";
 import { SESSIONS_COPY } from "../../../../constants/mentor";
 import { groupSessions } from "../lib/groupSessions";
@@ -19,18 +20,17 @@ function formatWhen(iso) {
 
 // Placeholder rows while the list loads, so "No sessions yet" is never shown
 // for a list that simply hasn't arrived.
-const SKELETON_WIDTHS = ["78%", "62%", "70%", "54%", "66%"];
+const SKELETON_WIDTHS = ["w-[78%]", "w-[62%]", "w-[70%]", "w-[54%]", "w-[66%]"];
 
 function SessionsSkeleton({ label }) {
   return (
-    <div role="status" aria-busy="true" className="space-y-1 px-1 pt-1">
-      <span className="sr-only">{label}</span>
+    <SkeletonRegion label={label} className="space-y-1 px-1 pt-1">
       {SKELETON_WIDTHS.map((w, i) => (
         <div key={i} className="rounded-lg px-3 py-2.5">
-          <div className="h-3 rounded bg-white/8 motion-safe:animate-pulse" style={{ width: w }} />
+          <Bone className={`h-3 ${w}`} />
         </div>
       ))}
-    </div>
+    </SkeletonRegion>
   );
 }
 

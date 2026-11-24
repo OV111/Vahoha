@@ -28,27 +28,28 @@ export function compareScan(nodes, scan) {
   const matched = [];
   const newParts = [];
 
-  const strongMatch = (part) => {
-    const words = techWords(part);
+  // How well a part fits a node: shared words and shared files. Two services on
+  // the same framework both fit a little; their own name and folder fit more.
+  const fit = (part, node) => {
+    if (node.data.kind !== part.kind) return 0;
+    const label = `${node.data.title} ${node.data.sub}`.toLowerCase();
     const paths = new Set(partPaths(part));
-    return nodes.find((n) => {
-      if (used.has(n.id) || n.data.kind !== part.kind) return false;
-      const label = `${n.data.title} ${n.data.sub}`.toLowerCase();
-      return words.some((w) => label.includes(w)) || (n.data.evidence ?? []).some((p) => paths.has(p));
-    });
+    return techWords(part).filter((w) => label.includes(w)).length + (node.data.evidence ?? []).filter((p) => paths.has(p)).length;
   };
 
-  // Strong matches first, so a kind-only fallback can't steal a node another part names exactly.
-  const pending = [];
-  for (const part of scan.parts) {
-    const node = strongMatch(part);
-    if (node) {
-      used.add(node.id);
-      matched.push({ part, nodeId: node.id });
-    } else {
-      pending.push(part);
-    }
+  // Best fits first, so a weak one (or the kind-only fallback below) can't steal a node another part names exactly.
+  const fits = scan.parts
+    .flatMap((part) => nodes.map((node) => ({ part, node, score: fit(part, node) })))
+    .filter((f) => f.score > 0)
+    .sort((a, b) => b.score - a.score);
+  const done = new Set();
+  for (const { part, node } of fits) {
+    if (done.has(part) || used.has(node.id)) continue;
+    done.add(part);
+    used.add(node.id);
+    matched.push({ part, nodeId: node.id });
   }
+  const pending = scan.parts.filter((part) => !done.has(part));
 
   for (const part of pending) {
     const sameKind = nodes.filter((n) => n.data.kind === part.kind);

@@ -33,6 +33,12 @@ const preloadFonts = () => ({
   },
 });
 
+// Every page's first API call waits for this connection, so it opens with the HTML.
+const preconnectApi = (apiUrl) => ({
+  name: "preconnect-api",
+  transformIndexHtml: () => (apiUrl ? [{ tag: "link", attrs: { rel: "preconnect", href: new URL(apiUrl).origin, crossorigin: "use-credentials" }, injectTo: "head" }] : []),
+});
+
 // package name -> vendor chunk. Everything else is split by Vite as usual.
 const VENDOR_CHUNKS = {
   react: "vendor-react",
@@ -76,6 +82,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
       react(),
       tailwindcss(),
       preloadFonts(),
+      preconnectApi(loadEnv(mode, process.cwd(), "VITE_").VITE_API_BASE_URL),
       sourcemaps &&
         sentryVitePlugin({
           org: "vahoha",

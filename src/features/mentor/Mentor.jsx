@@ -132,7 +132,18 @@ export default function Mentor({ embedded = false, challengeContext = null, orig
   const [search, setSearch] = useState(null);
   const searchSeq = useRef(0);
 
-  const { sendMessage } = useAgentStream();
+  const { sendMessage, cancel, discard, retry } = useAgentStream();
+
+  // Empties the view. Every switch of conversation goes through here, so a reply
+  // still streaming or a transcript still loading can't land in the next one.
+  const resetChat = () => {
+    discard();
+    setActiveSession(null);
+    useMentorStore.getState().setMessages([]);
+    useMentorStore.getState().setLoadingSession(false);
+    setTeachBackContext(null);
+    setError(null);
+  };
 
   const sessions = storeSessions;
   const activeSessionId = storeActiveSessionId;
@@ -165,9 +176,7 @@ export default function Mentor({ embedded = false, challengeContext = null, orig
   const ctxTopic = challengeContext?.topic;
   useEffect(() => {
     if (!embedded || !ctxSlug) return;
-    setActiveSession(null);
-    useMentorStore.getState().setMessages([]);
-    setError(null);
+    resetChat();
     setOriginContext({ surface: "challenge", path: ctxPath, layer: ctxLayer, topic: ctxTopic, challengeSlug: ctxSlug });
     setFocusToken((n) => n + 1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -176,9 +185,7 @@ export default function Mentor({ embedded = false, challengeContext = null, orig
   const originKey = embedded && !ctxSlug && origin ? JSON.stringify(origin) : null;
   useEffect(() => {
     if (!originKey) return;
-    setActiveSession(null);
-    useMentorStore.getState().setMessages([]);
-    setError(null);
+    resetChat();
     setOriginContext(readMentorOrigin(JSON.parse(originKey)) ?? { surface: "chat" });
     setDraft(initialPrompt);
     setFocusToken((n) => n + 1);
@@ -293,17 +300,18 @@ export default function Mentor({ embedded = false, challengeContext = null, orig
     // loaded transcript and re-fetch it for nothing.
     if (sessionId === storeActiveSessionId) return;
 
-    const store = useMentorStore.getState();
+    resetChat();
     setActiveSession(sessionId);
-    store.setMessages([]);
-    store.setLoadingSession(true);
-    setError(null);
+    useMentorStore.getState().setLoadingSession(true);
+    // A slow answer for a chat they have since left must not replace the open one.
+    const stillOpen = () => useMentorStore.getState().activeSessionId === sessionId;
     // Opening another conversation ends the connection to wherever they arrived
     // from — otherwise an old chat still claims they are on that exam page.
     setOriginContext({ surface: "chat" });
 
     try {
       const session = await getSession(sessionId);
+      if (!stillOpen()) return;
       useMentorStore.getState().setMessages(
         (session.messages ?? []).map((m) => ({
           role: m.role,
@@ -316,22 +324,19 @@ export default function Mentor({ embedded = false, challengeContext = null, orig
       // Surface the failure: a silent empty transcript looks like a genuinely empty
       // conversation. Distinct from "network" so the banner doesn't offer a Retry
       // that would try to RE-SEND a message instead of re-loading the conversation.
-      setError({ type: "session_load", message: "Couldn't load this conversation." });
+      if (stillOpen()) setError({ type: "session_load", message: "Couldn't load this conversation." });
     } finally {
-      useMentorStore.getState().setLoadingSession(false);
+      if (stillOpen()) useMentorStore.getState().setLoadingSession(false);
     }
   };
 
-  const handleNewSession = async () => {
-    try {
-      const session = await createSession("New conversation");
-      setSessions([session, ...useMentorStore.getState().sessions]);
-      useMentorStore.getState().adjustSessionsTotal(1);
-      setActiveSession(session._id);
-      useMentorStore.getState().setMessages([]);
-      // A deliberately fresh conversation carries no arrival context.
-      setOriginContext({ surface: "chat" });
-    } catch { /* non-fatal */ }
+  // The chat itself is created by its first message (handleSend), so clicking
+  // "new" never leaves empty chats in the list.
+  const handleNewSession = () => {
+    resetChat();
+    // A deliberately fresh conversation carries no arrival context.
+    setOriginContext({ surface: "chat" });
+    setFocusToken((n) => n + 1);
   };
 
   /**
@@ -449,8 +454,7 @@ export default function Mentor({ embedded = false, challengeContext = null, orig
     // Deleting the conversation you're reading has to reset the view too,
     // otherwise the transcript stays on screen with no session behind it.
     if (sessionId === useMentorStore.getState().activeSessionId) {
-      setActiveSession(null);
-      useMentorStore.getState().setMessages([]);
+      resetChat();
     }
 
     try {
@@ -480,8 +484,7 @@ export default function Mentor({ embedded = false, challengeContext = null, orig
     // The open chat goes too unless it's a pinned one being kept.
     const activeId = store.activeSessionId;
     if (activeId && !kept.some((s) => s._id === activeId)) {
-      setActiveSession(null);
-      store.setMessages([]);
+      resetChat();
     }
 
     try {
@@ -597,14 +600,11 @@ export default function Mentor({ embedded = false, challengeContext = null, orig
                   : `Daily limit reached${error.plan === "pro" ? "" : ` (${error.cap} messages/day)`}.${error.resetAt ? ` Resets at ${new Date(error.resetAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}.` : ""}${error.plan === "pro" ? "" : " Pro has no daily limit."}`
                 : error.type === "session_load" || error.type === "paused"
                   ? error.message
-                  : "Connection error. Your message was not sent."}
+                  : (error.message ?? "Connection error. Your message was not sent.")}
             </span>
             {error.type === "network" && (
               <button
-                onClick={() => {
-                  setError(null);
-                  handleSend(messages.findLast?.((m) => m.role === "user")?.content ?? "");
-                }}
+                onClick={() => retry(getAccessToken())}
                 className="flex items-center gap-1 text-[12px] underline underline-offset-2 shrink-0 hover:opacity-80"
               >
                 <RefreshCw size={12} /> Retry
@@ -659,6 +659,7 @@ export default function Mentor({ embedded = false, challengeContext = null, orig
           <ChatInput
             isStreaming={isStreaming}
             onSend={handleSend}
+            onStop={cancel}
             value={draft}
             onValueChange={setDraft}
             focusToken={focusToken}

@@ -94,7 +94,7 @@ describe('POST /api/system-maps/scan', () => {
       expect(part.evidence.length).toBeGreaterThan(0)
     }
     expect(res.body.data.wires).toEqual(
-      expect.arrayContaining([{ source: 'client-react', target: 'server-express', label: 'HTTP' }]),
+      expect.arrayContaining([{ source: 'client-react', target: 'server-express', label: 'HTTP', level: 'guessed' }]),
     )
   })
 
@@ -156,6 +156,8 @@ describe('POST /api/system-maps/scan', () => {
     process.env.GROQ_API_KEY = 'test'
     vi.spyOn(console, 'error').mockImplementation(() => {})
     fake.model = () => ({ content: 'not json' })
+    // A repo the label cache hasn't seen: a known one would be answered from it.
+    fake.repo = { ...REPO, fullName: 'ada/other' }
     const res = await scanAs({ repoUrl: 'github.com/ada/shop' })
     expect(res.status).toBe(200)
     expect(res.body.data.ai).toBe(false)
@@ -236,9 +238,9 @@ describe('lenses', () => {
     ])
     expect(res.body.data.wires).toEqual(
       expect.arrayContaining([
-        { source: 'server-express', target: 'primary-postgresql', label: 'writes' },
-        { source: 'primary-postgresql', target: 'replica-replica', label: 'replicates' },
-        { source: 'primary-postgresql', target: 'backup-backup', label: 'snapshots' },
+        { source: 'server-express', target: 'primary-postgresql', label: 'writes', level: 'likely' },
+        { source: 'primary-postgresql', target: 'replica-replica', label: 'replicates', level: 'guessed' },
+        { source: 'primary-postgresql', target: 'backup-backup', label: 'snapshots', level: 'guessed' },
       ]),
     )
   })

@@ -5,12 +5,7 @@ import { Bookmark } from "lucide-react";
 import { Link } from "react-router-dom";
 import { fetchFavourites as fetchFavouritesApi } from "@/services/blogsApi";
 import { BlogCardSkeletonGrid } from "@/features/blogs/components/BlogCardSkeleton";
-import { SkeletonTheme } from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import useThemeStore from "@/stores/useThemeStore";
 const Favorites = () => {
-  const theme = useThemeStore((s) => s.theme);
-  const isDarkMode = theme === "dark";
   const [blogs, setBlogs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -25,12 +20,7 @@ const Favorites = () => {
     <PageShell title="Favorites" subtitle="Posts you saved for later">
       <div className="mt-8">
         {isLoading ? (
-          <SkeletonTheme
-            baseColor={isDarkMode ? "#1f2937" : "#ebebeb"}
-            highlightColor={isDarkMode ? "#374151" : "#f5f5f5"}
-          >
-            <BlogCardSkeletonGrid />
-          </SkeletonTheme>
+          <BlogCardSkeletonGrid />
         ) : blogs.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-28 text-center">
             <Bookmark

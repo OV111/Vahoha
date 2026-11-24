@@ -18,14 +18,14 @@ const STEPS = [
     selector: "[data-tour='map-palette']",
     block: "center",
     title: "Add a part",
-    body: "Click a part to drop it in the middle of the map, or drag it to where you want it.",
+    body: "Tap or click a part to drop it in the middle of the map, or drag it to where you want it.",
   },
   {
     id: "canvas",
     selector: "[data-tour='map-canvas']",
     block: "center",
     title: "Wire it up",
-    body: "We started you with an example to change. Drag a part to move it, and Shift-drag from one part to another to wire them. Click a part or a wire to rename it, add details or delete it.",
+    body: "We started you with an example to change. Drag a part to move it (on a phone, tap it first). To wire two parts, use the plug button, or Shift-drag on a computer. Select a part or a wire to rename it, add details or delete it.",
   },
   {
     id: "scan",

@@ -1,20 +1,9 @@
+import { Bone } from "@/components/ui/Skeleton";
 import { BellOff, Users } from "lucide-react";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import useThemeStore from "../../../stores/useThemeStore";
 import { formatTimeAgo } from "../lib/time";
 
 /** One conversation (direct or group) in the Messages list. */
 const ConversationRow = ({ item, isActive, isLoadingPreview, onSelect }) => {
-  const isDarkMode = useThemeStore((s) => s.theme) === "dark";
-  const skeleton = {
-    height: 12,
-    borderRadius: 6,
-    baseColor: isDarkMode ? "#1f2937" : "#ebebeb",
-    highlightColor: isDarkMode ? "#374151" : "#f5f5f5",
-    className: "opacity-80",
-  };
-
   return (
     <button
       type="button"
@@ -43,8 +32,8 @@ const ConversationRow = ({ item, isActive, isLoadingPreview, onSelect }) => {
         <div className="flex items-center justify-between">
           {isLoadingPreview ? (
             <>
-              <Skeleton width={120} {...skeleton} />
-              <Skeleton width={44} {...skeleton} />
+              <Bone className="my-0.5 h-3 w-[120px]" />
+              <Bone soft className="my-0.5 h-3 w-11" />
             </>
           ) : (
             <>

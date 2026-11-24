@@ -1,3 +1,4 @@
+import { Bone } from "@/components/ui/Skeleton";
 import React, { useState } from "react";
 
 // The grid pattern for the empty state: reads as designed, not as a missing photo.
@@ -22,7 +23,7 @@ function BannerImage({ url }) {
       style={{ backgroundImage: `url(${tiny})` }}
     >
       {/* Pulses until the full photo arrives, so a slow connection reads as loading, not broken. */}
-      {!loaded && <div aria-hidden="true" className="absolute inset-0 animate-pulse bg-white/[0.06]" />}
+      {!loaded && <Bone className="absolute inset-0 rounded-none bg-white/[0.06]" />}
       <img
         src={full}
         alt="Banner"
@@ -45,7 +46,7 @@ export default function ProfileBanner({ url, loading = false, children }) {
       {loading ? (
         // Profile not here yet: a neutral pulsing strip, so the empty-banner
         // state (and its "Add a banner" button) never flashes for someone who has one.
-        <div aria-hidden="true" className="h-40 w-full animate-pulse bg-white/[0.05] sm:h-56" />
+        <Bone soft className="h-40 w-full rounded-none sm:h-56" />
       ) : url ? (
         <BannerImage url={url} />
       ) : (

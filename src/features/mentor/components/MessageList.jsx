@@ -1,3 +1,4 @@
+import { Bone } from "@/components/ui/Skeleton";
 import { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import { FileText } from "lucide-react";
 import useMentorStore from "@/stores/useMentorStore";
@@ -205,7 +206,7 @@ export default function MessageList({
           if (msg.role === "context") {
             return msg.loading ? (
               <div key={i} className="max-w-2xl rounded-xl border border-white/10 bg-white/3 p-4">
-                <div className="h-3 w-24 rounded bg-white/8 animate-pulse" />
+                <Bone className="h-3 w-24" />
               </div>
             ) : (
               <ContextCard key={i} data={msg.data} error={msg.error} />
@@ -215,7 +216,7 @@ export default function MessageList({
           if (msg.role === "teach_back") {
             return msg.loading ? (
               <div key={i} className="max-w-2xl rounded-xl border border-purple-700/40 bg-purple-950/10 p-4">
-                <div className="h-3 w-32 rounded bg-white/8 animate-pulse" />
+                <Bone className="h-3 w-32" />
               </div>
             ) : (
               <TeachBackCard key={i} data={msg.data} error={msg.error} onAnswerFollowUp={onAnswerFollowUp} />

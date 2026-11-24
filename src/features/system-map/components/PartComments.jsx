@@ -43,21 +43,21 @@ export default function PartComments({ comments, saved, onAdd, onDelete }) {
       </h3>
 
       {comments.length === 0 ? (
-        <p className="mt-2 text-sm text-neutral-500">No comments yet. Ask your team why this part is here, or how it works.</p>
+        <p className="mt-2 text-sm text-neutral-400">No comments yet. Ask your team why this part is here, or how it works.</p>
       ) : (
         <ul className="mt-2 space-y-3">
           {comments.map((c) => (
             <li key={c.id} className="text-sm">
               <div className="flex items-center gap-2">
                 <span className="font-medium text-neutral-200">{c.author}</span>
-                <time dateTime={c.createdAt} className="mr-auto text-xs text-neutral-500">
+                <time dateTime={c.createdAt} className="mr-auto text-xs text-neutral-400">
                   {when(c.createdAt)}
                 </time>
                 {c.mine && (
                   <button
                     type="button"
                     onClick={() => remove(c.id)}
-                    className="-my-2 flex size-9 cursor-pointer items-center justify-center rounded-lg text-neutral-500 transition-colors hover:text-red-300 focus-visible:outline-2 focus-visible:outline-purple-400"
+                    className="-my-2 flex size-9 cursor-pointer items-center justify-center rounded-lg text-neutral-400 transition-colors hover:text-red-300 focus-visible:outline-2 focus-visible:outline-purple-400"
                   >
                     <Trash2 size={13} aria-hidden="true" />
                     <span className="sr-only">Delete your comment</span>
@@ -96,14 +96,14 @@ export default function PartComments({ comments, saved, onAdd, onDelete }) {
               {busy ? "Posting…" : "Comment"}
             </button>
             {draft.length > MAX_LENGTH - 50 && (
-              <span className="text-xs text-neutral-500">
+              <span className="text-xs text-neutral-400">
                 {draft.length}/{MAX_LENGTH}
               </span>
             )}
           </div>
         </form>
       ) : (
-        <p className="mt-3 text-sm text-neutral-500">This part is still saving. Comments open once it&apos;s saved.</p>
+        <p className="mt-3 text-sm text-neutral-400">This part is still saving. Comments open once it&apos;s saved.</p>
       )}
 
       {error && (

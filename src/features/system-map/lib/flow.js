@@ -1,4 +1,5 @@
 import { isDown } from "../../../../constants/isoShapes";
+import { isUnconfirmed } from "./mapGraph";
 
 // When a request crosses each wire, from the way the learner wired the map.
 // Requests start at parts nothing points to (usually the client) and move one
@@ -7,7 +8,7 @@ import { isDown } from "../../../../constants/isoShapes";
 // Pure, so it is tested without React Flow.
 
 // Used when every part has a wire coming in (the map is one big loop).
-const START_KINDS = ["client", "entry", "datasource"];
+const START_KINDS = ["client", "mobile", "entry", "datasource"];
 
 /**
  * @returns {{ hops: Map<string, number>, steps: number }} edge id -> the step its request travels in, and how many steps one full trip takes.
@@ -45,11 +46,13 @@ export function flowTiming(nodes, edges) {
 export function mapMetrics(nodes, edges) {
   const ids = new Set(nodes.map((n) => n.id));
   const wired = edges.filter((e) => ids.has(e.source) && ids.has(e.target));
-  const trip = flowTiming(nodes, wired);
-  const onFlow = new Set(wired.filter((e) => trip.hops.has(e.id)).flatMap((e) => [e.source, e.target]));
+  const live = wired.filter((e) => !isUnconfirmed(e)); // no request is shown on a wire nobody confirmed
+  const trip = flowTiming(nodes, live);
+  const onFlow = new Set(live.filter((e) => trip.hops.has(e.id)).flatMap((e) => [e.source, e.target]));
   return {
     parts: nodes.length,
     wires: wired.length,
+    unconfirmed: wired.length - live.length,
     steps: trip.hops.size ? trip.steps : 0,
     offFlow: nodes.filter((n) => !onFlow.has(n.id)).length,
     found: nodes.filter((n) => n.data.evidence?.length > 0).length,

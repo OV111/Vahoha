@@ -3,7 +3,7 @@
  * map can both win when they touched different things.
  *
  *   addNode { node }       removeNode { id }       updateNode { id, set, unset? }
- *   addEdge { edge }       removeEdge { id }       updateEdge { id, set }
+ *   addEdge { edge }       removeEdge { id }       updateEdge { id, set, unset? }
  *   setMeta { set, unset? }   (lens, repo)
  *
  * The client builds these by diffing its last saved graph against the canvas

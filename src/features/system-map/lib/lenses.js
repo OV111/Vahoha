@@ -10,27 +10,27 @@ export const LENSES = [
   {
     id: "software",
     title: "Software",
-    palette: ["client", "server", "database", "cache", "queue", "worker", "external", "storage"],
+    palette: ["client", "mobile", "cdn", "firewall", "ratelimiter", "loadbalancer", "gateway", "server", "websocket", "database", "cache", "search", "vectordb", "queue", "eventbus", "worker", "scheduler", "external", "storage", "monitoring"],
   },
   {
     id: "data-storage",
     title: "Data storage",
-    palette: ["server", "primary", "replica", "shard", "cache", "backup", "migration", "storage"],
+    palette: ["server", "primary", "replica", "shard", "cache", "search", "warehouse", "backup", "migration", "storage"],
   },
   {
     id: "data-ai",
     title: "Data and AI",
-    palette: ["datasource", "pipeline", "featurestore", "model", "evaluation", "endpoint", "database", "storage", "client"],
+    palette: ["datasource", "pipeline", "scheduler", "featurestore", "vectordb", "model", "evaluation", "endpoint", "database", "warehouse", "storage", "client"],
   },
   {
     id: "security",
     title: "Security",
-    palette: ["client", "entry", "firewall", "auth", "server", "database", "secrets", "external"],
+    palette: ["client", "mobile", "entry", "firewall", "ratelimiter", "gateway", "auth", "server", "database", "secrets", "external"],
   },
   {
     id: "infrastructure",
     title: "Infrastructure",
-    palette: ["client", "dns", "loadbalancer", "container", "cluster", "cicd", "database", "storage"],
+    palette: ["client", "dns", "cdn", "loadbalancer", "gateway", "registry", "container", "cluster", "cicd", "monitoring", "database", "storage"],
   },
 ];
 

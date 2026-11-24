@@ -109,6 +109,26 @@ const EXTERNAL_RULES = [
   rule("smtp", "external", "smtp", "Email (SMTP)", "nodemailer", ["npm:nodemailer"]),
 ];
 
+const SEARCH_RULES = [
+  rule("search", "search", "elasticsearch", "Elasticsearch", "search engine", ["npm:@elastic/elasticsearch", "py:elasticsearch", "image:elasticsearch"]),
+  rule("search", "search", "opensearch", "OpenSearch", "search engine", ["npm:@opensearch-project/opensearch", "py:opensearch-py", "image:opensearch"]),
+  rule("search", "search", "meilisearch", "Meilisearch", "search engine", ["npm:meilisearch", "py:meilisearch", "image:meilisearch"]),
+  rule("search", "search", "typesense", "Typesense", "search engine", ["npm:typesense", "py:typesense", "image:typesense"]),
+  rule("search", "search", "algolia", "Algolia", "hosted search", ["npm:algoliasearch", "py:algoliasearch"]),
+];
+
+const VECTOR_RULES = [
+  rule("vector", "vectordb", "pinecone", "Pinecone", "vector database", ["npm:@pinecone-database/pinecone", "py:pinecone", "py:pinecone-client"]),
+  rule("vector", "vectordb", "qdrant", "Qdrant", "vector database", ["npm:@qdrant/js-client-rest", "py:qdrant-client", "image:qdrant"]),
+  rule("vector", "vectordb", "weaviate", "Weaviate", "vector database", ["npm:weaviate-client", "npm:weaviate-ts-client", "py:weaviate-client", "image:weaviate"]),
+  rule("vector", "vectordb", "chroma", "Chroma", "vector database", ["npm:chromadb", "py:chromadb", "image:chroma"]),
+];
+
+const MONITORING_RULES = [
+  rule("monitoring", "monitoring", "prometheus", "Prometheus", "metrics", ["image:prometheus"]),
+  rule("monitoring", "monitoring", "grafana", "Grafana", "dashboards", ["image:grafana"]),
+];
+
 const FILE_STORAGE_RULES = [
   // File storage.
   rule("s3", "storage", "s3", "Amazon S3", "file storage", ["npm:@aws-sdk/client-s3", "npm:aws-sdk", "py:boto3"]),
@@ -126,6 +146,9 @@ export const SCAN_RULES = [
   ...QUEUE_RULES,
   ...EXTERNAL_RULES,
   ...FILE_STORAGE_RULES,
+  ...SEARCH_RULES,
+  ...VECTOR_RULES,
+  ...MONITORING_RULES,
 ];
 
 // A queue with no consumer is half a design; these paths show where the jobs run.
@@ -145,6 +168,9 @@ export const WIRE_RULES = [
   { from: "worker", to: "database", label: "writes" },
   { from: "app", to: "external", label: "API calls" },
   { from: "app", to: "storage", label: "uploads" },
+  { from: "app", to: "search", label: "searches" },
+  { from: "app", to: "vectordb", label: "similar items" },
+  { from: "app", to: "monitoring", label: "metrics" },
 ];
 
 // ---- Data storage ----------------------------------------------------------
@@ -186,6 +212,7 @@ const DATA_STORAGE_WIRES = [
 // ---- Data and AI -----------------------------------------------------------
 
 const DATA_AI_RULES = [
+  ...VECTOR_RULES,
   ...WEB_RULES,
   rule("serve", "endpoint", "bentoml", "BentoML service", "model serving", ["py:bentoml"]),
   rule("serve", "endpoint", "torchserve", "TorchServe", "model serving", ["py:torchserve", "image:torchserve"]),
@@ -239,6 +266,7 @@ const DATA_AI_WIRES = [
   { from: "pipeline", to: "database", label: "writes" },
   { from: "pipeline", to: "storage", label: "artifacts" },
   { from: "endpoint", to: "database", label: "stores results" },
+  { from: "endpoint", to: "vectordb", label: "similar items" },
 ];
 
 // ---- Security --------------------------------------------------------------
@@ -320,8 +348,9 @@ const INFRA_RULES = [
   ...WEB_RULES,
   rule("dns", "dns", "route53", "Route 53", "DNS", ["t:tf-route53"]),
   rule("dns", "dns", "cloudflare", "Cloudflare DNS", "DNS", ["t:tf-cloudflare"]),
-  rule("dns", "dns", "cloudfront", "CloudFront", "CDN", ["t:tf-cloudfront"]),
-  rule("dns", "dns", "cdn", "CDN", "edge cache", ["t:tf-cdn"]),
+  rule("cdn", "cdn", "cloudfront", "CloudFront", "CDN", ["t:tf-cloudfront"]),
+  rule("cdn", "cdn", "cdn", "CDN", "edge cache", ["t:tf-cdn"]),
+  ...MONITORING_RULES,
   rule("lb", "loadbalancer", "terraform", "Load balancer", "from Terraform", ["t:tf-lb"]),
   rule("lb", "loadbalancer", "ingress", "Kubernetes Ingress", "routes traffic into the cluster", ["t:k8s-ingress"]),
   rule("lb", "loadbalancer", "traefik", "Traefik", "reverse proxy", ["image:traefik", "path:traefik"]),
@@ -348,6 +377,8 @@ const INFRA_RULES = [
 const INFRA_WIRES = [
   { from: "client", to: "dns", label: "resolves" },
   { from: "client", to: "loadbalancer", label: "requests", unless: "dns" },
+  { from: "client", to: "cdn", label: "files" },
+  { from: "cdn", to: "storage", label: "misses" },
   { from: "dns", to: "loadbalancer", label: "traffic" },
   { from: "loadbalancer", to: "cluster", label: "requests" },
   { from: "loadbalancer", to: "container", label: "requests", unless: "cluster" },
@@ -399,5 +430,9 @@ export const KIND_WHY = {
   container: "Packages the app and what it needs so it runs the same everywhere.",
   cluster: "Runs and restarts many containers across machines.",
   cicd: "Tests and ships every change automatically.",
+  cdn: "Keeps copies of files close to the people who ask for them.",
+  search: "Finds records by words, faster than the database could.",
+  vectordb: "Finds items with a similar meaning.",
+  monitoring: "Collects logs and metrics, so a failure is noticed.",
   dns: "Turns a domain name into the address people actually reach.",
 };

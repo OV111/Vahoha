@@ -180,3 +180,29 @@ input:-webkit-autofill:focus {
     [data-motion="code"] path:nth-child(3) { animation: nav-code-slash 0.6s ease-in-out; }
   }
 }
+
+/* Loading placeholders, used through components/ui/Skeleton.jsx. In the components
+   layer so a size, radius or colour utility on the element wins. */
+@layer components {
+  .bone {
+    border-radius: calc(var(--radius) - 4px);
+    background-color: #1a1a1a;
+  }
+  .bone-soft {
+    background-color: #161616;
+  }
+  .bone-panel {
+    border: 1px solid #1a1a1a;
+    border-radius: calc(var(--radius) + 8px);
+    background-color: #0d0d0d;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .bone,
+    .bone-panel {
+      animation: var(--animate-pulse);
+    }
+    .bone-panel :is(.bone, .bone-panel) {
+      animation: none;
+    }
+  }
+}

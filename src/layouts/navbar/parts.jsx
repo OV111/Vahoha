@@ -1,3 +1,4 @@
+import { Bone } from "@/components/ui/Skeleton";
 import { useState } from "react";
 import useProfileStore from "@/stores/useProfileStore";
 import useNotificationStore from "@/stores/useNotificationStore";
@@ -56,10 +57,7 @@ const initials = (user) =>
 // The navbar shows this, same size and spot as the avatar, while the session
 // is checked, so nothing shifts when the real avatar takes its place.
 export const AvatarPlaceholder = ({ className = "" }) => (
-  <span
-    aria-hidden="true"
-    className={`my-1 block h-7 w-7 shrink-0 animate-pulse rounded-full bg-white/10 ${className}`}
-  />
+  <Bone as="span" className={`my-1 block h-7 w-7 shrink-0 rounded-full ${className}`} />
 );
 
 export const AvatarImage = ({ inDropdown = false }) => {

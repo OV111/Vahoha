@@ -58,7 +58,7 @@ export default function ExportMenu({ onExport, buttonClass, disabled }) {
         <div
           role="menu"
           aria-label="Export as"
-          className="absolute right-0 z-50 mt-2 w-60 rounded-xl border border-neutral-800 bg-neutral-950 p-1 shadow-xl shadow-black/60"
+          className="absolute right-0 z-50 mt-2 w-60 max-sm:fixed max-sm:inset-x-3 max-sm:bottom-[calc(0.75rem+env(safe-area-inset-bottom))] max-sm:mt-0 max-sm:w-auto rounded-xl border border-neutral-800 bg-neutral-950 p-1 shadow-xl shadow-black/60"
         >
           {ITEMS.map(({ id, label, hint, Icon }, i) => (
             <button
@@ -72,7 +72,7 @@ export default function ExportMenu({ onExport, buttonClass, disabled }) {
               <Icon size={15} aria-hidden="true" />
               <span>
                 <span className="block">{label}</span>
-                <span className="block text-xs text-neutral-500">{hint}</span>
+                <span className="block text-xs text-neutral-400">{hint}</span>
               </span>
             </button>
           ))}

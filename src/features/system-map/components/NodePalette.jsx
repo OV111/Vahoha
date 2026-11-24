@@ -7,8 +7,8 @@ export const DRAG_TYPE = "application/x-vahoha-node";
 export default function NodePalette({ lens, onAdd, disabled }) {
   return (
     <div>
-      <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Add a part</h2>
-      <ul className={`${SCROLL_ROW} mt-2 flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:[mask-image:none]`}>
+      <h2 className="max-lg:sr-only text-xs font-semibold uppercase tracking-wider text-neutral-400">Add a part</h2>
+      <ul className={`${SCROLL_ROW} flex gap-2 overflow-x-auto lg:mt-2 pb-1 thin-scrollbar lg:max-h-[calc(100vh-16rem)] lg:min-h-[440px] lg:flex-col lg:overflow-x-hidden lg:overflow-y-auto lg:pr-1 lg:[mask-image:none]`}>
         {paletteFor(lens).map(({ kind, label }) => {
           const Icon = KIND_ICONS[kind];
           return (

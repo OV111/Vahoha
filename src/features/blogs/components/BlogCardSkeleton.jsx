@@ -1,29 +1,32 @@
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import { Bone, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
 
 // Mirrors BlogCard's layout, so the page doesn't jump when real cards arrive.
-export const BlogCardSkeleton = () => (
-  <div className="flex min-h-[478px] flex-col overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950">
-    <Skeleton height={224} borderRadius={0} containerClassName="block leading-[0]" />
+const BlogCardSkeleton = () => (
+  <BonePanel className="flex min-h-[478px] flex-col overflow-hidden">
+    <Bone soft className="h-56 rounded-none" />
     <div className="flex flex-col gap-3 p-5">
-      <Skeleton width={70} height={20} borderRadius={999} />
-      <Skeleton height={20} width="85%" />
-      <Skeleton height={14} count={3} />
-    </div>
-    <div className="mt-auto flex items-center justify-between border-t border-neutral-800 px-5 py-3">
-      <div className="flex items-center gap-2.5">
-        <Skeleton circle width={28} height={28} />
-        <Skeleton width={90} height={12} />
+      <Bone className="h-5 w-[70px] rounded-full" />
+      <Bone className="h-5 w-5/6" />
+      <div className="flex flex-col gap-2">
+        <Bone soft className="h-3 w-full" />
+        <Bone soft className="h-3 w-full" />
+        <Bone soft className="h-3 w-2/3" />
       </div>
-      <Skeleton width={70} height={20} />
     </div>
-  </div>
+    <div className="mt-auto flex items-center justify-between border-t border-[#1a1a1a] px-5 py-3">
+      <div className="flex items-center gap-2.5">
+        <Bone className="size-7 rounded-full" />
+        <Bone className="h-3 w-[90px]" />
+      </div>
+      <Bone className="h-5 w-[70px]" />
+    </div>
+  </BonePanel>
 );
 
 export const BlogCardSkeletonGrid = ({ count = 6 }) => (
-  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+  <SkeletonRegion label="Loading posts" className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
     {Array.from({ length: count }, (_, i) => (
       <BlogCardSkeleton key={i} />
     ))}
-  </div>
+  </SkeletonRegion>
 );

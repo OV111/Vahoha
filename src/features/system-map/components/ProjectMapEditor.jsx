@@ -1,31 +1,25 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { addEdge, ReactFlowProvider, reconnectEdge, useEdgesState, useNodesState, useReactFlow } from "@xyflow/react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import "../project-map-theme.css";
-import SystemCanvas from "./SystemCanvas";
 import IsoView from "./IsoView";
-import NodePalette, { DRAG_TYPE } from "./NodePalette";
-import RepoScanPanel from "./RepoScanPanel";
+import MapHeader, { CANVAS, PAGE } from "./MapHeader";
+import NodePalette from "./NodePalette";
 import LensPicker from "./LensPicker";
 import UnderstandingCheck from "./UnderstandingCheck";
 import DriftBanner from "./DriftBanner";
-import VersionHistory from "./VersionHistory";
 import ProjectMapTour from "./ProjectMapTour";
 import MapToolbar from "./MapToolbar";
 import MapAlerts from "./MapAlerts";
-import EditSheet from "./EditSheet";
 import { MetricStrip, StageControls } from "./StageChrome";
 import useMapComments from "../hooks/useMapComments";
 import { saveOps } from "../systemMapApi";
-import { EXAMPLE_GRAPH, MAX_NODES, freeSpot, fromGraph, toGraph, withArrow } from "../lib/mapGraph";
+import { EXAMPLE_GRAPH, MAX_NODES, freeSpot, fromGraph, toGraph, withoutExample } from "../lib/mapGraph";
 import { isKind, kindInfo } from "../lib/nodeKinds";
-import { fitOptions } from "../lib/viewport";
+import { applyChanges, connect } from "../lib/changes";
 import { applyScan } from "../lib/applyScan";
 import { canRedo, canUndo, record, redo, startHistory, undo } from "../lib/history";
 import { applyOpsLenient, diffGraph } from "../lib/graphOps";
-import { toMermaid } from "../lib/mermaid";
-import { downloadUrl, renderMapImage } from "../lib/exportImage";
 import { mapMetrics } from "../lib/flow";
-import { PX_PER_TILE } from "../lib/isoGeometry";
 import { SITE } from "../../../../constants/site";
 
 // The editor and everything only it uses live here, so the page can lazy-load
@@ -34,9 +28,13 @@ import { SITE } from "../../../../constants/site";
 const SAVE_DEBOUNCE_MS = 400;
 const HISTORY_PAUSE_MS = 350; // edits closer together than this (typing a name) are one undo step
 const INFO_MS = 4000;
-const NODE_HALF = { x: 88, y: 30 }; // drop point is the node's centre, not its corner
 const DELETE_KEYS = ["Backspace", "Delete"]; // removes the selected part or wire
-const SNAP = [PX_PER_TILE, PX_PER_TILE]; // one 3D floor tile, so a flat layout lands neatly on the 3D floor
+// Not needed to look at the map, so they download when first used.
+const FlatCanvas = lazy(() => import("./FlatCanvas"));
+const RepoScanPanel = lazy(() => import("./RepoScanPanel"));
+const VersionHistory = lazy(() => import("./VersionHistory"));
+const loadEditSheet = () => import("./EditSheet");
+const EditSheet = lazy(loadEditSheet);
 
 const graphJson = (nodes, edges, repo, lens) => JSON.stringify(toGraph(nodes, edges, repo, lens));
 
@@ -47,41 +45,23 @@ const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve))
 
 const newId = () => `n-${Math.random().toString(36).slice(2, 8)}`;
 
-// Leads with what the learner gets (proof), not with the drawing tool.
-const OWNER_COPY = {
-  personal: {
-    eyebrow: "Project map",
-    title: "Prove you understand what you built",
-    pitch: "Map your project, verify the parts against your repo, and pass a short check. Share one link that shows it.",
-  },
-  capstone: {
-    eyebrow: "Capstone map",
-    title: "Show how your capstone works",
-    pitch: "Map the parts of your capstone and verify them against your repo, so reviewers see how it fits together.",
-  },
-  team: {
-    eyebrow: "Team map",
-    title: "Show how your team's project works",
-    pitch: "Map the project together and verify the parts against your repo, so everyone sees how it fits together.",
-  },
-};
-
 const SAVE_STATUS = {
   saving: "Saving…",
   saved: "Saved to your account.",
   error: "Couldn't save your last change. It will retry on your next edit.",
 };
 
-function Editor({ initial }) {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initial.graph.nodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initial.graph.edges);
+export default function ProjectMapEditor({ initial }) {
+  const [nodes, setNodes] = useState(initial.graph.nodes);
+  const [edges, setEdges] = useState(initial.graph.edges);
+  const onNodesChange = useCallback((changes) => setNodes((ns) => applyChanges(changes, ns)), []);
+  const onEdgesChange = useCallback((changes) => setEdges((es) => applyChanges(changes, es)), []);
   const [repo, setRepo] = useState(initial.graph.repo ?? null); // the repo scan the map's evidence came from
   const [lens, setLens] = useState(initial.graph.lens); // the vocabulary the palette, scan and questions use
   const [scanOpen, setScanOpen] = useState(false);
   const [drift, setDrift] = useState(initial.remote?.drift ?? null); // what changed in the repo since the map was last true
   const ownerType = initial.remote?.ownerType ?? "personal";
   const isTeam = ownerType === "team";
-  const copy = OWNER_COPY[ownerType] ?? OWNER_COPY.personal;
   const [saveState, setSaveState] = useState("saved");
   const remoteRef = useRef(initial.remote);
   const [initialSaved] = useState(() => toGraph(initial.graph.nodes, initial.graph.edges, initial.graph.repo, initial.graph.lens));
@@ -99,9 +79,17 @@ function Editor({ initial }) {
   const [savedIds, setSavedIds] = useState(() => new Set(initial.graph.nodes.map((n) => n.id)));
   const [historyOpen, setHistoryOpen] = useState(false);
   const [view3d, setView3d] = useState(true); // opens in 3D; the flat canvas is one click away
-  const { screenToFlowPosition, fitView } = useReactFlow();
   const canvasRef = useRef(null);
   const isoRef = useRef(null);
+  const flatRef = useRef(null);
+  const viewRef = () => isoRef.current ?? flatRef.current; // whichever view is on screen
+
+  // The first tap on a part should open its sheet at once, so it downloads once the page is quiet.
+  useEffect(() => {
+    if (!window.requestIdleCallback) return undefined;
+    const id = window.requestIdleCallback(loadEditSheet, { timeout: 5000 });
+    return () => window.cancelIdleCallback(id);
+  }, []);
 
   useEffect(() => {
     liveRef.current = { nodes, edges, repo, lens };
@@ -191,17 +179,25 @@ function Editor({ initial }) {
 
   const selectedNode = nodes.find((n) => n.selected) ?? null;
   const selectedEdge = selectedNode ? null : (edges.find((e) => e.selected) ?? null);
+  // Below lg the edit sheet covers the lower half of the screen: bring the map up above it.
+  const editing = selectedNode?.id ?? selectedEdge?.id ?? null;
+  useEffect(() => {
+    if (editing && window.matchMedia("(max-width: 1023px)").matches) canvasRef.current?.scrollIntoView({ block: "start", behavior: "smooth" });
+  }, [editing]);
   const full = nodes.length >= MAX_NODES;
+  // The scan is compared with the learner's own parts, so a starter part never hides one the repo has.
+  const ownNodes = useMemo(() => withoutExample(nodes, edges).nodes, [nodes, edges]);
   const metrics = useMemo(() => mapMetrics(nodes, edges), [nodes, edges]);
   const [flatPaused, setFlatPaused] = useState(false);
 
-  // The flat view's request dots are SVG (SMIL) animations, so they pause and rewind through the svg elements.
-  const flatSvgs = () => canvasRef.current?.querySelectorAll("svg") ?? [];
+  const flatPlayback = useRef({ clock: 0, paused: false });
   const toggleFlatPause = () => {
-    flatSvgs().forEach((svg) => (flatPaused ? svg.unpauseAnimations() : svg.pauseAnimations()));
+    flatPlayback.current.paused = !flatPaused;
     setFlatPaused(!flatPaused);
   };
-  const replayFlat = () => flatSvgs().forEach((svg) => svg.setCurrentTime(0));
+  const replayFlat = () => {
+    flatPlayback.current.clock = 0;
+  };
 
   // Team maps only. Re-read whenever another part is selected, so teammates' new comments show up.
   const comments = useMapComments(isTeam ? initial.remote.id : null, selectedNode?.id);
@@ -225,51 +221,16 @@ function Editor({ initial }) {
     [setNodes],
   );
 
-  const flatMiddle = () => {
-    const rect = canvasRef.current.getBoundingClientRect();
-    return screenToFlowPosition({ x: rect.left + rect.width / 2 - NODE_HALF.x, y: rect.top + rect.height / 2 - NODE_HALF.y });
-  };
-  const addToMiddle = (kind) => addNode(kind, freeSpot(nodes, isoRef.current ? isoRef.current.middle() : flatMiddle()));
-
-  // Whichever view is on screen frames the map; React Flow's fitView only reaches the flat one.
-  const fitMap = () => (isoRef.current ? isoRef.current.fit() : fitView(fitOptions()));
-
-  const onDrop = (e) => {
-    e.preventDefault();
-    addNode(e.dataTransfer.getData(DRAG_TYPE), screenToFlowPosition({ x: e.clientX - NODE_HALF.x, y: e.clientY - NODE_HALF.y }));
-  };
-  const onDragOver = (e) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-  };
-
-  const onConnect = useCallback((c) => setEdges((es) => addEdge(withArrow(c), es)), [setEdges]);
-
-  // Redoing a wire: drag either end onto another part to move it (the label
-  // stays), or drop it on empty canvas to remove it.
-  const reconnectedRef = useRef(true);
-  const onReconnectStart = useCallback(() => {
-    reconnectedRef.current = false;
-  }, []);
-  const onReconnect = useCallback(
-    (oldEdge, connection) => {
-      reconnectedRef.current = true;
-      setEdges((es) => reconnectEdge(oldEdge, connection, es, { shouldReplaceId: false }));
-    },
-    [setEdges],
-  );
-  const onReconnectEnd = useCallback(
-    (event, edge) => {
-      // Dropped on a part but not a valid end (e.g. back onto its own source): keep the wire as it was.
-      const onPart = event.target?.closest?.(".react-flow__node");
-      if (!reconnectedRef.current && !onPart) setEdges((es) => es.filter((e) => e.id !== edge.id));
-      reconnectedRef.current = true;
-    },
-    [setEdges],
-  );
+  const addToMiddle = (kind) => addNode(kind, freeSpot(nodes, viewRef()?.middle() ?? { x: 0, y: 0 }));
+  const fitMap = () => viewRef()?.fit();
+  const onConnect = useCallback((c) => setEdges((es) => connect(c, es)), []);
 
   const patchNode = (data) => setNodes((ns) => ns.map((n) => (n.id === selectedNode.id ? { ...n, data: { ...n.data, ...data } } : n)));
   const patchEdge = ({ label }) => setEdges((es) => es.map((e) => (e.id === selectedEdge.id ? { ...e, label: label || undefined } : e)));
+  // Confirmed: the wire is now the learner's own claim, so it has no level. Its files stay as evidence.
+  const confirmEdge = () =>
+    setEdges((es) => es.map((e) => (e.id === selectedEdge.id ? { ...e, data: { evidence: e.data?.evidence } } : e)));
+  const titleOf = (id) => nodes.find((n) => n.id === id)?.data.title ?? "this part";
   const deleteNode = useCallback(
     (id) => {
       setNodes((ns) => ns.filter((n) => n.id !== id));
@@ -286,8 +247,7 @@ function Editor({ initial }) {
   // "Show on map" in the understanding check: select the parts a question is about and zoom to them.
   const focusParts = (ids) => {
     setNodes((ns) => ns.map((n) => ({ ...n, selected: ids.includes(n.id) })));
-    if (isoRef.current) isoRef.current.focus(ids);
-    else fitView({ nodes: ids.map((id) => ({ id })), padding: 0.6, duration: 300 });
+    viewRef()?.focus(ids);
   };
 
   const load = (graph) => {
@@ -299,13 +259,17 @@ function Editor({ initial }) {
   };
 
   const applyRepoScan = (scan, acceptedKeys) => {
-    const result = applyScan(nodes, edges, scan, acceptedKeys);
+    const own = withoutExample(nodes, edges);
+    const result = applyScan(own.nodes, own.edges, scan, acceptedKeys);
     reasonRef.current = "scan";
-    setNodes(result.nodes);
-    setEdges(result.edges);
+    // The starter parts go only when the repo's take their place: linking evidence alone removes nothing.
+    const replaced = result.added > 0;
+    const starter = (all, kept) => (replaced ? [] : all.filter((item) => !kept.includes(item)));
+    setNodes([...starter(nodes, own.nodes), ...result.nodes]);
+    setEdges([...starter(edges, own.edges), ...result.edges]);
     setRepo(result.repo);
     requestAnimationFrame(fitMap);
-    return result.added;
+    return { added: result.added, removed: replaced ? nodes.length - own.nodes.length : 0 };
   };
 
   // Moves one step through history. The restored map is saved like any other edit.
@@ -368,7 +332,8 @@ function Editor({ initial }) {
     setInfo(`Restored the map from ${when}. Undo (Ctrl+Z) brings back what you had.`);
   };
 
-  const downloadText = (text, type, filename) => {
+  const downloadText = async (text, type, filename) => {
+    const { downloadUrl } = await import("../lib/exportImage");
     const url = URL.createObjectURL(new Blob([text], { type }));
     downloadUrl(url, filename);
     URL.revokeObjectURL(url);
@@ -379,23 +344,25 @@ function Editor({ initial }) {
     setInfo(null);
     const graph = toGraph(nodes, edges, repo, lens);
     if (format === "json") {
-      downloadText(JSON.stringify(graph, null, 2), "application/json", "project-map.json");
+      await downloadText(JSON.stringify(graph, null, 2), "application/json", "project-map.json");
       return;
     }
     if (format === "mermaid") {
+      const { toMermaid } = await import("../lib/mermaid");
       const text = toMermaid(graph, { fenced: true });
       try {
         await navigator.clipboard.writeText(text);
         setInfo("Copied as Mermaid. Paste it into a README.md and GitHub draws the diagram.");
       } catch {
         // No clipboard (blocked, or not a secure page): hand over the same text as a file.
-        downloadText(text, "text/markdown", "project-map.md");
+        await downloadText(text, "text/markdown", "project-map.md");
         setInfo("Saved as project-map.md. Paste its contents into a README and GitHub draws the diagram.");
       }
       return;
     }
     setExporting(true);
     try {
+      const { downloadUrl, renderMapImage } = await import("../lib/exportImage");
       if (format === "card") {
         // The card is drawn from the 3D view, so it is put on screen first when the flat one is showing.
         if (!isoRef.current) {
@@ -434,19 +401,13 @@ function Editor({ initial }) {
 
   return (
     // While the edit sheet is open on a phone, extra room at the bottom lets the page scroll the canvas up above it.
-    <section className={`pm-theme mx-auto max-w-[1500px] px-4 pt-6 pb-16 sm:px-6 ${selectedNode || selectedEdge ? "max-lg:pb-[60svh]" : ""}`}>
+    <section className={`pm-theme ${PAGE} ${selectedNode || selectedEdge ? "max-lg:pb-[60svh]" : ""}`}>
       <div className="flex flex-col gap-4">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-amber-300">{copy.eyebrow}</p>
-          <h1 className="mt-1 text-3xl font-extrabold text-white">{copy.title}</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-neutral-300">{copy.pitch}</p>
-          <p className="mt-1 text-xs text-neutral-500" role="status">
-            {SAVE_STATUS[saveState]}
-          </p>
+        <MapHeader ownerType={ownerType} status={SAVE_STATUS[saveState]}>
           {isTeam && (
-            <p className="mt-1 text-sm text-neutral-500">Team maps appear on your team&apos;s public evidence page once an admin publishes it.</p>
+            <p className="mt-1 text-sm text-neutral-400">Team maps appear on your team&apos;s public evidence page once an admin publishes it.</p>
           )}
-        </div>
+        </MapHeader>
         <MapToolbar
           remote={initial.remote}
           isTeam={isTeam}
@@ -456,6 +417,7 @@ function Editor({ initial }) {
           onToggle3d={() => {
             setView3d((on) => !on);
             setFlatPaused(false);
+            flatPlayback.current = { clock: 0, paused: false };
           }}
           history={history}
           onTravel={travel}
@@ -475,11 +437,15 @@ function Editor({ initial }) {
       <MapAlerts conflict={saveState === "conflict"} isTeam={isTeam} notice={notice} info={info} />
 
       {scanOpen && (
-        <RepoScanPanel signedIn={Boolean(initial.remote)} lens={lens} repo={repo} nodes={nodes} onApply={applyRepoScan} onClose={() => setScanOpen(false)} />
+        <Suspense fallback={null}>
+        <RepoScanPanel signedIn={Boolean(initial.remote)} lens={lens} repo={repo} nodes={ownNodes} onApply={applyRepoScan} onClose={() => setScanOpen(false)} />
+        </Suspense>
       )}
 
       {historyOpen && (
+        <Suspense fallback={null}>
         <VersionHistory mapId={initial.remote.id} isTeam={isTeam} onRestore={restoreVersion} onClose={() => setHistoryOpen(false)} />
+        </Suspense>
       )}
 
       {drift && <DriftBanner mapId={initial.remote.id} drift={drift} onDismissed={() => setDrift(null)} />}
@@ -495,30 +461,24 @@ function Editor({ initial }) {
           <div
             ref={canvasRef}
             data-tour="map-canvas"
-            className="relative h-[max(360px,min(62svh,520px))] overflow-hidden rounded-2xl border border-neutral-800 bg-[#050505] sm:h-[480px] lg:h-[calc(100vh-14rem)] lg:min-h-[480px]"
+            className={CANVAS}
           >
             {view3d ? (
               <IsoView ref={isoRef} nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} />
             ) : (
-              <SystemCanvas
-                nodes={nodes}
-                edges={edges}
-                onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
-                onConnect={onConnect}
-                onDeleteNode={deleteNode}
-                onDrop={onDrop}
-                onDragOver={onDragOver}
-                deleteKeyCode={DELETE_KEYS}
-                commentCounts={commentCounts}
-                onReconnect={onReconnect}
-                onReconnectStart={onReconnectStart}
-                onReconnectEnd={onReconnectEnd}
-                reconnectRadius={20}
-                snapToGrid
-                snapGrid={SNAP}
-                gridGap={PX_PER_TILE}
-              />
+              <Suspense fallback={<LoadingSuspense fill />}>
+                <FlatCanvas
+                  ref={flatRef}
+                  nodes={nodes}
+                  edges={edges}
+                  setNodes={setNodes}
+                  setEdges={setEdges}
+                  onAdd={addNode}
+                  onDeleteNode={deleteNode}
+                  commentCounts={commentCounts}
+                  playback={flatPlayback}
+                />
+              </Suspense>
             )}
             {!view3d && (
               <>
@@ -529,26 +489,30 @@ function Editor({ initial }) {
           </div>
           {comments.error && <p className="mt-2 text-sm text-red-300">{comments.error}</p>}
           {orphanComments > 0 && (
-            <p className="mt-2 text-sm text-neutral-500">
+            <p className="mt-2 text-sm text-neutral-400">
               {orphanComments} comment{orphanComments === 1 ? " is" : "s are"} on parts no longer on the map. Undo the delete to see{" "}
               {orphanComments === 1 ? "it" : "them"} again.
             </p>
           )}
 
           {(selectedNode || selectedEdge) && (
+            <Suspense fallback={null}>
             <EditSheet
               node={selectedNode}
               edge={selectedEdge}
+              edgeEnds={selectedEdge && { source: titleOf(selectedEdge.source), target: titleOf(selectedEdge.target) }}
               repo={repo}
               lens={lens}
               onNode={patchNode}
               onEdge={patchEdge}
+              onConfirmEdge={confirmEdge}
               onDeleteNode={() => deleteNode(selectedNode.id)}
               onDeleteEdge={deleteEdge}
               onClose={clearSelection}
               comments={comments}
               savedIds={savedIds}
             />
+            </Suspense>
           )}
         </div>
       </div>
@@ -561,13 +525,5 @@ function Editor({ initial }) {
       )}
       <ProjectMapTour />
     </section>
-  );
-}
-
-export default function ProjectMapEditor({ initial }) {
-  return (
-    <ReactFlowProvider>
-      <Editor initial={initial} />
-    </ReactFlowProvider>
   );
 }

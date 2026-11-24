@@ -14,6 +14,8 @@ const button =
 
 const repoUrlOf = (repo) => (repo ? `https://github.com/${repo.fullName}` : "");
 
+const countLevel = (wires, level) => wires.filter((w) => w.level === level).length;
+
 function Section({ title, children }) {
   return (
     <div className="mt-5">
@@ -107,11 +109,15 @@ export default function RepoScanPanel({ signedIn, repo, nodes, lens = DEFAULT_LE
   };
 
   const accepted = drift ? drift.newParts.filter((p) => decisions[p.key] === true) : [];
-  const canApply = drift && (accepted.length > 0 || drift.matched.length > 0);
+  const canApply = drift && (accepted.length > 0 || (drift.matched.length > 0 && !state.applied));
 
   const apply = () => {
-    const added = onApply(scan, new Set(accepted.map((p) => p.key)));
-    setState({ status: "applied", added, linked: drift.matched.length });
+    const { added, removed } = onApply(scan, new Set(accepted.map((p) => p.key)));
+    // Added parts are on the map now, so they leave the list; the rest stay for a later choice.
+    const left = drift.newParts.length - accepted.length;
+    const applied = { added, removed, linked: drift.matched.length };
+    setState(left > 0 ? { status: "done", scan, applied } : { status: "applied", applied });
+    setDecisions({});
   };
 
   return (
@@ -151,7 +157,7 @@ export default function RepoScanPanel({ signedIn, repo, nodes, lens = DEFAULT_LE
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="https://github.com/you/your-project"
-              className="mt-1 min-h-11 w-full rounded-lg border border-neutral-700 bg-black px-3 text-sm text-white placeholder:text-neutral-600 focus-visible:outline-2 focus-visible:outline-purple-400"
+              className="mt-1 min-h-11 w-full rounded-lg border border-neutral-700 bg-black px-3 text-base sm:text-sm text-white placeholder:text-neutral-600 focus-visible:outline-2 focus-visible:outline-purple-400"
             />
           </label>
           <button type="submit" disabled={state.status === "loading" || !url.trim()} className={`${button} border-purple-500/60 bg-purple-600 text-white hover:bg-purple-500`}>
@@ -183,10 +189,11 @@ export default function RepoScanPanel({ signedIn, repo, nodes, lens = DEFAULT_LE
       <div aria-live="polite">
         {state.status === "error" && <p className="mt-3 rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-300">{state.message}</p>}
 
-        {state.status === "applied" && (
+        {state.applied && (
           <p className="mt-3 rounded-lg bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
-            Added {state.added} part{state.added === 1 ? "" : "s"}
-            {state.linked > 0 && ` and linked repo evidence to ${state.linked} you already had`}.
+            Added {state.applied.added} part{state.applied.added === 1 ? "" : "s"}
+            {state.applied.linked > 0 && ` and linked repo evidence to ${state.applied.linked} already on your map`}.
+            {state.applied.removed > 0 && " The example parts were removed. Undo (Ctrl+Z) brings them back."}
           </p>
         )}
 
@@ -203,6 +210,12 @@ export default function RepoScanPanel({ signedIn, repo, nodes, lens = DEFAULT_LE
             {scan.parts.length === 0 && (
               <p className="mt-3 text-sm text-neutral-400">
                 Nothing recognisable yet. The scan reads files like package.json, requirements.txt and docker-compose.yml.
+              </p>
+            )}
+
+            {scan.wires.length > 0 && (
+              <p className="mt-2 text-sm text-neutral-400">
+                Connections: {countLevel(scan.wires, "proven")} proven by your config, {scan.wires.length - countLevel(scan.wires, "proven")} for you to confirm on the map.
               </p>
             )}
 
@@ -226,7 +239,7 @@ export default function RepoScanPanel({ signedIn, repo, nodes, lens = DEFAULT_LE
                   <li key={part.key} className="flex items-center gap-2 text-sm text-neutral-300">
                     <Check size={14} className="shrink-0 text-emerald-400" aria-hidden="true" />
                     {part.title}
-                    {part.sub && <span className="text-neutral-500">({part.sub})</span>} matches “{titleOf(nodeId)}”
+                    {part.sub && <span className="text-neutral-400">({part.sub})</span>} matches “{titleOf(nodeId)}”
                   </li>
                 ))}
               </Section>

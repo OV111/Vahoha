@@ -1,6 +1,6 @@
 import process from "node:process";
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { detectParts, inferWires, pickKeyFiles, readSignals } from "../../modules/system-map/lib/repoScan.js";
+import { MAX_KEY_FILES, detectParts, inferWires, pickKeyFiles, readSignals } from "../../modules/system-map/lib/repoScan.js";
 import { LENSES, LENS_KINDS } from "../../modules/system-map/lib/lenses.js";
 import { LENS_SCAN } from "../../modules/system-map/lib/scanRules.js";
 import { labelScan } from "../../modules/system-map/services/scanLabelService.js";
@@ -10,7 +10,7 @@ const scan = (files, paths = files.map((f) => f.path)) => detectParts(readSignal
 const keys = (parts) => parts.map((p) => p.key).sort();
 
 describe("pickKeyFiles", () => {
-  it("reads key files shallowest first, skips vendored and huge files, and caps package.json at 5", () => {
+  it("reads key files shallowest first, skips vendored and huge files, and caps package.json at 14", () => {
     const entries = [
       { path: "apps/web/package.json", size: 100 },
       { path: "package.json", size: 100 },
@@ -19,11 +19,11 @@ describe("pickKeyFiles", () => {
       { path: "big/package.json", size: 500_000 },
       { path: ".env.example", size: 50 },
       { path: "README.md", size: 50 },
-      ...Array.from({ length: 8 }, (_, i) => ({ path: `pkgs/p${i}/package.json`, size: 10 })),
+      ...Array.from({ length: 20 }, (_, i) => ({ path: `pkgs/p${i}/package.json`, size: 10 })),
     ];
     const picked = pickKeyFiles(entries);
     expect(picked[0]).toBe("package.json");
-    expect(picked.filter((p) => p.endsWith("package.json"))).toHaveLength(5);
+    expect(picked.filter((p) => p.endsWith("package.json"))).toHaveLength(14);
     expect(picked).toContain("docker-compose.yml");
     expect(picked).toContain(".env.example");
     expect(picked.some((p) => p.includes("node_modules") || p.startsWith("big/") || p === "README.md")).toBe(false);
@@ -41,10 +41,10 @@ describe("detectParts", () => {
     expect(express.evidence).toEqual([{ path: "server/package.json", reason: '"express" in package.json' }]);
     expect(wires).toEqual(
       expect.arrayContaining([
-        { source: "client-react", target: "server-express", label: "HTTP" },
-        { source: "server-express", target: "database-mongodb", label: "queries" },
-        { source: "server-express", target: "cache-redis", label: "cache" },
-        { source: "server-express", target: "external-stripe", label: "API calls" },
+        { source: "client-react", target: "server-express", label: "HTTP", level: "guessed" },
+        { source: "server-express", target: "database-mongodb", label: "queries", level: "likely" },
+        { source: "server-express", target: "cache-redis", label: "cache", level: "likely" },
+        { source: "server-express", target: "external-stripe", label: "API calls", level: "likely" },
       ]),
     );
   });
@@ -63,7 +63,7 @@ describe("detectParts", () => {
 
   it("uses the client as the app when there is no separate server", () => {
     const { wires } = scan([{ path: "package.json", text: pkg({ next: "15", mongodb: "6" }) }]);
-    expect(wires).toEqual([{ source: "client-nextjs", target: "database-mongodb", label: "queries" }]);
+    expect(wires).toEqual([{ source: "client-nextjs", target: "database-mongodb", label: "queries", level: "likely" }]);
   });
 
   it("adds a worker only when a queue has somewhere to run", () => {
@@ -72,7 +72,7 @@ describe("detectParts", () => {
 
     const { parts, wires } = scan(files, ["package.json", "src/workers/email.js"]);
     expect(parts.find((p) => p.key === "worker").evidence).toEqual([{ path: "src/workers/email.js", reason: "a worker or jobs file" }]);
-    expect(wires).toEqual(expect.arrayContaining([{ source: "queue-bullmq", target: "worker", label: "jobs" }]));
+    expect(wires).toEqual(expect.arrayContaining([{ source: "queue-bullmq", target: "worker", label: "jobs", level: "likely" }]));
   });
 
   it("reads Python, Go, prisma and .env.example signals", () => {
@@ -158,7 +158,7 @@ describe("labelScan", () => {
     const sent = JSON.parse(run.mock.calls[0][0][1].content);
     expect(Object.keys(sent).sort()).toEqual(["files", "lens", "parts", "repo", "wires"]);
     expect(sent.lens).toBe("software");
-    expect(sent.files).toHaveLength(150);
+    expect(sent.files).toHaveLength(30);
   });
 
   it.each([
@@ -197,7 +197,7 @@ describe("lens palettes", () => {
     }
   });
 
-  it("reads at most 16 key files per lens, however big the repo", () => {
+  it("caps how many key files a lens reads, however big the repo", () => {
     const entries = [
       ...Array.from({ length: 12 }, (_, i) => ({ path: `p${i}/package.json`, size: 10 })),
       ...Array.from({ length: 8 }, (_, i) => ({ path: `r${i}/requirements-${i}.txt`, size: 10 })),
@@ -211,7 +211,7 @@ describe("lens palettes", () => {
       { path: "docker-compose.yml", size: 10 },
       { path: "Pipfile", size: 10 },
     ];
-    for (const lens of LENSES) expect(pickKeyFiles(entries, lens).length).toBeLessThanOrEqual(16);
+    for (const lens of LENSES) expect(pickKeyFiles(entries, lens).length).toBeLessThanOrEqual(MAX_KEY_FILES);
   });
 
   it("picks the files each lens cares about", () => {
@@ -230,7 +230,7 @@ describe("lens palettes", () => {
     expect(pickKeyFiles(entries, "data-ai")).toEqual(expect.arrayContaining(["requirements-dev.txt", "dvc.yaml"]));
     expect(pickKeyFiles(entries, "data-storage")).toEqual(expect.arrayContaining(["scripts/backup-db.sh", ".github/workflows/ci.yml"]));
     expect(pickKeyFiles(entries, "security")).toContain("Dockerfile");
-    expect(pickKeyFiles(entries, "software")).toEqual(["docker-compose.yml", "requirements-dev.txt"]);
+    expect(pickKeyFiles(entries, "software")).toEqual(["docker-compose.yml", "requirements-dev.txt", "k8s/deploy.yaml"]);
   });
 
   it("scans the software lens exactly as before, even when the repo has infrastructure files", () => {

@@ -33,7 +33,7 @@ export default function KindSelect({ id, options, value, onChange }) {
               <OptionIcon size={15} aria-hidden="true" className="shrink-0 text-amber-300" />
               <span className="min-w-0 flex-1">
                 <span className="block truncate group-data-selected:text-purple-300">{option.label}</span>
-                <span className="block truncate text-xs text-neutral-500">{option.sub}</span>
+                <span className="block truncate text-xs text-neutral-400">{option.sub}</span>
               </span>
               <Check size={14} aria-hidden="true" className="invisible shrink-0 text-purple-300 group-data-selected:visible" />
             </ListboxOption>

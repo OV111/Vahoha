@@ -1,7 +1,6 @@
+import { Bone, BoneLines, SkeletonRegion } from "@/components/ui/Skeleton";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import { Bell, CheckCheck, Trash2 } from "lucide-react";
 import PageShell from "../components/PageShell";
 import { SURFACE } from "@/components/ui/surface";
@@ -146,24 +145,14 @@ function NotificationRow({ notif, onRead, onDelete }) {
 
 function RowsSkeleton() {
   return (
-    <SkeletonTheme baseColor="#171717" highlightColor="#262626">
-      <ul
-        role="status"
-        aria-busy="true"
-        aria-label="Loading notifications"
-        className="divide-y divide-white/[0.06]"
-      >
-        {Array.from({ length: 5 }, (_, i) => (
-          <li key={i} className="flex items-center gap-4 px-5 py-4">
-            <Skeleton circle width={40} height={40} />
-            <div className="min-w-0 flex-1">
-              <Skeleton width="55%" height={15} />
-              <Skeleton width="20%" height={12} className="mt-2" />
-            </div>
-          </li>
-        ))}
-      </ul>
-    </SkeletonTheme>
+    <SkeletonRegion label="Loading notifications" className="divide-y divide-[#1a1a1a]">
+      {Array.from({ length: 5 }, (_, i) => (
+        <div key={i} className="flex items-center gap-4 px-5 py-4">
+          <Bone className="size-10 shrink-0 rounded-full" />
+          <BoneLines className="min-w-0 flex-1" widths={["w-[55%]", "w-1/5"]} />
+        </div>
+      ))}
+    </SkeletonRegion>
   );
 }
 

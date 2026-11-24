@@ -1,3 +1,4 @@
+import { Bone } from "@/components/ui/Skeleton";
 import { useState } from "react";
 
 const avatarSrc = (url) => url.replace("/upload/", "/upload/w_112,h_112,c_fill,f_auto,q_auto/");
@@ -9,7 +10,7 @@ const avatarSrc = (url) => url.replace("/upload/", "/upload/w_112,h_112,c_fill,f
 export default function ProfileAvatar({ url, firstName, lastName, loading = false }) {
   const [loadedSrc, setLoadedSrc] = useState(null);
 
-  if (loading) return <div aria-hidden="true" className="h-full w-full animate-pulse bg-white/10" />;
+  if (loading) return <Bone className="h-full w-full rounded-none" />;
 
   if (!url)
     return (
@@ -23,7 +24,7 @@ export default function ProfileAvatar({ url, firstName, lastName, loading = fals
   const loaded = loadedSrc === src;
   return (
     <div className="relative h-full w-full">
-      {!loaded && <div aria-hidden="true" className="absolute inset-0 animate-pulse bg-white/10" />}
+      {!loaded && <Bone className="absolute inset-0 rounded-none" />}
       <img
         src={src}
         alt="User"

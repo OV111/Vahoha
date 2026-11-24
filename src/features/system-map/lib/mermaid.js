@@ -11,8 +11,13 @@ const SHAPES = {
   shard: ["[(", ")]"],
   backup: ["[(", ")]"],
   featurestore: ["[(", ")]"],
+  search: ["[(", ")]"],
+  vectordb: ["[(", ")]"],
+  warehouse: ["[(", ")]"],
   queue: ["[/", "/]"],
+  eventbus: ["[/", "/]"],
   client: ["([", "])"],
+  mobile: ["([", "])"],
   external: ["{{", "}}"],
   cache: ["[[", "]]"],
 };
@@ -53,7 +58,8 @@ export function toMermaid(graph, { fenced = false } = {}) {
     const to = ids.get(edge.target);
     if (!from || !to) continue;
     const text = escape(edge.label);
-    lines.push(text ? `  ${from} -->|"${text}"| ${to}` : `  ${from} --> ${to}`);
+    const arrow = edge.level === "likely" || edge.level === "guessed" ? "-.->" : "-->"; // dotted: not confirmed
+    lines.push(text ? `  ${from} ${arrow}|"${text}"| ${to}` : `  ${from} ${arrow} ${to}`);
   }
 
   const body = lines.join("\n");

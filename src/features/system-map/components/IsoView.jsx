@@ -1,35 +1,34 @@
-import { useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { kindColor } from "../lib/nodeKinds";
+import { isoStartZoom } from "../lib/viewport";
+import { isUnconfirmed } from "../lib/mapGraph";
 import { DEFAULT_SIZE } from "../lib/edgeRouting";
-import { flowTiming, mapMetrics } from "../lib/flow";
-import { renderIsoImage, renderShareCard } from "../lib/exportImage";
+import { mapMetrics } from "../lib/flow";
+import { laneCounts, simulate } from "../lib/simulation";
+import useFlowPlayback from "../hooks/useFlowPlayback";
 import { PX_PER_TILE, TILE_H, TILE_W, fitBox, iso, isoWire, screenToTiles, worldOf } from "../lib/isoGeometry";
 import { DEAD_COLOR, isDown, shapeOf } from "../../../../constants/isoShapes";
 import { Gradients, IsoShape, Labels } from "./IsoShapes";
-import { Legend, MetricStrip, StageControls } from "./StageChrome";
+import { FlowLegend, MetricStrip, StageControls } from "./StageChrome";
 
 // The map seen from above at an angle: the same saved positions laid on a 2:1
 // isometric floor, each part a shape for its kind in its family colour, requests moving
-// along the wires in trip order. Look only; the flat canvas stays the place to edit.
-
-const HOP_SECONDS = 0.9;
-
+// by what each part does (lib/simulation.js). Look only; the flat canvas stays the place to edit.
 
 const MIN_ZOOM = 0.4;
-const MAX_ZOOM = 3;
+const MAX_ZOOM = 5;
 const CLICK_SLOP = 4; // px of movement before a press on a part counts as a drag
 
 const isPad = (node) => shapeOf(node.data.kind).floor === true;
 
-export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, onConnect, readOnly = false, ref }) {
+export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, onConnect, readOnly = false, metricsClass, ref }) {
   const uid = `iso${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   const [paused, setPaused] = useState(false);
-  const pausedRef = useRef(false);
-  const clock = useRef(0);
-  const dotRefs = useRef(new Map());
-  const wireRefs = useRef(new Map());
-  const svgRef = useRef(null);
+  const control = useRef({ clock: 0, paused: false });
+  const stageRef = useRef(null); // holds the three layers and every pointer handler
+  const svgRef = useRef(null); // the floor layer; the others share its size and viewBox
   const drag = useRef(null);
+  const fingers = useRef(new Map()); // pointer id -> where it is, for pinch zoom
   const [view, setView] = useState({ dx: 0, dy: 0, zoom: 1 });
   const [linking, setLinking] = useState(false); // connect mode: a drag from a part draws a wire
   const [pending, setPending] = useState(null); // the wire being drawn: { from, to, target }
@@ -40,11 +39,11 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
 
   const scene = useMemo(() => {
     const world = new Map(nodes.map((n) => [n.id, worldOf(n)]));
-    const byId = new Map(nodes.map((n) => [n.id, n]));
-    const trip = flowTiming(nodes, edges);
+    const timeline = simulate(nodes, edges);
+    const lanes = laneCounts(timeline.moves);
 
     const colors = [...new Set([...nodes.map((n) => kindColor(n.data.kind)), DEAD_COLOR])];
-    const gradOf = (node) => `${uid}-g${colors.indexOf(isDown(node) ? DEAD_COLOR : kindColor(node.data.kind))}`;
+    const gradOf = (node, layer) => `${layer}-g${colors.indexOf(isDown(node) ? DEAD_COLOR : kindColor(node.data.kind))}`;
 
     const wires = edges
       .filter((e) => world.has(e.source) && world.has(e.target))
@@ -53,9 +52,8 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
         source: e.source,
         target: e.target,
         selected: Boolean(e.selected),
-        step: trip.hops.get(e.id),
-        color: kindColor(byId.get(e.source).data.kind),
-        failed: isDown(byId.get(e.target)),
+        unconfirmed: isUnconfirmed(e),
+        lanes: lanes.get(e.id) ?? 0,
         ...isoWire(world.get(e.source), world.get(e.target)),
       }));
 
@@ -66,60 +64,20 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
       return pa.x + pa.y - (pb.x + pb.y);
     });
 
-    return { world, wires, order, colors, gradOf, steps: trip.steps, metrics: mapMetrics(nodes, edges) };
-  }, [nodes, edges, uid]);
+    return { world, wires, at: new Map(wires.map((w) => [w.id, w.at])), timeline, order, colors, gradOf, metrics: mapMetrics(nodes, edges) };
+  }, [nodes, edges]);
 
-  const sceneRef = useRef(scene);
-  useEffect(() => {
-    sceneRef.current = scene;
-  });
-
-  // Requests move every frame, written straight to the DOM so React doesn't
-  // re-render 60 times a second. Started once: it reads the latest wires from
-  // sceneRef, so selecting or dragging a part doesn't restart it.
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
-    const shown = new Map(); // wire id -> { dot, live } as last written, to skip writes that change nothing
-    let last = performance.now();
-    let frame;
-    const tick = (now) => {
-      frame = requestAnimationFrame(tick);
-      const dt = (now - last) / 1000;
-      last = now;
-      if (pausedRef.current) return;
-      clock.current += dt;
-      const { wires, steps } = sceneRef.current;
-      const hop = (clock.current % (steps * HOP_SECONDS)) / HOP_SECONDS;
-      for (const wire of wires) {
-        const dot = dotRefs.current.get(wire.id);
-        if (!dot || wire.step === undefined) continue;
-        const local = hop - wire.step;
-        const live = local >= 0 && local < 1;
-        const before = shown.get(wire.id);
-        // A remounted dot (the wire was removed and drawn again) starts hidden, whatever was written before.
-        if (before?.dot !== dot || before.live !== live) {
-          shown.set(wire.id, { dot, live });
-          dot.style.opacity = live ? 1 : 0;
-          wireRefs.current.get(wire.id)?.classList.toggle("pm-held", live);
-        }
-        if (live) {
-          const p = wire.at(local);
-          dot.setAttribute("transform", `translate(${p.x} ${p.y})`);
-        }
-      }
-    };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, []);
+  const { dots, wires: wireRefs } = useFlowPlayback(scene.timeline, (id, t) => scene.at.get(id)?.(t) ?? null, control, stageRef);
 
   const togglePause = () => {
-    pausedRef.current = !pausedRef.current;
-    setPaused(pausedRef.current);
+    control.current.paused = !control.current.paused;
+    setPaused(control.current.paused);
   };
   const replay = () => {
-    clock.current = 0;
+    control.current.clock = 0;
   };
 
+  const top = `${uid}t`; // the parts layer's own gradient ids
   const { world, wires, order, colors, gradOf, metrics } = scene;
   const box = fit.box;
   const cx = box.x + box.w / 2;
@@ -132,6 +90,51 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
   const unitsPerPx = () => {
     const el = svgRef.current;
     return el ? Math.max(vw / el.clientWidth, vh / el.clientHeight) : 1;
+  };
+
+  // On a phone the whole map is too small to read, so it opens zoomed in; "show the whole map" still fits it all.
+  useLayoutEffect(() => {
+    const el = svgRef.current;
+    if (!el.clientWidth) return;
+    const zoom = Math.min(MAX_ZOOM, isoStartZoom(Math.min(el.clientWidth / box.w, el.clientHeight / box.h)));
+    if (zoom > 1) setView((v) => ({ ...v, zoom }));
+    // Only when the view opens: after that the learner's own zoom stays.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Two fingers: zoom around the point between them, and pan as it moves.
+  const pinchShape = () => {
+    const [a, b] = [...fingers.current.values()];
+    return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, gap: Math.hypot(a.x - b.x, a.y - b.y) || 1 };
+  };
+  const startPinch = (e) => {
+    const d = drag.current;
+    // The first finger may have been moving a part: that move ends here, as one undo step.
+    if (d?.kind === "node" && d.moved) onNodesChange([{ type: "position", id: d.id, position: d.to, dragging: false }]);
+    setPending(null);
+    svgRef.current.setPointerCapture(e.pointerId);
+    drag.current = { kind: "pinch", start: pinchShape(), view };
+  };
+  const movePinch = (d) => {
+    const now = pinchShape();
+    const rect = svgRef.current.getBoundingClientRect();
+    const base = Math.max(box.w / rect.width, box.h / rect.height); // svg units per px at zoom 1
+    const zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, (d.view.zoom * now.gap) / d.start.gap));
+    const off = (p) => ({ x: p.x - rect.left - rect.width / 2, y: p.y - rect.top - rect.height / 2 });
+    const from = off(d.start);
+    const to = off(now);
+    setView({
+      zoom,
+      dx: d.view.dx + (from.x * base) / d.view.zoom - (to.x * base) / zoom,
+      dy: d.view.dy + (from.y * base) / d.view.zoom - (to.y * base) / zoom,
+    });
+  };
+  const onDownCapture = (e) => {
+    if (e.pointerType !== "touch") return;
+    fingers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (fingers.current.size < 2) return;
+    e.stopPropagation(); // the second finger must not start moving whatever is under it
+    if (fingers.current.size === 2) startPinch(e);
   };
 
   // The pointer in svg units.
@@ -160,6 +163,11 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
       setPending({ from: iso(w.x, w.y, shapeOf(node.data.kind).height), to: toSvg(e), target: null });
       return;
     }
+    // A finger on a part that isn't selected pans: parts cover most of a small screen. Tap it first to move it.
+    if (e.pointerType === "touch" && !node.selected) {
+      drag.current = { ...base, kind: "pan", view, tapped: node.id };
+      return;
+    }
     drag.current = { ...base, kind: "node", from: node.position, to: node.position };
   };
 
@@ -184,8 +192,13 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
   };
 
   const onPointerMove = (e) => {
+    if (fingers.current.has(e.pointerId)) fingers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     const d = drag.current;
     if (!d) return;
+    if (d.kind === "pinch") {
+      if (fingers.current.size === 2) movePinch(d);
+      return;
+    }
     const dx = (e.clientX - d.x) * d.scale;
     const dy = (e.clientY - d.y) * d.scale;
     if (!d.moved && Math.hypot(e.clientX - d.x, e.clientY - d.y) < CLICK_SLOP) return;
@@ -209,12 +222,14 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
   };
 
   const onPointerUp = (e) => {
+    fingers.current.delete(e.pointerId);
     const d = drag.current;
     drag.current = null;
+    if (d?.kind === "pinch") return;
     if (!d || !onNodesChange) return;
     if (d.kind === "pan") {
       // A press on the floor that didn't pan clears the selection.
-      if (!d.moved) select(null, null);
+      if (!d.moved) select(d.tapped ?? null, null);
       return;
     }
     if (d.kind === "link") {
@@ -233,17 +248,30 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
     }
   };
 
-  const drawShape = (n) => (
+  const drawShape = (layer) => (n) => (
     <IsoShape
       key={n.id}
       node={n}
       def={shapeOf(n.data.kind)}
-      grad={gradOf(n)}
+      grad={gradOf(n, layer)}
       color={isDown(n) ? DEAD_COLOR : kindColor(n.data.kind)}
-      shadow={`${uid}-shadow`}
+      shadow={`${layer}-shadow`}
       dead={isDown(n)}
       highlight={pending?.target === n.id}
     />
+  );
+
+  // Each layer carries its own paints, so it can be exported on its own.
+  const paints = (layer) => (
+    <>
+      {colors.map((color, i) => (
+        <Gradients key={color} id={`${layer}-g${i}`} color={color} />
+      ))}
+      <radialGradient id={`${layer}-shadow`}>
+        <stop offset="0" stopColor="#000" stopOpacity="0.6" />
+        <stop offset="1" stopColor="#000" stopOpacity="0" />
+      </radialGradient>
+    </>
   );
 
   const frame = (list) => {
@@ -265,13 +293,13 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
     },
     fit: refit,
     focus: (ids) => frame(nodes.filter((n) => ids.includes(n.id))),
-    image: (format) => renderIsoImage(svgRef.current, fitBox(nodes), format),
-    card: (info) => renderShareCard(svgRef.current, fitBox(nodes), info),
+    image: async (format) => (await import("../lib/exportImage")).renderIsoImage(stageRef.current, fitBox(nodes), format),
+    card: async (info) => (await import("../lib/exportImage")).renderShareCard(stageRef.current, fitBox(nodes), info),
   }));
 
   // Wheel zoom needs a non-passive listener to stop the page scrolling.
   useEffect(() => {
-    const el = svgRef.current;
+    const el = stageRef.current;
     const onWheel = (e) => {
       e.preventDefault();
       setView((v) => ({ ...v, zoom: Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, v.zoom * (e.deltaY < 0 ? 1.1 : 1 / 1.1))) }));
@@ -282,26 +310,24 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
 
   return (
     <div className="relative size-full">
-      <MetricStrip metrics={metrics} />
+      <MetricStrip metrics={metrics} className={metricsClass} />
 
-      <svg
-        ref={svgRef}
-        viewBox={viewBox}
-        className={`size-full touch-none select-none ${linking ? "cursor-crosshair" : "cursor-move"}`}
+      <div
+        ref={stageRef}
+        className={`absolute inset-0 touch-none select-none ${linking ? "cursor-crosshair" : "cursor-move"}`}
         role="img"
-        aria-label="3D view of the map. Drag a part to move it, Shift-drag from one part to another to wire them, drag the floor to pan, scroll to zoom."
+        aria-label="3D view of the map. Drag a part to move it, Shift-drag from one part to another to wire them, drag the floor to pan, scroll or pinch to zoom. On a touch screen, tap a part before moving it."
+        onPointerDownCapture={onDownCapture}
+        // Everything here is pointer events. Without this, the click a tap also sends lands on the edit sheet that just opened under the finger.
+        onTouchEnd={(e) => e.cancelable && e.preventDefault()}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
       >
+      {/* Three layers: a moving dot redraws the dots, not the whole scene. */}
+      <svg ref={svgRef} viewBox={viewBox} className="absolute inset-0 size-full">
         <defs>
-          {colors.map((color, i) => (
-            <Gradients key={color} id={`${uid}-g${i}`} color={color} />
-          ))}
-          <radialGradient id={`${uid}-shadow`}>
-            <stop offset="0" stopColor="#000" stopOpacity="0.6" />
-            <stop offset="1" stopColor="#000" stopOpacity="0" />
-          </radialGradient>
+          {paints(uid)}
           <pattern id={`${uid}-grid`} width="28" height="14" patternUnits="userSpaceOnUse">
             <path d="M0 7 L14 0 L28 7 L14 14 Z" fill="none" stroke="#262626" strokeWidth="0.8" />
           </pattern>
@@ -334,9 +360,9 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
                 ref={(el) => (el ? wireRefs.current.set(w.id, el) : wireRefs.current.delete(w.id))}
                 d={w.d}
                 fill="none"
-                stroke={w.selected ? "#c084fc" : w.step === undefined ? "#27272a" : "#52525b"}
+                stroke={w.selected ? "#c084fc" : w.lanes === 0 && !w.unconfirmed ? "#27272a" : "#52525b"}
                 strokeWidth={w.selected ? 2.5 : 1.5}
-                strokeDasharray="5 5"
+                strokeDasharray={w.unconfirmed ? "4 6" : undefined}
                 strokeLinecap="round"
                 className="pointer-events-none"
               />
@@ -347,26 +373,34 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
         </g>
 
         <g className="layer-floor" onPointerDown={onPartDown}>
-          {order.filter(isPad).map(drawShape)}
+          {order.filter(isPad).map(drawShape(uid))}
         </g>
 
+      </svg>
+
+      <svg viewBox={viewBox} className="pointer-events-none absolute inset-0 size-full will-change-transform">
         <g className="layer-packets pointer-events-none">
-          {wires
-            .filter((w) => w.step !== undefined)
-            .map((w) => (
-              <g
-                key={w.id}
-                ref={(el) => (el ? dotRefs.current.set(w.id, el) : dotRefs.current.delete(w.id))}
-                style={{ opacity: 0 }}
-                className="motion-reduce:hidden"
-              >
-                <circle r={4.3} fill={w.failed ? "#f87171" : w.color} stroke="#0a0a0a" strokeWidth={1} />
-              </g>
-            ))}
+          {wires.flatMap((w) =>
+            Array.from({ length: w.lanes }, (_, lane) => {
+              const key = `${w.id}:${lane}`;
+              return (
+                <circle
+                  key={key}
+                  ref={(el) => (el ? dots.current.set(key, el) : dots.current.delete(key))}
+                  r={4.3}
+                  visibility="hidden"
+                  className="motion-reduce:hidden"
+                />
+              );
+            }),
+          )}
         </g>
+      </svg>
 
-        <g className="layer-ents" onPointerDown={onPartDown}>
-          {order.filter((n) => !isPad(n)).map(drawShape)}
+      <svg viewBox={viewBox} className="pointer-events-none absolute inset-0 size-full will-change-transform">
+        <defs>{paints(top)}</defs>
+        <g className="layer-ents pointer-events-auto" onPointerDown={onPartDown}>
+          {order.filter((n) => !isPad(n)).map(drawShape(top))}
         </g>
 
         {pending && (
@@ -388,8 +422,9 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
           </text>
         )}
       </svg>
+      </div>
 
-      <Legend />
+      <FlowLegend types={scene.timeline.types} unconfirmed={metrics.unconfirmed > 0} />
       <StageControls
         linking={linking}
         onToggleLink={onConnect ? () => setLinking((on) => !on) : null}

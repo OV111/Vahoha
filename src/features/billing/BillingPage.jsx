@@ -1,3 +1,4 @@
+import { Bone, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
 import { useEffect, useRef } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -7,6 +8,7 @@ import { PLANS_BY_ID } from "./plans";
 import { PAGE } from "../../../constants/layout";
 import posthog, { isPostHogConfigured } from "@/lib/posthog";
 
+const FEATURE_WIDTHS = ["w-3/5", "w-1/2", "w-2/3", "w-2/5"];
 const SECTION = "rounded-xl border border-white/10 bg-zinc-950 p-5 sm:p-6";
 const SECTION_TITLE = "mb-4 text-base font-semibold text-[#F7F7F8]";
 const PRIMARY_BTN =
@@ -103,10 +105,18 @@ const BillingPage = () => {
       </header>
 
       {loading && (
-        <div className={`${SECTION} animate-pulse`} aria-busy="true" aria-label="Loading billing">
-          <div className="mb-3 h-5 w-32 rounded bg-white/10" />
-          <div className="h-4 w-64 rounded bg-white/5" />
-        </div>
+        <SkeletonRegion label="Loading billing">
+          <BonePanel className="rounded-xl p-5 sm:p-6">
+            <h2 className={SECTION_TITLE}>Current plan</h2>
+            <Bone className="my-1 h-5 w-40" />
+            <Bone soft className="mt-2 h-3.5 w-64 max-w-full" />
+            <div className="mt-6 grid gap-2.5 sm:grid-cols-2">
+              {FEATURE_WIDTHS.map((width) => (
+                <Bone key={width} soft className={`my-0.5 h-4 ${width}`} />
+              ))}
+            </div>
+          </BonePanel>
+        </SkeletonRegion>
       )}
 
       {!loading && error && !status && (

@@ -35,7 +35,7 @@ function ResultItem({ question, result, index }) {
     <li className="rounded-xl border border-neutral-800 bg-black/40 p-3">
       <div className="flex items-start justify-between gap-3">
         <p className="text-sm text-white">
-          <span className="mr-1.5 text-neutral-500">Q{index + 1}</span>
+          <span className="mr-1.5 text-neutral-400">Q{index + 1}</span>
           {question.q}
         </p>
         <ScoreDots score={result.score} />
@@ -43,7 +43,7 @@ function ResultItem({ question, result, index }) {
       <p className="mt-2 text-sm leading-relaxed text-neutral-300">{result.feedback}</p>
       {result.missed.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1.5">
-          <span className="text-xs text-neutral-500">Missed:</span>
+          <span className="text-xs text-neutral-400">Missed:</span>
           {result.missed.map((m) => (
             <span key={m} className="rounded-full bg-neutral-800 px-2 py-0.5 text-xs text-neutral-300">
               {m}
@@ -132,7 +132,7 @@ export default function UnderstandingCheck({ mapId, onFocus }) {
             return (
               <div key={q.id}>
                 <label htmlFor={`answer-${q.id}`} className="block text-sm text-white">
-                  <span className="mr-1.5 text-neutral-500">Q{i + 1}</span>
+                  <span className="mr-1.5 text-neutral-400">Q{i + 1}</span>
                   {q.q}
                 </label>
                 <textarea
@@ -142,7 +142,7 @@ export default function UnderstandingCheck({ mapId, onFocus }) {
                   rows={4}
                   disabled={phase === "grading"}
                   onChange={(e) => setDrafts((d) => ({ ...d, [q.id]: e.target.value }))}
-                  className="mt-1.5 w-full rounded-lg border border-neutral-700 bg-black px-3 py-2 text-sm text-white placeholder:text-neutral-600 focus-visible:outline-2 focus-visible:outline-purple-400 disabled:opacity-60"
+                  className="mt-1.5 w-full rounded-lg border border-neutral-700 bg-black px-3 py-2 text-base sm:text-sm text-white placeholder:text-neutral-600 focus-visible:outline-2 focus-visible:outline-purple-400 disabled:opacity-60"
                   placeholder="In your own words…"
                 />
                 <div className="flex items-center justify-between gap-2">
@@ -157,7 +157,7 @@ export default function UnderstandingCheck({ mapId, onFocus }) {
                   ) : (
                     <span />
                   )}
-                  <span className={`text-xs tabular-nums ${text.length >= MAX_ANSWER ? "text-amber-300" : "text-neutral-500"}`}>
+                  <span className={`text-xs tabular-nums ${text.length >= MAX_ANSWER ? "text-amber-300" : "text-neutral-400"}`}>
                     {text.length}/{MAX_ANSWER}
                   </span>
                 </div>

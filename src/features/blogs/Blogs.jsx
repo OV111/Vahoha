@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Search, X, ChevronLeft, ChevronRight } from "lucide-react";
-import { SkeletonTheme } from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import BlogCard from "@/features/blogs/components/BlogCard";
 import { BlogCardSkeletonGrid } from "@/features/blogs/components/BlogCardSkeleton";
 import useDebouncedValue from "@/hooks/useDebouncedValue";
@@ -219,40 +217,38 @@ const Blogs = () => {
         )}
       </div>
 
-      <SkeletonTheme baseColor="#171717" highlightColor="#262626">
-        {status === "loading" && <BlogCardSkeletonGrid count={6} />}
+      {status === "loading" && <BlogCardSkeletonGrid count={6} />}
 
-        {status === "error" && (
-          <div className="flex flex-col items-center gap-3 rounded-2xl border border-neutral-800 py-20 text-center">
-            <p className="font-medium text-neutral-200">Couldn&apos;t load posts</p>
-            <p className="text-sm text-neutral-500">Check your connection and try again.</p>
-            <button
-              type="button"
-              onClick={() => setRetryKey((k) => k + 1)}
-              className="mt-2 cursor-pointer rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-neutral-200"
-            >
-              Retry
-            </button>
-          </div>
-        )}
+      {status === "error" && (
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-neutral-800 py-20 text-center">
+          <p className="font-medium text-neutral-200">Couldn&apos;t load posts</p>
+          <p className="text-sm text-neutral-500">Check your connection and try again.</p>
+          <button
+            type="button"
+            onClick={() => setRetryKey((k) => k + 1)}
+            className="mt-2 cursor-pointer rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-neutral-200"
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
-        {status === "ready" && blogs.length === 0 && (
-          <div className="flex flex-col items-center gap-2 rounded-2xl border border-neutral-800 py-20 text-center">
-            <p className="font-medium text-neutral-200">No posts found</p>
-            <p className="text-sm text-neutral-500">
-              {hasFilters ? "Try a different topic or search." : "Nothing has been published yet."}
-            </p>
-          </div>
-        )}
+      {status === "ready" && blogs.length === 0 && (
+        <div className="flex flex-col items-center gap-2 rounded-2xl border border-neutral-800 py-20 text-center">
+          <p className="font-medium text-neutral-200">No posts found</p>
+          <p className="text-sm text-neutral-500">
+            {hasFilters ? "Try a different topic or search." : "Nothing has been published yet."}
+          </p>
+        </div>
+      )}
 
-        {status === "ready" && blogs.length > 0 && (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {blogs.map((blog) => (
-              <BlogCard key={blog._id} card={blog} />
-            ))}
-          </div>
-        )}
-      </SkeletonTheme>
+      {status === "ready" && blogs.length > 0 && (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {blogs.map((blog) => (
+            <BlogCard key={blog._id} card={blog} />
+          ))}
+        </div>
+      )}
 
       {status === "ready" && totalPages > 1 && (
         <Pagination page={page} totalPages={totalPages} onChange={goToPage} />

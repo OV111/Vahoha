@@ -78,7 +78,257 @@ function Pieces({ cx, cy, offsets, half, height, ...paint }) {
     .map(([dx, dy]) => <Solid key={`${dx},${dy}`} faces={boxFaces(cx + dx, cy + dy, half, height)} {...paint} />);
 }
 
+// Lays 2D drawing onto a box's left face: x runs along the face, y stays upright, 0 0 is its middle.
+const onLeftFace = (f, height) => {
+  const mid = lerp(f.w, f.s, 0.5);
+  return `matrix(1 0.5 0 1 ${mid.x} ${mid.y - height / 2})`;
+};
+
+// A round stand whose emblem is drawn upright above it, facing the viewer.
+function Stand({ x, y, def, paint, children }) {
+  const t = iso(x, y, def.height);
+  return (
+    <>
+      <Cylinder cx={x} cy={y} r={def.half} height={def.height} {...paint} />
+      <g transform={`translate(${t.x} ${t.y - 2})`}>{children}</g>
+    </>
+  );
+}
+
+const face = (paint) => ({ fill: `url(#${paint.grad}-top)`, stroke: paint.color, strokeWidth: 1.5 });
+const ink = (paint) => ({ fill: "none", stroke: paint.color, strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" });
+
 const BODIES = {
+  phone: ({ x, y, def, paint }) => (
+    <Stand {...{ x, y, def, paint }}>
+      <rect x={-11} y={-45} width={28} height={46} rx={5} fill={`url(#${paint.grad}-side)`} stroke={paint.color} strokeOpacity={0.45} />
+      <rect x={-14} y={-46} width={28} height={46} rx={5} {...face(paint)} />
+      <rect x={-10.5} y={-40} width={21} height={32} rx={2} fill="rgb(0 0 0 / 0.45)" />
+      <path d="M-6 -34 L6 -34 M-6 -28 L2 -28 M-6 -22 L5 -22" {...ink(paint)} />
+      <circle cy={-4} r={1.8} fill={paint.color} />
+    </Stand>
+  ),
+
+  globe: ({ x, y, def, paint }) => (
+    <Stand {...{ x, y, def, paint }}>
+      <circle cy={-24} r={21} {...face(paint)} />
+      <path d="M0 -45 A21 21 0 0 1 0 -3 A30 30 0 0 0 0 -45 Z" fill="#000" opacity={0.15} />
+      <path d="M-21 -24 L21 -24 M-18 -35 Q0 -30 18 -35 M-18 -13 Q0 -18 18 -13" {...ink(paint)} />
+      <ellipse cy={-24} rx={9} ry={21} {...ink(paint)} />
+      {[[-13, -32], [6, -38], [12, -19], [-5, -12]].map(([cx, cy]) => (
+        <circle key={cx} cx={cx} cy={cy} r={2.6} fill="#fff" />
+      ))}
+    </Stand>
+  ),
+
+  gauge: ({ x, y, def, paint }) => (
+    <Stand {...{ x, y, def, paint }}>
+      <path d="M-24 -4 A24 24 0 0 1 24 -4 Z" {...face(paint)} />
+      <path d="M-17 -6 A17 17 0 0 1 8 -19" {...ink(paint)} strokeWidth={4} stroke="#34d399" />
+      <path d="M12 -17 A17 17 0 0 1 17 -6" {...ink(paint)} strokeWidth={4} stroke="#f87171" />
+      <path d="M0 -6 L11 -15" stroke="#fff" strokeWidth={2.5} strokeLinecap="round" />
+      <circle cy={-6} r={3} fill="#fff" />
+    </Stand>
+  ),
+
+  mast: ({ x, y, def, paint }) => (
+    <Stand {...{ x, y, def, paint }}>
+      <path d="M-9 0 L0 -32 L9 0 M-6 -10 L6 -10 M-3.5 -20 L3.5 -20" {...ink(paint)} strokeWidth={2.5} />
+      <circle cy={-34} r={4} fill="#fff" stroke={paint.color} strokeWidth={1.5} />
+      <path d="M9 -42 Q14 -34 9 -26 M15 -46 Q23 -34 15 -22 M-9 -42 Q-14 -34 -9 -26 M-15 -46 Q-23 -34 -15 -22" {...ink(paint)} strokeWidth={2} />
+    </Stand>
+  ),
+
+  lens: ({ x, y, def, paint }) => (
+    <Stand {...{ x, y, def, paint }}>
+      <path d="M7 -16 L18 -3" stroke={paint.color} strokeWidth={7} strokeLinecap="round" />
+      <circle cx={-4} cy={-28} r={18} {...face(paint)} strokeWidth={4} />
+      <circle cx={-4} cy={-28} r={13} fill="rgb(0 0 0 / 0.4)" />
+      <path d="M-12 -33 L4 -33 M-12 -28 L1 -28 M-12 -23 L3 -23" {...ink(paint)} stroke="#fff" />
+    </Stand>
+  ),
+
+  clock: ({ x, y, def, paint }) => (
+    <Stand {...{ x, y, def, paint }}>
+      <circle cx={2} cy={-23} r={21} fill={`url(#${paint.grad}-side)`} stroke={paint.color} strokeOpacity={0.45} />
+      <circle cy={-24} r={21} {...face(paint)} />
+      <circle cy={-24} r={16.5} fill="rgb(0 0 0 / 0.4)" />
+      {[0, 90, 180, 270].map((deg) => (
+        <path key={deg} d="M0 -13 L0 -16" transform={`translate(0 -24) rotate(${deg})`} stroke="#fff" strokeWidth={2} />
+      ))}
+      <path d="M0 -35 L0 -24 L8 -19" {...ink(paint)} stroke="#fff" strokeWidth={2.2} />
+    </Stand>
+  ),
+
+  // A question goes in, the model's answer comes out.
+  answer: ({ x, y, def, paint }) => (
+    <Stand {...{ x, y, def, paint }}>
+      <path d="M-18 -46 L22 -46 Q27 -46 27 -41 L27 -19 Q27 -14 22 -14 L3 -14 L-7 -3 L-7 -14 L-18 -14 Q-23 -14 -23 -19 L-23 -41 Q-23 -46 -18 -46 Z" transform="translate(1 1)" fill={`url(#${paint.grad}-side)`} stroke={paint.color} strokeOpacity={0.45} />
+      <path d="M-20 -47 L20 -47 Q25 -47 25 -42 L25 -20 Q25 -15 20 -15 L2 -15 L-8 -4 L-8 -15 L-20 -15 Q-25 -15 -25 -20 L-25 -42 Q-25 -47 -20 -47 Z" {...face(paint)} />
+      <path d="M-12 -41 Q-11 -32 -3 -31 Q-11 -30 -12 -21 Q-13 -30 -21 -31 Q-13 -32 -12 -41 Z" fill="#fff" />
+      <path d="M2 -36 L18 -36 M2 -31 L14 -31 M2 -26 L17 -26" {...ink(paint)} stroke="#fff" strokeWidth={2} />
+    </Stand>
+  ),
+
+  transfer: ({ x, y, def, paint }) => (
+    <Stand {...{ x, y, def, paint }}>
+      {[[-21, 24, 0.55], [21, 32, 1]].map(([cx, h, opacity]) => (
+        <g key={cx} transform={`translate(${cx} 0)`} opacity={opacity}>
+          <path d={`M-12 ${-h} L-12 -4 A12 5 0 0 0 12 -4 L12 ${-h} Z`} fill={`url(#${paint.grad}-side)`} stroke={paint.color} strokeWidth={1.2} />
+          <path d={`M-12 ${-h / 2} A12 5 0 0 0 12 ${-h / 2}`} fill="none" stroke={SLOT} strokeWidth={1.5} />
+          <ellipse cy={-h} rx={12} ry={5} {...face(paint)} />
+        </g>
+      ))}
+      <path d="M-7 -16 L6 -16 M1 -21 L6 -16 L1 -11" {...ink(paint)} stroke="#fff" strokeWidth={2.5} />
+    </Stand>
+  ),
+
+  // Back to front: the belt and job going in, the machine, the belt and job coming out.
+  machine: ({ x, y, def, paint }) => {
+    const body = 1.5;
+    const belt = (def.half - body) / 2;
+    const f = boxFaces(x, y, body, def.height, def.depth);
+    const side = (dir) => {
+      const at = x + dir * (body + belt);
+      return (
+        <>
+          <Solid faces={boxFaces(at, y, belt, 8, 0.85)} {...paint} />
+          <Solid faces={boxFaces(at, y, 0.5, 14, 0.5, 8)} {...paint} color="#fff" shadow={null} />
+        </>
+      );
+    };
+    return (
+      <>
+        {side(-1)}
+        <Solid faces={f} {...paint} />
+        <g transform={onLeftFace(f, def.height)}>
+          {[0, 45, 90, 135].map((deg) => (
+            <rect key={deg} x={-3.5} y={-16} width={7} height={32} rx={1.5} transform={`rotate(${deg})`} fill={paint.color} />
+          ))}
+          <circle r={12} fill={paint.color} />
+          <circle r={5} fill="rgb(0 0 0 / 0.6)" />
+        </g>
+        {side(1)}
+      </>
+    );
+  },
+
+  // An archive box with its lid on and a handle cut in the front.
+  archive: ({ x, y, def, paint }) => {
+    const f = boxFaces(x, y, def.half - 0.15, def.base);
+    return (
+      <>
+        <Solid faces={f} {...paint} />
+        <g transform={onLeftFace(f, def.base)}>
+          <rect x={-12} y={-3} width={24} height={9} rx={4.5} fill="rgb(0 0 0 / 0.55)" stroke={paint.color} strokeWidth={1.2} />
+        </g>
+        <Solid faces={boxFaces(x, y, def.half, def.height - def.base, def.half, def.base)} {...paint} shadow={null} />
+      </>
+    );
+  },
+
+  // One front, several doorways: every request is sent through the right one.
+  arches: ({ x, y, def, paint }) => {
+    const f = boxFaces(x, y, def.half, def.height, def.depth);
+    return (
+      <>
+        <Solid faces={f} {...paint} />
+        <g transform={onLeftFace(f, def.height)}>
+          {[-21, 0, 21].map((cx) => (
+            <path key={cx} d={`M${cx - 7} 17 L${cx - 7} 0 A7 9 0 0 1 ${cx + 7} 0 L${cx + 7} 17 Z`} fill="rgb(0 0 0 / 0.55)" stroke={paint.color} strokeWidth={1.2} />
+          ))}
+        </g>
+      </>
+    );
+  },
+
+  cabinet: ({ x, y, def, paint }) => {
+    const f = boxFaces(x, y, def.half, def.height);
+    const w = def.half * 2 * TILE_W;
+    return (
+      <>
+        <Solid faces={f} {...paint} />
+        <g transform={onLeftFace(f, def.height)}>
+          {[-15, 0, 15].map((cy) => (
+            <g key={cy}>
+              <rect x={-w / 2 + 5} y={cy - 6} width={w - 10} height={12} rx={1.5} fill="rgb(0 0 0 / 0.25)" stroke={SLOT} strokeWidth={1.2} />
+              <path d={`M-5 ${cy} L5 ${cy}`} stroke={paint.color} strokeWidth={2.5} strokeLinecap="round" />
+            </g>
+          ))}
+        </g>
+      </>
+    );
+  },
+
+  bus: ({ x, y, def, paint }) => {
+    const f = boxFaces(x, y, def.half, def.height, def.depth);
+    return (
+      <>
+        <Solid faces={f} {...paint} />
+        <g transform={onLeftFace(f, def.height)}>
+          {[-32, -11, 11, 32].map((cx) => (
+            <g key={cx}>
+              <path d={`M${cx} 4 L${cx} 14`} stroke={paint.color} strokeWidth={2.5} />
+              <circle cx={cx} cy={4} r={4.5} fill="rgb(0 0 0 / 0.5)" stroke={paint.color} strokeWidth={2} />
+            </g>
+          ))}
+        </g>
+      </>
+    );
+  },
+
+  screen: ({ x, y, def, paint }) => {
+    const f = boxFaces(x, y, def.half, def.height, def.depth);
+    const w = def.half * 2 * TILE_W;
+    return (
+      <>
+        <Solid faces={f} {...paint} />
+        <g transform={onLeftFace(f, def.height)}>
+          <rect x={-w / 2 + 5} y={-def.height / 2 + 6} width={w - 10} height={def.height - 14} rx={2} fill="rgb(0 0 0 / 0.55)" />
+          <path d="M-27 6 L-18 2 L-11 8 L-4 -12 L3 4 L11 -4 L18 0 L27 -8" {...ink(paint)} strokeWidth={2} />
+          <path d="M-27 14 L27 14" stroke={paint.color} strokeOpacity={0.4} />
+        </g>
+      </>
+    );
+  },
+
+  points: ({ x, y, def, paint }) => {
+    const b = isoCircle(x, y, def.half);
+    const dots = [[-24, -16], [-13, -6], [-17, -27], [-2, -14], [10, -3], [8, -24], [22, -14]];
+    return (
+      <>
+        <Cylinder cx={x} cy={y} r={def.half} height={def.height} {...paint} />
+        <g transform={`translate(${b.x} ${b.y + 7})`}>
+          <path d="M-24 -16 L-13 -6 L-17 -27 Z M-2 -14 L10 -3 L22 -14 L8 -24 Z" {...ink(paint)} strokeOpacity={0.7} />
+          {dots.map(([cx, cy]) => (
+            <circle key={cx} cx={cx} cy={cy} r={2.8} fill="#fff" />
+          ))}
+        </g>
+      </>
+    );
+  },
+
+  warehouse: ({ x, y, def, paint }) => {
+    const f = boxFaces(x, y, def.half, def.height, def.depth);
+    const up = (p) => ({ x: p.x, y: p.y - def.height });
+    const n = iso(x - def.half, y - def.depth, def.height);
+    const left = iso(x - def.half, y, def.height + def.roof);
+    const right = iso(x + def.half, y, def.height + def.roof);
+    const roof = { fill: `url(#${paint.grad}-top)`, stroke: paint.color, strokeWidth: 1, strokeLinejoin: "round" };
+    return (
+      <>
+        <Solid faces={f} {...paint} />
+        <path d={roundedPath([left, right, up(f.e), n], 1)} {...roof} />
+        <path d={roundedPath([up(f.s), up(f.e), right], 1)} {...roof} fill={`url(#${paint.grad}-side)`} />
+        <path d={roundedPath([up(f.w), up(f.s), right, left], 1)} {...roof} />
+        <g transform={onLeftFace(f, def.height)}>
+          <rect x={-16} y={-8} width={32} height={21} fill="rgb(0 0 0 / 0.5)" stroke={paint.color} strokeWidth={1.2} />
+          <path d="M-16 -3 L16 -3 M-16 2 L16 2 M-16 7 L16 7" stroke={paint.color} strokeOpacity={0.5} />
+        </g>
+      </>
+    );
+  },
+
   box: ({ x, y, def, paint }) => <Solid faces={boxFaces(x, y, def.half, def.height)} {...paint} />,
   slab: ({ x, y, def, paint }) => <Solid faces={boxFaces(x, y, def.half, def.height)} {...paint} />,
 
@@ -276,6 +526,8 @@ const BODIES = {
 function labelAt(def, x, y) {
   if (def.name === "pyramid") return iso(x, y, def.height * 0.3);
   if (def.name === "dome") return { ...iso(x, y, def.height), y: iso(x, y, def.height).y - 8 };
+  if (def.name === "warehouse") return iso(x, y + def.depth / 2, def.height + def.roof / 2);
+  if (def.name === "screen") return { ...iso(x, y, def.height), y: iso(x, y, def.height).y - 16 };
   if (def.name === "shield") return { ...iso(x, y, def.height), y: iso(x, y, def.height).y - 14 };
   return iso(x, y, def.height);
 }
@@ -295,10 +547,10 @@ export const IsoShape = memo(function IsoShape({ node, grad, color, shadow, dead
       {(node.selected || highlight) && <path d={roundedPath(ring, CORNER)} fill="none" stroke="#c084fc" strokeWidth={2.5} strokeDasharray="6 4" />}
       <Body x={world.x} y={world.y} def={def} paint={{ grad, color, shadow }} />
       {def.name !== "crowd" && (
-        <g transform={`translate(${at.x} ${at.y})`} className={dead ? "text-neutral-500" : "text-white"}>
-          <Icon x={-11} y={-24} width={22} height={22} strokeWidth={2} />
+        <g transform={`translate(${at.x} ${at.y})`} className={dead ? "text-neutral-400" : "text-white"}>
+          {!def.plain && <Icon x={-11} y={-24} width={22} height={22} strokeWidth={2} />}
           <text y={14} textAnchor="middle" fontSize={13} fontWeight={700} fill="currentColor">
-            {short(node.data.title, 13)}
+            {short(node.data.title, 14)}
           </text>
         </g>
       )}

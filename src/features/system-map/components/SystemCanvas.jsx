@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext, useMemo, useRef } from "react";
 import {
   Background,
   BackgroundVariant,
@@ -17,8 +17,11 @@ import "@xyflow/react/dist/style.css";
 import { BadgeCheck, Box, Maximize, MessageSquare, Minus, Plus, Trash2 } from "lucide-react";
 import { KIND_ICONS, kindColor } from "../lib/nodeKinds";
 import { fitOptions } from "../lib/viewport";
+import { isUnconfirmed } from "../lib/mapGraph";
 import { routeEdges } from "../lib/edgeRouting";
-import { flowTiming } from "../lib/flow";
+import { laneCounts, simulate } from "../lib/simulation";
+import useFlowPlayback from "../hooks/useFlowPlayback";
+import { FlowLegend } from "./StageChrome";
 
 const TONE_CLASS = {
   ok: "bg-emerald-500/15 text-emerald-300",
@@ -42,7 +45,7 @@ const STATUS_BORDER = { bad: "border-red-500/70", ok: "border-emerald-500/60" };
 const DeleteNodeContext = createContext(null);
 // Set by the team map editor: part id -> number of comments on it.
 const CommentCountContext = createContext(null);
-// The request trip through the map (lib/flow.js), or null when each edge's `animated` decides (the system labs light one wire at a time).
+// How many request dots each wire needs and where to register them, or null when each edge's `animated` decides (the system labs light one wire at a time).
 const FlowContext = createContext(null);
 
 function SystemNode({ id, data, selected }) {
@@ -113,29 +116,13 @@ const nodeTypes = { system: SystemNode };
 
 const DOTS = [0, 1, 2];
 const LOOP_SECONDS = 2.4;
-const HOP_SECONDS = 0.9;
 
-// One request crossing this wire during its step of the trip, hidden the rest of the time.
-// Every wire shares the same loop length, so the steps stay in order across the map.
-function TripDot({ path, step, steps }) {
-  const start = step / steps;
-  const end = (step + 1) / steps;
-  const dur = `${steps * HOP_SECONDS}s`;
-  return (
-    <circle r={4} opacity={0}>
-      <animateMotion dur={dur} repeatCount="indefinite" path={path} calcMode="linear" keyPoints="0;0;1;1" keyTimes={`0;${start};${end};1`} />
-      <animate attributeName="opacity" dur={dur} repeatCount="indefinite" calcMode="discrete" values="0;1;0" keyTimes={`0;${start};${end}`} />
-    </circle>
-  );
-}
-
-// A wire with requests travelling along it, in the colour of the part that sends them.
-function FlowEdge({ id, source, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, markerEnd, style, label, animated, selected }) {
-  const trip = useContext(FlowContext);
+// A wire with requests travelling along it. The playback hook moves and colours the dots.
+function FlowEdge({ id, source, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, markerEnd, style, label, data, animated, selected }) {
+  const flow = useContext(FlowContext);
   const color = kindColor(useNodesData(source)?.data?.kind);
   // Right-angle wires, like the 3D view: a busy map reads cleaner than with curves.
   const [path, labelX, labelY] = getSmoothStepPath({ sourceX, sourceY, sourcePosition, targetX, targetY, targetPosition, borderRadius: 10 });
-  const step = trip?.hops.get(id);
   return (
     <>
       <BaseEdge
@@ -143,11 +130,20 @@ function FlowEdge({ id, source, sourceX, sourceY, targetX, targetY, sourcePositi
         path={path}
         markerEnd={markerEnd}
         interactionWidth={24}
-        style={{ stroke: "#3f3f46", strokeWidth: 1.5, ...style, ...(selected ? { stroke: "#c084fc", strokeWidth: 2.5 } : {}) }}
+        style={{ stroke: "#52525b", strokeWidth: 1.5, ...(isUnconfirmed({ data }) ? { strokeDasharray: "4 6" } : {}), ...style, ...(selected ? { stroke: "#c084fc", strokeWidth: 2.5 } : {}) }}
       />
       <g className="pointer-events-none motion-reduce:hidden" fill={color}>
-        {trip
-          ? step !== undefined && <TripDot path={path} step={step} steps={trip.steps} />
+        {flow
+          ? flow.lanes.has(id) && (
+              <>
+                {/* Only measured, to find the points along the wire. */}
+                <path ref={(el) => (el ? flow.paths.current.set(id, el) : flow.paths.current.delete(id))} d={path} fill="none" />
+                {Array.from({ length: flow.lanes.get(id) }, (_, lane) => {
+                  const key = `${id}:${lane}`;
+                  return <circle key={key} ref={(el) => (el ? flow.dots.current.set(key, el) : flow.dots.current.delete(key))} r={4.5} visibility="hidden" />;
+                })}
+              </>
+            )
           : animated &&
             DOTS.map((i) => (
               <circle key={i} r={3.5}>
@@ -205,15 +201,29 @@ function ZoomControls() {
   );
 }
 const notSelf = (c) => c.source !== c.target;
-export default function SystemCanvas({ nodes, edges, onNodesChange, onEdgesChange, onConnect, onDeleteNode, commentCounts = null, flowAll = true, gridGap = 28, ...flowProps }) {
+export default function SystemCanvas({ nodes, edges, onNodesChange, onEdgesChange, onConnect, onDeleteNode, commentCounts = null, flowAll = true, playback, gridGap = 28, ...flowProps }) {
   // Drawn between the sides that face each other, so a wire to a part on the left points left.
   const routed = useMemo(() => routeEdges(nodes, edges), [nodes, edges]);
-  const trip = useMemo(() => (flowAll ? flowTiming(nodes, edges) : null), [flowAll, nodes, edges]);
+  const timeline = useMemo(() => (flowAll ? simulate(nodes, edges) : null), [flowAll, nodes, edges]);
+  const ownPlayback = useRef({ clock: 0, paused: false });
+  const paths = useRef(new Map());
+  const rootRef = useRef(null);
+  const { dots } = useFlowPlayback(
+    timeline,
+    (id, t) => {
+      const path = paths.current.get(id);
+      return path ? path.getPointAtLength(path.getTotalLength() * t) : null;
+    },
+    playback ?? ownPlayback,
+    rootRef,
+  );
+  const flow = useMemo(() => timeline && { lanes: laneCounts(timeline.moves), paths, dots }, [timeline, dots]);
   return (
-    <FlowContext.Provider value={trip}>
+    <FlowContext.Provider value={flow}>
     <CommentCountContext.Provider value={commentCounts}>
     <DeleteNodeContext.Provider value={onDeleteNode ?? null}>
       <ReactFlow
+        ref={rootRef}
         nodes={nodes}
         edges={routed}
         nodeTypes={nodeTypes}
@@ -233,6 +243,7 @@ export default function SystemCanvas({ nodes, edges, onNodesChange, onEdgesChang
       >
         <Background variant={BackgroundVariant.Lines} gap={gridGap} lineWidth={1} color="#141414" />
         <ZoomControls />
+        {timeline && <FlowLegend types={timeline.types} unconfirmed={edges.some(isUnconfirmed)} className="left-16" />}
       </ReactFlow>
     </DeleteNodeContext.Provider>
     </CommentCountContext.Provider>

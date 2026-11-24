@@ -3,8 +3,11 @@ import { parseRepoUrl } from "../../capstone/index.js";
 import { getFileText, getHeadCommit, getRepo, getTree } from "../../capstone/index.js";
 import { detectParts, pickKeyFiles, readSignals } from "../lib/repoScan.js";
 import { DEFAULT_LENS } from "../lib/lenses.js";
-import { labelScan } from "./scanLabelService.js";
+import { runStructured } from "../../capstone/index.js";
+import { createLabelCache, labelScan } from "./scanLabelService.js";
 import { fail } from "../../../utils/httpErrors.js";
+
+const labelCache = createLabelCache();
 
 /**
  * Reads a public GitHub repo and proposes the parts of its map, in the
@@ -32,10 +35,10 @@ export async function scanRepoService(repoUrl, lens = DEFAULT_LENS) {
   const texts = await Promise.all(keyFiles.map((path) => getFileText(meta.fullName, head.sha, path)));
   const files = keyFiles.map((path, i) => ({ path, text: texts[i] })).filter((f) => f.text !== null);
 
-  const { parts, wires } = detectParts(readSignals(files), tree.paths, lens);
+  const { parts, wires } = detectParts(readSignals(files), tree.paths, lens, files);
   if (!parts.length) fail(422, NOTHING_FOUND);
 
-  const labelled = await labelScan({ fullName: meta.fullName, parts, wires, paths: tree.paths, lens });
+  const labelled = await labelScan({ fullName: meta.fullName, parts, wires, paths: tree.paths, lens }, runStructured, labelCache);
   return {
     lens,
     repo: { fullName: meta.fullName, sha: head.sha, htmlUrl: meta.htmlUrl },

@@ -1,22 +1,30 @@
-import React from "react";
+import { Bone, BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
 import { BOOK_GRID, CARD_GRID } from "./grids";
+
+const BookSkeleton = () => (
+  <div className="space-y-3">
+    <BonePanel className="aspect-[2/3] rounded-lg" />
+    <Bone className="h-4 w-3/4" />
+    <Bone soft className="h-3 w-1/2" />
+  </div>
+);
+
+const CardSkeleton = () => (
+  <BonePanel className="flex h-44 flex-col rounded-md p-4">
+    <BoneLines widths={["w-1/2", "w-full", "w-5/6"]} />
+    <Bone className="mt-auto h-4 w-16" />
+  </BonePanel>
+);
 
 // Same grid + aspect ratio as the real cards, so nothing jumps when data arrives.
 export default function ResourceSkeleton({ variant = "card", count = 8 }) {
   const isBook = variant === "book";
+  const Item = isBook ? BookSkeleton : CardSkeleton;
   return (
-    <div className={isBook ? BOOK_GRID : CARD_GRID} aria-hidden="true">
-      {Array.from({ length: count }, (_, i) =>
-        isBook ? (
-          <div key={i} className="animate-pulse space-y-3">
-            <div className="aspect-[2/3] rounded-lg bg-neutral-900" />
-            <div className="h-4 w-3/4 rounded bg-neutral-900" />
-            <div className="h-3 w-1/2 rounded bg-neutral-900" />
-          </div>
-        ) : (
-          <div key={i} className="h-44 animate-pulse rounded-md border border-neutral-800 bg-neutral-950" />
-        ),
-      )}
-    </div>
+    <SkeletonRegion label="Loading resources" className={isBook ? BOOK_GRID : CARD_GRID}>
+      {Array.from({ length: count }, (_, i) => (
+        <Item key={i} />
+      ))}
+    </SkeletonRegion>
   );
 }

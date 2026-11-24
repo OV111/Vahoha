@@ -1,3 +1,4 @@
+import { BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
 import { useCallback, useEffect, useState } from "react";
 import { AlertTriangle } from "lucide-react";
 import { adminApi } from "./adminApi";
@@ -109,10 +110,11 @@ export default function CapstoneAdminPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
         <div className="flex flex-col gap-3">
           {!list && (
-            <div
-              className="h-64 animate-pulse rounded-2xl bg-zinc-900"
-              aria-busy="true"
-            />
+            <SkeletonRegion label="Loading attempts">
+              <BonePanel className="h-64 p-5">
+                <BoneLines widths={["w-1/3", "w-full", "w-5/6", "w-2/3"]} />
+              </BonePanel>
+            </SkeletonRegion>
           )}
           {list?.attempts.length === 0 && (
             <p className="text-[13px] text-zinc-500">No attempts.</p>
@@ -202,10 +204,11 @@ export default function CapstoneAdminPage() {
             </p>
           )}
           {selected && !detail && (
-            <div
-              className="h-96 animate-pulse rounded-2xl bg-zinc-900"
-              aria-busy="true"
-            />
+            <SkeletonRegion label="Loading attempt">
+              <BonePanel className="h-96 p-5">
+                <BoneLines widths={["w-1/3", "w-full", "w-5/6", "w-2/3"]} />
+              </BonePanel>
+            </SkeletonRegion>
           )}
           {detail && (
             <AttemptDetail

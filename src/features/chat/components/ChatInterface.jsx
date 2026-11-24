@@ -1,6 +1,6 @@
+import { BoneControl, SkeletonRegion } from "@/components/ui/Skeleton";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Send } from "lucide-react";
-import Skeleton from "react-loading-skeleton";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import GroupMembersModal from "./GroupMembersModal";
 import ChatHeader from "./ChatHeader";
@@ -126,22 +126,16 @@ const ChatInterface = ({
         >
           <div className="flex max-w-full flex-col gap-2">
             {isLoadingHistory ? (
-              <div className="space-y-3">
+              <SkeletonRegion label="Loading messages" className="space-y-3">
                 {[...Array(12)].map((_, idx) => (
                   <div
                     key={idx}
                     className={`flex ${idx % 2 === 0 ? "justify-start" : "justify-end"}`}
                   >
-                    <Skeleton
-                      width={idx % 2 === 0 ? 170 : 210}
-                      height={34}
-                      borderRadius={18}
-                      baseColor="#161616"
-                      highlightColor="#262626"
-                    />
+                    <BoneControl className={`h-[34px] rounded-[18px] ${idx % 2 === 0 ? "w-[170px]" : "w-[210px]"}`} />
                   </div>
                 ))}
-              </div>
+              </SkeletonRegion>
             ) : chatMessages.length > 0 ? (
               chatMessages.map((msg) => {
                 const isMine = String(msg.senderId) === String(senderId);

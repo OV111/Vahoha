@@ -1,13 +1,12 @@
+import { Bone } from "@/components/ui/Skeleton";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Ellipsis, Users } from "lucide-react";
-import Skeleton from "react-loading-skeleton";
 import { formatTimeAgo, isOnlineByLastActive } from "../lib/time";
 
 const MENU_ITEM =
   "w-full cursor-pointer rounded-lg border border-transparent bg-white/5 px-3 py-2 text-left text-xs font-medium text-white/80 transition-all duration-200 hover:border-white/10 hover:bg-white/10 disabled:cursor-not-allowed disabled:text-[#8A8A93] disabled:hover:border-transparent disabled:hover:bg-white/5";
 
-const skeleton = { baseColor: "#161616", highlightColor: "#262626" };
 
 const TypingLine = ({ text }) => (
   <p className="flex items-center gap-1.5 truncate text-xs text-purple-600">
@@ -85,7 +84,7 @@ const ChatHeader = ({
               </div>
             )
           ) : isLoadingUserStats ? (
-            <Skeleton circle width={32} height={32} {...skeleton} />
+            <Bone className="size-8 shrink-0 rounded-full" />
           ) : userStats?.profileImage ? (
             <img src={userStats.profileImage} alt="Profile" className="mx-auto h-8 w-8 rounded-full bg-purple-100 object-cover lg:mx-0" />
           ) : (
@@ -104,9 +103,9 @@ const ChatHeader = ({
                 )}
               </div>
             ) : isLoadingUserStats ? (
-              <div className="space-y-0">
-                <Skeleton width={130} height={12} borderRadius={6} {...skeleton} />
-                <Skeleton width={90} height={10} borderRadius={6} {...skeleton} />
+              <div className="space-y-2">
+                <Bone className="h-3 w-[130px]" />
+                <Bone soft className="h-2.5 w-[90px]" />
               </div>
             ) : (
               <div>

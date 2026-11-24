@@ -1,15 +1,16 @@
+import { Bone, BonePanel } from "@/components/ui/Skeleton";
 import { ArrowRight, Minus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const CARD = "flex flex-col items-center gap-3 py-5 px-4 border border-[#1a1a1a] bg-[#0d0d0d]";
 
 const ProgressSkeleton = () => (
-  <div className={`${CARD} animate-pulse`}>
-    <div className="w-24 h-24 rounded-full border-[3px] border-[#1a1a1a]" />
-    <div className="h-3 w-full rounded-sm bg-[#1a1a1a]" />
-    <div className="h-3 w-2/3 rounded-sm bg-[#1a1a1a]" />
-    <div className="h-8 w-full rounded-sm bg-[#1a1a1a]" />
-  </div>
+  <BonePanel className={`${CARD} rounded-none`}>
+    <Bone className="size-24 rounded-full border-[3px] border-[#1a1a1a] bg-transparent" />
+    <Bone className="h-3 w-full" />
+    <Bone className="h-3 w-2/3" />
+    <Bone className="h-8 w-full" />
+  </BonePanel>
 );
 
 /**

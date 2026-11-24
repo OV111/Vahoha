@@ -16,7 +16,7 @@ describe("ReadOnlyMap", () => {
         <a href="/project-map">Draw your own</a>
       </ReadOnlyMap>,
     );
-    expect(html).toContain("Click a part to see what it is.");
+    expect(html).toContain("Select a part to see what it is.");
     expect(html).toContain("Draw your own");
   });
 

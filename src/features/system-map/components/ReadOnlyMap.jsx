@@ -1,17 +1,19 @@
-import { useMemo, useState } from "react";
-import { useEdgesState, useNodesState } from "@xyflow/react";
-import SystemCanvas from "./SystemCanvas";
+import { lazy, Suspense, useCallback, useMemo, useState } from "react";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import IsoView from "./IsoView";
 import EvidenceList from "./EvidenceList";
+import { applyChanges } from "../lib/changes";
 import { fromGraph } from "../lib/mapGraph";
 import { kindInfo } from "../lib/nodeKinds";
 
+const FlatCanvas = lazy(() => import("./FlatCanvas")); // opens in 3D, so most visitors never need it
+
 // Where the public pages (/map/:publicId, the team evidence page) default to a tall canvas.
-const TALL = "h-[max(360px,min(62svh,520px))] sm:h-[480px] lg:h-[calc(100vh-14rem)] lg:min-h-[480px]";
+const TALL = "h-[max(340px,min(66svh,560px))] sm:h-[480px] lg:h-[calc(100vh-14rem)] lg:min-h-[480px]";
 
 function PartDetails({ node, repo }) {
   if (!node) {
-    return <p className="text-sm text-neutral-400">Click a part to see what it is.</p>;
+    return <p className="text-sm text-neutral-400">Select a part to see what it is.</p>;
   }
   return (
     <div>
@@ -30,15 +32,17 @@ function PartDetails({ node, repo }) {
           <EvidenceList repo={repo} items={node.data.evidence} />
         </div>
       ) : (
-        repo && <p className="mt-3 text-xs text-neutral-500">Drawn by the owner, not found in the repo scan.</p>
+        repo && <p className="mt-3 text-xs text-neutral-400">Drawn by the owner, not found in the repo scan.</p>
       )}
     </div>
   );
 }
 
 function Viewer({ graph, className, children }) {
-  const [nodes, , onNodesChange] = useNodesState(graph.nodes);
-  const [edges, , onEdgesChange] = useEdgesState(graph.edges);
+  const [nodes, setNodes] = useState(graph.nodes);
+  const [edges, setEdges] = useState(graph.edges);
+  const onNodesChange = useCallback((changes) => setNodes((ns) => applyChanges(changes, ns)), []);
+  const onEdgesChange = useCallback((changes) => setEdges((es) => applyChanges(changes, es)), []);
   const selected = nodes.find((n) => n.selected) ?? null;
   const [view3d, setView3d] = useState(true); // opens in 3D: it's what a shared link is for
 
@@ -48,23 +52,16 @@ function Viewer({ graph, className, children }) {
         <button
           type="button"
           onClick={() => setView3d((on) => !on)}
-          className="absolute top-3 right-3 z-20 min-h-9 cursor-pointer rounded-lg border border-neutral-800 bg-neutral-950/90 px-3 text-xs text-neutral-300 transition-colors hover:border-neutral-600 hover:text-white focus-visible:outline-2 focus-visible:outline-purple-400"
+          className="absolute top-3 right-3 z-20 min-h-9 cursor-pointer pointer-coarse:min-h-11 rounded-lg border border-neutral-800 bg-neutral-950/90 px-3 text-xs text-neutral-300 transition-colors hover:border-neutral-600 hover:text-white focus-visible:outline-2 focus-visible:outline-purple-400"
         >
           {view3d ? "Flat view" : "3D view"}
         </button>
         {view3d ? (
-          <IsoView nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} readOnly />
+          <IsoView nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} readOnly metricsClass="left-3 right-28" />
         ) : (
-          <SystemCanvas
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            nodesDraggable={false}
-            nodesConnectable={false}
-            edgesReconnectable={false}
-            deleteKeyCode={null}
-          />
+          <Suspense fallback={<LoadingSuspense fill />}>
+            <FlatCanvas nodes={nodes} edges={edges} setNodes={setNodes} setEdges={setEdges} readOnly />
+          </Suspense>
         )}
       </div>
       <aside className="rounded-2xl border border-neutral-800 bg-neutral-950 p-4 lg:self-start" aria-live="polite">

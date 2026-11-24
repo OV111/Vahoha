@@ -1,3 +1,4 @@
+import { Bone, BoneControl, BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Check, Mic, MicOff, ShieldCheck, Clock } from "lucide-react";
@@ -5,6 +6,9 @@ import { useMicLevel } from "../hooks/useMicLevel";
 import { EXPLANATION_LIMIT_SEC, FOLLOWUP_LIMIT_SEC } from "../lib/examStates";
 import { formatClock } from "../lib/formatClock";
 
+const INTRO =
+  "Explain it out loud, the way you would in an interview. Pass and this layer is marked Verified on your profile.";
+const CLOCK_NOTE = "About 10 minutes. The clock doesn't pause.";
 const card = "rounded-2xl border border-neutral-800 bg-neutral-950 p-5 sm:p-6";
 const heading = "text-[15px] font-semibold text-neutral-100";
 
@@ -318,7 +322,27 @@ const PreExam = ({ eligibility, isBusy, onBegin }) => {
 
   if (!eligibility) {
     return (
-      <div className={`${card} h-64 animate-pulse`} aria-label="Loading" />
+      <SkeletonRegion label="Loading exam">
+        <div className="space-y-5">
+          <div>
+            <Bone className="my-1 h-7 w-56" />
+            <p className="mt-2 max-w-prose text-[15px] leading-relaxed text-neutral-400">{INTRO}</p>
+            <Bone soft className="mt-3 h-5 w-40" />
+          </div>
+          <div className="grid gap-5 lg:grid-cols-12 lg:items-start">
+            <div className={`${card} lg:col-span-7`}>
+              <h3 className={`${heading} mb-4`}>How it goes</h3>
+              <Timeline />
+              <p className="mt-5 text-sm text-neutral-500">{CLOCK_NOTE}</p>
+            </div>
+            <BonePanel className="p-5 sm:p-6 lg:col-span-5">
+              <BoneLines widths={["w-1/2", "w-full", "w-2/3"]} />
+              <BoneLines className="mt-8" widths={["w-2/5", "w-full"]} />
+              <BoneControl className="mt-8 h-11" bar="w-1/3" />
+            </BonePanel>
+          </div>
+        </div>
+      </SkeletonRegion>
     );
   }
 
@@ -339,8 +363,7 @@ const PreExam = ({ eligibility, isBusy, onBegin }) => {
           {eligibility.layerTitle ?? "This layer"}
         </h2>
         <p className="mt-2 max-w-prose text-[15px] leading-relaxed text-neutral-400">
-          Explain it out loud, the way you would in an interview. Pass and this
-          layer is marked Verified on your profile.
+          {INTRO}
         </p>
         <div className="mt-3">
           <StatusLine eligibility={eligibility} />
@@ -357,7 +380,7 @@ const PreExam = ({ eligibility, isBusy, onBegin }) => {
             </h3>
             <Timeline />
             <p className="mt-5 text-sm text-neutral-500">
-              About 10 minutes. The clock doesn&apos;t pause.
+              {CLOCK_NOTE}
             </p>
           </section>
 
