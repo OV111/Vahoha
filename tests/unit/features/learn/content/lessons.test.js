@@ -32,9 +32,9 @@ describe("lesson content", () => {
     expect(entries.length).toBeGreaterThan(0);
   });
 
-  it("has a manifest entry for exactly the lesson files, with matching minutes", () => {
+  it("has a manifest entry for exactly the lesson files, with matching minutes and mystery", () => {
     const fromFiles = Object.fromEntries(
-      entries.map(({ trackId, layerId, slug, lesson }) => [`${trackId}/${layerId}/${slug}`, { minutes: lesson.minutes }]),
+      entries.map(({ trackId, layerId, slug, lesson }) => [`${trackId}/${layerId}/${slug}`, { minutes: lesson.minutes, mystery: lesson.mystery }]),
     );
     expect(LESSON_MANIFEST).toEqual(fromFiles);
   });

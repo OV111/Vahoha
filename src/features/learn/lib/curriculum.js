@@ -26,7 +26,24 @@ const orderedSections = (layer) => {
 };
 
 /**
- * `[{ slug, order, title, description, resources, section }]` for one layer.
+ * A layer may author `steps: [{ title, lessons: [slug] }]`: the teaching order,
+ * independent of where the map draws each lesson. Layers without it keep the
+ * map order, with each section as a step. A lesson no step names goes last, so
+ * a missed slug is never lost.
+ */
+const inTeachingOrder = (lessons, steps) => {
+  if (!steps) return lessons.map((l) => ({ ...l, step: l.section }));
+  const bySlug = new Map(lessons.map((l) => [l.slug, l]));
+  const ordered = steps.flatMap(({ title, lessons: slugs }) =>
+    slugs.filter((slug) => bySlug.has(slug)).map((slug) => ({ ...bySlug.get(slug), step: title })),
+  );
+  const placed = new Set(ordered.map((l) => l.slug));
+  const rest = lessons.filter((l) => !placed.has(l.slug)).map((l) => ({ ...l, step: l.section }));
+  return [...ordered, ...rest].map((l, i) => ({ ...l, order: i + 1 }));
+};
+
+/**
+ * `[{ slug, order, title, description, resources, section, step }]` for one layer.
  *
  * Slugs come from the title and are the lesson's id in the URL, so they must
  * stay stable once users have progress saved against them. A repeated title
@@ -35,7 +52,7 @@ const orderedSections = (layer) => {
 export const buildLessons = (layer) => {
   const used = new Set();
   let order = 0;
-  return orderedSections(layer).flatMap((section) =>
+  const lessons = orderedSections(layer).flatMap((section) =>
     (section.children ?? []).map((child) => {
       order += 1;
       let slug = slugify(child.title);
@@ -51,6 +68,7 @@ export const buildLessons = (layer) => {
       };
     }),
   );
+  return inTeachingOrder(lessons, layer.steps);
 };
 
 /**

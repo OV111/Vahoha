@@ -26,7 +26,7 @@ export default function ServerBanner() {
 
   // The live region is always there: screen readers only announce changes inside one.
   return (
-    <div role="status" className="pointer-events-none fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-60 flex justify-center px-4">
+    <div role="status" className="pointer-events-none fixed inset-x-0 bottom-[calc(var(--banner-lift,1rem)+env(safe-area-inset-bottom))] z-60 flex justify-center px-4">
       {status !== "up" && !pageBlocked && (
         <div className="pointer-events-auto flex max-w-full items-center gap-3 rounded-full border border-amber-500/40 bg-[#0d0d0d] py-1.5 pr-1.5 pl-4 text-sm text-neutral-200 shadow-lg shadow-black/50">
           <span className="size-2 shrink-0 rounded-full bg-amber-400" aria-hidden="true" />

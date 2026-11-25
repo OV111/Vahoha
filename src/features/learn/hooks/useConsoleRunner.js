@@ -4,7 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const KILL_AFTER_MS = 4000;
 
 /**
- * Runs lesson code in a throwaway Web Worker and returns what it printed.
+ * Runs lesson code in a throwaway Web Worker. `run` resolves to the printed
+ * lines, which are also kept in `lines`.
  * Same lifecycle as the Arena's useCodeRunner: one worker per run, always
  * terminated, so an infinite loop can never leak a live thread.
  */
@@ -39,6 +40,7 @@ export default function useConsoleRunner() {
 
     setLines(next);
     setRunning(false);
+    return next;
   }, []);
 
   const clear = useCallback(() => setLines(null), []);

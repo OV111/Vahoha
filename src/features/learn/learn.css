@@ -16,3 +16,38 @@
     animation: none;
   }
 }
+
+/* The skill just finished, on the finish screen. */
+@keyframes learn-skill-lit {
+  from {
+    background: #34d399;
+    color: #000;
+    transform: scale(1.1);
+  }
+}
+
+.learn-skill-lit {
+  animation: learn-skill-lit 800ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .learn-skill-lit {
+    animation: none;
+  }
+}
+
+/* The lesson workspace: three surfaces, darkest where the code is. */
+.lesson-shell {
+  --lesson-rail: #0f0b18;
+  --lesson-stage: #161122;
+  --lesson-raised: #231b35;
+  --lesson-line: #2f2644;
+  --lesson-code: #08060d;
+  background: var(--lesson-stage);
+}
+
+.lesson-board {
+  background-color: #1c1530;
+  background-image: radial-gradient(#3a2d5c 1.2px, transparent 1.2px);
+  background-size: 20px 20px;
+}

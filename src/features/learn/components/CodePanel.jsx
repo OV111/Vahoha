@@ -11,27 +11,33 @@ const levelClass = { log: "text-neutral-200", warn: "text-amber-300", error: "te
  * Editable code for the current step, a Run button and the console.
  * Mounted with a per-step key, so edits and output reset when the step changes.
  * `lockedReason` keeps Run disabled on predict steps until the learner answers.
+ * `onResult` gets the printed lines after each run.
  */
-export default function CodePanel({ source, lockedReason }) {
+export default function CodePanel({ source, lockedReason, onResult, label = "Live code" }) {
   const [draft, setDraft] = useState(source);
   const { run, running, lines } = useConsoleRunner();
   const edited = draft !== source;
   const canRun = !lockedReason && !running;
 
+  const execute = async () => {
+    const printed = await run(draft);
+    onResult?.(printed);
+  };
+
   const onKeyDown = (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && canRun) {
       e.preventDefault();
-      run(draft);
+      execute();
     }
   };
 
   return (
     <div
       onKeyDown={onKeyDown}
-      className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-neutral-800 bg-[#050505]"
+      className="flex h-full min-h-0 flex-col overflow-hidden bg-(--lesson-code)"
     >
-      <div className="flex items-center justify-between gap-2 border-b border-neutral-800 px-3 py-2">
-        <span className="font-mono text-xs text-neutral-500">main.js</span>
+      <div className="flex items-center justify-between gap-2 border-b border-(--lesson-line) px-4 py-2">
+        <span className="text-sm text-neutral-300">{label}</span>
         <div className="flex items-center gap-1">
           {edited && (
             <button
@@ -44,10 +50,10 @@ export default function CodePanel({ source, lockedReason }) {
           )}
           <button
             type="button"
-            onClick={() => run(draft)}
+            onClick={execute}
             disabled={!canRun}
             title={lockedReason ?? "Run (Ctrl+Enter)"}
-            className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-purple-600 px-4 text-sm font-medium text-white transition-colors enabled:cursor-pointer enabled:hover:bg-purple-500 disabled:bg-neutral-800 disabled:text-neutral-500"
+            className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-neutral-700 px-4 text-sm font-medium text-neutral-100 transition-colors enabled:cursor-pointer enabled:hover:border-purple-500 disabled:border-neutral-800 disabled:text-neutral-500"
           >
             {lockedReason ? <Lock size={13} aria-hidden="true" /> : <Play size={13} fill="currentColor" aria-hidden="true" />}
             {running ? "Running…" : "Run"}
@@ -59,12 +65,12 @@ export default function CodePanel({ source, lockedReason }) {
         <CodeEditor value={draft} onChange={setDraft} />
       </div>
 
-      <div className="h-44 shrink-0 overflow-auto border-t border-neutral-800 px-4 py-3 font-mono text-[13px] leading-6 lg:h-56">
-        <p className="mb-1 text-xs text-neutral-600">Console</p>
+      <div className="h-44 shrink-0 overflow-auto border-t border-(--lesson-line) bg-(--lesson-rail) px-4 py-3 font-mono text-[13px] leading-6 lg:h-56">
+        <p className="mb-1 font-sans text-sm text-neutral-400">Console</p>
         <div role="log" aria-live="polite">
           {lockedReason && <p className="text-neutral-500">{lockedReason}</p>}
-          {!lockedReason && lines === null && <p className="text-neutral-600">Press Run to see what this prints.</p>}
-          {lines?.length === 0 && <p className="text-neutral-600">Nothing was printed.</p>}
+          {!lockedReason && lines === null && <p className="text-neutral-400">Press Run to see what this prints.</p>}
+          {lines?.length === 0 && <p className="text-neutral-400">Nothing was printed.</p>}
           {lines?.map((line, i) => (
             <p
               // Output order is the point of the lesson, so index is the right key.

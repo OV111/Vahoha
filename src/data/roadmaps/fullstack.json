@@ -3012,6 +3012,36 @@
       "id": "mern-2",
       "title": "JavaScript Deep Dive",
       "order": 2,
+      "steps": [
+        {
+          "title": "Data",
+          "lessons": [
+            "destructuring-spread-and-rest-in-function-signatures",
+            "array-methods-map-filter-reduce-and-their-composition"
+          ]
+        },
+        {
+          "title": "How JS runs",
+          "lessons": [
+            "call-stack-task-queue-and-microtask-queue-ordering",
+            "how-closures-capture-free-variables-in-the-scope-chain"
+          ]
+        },
+        {
+          "title": "Async",
+          "lessons": [
+            "promise-chaining-versus-async-await-for-sequential-calls",
+            "promise-all-promise-allsettled-and-race-conditions"
+          ]
+        },
+        {
+          "title": "Real app",
+          "lessons": [
+            "fetch-response-ok-and-typed-error-handling",
+            "es-modules-import-export-and-the-difference-from-commonjs"
+          ]
+        }
+      ],
       "techs": [
         "ES6+",
         "Async/Await",

@@ -2,7 +2,9 @@ import { useMemo } from "react";
 import useRoadmapStore from "@/stores/useRoadmapStore";
 import { buildLessons, lessonHrefs, lessonSlugs } from "@/features/learn/lib/curriculum";
 import { lessonMeta } from "@/features/learn/content/manifest";
+import { hasLessonContent } from "@/features/learn/content";
 import { useLayerStatuses } from "@/features/learn/lib/lessonStatus";
+import { nextLesson } from "@/features/learn/lib/nextLesson";
 import { hasLab } from "@/features/labs/content";
 import { effectiveStatuses, layerNodeProgress, layerView, parentStatus, statusOf, summarize } from "../lib/nodeProgress";
 
@@ -45,11 +47,7 @@ export const useLayerTree = (layer, layerState) => {
     const { summary } = layerNodeProgress(layer, statuses);
     const view = layerView(layerState, summary);
 
-    // "Continue" opens the lesson to pick up: the first one in progress, else the first not started.
-    const ordered = buildLessons(layer);
-    const resume =
-      ordered.find((l) => statusOf(statuses, l.slug) === "in_progress") ??
-      ordered.find((l) => statusOf(statuses, l.slug) === "not_started");
+    const resume = nextLesson(buildLessons(layer), statuses, (slug) => hasLessonContent(trackId, layer.id, slug));
     const layerHref = trackId ? `/learn/${trackId}/${layer.id}` : null;
     const ctaHref = view.cta === "Continue" && resume && layerHref ? `${layerHref}/${resume.slug}` : layerHref;
 

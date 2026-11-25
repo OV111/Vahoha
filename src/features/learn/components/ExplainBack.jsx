@@ -19,7 +19,7 @@ export default function ExplainBack({ step, value, onChange }) {
   return (
     <div>
       <MarkdownMessage content={step.prompt} className="text-[19px] font-medium leading-snug text-neutral-50" />
-      <p className="mt-2 text-sm text-neutral-500">Putting it in your own words is what makes it stick.</p>
+      <p className="mt-2 text-sm text-neutral-400">Putting it in your own words is what makes it stick.</p>
 
       <label htmlFor="explain-back" className="sr-only">
         Your explanation
@@ -31,12 +31,12 @@ export default function ExplainBack({ step, value, onChange }) {
         readOnly={value.revealed}
         rows={6}
         placeholder="Explain it as if to a friend who has never seen it."
-        className="mt-5 w-full resize-y rounded-xl border border-neutral-700 bg-neutral-950 p-4 text-[15px] leading-relaxed text-neutral-100 placeholder:text-neutral-600 focus:border-purple-500 focus:outline-none"
+        className="mt-5 w-full resize-y rounded-xl border border-(--lesson-line) bg-(--lesson-code) p-4 text-[15px] leading-relaxed text-neutral-100 placeholder:text-neutral-500 focus:border-purple-500 focus:outline-none"
       />
 
       {!value.revealed ? (
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-neutral-400">
             {ready ? "Done? Compare it." : `${Math.max(0, MIN_EXPLAIN_CHARS - value.text.trim().length)} more characters`}
           </p>
           <button
@@ -50,7 +50,7 @@ export default function ExplainBack({ step, value, onChange }) {
         </div>
       ) : (
         <div className="mt-6 space-y-5">
-          <div className="rounded-xl bg-neutral-900/70 p-4">
+          <div className="rounded-xl bg-(--lesson-raised) p-4">
             <p className="text-sm font-medium text-neutral-400">Model answer</p>
             <p className="mt-2 text-[15px] leading-relaxed text-neutral-200">{step.modelAnswer}</p>
           </div>

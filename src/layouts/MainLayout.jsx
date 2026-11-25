@@ -11,13 +11,20 @@ const MainLayout = () => {
   // A route marked `handle: { appShell: true }` is a full-screen tool (the mentor
   // chat): it sizes itself to the space under the navbar, so a footer or a
   // full-screen minimum below it would turn the whole page into a scroller.
-  const appShell = useMatches().some((m) => m.handle?.appShell);
+  const matches = useMatches();
+  const appShell = matches.some((m) => m.handle?.appShell);
+  // `handle: { focus: true }` (a lesson): no navbar or footer, the page brings its own.
+  const focus = matches.some((m) => m.handle?.focus);
 
   return (
-    <div className="relative bg-black min-h-dvh overflow-x-hidden">
+    <div
+      className="relative bg-black min-h-dvh overflow-x-hidden"
+      // A lesson has its own bar at the bottom: the server banner floats above it.
+      style={focus ? { "--banner-lift": "5.5rem" } : undefined}
+    >
       <ScrollRestoration />
       <RouteSeo />
-      <Navbar />
+      {!focus && <Navbar />}
       <main className={appShell ? "" : "min-h-dvh"}>
         <Suspense fallback={<LoadingSuspense />}>
           <RecruiterGate>
@@ -26,7 +33,7 @@ const MainLayout = () => {
           <PrerenderHandoff />
         </Suspense>
       </main>
-      {!appShell && <Footer />}
+      {!appShell && !focus && <Footer />}
       <ServerBanner />
     </div>
   );

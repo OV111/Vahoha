@@ -3,10 +3,32 @@
 export default {
   minutes: 20,
   status: "draft",
+  mystery: "Why does every button say 3?",
+  outcome: "explain why callbacks in a loop share a value, and fix it.",
 
   steps: [
     {
+      kind: "problem",
+      short: "The problem",
+      title: "Why does every button say 3?",
+      body: "A developer made three buttons in a loop. Each one should say its own number. Click all three.",
+      demo: "loop-buttons",
+      code: {
+        lang: "js",
+        source: `const buttons = [];
+
+for (var i = 0; i < 3; i++) {
+  buttons.push(() => console.log("I am button", i));
+}
+
+buttons.forEach((click) => click());`,
+      },
+    },
+    {
       kind: "read",
+      short: "Where it was written",
+      key: "A function looks for variables where it was written, not where it is called.",
+      diagram: "lexical-scope",
       title: "A function remembers where it was written",
       body: `When a function uses a variable it didn't declare, JavaScript looks for it where the function was **written**, not where it is **called**. This is **lexical scope**.
 
@@ -29,6 +51,9 @@ run();`,
     },
     {
       kind: "read",
+      short: "The scope chain",
+      key: "Lookups go outwards, one scope at a time, and never inwards.",
+      diagram: "scope-chain",
       title: "The scope chain",
       body: `Each function has its own scope, and each scope points to the one it was written inside. Looking up a name walks that chain outwards: local, then the enclosing function, then further out, then global.
 
@@ -59,6 +84,7 @@ try {
     },
     {
       kind: "check",
+      short: "Check: outer returned",
       type: "predict",
       q: "`inner` runs after `outer` has already returned. What does it print?",
       options: ["global", "outer", "undefined", "ReferenceError"],
@@ -81,6 +107,9 @@ fn();`,
     },
     {
       kind: "read",
+      short: "Keeping variables alive",
+      key: "A closure is a function plus the variables it holds on to.",
+      diagram: "counters",
       title: "A closure keeps variables alive",
       body: `Normally a function's local variables disappear when it returns. But if an inner function still uses them, they stay alive for as long as that inner function exists. The function plus the variables it holds on to is a **closure**.
 
@@ -103,6 +132,7 @@ console.log(a(), a(), b());`,
     },
     {
       kind: "check",
+      short: "Check: two counters",
       type: "predict",
       q: "`b` is assigned from `a`, not from a new `makeCounter()` call. What prints?",
       options: ["1 1 2", "1 2 3", "1 1 1"],
@@ -123,6 +153,9 @@ console.log(a(), b(), a());`,
     },
     {
       kind: "read",
+      short: "Variables, not values",
+      key: "A closure keeps the variable itself, so it sees later changes.",
+      diagram: "live-link",
       title: "Closures hold variables, not values",
       body: `A closure doesn't take a snapshot. It keeps a live link to the variable, so it sees whatever value the variable has **when it runs**.
 
@@ -139,6 +172,9 @@ hello();`,
     },
     {
       kind: "read",
+      short: "The loop bug",
+      key: "With var, every callback shares one variable. With let, each gets its own.",
+      diagram: "loop-bindings",
       title: "The classic loop bug",
       body: `\`var\` is scoped to the whole function, so a loop with \`var\` has **one** \`i\` that every callback shares. By the time the timers run (they are tasks, from the last lesson), the loop has finished and \`i\` is 3.
 
@@ -156,6 +192,7 @@ for (let j = 0; j < 3; j++) {
     },
     {
       kind: "check",
+      short: "Check: loop",
       type: "predict",
       q: "No timers this time. What does this print?",
       options: ["[0,1,2]", "[3,3,3]", "[2,2,2]"],
@@ -174,6 +211,8 @@ console.log(fns.map((f) => f()));`,
     },
     {
       kind: "read",
+      short: "Everyday uses",
+      key: "Private state, event handlers and React hooks all rely on closures.",
       title: "Where you use this every day",
       body: `- **Private state.** \`count\` in \`makeCounter\` can't be reached from outside. Nothing but the returned function can change it.
 - **Event handlers and callbacks.** A click handler or a \`.then\` callback uses variables from the component or function that created it.
@@ -204,6 +243,7 @@ console.log(init(), init());`,
     },
     {
       kind: "check",
+      short: "Check: stale count",
       type: "mcq",
       q: "A React component starts `setInterval(() => console.log(count), 1000)` inside `useEffect(..., [])`. Clicking a button increases `count`, but the interval keeps logging 0. Why?",
       options: [
@@ -216,7 +256,56 @@ console.log(init(), init());`,
       why: "Each render has its own count. The interval was created once, during the first render, so its closure holds that render's count forever. The fixes are in Go deeper.",
     },
     {
+      kind: "try",
+      short: "Fix the buttons",
+      title: "Fix the buttons",
+      body: "Change the code so it prints **Button 0**, **Button 1** and **Button 2**.",
+      code: {
+        lang: "js",
+        source: `for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log("Button", i), 0);
+}`,
+      },
+      expect: ["Button 0", "Button 1", "Button 2"],
+      hint: "All three callbacks share one variable. Which keyword gives each turn of the loop its own?",
+      fix: `for (let i = 0; i < 3; i++) {
+  setTimeout(() => console.log("Button", i), 0);
+}`,
+    },
+    {
+      kind: "check",
+      short: "Find AI's mistake",
+      type: "predict",
+      ai: true,
+      q: "We asked AI for a function that can run **only once**, so a customer is never charged twice. What happens here?",
+      options: [
+        "It works: called blocks the second charge",
+        "It never charges, because called starts as false",
+        "It charges twice: every call makes a new called",
+        "It crashes: arrow functions can't change outer variables",
+      ],
+      answer: 2,
+      why: "let called sits inside the returned function, so every call starts again at false. Move it one level up, into makeOnce, and the closure remembers it.",
+      code: {
+        lang: "js",
+        source: `function makeOnce(fn) {
+  return (...args) => {
+    let called = false;
+    if (!called) {
+      called = true;
+      return fn(...args);
+    }
+  };
+}
+
+const pay = makeOnce(() => console.log("charged"));
+pay();
+pay();`,
+      },
+    },
+    {
       kind: "explain",
+      short: "Explain it back",
       prompt:
         "In your own words: what is a closure, and why does `count` in `makeCounter` survive after `makeCounter` has returned?",
       mustMention: [

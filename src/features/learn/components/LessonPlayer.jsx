@@ -1,348 +1,188 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
+import useAuthStore from "@/stores/useAuthStore";
+import MentorPanel from "@/features/mentor/components/MentorPanel";
 import { mentorOrigin } from "@/features/mentor/lib/mentorOrigin";
-import { FlaskConical, ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
-import MarkdownMessage from "@/features/mentor/components/MarkdownMessage";
-import CheckQuestion from "./CheckQuestion";
-import ExplainBack from "./ExplainBack";
-import GoDeeper from "./GoDeeper";
-import { CodePanelSkeleton } from "./LearnSkeletons";
-import LoadingSuspense from "@/components/feedback/LoadingSuspense";
-import { markLessonFinished } from "../lib/lessonProgress";
+import LessonHeader from "./player/LessonHeader";
+import LessonFooter from "./player/LessonFooter";
+import LessonFinished from "./player/LessonFinished";
+import LessonOutline from "./player/LessonOutline";
+import SidePanel from "./player/SidePanel";
+import StepContent from "./player/StepContent";
+import useLessonSession, { solved } from "../hooks/useLessonSession";
+import { finishedLessons } from "../lib/lessonProgress";
+import { LESSON_PARTS, partOf } from "../lib/lessonParts";
 import "../learn.css";
 
-// CodeMirror is the heaviest part of the lesson page. Loading it on demand lets
-// the step text paint first; the import starts as soon as the player renders.
-const CodePanel = lazy(() => import("./CodePanel"));
-
-// The editor chunk is ~137 KB gzip; fetching it at load competes with the
-// lesson text for bandwidth, so wait until the panel is near the viewport.
-function useNearViewport(active) {
-  const ref = useRef(null);
-  const [near, setNear] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!active || !el || near) return;
-    if (!("IntersectionObserver" in window)) {
-      setNear(true);
-      return;
-    }
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setNear(true);
-      },
-      { rootMargin: "400px 0px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [active, near]);
-
-  return [ref, near, () => setNear(true)];
-}
-
-const DONE = "done";
-const emptyExplain = { text: "", revealed: false, covered: [] };
-
-// Arrow keys move between steps, but never while the learner is typing.
-const isTyping = (el) => el?.closest?.("textarea, input, select, [contenteditable='true'], .cm-editor");
-
-/** Which step's code the panel shows: this step's, or the latest one before it. */
-const codeIndexFor = (steps, index) => {
-  for (let i = index; i >= 0; i--) if (steps[i].code) return i;
-  return -1;
+const BLOCKED_HINT = {
+  check: "Pick an answer to continue",
+  try: "Make it work to continue",
+  explain: "Write your explanation to continue",
 };
 
-function ProgressBar({ total, index }) {
-  return (
-    <div
-      className="flex flex-1 gap-1"
-      role="progressbar"
-      aria-valuemin={0}
-      aria-valuemax={total}
-      aria-valuenow={Math.min(index + 1, total)}
-      aria-label="Lesson progress"
-    >
-      {Array.from({ length: total }, (_, i) => (
-        <span
-          key={i}
-          className={`h-1.5 flex-1 rounded-full transition-colors ${
-            i < index ? "bg-purple-500" : i === index ? "bg-purple-300" : "bg-neutral-800"
-          }`}
-        />
-      ))}
-    </div>
-  );
-}
+// Shortcuts never fire while the learner is typing.
+const isTyping = (el) => el?.closest?.("textarea, input, select, [contenteditable='true'], .cm-editor");
+const isControl = (el) => el?.closest?.("button, a, summary");
 
-function NavButtons({ index, canContinue, blockedHint, isLast, onBack, onNext }) {
-  return (
-    <div className="flex items-center justify-between gap-4">
-      <button
-        type="button"
-        onClick={onBack}
-        disabled={index === 0}
-        className="inline-flex min-h-11 items-center gap-2 rounded-xl px-3 text-sm text-neutral-400 transition-colors enabled:cursor-pointer enabled:hover:text-white disabled:opacity-30"
-      >
-        <ArrowLeft size={15} aria-hidden="true" /> Back
-      </button>
-      <div className="flex items-center gap-3">
-        {!canContinue && <span className="hidden text-sm text-neutral-500 sm:inline">{blockedHint}</span>}
-        <button
-          type="button"
-          onClick={onNext}
-          disabled={!canContinue}
-          className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-purple-600 px-6 text-[15px] font-medium text-white transition-colors enabled:cursor-pointer enabled:hover:bg-purple-500 disabled:bg-neutral-800 disabled:text-neutral-500"
-        >
-          {isLast ? "Finish" : "Continue"} <ArrowRight size={15} aria-hidden="true" />
-        </button>
-      </div>
-    </div>
-  );
-}
+const printedExactly = (lines, expected) =>
+  lines.length === expected.length && lines.every((l, i) => l.level === "log" && l.text === expected[i]);
 
-// Answers live in memory until progress is saved server-side, so a reload or a
-// deep link can reach this screen with questions unanswered: say so honestly.
-function scoreLine({ right, answered, total }) {
-  if (answered === 0) return "Answer the questions in this lesson to see how much stuck.";
-  const skipped = total - answered;
-  return [
-    `${right} of ${answered} questions right.`,
-    right < answered && "Go back to the ones you missed before the layer test.",
-    skipped > 0 && `You skipped ${skipped}.`,
-  ]
-    .filter(Boolean)
-    .join(" ");
-}
-
-function Finished({ lesson, content, score, next, testHref, layerTitle, labHref }) {
-  return (
-    <div className="mx-auto max-w-2xl">
-      <h2 className="text-[28px] font-semibold leading-tight text-neutral-50">You finished this lesson</h2>
-      <p className="mt-3 text-[17px] leading-relaxed text-neutral-300">{scoreLine(score)}</p>
-
-      <div className="mt-8 flex flex-wrap gap-3">
-        {/* A lesson with a lab: practice first (LAB_SYSTEM.md flow), the next lesson stays one click away. */}
-        {labHref && (
-          <Link
-            to={labHref}
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-purple-600 px-6 text-[15px] font-medium text-white hover:bg-purple-500"
-          >
-            <FlaskConical size={15} aria-hidden="true" /> Practice it in the lab
-          </Link>
-        )}
-        {next ? (
-          <Link
-            to={next.href}
-            className={labHref
-              ? "inline-flex min-h-11 items-center gap-2 rounded-xl border border-neutral-700 px-5 text-[15px] text-neutral-200 hover:border-purple-500"
-              : "inline-flex min-h-11 items-center gap-2 rounded-xl bg-purple-600 px-6 text-[15px] font-medium text-white hover:bg-purple-500"}
-          >
-            Next lesson: {next.title} <ArrowRight size={15} aria-hidden="true" />
-          </Link>
-        ) : (
-          <Link
-            to={testHref}
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-purple-600 px-6 text-[15px] font-medium text-white hover:bg-purple-500"
-          >
-            Take the {layerTitle} test <ArrowRight size={15} aria-hidden="true" />
-          </Link>
-        )}
-        <Link
-          to="/mentor"
-          state={mentorOrigin("lesson", { topic: lesson.title, layer: layerTitle })}
-          className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-neutral-700 px-4 text-sm text-neutral-200 hover:border-purple-500"
-        >
-          <Sparkles size={14} aria-hidden="true" /> Ask the mentor
-        </Link>
-      </div>
-
-      <section className="mt-14" aria-labelledby="go-deeper">
-        <h2 id="go-deeper" className="text-xl font-semibold text-neutral-50">
-          Go deeper
-        </h2>
-        <p className="mt-1 text-[15px] text-neutral-400">Optional. The parts most developers skip.</p>
-        <div className="mt-5">
-          <GoDeeper levels={content.deeper} docs={lesson.resources} />
-        </div>
-      </section>
-    </div>
-  );
-}
-
-/**
- * A written lesson, one step per screen, with live code beside it.
- * The current step lives in the URL (?step=4), so Back, refresh and shared
- * links all land on the same screen.
- */
-export default function LessonPlayer({ track, layer, lesson, content, next, testHref, labHref }) {
-  const { steps } = content;
-  const [params, setParams] = useSearchParams();
-  const [answers, setAnswers] = useState({}); // step index -> picked option
-  const [explain, setExplain] = useState(emptyExplain);
-
-  const raw = params.get("step");
-  const index = raw === DONE ? steps.length : Math.min(Math.max(Number.parseInt(raw, 10) - 1 || 0, 0), steps.length - 1);
-  const finished = index === steps.length;
-  const step = steps[index];
-
-  const canContinue =
-    finished || step.kind === "read" || (step.kind === "check" ? answers[index] != null : explain.revealed);
-  const blockedHint = step?.kind === "check" ? "Pick an answer to continue" : "Write your explanation to continue";
-
-  const goTo = (i) => {
-    setParams({ step: i >= steps.length ? DONE : String(i + 1) });
-    window.scrollTo({ top: 0 });
-  };
-  const back = () => index > 0 && goTo(index - 1);
-  const forward = () => canContinue && !finished && goTo(index + 1);
-
-  // Opening ?step=done directly isn't finishing; working through the steps is.
-  const engaged = Object.keys(answers).length > 0;
-  useEffect(() => {
-    if (finished && engaged) markLessonFinished(track.id, layer.id, lesson.slug);
-  }, [finished, engaged, track.id, layer.id, lesson.slug]);
-
+/** Arrow keys and Enter move between steps; 1 to 4 answer a question. */
+function useLessonKeys(session, paused) {
+  const { step, index, work, back, forward, setAnswer } = session;
   useEffect(() => {
     const onKey = (e) => {
-      if (isTyping(e.target) || e.metaKey || e.ctrlKey || e.altKey) return;
-      if (e.key === "ArrowRight") forward();
+      if (paused || isTyping(e.target) || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === "ArrowRight" || (e.key === "Enter" && !isControl(e.target))) forward();
       if (e.key === "ArrowLeft") back();
+      const option = Number(e.key) - 1;
+      if (step?.kind === "check" && work.answers[index] == null && step.options[option] !== undefined) setAnswer(option);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   });
+}
 
-  const codeIndex = finished || step.kind === "explain" ? -1 : codeIndexFor(steps, index);
-  const hasPanel = codeIndex !== -1;
-  const [panelRef, panelNear, showPanel] = useNearViewport(hasPanel);
-  const predictLocked = step?.kind === "check" && step.type === "predict" && answers[index] == null;
+/** Smaller screens: the outline folds into a bar that names the current step. */
+function OutlineMenu({ step, children }) {
+  const ref = useRef(null);
+  return (
+    <details
+      ref={ref}
+      onClick={(e) => {
+        if (e.target.closest("button")) ref.current.open = false;
+      }}
+      className="group border-b border-(--lesson-line) bg-(--lesson-rail) xl:hidden"
+    >
+      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-5 text-[15px] [&::-webkit-details-marker]:hidden">
+        <span className="min-w-0 truncate text-neutral-300">
+          <span className="font-medium text-white">{step ? LESSON_PARTS[partOf(step)] : "Lesson outline"}</span>
+          {step && `, ${step.short}`}
+        </span>
+        <ChevronDown
+          size={17}
+          className="shrink-0 text-neutral-400 transition-transform group-open:rotate-180 motion-reduce:transition-none"
+          aria-hidden="true"
+        />
+      </summary>
+      <div className="max-h-[60dvh] overflow-y-auto px-3 pb-5 pt-2">{children}</div>
+    </details>
+  );
+}
+
+/**
+ * A written lesson as a workspace: the outline on the left, the current step in
+ * the middle, live code on the right. Wide screens give each column its own
+ * scroll, so the outline and the code stay put while the text moves.
+ */
+export default function LessonPlayer({ track, layer, lesson, lessons, content, next, testHref, labHref }) {
+  const { steps } = content;
+  const { auth } = useAuthStore();
+  const navigate = useNavigate();
+  const [mentorOpen, setMentorOpen] = useState(false);
+  const closeMentor = useCallback(() => setMentorOpen(false), []);
+  const session = useLessonSession({ trackId: track.id, layerId: layer.id, slug: lesson.slug, steps });
+  const { index, step, finished, work, engaged } = session;
+  useLessonKeys(session, mentorOpen);
+
+  // A guest has no mentor: the page itself sends them to sign in.
+  const origin = mentorOrigin("lesson", { topic: lesson.title, path: track.id, layer: layer.id });
+  const askMentor = () => (auth ? setMentorOpen(true) : navigate("/mentor", { state: origin }));
+
+  const onResult = (lines) => {
+    if (step.kind !== "try" || solved(work.tries[index])) return;
+    session.setTry(printedExactly(lines, step.expect) ? "passed" : "failed");
+  };
 
   const checks = steps.map((s, i) => [s, i]).filter(([s]) => s.kind === "check");
   const score = {
-    right: checks.filter(([s, i]) => answers[i] === s.answer).length,
-    answered: checks.filter(([, i]) => answers[i] != null).length,
+    right: checks.filter(([s, i]) => work.answers[i] === s.answer).length,
+    answered: checks.filter(([, i]) => work.answers[i] != null).length,
     total: checks.length,
   };
 
-  const stepLabel =
-    step?.kind === "check" ? "Your turn" : step?.kind === "explain" ? "Explain it back" : `Step ${index + 1} of ${steps.length}`;
+  const layerHref = `/learn/${track.id}/${layer.id}`;
+  const outline = <LessonOutline steps={steps} index={index} furthest={session.furthest} onOpen={session.goTo} />;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 pb-32 pt-6 sm:px-6 lg:px-8 lg:pb-16">
-      <header className="flex items-center gap-4">
-        <Link
-          to={`/learn/${track.id}/${layer.id}`}
-          className="inline-flex min-h-11 shrink-0 items-center gap-1.5 text-sm text-neutral-400 hover:text-white"
-        >
-          <ArrowLeft size={15} aria-hidden="true" />
-          <span className="hidden sm:inline">{layer.title}</span>
-          <span className="sm:hidden">Back</span>
-        </Link>
-        <ProgressBar total={steps.length} index={index} />
-        <span className="shrink-0 text-sm tabular-nums text-neutral-500">
-          {finished ? "Done" : `${index + 1} / ${steps.length}`}
-        </span>
-      </header>
+    <div className="lesson-shell flex min-h-dvh flex-col lg:h-dvh">
+      <LessonHeader
+        layerHref={layerHref}
+        layerTitle={layer.title}
+        title={lesson.title}
+        draft={content.status === "draft"}
+        total={steps.length}
+        index={index}
+        onMentor={askMentor}
+      />
+      <OutlineMenu step={step}>{outline}</OutlineMenu>
 
-      <div className="mt-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <h1 className="text-sm font-medium text-neutral-300">{lesson.title}</h1>
-        {content.status === "draft" && <span className="text-xs text-amber-400/80">Draft, not yet reviewed</span>}
-      </div>
+      <div className="flex min-h-0 flex-1">
+        <aside className="hidden w-68 shrink-0 overflow-y-auto border-r border-(--lesson-line) bg-(--lesson-rail) px-3 py-6 xl:block">
+          {outline}
+        </aside>
 
-      {finished ? (
-        <div className="mt-10">
-          <Finished
-            lesson={lesson}
-            content={content}
-            score={score}
-            next={next}
-            testHref={testHref}
-            labHref={labHref}
-            layerTitle={layer.title}
-          />
-        </div>
-      ) : (
-        <div
-          className={
-            hasPanel
-              ? "mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-12"
-              : "mx-auto mt-8 max-w-2xl"
-          }
-        >
-          <section aria-label={stepLabel} className="min-w-0">
-            <p className="text-sm text-purple-300">{stepLabel}</p>
-            <div className="mt-3 max-w-[62ch]">
-              {step.kind === "read" && (
-                <>
-                  <h2 className="text-[28px] font-semibold leading-tight text-neutral-50">{step.title}</h2>
-                  <MarkdownMessage content={step.body} className="mt-5 text-[17px] leading-[1.7] text-neutral-300" />
-                </>
-              )}
-              {step.kind === "check" && (
-                <CheckQuestion
-                  step={step}
-                  picked={answers[index]}
-                  onPick={(i) => setAnswers((prev) => ({ ...prev, [index]: i }))}
-                />
-              )}
-              {step.kind === "explain" && <ExplainBack step={step} value={explain} onChange={setExplain} />}
-            </div>
-
-            <div className="mt-12 hidden lg:block">
-              <NavButtons
-                index={index}
-                canContinue={canContinue}
-                blockedHint={blockedHint}
+        {finished ? (
+          <div className="min-w-0 flex-1 overflow-y-auto px-5 py-12 sm:px-10">
+            <LessonFinished
+              lesson={lesson}
+              lessons={lessons}
+              content={content}
+              score={score}
+              completed={engaged}
+              doneSlugs={new Set([...finishedLessons(track.id, layer.id), ...(engaged ? [lesson.slug] : [])])}
+              next={next}
+              layerHref={layerHref}
+              testHref={testHref}
+              labHref={labHref}
+            />
+          </div>
+        ) : (
+          <div className="grid min-h-0 min-w-0 flex-1 grid-cols-[minmax(0,1fr)] content-start pb-18 lg:grid-cols-[minmax(0,1.12fr)_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)] lg:content-normal lg:pb-0">
+            <div className="flex min-h-0 min-w-0 flex-col">
+              {/* Keyed: a new step starts at the top of its own scroll. */}
+              <section key={index} aria-label={step.short} className="min-h-0 flex-1 lg:overflow-y-auto">
+                <div className="mx-auto max-w-[70ch] px-5 py-8 sm:px-10 sm:py-11">
+                  <StepContent
+                    step={step}
+                    content={content}
+                    answer={work.answers[index]}
+                    result={work.tries[index]}
+                    explain={work.explain}
+                    onAnswer={session.setAnswer}
+                    onShowFix={() => session.setTry("shown")}
+                    onExplain={session.setExplain}
+                  />
+                </div>
+              </section>
+              <LessonFooter
+                canBack={index > 0}
+                canContinue={session.canContinue}
+                blockedHint={BLOCKED_HINT[step.kind]}
                 isLast={index === steps.length - 1}
-                onBack={back}
-                onNext={forward}
+                onBack={session.back}
+                onNext={session.forward}
               />
             </div>
-          </section>
 
-          {hasPanel && (
             <aside
-              ref={panelRef}
-              onPointerDown={showPanel}
-              onFocus={showPanel}
-              aria-label="Code"
-              className="h-[460px] min-w-0 lg:sticky lg:top-24 lg:h-[calc(100dvh-8rem)]"
+              aria-label={step.kind === "explain" ? "Pictures" : "Code"}
+              className="min-h-0 min-w-0 border-t border-(--lesson-line) bg-(--lesson-code) lg:overflow-y-auto lg:border-l lg:border-t-0"
             >
-              {panelNear ? (
-              <Suspense
-                fallback={
-                  <CodePanelSkeleton>
-                    <LoadingSuspense fill />
-                  </CodePanelSkeleton>
-                }
-              >
-                <CodePanel
-                  key={codeIndex}
-                  source={steps[codeIndex].code.source}
-                  lockedReason={predictLocked ? "Answer the question first, then run it to check." : null}
-                />
-              </Suspense>
-              ) : (
-                <CodePanelSkeleton />
-              )}
+              <SidePanel
+                steps={steps}
+                index={index}
+                locked={step.kind === "check" && step.type === "predict" && work.answers[index] == null}
+                fixShown={work.tries[index] === "shown"}
+                onResult={onResult}
+              />
             </aside>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
 
-      {!finished && (
-        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-neutral-800 bg-black/95 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3 backdrop-blur lg:hidden">
-          <NavButtons
-            index={index}
-            canContinue={canContinue}
-            blockedHint={blockedHint}
-            isLast={index === steps.length - 1}
-            onBack={back}
-            onNext={forward}
-          />
-        </div>
-      )}
+      <MentorPanel open={mentorOpen} onClose={closeMentor} origin={origin.origin} subtitle={lesson.title} />
     </div>
   );
 }

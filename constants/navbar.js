@@ -9,6 +9,7 @@ import {
   Code2,
   GraduationCap,
   Bot,
+  BookOpen,
   Rocket,
   Users,
   TrendingUp,
@@ -48,6 +49,7 @@ export const NAV_GROUPS_AUTH = [
     public: true,
     showTracks: true,
     items: [
+      { label: "My learning", to: "/learn", icon: BookOpen, description: "Your next lesson, one click away", public: true },
       { label: "Roadmaps", to: "/roadmaps", icon: Map, description: "Step-by-step paths to job-ready", public: true },
       { label: "Labs", to: "/labs", icon: FlaskConical, description: "Hands-on practice for every lesson", public: true },
       { label: "Code Library", to: "/libs", icon: Library, description: "Books, docs, guides and sheets" },

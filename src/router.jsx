@@ -48,6 +48,7 @@ const ReadMore = lazy(() => import("./features/blogs/ReadMore"));
 
 const RoadmapPage = lazy(() => import("./features/roadmap/RoadmapPage"));
 const ExamPage = lazy(() => import("./features/roadmap/ExamPage"));
+const LearnHomePage = lazy(() => import("./features/learn/LearnHomePage"));
 const LayerLearnPage = lazy(() => import("./features/learn/LayerLearnPage"));
 const LearnTopicPage = lazy(() => import("./features/learn/TopicPage"));
 const ProgressPage = lazy(() => import("./features/mastery/ProgressPage"));
@@ -133,8 +134,9 @@ const shareRoutes = [
 ];
 
 const learnRoutes = [
+  { path: "learn", element: <LearnHomePage /> },
   { path: "learn/:trackId/:layerId", element: <LayerLearnPage /> },
-  { path: "learn/:trackId/:layerId/:topicSlug", element: <LearnTopicPage /> },
+  { path: "learn/:trackId/:layerId/:topicSlug", element: <LearnTopicPage />, handle: { focus: true } },
   { path: "learn/:trackId/:layerId/:topicSlug/lab", element: <LabPage /> },
 ];
 

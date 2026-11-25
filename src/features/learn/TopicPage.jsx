@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { markLessonOpened } from "./lib/lessonStatus";
+import { layerStatuses, markLessonOpened } from "./lib/lessonStatus";
+import { nextLesson } from "./lib/nextLesson";
+import { hasLessonContent } from "./content";
+import { lessonMeta } from "./content/manifest";
 import { hasLab } from "@/features/labs/content";
 import { ArrowLeft, ArrowRight, ExternalLink, FlaskConical, Sparkles } from "lucide-react";
 import useLearnLayer from "./hooks/useLearnLayer";
@@ -37,6 +40,11 @@ export default function TopicPage() {
 
   // A written lesson gets the step-by-step player; the rest keep the summary page.
   if (content.status === "ready") {
+    const others = lessons.filter((l) => l.slug !== lesson.slug);
+    const isWritten = (slug) => hasLessonContent(track.id, layer.id, slug);
+    const upNext = others.some((l) => isWritten(l.slug))
+      ? nextLesson(others, layerStatuses(track.id, layer.id), isWritten)
+      : null;
     return (
       <LessonPlayer
         // A fresh player per lesson, so answers never leak into the next one.
@@ -44,8 +52,14 @@ export default function TopicPage() {
         track={track}
         layer={layer}
         lesson={lesson}
+        lessons={lessons}
         content={content.lesson}
-        next={next ? { href: `${base}/${next.slug}`, title: next.title } : null}
+        next={
+          upNext && {
+            href: `${base}/${upNext.slug}`,
+            title: lessonMeta(track.id, layer.id, upNext.slug)?.mystery ?? upNext.title,
+          }
+        }
         testHref={`/roadmaps/exam/${layer.id}?path=${track.domain.id}`}
         labHref={labHref}
       />

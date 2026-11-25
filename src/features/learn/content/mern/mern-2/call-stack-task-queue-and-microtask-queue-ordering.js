@@ -3,10 +3,29 @@
 export default {
   minutes: 20,
   status: "draft",
+  mystery: "A 0 ms timer runs last. Why?",
+  outcome: "predict the order in which asynchronous code runs.",
 
   steps: [
     {
+      kind: "problem",
+      short: "The problem",
+      title: "A 0 ms timer runs last. Why?",
+      body: "The timer waits **0 ms** and comes first in the code. Run it and see what prints first.",
+      code: {
+        lang: "js",
+        source: `setTimeout(() => console.log("timer, 0 ms"), 0);
+
+Promise.resolve().then(() => console.log("promise"));
+
+console.log("last line");`,
+      },
+    },
+    {
       kind: "read",
+      short: "One thread",
+      key: "One call stack means one thing at a time, until it finishes.",
+      diagram: "call-stack",
       title: "JavaScript runs on one thread",
       body: `JavaScript executes your code on a single thread with a single **call stack**. Calling a function pushes a frame onto the stack. Returning pops it.
 
@@ -29,6 +48,9 @@ a();`,
     },
     {
       kind: "read",
+      short: "Waiting happens outside",
+      key: "The host does the waiting. Your callback queues until the stack is empty.",
+      diagram: "waiting",
       title: "Waiting happens outside the stack",
       body: `\`setTimeout\`, \`fetch\` and file reads don't wait on your thread. JavaScript hands the waiting to its host: the browser, or libuv in Node.js. When the wait is over, the host puts your callback in a **queue**.
 
@@ -46,6 +68,9 @@ console.log("after");`,
     },
     {
       kind: "read",
+      short: "Two queues",
+      key: "Timers and clicks are tasks. Promise callbacks are microtasks.",
+      diagram: "two-queues",
       title: "Two queues, not one",
       body: `| Queue | What waits in it |
 | --- | --- |
@@ -56,6 +81,7 @@ Which queue a callback lands in decides when it runs. That is the whole lesson.`
     },
     {
       kind: "check",
+      short: "Check: which queue",
       type: "mcq",
       q: "A `.then` callback is ready to run. Where does it wait?",
       options: ["On the call stack", "In the task queue", "In the microtask queue"],
@@ -64,6 +90,9 @@ Which queue a callback lands in decides when it runs. That is the whole lesson.`
     },
     {
       kind: "read",
+      short: "The event loop",
+      key: "One task, then every microtask, then the next task.",
+      diagram: "event-loop",
       title: "The rule the event loop follows",
       body: `The **event loop** repeats one cycle:
 
@@ -86,6 +115,7 @@ console.log("2: sync");`,
     },
     {
       kind: "check",
+      short: "Check: print order",
       type: "predict",
       q: "What does this print?",
       options: ["A, B, C", "C, B, A", "C, A, B", "B, C, A"],
@@ -100,6 +130,9 @@ console.log("C");`,
     },
     {
       kind: "read",
+      short: "await",
+      key: "await pauses the function, never the thread.",
+      diagram: "await-pause",
       title: "await pauses the function, not the thread",
       body: `An \`async\` function runs synchronously up to its first \`await\`. The rest of the function is queued as a microtask, and the caller carries on.
 
@@ -119,6 +152,7 @@ console.log("3: end");`,
     },
     {
       kind: "check",
+      short: "Check: nested queues",
       type: "predict",
       q: "A microtask schedules a timer and another microtask. What prints?",
       options: ["1, 2, 3", "1, 3, 2", "3, 1, 2"],
@@ -135,6 +169,9 @@ console.log("3: end");`,
     },
     {
       kind: "read",
+      short: "Why it matters",
+      key: "A long synchronous loop blocks clicks, timers and rendering.",
+      diagram: "blocked",
       title: "Why this matters in real apps",
       body: `A long synchronous loop blocks **everything**. The timer below is due at 0 ms, but it has to wait for the loop to finish. Run it and look at the time.
 
@@ -159,6 +196,7 @@ console.log("loop done");`,
     },
     {
       kind: "check",
+      short: "Check: timeout 0",
       type: "mcq",
       q: "When does a `setTimeout(fn, 0)` callback run?",
       options: [
@@ -171,7 +209,54 @@ console.log("loop done");`,
       why: "The delay is a minimum, not a promise to run now. The callback waits in the task queue, and a task only starts once the stack is empty and the microtask queue is drained.",
     },
     {
+      kind: "try",
+      short: "Change the order",
+      title: "Change the order",
+      body: "Make **save** print before **check**. Keep both lines, and keep both of them asynchronous.",
+      code: {
+        lang: "js",
+        source: `setTimeout(() => console.log("save"), 0);
+
+Promise.resolve().then(() => console.log("check"));`,
+      },
+      expect: ["save", "check"],
+      hint: "Put save in the same queue as check. Which function adds a callback to the microtask queue?",
+      fix: `queueMicrotask(() => console.log("save"));
+
+Promise.resolve().then(() => console.log("check"));`,
+    },
+    {
+      kind: "check",
+      short: "Find AI's mistake",
+      type: "predict",
+      ai: true,
+      q: "We asked AI to save the draft, then tell the user it is saved. What is wrong?",
+      options: [
+        "Nothing, the message comes after the save",
+        "The message appears before the save finishes",
+        "The save never runs",
+        "await null blocks the whole page",
+      ],
+      answer: 1,
+      why: "onClick calls save() but doesn't await it. At its first await, save hands control back, and the message prints. Make onClick async and write await save().",
+      code: {
+        lang: "js",
+        source: `async function save() {
+  await null; // writing to disk
+  console.log("draft is on disk");
+}
+
+function onClick() {
+  save();
+  console.log("Saved!");
+}
+
+onClick();`,
+      },
+    },
+    {
       kind: "explain",
+      short: "Explain it back",
       prompt:
         "In your own words: why does a `setTimeout(fn, 0)` callback run after a promise `.then` callback that was scheduled later in the same code?",
       mustMention: [
