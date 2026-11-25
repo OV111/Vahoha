@@ -1,14 +1,3 @@
-/**
- * Capstone admin (stage 7): review queue, full detail, overrides, revocation.
- *
- * Every write requires a reason and appends to capstone_admin_actions — an
- * append-only audit log. Overriding an AI decision is exactly the kind of
- * action that must be explainable later, to the learner and to ourselves.
- *
- * Admins see everything the learner never does: integrity flags, expected
- * points, late answers, paste/tab counters, model usage.
- */
-
 import { ObjectId } from "mongodb";
 import { revokeCapstoneXp } from "../../../services/xpService.js";
 import { COOLDOWN_MS } from "../lib/constants.js";
@@ -30,6 +19,12 @@ const PAGE_SIZE = 25;
 const logAction = (db, adminId, action, fields) =>
   db.collection(ADMIN_ACTIONS).insertOne({ adminId: new ObjectId(adminId), action, ...fields, at: new Date() });
 
+const loadAttempt = async (db, attemptId) => {
+  const attempt = await db.collection(ATTEMPTS).findOne({ _id: new ObjectId(attemptId) });
+  if (!attempt) fail(404, "Attempt not found");
+  return attempt;
+};
+
 const sumIntegrity = (sessions) =>
   sessions
     .flatMap((s) => s.questions ?? [])
@@ -41,6 +36,36 @@ const sumIntegrity = (sessions) =>
       }),
       { tabSwitches: 0, pasteEvents: 0, lateAnswers: 0 },
     );
+
+const groupByAttempt = (rows) => {
+  const groups = new Map();
+  for (const row of rows) {
+    const id = row.attemptId.toString();
+    groups.set(id, [...(groups.get(id) ?? []), row]);
+  }
+  return groups;
+};
+
+const toQueueRow = (attempt, { username, submissions, reviews, sessions }) => {
+  const flags = [...submissions, ...reviews, ...sessions].flatMap((x) => x.flags ?? []).map((f) => f.id);
+  const passed = submissions.find((s) => s.passed);
+  const latestReview = reviews.toSorted((x, y) => y.createdAt - x.createdAt)[0];
+  const graded = sessions.filter((s) => s.status === "graded");
+  return {
+    id: attempt._id.toString(),
+    username,
+    trackId: attempt.trackId,
+    attemptNumber: attempt.attemptNumber,
+    status: attempt.status,
+    repo: passed?.repo?.fullName ?? submissions[0]?.repo?.fullName ?? null,
+    reviewScore: latestReview?.totalScore ?? null,
+    defenseScore: attempt.defenseScore ?? graded.at(-1)?.result?.score ?? null,
+    flags: [...new Set(flags)],
+    integrity: sumIntegrity(sessions),
+    overridden: Boolean(attempt.override),
+    updatedAt: attempt.updatedAt,
+  };
+};
 
 /** The review queue: newest activity first, with every integrity signal summarised. */
 export const listAttemptsService = async (db, { status, page = 1 }) => {
@@ -60,52 +85,24 @@ export const listAttemptsService = async (db, { status, page = 1 }) => {
     db.collection(DEFENSES).find({ attemptId: { $in: ids } }, { projection: { attemptId: 1, status: 1, result: 1, flags: 1, "questions.integrity": 1, "questions.lateAnswer": 1 } }).toArray(),
   ]);
   const usernameOf = new Map(users.map((u) => [u._id.toString(), u.username]));
-  const byAttempt = (rows) => {
-    const m = new Map();
-    for (const r of rows) {
-      const k = r.attemptId.toString();
-      m.set(k, [...(m.get(k) ?? []), r]);
-    }
-    return m;
-  };
-  const subs = byAttempt(submissions);
-  const revs = byAttempt(reviews);
-  const defs = byAttempt(sessions);
+  const submissionsOf = groupByAttempt(submissions);
+  const reviewsOf = groupByAttempt(reviews);
+  const sessionsOf = groupByAttempt(sessions);
 
   return {
     page,
     pageSize: PAGE_SIZE,
     total,
     attempts: attempts.map((a) => {
-      const k = a._id.toString();
-      const mySubs = subs.get(k) ?? [];
-      const myRevs = revs.get(k) ?? [];
-      const myDefs = defs.get(k) ?? [];
-      const flags = [...mySubs, ...myRevs, ...myDefs].flatMap((x) => x.flags ?? []).map((f) => f.id);
-      const latestReview = myRevs.sort((x, y) => y.createdAt - x.createdAt)[0];
-      const graded = myDefs.filter((s) => s.status === "graded");
-      return {
-        id: k,
+      const id = a._id.toString();
+      return toQueueRow(a, {
         username: usernameOf.get(a.userId.toString()) ?? null,
-        trackId: a.trackId,
-        attemptNumber: a.attemptNumber,
-        status: a.status,
-        repo: mySubs.find((s) => s.passed)?.repo?.fullName ?? mySubs[0]?.repo?.fullName ?? null,
-        reviewScore: latestReview?.totalScore ?? null,
-        defenseScore: a.defenseScore ?? graded.at(-1)?.result?.score ?? null,
-        flags: [...new Set(flags)],
-        integrity: sumIntegrity(myDefs),
-        overridden: Boolean(a.override),
-        updatedAt: a.updatedAt,
-      };
+        submissions: submissionsOf.get(id) ?? [],
+        reviews: reviewsOf.get(id) ?? [],
+        sessions: sessionsOf.get(id) ?? [],
+      });
     }),
   };
-};
-
-const loadAttempt = async (db, attemptId) => {
-  const attempt = await db.collection(ATTEMPTS).findOne({ _id: new ObjectId(attemptId) });
-  if (!attempt) fail(404, "Attempt not found");
-  return attempt;
 };
 
 /** Everything about one attempt, including what learners never see. */
@@ -134,18 +131,6 @@ export const getAttemptDetailService = async (db, attemptId) => {
   };
 };
 
-/**
- * Force an attempt's outcome.
- *  passed → requires a review (a certificate is a snapshot of real scores);
- *           issues the certificate.
- *  failed → starts the cooldown (it counts as a used attempt) and revokes any
- *           certificate already issued for it.
- * Only the learner's LATEST attempt on a track can be overridden: changing an
- * old one while a newer one exists would leave two outcomes for one track.
- *
- * In-flight work cannot undo this: every service's own write is conditional on
- * the status it claimed, so after an override those writes simply match nothing.
- */
 export const overrideAttemptService = async (db, adminId, attemptId, { outcome, reason }) => {
   await ensureIndexes(db);
   const attempt = await loadAttempt(db, attemptId);

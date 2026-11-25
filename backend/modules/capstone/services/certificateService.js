@@ -30,6 +30,11 @@ export const ASSESSMENT_METHOD =
 const newPublicId = () => randomBytes(9).toString("base64url");
 export const PUBLIC_ID_PATTERN = /^[A-Za-z0-9_-]{12}$/;
 
+// A new pass after an admin failed the old attempt: the old, revoked certificate must not
+// stand in for it. One revoked for this same attempt stays; only an admin restores that.
+const isReplaceable = (certificate, attempt) =>
+  Boolean(certificate.revokedAt) && !certificate.attemptId.equals(attempt._id);
+
 /**
  * Issue the certificate for a passed attempt, or return the existing one.
  * @returns {Promise<object|{locked:true}|null>} null if the attempt has not passed
@@ -39,7 +44,7 @@ export const ensureCertificate = async (db, userId, attempt) => {
   const ownerId = new ObjectId(userId);
 
   const existing = await db.collection(CERTIFICATES).findOne({ userId: ownerId, trackId: attempt.trackId });
-  if (existing) return existing;
+  if (existing && !isReplaceable(existing, attempt)) return existing;
 
   // Certificates are a Pro feature; while BILLING_ENFORCED is off this is
   // always true. Not issuing (rather than issuing a hidden one) keeps the
@@ -94,6 +99,16 @@ export const ensureCertificate = async (db, userId, attempt) => {
   for (let tries = 0; tries < 3; tries++) {
     try {
       certificate.publicId = newPublicId();
+      if (existing) {
+        // Matches nothing if a concurrent request replaced it first or an admin
+        // restored it: then that one stands.
+        const replaced = await db.collection(CERTIFICATES).findOneAndReplace(
+          { _id: existing._id, attemptId: existing.attemptId, revokedAt: { $ne: null } },
+          certificate,
+          { returnDocument: "after" },
+        );
+        return replaced ?? db.collection(CERTIFICATES).findOne({ _id: existing._id });
+      }
       const { insertedId } = await db.collection(CERTIFICATES).insertOne({ ...certificate });
       return { ...certificate, _id: insertedId };
     } catch (err) {
