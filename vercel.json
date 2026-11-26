@@ -8,7 +8,7 @@
     { "source": "/foundations/:slug", "destination": "/labs/foundations/:slug", "permanent": true }
   ],
   "rewrites": [
-    { "source": "/((?!assets/|api/)[^.]*)", "destination": "/spa" }
+    { "source": "/((?!assets/|api/)(?!.*\\.(?:js|mjs|css|map|png|jpe?g|webp|gif|svg|ico|json|xml|txt|woff2?)$).*)", "destination": "/spa" }
   ],
   "headers": [
     {

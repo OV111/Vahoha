@@ -298,11 +298,15 @@ export default function UserProfile() {
                         {
                           label: "Share profile",
                           onClick: () => {
-                            captureEvent("share_created", { surface: "profile", channel: navigator.share ? "native" : "copy" });
                             if (navigator.share) {
-                              navigator.share({ url: window.location.href });
+                              // Rejects when the user closes the share sheet: that isn't a share.
+                              navigator
+                                .share({ url: window.location.href })
+                                .then(() => captureEvent("share_created", { surface: "profile", channel: "native" }))
+                                .catch(() => {});
                             } else {
                               navigator.clipboard.writeText(window.location.href);
+                              captureEvent("share_created", { surface: "profile", channel: "copy" });
                               toast.success("Link copied!");
                             }
                             setIsMenuOpen(false);
