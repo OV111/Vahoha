@@ -17,6 +17,20 @@ are all readable in the browser.
 | `VITE_POSTHOG_KEY` and `VITE_POSTHOG_HOST` | No, set both or neither | `phc_...` and `https://eu.i.posthog.com` | One without the other: analytics stay off (warning) |
 | `VITE_SENTRY_DSN` | No | `https://key@o0.ingest.de.sentry.io/0` | Missing: no errors are sent to Sentry. Not checked by the build |
 
+## Which file holds what
+
+| File | Read by | Holds |
+|---|---|---|
+| `.env.example` | nobody (committed template) | every variable with a placeholder |
+| `.env.development` | `npm run dev` | localhost API and WebSocket, Google client id, Sentry DSN. No PostHog key, so local clicks stay out of production analytics |
+| `.env.production` | `npm run build` on your machine | the live API, Google client id, Sentry DSN, PostHog |
+| `.env.staging` | `npm run build:staging` | same as production, without PostHog |
+
+All of them except `.env.example` are git-ignored. Vercel builds from its own project
+settings, so a change here never reaches the live site: change it in Vercel too.
+`.env.example` and `backend/.env.example` are generated from `backend/config/env.js` by
+`node backend/scripts/writeEnvExample.js`.
+
 ## What the build check does
 
 - **`production` and `staging`** (`vite build`, `vite build --mode staging`): every

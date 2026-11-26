@@ -14,21 +14,12 @@ node_modules
 dist
 dist-ssr
 
-# Environment variables — never commit any .env file with real values
-.env
-.env.local
-.env.development
-.env.staging
-.env.production
-.env.*.local
-backend/.env
-backend/.env.local
-backend/.env.staging
-backend/.env.production
-backend/.env.development
-.env.development.local
-.env.staging.local
-.env.production.local
+# Environment variables: every .env file stays local. Only the templates
+# (written by backend/scripts/writeEnvExample.js) are committed.
+.env*
+!.env.example
+backend/.env*
+!backend/.env.example
 
 # User uploads
 uploads/

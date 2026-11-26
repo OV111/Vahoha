@@ -35,11 +35,8 @@ async function load() {
 }
 
 if (missingConfig) {
-  if (import.meta.env.DEV) {
-    throw new Error(
-      `${missingConfig} variable required by PostHog is missing or un-configured, this causes events to be silently missed. This error stops appearing once ${missingConfig} is configured`,
-    );
-  }
+  // Local dev has no key on purpose, so its clicks stay out of production analytics.
+  if (import.meta.env.DEV) console.info(`PostHog is off: ${missingConfig} is not set.`);
 } else if (typeof window !== "undefined") {
   // Browser only: the build-time prerender imports this module in Node.
   // Starts on the first interaction, or after a few seconds for a visitor who
