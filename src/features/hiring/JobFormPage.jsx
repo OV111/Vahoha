@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
-import Dropdown from "@/components/ui/Dropdown";
+import Dropdown from "@/components/primitives/Dropdown";
 import LayerPicker from "./components/LayerPicker";
 import ChipInput from "./components/ChipInput";
 import { createJob, fetchJob, updateJob } from "./api/hiringApi";
@@ -13,14 +13,14 @@ import {
   SALARY_CURRENCIES,
   SALARY_PERIODS,
   WORKPLACES,
-} from "../../../constants/hiringRules";
+} from "@shared/hiringRules";
 import {
   JOBS_COPY,
   JOB_LEVEL_LABELS,
   JOB_TYPE_LABELS,
   SALARY_PERIOD_LABELS,
   WORKPLACE_LABELS,
-} from "../../../constants/hiring";
+} from "@/constants/hiring";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 
 const INPUT =

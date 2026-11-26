@@ -1,13 +1,13 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Box, Check, ExternalLink, GitBranch, ScanSearch, X } from "lucide-react";
-import { scanRepo } from "../systemMapApi";
-import { compareScan } from "../lib/drift";
-import { DEFAULT_LENS, lensInfo } from "../lib/lenses";
-import { KIND_ICONS } from "../lib/nodeKinds";
-import useMyRepos from "../hooks/useMyRepos";
+import { scanRepo } from "@/features/system-map/systemMapApi";
+import { compareScan } from "@/features/system-map/lib/drift";
+import { DEFAULT_LENS, lensInfo } from "@/features/system-map/lib/lenses";
+import { KIND_ICONS } from "@/features/system-map/lib/nodeKinds";
+import useMyRepos from "@/features/system-map/hooks/useMyRepos";
 import EvidenceList from "./EvidenceList";
-import { DEVELOPER_SIGNUP_PATH } from "../../../../constants/site";
+import { DEVELOPER_SIGNUP_PATH } from "@/constants/site";
 
 const button =
   "inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-neutral-700 px-3 text-sm text-neutral-200 transition-colors hover:border-neutral-500 hover:text-white focus-visible:outline-2 focus-visible:outline-purple-400 disabled:cursor-not-allowed disabled:opacity-50";

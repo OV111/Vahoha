@@ -1,4 +1,4 @@
-import { JOB_LEVEL_LABELS, JOB_TYPE_LABELS, WORKPLACE_LABELS } from "../../../../constants/hiring";
+import { JOB_LEVEL_LABELS, JOB_TYPE_LABELS, WORKPLACE_LABELS } from "@/constants/hiring";
 
 const DAY = 24 * 60 * 60 * 1000;
 

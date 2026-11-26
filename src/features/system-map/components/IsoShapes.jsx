@@ -1,10 +1,10 @@
 import { memo } from "react";
 import { Box as BoxIcon } from "lucide-react";
-import { KIND_ICONS, kindColor, kindInfo } from "../lib/nodeKinds";
-import { TILE_W, boxFaces, iso, isoCircle, roundedPath, shapeTop, worldOf } from "../lib/isoGeometry";
-import { DEAD_COLOR, isDown, shapeOf } from "../../../../constants/isoShapes";
+import { KIND_ICONS, kindColor, kindInfo } from "@/features/system-map/lib/nodeKinds";
+import { TILE_W, boxFaces, iso, isoCircle, roundedPath, shapeTop, worldOf } from "@/features/system-map/lib/isoGeometry";
+import { DEAD_COLOR, isDown, shapeOf } from "@/constants/projectMapShapes";
 
-// One drawing per shape in constants/isoShapes.js. Every shape is lit the same
+// One drawing per shape in src/constants/projectMapShapes.js. Every shape is lit the same
 // way (top from the "-top" gradient, sides from "-side", the right side shaded
 // darker) so they read as one scene even though no two look alike.
 

@@ -1,6 +1,6 @@
-import { KIND_ICONS } from "../lib/nodeKinds";
-import { paletteFor } from "../lib/lenses";
-import { SCROLL_ROW } from "../lib/scrollRow";
+import { KIND_ICONS } from "@/features/system-map/lib/nodeKinds";
+import { paletteFor } from "@/features/system-map/lib/lenses";
+import { SCROLL_ROW } from "@/features/system-map/lib/scrollRow";
 
 export const DRAG_TYPE = "application/x-vahoha-node";
 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { capstoneApi } from "../capstoneApi";
+import { capstoneApi } from "@/features/capstone/capstoneApi";
 import { captureEvent } from "@/lib/posthog";
 import { queryCache } from "@/lib/queryCache";
 

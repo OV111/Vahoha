@@ -1,10 +1,10 @@
 import { motion } from "framer-motion"; // eslint-disable-line no-unused-vars
-import LayerNode from "../LayerNode";
+import LayerNode from "@/features/roadmap/components/LayerNode";
 import SectionCard from "./SectionCard";
 import { useConnection, useConnectorNode } from "./connectorHooks";
 import { TREE_TOKENS } from "./treeTokens";
 import { PATH_COLORS } from "./statusMeta";
-import { useLayerTree } from "../../hooks/useLayerTree";
+import { useLayerTree } from "@/features/roadmap/hooks/useLayerTree";
 
 // Section and subtopic cards are fixed-width and stack vertically, so every
 // row's side panel is naturally this width UNLESS a layer has zero sections
@@ -57,7 +57,7 @@ const SidePanel = ({ side, sections, layerId }) => (
 const DesktopTreeRow = ({ layer, index, isDone, isPrevDone, status }) => {
   const layerId = `layer-${layer.id}`;
   const layerConnectorRef = useConnectorNode(layerId);
-  const { left, right, summary, view, ctaHref } = useLayerTree(layer, status);
+  const { left, right, summary, view } = useLayerTree(layer, status);
 
   return (
     <motion.div
@@ -87,7 +87,6 @@ const DesktopTreeRow = ({ layer, index, isDone, isPrevDone, status }) => {
           index={index}
           view={view}
           summary={summary}
-          ctaHref={ctaHref}
           connectorId={layerId}
           connectorRef={layerConnectorRef}
         />

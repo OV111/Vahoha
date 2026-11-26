@@ -10,7 +10,7 @@ import MemberList from "./components/MemberList";
 import TaskBoard from "./components/board/TaskBoard";
 import TeamPulse from "./components/TeamPulse";
 import TeamSetup from "./components/TeamSetup";
-import { PAGE } from "../../../constants/layout";
+import { PAGE } from "@/constants/layout";
 import "./teams-theme.css";
 
 /**

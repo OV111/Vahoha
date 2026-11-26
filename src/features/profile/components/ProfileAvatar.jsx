@@ -1,4 +1,4 @@
-import { Bone } from "@/components/ui/Skeleton";
+import { Bone } from "@/components/feedback/Skeleton";
 import { useState } from "react";
 
 const avatarSrc = (url) => url.replace("/upload/", "/upload/w_112,h_112,c_fill,f_auto,q_auto/");

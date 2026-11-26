@@ -1,7 +1,7 @@
 import { Banknote, Check, MapPin, X } from "lucide-react";
 import { salaryText } from "@/features/hiring/lib/salary";
 import { jobLine } from "@/features/hiring/lib/intros";
-import { INBOX_COPY as COPY } from "../../../../../constants/hiring";
+import { INBOX_COPY as COPY } from "@/constants/hiring";
 
 const RequiredLayers = ({ layers, match }) => {
   const metIds = new Set(match.met.map((l) => l.layerId));

@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import usePlan from "../hooks/usePlan";
+import usePlan from "@/features/billing/hooks/usePlan";
 
 /**
  * Layout route for Pro pages. Nest it inside ProtectedLayout, so guests are

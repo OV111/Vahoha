@@ -1,4 +1,4 @@
-import { errorClass, inputClass, labelClass } from "../authStyles";
+import { errorClass, inputClass, labelClass } from "@/features/auth/authStyles";
 
 /**
  * Label, input and error for a react-hook-form field.

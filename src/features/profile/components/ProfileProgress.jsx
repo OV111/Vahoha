@@ -1,7 +1,7 @@
-import { BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
+import { BoneLines, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Github } from "lucide-react";
-import { SURFACE } from "@/components/ui/surface";
+import { SURFACE } from "@/components/primitives/styles";
 
 /**
  * Presentational pieces for the learning sections of a profile (own + public).

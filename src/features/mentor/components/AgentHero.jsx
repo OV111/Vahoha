@@ -1,6 +1,6 @@
 import useProfileStore from "@/stores/useProfileStore";
 import hexLogo from "@/assets/brand/vahoha-mark-96.webp";
-import TextType from "@/components/effects/TextType";
+import TextType from "./TextType";
 
 function getGreeting() {
   const h = new Date().getHours();

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import ConfirmDialog from "@/components/ui/ConfirmDialog";
-import { AI_LEAD } from "../../../../constants/teams";
-import { teamsApi } from "../teamsApi";
+import ConfirmDialog from "@/components/feedback/ConfirmDialog";
+import { AI_LEAD } from "@shared/teams";
+import { teamsApi } from "@/features/teams/teamsApi";
 
 /**
  * Self-serve setup on the team page: while forming, the creator, lead or

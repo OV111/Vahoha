@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getMessagePolicy, setMessagePolicy } from "../../chat/lib/chatControlsApi";
+import { getMessagePolicy, setMessagePolicy } from "@/features/chat/lib/chatControlsApi";
 
 const OPTIONS = [
   { value: "everyone", label: "Everyone", hint: "Anyone can send you one message request." },

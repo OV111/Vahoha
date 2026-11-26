@@ -6,7 +6,7 @@ import {
   TASK_AREAS,
   TASK_LIMITS,
   TASK_SIZES,
-} from "../../../../constants/teams.js";
+} from "#shared/teams.js";
 
 const objectId = z.string().regex(/^[a-f0-9]{24}$/, "Invalid id");
 

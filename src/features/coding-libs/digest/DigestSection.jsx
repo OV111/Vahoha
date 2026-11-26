@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { InterviewCard, LearnCard, QuickRow } from "./ConceptCards";
-import { setConceptKnown, submitConceptCheck } from "../../../services/libraryApi";
+import { setConceptKnown, submitConceptCheck } from "@/services/libraryApi";
 import { MODES, ROLES, estimateMinutes } from "./digestData";
 import { useDigest } from "./useDigest";
 

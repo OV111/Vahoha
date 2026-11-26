@@ -72,7 +72,7 @@ function Breakdown({ concepts }) {
  * "Names only" still gives direction, which the mentor gate depends on.
  *
  * @param {{
- *   result: import("../lib/examStates").ExamResult,
+ *   result: import("@/features/voice-exam/lib/examStates").ExamResult,
  *   layerTitle?: string|null,
  *   detailed?: boolean,
  *   practice?: boolean,   already verified before this run, so a fail changes nothing

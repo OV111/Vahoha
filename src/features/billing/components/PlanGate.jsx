@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Lock } from "lucide-react";
-import usePlan from "../hooks/usePlan";
+import usePlan from "@/features/billing/hooks/usePlan";
 
 /**
  * Shows `children` to users whose plan includes the feature, an upgrade prompt

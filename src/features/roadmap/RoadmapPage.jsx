@@ -5,16 +5,16 @@ import { toast } from "sonner";
 import CategoryBar from "./components/CategoryBar";
 import TrackSelector from "./components/TrackSelector";
 import RoadmapTree from "./components/RoadmapTree";
-import useRoadmapStore from "../../stores/useRoadmapStore";
-import useAuthStore from "../../stores/useAuthStore";
+import useRoadmapStore from "@/features/roadmap/hooks/useRoadmapStore";
+import useAuthStore from "@/stores/useAuthStore";
 import RoadmapHero from "./components/RoadmapHero";
 import FloatingLoad from "./components/FloatingLoad";
 import TrackOnboardingPanel from "./components/TrackOnboardingPanel";
 import WelcomeTour from "./components/WelcomeTour";
 import { trackHasDoneLayer } from "./lib/trackStarted";
-import { useTrackHasProgress } from "../learn/lib/lessonStatus";
+import { useTrackHasProgress } from "@/features/learn/lib/lessonStatus";
 import "./roadmap.css";
-import { ROADMAP_DOMAINS } from "../../../constants/categories";
+import { ROADMAP_DOMAINS } from "@shared/categories";
 import { captureEvent } from "@/lib/posthog";
 
 export default function RoadmapPage() {

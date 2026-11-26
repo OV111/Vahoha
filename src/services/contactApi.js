@@ -1,4 +1,4 @@
-import { API_BASE_URL, netFetch } from "../../constants/api";
+import { API_BASE_URL, netFetch } from "@/constants/api";
 
 // Failed sends throw with the server's message and the field it rejected; network errors have no status.
 export const sendContactMessage = async (form) => {

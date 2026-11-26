@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ConfirmDialog from "@/components/ui/ConfirmDialog";
-import TSelect from "../TSelect";
+import ConfirmDialog from "@/components/feedback/ConfirmDialog";
+import TSelect from "@/features/teams/components/TSelect";
 
 /**
  * Sprint picker, progress for the picked sprint, and (lead / co-lead only)

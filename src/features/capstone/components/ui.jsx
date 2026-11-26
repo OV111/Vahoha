@@ -1,6 +1,6 @@
 import { AlertTriangle, Loader2 } from "lucide-react";
-import { SURFACE } from "@/components/ui/surface";
-import { formatDateTime } from "../lib/format";
+import { SURFACE } from "@/components/primitives/styles";
+import { formatDateTime } from "@/features/capstone/lib/format";
 
 /** Small shared building blocks for the capstone screens. */
 

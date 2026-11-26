@@ -12,9 +12,9 @@ import { applyOverride, decideTrust } from '../../modules/hiring/services/trustE
 import { blockRecruiters } from '../../middleware/blockRecruiters.js'
 import { requireRecruiter } from '../../middleware/requireRecruiter.js'
 import { createAccessToken } from '../../utils/jwtToken.js'
-import { WEBSITE_PATTERN } from '../../../constants/hiringRules.js'
-import { isDisposableEmail, isFreeEmail } from '../../../constants/emailDomains.js'
-import { isRecruiterBlockedPath } from '../../../constants/recruiterAccess.js'
+import { WEBSITE_PATTERN } from '#shared/hiringRules.js'
+import { isDisposableEmail, isFreeEmail } from '#shared/emailDomains.js'
+import { isRecruiterBlockedPath } from '#shared/recruiterAccess.js'
 
 describe('SSRF guard: isPublicAddress', () => {
   it.each([

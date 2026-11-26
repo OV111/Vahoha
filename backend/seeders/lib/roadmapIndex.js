@@ -1,14 +1,14 @@
 import { readFile, readdir } from "fs/promises";
 import { fileURLToPath } from "url";
 import { dirname, join, basename } from "path";
-import { TRACKS } from "../../../constants/roadmapPaths.js";
+import { TRACKS } from "#shared/roadmapPaths.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROADMAP_DIR = join(__dirname, "../../../src/data/roadmaps");
 
 /**
  * Every track in src/data/roadmaps/*.json with the category id the exam page
- * sends as `path` (same rule as roadmapSeeder.js: constants/roadmapPaths.js
+ * sends as `path` (same rule as roadmapSeeder.js: shared/roadmapPaths.js
  * wins, the file name is the fallback). Exam banks must be stored under it.
  *
  * @returns {Promise<Array<{ trackId: string, categoryId: string, title: string, layers: object[], hasMeta: boolean }>>}

@@ -9,7 +9,7 @@
 // alone pushed compiling past the public Judge0's compile time limit about
 // half the time. Everything imported here is something fmt already needs.
 
-import { parseType } from "../../../../../constants/challengeTypes.js";
+import { parseType } from "#shared/challengeTypes.js";
 import { literal } from "./literals.js";
 import { REPORT_MARKER } from "./report.js";
 

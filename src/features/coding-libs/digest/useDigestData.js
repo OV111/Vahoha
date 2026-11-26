@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchDigest } from "../../../services/libraryApi";
+import { fetchDigest } from "@/services/libraryApi";
 
 /**
  * The digest for one book, or null when it has none (or the user may not see

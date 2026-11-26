@@ -1,5 +1,5 @@
-import { MENTOR_USAGE_COPY as COPY } from "../../../../constants/mentorUsage";
-import { formatClock, formatCountdown, formatCompact, num } from "../lib/usageFormat";
+import { MENTOR_USAGE_COPY as COPY } from "@/constants/mentorUsage";
+import { formatClock, formatCountdown, formatCompact, num } from "@/features/profile/lib/usageFormat";
 
 const Stat = ({ label, value }) => (
   <div>

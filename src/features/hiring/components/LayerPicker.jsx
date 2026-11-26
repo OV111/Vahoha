@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Loader2, Plus, X } from "lucide-react";
 import useDebouncedValue from "@/hooks/useDebouncedValue";
-import { searchLayers } from "../api/hiringApi";
+import { searchLayers } from "@/features/hiring/api/hiringApi";
 
 // Picks the roadmap layers a job requires: search by title, click to add,
 // x to remove. `value` is [{ layerId, title, track }].

@@ -1,5 +1,5 @@
 import useCachedResource from "@/hooks/useCachedResource";
-import { fetchSubscription } from "../billingApi";
+import { fetchSubscription } from "@/features/billing/billingApi";
 
 const PLAN_RANK = { free: 0, pro: 1 };
 

@@ -1,5 +1,5 @@
 import { AnimatePresence, MotionConfig, motion as Motion } from "framer-motion";
-import { fadeUp } from "../lib/motion";
+import { fadeUp } from "@/features/capstone/lib/motion";
 import { SURFACE } from "./ui";
 
 /**

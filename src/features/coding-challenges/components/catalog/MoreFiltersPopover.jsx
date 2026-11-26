@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, SlidersHorizontal } from "lucide-react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
-import { TIME_RANGES } from "../../lib/timeRanges";
+import { TIME_RANGES } from "@/features/coding-challenges/lib/timeRanges";
 
 /** Click-toggled secondary filter popover: topics, estimated time, clear. */
 export default function MoreFiltersPopover({

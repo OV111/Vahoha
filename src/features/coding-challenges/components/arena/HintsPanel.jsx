@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Eye, Lock } from "lucide-react";
-import { C, FONT_MONO } from "../../lib/arenaTheme";
+import { C, FONT_MONO } from "@/features/coding-challenges/lib/arenaTheme";
 import ChallengeText from "./ChallengeText";
 
 export default function HintsPanel({ hints, onReveal }) {

@@ -7,7 +7,7 @@ import {
   MotionConfig,
 } from "motion/react";
 import { ArrowRight } from "lucide-react";
-import { Reveal } from "../../components/motion/Reveal.jsx";
+import { Reveal } from "./components/Reveal.jsx";
 import "./foundations-theme.css";
 import { FOUNDATIONS_FAQ } from "./faq.js";
 import { TOPICS, TOPIC_GROUPS } from "./topics/topics.js";

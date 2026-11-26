@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchLibraryResources } from "../../services/libraryApi";
+import { fetchLibraryResources } from "@/services/libraryApi";
 
 const LIMIT = 50;
 

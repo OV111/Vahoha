@@ -1,6 +1,6 @@
-import { Bone } from "@/components/ui/Skeleton";
+import { Bone } from "@/components/feedback/Skeleton";
 import { BellOff, Users } from "lucide-react";
-import { formatTimeAgo } from "../lib/time";
+import { formatTimeAgo } from "@/features/chat/lib/time";
 
 /** One conversation (direct or group) in the Messages list. */
 const ConversationRow = ({ item, isActive, isLoadingPreview, onSelect }) => {

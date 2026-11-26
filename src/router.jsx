@@ -1,18 +1,18 @@
 import { lazy } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
-import MainLayout from "./layouts/MainLayout";
-import ProtectedLayout from "./layouts/ProtectedLayout";
-import RouteError from "./components/feedback/RouteError";
-import PublicOnlyRoute from "./layouts/PublicOnlyRoute";
+import MainLayout from "@/layouts/MainLayout";
+import RequireAuth from "@/layouts/guards/RequireAuth";
+import RouteError from "@/components/screens/RouteError";
+import RequireGuest from "@/layouts/guards/RequireGuest";
 import Home from "./pages/Home";
-import OAuthSuccess from "./components/feedback/OAuthSuccess";
+import OAuthSuccess from "@/components/screens/OAuthSuccess";
 import FoundationRedirect from "./features/foundations/FoundationRedirect";
-import { FEATURES } from "../constants/features";
+import { FEATURES } from "@/constants/features";
 
 const redirect = (to) => <Navigate to={to} replace />;
 
-const NotFound = lazy(() => import("./components/feedback/NotFound"));
+const NotFound = lazy(() => import("@/components/screens/NotFound"));
 
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
@@ -119,7 +119,7 @@ const publicRoutes = [
 ];
 
 const authRoutes = [
-  { path: "get-started", element: <PublicOnlyRoute><GetStarted /></PublicOnlyRoute> },
+  { element: <RequireGuest />, children: [{ path: "get-started", element: <GetStarted /> }] },
   { path: "oauth-success", element: <OAuthSuccess /> },
   { path: "forgot-password", element: <ForgotPassword /> },
   { path: "reset-password", element: <ResetPassword /> },
@@ -136,7 +136,7 @@ const shareRoutes = [
 const learnRoutes = [
   { path: "learn", element: <LearnHomePage /> },
   { path: "learn/:trackId/:layerId", element: <LayerLearnPage /> },
-  { path: "learn/:trackId/:layerId/:topicSlug", element: <LearnTopicPage />, handle: { focus: true } },
+  { path: "learn/:trackId/:layerId/:topicSlug", element: <LearnTopicPage />, handle: { reading: true } },
   { path: "learn/:trackId/:layerId/:topicSlug/lab", element: <LabPage /> },
 ];
 
@@ -228,7 +228,7 @@ export const routes = [
       ...shareRoutes,
       ...learnRoutes,
       ...labRoutes,
-      { element: <ProtectedLayout />, children: protectedRoutes },
+      { element: <RequireAuth />, children: protectedRoutes },
     ],
   },
   { path: "*", element: <NotFound /> },

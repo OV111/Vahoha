@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Github, Users } from "lucide-react";
-import { ROADMAP_DOMAINS } from "../../../../constants/categories";
-import { teamsApi } from "../teamsApi";
+import { ROADMAP_DOMAINS } from "@shared/categories";
+import { teamsApi } from "@/features/teams/teamsApi";
 import TSelect from "./TSelect";
 
 /**

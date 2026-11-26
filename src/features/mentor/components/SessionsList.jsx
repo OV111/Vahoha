@@ -1,7 +1,7 @@
-import { Bone, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, SkeletonRegion } from "@/components/feedback/Skeleton";
 import { Loader2 } from "lucide-react";
-import { SESSIONS_COPY } from "../../../../constants/mentor";
-import { groupSessions } from "../lib/groupSessions";
+import { SESSIONS_COPY } from "@/constants/mentor";
+import { groupSessions } from "@/features/mentor/lib/groupSessions";
 import SessionItem from "./SessionItem";
 
 /** "2d ago" style — dates arrive as ISO strings from MongoDB. */

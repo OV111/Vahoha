@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "@/constants/api";
 
 // Every function resolves to an AttemptView or Eligibility from lib/examStates.js.
 const BASE = `${API_BASE_URL}/api/voice-exam`;

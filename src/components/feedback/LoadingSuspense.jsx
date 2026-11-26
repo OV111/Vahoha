@@ -2,12 +2,6 @@ import { TailChase } from "ldrs/react";
 import "ldrs/react/TailChase.css";
 import useThemeStore from "@/stores/useThemeStore";
 
-/**
- * The app's loader. Full-page by default (the route Suspense fallback);
- * `fill` makes it fill its parent instead and leaves the background to the
- * parent, for panels and pages that already own their own surface. `size`
- * shrinks the circle for small panels and popovers.
- */
 const LoadingSuspense = ({ fill = false, size = 44 }) => {
   const theme = useThemeStore((s) => s.theme);
   const isDark = theme !== "light";

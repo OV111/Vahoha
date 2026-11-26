@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { TRACKS } from "../../../../constants/roadmapPaths";
+import { TRACKS } from "@shared/roadmapPaths";
 import { ROOMS, roomOfTrack, tracksInRoom, roomById, sectionOfTrack, tracksInSection } from "@/features/labs/rooms";
 
 const allTracks = Object.values(TRACKS).flat();

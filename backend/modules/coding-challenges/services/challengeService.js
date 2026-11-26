@@ -4,7 +4,7 @@ import { escapeRegex } from "../../../utils/regex.js";
 import { createTtlCache } from "../../../utils/ttlCache.js";
 import { getTracks } from "../../../services/roadmapCache.js";
 import { currentStreak } from "../../../services/learningActivity.js";
-import { isJudgeLanguage } from "../../../../constants/challengeLanguages.js";
+import { isJudgeLanguage } from "#shared/challengeLanguages.js";
 import { describeJudge } from "./judge0Client.js";
 
 /**

@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import { getAccessToken } from "../../constants/api";
-import posthog, { isPostHogConfigured } from "../lib/posthog";
-import { queryCache } from "../lib/queryCache";
-import { fetchMyProfile } from "../services/profileApi";
-import { fetchUserBlogs } from "../services/blogsApi";
+import { getAccessToken } from "@/constants/api";
+import posthog, { isPostHogConfigured } from "@/lib/posthog";
+import { queryCache } from "@/lib/queryCache";
+import { fetchMyProfile } from "@/services/profileApi";
+import { fetchUserBlogs } from "@/services/blogsApi";
 
 const PROFILE_KEY = "profile";
 const PROFILE_STALE_MS = 60_000;
@@ -14,10 +14,8 @@ const useProfileStore = create((set, get) => ({
   blogs: [],
   isLoading: false,
   isBlogsLoading: false,
-  // Loads the profile unless the one on screen is under a minute old. The app
-  // loads it at login and the profile page asks again on mount: a second call
-  // while the first is out joins it, and one right after reuses it. A save or a
-  // finished test marks it out of date (lib/queryInvalidation.js); `force` always asks.
+  // Skips the request if the profile is under a minute old; a call while one is
+  // already out joins it. Writes mark it stale (lib/queryInvalidation.js).
   fetchProfile: async ({ force = false } = {}) => {
     const token = getAccessToken();
     if (!token) return "unauthorized";
@@ -29,10 +27,7 @@ const useProfileStore = create((set, get) => ({
       const data = await queryCache.load(PROFILE_KEY, fetchMyProfile, { staleMs: PROFILE_STALE_MS, force });
       const user = data.userWithoutPassword;
       const previousUser = get().user;
-      set({
-        user,
-        stats: data.stats,
-      });
+      set({ user, stats: data.stats });
       if (isPostHogConfigured && user?._id && previousUser?._id !== user._id) {
         posthog.identify(String(user._id), {
           email: user.email,
@@ -57,15 +52,9 @@ const useProfileStore = create((set, get) => ({
       set({ isBlogsLoading: false });
     }
   },
-  updateStats: (newStats) =>
-    set((state) => ({ stats: { ...state.stats, ...newStats } })),
-
-  updateUser: (newUser) =>
-    set((state) => ({ user: { ...state.user, ...newUser } })),
-
-  clearProfile: () => {
-    set({ user: null, stats: null, blogs: [], isBlogsLoading: false });
-  },
+  updateStats: (newStats) => set((state) => ({ stats: { ...state.stats, ...newStats } })),
+  updateUser: (newUser) => set((state) => ({ user: { ...state.user, ...newUser } })),
+  clearProfile: () => set({ user: null, stats: null, blogs: [], isBlogsLoading: false }),
 }));
 
 export default useProfileStore;

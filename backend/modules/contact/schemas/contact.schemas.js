@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CONTACT_TOPICS, CONTACT_LIMITS } from "../../../../constants/contact.js";
+import { CONTACT_TOPICS, CONTACT_LIMITS } from "#shared/contact.js";
 
 export { CONTACT_TOPICS };
 

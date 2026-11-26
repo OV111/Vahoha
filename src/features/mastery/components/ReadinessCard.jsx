@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { TEXT, MUTED, SOFT, BORDER, SURFACE, FOCUS } from "../lib/tone";
+import { TEXT, MUTED, SOFT, BORDER, SURFACE, FOCUS } from "@/features/mastery/lib/tone";
 
 const OVERALL_LABEL = {
   entry: "Entry level",

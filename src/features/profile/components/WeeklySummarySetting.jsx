@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getEmailPrefs, setEmailPrefs } from "@/services/emailPrefsApi";
-import { WEEKLY_SUMMARY_COPY as COPY } from "../../../../constants/weeklySummary";
+import { WEEKLY_SUMMARY_COPY as COPY } from "@shared/weeklySummary";
 
 /**
  * Weekly progress email on/off. Saves on click, like MessagePolicySetting:

@@ -1,16 +1,16 @@
 import { lazy, Suspense, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
-import ServerDown from "@/components/feedback/ServerDown";
-import NotFound from "../../../components/feedback/NotFound";
+import ServerDown from "@/components/screens/ServerDown";
+import NotFound from "@/components/screens/NotFound";
 import useAuthStore from "@/stores/useAuthStore";
-import MapSkeleton from "../components/MapSkeleton";
-import useInitialMap from "../hooks/useInitialMap";
-import { DEVELOPER_SIGNUP_PATH } from "../../../../constants/site";
+import MapSkeleton from "@/features/system-map/components/MapSkeleton";
+import useInitialMap from "@/features/system-map/hooks/useInitialMap";
+import { DEVELOPER_SIGNUP_PATH } from "@/constants/site";
 
 // Only signed-in learners reach the editor; guests stop at the sign-in screen,
 // so the heavy canvas/export code stays out of the page's own chunk.
-const loadEditor = () => import("../components/ProjectMapEditor");
+const loadEditor = () => import("@/features/system-map/components/ProjectMapEditor");
 const ProjectMapEditor = lazy(loadEditor);
 
 // /project-map — a free editor for the system diagram of your own project.

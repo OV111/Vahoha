@@ -1,8 +1,6 @@
 import { io } from "socket.io-client";
 import { ensureFreshToken, getAccessToken } from "./session";
 
-// 3 s, 6 s, 12 s ... up to 60 s. The random part keeps every open tab from retrying
-// at the same instant after a deploy, which would all hit a restarting server at once.
 export const RECONNECT_BASE_MS = 3000;
 export const RECONNECT_MAX_MS = 60_000;
 const REFUSED_RETRY_MS = 10_000;

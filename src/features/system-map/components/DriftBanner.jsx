@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Check, GitPullRequest } from "lucide-react";
-import { dismissDrift } from "../driftApi";
+import { dismissDrift } from "@/features/system-map/driftApi";
 
 const SHOWN = 5;
 

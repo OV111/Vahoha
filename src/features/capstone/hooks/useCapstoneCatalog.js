@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { capstoneApi } from "../capstoneApi";
+import { capstoneApi } from "@/features/capstone/capstoneApi";
 
 // One request per page load, shared by every caller (the roadmap re-renders
 // often and switches tracks; the catalog only changes when a brief is published).

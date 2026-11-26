@@ -1,4 +1,4 @@
-import { SESSION_GROUP_LABELS } from "../../../../constants/mentor";
+import { SESSION_GROUP_LABELS } from "@/constants/mentor";
 
 const DAY_MS = 86_400_000;
 

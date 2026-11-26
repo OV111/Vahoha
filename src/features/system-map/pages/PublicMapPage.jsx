@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { BadgeCheck, Map as MapIcon } from "lucide-react";
-import UserAvatar from "@/components/ui/UserAvatar";
+import UserAvatar from "@/components/primitives/UserAvatar";
 import useAuthStore from "@/stores/useAuthStore";
-import ReadOnlyMap from "../components/ReadOnlyMap";
-import { fetchPublicMap } from "../systemMapApi";
-import { fromGraph } from "../lib/mapGraph";
-import { DEFAULT_LENS, lensInfo } from "../lib/lenses";
+import ReadOnlyMap from "@/features/system-map/components/ReadOnlyMap";
+import { fetchPublicMap } from "@/features/system-map/systemMapApi";
+import { fromGraph } from "@/features/system-map/lib/mapGraph";
+import { DEFAULT_LENS, lensInfo } from "@/features/system-map/lib/lenses";
 
 // /map/:publicId — a Project Map its owner chose to share. Open to anyone and
 // read-only: viewers can pan, zoom and click a part, never change it. The API

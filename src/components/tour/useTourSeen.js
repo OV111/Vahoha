@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 import useAuthStore from "@/stores/useAuthStore";
-import useTourStore from "@/stores/useTourStore";
+import useTourStore from "./useTourStore";
 
 /**
  * Whether the signed-in user already finished or skipped the tour `tourId`

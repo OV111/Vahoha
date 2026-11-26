@@ -1,11 +1,11 @@
 import { lazy, Suspense, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
-import SearchBar from "../../components/search/SearchBar";
-import { focusRing } from "./parts";
+import SearchBar from "./SearchBar";
+import { focusRing } from "./navbarParts";
 
 // Only shown once someone opens search, so it stays out of every page's first load.
-const SearchResults = lazy(() => import("../../components/search/SearchResults"));
+const SearchResults = lazy(() => import("./SearchResults"));
 
 // Desktop search: an icon that expands into a search field on hover or click.
 export default function NavSearch({

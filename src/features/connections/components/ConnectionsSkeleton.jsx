@@ -1,4 +1,4 @@
-import { Bone, BoneControl, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, BoneControl, SkeletonRegion } from "@/components/feedback/Skeleton";
 
 /** Rows shaped like ConnectionRow, so the list doesn't jump when data lands. */
 export default function ConnectionsSkeleton({ rows = 5 }) {

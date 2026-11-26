@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
-import { MAX_TEAM_MEMBERS } from "../../../constants/teams";
+import { MAX_TEAM_MEMBERS } from "@shared/teams";
 import { teamsApi } from "./teamsApi";
 import TeamHealth from "./components/admin/TeamHealth";
 import TeamList from "./components/admin/TeamList";

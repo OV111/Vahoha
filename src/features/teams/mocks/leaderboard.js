@@ -1,4 +1,4 @@
-import { SIGNALS } from "../lib/score";
+import { SIGNALS } from "@/features/teams/lib/score";
 
 // Dev-only sample for previewing "Top teams" without seeded data. Shape
 // matches GET /teams/leaderboard. The viewer's team ranks 13th so the

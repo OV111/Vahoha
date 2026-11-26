@@ -2,14 +2,14 @@
  * Scores a learner's written explanation of their own passing code.
  *
  * Unlike exam teach-back there is no hand-written rubric per problem: the four
- * points (constants/challengeExplain.js) are the same for every challenge, and
+ * points (shared/challengeExplain.js) are the same for every challenge, and
  * the challenge itself (task, constraints, the learner's code, our reference
  * explanation) is what the model checks the explanation against. That way all
  * 200+ challenges get it with no new content.
  */
 
 import { askGroq, MODEL, stripFences } from "../../../services/teachBackEvaluatorService.js";
-import { EXPLAIN_MAX_POINT_SCORE, EXPLAIN_POINTS } from "../../../../constants/challengeExplain.js";
+import { EXPLAIN_MAX_POINT_SCORE, EXPLAIN_POINTS } from "#shared/challengeExplain.js";
 
 const MAX_CODE_CHARS = 6000;
 

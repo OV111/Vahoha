@@ -1,4 +1,4 @@
-import { CATEGORY_OPTIONS, categoryHref } from "../../../../constants/categories.js";
+import { CATEGORY_OPTIONS, categoryHref } from "#shared/categories.js";
 import { escapeRegex } from "../../../utils/regex.js";
 
 export const searchUsers = async (db, query) => {

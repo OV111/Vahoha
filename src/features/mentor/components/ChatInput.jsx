@@ -3,9 +3,9 @@ import { ArrowUp, Mic, MicOff, AudioLines, FileText, Square, X } from "lucide-re
 import {
   DROPDOWN_ITEMS,
   ATTACHMENT_ACCEPTED_EXTENSIONS,
-} from "../../../../constants/mentor";
-import { readAttachments, formatBytes } from "../lib/readAttachment";
-import { useSpeechDictation } from "../lib/useSpeechDictation";
+} from "@/constants/mentor";
+import { readAttachments, formatBytes } from "@/features/mentor/lib/readAttachment";
+import { useSpeechDictation } from "@/features/mentor/lib/useSpeechDictation";
 import AgentMenu from "./AgentMenu";
 import { captureEvent } from "@/lib/posthog";
 

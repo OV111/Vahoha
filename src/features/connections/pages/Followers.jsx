@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Search } from "lucide-react";
-import PageShell from "../../profile/components/PageShell";
-import { SURFACE } from "@/components/ui/surface";
+import PageShell from "@/features/profile/components/PageShell";
+import { SURFACE } from "@/components/primitives/styles";
 import useConnections from "@/features/connections/hooks/useConnections";
 import ConnectionRow from "@/features/connections/components/ConnectionRow";
 import ConnectionsSkeleton from "@/features/connections/components/ConnectionsSkeleton";

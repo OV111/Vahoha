@@ -1,8 +1,8 @@
 import { useLayoutEffect, useRef } from "react";
 import { Check, Trash2, X } from "lucide-react";
-import { kindInfo } from "../lib/nodeKinds";
-import { paletteFor } from "../lib/lenses";
-import { MAX_NOTE, isUnconfirmed } from "../lib/mapGraph";
+import { kindInfo } from "@/features/system-map/lib/nodeKinds";
+import { paletteFor } from "@/features/system-map/lib/lenses";
+import { MAX_NOTE, isUnconfirmed } from "@/features/system-map/lib/mapGraph";
 import EvidenceList from "./EvidenceList";
 import KindSelect from "./KindSelect";
 

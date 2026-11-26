@@ -1,7 +1,7 @@
 // C++ harness: the standard headers, the learner's `class Solution`, then a
 // main() that calls the method once per hidden case and prints the report.
 
-import { typeIn } from "../../../../../constants/challengeTypes.js";
+import { typeIn } from "#shared/challengeTypes.js";
 import { literal } from "./literals.js";
 import { REPORT_MARKER } from "./report.js";
 

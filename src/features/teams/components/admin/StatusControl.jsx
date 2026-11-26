@@ -1,4 +1,4 @@
-import { TEAM_STATUSES } from "../../../../../constants/teams";
+import { TEAM_STATUSES } from "@shared/teams";
 
 export default function StatusControl({ value, onChange, busy }) {
   return (

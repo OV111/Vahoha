@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Search, X } from "lucide-react";
 import FilterGroup from "./FilterGroup";
 import MoreFiltersPopover from "./MoreFiltersPopover";
-import { STATUS_OPTIONS } from "../../lib/statuses";
+import { STATUS_OPTIONS } from "@/features/coding-challenges/lib/statuses";
 
 /** Sticky toolbar: search, then Path / Layer / Difficulty / Status, recommended, more filters, and the result count. */
 export default function FilterBar({ filters, topics, tracks, shownTrack, total = null }) {

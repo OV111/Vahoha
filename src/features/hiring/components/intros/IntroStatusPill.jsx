@@ -1,4 +1,4 @@
-import { INTRO_STATUS_LABELS } from "../../../../../constants/hiring";
+import { INTRO_STATUS_LABELS } from "@/constants/hiring";
 
 const TONE = {
   pending: "bg-amber-500/15 text-amber-300",

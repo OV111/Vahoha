@@ -1,5 +1,5 @@
 import { ShieldCheck } from "lucide-react";
-import { TRUST_BADGES } from "../../../../../constants/hiring";
+import { TRUST_BADGES } from "@/constants/hiring";
 
 const TrustBadge = ({ level }) => {
   const badge = TRUST_BADGES[level];

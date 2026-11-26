@@ -1,4 +1,4 @@
-import { judgeStarter } from "../../../../constants/challengeLanguages.js";
+import { judgeStarter } from "#shared/challengeLanguages.js";
 
 const functionSpec = {
   name: "mergeIntervals",

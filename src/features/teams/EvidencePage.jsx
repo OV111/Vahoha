@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { ExternalLink } from "lucide-react";
 import { teamsApi } from "./teamsApi";
-import ReadOnlyMap from "../system-map/components/ReadOnlyMap";
-import { DEFAULT_LENS, lensInfo } from "../system-map/lib/lenses";
+import ReadOnlyMap from "@/features/system-map/components/ReadOnlyMap";
+import { DEFAULT_LENS, lensInfo } from "@/features/system-map/lib/lenses";
 import "./teams-theme.css";
 
 /**

@@ -1,5 +1,5 @@
-import { ROADMAP_DOMAINS } from "../../../../constants/categories";
-import useRoadmapStore from "../../../stores/useRoadmapStore";
+import { ROADMAP_DOMAINS } from "@shared/categories";
+import useRoadmapStore from "@/features/roadmap/hooks/useRoadmapStore";
 
 const CategoryBar = () => {
   const { selectedCategory, setCategory } = useRoadmapStore();

@@ -1,5 +1,5 @@
 import { AlertTriangle, ArrowLeft, RotateCcw, SearchX, WifiOff } from "lucide-react";
-import { C, FONT_SANS } from "../../lib/arenaTheme";
+import { C, FONT_SANS } from "@/features/coding-challenges/lib/arenaTheme";
 
 // What to say for each way loading a challenge can fail. "network" means the
 // request never got an answer, so trying again is the useful action; a missing

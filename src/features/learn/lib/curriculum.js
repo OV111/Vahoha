@@ -26,19 +26,29 @@ const orderedSections = (layer) => {
 };
 
 /**
- * A layer may author `steps: [{ title, lessons: [slug] }]`: the teaching order,
+ * A layer may author `steps: [{ title, about, lessons: [{ slug, short }] }]`: the teaching order,
  * independent of where the map draws each lesson. Layers without it keep the
- * map order, with each section as a step. A lesson no step names goes last, so
+ * map order, with each section as a step. An entry with its own `title` is a
+ * lesson the map doesn't draw; `also` names map lessons that this one covers too. A lesson no step names goes last, so
  * a missed slug is never lost.
  */
 const inTeachingOrder = (lessons, steps) => {
   if (!steps) return lessons.map((l) => ({ ...l, step: l.section }));
   const bySlug = new Map(lessons.map((l) => [l.slug, l]));
-  const ordered = steps.flatMap(({ title, lessons: slugs }) =>
-    slugs.filter((slug) => bySlug.has(slug)).map((slug) => ({ ...bySlug.get(slug), step: title })),
+  const covered = new Set(steps.flatMap((s) => s.lessons.flatMap((l) => l.also ?? [])));
+  const ordered = steps.flatMap(({ title: step, about: stepAbout, lessons: entries }) =>
+    entries
+      .filter(({ slug, title }) => bySlug.has(slug) || title)
+      .map(({ slug, short, title, description, also }) => ({
+        ...(bySlug.get(slug) ?? { slug, title, description: description ?? "", resources: [], section: step }),
+        short,
+        also: also ?? [],
+        step,
+        stepAbout,
+      })),
   );
   const placed = new Set(ordered.map((l) => l.slug));
-  const rest = lessons.filter((l) => !placed.has(l.slug)).map((l) => ({ ...l, step: l.section }));
+  const rest = lessons.filter((l) => !placed.has(l.slug) && !covered.has(l.slug)).map((l) => ({ ...l, step: l.section }));
   return [...ordered, ...rest].map((l, i) => ({ ...l, order: i + 1 }));
 };
 
@@ -49,10 +59,13 @@ const inTeachingOrder = (lessons, steps) => {
  * stay stable once users have progress saved against them. A repeated title
  * inside one layer gets its position appended so ids never collide.
  */
-export const buildLessons = (layer) => {
+export const buildLessons = (layer) => inTeachingOrder(mapLessons(layer), layer.steps);
+
+/** The lessons as the map draws them, before any authored order. */
+const mapLessons = (layer) => {
   const used = new Set();
   let order = 0;
-  const lessons = orderedSections(layer).flatMap((section) =>
+  return orderedSections(layer).flatMap((section) =>
     (section.children ?? []).map((child) => {
       order += 1;
       let slug = slugify(child.title);
@@ -68,7 +81,12 @@ export const buildLessons = (layer) => {
       };
     }),
   );
-  return inTeachingOrder(lessons, layer.steps);
+};
+
+/** Map lesson slug -> the slug of the lesson that teaches it (itself, unless covered by another). */
+const taughtBy = (layer) => {
+  const aliases = new Map(buildLessons(layer).flatMap((l) => (l.also ?? []).map((slug) => [slug, l.slug])));
+  return (slug) => aliases.get(slug) ?? slug;
 };
 
 /**
@@ -78,18 +96,20 @@ export const buildLessons = (layer) => {
  */
 export const lessonSlugs = (layer) => {
   const slugs = new Map();
-  for (const l of buildLessons(layer)) {
+  const teacher = taughtBy(layer);
+  for (const l of mapLessons(layer)) {
     const key = `${l.section}::${l.title}`;
-    if (!slugs.has(key)) slugs.set(key, l.slug);
+    if (!slugs.has(key)) slugs.set(key, teacher(l.slug));
   }
   return (section, title) => slugs.get(`${section}::${title}`) ?? null;
 };
 
 export const lessonHrefs = (trackId, layer) => {
   const hrefs = new Map();
-  for (const l of buildLessons(layer)) {
+  const teacher = taughtBy(layer);
+  for (const l of mapLessons(layer)) {
     const key = `${l.section}::${l.title}`;
-    if (!hrefs.has(key)) hrefs.set(key, `/learn/${trackId}/${layer.id}/${l.slug}`);
+    if (!hrefs.has(key)) hrefs.set(key, `/learn/${trackId}/${layer.id}/${teacher(l.slug)}`);
   }
   return (section, title) => hrefs.get(`${section}::${title}`) ?? null;
 };

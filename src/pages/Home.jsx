@@ -1,12 +1,11 @@
 import { lazy, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import useAuthStore from "../stores/useAuthStore";
-import RiseText from "../components/home/RiseText";
-import PixelBackground from "../components/home/PixelBackground";
-import Divider from "../components/ui/Divider";
+import useAuthStore from "@/stores/useAuthStore";
+import RiseText from "@/components/home/RiseText";
+import PixelBackground from "@/components/home/PixelBackground";
 import vahohaMark from "@/assets/brand/vahoha-mark-96.webp";
 
-const HowItWorks = lazy(() => import("../components/home/HowItWorks"));
+const HowItWorks = lazy(() => import("@/components/home/HowItWorks"));
 
 const Home = () => {
   const auth = useAuthStore((state) => state.auth);
@@ -39,8 +38,8 @@ const Home = () => {
         </div>
 
         <RiseText
-          lines={["Junior to mid-level.", "Proven, not watched."]}
-          highlight="Proven"
+          lines={["The Next Generation of", "Developer Learning."]}
+          highlight="Learning"
           className="max-w-xl text-[clamp(26px,8.5vw,34px)] leading-[1.1] font-[450] tracking-[-0.48px] text-balance [--rt-underline-offset:-0.2em] min-[420px]:text-4xl sm:text-5xl md:text-[50px] md:leading-[0.96] md:[--rt-underline-offset:-0.08em] [&_.rt-line]:inline max-sm:[&_.rt-line]:whitespace-nowrap md:[&_.rt-line]:block text-white"
           style={{ fontFamily: '"Geist Variable", system-ui, sans-serif' }}
         />
@@ -49,9 +48,9 @@ const Home = () => {
           className="rt-fade mt-4 max-w-xl text-sm leading-6 sm:text-base sm:leading-7 md:text-[18px] md:leading-[29.25px] font-normal text-neutral-300"
           style={{ "--delay": "650ms" }}
         >
-          Unlock each layer by passing a graded exam.{" "}
+          Prove what you know, unlock real progress,{" "}
           <br className="hidden sm:block" />
-          Your AI mentor tracks your weak spots.
+          guided by a mentor that knows your journey.
         </p>
 
         <div
@@ -74,7 +73,7 @@ const Home = () => {
         </div>
       </section>
 
-      <Divider />
+      <hr className="mx-6 border-white/10 sm:mx-10 lg:mx-16" />
 
       {/* Full-width wrapper so the pixels sit on the screen edges, not the max-w-6xl column. */}
       <div className="relative isolate">

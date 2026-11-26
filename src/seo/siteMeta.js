@@ -6,7 +6,7 @@
 export const SITE_URL = "https://vahoha.com";
 export const SITE_NAME = "Vahoha";
 
-// One link preview image per page type, rendered from constants/ogCards.js
+// One link preview image per page type, rendered from shared/ogCards.js
 // by scripts/generateOgImages.js.
 export const ogImage = (card) => `${SITE_URL}/og/${card}.png`;
 export const DEFAULT_OG_IMAGE = ogImage("home");

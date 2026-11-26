@@ -1,5 +1,5 @@
-import LegalPage from "../components/legal/LegalPage";
-import { PRIVACY_EFFECTIVE_DATE, PRIVACY_SECTIONS, PRIVACY_SUMMARY } from "../../constants/legal";
+import LegalPage from "./LegalPage";
+import { PRIVACY_EFFECTIVE_DATE, PRIVACY_SECTIONS, PRIVACY_SUMMARY } from "@/constants/legal";
 
 const Summary = () => (
   <section className="rounded-2xl border border-neutral-800 bg-neutral-950 p-6">

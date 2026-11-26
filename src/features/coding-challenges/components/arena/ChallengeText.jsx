@@ -1,5 +1,5 @@
 import MarkdownMessage from "@/features/mentor/components/MarkdownMessage";
-import { challengeMarkdown } from "../../lib/richText";
+import { challengeMarkdown } from "@/features/coding-challenges/lib/richText";
 
 /** Challenge copy rendered as markdown: inline code chips and fenced code blocks. */
 export default function ChallengeText({ text, className }) {

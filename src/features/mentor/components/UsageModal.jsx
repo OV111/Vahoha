@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect } from "react";
 import { X } from "lucide-react";
-import { SESSIONS_COPY } from "../../../../constants/mentor";
-import { MENTOR_USAGE_COPY, THIN_SCROLL_CLASS } from "../../../../constants/mentorUsage";
+import { SESSIONS_COPY } from "@/constants/mentor";
+import { MENTOR_USAGE_COPY, THIN_SCROLL_CLASS } from "@/constants/mentorUsage";
 import UsageSkeleton from "@/features/profile/components/UsageSkeleton";
 
 // Loaded on first open: most chats never look at usage, so the chat page should

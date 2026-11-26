@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import { Briefcase } from "lucide-react";
 import useAuthStore from "@/stores/useAuthStore";
 import useProfileStore from "@/stores/useProfileStore";
-import { HIRE_CTA, HIRING_LOGIN_PATH } from "../../../../constants/hiring";
-import { FEATURES } from "../../../../constants/features";
+import { HIRE_CTA, HIRING_LOGIN_PATH } from "@/constants/hiring";
+import { FEATURES } from "@/constants/features";
 
 // The hiring door on a shared scorecard: recruiters usually arrive here from a
 // link in an application, so this is where most of them first meet Vahoha.

@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "@/constants/api";
 import { queryCache } from "@/lib/queryCache";
 
 const NOTIFICATIONS_KEY = "notifications";

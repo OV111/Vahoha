@@ -157,6 +157,10 @@ const USER_KEYED_COLLECTIONS = [
   "voice_exam_attempts",
   // Judgment simulator runs: decisions and typed reasons.
   "judgment_runs",
+  // Learn pages: progress, answers and written explanations.
+  "learn_progress",
+  "learn_answers",
+  "learn_explanations",
   // Hiring sign-up codes (recruiters).
   "hiring_email_codes",
 ];

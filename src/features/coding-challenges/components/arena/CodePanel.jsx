@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Code2 } from "lucide-react";
-import { C, FONT_MONO } from "../../lib/arenaTheme";
+import { C, FONT_MONO } from "@/features/coding-challenges/lib/arenaTheme";
 import CodeEditor from "./CodeEditor";
-import { CHALLENGE_LANGUAGES } from "../../../../../constants/challengeLanguages";
+import { CHALLENGE_LANGUAGES } from "@shared/challengeLanguages";
 
 const FILE_META = {
   js: { dot: C.amber, label: "JavaScript · UTF-8" },

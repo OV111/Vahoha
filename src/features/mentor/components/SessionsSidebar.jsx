@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { Search, SquarePen, PanelLeft, Trash2, X, Code2, BarChart3 } from "lucide-react";
-import ConfirmDialog from "@/components/ui/ConfirmDialog";
-import useMentorStore from "@/stores/useMentorStore";
+import ConfirmDialog from "@/components/feedback/ConfirmDialog";
+import useMentorStore from "@/features/mentor/hooks/useMentorStore";
 import {
   SESSIONS_COPY,
   SESSION_SEARCH_DEBOUNCE_MS,
   SIDEBAR_OPEN_STORAGE_KEY,
-} from "../../../../constants/mentor";
+} from "@/constants/mentor";
 import SessionsList from "./SessionsList";
 import UsageModal from "./UsageModal";
 

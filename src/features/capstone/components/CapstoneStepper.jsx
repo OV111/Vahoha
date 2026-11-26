@@ -1,7 +1,7 @@
 import { MotionConfig, motion as Motion } from "framer-motion";
 import { Check, X } from "lucide-react";
-import { STEPS } from "../lib/steps";
-import { hasIntroPlayed } from "../lib/motion";
+import { STEPS } from "@/features/capstone/lib/steps";
+import { hasIntroPlayed } from "@/features/capstone/lib/motion";
 
 const LAST = STEPS.length - 1;
 const EASE = [0.22, 1, 0.36, 1];

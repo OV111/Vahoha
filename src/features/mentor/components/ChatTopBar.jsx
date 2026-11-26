@@ -1,5 +1,5 @@
 import { Download } from "lucide-react";
-import { exportConversation } from "../lib/exportConversation";
+import { exportConversation } from "@/features/mentor/lib/exportConversation";
 import ContextMeter from "./ContextMeter";
 
 /** Chat header: the conversation title, the context meter and an export action. */

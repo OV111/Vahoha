@@ -13,8 +13,8 @@ import {
   Trophy,
   Users,
 } from "lucide-react";
-import { PHASES, TO } from "./hiwRoutes";
-import { SoonTag } from "./hiwShared";
+import { PHASES, TO } from "@/constants/howItWorks";
+import { SoonTag } from "./SoonTag";
 
 // The animated diagram (and the motion library it pulls in) is desktop-only.
 const HowItWorksDiagram = lazy(() => import("./HowItWorksDiagram"));
@@ -78,7 +78,6 @@ const HowItWorks = () => {
         Every step is earned. Every win becomes proof.
       </p>
 
-      {/* Desktop: branching path diagram. The box keeps its size while the chunk loads. */}
       <div className="mx-auto mt-16 hidden aspect-[1200/560] w-full max-w-6xl lg:block">
         {isDesktop && (
           <Suspense fallback={null}>
@@ -87,8 +86,6 @@ const HowItWorks = () => {
         )}
       </div>
 
-      {/* Below lg: the same steps as a compact timeline. The rail runs behind the
-          small icon nodes; each row is a full-width link, so the tap area stays 44px. */}
       <div className="mx-auto mt-8 max-w-md space-y-6 lg:hidden">
         {MOBILE_GROUPS.map(({ phase, steps }) => (
           <section key={phase}>

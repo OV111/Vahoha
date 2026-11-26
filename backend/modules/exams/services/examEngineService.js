@@ -8,7 +8,7 @@ import { prerequisiteIds, missingPrerequisites } from "../../../services/layerUn
 import { getRubric, listRubricsForLayer } from "../../../services/rubricService.js";
 import { evaluateTeachBack, generateFollowUp } from "../../../services/teachBackEvaluatorService.js";
 import { toTopicSlug } from "../../../utils/topicKey.js";
-import { EXAM_RULES } from "../../../../constants/exam.js";
+import { EXAM_RULES } from "#shared/exam.js";
 import { recomputeMastery } from "../../../services/learnerMasteryService.js";
 import { trackEvent } from "../../../services/eventService.js";
 import { awardXp, examXp } from "../../../services/xpService.js";

@@ -1,5 +1,5 @@
-import { LENSES } from "../lib/lenses";
-import { SCROLL_ROW } from "../lib/scrollRow";
+import { LENSES } from "@/features/system-map/lib/lenses";
+import { SCROLL_ROW } from "@/features/system-map/lib/scrollRow";
 
 export default function LensPicker({ lens, onChange }) {
   return (

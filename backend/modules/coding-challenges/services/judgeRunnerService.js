@@ -6,7 +6,7 @@
  * flow treats both runners alike.
  */
 
-import { isJudgeLanguage } from "../../../../constants/challengeLanguages.js";
+import { isJudgeLanguage } from "#shared/challengeLanguages.js";
 import { buildCaseRun, gradeCaseReport, hasHarness, parseCaseReport } from "../lib/caseHarness.js";
 import { describeJudge, runCode } from "./judge0Client.js";
 

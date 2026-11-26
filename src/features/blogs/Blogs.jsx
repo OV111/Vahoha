@@ -6,13 +6,13 @@ import { BlogCardSkeletonGrid } from "@/features/blogs/components/BlogCardSkelet
 import useDebouncedValue from "@/hooks/useDebouncedValue";
 import { fetchBlogs } from "@/services/blogsApi";
 import FilterMenu from "./components/FilterMenu";
-import { PAGE } from "../../../constants/layout";
+import { PAGE } from "@/constants/layout";
 import {
   BLOG_TOPICS,
   SORT_OPTIONS,
   DIFFICULTIES,
   READ_TIMES,
-} from "../../../constants/blogs";
+} from "@/constants/blogs";
 
 const PAGE_SIZE = 12; // divisible by 2 and 3, so the grid never ends on a gap
 const DEFAULTS = { sort: "Newest", page: "1" };

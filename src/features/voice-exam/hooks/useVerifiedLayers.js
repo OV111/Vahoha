@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import useCachedResource from "@/hooks/useCachedResource";
-import { fetchVerifiedLayers } from "../api/voiceExamApi";
+import { fetchVerifiedLayers } from "@/features/voice-exam/api/voiceExamApi";
 
 /** Set of layer ids the signed-in user verified by voice exam. Empty for guests. */
 export const useVerifiedLayers = (enabled = true) => {

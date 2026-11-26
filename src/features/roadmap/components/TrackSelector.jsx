@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-import { TRACKS } from "../../../../constants/roadmapPaths.js";
-import useRoadmapStore from "../../../stores/useRoadmapStore.js";
+import { TRACKS } from "@shared/roadmapPaths";
+import useRoadmapStore from "@/features/roadmap/hooks/useRoadmapStore.js";
 
 const TrackSelector = () => {
   const { selectedCategory, selectedTrack, setTrack } = useRoadmapStore();

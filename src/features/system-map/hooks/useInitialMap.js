@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useAuthStore from "@/stores/useAuthStore";
-import { createMap, createOwnerMap, fetchMap, fetchMyMaps, fetchOwnerMap } from "../systemMapApi";
-import { EXAMPLE_GRAPH, clearSaved, fromGraph, loadSaved, toGraph } from "../lib/mapGraph";
+import { createMap, createOwnerMap, fetchMap, fetchMyMaps, fetchOwnerMap } from "@/features/system-map/systemMapApi";
+import { EXAMPLE_GRAPH, clearSaved, fromGraph, loadSaved, toGraph } from "@/features/system-map/lib/mapGraph";
 
 const DEFAULT_TITLE = "My project";
 const OWNER_TITLES = { capstone: "Capstone map", team: "Team map" };

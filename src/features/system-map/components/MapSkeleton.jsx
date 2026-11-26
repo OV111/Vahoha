@@ -1,10 +1,10 @@
-import { Bone, BonePanel } from "@/components/ui/Skeleton";
-import "../project-map-theme.css";
+import { Bone, BonePanel } from "@/components/feedback/Skeleton";
+import "@/features/system-map/project-map-theme.css";
 import LensPicker from "./LensPicker";
 import MapHeader, { CANVAS, PAGE } from "./MapHeader";
 import MapToolbar from "./MapToolbar";
 import NodePalette from "./NodePalette";
-import { DEFAULT_LENS } from "../lib/lenses";
+import { DEFAULT_LENS } from "@/features/system-map/lib/lenses";
 
 const NO_HISTORY = { undo: false, redo: false };
 const PENDING_MAP = { id: null, shared: false, publicId: null }; // signed in, so the toolbar shows History and Share

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Copy, Check, ThumbsUp, ThumbsDown } from "lucide-react";
-import useMentorStore from "@/stores/useMentorStore";
+import useMentorStore from "@/features/mentor/hooks/useMentorStore";
 import { rateMessage } from "@/services/mentorApi";
-import { MESSAGE_FEEDBACK_COPY as COPY } from "../../../../constants/mentor";
+import { MESSAGE_FEEDBACK_COPY as COPY } from "@/constants/mentor";
 
 /** Action row under an agent response: Copy, and 👍/👎 once the answer is saved. */
 function ActionButton({ icon, label, onClick, active, pressed }) {

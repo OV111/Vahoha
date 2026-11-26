@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import OptionCards from "./OptionCards";
 import FormButtons from "./FormButtons";
-import { JOIN_AS } from "../../../../constants/hiring";
+import { JOIN_AS } from "@/constants/hiring";
 
 // The first screen of "Create account": developer or hiring. Asked once, with
 // big explicit cards, so a recruiter can't end up with a learner account by

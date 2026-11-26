@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { C, FONT_MONO } from "../../lib/arenaTheme";
+import { C, FONT_MONO } from "@/features/coding-challenges/lib/arenaTheme";
 
 export default function SubBar({ breadcrumb, challengeId, pager, onBack }) {
   return (

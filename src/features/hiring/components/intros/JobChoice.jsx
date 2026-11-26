@@ -1,6 +1,6 @@
 import { motion as Motion, MotionConfig } from "motion/react";
 import { Check } from "lucide-react";
-import { jobLine, matchText } from "../../lib/intros";
+import { jobLine, matchText } from "@/features/hiring/lib/intros";
 
 const EASE = [0.22, 1, 0.36, 1];
 

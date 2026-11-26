@@ -12,7 +12,7 @@
 
 import { CONTRIBUTIONS, RATINGS, SPRINTS, TASKS, TEAMS, TEAM_DEFENSES, TEAM_EVIDENCE, ensureIndexes } from "../teamsData.js";
 import { getTeamHealthForAdmin } from "../ai-lead/teamPulseService.js";
-import { AI_LEAD } from "../../../../../constants/teams.js";
+import { AI_LEAD } from "#shared/teams.js";
 import { MIN_RATERS } from "../proof/ratingService.js";
 import { MIN_PRS_TO_RANK, computeTeamStats, scoreTeam, teamFlags } from "../../lib/teamScore.js";
 

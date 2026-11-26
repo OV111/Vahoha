@@ -1,4 +1,4 @@
-import { CHIPS } from "../../../../constants/mentor";
+import { CHIPS } from "@/constants/mentor";
 
 /**
  * Quick-prompt chips for the empty state.

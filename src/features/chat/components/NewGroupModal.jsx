@@ -1,7 +1,7 @@
-import UserAvatar from "@/components/ui/UserAvatar";
+import UserAvatar from "@/components/primitives/UserAvatar";
 import { useMemo, useState } from "react";
 import { X, Check } from "lucide-react";
-import { createGroupChat } from "../lib/groupChatApi";
+import { createGroupChat } from "@/features/chat/lib/groupChatApi";
 
 const NewGroupModal = ({ mutualFollowers, onClose, onCreated }) => {
   const [name, setName] = useState("");

@@ -4,10 +4,10 @@ import { toast } from "sonner";
 import { GoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-import useAuthStore from "../../../stores/useAuthStore";
-import { githubButtonClass, googleButtonClass } from "../authStyles";
-import { googleAuth, GITHUB_AUTH_URL } from "../../../services/authApi";
-import { landingPath } from "../../hiring/lib/landingPath";
+import useAuthStore from "@/stores/useAuthStore";
+import { githubButtonClass, googleButtonClass } from "@/features/auth/authStyles";
+import { googleAuth, GITHUB_AUTH_URL } from "@/services/authApi";
+import { landingPath } from "@/features/hiring/lib/landingPath";
 
 
 

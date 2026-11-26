@@ -23,7 +23,7 @@ import {
   Zap,
   Loader2,
 } from "lucide-react";
-import { ABOUT_MAX } from "../../../../constants/pathSetup.js";
+import { ABOUT_MAX } from "@shared/pathSetup";
 
 const FREE_TEXT_STEP = {
   id: "about",

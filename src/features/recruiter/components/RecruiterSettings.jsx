@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
-import { recruiterApi } from "../recruiterApi";
+import { recruiterApi } from "@/features/recruiter/recruiterApi";
 import Checkbox from "./FormCheckbox";
 
 function CopyLink({ path }) {

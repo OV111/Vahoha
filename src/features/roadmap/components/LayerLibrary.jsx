@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ExternalLink, Library } from "lucide-react";
-import { fetchLibraryResources } from "../../../services/libraryApi";
+import { fetchLibraryResources } from "@/services/libraryApi";
 
 const MAX_ITEMS = 5;
 
@@ -33,7 +33,7 @@ const LayerLibrary = ({ layerId, onNavigate }) => {
 
   return (
     <div>
-      <h3 className="mb-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-neutral-600">
+      <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-neutral-200">
         <Library size={12} />
         Library for this layer
       </h3>

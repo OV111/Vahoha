@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Send } from "lucide-react";
-import { fetchSentIntrosSummary } from "../../api/hiringApi";
-import { INTROS_SUMMARY_COPY as COPY } from "../../../../../constants/hiring";
+import { fetchSentIntrosSummary } from "@/features/hiring/api/hiringApi";
+import { INTROS_SUMMARY_COPY as COPY } from "@/constants/hiring";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 
 const Count = ({ n, label, tone }) => (

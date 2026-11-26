@@ -103,7 +103,7 @@ const main = async () => {
 
   console.log(`Wrote ${tracks.length} prompt(s) to docs/exam-prompts/`);
   const orphans = tracks.filter((t) => !t.hasMeta).map((t) => t.trackId);
-  if (orphans.length) console.log(`No metadata in constants/roadmapPaths.js for: ${orphans.join(", ")}`);
+  if (orphans.length) console.log(`No metadata in shared/roadmapPaths.js for: ${orphans.join(", ")}`);
 };
 
 main().catch((err) => {

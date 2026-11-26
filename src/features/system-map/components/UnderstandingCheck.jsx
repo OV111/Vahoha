@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Check, ChevronDown, Crosshair, RotateCcw } from "lucide-react";
-import { startCheck, submitAnswers } from "../understandingApi";
+import { startCheck, submitAnswers } from "@/features/system-map/understandingApi";
 
 const MAX_ANSWER = 1500;
 

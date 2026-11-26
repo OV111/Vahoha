@@ -41,7 +41,7 @@ export const PLANS = "team_plans";
 export const WARNINGS = "team_warnings";
 export const UPDATES = "team_updates";
 
-export { TEAM_STATUSES } from "../../../../constants/teams.js";
+export { TEAM_STATUSES } from "#shared/teams.js";
 export const MEMBER_STATUSES = ["invited", "active", "left"];
 
 let indexesReady = null;

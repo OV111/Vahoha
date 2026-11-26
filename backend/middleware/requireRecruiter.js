@@ -1,4 +1,4 @@
-import { TRUST_LEVELS } from "../../constants/hiringRules.js";
+import { TRUST_LEVELS } from "#shared/hiringRules.js";
 import { makeErrorHandler } from "../utils/respond.js";
 
 const sendError = makeErrorHandler("recruiter");

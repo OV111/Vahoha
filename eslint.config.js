@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'dist-ssr']),
+  globalIgnores(['dist', 'dist-ssr', 'public/lesson-react.js']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [
@@ -32,6 +32,18 @@ export default defineConfig([
       'react-hooks/immutability': 'warn',
       'react-hooks/preserve-manual-memoization': 'warn',
       'react-hooks/purity': 'warn',
+    },
+  },
+  {
+    // The backend imports shared/, so it must stay plain data and logic: no React, icons or src/ code.
+    files: ['shared/**/*.js'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: [
+          { group: ['react', 'react-*', 'lucide-react', 'framer-motion', 'motion'], message: 'shared/ is imported by the backend: keep UI code in src/constants.' },
+          { group: ['@/*', '../src/*', '**/src/*'], message: 'shared/ must not import frontend code.' },
+        ],
+      }],
     },
   },
 ])

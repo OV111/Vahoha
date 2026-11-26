@@ -1,4 +1,4 @@
-import { OWNER_COPY } from "../../../../constants/projectMap";
+import { OWNER_COPY } from "@/constants/projectMap";
 
 export const PAGE = "mx-auto max-w-[1500px] px-4 pt-4 pb-16 sm:px-6 sm:pt-6";
 export const CANVAS =

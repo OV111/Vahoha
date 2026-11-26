@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders, apiFetch } from "../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "@/constants/api";
 
 /**
  * Thin client for /api/billing. Kept separate from the hook so the network

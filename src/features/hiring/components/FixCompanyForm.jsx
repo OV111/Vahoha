@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Loader2, RefreshCw } from "lucide-react";
-import TextField from "../../auth/components/TextField";
-import { sanitizeInput } from "../../../utils/sanitize";
-import { WEBSITE_MESSAGE, WEBSITE_PATTERN } from "../../../../constants/hiringRules";
-import { recheckCompany, updateCompany } from "../api/hiringApi";
+import TextField from "@/features/auth/components/TextField";
+import { sanitizeInput } from "@/utils/sanitize";
+import { WEBSITE_MESSAGE, WEBSITE_PATTERN } from "@shared/hiringRules";
+import { recheckCompany, updateCompany } from "@/features/hiring/api/hiringApi";
 
 // For a "limited" company: run the checks again as-is (the site was down), or
 // fix the name/website first (the usual cause is a typo) and re-check.

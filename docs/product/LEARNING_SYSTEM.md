@@ -98,6 +98,58 @@ Everything is proven on one track before any other gets content.
 
 > **Watch two numbers:** lesson completion (started → finished) and 7-day return. If they're low on 24 good lessons, more content won't fix it.
 
+## 🧩 Open problem: layer depth
+
+> **Status · 2026-11-25:** under discussion, nothing decided. Raised by the founder: 8 topics for Node & Express, or React Fundamentals followed by 8 for React Advanced, is not enough to make a developer.
+
+**What we see.** 181 tracks, 1,846 layers, 14,913 lesson titles. 1,749 layers (95%) have exactly 8 lessons: the roadmaps were filled from one template (4 subtopics × 2), whatever the size of the topic.
+
+**It is three problems, not one:**
+
+| Problem | Question |
+| --- | --- |
+| **Coverage** | Is something important missing? (Exams, challenges and projects ask for things no lesson teaches.) |
+| **Depth** | Can the learner *do* it after reading? |
+| **Cost** | Who writes and maintains it all? |
+
+More topics help only coverage. Sharing helps only cost. Neither gives depth: someone can read 22 Node topics and still not build an API.
+
+**Ideas so far**
+
+| Idea | Good | Problem |
+| --- | --- | --- |
+| ~22 core + 8 deep topics for layer 5 | Coverage | Too much to write, too long to finish, still only reading |
+| Link to other paths (MERN → Node) | No writing | Learners leave and may not return; `node-dev` teaches Fastify and PostgreSQL, not Express and MongoDB; its topics aren't written |
+| Shared modules (Node comes into MERN) | Written once, learner never leaves | Solves cost, not depth. Paths that differ in code (MongoDB or PostgreSQL auth) share only the theory |
+| Audit prompt per layer (job tasks → skills → gaps) | Finds gaps | AI pads and invents: check against official docs, junior job posts, our own exams and challenges |
+| **Milestones (leading idea)** | Depth | Below |
+
+**Leading idea: layers differ in kind.** *Concept* layers (JavaScript, React basics) work as topic pages. *Craft* layers (Node & Express, MongoDB, deployment) become one project in checked milestones, and a topic opens when a milestone needs it. Example for `mern-5`, a blog API:
+
+| # | Milestone | Needs |
+| :---: | --- | --- |
+| 1 | A server that answers | How Node waits, modules and npm |
+| 2 | Posts: list, read, create | Routes, requests and responses, REST and status codes |
+| 3 | Bad input is refused | Middleware, validation |
+| 4 | Nothing crashes it | Async errors, error handler |
+| 5 | 10,000 posts | Pagination and filters |
+| 6 | Someone else can read the code | Structure, config, logs |
+| 7 | Something breaks: find it | Debugging, judgment case |
+
+A topic is core only if a milestone or the test can't be done without it, so the number of topics follows from the project (about 12 here). Deep extras are a short box in the topic or the Mentor, not pages.
+
+**Constraints**
+- Keep layer ids (`mern-5`): exams, rubrics, challenges and saved progress use them. Layers grow inside; they aren't split or renumbered.
+- *Next* always stays in the learner's own path.
+- Topics are shared by `topicId` (already true for the 27 written ones), and never linked while unwritten.
+
+**Not known yet**
+1. Finish line for a craft layer: *understand* Node and Express, or *have built* a working API? (Proposal: built. **Founder decides.**)
+2. How to check Express code: server sandbox, or the learner's repo (the capstone review already reads repos).
+3. Do learners prefer milestones or reading first? No user has tried either.
+
+**Next step, before any code:** design `mern-5` on paper (milestones, topics, how each is checked), show it to 3 developers and ask: *"After this, could you build an API alone? What's missing?"*
+
 ## ⚖️ Decisions
 
 | # | Decision | Status |

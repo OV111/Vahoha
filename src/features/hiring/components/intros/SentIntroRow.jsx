@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { Layers } from "lucide-react";
 import IntroStatusPill from "./IntroStatusPill";
 import CopyEmail from "./CopyEmail";
-import { expiresText, jobLine, matchText, shortDate } from "../../lib/intros";
-import { INTROS_PAGE_COPY as COPY } from "../../../../../constants/hiring";
+import { expiresText, jobLine, matchText, shortDate } from "@/features/hiring/lib/intros";
+import { INTROS_PAGE_COPY as COPY } from "@/constants/hiring";
 
 // One request on /hiring/intros: who, which job, where it stands.
 const SentIntroRow = ({ intro, onWithdraw }) => {

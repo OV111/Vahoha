@@ -20,7 +20,7 @@ A learning platform for developers. A learner picks a roadmap track and works th
 ## Folder structure
 
 ```
-src/               frontend: features/<name>/, pages/, components/ui, hooks, lib, stores
+src/               frontend: features/<name>/, pages/, components, hooks, lib, stores
 backend/modules/   one folder per feature: routes, controllers, services, schemas, index.js
 backend/services/  shared learning core (XP ledger, progress, mastery)
 backend/seeders/   seeders and importers (roadmap, exams, challenges, capstones)

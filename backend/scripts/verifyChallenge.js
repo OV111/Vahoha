@@ -40,8 +40,8 @@ import {
   isJudgeLanguage,
   isTypedLanguage,
   judgeStarter,
-} from "../../constants/challengeLanguages.js";
-import { isTypedSpec, matchesType } from "../../constants/challengeTypes.js";
+} from "#shared/challengeLanguages.js";
+import { isTypedSpec, matchesType } from "#shared/challengeTypes.js";
 
 dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), "../.env"), quiet: true });
 
@@ -87,7 +87,7 @@ const lintTestNames = (label, tests, problems) => {
 
 const lintTypedCases = (c, problems) => {
   if (!isTypedSpec(c.functionSpec)) {
-    problems.push("functionSpec needs a type for every parameter and for returns (see constants/challengeTypes.js)");
+    problems.push("functionSpec needs a type for every parameter and for returns (see shared/challengeTypes.js)");
     return;
   }
   const params = c.functionSpec.params;

@@ -1,9 +1,9 @@
-import { Bone } from "@/components/ui/Skeleton";
+import { Bone } from "@/components/feedback/Skeleton";
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock, Zap } from "lucide-react";
-import { formatTitle } from "../../lib/formatTitle";
+import { formatTitle } from "@/features/coding-challenges/lib/formatTitle";
 import { motion as Motion } from "framer-motion";
-import useUtcMidnightCountdown from "../../hooks/useUtcMidnightCountdown";
+import useUtcMidnightCountdown from "@/features/coding-challenges/hooks/useUtcMidnightCountdown";
 
 const DIFFICULTY_LABEL = { easy: "Easy", med: "Medium", hard: "Hard" };
 

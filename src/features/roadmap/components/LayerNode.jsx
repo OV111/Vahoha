@@ -1,8 +1,8 @@
 import { memo } from "react";
 import { motion } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { Link } from "react-router-dom";
-import { Clock, Lock, Check, Play, ArrowRight, Flag, ChevronRight } from "lucide-react";
-import useRoadmapStore from "@/stores/useRoadmapStore";
+import { BookOpen, Clock, Check, Play, ArrowRight, Flag, ChevronRight } from "lucide-react";
+import useRoadmapStore from "@/features/roadmap/hooks/useRoadmapStore";
 import useAuthStore from "@/stores/useAuthStore";
 
 // Central layer card: top of the visual hierarchy. Its badge and button both
@@ -42,19 +42,35 @@ const TONES = {
   locked: {
     card: "border-neutral-800 bg-neutral-950/80",
     badge: "bg-neutral-800/60 text-neutral-300 border-neutral-700/60",
-    Icon: Lock,
+    Icon: BookOpen,
     title: "text-neutral-300 text-sm",
     meta: "text-neutral-400",
   },
 };
 
+// What the learner can do here now, in one line.
+const HINT = {
+  "up-next": "Start here. Read, answer questions, then take the test.",
+  "in-progress": "Keep going. The test is open whenever you are ready.",
+  ready: "All lessons done. Take the test to unlock the next layer.",
+  done: "You passed this layer. Come back to review anytime.",
+  locked: "You can learn now. The test opens after you pass the previous layer.",
+};
+
+const CTA = {
+  "Start learning": "Start learning",
+  Preview: "Start learning",
+  Continue: "Continue learning",
+  Review: "Review",
+};
+
 /**
  * @param {{ layer: object, index: number,
- *           view: import("../lib/nodeProgress").LayerView,
- *           summary: import("../lib/nodeProgress").Summary,
- *           ctaHref?: string, connectorId?: string, connectorRef?: Function }} props
+ *           view: import("@/features/roadmap/lib/nodeProgress").LayerView,
+ *           summary: import("@/features/roadmap/lib/nodeProgress").Summary,
+ *           connectorId?: string, connectorRef?: Function }} props
  */
-const LayerNode = memo(({ layer, index, view, summary, ctaHref, connectorId, connectorRef }) => {
+const LayerNode = memo(({ layer, index, view, summary, connectorId, connectorRef }) => {
   const { activeLayer, setActiveLayer, selectedTrack, selectedCategory } = useRoadmapStore();
   const { auth } = useAuthStore();
   const isActive = activeLayer?.id === layer.id;
@@ -86,7 +102,7 @@ const LayerNode = memo(({ layer, index, view, summary, ctaHref, connectorId, con
           <span className={`text-[11px] font-semibold uppercase tracking-wider ${tone.meta}`}>{layerName}</span>
           <span className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium ${tone.badge}`}>
             <tone.Icon size={10} aria-hidden="true" />
-            {view.badge}
+            {view.tone === "locked" ? "open to learn" : view.badge}
           </span>
         </div>
 
@@ -138,19 +154,21 @@ const LayerNode = memo(({ layer, index, view, summary, ctaHref, connectorId, con
       </button>
 
       {selectedTrack && (
-        <Link
-          to={ctaHref ?? `/learn/${selectedTrack.id}/${layer.id}`}
-          data-tree-node
-          // Compact look (36px), full 44px hit area via the invisible ::before.
-          className={`relative mx-auto mb-4 flex h-9 w-fit items-center justify-center gap-1.5 rounded-lg px-6 text-xs font-semibold transition-colors duration-150 before:absolute before:-inset-x-2 before:-inset-y-1 before:content-[''] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-300 ${
-            view.primaryCta
-              ? "bg-purple-600 text-white hover:bg-purple-500"
-              : "border border-neutral-700 text-neutral-200 hover:border-neutral-500 hover:text-white"
-          }`}
-        >
-          <Play size={11} fill="currentColor" aria-hidden="true" />
-          {view.cta}
-        </Link>
+        <div className="grid gap-2.5 px-4 pb-4">
+          <p className="text-[13px] leading-snug text-neutral-300">{HINT[view.tone]}</p>
+          <Link
+            to={`/learn/${selectedTrack.id}/${layer.id}`}
+            data-tree-node
+            className={`grid min-h-11 grid-flow-col place-content-center items-center gap-2 rounded-lg text-sm font-semibold transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-300 ${
+              view.tone === "done" || view.tone === "ready"
+                ? "border border-neutral-700 text-neutral-200 hover:border-neutral-500 hover:text-white"
+                : "bg-purple-600 text-white hover:bg-purple-500"
+            }`}
+          >
+            <Play size={13} fill="currentColor" aria-hidden="true" />
+            {CTA[view.cta]}
+          </Link>
+        </div>
       )}
 
       {/* The test used to live only in the drawer. Guests see nothing here:

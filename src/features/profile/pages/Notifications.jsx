@@ -1,9 +1,9 @@
-import { Bone, BoneLines, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, BoneLines, SkeletonRegion } from "@/components/feedback/Skeleton";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Bell, CheckCheck, Trash2 } from "lucide-react";
-import PageShell from "../components/PageShell";
-import { SURFACE } from "@/components/ui/surface";
+import PageShell from "@/features/profile/components/PageShell";
+import { SURFACE } from "@/components/primitives/styles";
 import { timeAgo } from "@/features/connections/lib/connections";
 import { toast } from "sonner";
 import {
@@ -17,7 +17,7 @@ import {
   FILTERS,
   TYPE_META,
   FILTER_TYPE_MAP,
-} from "../../../../constants/notifications";
+} from "@/constants/notifications";
 
 const DAY = 24 * 60 * 60 * 1000;
 

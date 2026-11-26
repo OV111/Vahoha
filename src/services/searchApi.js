@@ -1,4 +1,4 @@
-import { API_BASE_URL, netFetch } from "../../constants/api";
+import { API_BASE_URL, netFetch } from "@/constants/api";
 
 export const fetchUserData = async (query, isAuthenticated = false) => {
   const trimmedQuery = query?.trim() || "";

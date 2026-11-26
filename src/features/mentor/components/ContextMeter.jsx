@@ -1,6 +1,6 @@
-import useMentorStore from "@/stores/useMentorStore";
-import { CONTEXT_METER } from "../../../../constants/mentor";
-import { fullTokens, isCount } from "../lib/formatTokens";
+import useMentorStore from "@/features/mentor/hooks/useMentorStore";
+import { CONTEXT_METER } from "@/constants/mentor";
+import { fullTokens, isCount } from "@/features/mentor/lib/formatTokens";
 
 const TONES = {
   ok: { bar: "bg-white/45", text: "text-white/45" },

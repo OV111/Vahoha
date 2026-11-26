@@ -11,7 +11,7 @@
  * weak spots, level or CV.
  */
 
-import { AI_LEAD, TASK_AREAS, TASK_LIMITS, TASK_SIZES } from "../../../../constants/teams.js";
+import { AI_LEAD, TASK_AREAS, TASK_LIMITS, TASK_SIZES } from "#shared/teams.js";
 import { isTeamLead } from "./taskRules.js";
 
 export const PLAN_RULES = {

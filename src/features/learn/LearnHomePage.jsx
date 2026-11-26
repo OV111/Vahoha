@@ -1,14 +1,13 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { Bone, BoneControl, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, BoneControl, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
 import useMyLayer from "./hooks/useMyLayer";
 import { useLayerStatuses } from "./lib/lessonStatus";
 import { buildLessons } from "./lib/curriculum";
 import { nextLesson } from "./lib/nextLesson";
-import { loadDraft } from "./lib/lessonDraft";
-import { hasLessonContent } from "./content";
-import { lessonMeta } from "./content/manifest";
-import { LEARN_HOME_COPY as COPY, LEARN_PHASES } from "../../../constants/learn";
+import { loadTopicWork } from "./lib/topicWork";
+import { hasTopic, topicMeta } from "./content/topics";
+import { LEARN_HOME_COPY as COPY, LEARN_PHASES } from "@/constants/learn";
 
 function ActionCard({ eyebrow, title, detail, to, label }) {
   return (
@@ -55,7 +54,7 @@ function CapstoneRow({ passedCount, layerCount }) {
 
 function NextUp({ track, layer, layerCount, passedCount }) {
   const statuses = useLayerStatuses(track.id, layer.id);
-  const written = (slug) => hasLessonContent(track.id, layer.id, slug);
+  const written = (slug) => hasTopic(track.id, layer.id, slug);
   const lesson = nextLesson(buildLessons(layer), statuses, written);
   const base = `/learn/${track.id}/${layer.id}`;
 
@@ -80,10 +79,10 @@ function NextUp({ track, layer, layerCount, passedCount }) {
 }
 
 function LessonCard({ base, lesson, track, layer, started }) {
-  const meta = lessonMeta(track.id, layer.id, lesson.slug);
-  const draft = loadDraft(track.id, layer.id, lesson.slug);
-  const progress = draft ? `screen ${draft.index + 1} of ${draft.total}` : meta && `about ${meta.minutes} min`;
-  // Without a written lesson there is no mystery: the title leads and nothing repeats below it.
+  const meta = topicMeta(track.id, layer.id, lesson.slug);
+  const answered = meta ? Object.keys(loadTopicWork(meta.topicId).answers).length : 0;
+  const progress = answered > 0 ? `${answered} answered` : meta && `about ${meta.minutes} min`;
+  // Without a written topic there is no mystery: the title leads and nothing repeats below it.
   const detail = meta ? `${lesson.title}, ${progress}` : lesson.description;
   return (
     <ActionCard
@@ -91,7 +90,7 @@ function LessonCard({ base, lesson, track, layer, started }) {
       title={meta?.mystery ?? lesson.title}
       detail={detail}
       to={`${base}/${lesson.slug}`}
-      label={draft ? COPY.continue : COPY.start}
+      label={answered > 0 ? COPY.continue : COPY.start}
     />
   );
 }

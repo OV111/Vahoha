@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ATTACHMENT_LIMITS as SHARED_LIMITS } from "#shared/mentorAttachments.js";
 import { FEEDBACK_REASONS } from "../services/feedbackService.js";
 
 /**
@@ -78,18 +79,13 @@ export const updateSessionSchema = z
   });
 
 /**
- * Attachment limits — the ENFORCING copy. `constants/mentor.js` mirrors these
- * for UI feedback only; a client can send anything, so these are what count.
- * Keep the two in sync if you change them.
- *
- * MAX_TOTAL_CHARS is a context-window guard, not just a cost guard: the session
- * keeps a 20-turn window, so 20 turns x ~4k tokens of attachments stays inside
- * gpt-oss-120b's 131K context.
+ * The enforcing copy of the shared limits: a client can send anything. The
+ * headroom covers the truncation marker the browser appends to a long file.
  */
 export const ATTACHMENT_LIMITS = {
-  MAX_FILES: 3,
-  MAX_CHARS_PER_FILE: 8200, // slight headroom over the client's 8000 + truncation marker
-  MAX_TOTAL_CHARS: 16500,
+  MAX_FILES: SHARED_LIMITS.MAX_FILES,
+  MAX_CHARS_PER_FILE: SHARED_LIMITS.MAX_CHARS_PER_FILE + 200,
+  MAX_TOTAL_CHARS: SHARED_LIMITS.MAX_TOTAL_CHARS + 500,
 };
 
 const attachmentSchema = z.object({

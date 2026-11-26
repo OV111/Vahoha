@@ -5,7 +5,7 @@
 // The learner's file comes first and unchanged except for that rule, which
 // keeps compiler line numbers the same as in their editor.
 
-import { typeIn } from "../../../../../constants/challengeTypes.js";
+import { typeIn } from "#shared/challengeTypes.js";
 import { literal } from "./literals.js";
 import { REPORT_MARKER } from "./report.js";
 

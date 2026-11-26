@@ -1,27 +1,33 @@
 import { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
+import { hasLab } from "@/features/labs/content";
+import { hasTopic, topicMeta } from "./content/topics";
+import useLearnLayer from "./hooks/useLearnLayer";
+import useTopic from "./hooks/useTopic";
+import { findLesson } from "./lib/curriculum";
 import { layerStatuses, markLessonOpened } from "./lib/lessonStatus";
 import { nextLesson } from "./lib/nextLesson";
-import { hasLessonContent } from "./content";
-import { lessonMeta } from "./content/manifest";
-import { hasLab } from "@/features/labs/content";
-import { ArrowLeft, ArrowRight, ExternalLink, FlaskConical, Sparkles } from "lucide-react";
-import useLearnLayer from "./hooks/useLearnLayer";
-import useLessonContent from "./hooks/useLessonContent";
 import LearnState from "./components/LearnState";
-import LessonPlayer from "./components/LessonPlayer";
-import { findLesson } from "./lib/curriculum";
-import { mentorOrigin } from "@/features/mentor/lib/mentorOrigin";
+import TopicArticle from "./components/topic/TopicArticle";
+import TopicSummary from "./components/topic/TopicSummary";
 
-const primaryLink =
-  "inline-flex min-h-11 items-center gap-2 rounded-xl bg-purple-600 px-5 text-sm font-medium text-white transition-colors hover:bg-purple-500";
+/** The written topic to open after this one, or null. */
+function nextTopicLink(track, layer, lessons, lesson) {
+  const isWritten = (slug) => hasTopic(track.id, layer.id, slug);
+  const others = lessons.filter((l) => l.slug !== lesson.slug && isWritten(l.slug));
+  const next = nextLesson(others, layerStatuses(track.id, layer.id), isWritten);
+  return (
+    next && {
+      href: `/learn/${track.id}/${layer.id}/${next.slug}`,
+      title: topicMeta(track.id, layer.id, next.slug).mystery,
+    }
+  );
+}
 
 export default function TopicPage() {
   const { trackId, layerId, topicSlug } = useParams();
   const { status, track, layer, lessons } = useLearnLayer(trackId, layerId);
-  const content = useLessonContent(trackId, layerId, topicSlug);
-  // Known before anything loads, so the placeholder already has the right shape.
-  const variant = content.status === "none" ? "article" : "lesson";
+  const { status: topicStatus, topic } = useTopic(trackId, layerId, topicSlug);
 
   // Opening a real lesson marks it "in progress" on the roadmap; no manual ticking.
   const exists = status === "ready" && lessons.some((l) => l.slug === topicSlug);
@@ -29,131 +35,30 @@ export default function TopicPage() {
     if (exists) markLessonOpened(trackId, layerId, topicSlug);
   }, [exists, trackId, layerId, topicSlug]);
 
-  if (status !== "ready") return <LearnState status={status} variant={variant} />;
-  if (content.status === "loading") return <LearnState status="loading" variant="lesson" />;
+  if (status !== "ready") return <LearnState status={status} variant="article" />;
+  // A map lesson that another lesson covers opens that one.
+  const teacher = lessons.find((l) => l.also?.includes(topicSlug));
+  if (teacher) return <Navigate to={`/learn/${track.id}/${layer.id}/${teacher.slug}`} replace />;
   const found = findLesson(lessons, topicSlug);
   if (!found) return <LearnState status="missing" />;
+  if (topicStatus === "loading") return <LearnState status="loading" variant="article" />;
+  if (topicStatus === "error") return <LearnState status="error" what="topic" />;
 
-  const { lesson, prev, next, total } = found;
-  const base = `/learn/${track.id}/${layer.id}`;
-  const labHref = hasLab(track.id, layer.id, lesson.slug) ? `${base}/${lesson.slug}/lab` : null;
+  const labHref = hasLab(track.id, layer.id, topicSlug) ? `/learn/${track.id}/${layer.id}/${topicSlug}/lab` : null;
 
-  // A written lesson gets the step-by-step player; the rest keep the summary page.
-  if (content.status === "ready") {
-    const others = lessons.filter((l) => l.slug !== lesson.slug);
-    const isWritten = (slug) => hasLessonContent(track.id, layer.id, slug);
-    const upNext = others.some((l) => isWritten(l.slug))
-      ? nextLesson(others, layerStatuses(track.id, layer.id), isWritten)
-      : null;
-    return (
-      <LessonPlayer
-        // A fresh player per lesson, so answers never leak into the next one.
-        key={`${layer.id}/${lesson.slug}`}
-        track={track}
-        layer={layer}
-        lesson={lesson}
-        lessons={lessons}
-        content={content.lesson}
-        next={
-          upNext && {
-            href: `${base}/${upNext.slug}`,
-            title: lessonMeta(track.id, layer.id, upNext.slug)?.mystery ?? upNext.title,
-          }
-        }
-        testHref={`/roadmaps/exam/${layer.id}?path=${track.domain.id}`}
-        labHref={labHref}
-      />
-    );
-  }
+  if (topicStatus === "none") return <TopicSummary track={track} layer={layer} labHref={labHref} {...found} />;
 
   return (
-    <article className="mx-auto max-w-3xl px-6 pb-24 pt-10 sm:px-10">
-      <Link to={base} className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-neutral-200">
-        <ArrowLeft size={14} aria-hidden="true" /> {layer.title}
-      </Link>
-
-      <header className="mt-6">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-purple-400">
-          {lesson.section} · {lesson.order} of {total}
-        </p>
-        <h1 className="mt-2 text-2xl font-bold leading-snug text-neutral-100 sm:text-3xl">{lesson.title}</h1>
-      </header>
-
-      {content.status === "error" && (
-        <p className="mt-8 text-sm text-neutral-400">
-          This lesson didn't load. Check your connection and refresh the page.
-        </p>
-      )}
-      {content.status === "none" && (
-        <>
-          <section className="mt-8">
-            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-neutral-500">The idea</h2>
-            <p className="mt-3 leading-relaxed text-neutral-300">{lesson.description}</p>
-          </section>
-
-          <section className="mt-8">
-            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-neutral-500">Study this</h2>
-            <ul className="mt-3 space-y-2">
-              {lesson.resources.map((r) => (
-                <li key={r.url}>
-                  <a
-                    href={r.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex min-h-11 items-center justify-between gap-3 rounded-xl border border-neutral-800 bg-neutral-900/50 px-4 py-3 text-sm text-neutral-200 transition-colors hover:border-purple-700/60"
-                  >
-                    <span className="min-w-0 truncate">{r.label}</span>
-                    <ExternalLink size={14} className="shrink-0 text-neutral-500" aria-hidden="true" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </>
-      )}
-
-      <section className="mt-8 flex flex-wrap gap-3">
-        {labHref && (
-          <Link
-            to={labHref}
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-purple-600 px-4 text-sm font-medium text-white transition-colors hover:bg-purple-500"
-          >
-            <FlaskConical size={14} aria-hidden="true" /> Practice it in the lab
-          </Link>
-        )}
-        <Link
-          to="/mentor"
-          state={mentorOrigin("lesson", { topic: lesson.title, path: track.id, layer: layer.id })}
-          className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-purple-600/50 px-4 text-sm font-medium text-purple-300 transition-colors hover:bg-purple-600/20"
-        >
-          <Sparkles size={14} aria-hidden="true" /> Ask the mentor about this
-        </Link>
-      </section>
-
-      <nav
-        aria-label="Lesson navigation"
-        className="mt-12 flex items-center justify-between gap-4 border-t border-neutral-800 pt-6"
-      >
-        {prev ? (
-          <Link
-            to={`${base}/${prev.slug}`}
-            className="inline-flex min-h-11 items-center gap-2 text-sm text-neutral-400 hover:text-white"
-          >
-            <ArrowLeft size={14} aria-hidden="true" /> Previous
-          </Link>
-        ) : (
-          <span />
-        )}
-        {next ? (
-          <Link to={`${base}/${next.slug}`} className={primaryLink}>
-            Next <ArrowRight size={14} aria-hidden="true" />
-          </Link>
-        ) : (
-          <Link to={base} className={primaryLink}>
-            Ready for the test <ArrowRight size={14} aria-hidden="true" />
-          </Link>
-        )}
-      </nav>
-    </article>
+    <TopicArticle
+      // A fresh page per topic, so answers never leak into the next one.
+      key={topic.topicId}
+      topic={topic}
+      track={track}
+      layer={layer}
+      lesson={found.lesson}
+      lessons={lessons}
+      next={nextTopicLink(track, layer, lessons, found.lesson)}
+      labHref={labHref}
+    />
   );
 }

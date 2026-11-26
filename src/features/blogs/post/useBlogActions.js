@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import useAuthStore from "@/stores/useAuthStore";
-import useBlogInteractionsStore from "@/stores/useBlogInteractionsStore";
-import { toggleBlogFavourite, toggleBlogLike } from "../../../services/blogsApi";
+import useBlogInteractionsStore from "@/features/blogs/useBlogInteractionsStore";
+import { toggleBlogFavourite, toggleBlogLike } from "@/services/blogsApi";
 import { captureEvent } from "@/lib/posthog";
 
 /**

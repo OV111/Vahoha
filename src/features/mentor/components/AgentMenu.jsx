@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Plus, ChevronRight } from "lucide-react";
-import { DROPDOWN_ITEMS } from "../../../../constants/mentor";
+import { DROPDOWN_ITEMS } from "@/constants/mentor";
 
 /** The "+" menu next to the composer. */
 export default function AgentMenu({

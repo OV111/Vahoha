@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
-import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
-import Badge from "../components/Badge";
-import { DIFFICULTY, TYPE_TONE } from "../lib/challengeTones";
+import { API_BASE_URL, authHeaders, apiFetch } from "@/constants/api";
+import Badge from "@/features/coding-challenges/components/Badge";
+import { DIFFICULTY, TYPE_TONE } from "@/features/coding-challenges/lib/challengeTones";
 
 const C = {
   bg:       "#000000",

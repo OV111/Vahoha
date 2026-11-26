@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion as Motion } from "motion/react";
 import { Check, Github } from "lucide-react";
-import { ABOUT_PILLARS, ABOUT_AUDIENCE, ABOUT_STATUS } from "../../constants/about";
+import { ABOUT_PILLARS, ABOUT_AUDIENCE, ABOUT_STATUS } from "@/constants/about";
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },

@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { HttpError } from "../../../utils/httpErrors.js";
 import { getLayers, getTracks } from "../../../services/roadmapCache.js";
-import { JOB_LIMITS } from "../../../../constants/hiringRules.js";
+import { JOB_LIMITS } from "#shared/hiringRules.js";
 
 /**
  * A company's jobs. Private to the company for now: they give an intro request

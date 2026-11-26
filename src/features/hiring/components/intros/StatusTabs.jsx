@@ -1,4 +1,4 @@
-import { INTRO_FILTERS } from "../../../../../constants/hiring";
+import { INTRO_FILTERS } from "@/constants/hiring";
 
 // Status filter pills, shared by the recruiter's list and the developer inbox.
 const StatusTabs = ({ value, onChange }) => (

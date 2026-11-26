@@ -51,6 +51,7 @@ backend/evals/results/
 
 # Generated per-track roadmap files (scripts/splitRoadmaps.js)
 public/roadmaps/
+public/lesson-react.js
 
 # Local-only folders
 ui-ux-pro-max-skill/

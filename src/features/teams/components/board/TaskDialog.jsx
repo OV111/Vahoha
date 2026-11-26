@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
-import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import ConfirmDialog from "@/components/feedback/ConfirmDialog";
 import {
   MANUAL_TASK_STATUSES,
   TASK_AREAS,
   TASK_LIMITS,
   TASK_SIZES,
   TASK_STATUS_LABELS,
-} from "../../../../../constants/teams";
-import { teamsApi } from "../../teamsApi";
-import TSelect from "../TSelect";
+} from "@shared/teams";
+import { teamsApi } from "@/features/teams/teamsApi";
+import TSelect from "@/features/teams/components/TSelect";
 
 /**
  * Create or edit one task, and read or add its comments. The server repeats

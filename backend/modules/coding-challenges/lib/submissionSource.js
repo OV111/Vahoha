@@ -13,7 +13,7 @@ import {
   mainFileName,
   specSupports,
   DEFAULT_LANGUAGE,
-} from "../../../../constants/challengeLanguages.js";
+} from "#shared/challengeLanguages.js";
 import { stripTypes } from "./typescript.js";
 
 const fail = (status, message) => {

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Sparkles } from "lucide-react";
-import { STATUS_META, STATUS_ORDER } from "../lib/statusMeta";
-import { PROGRESS_COPY } from "../../../../constants/progress";
-import { TEXT, MUTED, BORDER, CHIP, FOCUS } from "../lib/tone";
+import { STATUS_META, STATUS_ORDER } from "@/features/mastery/lib/statusMeta";
+import { PROGRESS_COPY } from "@/constants/progress";
+import { TEXT, MUTED, BORDER, CHIP, FOCUS } from "@/features/mastery/lib/tone";
 
 const COPY = PROGRESS_COPY.topics;
 

@@ -1,6 +1,6 @@
 import { Buffer } from "node:buffer";
 import { z } from "zod";
-import { PASSWORD_RULES, PASSWORD_MESSAGES } from "../../../../constants/password.js";
+import { PASSWORD_RULES, PASSWORD_MESSAGES } from "#shared/password.js";
 
 /**
  * Schemas for POST /get-started and POST /login.

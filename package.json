@@ -3,14 +3,18 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "imports": {
+    "#shared/*": "./shared/*"
+  },
   "engines": {
     "node": ">=22.12.0 <25"
   },
   "scripts": {
-    "predev": "node scripts/splitRoadmaps.js",
+    "predev": "node scripts/splitRoadmaps.js && node scripts/buildLessonReact.js",
     "dev": "vite",
     "start": "node --no-node-snapshot --import ./backend/instrument.js backend/server.js",
     "seed:roadmap": "node backend/seeders/roadmapSeeder.js",
+    "seed:learn": "node backend/seeders/learnTopicSeeder.js",
     "seed:challenges": "node backend/seeders/challengeSeeder.js",
     "challenges:verify": "node backend/scripts/verifyChallenge.js",
     "seed:capstones": "node backend/seeders/capstoneSeeder.js",
@@ -29,10 +33,10 @@
     "migrate:progress": "node backend/scripts/reconcileProgress.js",
     "seed:concepts": "node backend/seeders/conceptSeeder.js",
     "seed:rubrics": "node backend/seeders/teachBackRubricSeeder.js",
-    "prebuild": "node scripts/splitRoadmaps.js",
+    "prebuild": "node scripts/splitRoadmaps.js && node scripts/buildLessonReact.js",
     "build": "vite build && vite build --ssr src/entry-prerender.jsx --outDir dist-ssr",
     "postbuild": "node scripts/seoPostBuild.js",
-    "prebuild:staging": "node scripts/splitRoadmaps.js",
+    "prebuild:staging": "node scripts/splitRoadmaps.js && node scripts/buildLessonReact.js",
     "build:staging": "vite build --mode staging && vite build --mode staging --ssr src/entry-prerender.jsx --outDir dist-ssr",
     "postbuild:staging": "node scripts/seoPostBuild.js",
     "server": "nodemon --exec \"node --no-node-snapshot --import ./backend/instrument.js\" backend/server.js",

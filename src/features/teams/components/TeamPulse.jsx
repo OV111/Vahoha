@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AlertTriangle, Bot } from "lucide-react";
 
-import { teamsApi } from "../teamsApi";
+import { teamsApi } from "@/features/teams/teamsApi";
 
 /**
  * The AI lead's view of the team: health, open warnings and last week's

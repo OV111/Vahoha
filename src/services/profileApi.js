@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "@/constants/api";
 
 // Throws on anything but a good answer, so a failure is never cached as a profile.
 export const fetchMyProfile = async () => {

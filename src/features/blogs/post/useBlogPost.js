@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchPublicPost } from "../../../services/blogsApi";
+import { fetchPublicPost } from "@/services/blogsApi";
 import { decodePostId } from "./postModel.js";
 
 /**

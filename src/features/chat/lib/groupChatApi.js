@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders, apiFetch } from "../../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "@/constants/api";
 
 const jsonHeaders = { "Content-Type": "application/json" };
 

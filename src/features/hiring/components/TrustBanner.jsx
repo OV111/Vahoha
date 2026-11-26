@@ -1,7 +1,7 @@
 import { CheckCircle2, ShieldAlert, ShieldQuestion } from "lucide-react";
 import VerifyEmailStep from "./VerifyEmailStep";
 import FixCompanyForm from "./FixCompanyForm";
-import { TRUST_COPY } from "../../../../constants/hiring";
+import { TRUST_COPY } from "@/constants/hiring";
 
 const STYLE = {
   verified: { Icon: CheckCircle2, box: "border-emerald-900/60 bg-emerald-950/30 text-emerald-200" },

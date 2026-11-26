@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
-import { fetchVersion, fetchVersions } from "../systemMapApi";
-import { fromGraph } from "../lib/mapGraph";
+import { fetchVersion, fetchVersions } from "@/features/system-map/systemMapApi";
+import { fromGraph } from "@/features/system-map/lib/mapGraph";
 
 // What came right after each version, i.e. why it was kept.
 const REASON_LABEL = {

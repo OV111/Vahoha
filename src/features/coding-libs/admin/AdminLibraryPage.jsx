@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Check, FileJson, Globe, Lock } from "lucide-react";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
-import { libraryAdminApi } from "../../../services/libraryAdminApi";
+import { libraryAdminApi } from "@/services/libraryAdminApi";
 
 const card = "rounded-md border border-neutral-800 bg-neutral-950 p-5";
 const button =

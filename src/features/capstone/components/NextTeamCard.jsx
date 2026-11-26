@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { motion as Motion } from "framer-motion";
 import { Users } from "lucide-react";
 import { SURFACE, SectionLabel } from "./ui";
-import { fadeUp } from "../lib/motion";
+import { fadeUp } from "@/features/capstone/lib/motion";
 
 /**
  * Shown once the capstone is passed: the next step in the proof pipeline.

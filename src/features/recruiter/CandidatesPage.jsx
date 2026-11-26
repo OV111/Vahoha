@@ -1,11 +1,11 @@
 import { Search, X } from "lucide-react";
 import Seo from "@/seo/Seo";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
-import Dropdown from "@/components/ui/Dropdown";
+import Dropdown from "@/components/primitives/Dropdown";
 import CandidateCard from "./components/CandidateCard";
-import useSavedUsernames from "../hiring/useSavedUsernames";
+import useSavedUsernames from "@/features/hiring/useSavedUsernames";
 import useCandidates from "./hooks/useCandidates";
-import { PAGE } from "../../../constants/layout";
+import { PAGE } from "@/constants/layout";
 
 /**
  * /candidates: developers who opted in via "Show me to recruiters", ranked by

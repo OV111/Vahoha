@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { findActiveNavPath } from "@/utils/navigation";
-import { NAV_GROUPS_AUTH, NAV_GROUPS_GUEST, TRACK_LINKS } from "../../../constants/navbar";
+import { NAV_GROUPS_AUTH, NAV_GROUPS_GUEST, TRACK_LINKS } from "@/constants/navbar";
 
 const itemsOf = (groups) =>
   groups.flatMap((g) => [...g.items, ...(g.showTracks ? TRACK_LINKS : [])]);

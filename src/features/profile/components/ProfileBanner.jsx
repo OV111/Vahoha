@@ -1,4 +1,4 @@
-import { Bone } from "@/components/ui/Skeleton";
+import { Bone } from "@/components/feedback/Skeleton";
 import React, { useState } from "react";
 
 // The grid pattern for the empty state: reads as designed, not as a missing photo.

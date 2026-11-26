@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import Seo from "../../seo/Seo";
+import Seo from "@/seo/Seo";
 import { formatTitle } from "./lib/formatTitle";
-import LoadingSuspense from "../../components/feedback/LoadingSuspense";
-import useChallengeStore from "./store/useChallengeStore";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
+import useChallengeStore from "@/features/coding-challenges/hooks/useChallengeStore";
 import useCodeRunner from "./hooks/useCodeRunner";
 import useArenaFiles from "./hooks/useArenaFiles";
 import useArenaSubmit from "./hooks/useArenaSubmit";
@@ -23,8 +23,8 @@ import {
   isChallengeLanguage,
   isJudgeLanguage,
   languagesOf,
-} from "../../../constants/challengeLanguages";
-import useViewOnly from "../hiring/useViewOnly";
+} from "@shared/challengeLanguages";
+import useViewOnly from "@/features/hiring/useViewOnly";
 
 const MOBILE_TABS = [
   { key: "problem", label: "Problem" },

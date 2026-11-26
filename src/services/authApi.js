@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders, apiFetch, netFetch } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch, netFetch } from "@/constants/api";
 
 // GitHub sign-in and account linking are full-page redirects; the server reads the refresh cookie.
 export const GITHUB_AUTH_URL = `${API_BASE_URL}/auth/github`;

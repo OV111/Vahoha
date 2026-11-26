@@ -1,6 +1,6 @@
 import { AnimatePresence, MotionConfig, motion as Motion } from "framer-motion";
 import { Check, Loader2 } from "lucide-react";
-import { SURFACE } from "@/components/ui/surface";
+import { SURFACE } from "@/components/primitives/styles";
 
 /**
  * Sticky "unsaved changes" bar for forms. Appears only while there is

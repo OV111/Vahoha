@@ -2,10 +2,10 @@ import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { ChevronDown } from "lucide-react";
-import LayerNode from "../LayerNode";
+import LayerNode from "@/features/roadmap/components/LayerNode";
 import StatusIcon from "./StatusIcon";
 import { STATUS_META } from "./statusMeta";
-import { useLayerTree } from "../../hooks/useLayerTree";
+import { useLayerTree } from "@/features/roadmap/hooks/useLayerTree";
 
 // Narrow screens: no mind-map. The layer card on top, then each topic as a
 // collapsible section with its lessons listed underneath. Everything is
@@ -89,7 +89,7 @@ const MobileSection = ({ section, defaultOpen }) => {
 };
 
 const MobileTreeRow = ({ layer, index, status }) => {
-  const { left, right, summary, view, ctaHref } = useLayerTree(layer, status);
+  const { left, right, summary, view } = useLayerTree(layer, status);
   const sections = [...left, ...right];
   // Open the topics of the layer the learner is working on; keep the rest short.
   const defaultOpen = view.tone === "up-next" || view.tone === "in-progress" || view.tone === "ready";
@@ -101,7 +101,7 @@ const MobileTreeRow = ({ layer, index, status }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2, delay: Math.min(index * 0.05, 0.3) }}
     >
-      <LayerNode layer={layer} index={index} view={view} summary={summary} ctaHref={ctaHref} />
+      <LayerNode layer={layer} index={index} view={view} summary={summary} />
 
       {sections.length > 0 && (
         <div className="mt-3 flex flex-col gap-2 border-l border-neutral-700 pl-3">

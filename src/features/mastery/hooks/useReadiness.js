@@ -1,5 +1,5 @@
 import useCachedResource from "@/hooks/useCachedResource";
-import { fetchReadiness } from "../masteryApi";
+import { fetchReadiness } from "@/features/mastery/masteryApi";
 
 /** The learner's mid-level readiness, with loading/error state and a manual reload. Cached like useMastery. */
 const useReadiness = () => {

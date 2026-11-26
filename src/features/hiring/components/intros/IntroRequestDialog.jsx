@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Info, Loader2, X } from "lucide-react";
 import JobChoice from "./JobChoice";
-import { sendIntro } from "../../api/hiringApi";
-import { INTRO_MESSAGE, INTRO_REQUEST_COPY as COPY } from "../../../../../constants/hiring";
+import { sendIntro } from "@/features/hiring/api/hiringApi";
+import { INTRO_MESSAGE, INTRO_REQUEST_COPY as COPY } from "@/constants/hiring";
 
 // Modal form: pick an open job, write the message, send. Escape and a backdrop
 // click close it, as with ConfirmDialog.

@@ -6,11 +6,11 @@ import {
   NAV_GROUPS_RECRUITER,
   NAV_LINKS_GUEST,
   TRACK_LINKS,
-} from "../../../constants/navbar";
-import { useIsRecruiter } from "./hooks";
+} from "@/constants/navbar";
+import { useIsRecruiter } from "./useNavbar";
 import NavGroupMenu from "./NavGroupMenu";
 import { Sparkles } from "lucide-react";
-import "./mentor-button.css";
+import "./mentorButton.css";
 
 // Center links on desktop. Guests get the same menus with protected items
 // locked (see constants), plus a few plain links.

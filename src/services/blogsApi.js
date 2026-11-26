@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders, apiFetch, netFetch } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch, netFetch } from "@/constants/api";
 
 // `signal` lets the caller cancel a request that's no longer wanted (the user
 // changed a filter mid-flight), so a slow old response can't overwrite a newer one.

@@ -21,7 +21,7 @@ import {
   StreamLanguage,
 } from "@codemirror/language";
 import { javascript } from "@codemirror/lang-javascript";
-import { arenaTheme, arenaHighlight } from "../../lib/editorTheme";
+import { arenaTheme, arenaHighlight } from "@/features/coding-challenges/lib/editorTheme";
 
 // Grammars other than JavaScript are fetched when a file in that language is
 // opened, so they cost nothing to the learners who never pick them.

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Lock } from "lucide-react";
-import { TEXT, MUTED, BORDER, FOCUS } from "../lib/tone";
+import { TEXT, MUTED, BORDER, FOCUS } from "@/features/mastery/lib/tone";
 
 /**
  * Shown to a free user once billing is enforced. It says exactly what they would

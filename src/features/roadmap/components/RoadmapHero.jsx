@@ -1,6 +1,6 @@
 import { motion as Motion, useReducedMotion } from "framer-motion";
-import { ROADMAP_DOMAINS } from "../../../../constants/categories";
-import { TRACKS } from "../../../../constants/roadmapPaths.js";
+import { ROADMAP_DOMAINS } from "@shared/categories";
+import { TRACKS } from "@shared/roadmapPaths";
 
 // Counts come from the same constants the page renders, so the meta strip
 // can't drift from what the user will actually see.

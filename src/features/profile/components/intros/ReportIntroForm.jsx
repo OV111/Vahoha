@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import OptionCards from "@/features/hiring/components/OptionCards";
-import { INBOX_COPY as COPY, REPORT_DETAILS_MAX, REPORT_REASONS } from "../../../../../constants/hiring";
+import { INBOX_COPY as COPY, REPORT_DETAILS_MAX, REPORT_REASONS } from "@/constants/hiring";
 
 // Shown inside the intro card, so the developer keeps the request in view
 // while saying what's wrong with it.

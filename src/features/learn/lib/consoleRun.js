@@ -7,6 +7,8 @@ export const WAIT_BUDGET_MS = 3000;
 
 function show(value) {
   if (typeof value === "string") return value;
+  // JSON would print NaN and Infinity as null.
+  if (typeof value === "number") return String(value);
   if (value instanceof Error) return `${value.name}: ${value.message}`;
   if (typeof value === "function") return `[Function: ${value.name || "anonymous"}]`;
   if (value === undefined) return "undefined";

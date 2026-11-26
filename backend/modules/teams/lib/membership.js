@@ -4,7 +4,7 @@
  * these and turn a refusal into an HTTP error.
  */
 
-import { MAX_RUNNING_TEAMS, MAX_TEAM_MEMBERS } from "../../../../constants/teams.js";
+import { MAX_RUNNING_TEAMS, MAX_TEAM_MEMBERS } from "#shared/teams.js";
 import { isTeamLead } from "./taskRules.js";
 
 export const MIN_MEMBERS_TO_BEGIN = 2;

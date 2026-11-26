@@ -1,6 +1,6 @@
 import useAuthStore from "@/stores/useAuthStore";
 import useProfileStore from "@/stores/useProfileStore";
-import { FEATURES } from "../../../constants/features";
+import { FEATURES } from "@/constants/features";
 
 export const VIEW_ONLY_HINT = "Hiring accounts can view this, not take part.";
 

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Ban, Flag, Globe, Loader2 } from "lucide-react";
-import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import ConfirmDialog from "@/components/feedback/ConfirmDialog";
 import IntroStatusPill from "@/features/hiring/components/intros/IntroStatusPill";
 import CopyEmail from "@/features/hiring/components/intros/CopyEmail";
 import { expiresText, shortDate } from "@/features/hiring/lib/intros";
 import TrustBadge from "./TrustBadge";
 import IntroJobDetails from "./IntroJobDetails";
 import ReportIntroForm from "./ReportIntroForm";
-import { INBOX_COPY as COPY } from "../../../../../constants/hiring";
+import { INBOX_COPY as COPY } from "@/constants/hiring";
 
 const SECONDARY =
   "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm text-neutral-400 hover:bg-white/5 hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400";

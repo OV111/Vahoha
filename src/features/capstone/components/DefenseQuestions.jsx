@@ -1,7 +1,7 @@
 import QuestionCard from "./QuestionCard";
 import { PrimaryButton } from "./ui";
-import { formatDateTime } from "../lib/format";
-import { TONE, levelOf } from "../lib/review";
+import { formatDateTime } from "@/features/capstone/lib/format";
+import { TONE, levelOf } from "@/features/capstone/lib/review";
 
 const SECONDARY =
   "inline-flex items-center justify-center rounded-lg border border-white/10 px-4 py-2.5 text-sm font-semibold text-neutral-200 transition-colors hover:border-purple-400/50 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 disabled:cursor-not-allowed disabled:opacity-50";

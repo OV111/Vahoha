@@ -7,12 +7,12 @@ import {
   Clock, ChevronRight, CheckCircle2, XCircle,
   RotateCcw, ArrowLeft, Loader2, AlertTriangle, Timer, ListChecks, Eye, ShieldAlert,
 } from "lucide-react";
-import { EXAM_RULES } from "../../../constants/exam";
-import useRoadmapStore from "../../stores/useRoadmapStore";
-import { answerExamQuestion, generateExam, reportExamLeave } from "../../services/roadmapApi";
+import { EXAM_RULES } from "@shared/exam";
+import useRoadmapStore from "@/features/roadmap/hooks/useRoadmapStore";
+import { answerExamQuestion, generateExam, reportExamLeave } from "@/services/roadmapApi";
 import InlineTeachBack from "./components/InlineTeachBack";
 import useCountdown from "@/hooks/useCountdown";
-import NoCopy from "@/components/integrity/NoCopy";
+import NoCopy from "@/components/primitives/NoCopy";
 
 // ── Question timer (remounted for every question via its key) ─
 const QuestionTimer = ({ seconds, onExpire }) => {

@@ -2,7 +2,7 @@ import process from "node:process";
 import { HttpError } from "../../../utils/httpErrors.js";
 import { sendIntroRequestEmail } from "../../../utils/emailService.js";
 import { notify } from "../../../queues/notify.js";
-import { INTRO_RULES } from "../../../../constants/hiringRules.js";
+import { INTRO_RULES } from "#shared/hiringRules.js";
 import { describeLayers, getJob } from "./jobService.js";
 import { optedInIds } from "./savedService.js";
 import {

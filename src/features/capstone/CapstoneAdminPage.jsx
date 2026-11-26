@@ -1,4 +1,4 @@
-import { BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
+import { BoneLines, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
 import { useCallback, useEffect, useState } from "react";
 import { AlertTriangle } from "lucide-react";
 import { adminApi } from "./adminApi";

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PrimaryButton } from "../ui";
+import { PrimaryButton } from "@/features/capstone/components/ui";
 
 /**
  * A destructive admin action that needs a written reason (min 10 chars, the

@@ -1,5 +1,5 @@
-import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
-import { SESSIONS_PAGE_SIZE } from "../../constants/mentor";
+import { API_BASE_URL, authHeaders, apiFetch } from "@/constants/api";
+import { SESSIONS_PAGE_SIZE } from "@/constants/mentor";
 
 const MENTOR_URL = `${API_BASE_URL}/api/mentor`;
 

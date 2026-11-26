@@ -7,7 +7,7 @@
  * Mid at most, and stops counting once platform evidence exists (lib/teamLevel.js).
  */
 
-import { TASK_AREAS } from "../../../../constants/teams.js";
+import { TASK_AREAS } from "#shared/teams.js";
 
 export const CV_RULES = {
   midYears: 2, // professional software years for a Mid estimate

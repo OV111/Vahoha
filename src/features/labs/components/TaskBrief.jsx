@@ -1,6 +1,6 @@
 import { Bot, CheckCircle2, Circle, User } from "lucide-react";
 import MarkdownMessage from "@/features/mentor/components/MarkdownMessage";
-import { TASK_TYPES } from "../taskTypes";
+import { TASK_TYPES } from "@/features/labs/taskTypes";
 
 // Left column: what to do. The type chip and a soft glow in the type's color
 // tell the learner which mode they're in before they read a word.

@@ -16,8 +16,8 @@ import {
   RotateCcw,
   Trophy,
 } from "lucide-react";
-import { TO } from "./hiwRoutes";
-import { SoonTag } from "./hiwShared";
+import { TO } from "@/constants/howItWorks";
+import { SoonTag } from "./SoonTag";
 
 /**
  * "How it works", mirrored top to bottom around the test, which sits dead centre

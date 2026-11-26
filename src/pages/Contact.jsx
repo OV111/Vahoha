@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { motion as Motion } from "motion/react";
 import { Mail, Send, Github, Instagram, CheckCircle2, ChevronDown } from "lucide-react";
-import XLogo from "../components/ui/XLogo";
-import { sendContactMessage } from "../services/contactApi";
-import { SITE } from "../../constants/site";
-import { CONTACT_TOPICS, CONTACT_LIMITS } from "../../constants/contact";
+import { FaXTwitter } from "react-icons/fa6";
+import { sendContactMessage } from "@/services/contactApi";
+import { SITE } from "@/constants/site";
+import { CONTACT_TOPICS, CONTACT_LIMITS } from "@shared/contact";
 
 const EMPTY_FORM = { name: "", email: "", topic: "", message: "", website: "" };
 
 const SOCIALS = [
-  { label: "X", ...SITE.socials.x, Icon: XLogo },
+  { label: "X", ...SITE.socials.x, Icon: FaXTwitter },
   { label: "Instagram", ...SITE.socials.instagram, Icon: Instagram },
   { label: "GitHub", ...SITE.socials.github, Icon: Github },
 ];

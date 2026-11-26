@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders, apiFetch } from "../../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "@/constants/api";
 
 /** Client for /api/capstone/admin. Non-admins get a 404 from the server. */
 const request = async (path, { method = "GET", body } = {}) => {

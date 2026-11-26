@@ -1,5 +1,5 @@
 import React from "react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "./Checkbox";
 
 export default function FilterCheckbox({ label, count, active, onClick }) {
   return (

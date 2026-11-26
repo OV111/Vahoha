@@ -7,7 +7,7 @@ import {
   toTypeScriptStarter,
   isChallengeLanguage,
   TS_STARTER_HEADER,
-} from '../../../constants/challengeLanguages.js'
+} from '#shared/challengeLanguages.js'
 
 describe('stripTypes', () => {
   it('removes annotations, generics and type-only declarations', () => {

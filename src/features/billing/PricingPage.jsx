@@ -1,10 +1,10 @@
 import { toast } from "sonner";
 import { Info } from "lucide-react";
-import useAuthStore from "../../stores/useAuthStore";
+import useAuthStore from "@/stores/useAuthStore";
 import useBilling from "./hooks/useBilling";
 import PlanCard from "./components/PlanCard";
 import { PLANS } from "./plans";
-import { DEVELOPER_SIGNUP_PATH } from "../../../constants/site";
+import { DEVELOPER_SIGNUP_PATH } from "@/constants/site";
 
 const PricingPage = () => {
   const { auth: isAuthed } = useAuthStore();

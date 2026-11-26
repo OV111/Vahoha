@@ -3,10 +3,10 @@ import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import { Maximize2, Sparkles, X } from "lucide-react";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
-import { MENTOR_PANEL_COPY as COPY } from "../../../../constants/mentor";
+import { MENTOR_PANEL_COPY as COPY } from "@/constants/mentor";
 import "./MentorPanel.css";
 
-const Mentor = lazy(() => import("../Mentor"));
+const Mentor = lazy(() => import("@/features/mentor/Mentor"));
 
 /**
  * The mentor opened ON TOP of another page instead of navigating away, so the

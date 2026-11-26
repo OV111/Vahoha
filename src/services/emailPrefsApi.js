@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "@/constants/api";
 
 const request = async (path, options = {}) => {
   const res = await apiFetch(`${API_BASE_URL}/api/email${path}`, {

@@ -6,7 +6,7 @@ import {
 } from "../../../services/userProgressService.js";
 import { trackEvent } from "../../../services/eventService.js";
 import { sanitizeLayerProgress, doneLayerIds } from "../../../services/layerProgress.js";
-import { PATH_SETUP, ABOUT_MAX } from "../../../../constants/pathSetup.js";
+import { PATH_SETUP, ABOUT_MAX } from "#shared/pathSetup.js";
 
 export const getProgress = async (req, res) => {
   try {
@@ -23,7 +23,7 @@ export const getProgress = async (req, res) => {
 const CHOICES = ["skillLevel", "goal", "background", "weeklyTime"];
 
 /**
- * The Path Setup answers, checked against constants/pathSetup.js. Returns
+ * The Path Setup answers, checked against shared/pathSetup.js. Returns
  * { fields } with only what was sent, or { error }. `about` is free text that
  * ends up in the mentor prompt, so it is flattened to one line and capped.
  */

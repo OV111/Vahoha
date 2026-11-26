@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { teamsApi } from "../teamsApi";
+import { teamsApi } from "@/features/teams/teamsApi";
 
 /**
  * Rate each teammate 1-5. You only ever see the ratings YOU gave; what others

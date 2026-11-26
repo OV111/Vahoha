@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Inbox } from "lucide-react";
-import PageShell from "../components/PageShell";
-import InboxIntroCard from "../components/intros/InboxIntroCard";
+import PageShell from "@/features/profile/components/PageShell";
+import InboxIntroCard from "@/features/profile/components/intros/InboxIntroCard";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
-import useIntroStore from "@/stores/useIntroStore";
+import useIntroStore from "@/features/profile/hooks/useIntroStore";
 import { answerIntro, fetchInbox, reportIntro } from "@/features/hiring/api/hiringApi";
-import { INBOX_COPY as COPY } from "../../../../constants/hiring";
+import { INBOX_COPY as COPY } from "@/constants/hiring";
 
 const DONE_TOAST = { accept: COPY.accepted, decline: COPY.declined, block: COPY.blocked };
 

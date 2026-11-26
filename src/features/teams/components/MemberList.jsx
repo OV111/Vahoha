@@ -1,5 +1,5 @@
 import { Bot } from "lucide-react";
-import { AI_LEAD, TEAM_LEVEL_LABELS } from "../../../../constants/teams";
+import { AI_LEAD, TEAM_LEVEL_LABELS } from "@shared/teams";
 
 /**
  * Team members with their level and role. Levels come from the server

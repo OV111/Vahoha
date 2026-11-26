@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "@/constants/api";
 
 export const fetchComments = async (blogId) => {
   const res = await apiFetch(`${API_BASE_URL}/blogs/${blogId}/comments`);

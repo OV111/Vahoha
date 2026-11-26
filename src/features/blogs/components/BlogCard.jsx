@@ -5,23 +5,23 @@ import SharePopover from "./SharePopover";
 import CommentPopover from "./CommentPopover";
 import { toast } from "sonner";
 import useAuthStore from "@/stores/useAuthStore";
-import useBlogInteractionsStore from "@/stores/useBlogInteractionsStore";
-import { toggleBlogFavourite, toggleBlogLike } from "../../../services/blogsApi";
+import useBlogInteractionsStore from "@/features/blogs/useBlogInteractionsStore";
+import { toggleBlogFavourite, toggleBlogLike } from "@/services/blogsApi";
 
-import fs1React    from "../assets/covers/fullstack-react.webp";
-import buildingApi from "../assets/covers/building-rest-api.webp";
-import nodeMongo   from "../assets/covers/node-mongodb.webp";
-import authStrat   from "../assets/covers/auth-strategies.webp";
-import caching     from "../assets/covers/caching.webp";
-import scalable    from "../assets/covers/scalable-design.webp";
+import fs1React    from "@/features/blogs/assets/covers/fullstack-react.webp";
+import buildingApi from "@/features/blogs/assets/covers/building-rest-api.webp";
+import nodeMongo   from "@/features/blogs/assets/covers/node-mongodb.webp";
+import authStrat   from "@/features/blogs/assets/covers/auth-strategies.webp";
+import caching     from "@/features/blogs/assets/covers/caching.webp";
+import scalable    from "@/features/blogs/assets/covers/scalable-design.webp";
 
-import JohnDoe     from "../assets/authors/john-doe.webp";
-import AdaByte     from "../assets/authors/ada-byte.webp";
-import DmitryPetrov from "../assets/authors/dmitry-petrov.webp";
-import AliceKeyes  from "../assets/authors/alice-keyes.webp";
-import WilliamChen from "../assets/authors/william-chen.webp";
-import GraceHopper from "../assets/authors/grace-hopper.webp";
-import useViewOnly from "../../hiring/useViewOnly";
+import JohnDoe     from "@/features/blogs/assets/authors/john-doe.webp";
+import AdaByte     from "@/features/blogs/assets/authors/ada-byte.webp";
+import DmitryPetrov from "@/features/blogs/assets/authors/dmitry-petrov.webp";
+import AliceKeyes  from "@/features/blogs/assets/authors/alice-keyes.webp";
+import WilliamChen from "@/features/blogs/assets/authors/william-chen.webp";
+import GraceHopper from "@/features/blogs/assets/authors/grace-hopper.webp";
+import useViewOnly from "@/features/hiring/useViewOnly";
 
 const blogImgMap = {
   "fs1React.jpg":          fs1React,

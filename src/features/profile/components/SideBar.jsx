@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { sidebarArr } from "../../../../constants/sidebars";
-import { isRecruiterBlockedPath } from "../../../../constants/recruiterAccess";
+import { sidebarArr } from "@/constants/profileSidebar";
+import { isRecruiterBlockedPath } from "@shared/recruiterAccess";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import useAuthStore from "../../../stores/useAuthStore.js";
-import useIntroStore from "../../../stores/useIntroStore.js";
-import useViewOnly from "../../hiring/useViewOnly";
+import useAuthStore from "@/stores/useAuthStore.js";
+import useIntroStore from "@/features/profile/hooks/useIntroStore.js";
+import useViewOnly from "@/features/hiring/useViewOnly";
 import { toast } from "sonner";
 import { LogOut } from "lucide-react";
 

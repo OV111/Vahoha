@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Lightbulb, Loader2, RotateCcw, Zap } from "lucide-react";
-import { C, FONT_MONO } from "../../lib/arenaTheme";
+import { C, FONT_MONO } from "@/features/coding-challenges/lib/arenaTheme";
 import SectionHead from "./SectionHead";
-import { EXPLAIN_MAX_CHARS, EXPLAIN_MIN_CHARS, EXPLAIN_POINTS } from "../../../../../constants/challengeExplain";
+import { EXPLAIN_MAX_CHARS, EXPLAIN_MIN_CHARS, EXPLAIN_POINTS } from "@shared/challengeExplain";
 
 /**
  * "Explain what you did", shown after a passing submit and before the

@@ -3,7 +3,7 @@ import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import { confirmPasswordReset } from "@/services/authApi";
-import { newPasswordError } from "../../constants/password";
+import { newPasswordError } from "@shared/password";
 
 const inputBase =
   "w-full px-3.5 py-2.5 text-base sm:text-sm text-[#30313d] dark:text-white bg-white dark:bg-zinc-800 border rounded-md placeholder:text-[#a3acb9] dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-fuchsia-100 dark:focus:ring-fuchsia-900/30 transition-all duration-150";

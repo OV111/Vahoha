@@ -6,7 +6,7 @@
  */
 
 import { ObjectId } from "mongodb";
-import { TASK_LIMITS } from "../../../../../constants/teams.js";
+import { TASK_LIMITS } from "#shared/teams.js";
 import { assignRefusal, deleteRefusal, derivePrefix, formatRef, moveRefusal } from "../../lib/taskRules.js";
 import { assertActiveMember, loadBoard } from "./boardAccess.js";
 import { SPRINTS, TASKS, TASK_EVENTS, TEAMS } from "../teamsData.js";

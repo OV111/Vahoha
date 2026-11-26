@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { motion as Motion } from "framer-motion";
 import { Workflow } from "lucide-react";
 import { SURFACE, SectionLabel } from "./ui";
-import { fadeUp } from "../lib/motion";
+import { fadeUp } from "@/features/capstone/lib/motion";
 
 /**
  * Link to the capstone's Project Map. Shown once the learner has an attempt:

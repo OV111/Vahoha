@@ -1,5 +1,5 @@
 import React from "react";
-import { LIBS_CATEGORIES } from "../../../constants/libs";
+import { LIBS_CATEGORIES } from "@/constants/library";
 import SectionHeader from "./SectionHeader";
 import FilterCheckbox from "./FilterCheckbox";
 

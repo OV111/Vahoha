@@ -1,5 +1,5 @@
 import { Check, Lock } from "lucide-react";
-import { TASK_TYPES } from "../taskTypes";
+import { TASK_TYPES } from "@/features/labs/taskTypes";
 
 // The lab as a short mission: stations joined by a track that fills purple as
 // tasks are done. Done and current stations are clickable; later ones stay

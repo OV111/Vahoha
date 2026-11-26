@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useTrackLayers } from "@/features/roadmap/hooks/useTrackLayers";
-import { buildLessons } from "../lib/curriculum";
-import { findTrack } from "../lib/tracks";
+import { buildLessons } from "@/features/learn/lib/curriculum";
+import { findTrack } from "@/features/learn/lib/tracks";
 
 /**
  * Resolves /learn/:trackId/:layerId into { track, layer, lessons }.

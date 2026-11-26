@@ -1,5 +1,5 @@
-import { SectionHeader } from "../components/ProfileSections";
-import { Bone, BoneControl, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
+import { SectionHeader } from "@/features/profile/components/ProfileSections";
+import { Bone, BoneControl, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
 
 // Mirrors UserProfile's layout. Only headings every profile has are real text;
 // "Verified layers" is left out because most profiles have none.

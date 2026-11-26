@@ -1,7 +1,7 @@
 import { motion as Motion } from "framer-motion";
 import { SURFACE, SectionLabel } from "./ui";
-import { fadeUp } from "../lib/motion";
-import { formatRelative } from "../lib/format";
+import { fadeUp } from "@/features/capstone/lib/motion";
+import { formatRelative } from "@/features/capstone/lib/format";
 
 const TYPE_STYLES = {
   assign: { dot: "bg-purple-400", text: "text-purple-200" },

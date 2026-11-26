@@ -17,7 +17,7 @@ import {
   SALARY_CURRENCIES,
   SALARY_PERIODS,
   WORKPLACES,
-} from "../../../../constants/hiringRules.js";
+} from "#shared/hiringRules.js";
 
 // POST /api/hiring/signup. Mirrors the 4-step form in src/features/hiring, but
 // these are the rules that count: anyone can POST here directly.

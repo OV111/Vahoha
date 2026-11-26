@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { AlertTriangle, RotateCcw } from "lucide-react";
-import useCapstone from "../hooks/useCapstone";
+import useCapstone from "@/features/capstone/hooks/useCapstone";
 import CapstoneHero from "./CapstoneHero";
 import AgentStatusCard from "./AgentStatusCard";
 import AssignmentCard from "./AssignmentCard";
@@ -12,7 +12,7 @@ import RevisionHistory from "./RevisionHistory";
 import AgentReviewFullCard from "./AgentReviewFullCard";
 import { ErrorBanner, PrimaryButton, SURFACE } from "./ui";
 import { TrackSkeleton } from "./CapstoneSkeleton";
-import { markIntroPlayed } from "../lib/motion";
+import { markIntroPlayed } from "@/features/capstone/lib/motion";
 import CapstoneTour from "./CapstoneTour";
 
 const PAGE = "mx-auto max-w-7xl px-4 sm:px-6 lg:px-12";

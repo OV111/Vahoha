@@ -3,13 +3,13 @@ import { Link, useParams } from "react-router-dom";
 import { mentorOrigin } from "@/features/mentor/lib/mentorOrigin";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import NotFound from "../../components/feedback/NotFound";
+import NotFound from "@/components/screens/NotFound";
 import "./foundations-theme.css";
 import { ExplainBack, TryItList } from "./components/TryIt.jsx";
 import { TOPICS, TOPIC_GROUPS } from "./topics/topics.js";
-import Seo from "../../seo/Seo";
-import { jsonLdFor } from "../../seo/siteMeta";
-import { lessonMeta } from "../../seo/lessonPages";
+import Seo from "@/seo/Seo";
+import { jsonLdFor } from "@/seo/siteMeta";
+import { lessonMeta } from "@/seo/lessonPages";
 
 // Loads the lesson module for a topic. Each lesson is its own chunk, so the
 // syllabus never downloads lesson text and a lesson page only fetches one.

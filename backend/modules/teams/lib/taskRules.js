@@ -4,7 +4,7 @@
  * refusal into an HTTP error.
  */
 
-import { BOARD_OPEN_STATUSES, MANUAL_TASK_STATUSES } from "../../../../constants/teams.js";
+import { BOARD_OPEN_STATUSES, MANUAL_TASK_STATUSES } from "#shared/teams.js";
 
 const same = (a, b) => a != null && b != null && String(a) === String(b);
 

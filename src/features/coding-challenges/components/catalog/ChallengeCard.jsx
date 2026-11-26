@@ -1,8 +1,8 @@
 import { Check, Clock, Code2, Map as MapIcon, Users, Zap } from "lucide-react";
-import { CHALLENGE_LANGUAGES, languagesOf, shortLabel } from "../../../../../constants/challengeLanguages";
-import Badge from "../Badge";
-import DifficultyBadge from "../DifficultyBadge";
-import { formatTitle } from "../../lib/formatTitle";
+import { CHALLENGE_LANGUAGES, languagesOf, shortLabel } from "@shared/challengeLanguages";
+import Badge from "@/features/coding-challenges/components/Badge";
+import DifficultyBadge from "@/features/coding-challenges/components/DifficultyBadge";
+import { formatTitle } from "@/features/coding-challenges/lib/formatTitle";
 
 // Below this a solver count reads as "nobody does this one", so it is left out.
 const MIN_SOLVES_SHOWN = 5;

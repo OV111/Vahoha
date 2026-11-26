@@ -4,7 +4,7 @@
 // stores progress on the server. Every read and write goes through this file,
 // so moving to an API changes nothing else.
 //
-// Finishing a lesson in the player (lessonProgress.js) also counts as "done".
+// Finishing a topic (lessonProgress.js) also counts as "done".
 // Both sources carry a timestamp and the newer one wins, so a learner can
 // still reset or skip a lesson they finished earlier.
 import { useMemo, useSyncExternalStore } from "react";

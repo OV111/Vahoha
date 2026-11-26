@@ -1,4 +1,4 @@
-import { FLOW_DOTS } from "../../../../constants/flowDots";
+import { FLOW_DOTS } from "@/constants/projectMapFlowDots";
 import { useState } from "react";
 import { Cable, Info, Maximize, Pause, Play, RotateCcw } from "lucide-react";
 

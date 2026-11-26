@@ -12,7 +12,7 @@
  * @property {{level: string, confirmedAt: Date|null}|null} cv  extracted CV estimate (stage 4)
  */
 
-import { AI_LEAD, TEAM_LEVELS } from "../../../../constants/teams.js";
+import { AI_LEAD, TEAM_LEVELS } from "#shared/teams.js";
 
 // Starting guesses: tune once real teams produce data.
 export const LEVEL_RULES = {

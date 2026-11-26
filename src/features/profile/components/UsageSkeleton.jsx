@@ -1,5 +1,5 @@
-import { Bone, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
-import { MENTOR_USAGE_COPY as COPY, MENTOR_USAGE_RANGES } from "../../../../constants/mentorUsage";
+import { Bone, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
+import { MENTOR_USAGE_COPY as COPY, MENTOR_USAGE_RANGES } from "@/constants/mentorUsage";
 
 const HEADING = "text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-[#8A8A93]";
 const LABEL = "text-xs text-gray-500 dark:text-[#8A8A93]";

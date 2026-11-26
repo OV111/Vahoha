@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AlertTriangle, RefreshCw, X, GraduationCap, PanelLeft } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
-import useMentorStore from "@/stores/useMentorStore";
+import useMentorStore from "@/features/mentor/hooks/useMentorStore";
 import useAgentStream from "./hooks/useAgentStream";
 import SessionsSidebar from "./components/SessionsSidebar";
 import ChatTopBar from "./components/ChatTopBar";
@@ -10,7 +10,7 @@ import MessageList from "./components/MessageList";
 import ChatInput from "./components/ChatInput";
 import AgentHero from "./components/AgentHero";
 import PromptChips from "./components/PromptChips";
-import { getAccessToken } from "../../../constants/api";
+import { getAccessToken } from "@/constants/api";
 import { readMentorOrigin } from "./lib/mentorOrigin";
 import {
   listSessions,

@@ -1,4 +1,4 @@
-import { Bone, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
 
 // Full class strings so Tailwind can see them.
 const TONES = {

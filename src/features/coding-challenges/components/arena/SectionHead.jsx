@@ -1,4 +1,4 @@
-import { C } from "../../lib/arenaTheme";
+import { C } from "@/features/coding-challenges/lib/arenaTheme";
 
 export default function SectionHead({ children }) {
   return (

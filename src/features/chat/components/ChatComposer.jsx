@@ -3,7 +3,7 @@ import { LoaderCircle, Mic, Send, Smile, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import EmojiPicker from "./EmojiPicker";
 import AttachMenu, { MAX_ATTACHMENT_BYTES } from "./AttachMenu";
-import useVoiceRecorder, { formatClock } from "../hooks/useVoiceRecorder";
+import useVoiceRecorder, { formatClock } from "@/features/chat/hooks/useVoiceRecorder";
 
 const iconBtn =
   "relative h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-[#8A8A93] transition-colors after:absolute after:-inset-1 hover:bg-white/5 hover:text-white focus-visible:outline-2 focus-visible:outline-purple-500";

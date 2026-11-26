@@ -12,7 +12,7 @@ import { getHeadCommit, getTree } from "../../../capstone/index.js";
 import { getWeakSpots } from "../../../../services/weakSpotService.js";
 import { groqChat } from "../../../../services/groqChat.js";
 import { GroqBusyError } from "../../../../services/groqGate.js";
-import { TASK_LIMITS } from "../../../../../constants/teams.js";
+import { TASK_LIMITS } from "#shared/teams.js";
 import { PLAN_RULES, PLAN_SCHEMA, applyPlanChoices, buildPlanMessages, canUsePlanner, normalizePlan } from "../../lib/aiPlan.js";
 import { loadBoard } from "../board/boardAccess.js";
 import { assertSprintUsable, insertTask } from "../board/taskService.js";

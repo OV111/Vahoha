@@ -1,7 +1,7 @@
-import { BoneControl, SkeletonRegion } from "@/components/ui/Skeleton";
+import { BoneControl, SkeletonRegion } from "@/components/feedback/Skeleton";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Send } from "lucide-react";
-import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import ConfirmDialog from "@/components/feedback/ConfirmDialog";
 import GroupMembersModal from "./GroupMembersModal";
 import ChatHeader from "./ChatHeader";
 import ChatComposer from "./ChatComposer";

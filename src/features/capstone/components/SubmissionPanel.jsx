@@ -2,8 +2,8 @@ import { useState } from "react";
 import { motion as Motion } from "framer-motion";
 import { Check, Github, X } from "lucide-react";
 import { PrimaryButton, SURFACE, SectionLabel } from "./ui";
-import { fadeUp } from "../lib/motion";
-import { formatRelative } from "../lib/format";
+import { fadeUp } from "@/features/capstone/lib/motion";
+import { formatRelative } from "@/features/capstone/lib/format";
 
 /** One automated check result from the last submission. */
 function CheckRow({ check }) {

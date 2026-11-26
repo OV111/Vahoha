@@ -1,4 +1,4 @@
-import { SkeletonRegion } from "@/components/ui/Skeleton";
+import { SkeletonRegion } from "@/components/feedback/Skeleton";
 import { useNavigate } from "react-router-dom";
 import ChallengeCard from "./ChallengeCard";
 import ChallengeCardSkeleton from "./ChallengeCardSkeleton";

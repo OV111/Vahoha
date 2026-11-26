@@ -113,7 +113,7 @@ routes/  controllers/  services/  schemas/ (Zod)  lib/ (pure logic)  index.js
 | Money | `billing` |
 
 - **Standalone pages** (Home, About, Contact, Privacy, Terms, GetStarted, password pages) live in `src/pages/`.
-- **Shared code:** `src/hooks`, `src/lib`, `src/components/ui`.
+- **Shared code:** `src/hooks`, `src/lib`, `src/components`.
 - **Stores** are in `stores/`. Access tokens live in memory only. The httpOnly refresh cookie restores the session on load.
 - **Teams UI** uses the scoped theme `features/teams/teams-theme.css` (`.teams-theme`, `t-*` classes).
 - **Build:** Vite plus an SSR prerender pass (`src/entry-prerender.jsx`, `scripts/seoPostBuild.js`).
@@ -150,7 +150,7 @@ src/data/roadmaps/<category>.json      authored: { [trackId]: Layer[] }
    `-- backend/seeders/roadmapSeeder.js -> roadmap_tracks + roadmap_layers  (the backend reads these)
 ```
 
-Category and track titles live in `constants/roadmapPaths.js`.
+Category and track titles live in `shared/roadmapPaths.js`.
 
 **After any layer change, run `npm run seed:roadmap`.** A JSON edit shows on the page after a restart or build, but the backend only sees it after the seeder runs. Otherwise the two disagree.
 
@@ -188,7 +188,7 @@ Authoring rules are in `docs/product/ROADMAP_LAYER_AUTHORING.md`.
 
 1. **Agent tool loop with streaming.** The mentor calls backend tools (progress, exam history, weak spots, posts, library, profile) while it streams. Tool results go into history before the next model call. The frontend SSE hook handles aborts and incremental chunks.
 2. **Exam integrity.** Answer keys never leave the server. Choices are shuffled per attempt, unseen questions are served first, a 30-minute cooldown follows a failed attempt, and tab-switch and paste flags are recorded for review. Honest limit: a multiple-choice exam cannot be made ChatGPT-proof (`docs/product/EXAM_INTEGRITY.md`).
-3. **Server-authoritative progression.** Layer N+1 unlocks only when the exam is passed at the threshold in `constants/exam.js` (`EXAM_RULES`), stored in `userProgress`. Nothing trusts the client.
+3. **Server-authoritative progression.** Layer N+1 unlocks only when the exam is passed at the threshold in `shared/exam.js` (`EXAM_RULES`), stored in `userProgress`. Nothing trusts the client.
 4. **One learner model.** `learnerMastery` is the single evidence spine. Exams, teach-back and challenge results feed it, and capstone review and defense are the next sources. New features write evidence through `recomputeMastery`, not into a parallel score. Content completion and demonstrated mastery stay separate signals.
 5. **One XP ledger.** All XP goes through `awardXp` (`services/xpService.js`). Never write XP directly.
 
@@ -213,13 +213,13 @@ Authoring rules are in `docs/product/ROADMAP_LAYER_AUTHORING.md`.
 | 1 | Verify the runner reports `isolated-vm` in production and get the isolate reviewed | Biggest attack surface |
 | 2 | Shared error handler and response shape (`NotFoundError`, `ValidationError`, one middleware) | There is only `notFound`. Routes return `{ message }` or `{ error }` |
 | 3 | Rate-limit counters to Redis | Needed before more than one instance |
-| 4 | Mentor daily cap and other tunables into config | `EXAM_RULES` is already in `constants/exam.js`. The mentor caps are not |
+| 4 | Mentor daily cap and other tunables into config | `EXAM_RULES` is already in `shared/exam.js`. The mentor caps are not |
 | 5 | Repository layer and enforced layer rules | Post-deploy plan A1 to A7 in `docs/PILOT_STATUS.md` |
 
 Closed since the last version of this doc:
 
 - Challenge HTML sink: `renderInlineCode` no longer exists, and `src/utils/sanitize.js` is in place. The only `dangerouslySetInnerHTML` left is in `ThinkingSpinner.jsx`.
-- Pass threshold is configured in `constants/exam.js`.
+- Pass threshold is configured in `shared/exam.js`.
 
 ---
 
@@ -227,7 +227,7 @@ Closed since the last version of this doc:
 
 | June finding | Status | Evidence |
 |---|---|---|
-| `useRoadmapStore` mixes state and persistence | **Partly open** | `stores/useRoadmapStore.js` still calls `persistProgress` |
+| `useRoadmapStore` mixes state and persistence | **Partly open** | `features/roadmap/hooks/useRoadmapStore.js` still calls `persistProgress` |
 | Onboarding answers go nowhere | **Fixed** | `modules/onboarding`, `startPath` stores `skillLevel` |
 | JWT in localStorage | **Fixed** | Access token in memory, httpOnly refresh cookie |
 | `/api` prefix mismatch | **Decided** | New routes use `/api`. Legacy routes stay bare (`/blogs`, `/library`, auth) |
@@ -240,4 +240,4 @@ Closed since the last version of this doc:
 | Empty `backend/events/` and `backend/jobs/` | **Still empty** | Delete them |
 | Two animation libraries | **Narrowed** | GSAP is gone. `motion` and `framer-motion` are both installed: pick one |
 | Agent on Anthropic | **Superseded** | Groq `openai/gpt-oss-120b` |
-| Pass threshold in `platformConfig` | **Superseded** | Constant in `constants/exam.js`, no DB collection |
+| Pass threshold in `platformConfig` | **Superseded** | Constant in `shared/exam.js`, no DB collection |

@@ -3,14 +3,14 @@ import { Send, Eye, Pencil, ChevronDown, Check } from "lucide-react";
 import { Save } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
-import SideBar from "../components/SideBar";
-import ImageDropZone from "../components/ImageDropZone";
+import SideBar from "@/features/profile/components/SideBar";
+import ImageDropZone from "@/features/profile/components/ImageDropZone";
 import {
   CATEGORIES,
   DIFFICULTIES,
   RECOMMENDED_TAGS,
-} from "../../../../constants/addBlog.js";
-import { createBlog } from "../../../services/blogsApi.js";
+} from "@/constants/addBlog.js";
+import { createBlog } from "@/services/blogsApi.js";
 import LayerPicker from "@/features/blogs/components/LayerPicker";
 
 const AUTOSAVE_KEY = "blog-draft-autosave";

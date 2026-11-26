@@ -1,13 +1,13 @@
 import { useEffect, useId, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { kindColor } from "../lib/nodeKinds";
-import { isoStartZoom } from "../lib/viewport";
-import { isUnconfirmed } from "../lib/mapGraph";
-import { DEFAULT_SIZE } from "../lib/edgeRouting";
-import { mapMetrics } from "../lib/flow";
-import { laneCounts, simulate } from "../lib/simulation";
-import useFlowPlayback from "../hooks/useFlowPlayback";
-import { PX_PER_TILE, TILE_H, TILE_W, fitBox, iso, isoWire, screenToTiles, worldOf } from "../lib/isoGeometry";
-import { DEAD_COLOR, isDown, shapeOf } from "../../../../constants/isoShapes";
+import { kindColor } from "@/features/system-map/lib/nodeKinds";
+import { isoStartZoom } from "@/features/system-map/lib/viewport";
+import { isUnconfirmed } from "@/features/system-map/lib/mapGraph";
+import { DEFAULT_SIZE } from "@/features/system-map/lib/edgeRouting";
+import { mapMetrics } from "@/features/system-map/lib/flow";
+import { laneCounts, simulate } from "@/features/system-map/lib/simulation";
+import useFlowPlayback from "@/features/system-map/hooks/useFlowPlayback";
+import { PX_PER_TILE, TILE_H, TILE_W, fitBox, iso, isoWire, screenToTiles, worldOf } from "@/features/system-map/lib/isoGeometry";
+import { DEAD_COLOR, isDown, shapeOf } from "@/constants/projectMapShapes";
 import { Gradients, IsoShape, Labels } from "./IsoShapes";
 import { FlowLegend, MetricStrip, StageControls } from "./StageChrome";
 
@@ -293,8 +293,8 @@ export default function IsoView({ nodes, edges, onNodesChange, onEdgesChange, on
     },
     fit: refit,
     focus: (ids) => frame(nodes.filter((n) => ids.includes(n.id))),
-    image: async (format) => (await import("../lib/exportImage")).renderIsoImage(stageRef.current, fitBox(nodes), format),
-    card: async (info) => (await import("../lib/exportImage")).renderShareCard(stageRef.current, fitBox(nodes), info),
+    image: async (format) => (await import("@/features/system-map/lib/exportImage")).renderIsoImage(stageRef.current, fitBox(nodes), format),
+    card: async (info) => (await import("@/features/system-map/lib/exportImage")).renderShareCard(stageRef.current, fitBox(nodes), info),
   }));
 
   // Wheel zoom needs a non-passive listener to stop the page scrolling.

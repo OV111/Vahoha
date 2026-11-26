@@ -1,18 +1,16 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Play } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import useAuthStore from "@/stores/useAuthStore";
 import { hasVoiceExam } from "@/features/voice-exam/lib/pilotLayers";
 import { useVerifiedLayers } from "@/features/voice-exam/hooks/useVerifiedLayers";
 import useLearnLayer from "./hooks/useLearnLayer";
 import LearnState from "./components/LearnState";
-import LayerSteps from "./components/layer/LayerSteps";
-import LayerGoals from "./components/layer/LayerGoals";
-import { hasLessonContent, loadLessonContent } from "./content";
-import { lessonMeta } from "./content/manifest";
+import LayerContents from "./components/layer/LayerContents";
+import { AfterTopics, UpNext } from "./components/layer/LayerAside";
+import { hasTopic, topicLoader, topicMeta } from "./content/topics";
 import { useLayerStatuses } from "./lib/lessonStatus";
 import { nextLesson } from "./lib/nextLesson";
-import { loadDraft } from "./lib/lessonDraft";
 
 const whenIdle = (fn) =>
   "requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 3000 }) : setTimeout(fn, 1500);
@@ -28,21 +26,41 @@ function usePrefetchNext(trackId, layerId, slug) {
     if (!slug) return;
     const id = whenIdle(() => {
       import("./TopicPage").catch(() => {});
-      if (hasLessonContent(trackId, layerId, slug)) loadLessonContent(trackId, layerId, slug).catch(() => {});
+      topicLoader(trackId, layerId, slug)?.().catch(() => {});
     });
     return () => ("cancelIdleCallback" in window ? cancelIdleCallback(id) : clearTimeout(id));
   }, [trackId, layerId, slug]);
 }
 
+/** Only ready topics count: one that isn't written yet can't be finished. */
+function Progress({ rows }) {
+  const ready = rows.filter((l) => l.written);
+  const done = ready.filter((l) => l.state === "done").length;
+  const coming = rows.length - ready.length;
+  if (rows.length === 0) return null;
+  return (
+    <div className="grid max-w-xl gap-2">
+      <div className="h-2 overflow-hidden rounded-full bg-white/10" aria-hidden="true">
+        <div className="h-full bg-purple-500" style={{ width: `${ready.length ? (done / ready.length) * 100 : 0}%` }} />
+      </div>
+      <p className="text-[13px] text-neutral-400">
+        {ready.length > 0 && `${done} of ${ready.length} ready topics done`}
+        {ready.length > 0 && coming > 0 && ", "}
+        {coming > 0 && `${coming} coming soon`}
+      </p>
+    </div>
+  );
+}
+
 /**
- * One layer: its lessons as a list in teaching order, then Build and Test. The
- * top button always points at the single next thing to do.
+ * One layer: its topics as a contents list that carries the next step, and what
+ * comes after the topics beside it.
  */
 export default function LayerLearnPage() {
   const { trackId, layerId } = useParams();
   const { status, track, layer, lessons, layerCount } = useLearnLayer(trackId, layerId);
   const statuses = useLayerStatuses(trackId, layerId);
-  const isWritten = (slug) => hasLessonContent(trackId, layerId, slug);
+  const isWritten = (slug) => hasTopic(trackId, layerId, slug);
   const next = nextLesson(lessons, statuses, isWritten);
   usePrefetchNext(trackId, layerId, next?.slug);
   const { auth } = useAuthStore();
@@ -57,68 +75,56 @@ export default function LayerLearnPage() {
     ? `/voice-exam/${layer.id}?path=${track.domain.id}&track=${track.id}`
     : null;
 
-  const rows = lessons.map((lesson) => {
-    const done = statuses[lesson.slug] === "done";
-    return {
-      ...lesson,
-      href: `${base}/${lesson.slug}`,
-      state: done ? "done" : lesson === next ? "next" : "todo",
-      written: isWritten(lesson.slug),
-      minutes: lessonMeta(track.id, layer.id, lesson.slug)?.minutes,
-    };
-  });
-  const doneCount = rows.filter((l) => l.state === "done").length;
+  const rows = lessons.map((lesson) => ({
+    ...lesson,
+    href: `${base}/${lesson.slug}`,
+    state: statuses[lesson.slug] === "done" ? "done" : lesson === next ? "next" : "todo",
+    written: isWritten(lesson.slug),
+    ...topicMeta(track.id, layer.id, lesson.slug), // minutes and mystery, when written
+  }));
 
-  let cta;
-  if (next) {
-    const resuming = loadDraft(track.id, layer.id, next.slug);
-    cta = { to: `${base}/${next.slug}`, label: `${resuming ? "Continue" : "Start"}: ${next.title}` };
-  } else if (lessons.length === 0) cta = { to: testHref, label: "Take the layer test" };
-  else cta = { to: challengesHref, label: "Lessons done: start building" };
+  const row = rows.find((l) => l.state === "next");
+  let upNext = null;
+  if (lessons.length === 0) upNext = { title: "Layer test", to: testHref, label: "Take the test" };
+  else if (!row) upNext = { title: "Topics done", detail: "Now build the layer project.", to: challengesHref, label: "Start building" };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 pb-24 pt-8 sm:px-6">
-      <Link to="/learn" className="inline-flex min-h-11 items-center gap-1.5 text-sm text-neutral-400 hover:text-white">
-        <ArrowLeft size={15} aria-hidden="true" /> My learning
-      </Link>
-
-      <header className="mt-5">
-        <p className="text-[15px] text-neutral-400">
-          {track.title}, layer {layer.order}
-          {layerCount > 0 && ` of ${layerCount}`}
-        </p>
-        <h1 className="mt-1 text-[34px] font-semibold leading-tight text-balance text-neutral-50">{layer.title}</h1>
-        <p className="mt-3 max-w-[62ch] text-[17px] leading-relaxed text-neutral-400">{layer.description}</p>
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-8 px-4 pb-24 pt-5 lg:px-6 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-x-4">
+      <header className="grid content-start gap-4">
+        <Link to="/learn" className="inline-flex min-h-11 w-fit items-center gap-2 text-[13px] text-neutral-400 hover:text-white">
+          <ArrowLeft size={16} aria-hidden="true" /> My learning
+        </Link>
+        <div>
+          <p className="text-[13px] text-neutral-400">
+            {track.title}, layer {layer.order}
+            {layerCount > 0 && ` of ${layerCount}`}
+          </p>
+          <h1 className="mt-1 text-2xl sm:text-3xl font-semibold leading-tight tracking-tight text-balance text-white">{layer.title}</h1>
+          <p className="mt-2 max-w-[65ch] text-sm leading-relaxed text-neutral-300">
+            {layer.outcome ? `After this layer you can ${layer.outcome}` : layer.description}
+          </p>
+        </div>
+        <Progress rows={rows} />
       </header>
 
-      {lessons.length > 0 && (
-        <div className="mt-7 flex items-center gap-4">
-          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-neutral-800" aria-hidden="true">
-            <div className="h-full bg-purple-500" style={{ width: `${(doneCount / lessons.length) * 100}%` }} />
-          </div>
-          <span className="shrink-0 text-[15px] text-neutral-400">
-            {doneCount} of {lessons.length} lessons done
-          </span>
+      {upNext && (
+        <div className="xl:col-start-2 xl:row-start-1 xl:self-end">
+          <UpNext {...upNext} />
         </div>
       )}
 
-      <Link
-        to={cta.to}
-        className="mt-6 inline-flex min-h-12 max-w-full items-center gap-2.5 rounded-xl bg-purple-600 px-6 text-[15px] font-medium text-white transition-colors hover:bg-purple-500"
-      >
-        <Play size={14} fill="currentColor" aria-hidden="true" className="shrink-0" />
-        <span className="truncate">{cta.label}</span>
-      </Link>
-
-      <div className="mt-10">
+      <div className="xl:row-start-2">
         {lessons.length === 0 ? (
-          <p className="mb-8 text-[15px] text-neutral-400">
-            Lessons for this layer are still being written. You can already take the test.
+          <p className="text-sm text-neutral-400">
+            Topics for this layer are still being written. You can already take the test.
           </p>
         ) : (
-          <LayerSteps lessons={rows} />
+          <LayerContents lessons={rows} resuming={Boolean(row) && statuses[row.slug] === "in_progress"} />
         )}
-        <LayerGoals
+      </div>
+
+      <div className="xl:col-start-2 xl:row-start-2">
+        <AfterTopics
           challenge={layer.challenge}
           challengesHref={challengesHref}
           testHref={testHref}

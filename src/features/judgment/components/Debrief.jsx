@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Lightbulb, RotateCcw } from "lucide-react";
-import { CALIBRATION_TEXT, VERDICTS } from "../lib/constants";
+import { CALIBRATION_TEXT, VERDICTS } from "@/features/judgment/lib/constants";
 
 const Stat = ({ label, value }) => (
   <div className="rounded-xl border border-neutral-800 bg-black px-4 py-3">

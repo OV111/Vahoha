@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play } from "lucide-react";
-import { formatClock } from "../hooks/useVoiceRecorder";
+import { formatClock } from "@/features/chat/hooks/useVoiceRecorder";
 
 // Only one voice note plays at a time, like every messenger.
 let currentlyPlaying = null;

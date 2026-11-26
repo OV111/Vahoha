@@ -1,5 +1,5 @@
 import Badge from "./Badge";
-import { DIFFICULTY } from "../lib/challengeTones";
+import { DIFFICULTY } from "@/features/coding-challenges/lib/challengeTones";
 
 // Older seeds have no `difficulty`; their XP tiers map onto the same scale.
 const difficultyOf = (c) =>

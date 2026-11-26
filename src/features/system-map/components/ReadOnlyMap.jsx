@@ -2,9 +2,9 @@ import { lazy, Suspense, useCallback, useMemo, useState } from "react";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import IsoView from "./IsoView";
 import EvidenceList from "./EvidenceList";
-import { applyChanges } from "../lib/changes";
-import { fromGraph } from "../lib/mapGraph";
-import { kindInfo } from "../lib/nodeKinds";
+import { applyChanges } from "@/features/system-map/lib/changes";
+import { fromGraph } from "@/features/system-map/lib/mapGraph";
+import { kindInfo } from "@/features/system-map/lib/nodeKinds";
 
 const FlatCanvas = lazy(() => import("./FlatCanvas")); // opens in 3D, so most visitors never need it
 

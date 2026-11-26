@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Clock, FileCode2 } from "lucide-react";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
-import { teamsApi } from "../teamsApi";
+import { teamsApi } from "@/features/teams/teamsApi";
 import useCountdown from "@/hooks/useCountdown";
 
 /**

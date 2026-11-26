@@ -5,7 +5,7 @@ import {
   languagesOf,
   mainFileName,
   toTypeScriptStarter,
-} from "../../../../constants/challengeLanguages";
+} from "@shared/challengeLanguages";
 
 /**
  * Owns the editor's local file state: seeds it from the saved draft (or the

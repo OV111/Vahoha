@@ -4,6 +4,7 @@ import { TOPICS } from "../features/foundations/topics/topics.js";
 // SEO entries for the Foundations lesson pages. Kept out of siteMeta.js so the
 // topic list isn't in every page's first download: TopicPage renders these
 // tags itself, and scripts/seoPostBuild.js adds the pages to the sitemap.
+// Node runs this file in that script, so its imports stay relative: Node has no @ alias.
 
 export const lessonMeta = (topic) => ({
   title: `${topic.title} | Foundations | ${SITE_NAME}`,

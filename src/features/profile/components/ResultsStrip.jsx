@@ -1,4 +1,4 @@
-import { Bone, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
 
 /**
  * The verified-results strip at the top of the profile: what a visitor (or a

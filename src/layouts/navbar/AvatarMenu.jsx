@@ -1,8 +1,8 @@
 import { NavLink } from "react-router-dom";
 import { LogOut } from "lucide-react";
-import { AVATAR_MENU_ITEMS, AVATAR_MENU_ITEMS_RECRUITER } from "../../../constants/navbar";
-import { useIsRecruiter } from "./hooks";
-import { focusRing, DropdownPanel, AvatarImage, UserSummary, UnreadBadge } from "./parts";
+import { AVATAR_MENU_ITEMS, AVATAR_MENU_ITEMS_RECRUITER } from "@/constants/navbar";
+import { useIsRecruiter } from "./useNavbar";
+import { focusRing, DropdownPanel, AvatarImage, UserSummary, UnreadBadge } from "./navbarParts";
 
 
 // Desktop avatar button and its dropdown (profile links + logout).

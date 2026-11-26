@@ -3,11 +3,11 @@ import { useSearchParams } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { TreeLoading, TreeEmpty, TreeError } from "./tree/TreeStates";
-import { handleTreeArrowKeys } from "../lib/treeKeyboard";
-import useRoadmapStore from "@/stores/useRoadmapStore";
-import { useTrackLayers } from "../hooks/useTrackLayers";
-import { prereqsDone, layerStatus } from "../lib/layerPrereqs";
-import { useMediaQuery } from "../hooks/useMediaQuery";
+import { handleTreeArrowKeys } from "@/features/roadmap/lib/treeKeyboard";
+import useRoadmapStore from "@/features/roadmap/hooks/useRoadmapStore";
+import { useTrackLayers } from "@/features/roadmap/hooks/useTrackLayers";
+import { prereqsDone, layerStatus } from "@/features/roadmap/lib/layerPrereqs";
+import { useMediaQuery } from "@/features/roadmap/hooks/useMediaQuery";
 import LayerDetail from "./LayerDetail";
 import { ConnectorProvider } from "./tree/ConnectorContext";
 import DesktopTreeRow from "./tree/DesktopTreeRow";

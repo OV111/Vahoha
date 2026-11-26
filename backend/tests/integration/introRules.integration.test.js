@@ -19,7 +19,7 @@ const { checkIntro, sendIntro, listCompanyIntros, withdrawIntro } = await import
 const { listMyIntros, acceptIntro, declineIntro, blockIntroCompany, reportIntro } = await import(
   '../../modules/hiring/services/introReplyService.js'
 )
-const { INTRO_RULES } = await import('../../../constants/hiringRules.js')
+const { INTRO_RULES } = await import('#shared/hiringRules.js')
 
 let mongod
 let client

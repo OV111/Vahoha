@@ -1,4 +1,4 @@
-import { Bone, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, SkeletonRegion } from "@/components/feedback/Skeleton";
 import { Fragment } from "react";
 import { Trophy } from "lucide-react";
 

@@ -1,4 +1,4 @@
-import { isDown } from "../../../../constants/isoShapes";
+import { isDown } from "@/constants/projectMapShapes";
 import { isUnconfirmed } from "./mapGraph";
 
 // When a request crosses each wire, from the way the learner wired the map.

@@ -1,6 +1,6 @@
 # Pilot Status
 
-> Updated: 2026-11-09 · The one status doc: what each feature does today, what is done, what is left before the first user, and what comes after. When this disagrees with the code, the code wins.
+> Updated: 2026-11-26 · Pilot gate changed: a workable learning system comes before outreach. Earlier: 2026-11-09 · The one status doc: what each feature does today, what is done, what is left before the first user, and what comes after. When this disagrees with the code, the code wins.
 
 The technical prep for the pilot is mostly done. What's left is mostly yours: content review, setup, and talking to users. Nothing below has been used by a real user yet.
 
@@ -138,6 +138,17 @@ Open: walk a failed test on production to check the copy and next action; decide
 
 Open question: which track is the pilot track (backend, MERN or frontend)?
 
+## Before the pilot: a workable learning system (decided 2026-11-26)
+
+Users come for the learning, so outreach waits until one track can be learned on, not only tested on. The bar is **workable, not complete**:
+
+- One pilot track chosen (still open: backend, MERN or frontend).
+- Layers 1-3 of that track have lessons and labs a learner can study before each exam.
+- Lesson progress saved server-side (lesson stage 3 in `product/LEARNING_SYSTEM.md`).
+- The learn rework (home, layer and lesson pages) committed and run end to end by you on production.
+
+Not needed before the pilot: every layer, every track, polish beyond what a first-time learner needs.
+
 ## Then: the pilot
 
 - Send 5 DMs a day (`founder/OUTREACH_KIT.md`). Target: 15 interviews in 3 weeks.
@@ -147,8 +158,7 @@ Open question: which track is the pilot track (backend, MERN or frontend)?
 ## Next: after the first 15 interviews
 
 - Fix the top 3 problems seen in demos.
-- Save lesson progress server-side (lesson stage 3 in `product/LEARNING_SYSTEM.md`).
-- More MERN lessons and labs for layers 1-3 (today: 2 lessons, 1 lab).
+- Fill the rest of the pilot track's layers where learners actually got stuck.
 - Turn on `BILLING_ENFORCED` only if payers appear (plan caps for mentor and capstone are already wired).
 - Open security items M4, M5, M7 and the remaining Lows.
 

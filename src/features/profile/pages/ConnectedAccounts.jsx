@@ -1,12 +1,12 @@
-import { BoneControl } from "@/components/ui/Skeleton";
+import { BoneControl } from "@/components/feedback/Skeleton";
 import { useState, useEffect } from "react";
-import SideBar from "../components/SideBar";
+import SideBar from "@/features/profile/components/SideBar";
 import useProfileStore from "@/stores/useProfileStore";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import XLogo from "@/components/ui/XLogo";
+import { FaXTwitter } from "react-icons/fa6";
 import { toast } from "sonner";
-import { saveSettings } from "../../../services/profileApi";
-import { disconnectGitHub as requestGitHubDisconnect, GITHUB_LINK_URL } from "../../../services/authApi";
+import { saveSettings } from "@/services/profileApi";
+import { disconnectGitHub as requestGitHubDisconnect, GITHUB_LINK_URL } from "@/services/authApi";
 
 
 const SOCIAL_FIELDS = [
@@ -25,7 +25,7 @@ const SOCIAL_FIELDS = [
   {
     key: "twitterLink",
     label: "Twitter / X",
-    icon: <XLogo size={16} />,
+    icon: <FaXTwitter size={16} />,
     placeholder: "https://x.com/username",
   },
   {

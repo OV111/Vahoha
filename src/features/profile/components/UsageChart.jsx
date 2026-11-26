@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { MENTOR_USAGE_COPY as COPY, THIN_SCROLL_CLASS } from "../../../../constants/mentorUsage";
-import { formatCompact, formatDay, formatFull, num } from "../lib/usageFormat";
+import { MENTOR_USAGE_COPY as COPY, THIN_SCROLL_CLASS } from "@/constants/mentorUsage";
+import { formatCompact, formatDay, formatFull, num } from "@/features/profile/lib/usageFormat";
 
 // The drawing is as wide as its container (measured below), not a fixed picture
 // scaled down: scaling shrank the 10px axis labels to about 4px on a phone.

@@ -10,7 +10,7 @@ import {
   JOB_STATUS_LABELS,
   JOB_TYPE_LABELS,
   WORKPLACE_LABELS,
-} from "../../../constants/hiring";
+} from "@/constants/hiring";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 
 const STATUS_TONE = {

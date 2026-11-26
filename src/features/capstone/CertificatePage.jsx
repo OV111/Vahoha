@@ -1,4 +1,4 @@
-import { Bone, BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, BoneLines, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FaLinkedinIn } from "react-icons/fa6";
@@ -15,7 +15,7 @@ import {
 import { fetchCertificate } from "./certificateApi";
 import { captureEvent } from "@/lib/posthog";
 import useProfileStore from "@/stores/useProfileStore";
-import { SITE } from "../../../constants/site";
+import { SITE } from "@/constants/site";
 
 /**
  * Public certificate verification — /verify/:publicId.

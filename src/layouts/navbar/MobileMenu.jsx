@@ -9,11 +9,11 @@ import {
   NAV_GROUPS_GUEST,
   NAV_LINKS_GUEST,
   TRACK_LINKS,
-} from "../../../constants/navbar";
-import SearchBar from "../../components/search/SearchBar";
+} from "@/constants/navbar";
+import SearchBar from "./SearchBar";
 import { NavSearchResults } from "./NavSearch";
-import { GuestActions, UserSummary, UnreadBadge } from "./parts";
-import { useIsRecruiter } from "./hooks";
+import { GuestActions, UserSummary, UnreadBadge } from "./navbarParts";
+import { useIsRecruiter } from "./useNavbar";
 
 const MobileNavLink = ({ to, children, className = "" }) => (
   <li className="text-base font-medium transition hover:text-purple-300">

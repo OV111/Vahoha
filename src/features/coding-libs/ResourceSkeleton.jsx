@@ -1,4 +1,4 @@
-import { Bone, BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, BoneLines, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
 import { BOOK_GRID, CARD_GRID } from "./grids";
 
 const BookSkeleton = () => (

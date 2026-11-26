@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Send } from "lucide-react";
-import useViewOnly from "../../useViewOnly";
+import useViewOnly from "@/features/hiring/useViewOnly";
 import IntroStatusPill from "./IntroStatusPill";
 import IntroRequestDialog from "./IntroRequestDialog";
 import CopyEmail from "./CopyEmail";
-import { checkIntro } from "../../api/hiringApi";
-import { INTRO_REQUEST_COPY as COPY } from "../../../../../constants/hiring";
+import { checkIntro } from "@/features/hiring/api/hiringApi";
+import { INTRO_REQUEST_COPY as COPY } from "@/constants/hiring";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 
 const PANEL = "flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-5";

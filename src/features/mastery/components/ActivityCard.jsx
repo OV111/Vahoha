@@ -1,6 +1,6 @@
 import { Flame } from "lucide-react";
-import { PROGRESS_COPY } from "../../../../constants/progress";
-import { TEXT, MUTED, SOFT, BORDER, SURFACE } from "../lib/tone";
+import { PROGRESS_COPY } from "@/constants/progress";
+import { TEXT, MUTED, SOFT, BORDER, SURFACE } from "@/features/mastery/lib/tone";
 
 const COPY = PROGRESS_COPY.stats;
 

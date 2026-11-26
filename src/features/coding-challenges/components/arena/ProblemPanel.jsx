@@ -1,13 +1,13 @@
 import { Star, CheckCircle2, Code2, Zap } from "lucide-react";
-import { jsTermsFor, languagesOf } from "../../../../../constants/challengeLanguages";
-import { C } from "../../lib/arenaTheme";
+import { jsTermsFor, languagesOf } from "@shared/challengeLanguages";
+import { C } from "@/features/coding-challenges/lib/arenaTheme";
 import ChallengeText from "./ChallengeText";
-import Badge from "../Badge";
-import DifficultyBadge from "../DifficultyBadge";
+import Badge from "@/features/coding-challenges/components/Badge";
+import DifficultyBadge from "@/features/coding-challenges/components/DifficultyBadge";
 import SectionHead from "./SectionHead";
 import ExampleBlock from "./ExampleBlock";
-import { formatTitle } from "../../lib/formatTitle";
-import NoCopy from "@/components/integrity/NoCopy";
+import { formatTitle } from "@/features/coding-challenges/lib/formatTitle";
+import NoCopy from "@/components/primitives/NoCopy";
 
 export default function ProblemPanel({ challenge, language }) {
   const terms = jsTermsFor(challenge, language);

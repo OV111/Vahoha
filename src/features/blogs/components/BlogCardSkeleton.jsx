@@ -1,4 +1,4 @@
-import { Bone, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
 
 // Mirrors BlogCard's layout, so the page doesn't jump when real cards arrive.
 const BlogCardSkeleton = () => (

@@ -1,7 +1,7 @@
 import { useId, useState } from "react";
 import { AnimatePresence, motion as Motion } from "framer-motion";
 import { ChevronDown, FileCode2 } from "lucide-react";
-import { TONE, evidenceRef, levelOf } from "../lib/review";
+import { TONE, evidenceRef, levelOf } from "@/features/capstone/lib/review";
 
 /** Four segments, one per rubric point — honest about the 0–4 scale. */
 function Meter({ score, max, tone }) {

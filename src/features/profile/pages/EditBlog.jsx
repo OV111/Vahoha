@@ -5,14 +5,14 @@ import { Save } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import { useParams, useNavigate } from "react-router-dom";
-import SideBar from "../components/SideBar";
-import ImageDropZone from "../components/ImageDropZone";
+import SideBar from "@/features/profile/components/SideBar";
+import ImageDropZone from "@/features/profile/components/ImageDropZone";
 import {
   CATEGORIES,
   DIFFICULTIES,
   RECOMMENDED_TAGS,
-} from "../../../../constants/addBlog.js";
-import { fetchBlogById, updateBlog } from "../../../services/blogsApi.js";
+} from "@/constants/addBlog.js";
+import { fetchBlogById, updateBlog } from "@/services/blogsApi.js";
 import LayerPicker from "@/features/blogs/components/LayerPicker";
 
 const EMPTY = {

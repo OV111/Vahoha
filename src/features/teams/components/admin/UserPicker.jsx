@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { teamsApi } from "../../teamsApi";
+import { teamsApi } from "@/features/teams/teamsApi";
 
 const DEBOUNCE_MS = 300;
 const MIN_CHARS = 2; // matches userSearchSchema on the server

@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import useMentorStore from "@/stores/useMentorStore";
+import useMentorStore from "./useMentorStore";
 import { apiFetch } from "@/lib/session";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";

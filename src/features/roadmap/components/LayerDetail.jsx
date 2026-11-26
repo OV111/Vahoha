@@ -1,59 +1,132 @@
+import { useState } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  X,
-  Clock,
-  BookOpen,
-  Code2,
-  Layers,
-  Check,
-  ChevronRight,
-  Lock,
-  Mic,
-  ShieldCheck,
-} from "lucide-react";
-import useRoadmapStore from "@/stores/useRoadmapStore";
+import { Link } from "react-router-dom";
+import { Check, ChevronDown, Clock, Code2, Mic, Play, ShieldCheck, X } from "lucide-react";
+import useRoadmapStore from "@/features/roadmap/hooks/useRoadmapStore";
 import useAuthStore from "@/stores/useAuthStore";
-import LayerPosts from "./LayerPosts";
-import LayerLibrary from "./LayerLibrary";
+import { buildLessons } from "@/features/learn/lib/curriculum";
 import { hasVoiceExam } from "@/features/voice-exam/lib/pilotLayers";
 import { useVerifiedLayers } from "@/features/voice-exam/hooks/useVerifiedLayers";
-import { DEVELOPER_SIGNUP_PATH } from "../../../../constants/site";
-import useViewOnly from "../../hiring/useViewOnly";
-import ViewOnlyNotice from "../../hiring/components/ViewOnlyNotice";
+import LayerPosts from "./LayerPosts";
+import LayerLibrary from "./LayerLibrary";
+import { DEVELOPER_SIGNUP_PATH } from "@/constants/site";
+import useViewOnly from "@/features/hiring/useViewOnly";
+import ViewOnlyNotice from "@/features/hiring/components/ViewOnlyNotice";
 
-const resourceTypeColor = {
-  docs: "bg-blue-900/30 text-blue-400 border border-blue-800/50",
-  course: "bg-violet-900/30 text-violet-400 border border-violet-800/50",
-  video: "bg-red-900/30 text-red-400 border border-red-800/50",
-  book: "bg-amber-900/30 text-amber-400 border border-amber-800/50",
-  article: "bg-green-900/30 text-green-400 border border-green-800/50",
-  project: "bg-teal-900/30 text-teal-400 border border-teal-800/50",
-};
+const secondaryButton =
+  "grid min-h-11 grid-flow-col place-content-center items-center gap-2 rounded-xl border border-neutral-700 px-4 text-sm font-medium text-neutral-100 transition-colors hover:border-purple-500";
 
-const LayerDetail = () => {
-  const navigate = useNavigate();
+/** Books, links and posts: useful, but not what the learner opened the panel for. */
+function MoreToRead({ layer, onNavigate }) {
+  // Mounted on first open, so a closed section fetches nothing.
+  const [open, setOpen] = useState(false);
+  return (
+    <details onToggle={(e) => setOpen(e.currentTarget.open)} className="group border-t border-neutral-800 pt-2">
+      <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between text-sm font-medium text-neutral-300 hover:text-white [&::-webkit-details-marker]:hidden">
+        Books and links
+        <ChevronDown
+          size={16}
+          className="transition-transform group-open:rotate-180 motion-reduce:transition-none"
+          aria-hidden="true"
+        />
+      </summary>
+      {open && (
+        <div className="grid gap-6 pt-3">
+          <ul className="grid gap-2">
+            {layer.resources.map((r) => (
+              <li key={r.label} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 text-sm">
+                <span className="truncate text-neutral-200">{r.label}</span>
+                <span className="text-neutral-400">{r.type}</span>
+              </li>
+            ))}
+          </ul>
+          <LayerLibrary layerId={layer.id} onNavigate={onNavigate} />
+          <LayerPosts layerId={layer.id} onNavigate={onNavigate} />
+        </div>
+      )}
+    </details>
+  );
+}
+
+function Actions({ layer, track, category, isDone, verified, onNavigate }) {
+  const { auth } = useAuthStore();
   const isViewOnly = useViewOnly();
-  const {
-    activeLayer,
-    closePanel,
-    layerProgress,
-    selectedCategory,
-    selectedTrack,
-  } = useRoadmapStore();
+  const path = category?.id ?? "backend";
+  const voice = hasVoiceExam(layer.id);
+
+  return (
+    <div className="grid gap-3 border-t border-neutral-800 px-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4">
+      {isViewOnly ? (
+        <ViewOnlyNotice>
+          Developers pass this layer's test (80% or more) to unlock the next one.
+          {voice && " A spoken exam here earns a Verified badge."}
+        </ViewOnlyNotice>
+      ) : auth ? (
+        <>
+          <div className={`grid gap-3 ${voice ? "grid-cols-2" : ""}`}>
+            {voice && (
+              <Link
+                to={`/voice-exam/${layer.id}?path=${path}&track=${track?.id ?? ""}`}
+                onClick={onNavigate}
+                className={secondaryButton}
+              >
+                <Mic size={15} aria-hidden="true" /> Voice exam
+              </Link>
+            )}
+            <Link to={`/roadmaps/exam/${layer.id}?path=${path}`} onClick={onNavigate} className={secondaryButton}>
+              <ShieldCheck size={15} aria-hidden="true" /> Take test
+            </Link>
+          </div>
+        </>
+      ) : (
+        <>
+          <Link to={DEVELOPER_SIGNUP_PATH} onClick={onNavigate} className={secondaryButton}>
+            Sign up to take the test
+          </Link>
+        </>
+      )}
+
+      {track && (
+        <Link
+          to={`/learn/${track.id}/${layer.id}`}
+          onClick={onNavigate}
+          className="grid min-h-12 grid-flow-col place-content-center items-center gap-2 rounded-xl bg-purple-600 text-sm font-semibold text-white transition-colors hover:bg-purple-500"
+        >
+          <Play size={14} fill="currentColor" aria-hidden="true" /> {isDone ? "Review this layer" : "Start learning"}
+        </Link>
+      )}
+
+      {!isViewOnly && (auth ? (
+          <p className="text-center text-xs text-neutral-400">
+            {isDone ? (
+              <span className="inline-flex items-center gap-1.5 text-emerald-300">
+                <Check size={14} aria-hidden="true" /> Test passed{verified && ", voice verified"}
+              </span>
+            ) : (
+              "Pass the test to complete this layer"
+            )}
+          </p>
+      ) : (
+          <p className="text-center text-xs text-neutral-400">Passing it unlocks the next layer</p>
+      ))}
+    </div>
+  );
+}
+
+/** A layer at a glance: what it gives, what is inside, and the buttons to act on it. */
+const LayerDetail = () => {
+  const { activeLayer: layer, closePanel, layerProgress, selectedCategory, selectedTrack } = useRoadmapStore();
   const { auth } = useAuthStore();
   const verifiedLayers = useVerifiedLayers(Boolean(auth));
 
-  if (!activeLayer) return null;
+  if (!layer) return null;
 
-  const currentStatus =
-    layerProgress[activeLayer.id] ?? activeLayer.status ?? "locked";
-  const isDone = currentStatus === "done";
+  const isDone = (layerProgress[layer.id] ?? layer.status) === "done";
+  const topics = buildLessons(layer);
 
   return (
     <>
-      {/* Backdrop */}
       <motion.div
         className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
         initial={{ opacity: 0 }}
@@ -62,211 +135,70 @@ const LayerDetail = () => {
         onClick={closePanel}
       />
 
-      {/* Drawer */}
       <motion.div
-        className="fixed top-0 right-0 z-50 h-full w-full max-w-md pt-[env(safe-area-inset-top)] pr-[env(safe-area-inset-right)] bg-neutral-950 border-l border-neutral-800 shadow-2xl flex flex-col"
+        role="dialog"
+        aria-label={layer.title}
+        className="fixed top-0 right-0 z-50 grid h-full w-full max-w-md grid-rows-[auto_minmax(0,1fr)_auto] border-l border-neutral-800 bg-neutral-950 pt-[env(safe-area-inset-top)] pr-[env(safe-area-inset-right)] shadow-2xl"
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
       >
-        {/* Header */}
-        <div className="flex items-start justify-between gap-4 px-6 pt-6 pb-4 border-b border-neutral-800">
+        <header className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-neutral-800 px-6 pb-4 pt-6">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-600 mb-1">
-              Layer {activeLayer.order}
-            </p>
-            <h2 className="text-lg font-bold text-neutral-100 leading-snug">
-              {activeLayer.title}
-            </h2>
-            <span className="inline-flex items-center gap-1.5 mt-2 text-[11px] text-neutral-500">
-              <Clock size={11} />
-              {activeLayer.estimatedTime}
+            <p className="mb-1 text-[10px] uppercase tracking-[0.2em] text-neutral-400">Layer {layer.order}</p>
+            <h2 className="text-lg font-bold leading-snug text-neutral-100">{layer.title}</h2>
+            <span className="mt-2 inline-flex items-center gap-1.5 text-[11px] text-neutral-400">
+              <Clock size={11} aria-hidden="true" />
+              {layer.estimatedTime}, {topics.length} topics
             </span>
           </div>
           <button
+            type="button"
             onClick={closePanel}
-            className="mt-1 p-1.5 rounded-lg text-neutral-600 hover:text-neutral-300 hover:bg-neutral-800 transition-colors"
+            aria-label="Close"
+            className="-mr-2 -mt-1 grid size-11 cursor-pointer place-items-center rounded-lg text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white"
           >
-            <X size={18} />
+            <X size={18} aria-hidden="true" />
           </button>
-        </div>
+        </header>
 
-        {/* Scrollable body */}
-        <div className="thin-scrollbar flex-1 overflow-y-auto px-6 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] space-y-6">
-          {/* Tech pills */}
-          <div className="flex flex-wrap gap-2">
-            {activeLayer.techs.map((t) => (
-              <span
-                key={t}
-                className="text-[11px] px-2.5 py-1 rounded-full bg-purple-900/30 text-purple-400 border border-purple-800/50"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-
-          {/* Description */}
-          <p className="text-sm text-neutral-400 leading-relaxed">
-            {activeLayer.description}
+        <div className="thin-scrollbar grid content-start gap-6 overflow-y-auto px-6 py-5">
+          <p className="text-sm leading-relaxed text-neutral-200">
+            {layer.outcome ? `After this layer you can ${layer.outcome}` : layer.description}
           </p>
 
-          {/* Topics */}
-          <div>
-            <h3 className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-neutral-600 mb-3">
-              <Layers size={12} />
-              What you'll learn
-            </h3>
-            <ul className="space-y-2">
-              {activeLayer.topics.map((topic, i) => (
-                <li
-                  key={i}
-                  className="flex items-start gap-2.5 text-sm text-neutral-300"
-                >
-                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-purple-500 shrink-0" />
+          <section>
+            <h3 className="text-sm font-semibold text-white">Inside</h3>
+            <ul className="mt-3 grid gap-2">
+              {layer.topics.map((topic) => (
+                <li key={topic} className="grid grid-cols-[6px_minmax(0,1fr)] gap-3 text-[13px] leading-snug text-neutral-300">
+                  <span aria-hidden="true" className="mt-1.5 size-1.5 rounded-full bg-purple-500" />
                   {topic}
                 </li>
               ))}
             </ul>
-          </div>
+          </section>
 
-          {/* Resources */}
-          <div>
-            <h3 className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-neutral-600 mb-3">
-              <BookOpen size={12} />
-              Resources
-            </h3>
-            <ul className="space-y-2">
-              {activeLayer.resources.map((r, i) => (
-                <li
-                  key={i}
-                  className="flex items-center justify-between gap-3 py-2 px-3 rounded-xl bg-neutral-900 border border-neutral-800"
-                >
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-neutral-200 truncate">
-                      {r.label}
-                    </p>
-                    <p className="text-[11px] text-neutral-600 mt-0.5">
-                      {r.platform}
-                    </p>
-                  </div>
-                  <span
-                    className={`shrink-0 text-[10px] px-2 py-0.5 rounded-full font-medium ${resourceTypeColor[r.type] ?? "bg-neutral-800 text-neutral-500"}`}
-                  >
-                    {r.type}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <section className="grid grid-cols-[18px_minmax(0,1fr)] gap-3 rounded-xl bg-purple-500/10 p-4">
+            <Code2 size={17} className="mt-0.5 text-purple-300" aria-hidden="true" />
+            <div>
+              <h3 className="text-sm font-semibold text-white">You will build</h3>
+              <p className="mt-1 text-[13px] leading-snug text-neutral-300">{layer.challenge}</p>
+            </div>
+          </section>
 
-          {selectedTrack && (
-            <Link
-              to={`/learn/${selectedTrack.id}/${activeLayer.id}`}
-              onClick={closePanel}
-              className="flex min-h-11 items-center justify-between gap-3 rounded-xl border border-purple-600/50 px-4 text-sm font-medium text-purple-300 transition-colors hover:bg-purple-600/20"
-            >
-              Start learning this layer
-              <ChevronRight size={14} aria-hidden="true" />
-            </Link>
-          )}
-
-          <LayerLibrary layerId={activeLayer.id} onNavigate={closePanel} />
-          <LayerPosts layerId={activeLayer.id} onNavigate={closePanel} />
-
-          {/* Challenge */}
-          <div className="rounded-2xl border border-purple-800/40 bg-purple-950/20 px-4 py-4">
-            <h3 className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-purple-500 mb-2">
-              <Code2 size={12} />
-              Layer Challenge
-            </h3>
-            <p className="text-sm text-neutral-300 leading-relaxed">
-              {activeLayer.challenge}
-            </p>
-          </div>
+          <MoreToRead key={layer.id} layer={layer} onNavigate={closePanel} />
         </div>
 
-        {/* Footer actions — guests can read everything above, but tracking
-            progress and taking the exam need an account. Hiring accounts
-            look only: they get what a developer does here instead. */}
-        {isViewOnly ? (
-          <div className="px-6 py-4 border-t border-neutral-800">
-            <ViewOnlyNotice>
-              Developers pass this layer's test (80% or more) to unlock the next one.
-              {hasVoiceExam(activeLayer.id) && " A spoken exam here earns a Verified badge."}
-            </ViewOnlyNotice>
-          </div>
-        ) : !auth ? (
-          <div className="px-6 py-4 border-t border-neutral-800 flex items-center justify-between gap-3">
-            {/* min-w-0 lets the hint wrap instead of squeezing the button. */}
-            <span className="flex min-w-0 items-start gap-2 text-[13px] leading-snug text-neutral-400">
-              <Lock size={13} className="mt-0.5 shrink-0" aria-hidden="true" />
-              Pass the test to unlock the next layer
-            </span>
-            {/* shrink-0 + nowrap: the call to action never breaks onto two lines;
-                min-h-11 is the 44px touch target. */}
-            <Link
-              to={DEVELOPER_SIGNUP_PATH}
-              onClick={closePanel}
-              className="flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-purple-600 px-4 text-sm font-medium text-white transition-colors duration-200 hover:bg-purple-500"
-            >
-              Sign up to start
-              <ChevronRight size={14} aria-hidden="true" />
-            </Link>
-          </div>
-        ) : (
-          <div className="px-6 py-4 border-t border-neutral-800 flex items-center justify-between gap-3">
-            {/* Read-only on purpose: a layer is completed only by passing its
-                exam, never by clicking. */}
-            <span
-              className={`flex items-center gap-2 text-sm font-medium ${
-                isDone ? "text-purple-300" : "text-neutral-400"
-              }`}
-            >
-              {isDone ? (
-                <Check size={14} className="text-purple-400" aria-hidden="true" />
-              ) : (
-                <Lock size={14} className="text-neutral-600" aria-hidden="true" />
-              )}
-              {isDone ? "Completed" : "Pass the test to complete"}
-              {verifiedLayers.has(activeLayer.id) && (
-                <span className="ml-1 inline-flex items-center gap-1 rounded-full bg-emerald-900/30 border border-emerald-800/50 px-2 py-0.5 text-xs text-emerald-300">
-                  <ShieldCheck size={12} aria-hidden="true" />
-                  Verified
-                </span>
-              )}
-            </span>
-
-            <div className="flex items-center gap-2">
-              {hasVoiceExam(activeLayer.id) && (
-                <button
-                  onClick={() => {
-                    closePanel();
-                    navigate(
-                      `/voice-exam/${activeLayer.id}?path=${selectedCategory?.id ?? "backend"}&track=${selectedTrack?.id ?? ""}`,
-                    );
-                  }}
-                  className="flex min-h-11 items-center gap-2 text-sm font-medium px-4 py-2 rounded-xl border border-purple-600/50 text-purple-300 hover:bg-purple-600/20 transition-colors duration-200"
-                >
-                  <Mic size={14} aria-hidden="true" />
-                  Voice exam
-                </button>
-              )}
-              <button
-                onClick={() => {
-                  closePanel();
-                  navigate(
-                    `/roadmaps/exam/${activeLayer.id}?path=${selectedCategory?.id ?? "backend"}`,
-                  );
-                }}
-                className="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white transition-colors duration-200"
-              >
-                Take Test
-                <ChevronRight size={14} />
-              </button>
-            </div>
-          </div>
-        )}
+        <Actions
+          layer={layer}
+          track={selectedTrack}
+          category={selectedCategory}
+          isDone={isDone}
+          verified={verifiedLayers.has(layer.id)}
+          onNavigate={closePanel}
+        />
       </motion.div>
     </>
   );

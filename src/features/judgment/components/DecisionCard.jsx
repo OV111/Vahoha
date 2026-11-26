@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { CONFIDENCE_LEVELS, MAX_WHY_CHARS, MIN_WHY_CHARS } from "../lib/constants";
+import { CONFIDENCE_LEVELS, MAX_WHY_CHARS, MIN_WHY_CHARS } from "@/features/judgment/lib/constants";
 
 /** The event of this week: pick an option, say why, say how sure you are. */
 const DecisionCard = ({ event, step, total, isBusy, onDecide }) => {

@@ -1,21 +1,21 @@
-import { Bone, BoneControl, BonePanel } from "@/components/ui/Skeleton";
+import { Bone, BoneControl, BonePanel } from "@/components/feedback/Skeleton";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useBlocker } from "react-router-dom";
 import DeleteAccount from "@/features/profile/components/DeleteAccount";
 import { toast } from "sonner";
-import PageShell from "../components/PageShell";
-import SaveBar from "../components/SaveBar";
+import PageShell from "@/features/profile/components/PageShell";
+import SaveBar from "@/features/profile/components/SaveBar";
 import useProfileStore from "@/stores/useProfileStore";
-import ImageDropZone from "../components/ImageDropZone";
+import ImageDropZone from "@/features/profile/components/ImageDropZone";
 import { saveSettings, checkUsernameAvailable } from "@/services/profileApi";
 import { Loader2, Check, X } from "lucide-react";
-import { INPUT_CLASS } from "@/components/ui/field";
-import ConfirmDialog from "@/components/ui/ConfirmDialog";
-import SearchSelect from "../components/SearchSelect";
-import MessagePolicySetting from "../components/MessagePolicySetting";
-import WeeklySummarySetting from "../components/WeeklySummarySetting";
-import { SettingsSection, SettingsLinkRow } from "../components/SettingsSection";
-import { SETTINGS_SECTIONS as SECTIONS, SETTINGS_LINKS as LINKS } from "../../../../constants/settingsPage";
+import { INPUT_CLASS } from "@/components/primitives/styles";
+import ConfirmDialog from "@/components/feedback/ConfirmDialog";
+import SearchSelect from "@/features/profile/components/SearchSelect";
+import MessagePolicySetting from "@/features/profile/components/MessagePolicySetting";
+import WeeklySummarySetting from "@/features/profile/components/WeeklySummarySetting";
+import { SettingsSection, SettingsLinkRow } from "@/features/profile/components/SettingsSection";
+import { SETTINGS_SECTIONS as SECTIONS, SETTINGS_LINKS as LINKS } from "@/constants/settingsPage";
 
 const LABEL_CLASS = "text-sm font-medium text-gray-700 dark:text-gray-300";
 

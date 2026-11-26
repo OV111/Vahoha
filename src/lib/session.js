@@ -8,7 +8,7 @@
 //   3. apiFetch() catches any 401 that still slips through, refreshes once and
 //      retries. If the refresh cookie is dead too, the session ends.
 
-import { UNREACHABLE_MESSAGE } from "../../constants/serverStatus.js";
+import { UNREACHABLE_MESSAGE } from "@/constants/serverStatus.js";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const REFRESH_EARLY_MS = 60 * 1000;
@@ -75,7 +75,7 @@ export const tokenLifetimeMs = (token) => {
   }
 };
 
-// Called when a request hints that the API may be unreachable (see useServerStatus).
+// Called when a request hints that the API may be unreachable (see useServerStatusStore).
 let onServerTrouble = () => {};
 export const setServerTroubleHandler = (fn) => {
   onServerTrouble = fn;

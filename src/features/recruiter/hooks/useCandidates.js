@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import useDebouncedValue from "@/hooks/useDebouncedValue";
-import { recruiterApi } from "../recruiterApi";
+import { recruiterApi } from "@/features/recruiter/recruiterApi";
 
 /**
  * Candidates list state, kept in the URL (same idea as the challenge catalog):

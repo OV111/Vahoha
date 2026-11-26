@@ -8,7 +8,7 @@ No unproctored online exam is cheat-proof; HackerRank and CodeSignal accept the 
 
 ## Current state (verified in code 2026-11-10)
 
-Rules live in one place, `constants/exam.js`, and the server and the intro screen both read it.
+Rules live in one place, `shared/exam.js`, and the server and the intro screen both read it.
 
 **Layer test (MCQ)**
 

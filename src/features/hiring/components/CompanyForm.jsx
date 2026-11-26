@@ -1,10 +1,10 @@
 import { useForm } from "react-hook-form";
-import TextField from "../../auth/components/TextField";
+import TextField from "@/features/auth/components/TextField";
 import FormButtons from "./FormButtons";
-import { errorClass, labelClass } from "../../auth/authStyles";
-import { sanitizeInput } from "../../../utils/sanitize";
-import { TEAM_SIZES } from "../../../../constants/hiring";
-import { WEBSITE_MESSAGE, WEBSITE_PATTERN } from "../../../../constants/hiringRules";
+import { errorClass, labelClass } from "@/features/auth/authStyles";
+import { sanitizeInput } from "@/utils/sanitize";
+import { TEAM_SIZES } from "@/constants/hiring";
+import { WEBSITE_MESSAGE, WEBSITE_PATTERN } from "@shared/hiringRules";
 
 const text = (label, max) => ({
   required: `${label} is required.`,

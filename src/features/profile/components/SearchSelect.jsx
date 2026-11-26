@@ -7,7 +7,7 @@ import {
   ComboboxOptions,
 } from "@headlessui/react";
 import { Check, ChevronDown } from "lucide-react";
-import { INPUT_CLASS } from "@/components/ui/field";
+import { INPUT_CLASS } from "@/components/primitives/styles";
 
 /**
  * A select you can type into: the input filters a long list (time zones,

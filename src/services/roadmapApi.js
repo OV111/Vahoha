@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "@/constants/api";
 
 // Failed responses throw with the server's message and the HTTP status, so callers can tell
 // a cooldown (429) from other failures. Network errors throw without a status.

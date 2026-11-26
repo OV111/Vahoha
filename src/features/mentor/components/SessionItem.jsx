@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { MoreHorizontal, Pencil, Trash2, Check, X, Pin, PinOff, Loader2, Code2 } from "lucide-react";
-import { SESSIONS_COPY } from "../../../../constants/mentor";
+import { SESSIONS_COPY } from "@/constants/mentor";
 
 const MENU_ITEM = "w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] cursor-pointer focus:outline-none focus-visible:bg-white/10";
 

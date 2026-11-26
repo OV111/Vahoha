@@ -13,7 +13,7 @@
 import { ObjectId } from "mongodb";
 import { listPassedTracks } from "../../../capstone/index.js";
 import { parseRepoUrl } from "../../../capstone/index.js";
-import { MAX_TEAM_MEMBERS } from "../../../../../constants/teams.js";
+import { MAX_TEAM_MEMBERS } from "#shared/teams.js";
 import {
   RUNNING_STATUSES,
   beginRefusal,

@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { MAX_TEAM_MEMBERS } from "../../../../../constants/teams";
+import { MAX_TEAM_MEMBERS } from "@shared/teams";
 
 // Layout pieces shared by the team admin panels.
 

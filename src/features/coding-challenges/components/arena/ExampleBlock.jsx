@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Check, Copy } from "lucide-react";
-import { C, FONT_MONO } from "../../lib/arenaTheme";
-import { parseExample, tokenize } from "../../lib/exampleFormat";
+import { C, FONT_MONO } from "@/features/coding-challenges/lib/arenaTheme";
+import { parseExample, tokenize } from "@/features/coding-challenges/lib/exampleFormat";
 
 const TOKEN_COLOR = {
   string: "#a5d6a7",

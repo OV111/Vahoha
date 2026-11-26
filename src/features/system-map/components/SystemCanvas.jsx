@@ -15,12 +15,12 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { BadgeCheck, Box, Maximize, MessageSquare, Minus, Plus, Trash2 } from "lucide-react";
-import { KIND_ICONS, kindColor } from "../lib/nodeKinds";
-import { fitOptions } from "../lib/viewport";
-import { isUnconfirmed } from "../lib/mapGraph";
-import { routeEdges } from "../lib/edgeRouting";
-import { laneCounts, simulate } from "../lib/simulation";
-import useFlowPlayback from "../hooks/useFlowPlayback";
+import { KIND_ICONS, kindColor } from "@/features/system-map/lib/nodeKinds";
+import { fitOptions } from "@/features/system-map/lib/viewport";
+import { isUnconfirmed } from "@/features/system-map/lib/mapGraph";
+import { routeEdges } from "@/features/system-map/lib/edgeRouting";
+import { laneCounts, simulate } from "@/features/system-map/lib/simulation";
+import useFlowPlayback from "@/features/system-map/hooks/useFlowPlayback";
 import { FlowLegend } from "./StageChrome";
 
 const TONE_CLASS = {

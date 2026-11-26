@@ -1,5 +1,5 @@
 import { Terminal } from "lucide-react";
-import { compactTokens, fullTokens, isCount } from "../lib/formatTokens";
+import { compactTokens, fullTokens, isCount } from "@/features/mentor/lib/formatTokens";
 
 /**
  * Rendered inline in the transcript when the user runs /context.

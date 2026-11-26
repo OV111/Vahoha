@@ -10,7 +10,7 @@
 // a string literal early or start an escape the language would read differently.
 
 import { Buffer } from "node:buffer";
-import { matchesType, parseType, typeIn } from "../../../../../constants/challengeTypes.js";
+import { matchesType, parseType, typeIn } from "#shared/challengeTypes.js";
 
 const isPrintable = (code) => code >= 0x20 && code < 0x7f;
 

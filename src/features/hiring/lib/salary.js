@@ -1,4 +1,4 @@
-import { SALARY_PERIOD_LABELS } from "../../../../constants/hiring";
+import { SALARY_PERIOD_LABELS } from "@/constants/hiring";
 
 const money = (n, currency) =>
   new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 }).format(n);

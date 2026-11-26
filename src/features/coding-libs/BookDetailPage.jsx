@@ -4,7 +4,7 @@ import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import {
   fetchLibraryResourceById,
   fetchLibraryResources,
-} from "../../services/libraryApi";
+} from "@/services/libraryApi";
 import BookCard from "./BookCard";
 import DigestSection from "./digest/DigestSection";
 import { useDigestData } from "./digest/useDigestData";

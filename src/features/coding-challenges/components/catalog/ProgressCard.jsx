@@ -1,4 +1,4 @@
-import { Bone, BonePanel } from "@/components/ui/Skeleton";
+import { Bone, BonePanel } from "@/components/feedback/Skeleton";
 import { ArrowRight, Minus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 

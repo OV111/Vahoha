@@ -9,13 +9,13 @@
  */
 
 import { ObjectId } from "mongodb";
-import { CHALLENGE_LANGUAGES, JUDGE_LANGUAGES } from "../../../../constants/challengeLanguages.js";
+import { CHALLENGE_LANGUAGES, JUDGE_LANGUAGES } from "#shared/challengeLanguages.js";
 import {
   EXPLAIN_MAX_CHARS,
   EXPLAIN_MIN_CHARS,
   EXPLAIN_PASS_SHARE,
   EXPLAIN_XP,
-} from "../../../../constants/challengeExplain.js";
+} from "#shared/challengeExplain.js";
 import { awardXp } from "../../../services/xpService.js";
 import { pickSubmissionSource } from "../lib/submissionSource.js";
 import { gradeExplanation } from "./explanationGrader.js";

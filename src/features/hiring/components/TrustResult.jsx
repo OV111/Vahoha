@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { motion as Motion } from "motion/react";
 import { CheckCircle2, ShieldAlert, ShieldQuestion } from "lucide-react";
-import { TRUST_COPY } from "../../../../constants/hiring";
-import { HIRING_HOME } from "../lib/landingPath";
+import { TRUST_COPY } from "@/constants/hiring";
+import { HIRING_HOME } from "@/features/hiring/lib/landingPath";
 
 const ICONS = { verified: CheckCircle2, limited: ShieldQuestion, unverified: ShieldQuestion, rejected: ShieldAlert };
 const TONE = { verified: "text-emerald-400", limited: "text-amber-400", unverified: "text-amber-400", rejected: "text-rose-400" };

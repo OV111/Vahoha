@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, BookOpen, Clock } from "lucide-react";
-import { TASK_TYPES } from "../taskTypes";
-import { labHref, lessonHref } from "../content/manifest";
-import { trackTitle } from "../rooms";
+import { TASK_TYPES } from "@/features/labs/taskTypes";
+import { labHref, lessonHref } from "@/features/labs/content/manifest";
+import { trackTitle } from "@/features/labs/rooms";
 
 // One lab in a room or on the building page. Two ways out: into the lab, or
 // back to the roadmap lesson it practices. The whole card opens the lab (stretched

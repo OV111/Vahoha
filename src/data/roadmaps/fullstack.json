@@ -2852,6 +2852,71 @@
       "id": "mern-1",
       "title": "Web Fundamentals",
       "order": 1,
+      "outcome": "build a responsive page that everyone can use, and make it react to what people do.",
+      "steps": [
+        {
+          "title": "HTML",
+          "about": "Say what things are, so everyone can use them",
+          "lessons": [
+            {
+              "slug": "semantic-html-and-the-accessibility-tree",
+              "short": "Semantic HTML"
+            }
+          ]
+        },
+        {
+          "title": "CSS",
+          "about": "Boxes, layout, and pages that fit every screen",
+          "lessons": [
+            {
+              "slug": "the-box-model-content-padding-border-and-margin",
+              "short": "The box model"
+            },
+            {
+              "slug": "when-to-use-flexbox-versus-css-grid",
+              "short": "Flexbox and grid"
+            },
+            {
+              "slug": "mobile-first-breakpoints-with-min-width-media-queries",
+              "short": "Responsive design"
+            }
+          ]
+        },
+        {
+          "title": "JavaScript",
+          "about": "Values, functions, and a page that reacts",
+          "lessons": [
+            {
+              "slug": "javascript-variables-types-and-functions",
+              "short": "Variables, types, functions",
+              "title": "JavaScript variables, types, and functions",
+              "description": "Variables name values, types decide what you can do with them, and functions take values in and give one back."
+            },
+            {
+              "slug": "selecting-elements-and-modifying-the-dom-at-runtime",
+              "short": "Changing the page"
+            },
+            {
+              "slug": "event-bubbling-delegation-and-removeeventlistener",
+              "short": "Events"
+            }
+          ]
+        },
+        {
+          "title": "The browser",
+          "about": "Look inside, find bugs, and make it fast",
+          "lessons": [
+            {
+              "slug": "browser-devtools-inspecting-layout-styles-and-the-network-ta",
+              "short": "Browser DevTools"
+            },
+            {
+              "slug": "the-critical-rendering-path-and-render-blocking-resources",
+              "short": "How a page is drawn"
+            }
+          ]
+        }
+      ],
       "techs": [
         "HTML",
         "CSS",
@@ -3012,33 +3077,62 @@
       "id": "mern-2",
       "title": "JavaScript Deep Dive",
       "order": 2,
+      "outcome": "build an app that loads live data, shows it, and survives when something fails.",
       "steps": [
         {
           "title": "Data",
+          "about": "Take apart, copy and change the data your app works with",
           "lessons": [
-            "destructuring-spread-and-rest-in-function-signatures",
-            "array-methods-map-filter-reduce-and-their-composition"
+            {
+              "slug": "destructuring-spread-and-rest-in-function-signatures",
+              "short": "Destructuring, spread, rest"
+            },
+            {
+              "slug": "array-methods-map-filter-reduce-and-their-composition",
+              "short": "Array methods"
+            }
           ]
         },
         {
           "title": "How JS runs",
+          "about": "What happens when your code waits, and what functions remember",
           "lessons": [
-            "call-stack-task-queue-and-microtask-queue-ordering",
-            "how-closures-capture-free-variables-in-the-scope-chain"
+            {
+              "slug": "call-stack-task-queue-and-microtask-queue-ordering",
+              "short": "Call stack and queues"
+            },
+            {
+              "slug": "how-closures-capture-free-variables-in-the-scope-chain",
+              "short": "Closures"
+            }
           ]
         },
         {
           "title": "Async",
+          "about": "Do many things without freezing the page",
           "lessons": [
-            "promise-chaining-versus-async-await-for-sequential-calls",
-            "promise-all-promise-allsettled-and-race-conditions"
+            {
+              "slug": "promise-chaining-versus-async-await-for-sequential-calls",
+              "short": "Promises and async/await"
+            },
+            {
+              "slug": "promise-all-promise-allsettled-and-race-conditions",
+              "short": "Promise.all and races"
+            }
           ]
         },
         {
           "title": "Real app",
+          "about": "Load data, survive failures, and split code into files",
           "lessons": [
-            "fetch-response-ok-and-typed-error-handling",
-            "es-modules-import-export-and-the-difference-from-commonjs"
+            {
+              "slug": "fetch-response-ok-and-typed-error-handling",
+              "short": "fetch and errors"
+            },
+            {
+              "slug": "es-modules-import-export-and-the-difference-from-commonjs",
+              "short": "ES modules"
+            }
           ]
         }
       ],
@@ -3197,6 +3291,77 @@
       "id": "mern-3",
       "title": "React Fundamentals",
       "order": 3,
+      "outcome": "build an interactive app from components, with lists, forms, filters and data that stays in step.",
+      "steps": [
+        {
+          "title": "Components",
+          "about": "Build the screen from small pieces",
+          "lessons": [
+            {
+              "slug": "jsx-compiles-to-react-createelement-calls",
+              "short": "JSX and components"
+            },
+            {
+              "slug": "unidirectional-data-flow-props-down-events-up",
+              "short": "Props"
+            }
+          ]
+        },
+        {
+          "title": "State and data",
+          "about": "Remember, change, and share what is on the screen",
+          "lessons": [
+            {
+              "slug": "why-state-updates-are-asynchronous-and-batched",
+              "short": "State"
+            },
+            {
+              "slug": "lifting-state-to-the-closest-common-parent",
+              "short": "Lifting state",
+              "title": "Lifting state to the closest common parent",
+              "description": "Data that two components need belongs in their closest common parent, so there is one truth."
+            }
+          ]
+        },
+        {
+          "title": "Reacting to people",
+          "about": "Clicks, forms, and lists that change",
+          "lessons": [
+            {
+              "slug": "rendering-lists-with-key-props-and-conditional-rendering",
+              "short": "Lists, keys, conditions"
+            },
+            {
+              "slug": "synthetic-events-and-event-pooling-in-react",
+              "short": "Events in React"
+            },
+            {
+              "slug": "controlled-inputs-value-prop-onchange-handler",
+              "short": "Controlled forms"
+            }
+          ]
+        },
+        {
+          "title": "Behind the scenes",
+          "about": "How React works, and how to reach outside it",
+          "lessons": [
+            {
+              "slug": "how-react-diffs-the-virtual-dom-and-batches-dom-updates",
+              "short": "How React updates"
+            },
+            {
+              "slug": "useeffect-dependency-array-and-cleanup-functions",
+              "short": "Effects"
+            },
+            {
+              "slug": "fetching-data-in-components",
+              "short": "Fetching data",
+              "title": "Fetching data in components",
+              "description": "Load data in an effect with a cleanup, and show loading, error, empty and success."
+            }
+          ]
+        }
+      ],
       "techs": [
         "React",
         "JSX",
@@ -3336,7 +3501,7 @@
             },
             {
               "title": "Synthetic events and event pooling in React",
-              "description": "React wraps native events in SyntheticEvent for cross-browser compatibility. Accessing event properties asynchronously requires event.persist() or extracting values before the async call.",
+              "description": "React passes handlers a synthetic event that works the same in every browser and listens at the root of the app. Event pooling, which older articles still describe, was removed in React 17.",
               "resources": [
                 {
                   "label": "React Docs — Responding to Events",
@@ -4385,6 +4550,76 @@
       "id": "pern-1",
       "title": "Web Fundamentals",
       "order": 1,
+      "outcome": "build a responsive page that everyone can use, and make it react to what people do.",
+      "steps": [
+        {
+          "title": "HTML",
+          "about": "Say what things are, so everyone can use them",
+          "lessons": [
+            {
+              "slug": "semantic-html-elements-and-the-accessibility-tree",
+              "short": "Semantic HTML"
+            }
+          ]
+        },
+        {
+          "title": "CSS",
+          "about": "Boxes, layout, and pages that fit every screen",
+          "lessons": [
+            {
+              "slug": "box-sizing-border-box-and-why-it-simplifies-layout-math",
+              "short": "The box model"
+            },
+            {
+              "slug": "css-grid-for-two-dimensional-page-layouts",
+              "short": "Flexbox and grid"
+            },
+            {
+              "slug": "responsive-design-with-media-queries-and-relative-units",
+              "short": "Responsive design"
+            }
+          ]
+        },
+        {
+          "title": "JavaScript",
+          "about": "Values, functions, and a page that reacts",
+          "lessons": [
+            {
+              "slug": "javascript-variables-types-and-functions",
+              "short": "Variables, types, functions",
+              "title": "JavaScript variables, types, and functions",
+              "description": "Variables name values, types decide what you can do with them, and functions take values in and give one back."
+            },
+            {
+              "slug": "queryselector-textcontent-and-classlist-for-dom-updates",
+              "short": "Changing the page"
+            },
+            {
+              "slug": "events-bubbling-and-delegation",
+              "short": "Events",
+              "title": "Events, bubbling, and delegation",
+              "description": "Events tell your code what happened and travel up from the element through its parents."
+            }
+          ]
+        },
+        {
+          "title": "The browser",
+          "about": "Look inside, find bugs, and make it fast",
+          "lessons": [
+            {
+              "slug": "inspecting-and-live-editing-styles-in-the-styles-panel",
+              "short": "Browser DevTools",
+              "also": [
+                "network-tab-reading-request-response-headers-and-timing"
+              ]
+            },
+            {
+              "slug": "the-critical-rendering-path-and-render-blocking-resources",
+              "short": "How a page is drawn"
+            }
+          ]
+        }
+      ],
       "techs": [
         "HTML",
         "CSS",
@@ -4674,6 +4909,77 @@
       "id": "pern-3",
       "title": "React Fundamentals",
       "order": 3,
+      "outcome": "build an interactive app from components, with lists, forms, filters and data that stays in step.",
+      "steps": [
+        {
+          "title": "Components",
+          "about": "Build the screen from small pieces",
+          "lessons": [
+            {
+              "slug": "jsx-compiles-to-react-createelement-implications-for-jsx-rul",
+              "short": "JSX and components"
+            },
+            {
+              "slug": "unidirectional-data-flow-and-why-it-simplifies-debugging",
+              "short": "Props"
+            }
+          ]
+        },
+        {
+          "title": "State and data",
+          "about": "Remember, change, and share what is on the screen",
+          "lessons": [
+            {
+              "slug": "why-state-updates-are-asynchronous-and-stale-closures-occur",
+              "short": "State"
+            },
+            {
+              "slug": "lifting-state-up-to-the-nearest-common-ancestor",
+              "short": "Lifting state"
+            }
+          ]
+        },
+        {
+          "title": "Reacting to people",
+          "about": "Clicks, forms, and lists that change",
+          "lessons": [
+            {
+              "slug": "rendering-lists-with-key-props-derived-from-stable-ids",
+              "short": "Lists, keys, conditions"
+            },
+            {
+              "slug": "events-in-react",
+              "short": "Events in React",
+              "title": "Events in React",
+              "description": "React passes your handlers a synthetic event and listens at the root of the app."
+            },
+            {
+              "slug": "controlled-forms",
+              "short": "Controlled forms",
+              "title": "Controlled forms",
+              "description": "value comes from state and onChange updates it, so the state is the truth."
+            }
+          ]
+        },
+        {
+          "title": "Behind the scenes",
+          "about": "How React works, and how to reach outside it",
+          "lessons": [
+            {
+              "slug": "how-react-diffs-the-virtual-dom-to-minimize-real-dom-changes",
+              "short": "How React updates"
+            },
+            {
+              "slug": "useeffect-dependencies-and-the-cleanup-pattern",
+              "short": "Effects"
+            },
+            {
+              "slug": "data-fetching-in-useeffect-loading-data-and-error-states",
+              "short": "Fetching data"
+            }
+          ]
+        }
+      ],
       "techs": [
         "React",
         "JSX",
@@ -7334,6 +7640,89 @@
       "id": "fullstack-engineer-1",
       "title": "Web Fundamentals",
       "order": 1,
+      "outcome": "build a responsive page that everyone can use, and make it react to what people do.",
+      "steps": [
+        {
+          "title": "HTML",
+          "about": "Say what things are, so everyone can use them",
+          "lessons": [
+            {
+              "slug": "semantic-html-and-the-accessibility-tree",
+              "short": "Semantic HTML"
+            }
+          ]
+        },
+        {
+          "title": "CSS",
+          "about": "Boxes, layout, and pages that fit every screen",
+          "lessons": [
+            {
+              "slug": "the-box-model-and-box-sizing-border-box",
+              "short": "The box model"
+            },
+            {
+              "slug": "flexbox-for-one-dimensional-layouts-grid-for-two-dimensional",
+              "short": "Flexbox and grid"
+            },
+            {
+              "slug": "mobile-first-media-queries-with-min-width-breakpoints",
+              "short": "Responsive design"
+            }
+          ]
+        },
+        {
+          "title": "JavaScript",
+          "about": "Values, functions, and a page that reacts",
+          "lessons": [
+            {
+              "slug": "javascript-variables-types-and-functions",
+              "short": "Variables, types, functions",
+              "title": "JavaScript variables, types, and functions",
+              "description": "Variables name values, types decide what you can do with them, and functions take values in and give one back."
+            },
+            {
+              "slug": "dom-manipulation-queryselector-classlist-and-events",
+              "short": "Changing the page"
+            },
+            {
+              "slug": "events-bubbling-and-delegation",
+              "short": "Events",
+              "title": "Events, bubbling, and delegation",
+              "description": "Events tell your code what happened and travel up from the element through its parents."
+            }
+          ]
+        },
+        {
+          "title": "The browser",
+          "about": "Look inside, find bugs, and make it fast",
+          "lessons": [
+            {
+              "slug": "network-tab-inspecting-requests-responses-and-status-codes",
+              "short": "Browser DevTools"
+            },
+            {
+              "slug": "dom-cssom-and-the-critical-rendering-path",
+              "short": "How a page is drawn"
+            }
+          ]
+        },
+        {
+          "title": "Data",
+          "about": "Load data from a server and survive failures",
+          "lessons": [
+            {
+              "slug": "promises-and-async-await",
+              "short": "Promises and async/await",
+              "title": "Promises and async/await",
+              "description": "A promise stands for a value that isn't there yet; async/await lets you write it as ordinary code."
+            },
+            {
+              "slug": "fetch-with-async-await-and-proper-error-handling",
+              "short": "fetch and errors"
+            }
+          ]
+        }
+      ],
       "techs": [
         "HTML",
         "CSS",
@@ -21277,6 +21666,91 @@
       "id": "astro-dev-1",
       "title": "Web and TypeScript Foundations",
       "order": 1,
+      "outcome": "build a responsive page that everyone can use, and split its code into typed modules.",
+      "steps": [
+        {
+          "title": "HTML",
+          "about": "Say what things are, so everyone can use them",
+          "lessons": [
+            {
+              "slug": "semantic-html-elements",
+              "short": "Semantic HTML",
+              "also": [
+                "aria-and-accessibility-tree"
+              ]
+            }
+          ]
+        },
+        {
+          "title": "CSS",
+          "about": "Boxes, layout, and pages that fit every screen",
+          "lessons": [
+            {
+              "slug": "css-box-model",
+              "short": "The box model"
+            },
+            {
+              "slug": "flexbox-and-grid",
+              "short": "Flexbox and grid"
+            },
+            {
+              "slug": "mobile-first-media-queries",
+              "short": "Responsive design"
+            },
+            {
+              "slug": "css-custom-properties"
+            }
+          ]
+        },
+        {
+          "title": "JavaScript",
+          "about": "Values, functions, and a page that reacts",
+          "lessons": [
+            {
+              "slug": "javascript-variables-types-and-functions",
+              "short": "Variables, types, functions",
+              "title": "JavaScript variables, types, and functions",
+              "description": "Variables name values, types decide what you can do with them, and functions take values in and give one back."
+            },
+            {
+              "slug": "es-modules-import-and-export",
+              "short": "ES modules",
+              "title": "ES modules: import and export",
+              "description": "A module has its own scope and shows only what it exports."
+            }
+          ]
+        },
+        {
+          "title": "The browser",
+          "about": "Look inside, find bugs, and make it fast",
+          "lessons": [
+            {
+              "slug": "browser-devtools",
+              "short": "Browser DevTools",
+              "title": "Browser DevTools",
+              "description": "Elements, Console, Network and breakpoints: look instead of guessing."
+            },
+            {
+              "slug": "how-the-browser-draws-a-page",
+              "short": "How a page is drawn",
+              "title": "How the browser draws a page",
+              "description": "From HTML and CSS to the picture on the screen, and what can block it."
+            }
+          ]
+        },
+        {
+          "title": "Tooling",
+          "about": "Split code into files, and describe its types",
+          "lessons": [
+            {
+              "slug": "static-typing-and-type-inference"
+            },
+            {
+              "slug": "interfaces-and-type-aliases"
+            }
+          ]
+        }
+      ],
       "techs": [
         "HTML",
         "CSS",

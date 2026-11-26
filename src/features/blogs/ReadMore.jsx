@@ -11,7 +11,7 @@ import PostMarkdown from "./post/PostMarkdown";
 import { decodePostId, formatDate, toPostView } from "./post/postModel";
 import useBlogActions from "./post/useBlogActions";
 import useBlogPost from "./post/useBlogPost";
-import { PAGE } from "../../../constants/layout";
+import { PAGE } from "@/constants/layout";
 
 // Sidebar cards use the same surface as the blog cards (BlogCard.jsx).
 const SIDE_CARD =

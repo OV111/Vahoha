@@ -1,6 +1,6 @@
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
 import { Box, Check, ChevronDown } from "lucide-react";
-import { KIND_ICONS } from "../lib/nodeKinds";
+import { KIND_ICONS } from "@/features/system-map/lib/nodeKinds";
 
 export default function KindSelect({ id, options, value, onChange }) {
   const selected = options.find((o) => o.kind === value) ?? options[0];

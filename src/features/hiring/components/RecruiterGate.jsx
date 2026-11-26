@@ -3,9 +3,9 @@ import { Navigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import useAuthStore from "@/stores/useAuthStore";
 import useProfileStore from "@/stores/useProfileStore";
-import { isRecruiterBlockedPath } from "../../../../constants/recruiterAccess";
-import { FEATURES } from "../../../../constants/features";
-import { HIRING_HOME } from "../lib/landingPath";
+import { isRecruiterBlockedPath } from "@shared/recruiterAccess";
+import { FEATURES } from "@/constants/features";
+import { HIRING_HOME } from "@/features/hiring/lib/landingPath";
 
 /**
  * Sends a signed-in recruiter to hiring home when they open a learner-only page

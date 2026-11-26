@@ -1,4 +1,4 @@
-import { API_BASE_URL, netFetch } from "../../../constants/api";
+import { API_BASE_URL, netFetch } from "@/constants/api";
 
 /**
  * Public certificate lookup — no auth header: anyone with the link (a

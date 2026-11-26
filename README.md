@@ -153,7 +153,7 @@ flowchart LR
 - **Coding challenges (Arena):** catalog, sandboxed grading, solve in JavaScript, Python, Ruby, PHP, Java, C++ or Go, explain your solution, community proposals with admin review, XP-priced hints
 - **Build Teams:** teams build together; PR sync, per-member defense, ratings and a public evidence page for recruiters
 - **Community:** Markdown blog, profiles, follows, DMs and group chat over Socket.IO (voice notes, attachments, reactions), queue-backed notifications
-- **Recruiter scorecards:** opt-in public candidate page. The candidates list is built but switched off (`constants/features.js`)
+- **Recruiter scorecards:** opt-in public candidate page. The candidates list is built but switched off (`src/constants/features.js`)
 - **Billing:** Polar checkout, subscription state and Free/Pro caps for mentor and capstone (inert until enabled)
 - **Pilot analytics:** 7 server-side events and an admin-only funnel (`GET /api/admin/funnel`)
 - **Search**, **OAuth**, **dark/light theme**

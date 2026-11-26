@@ -1,11 +1,11 @@
-import { Bone, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
 import { useEffect, useRef } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { AlertTriangle, Check, CreditCard, Info } from "lucide-react";
 import useBilling from "./hooks/useBilling";
 import { PLANS_BY_ID } from "./plans";
-import { PAGE } from "../../../constants/layout";
+import { PAGE } from "@/constants/layout";
 import { captureEvent } from "@/lib/posthog";
 
 const FEATURE_WIDTHS = ["w-3/5", "w-1/2", "w-2/3", "w-2/5"];

@@ -1,11 +1,11 @@
 import { lazy, Suspense, useState } from "react";
 import { Lightbulb, MessageSquare, PanelRightClose, PanelRightOpen } from "lucide-react";
-import { C } from "../../lib/arenaTheme";
+import { C } from "@/features/coding-challenges/lib/arenaTheme";
 import HintsPanel from "./HintsPanel";
-import LoadingSuspense from "../../../../components/feedback/LoadingSuspense";
+import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 
 // Loaded on first use: most arena visits never open the mentor.
-const Mentor = lazy(() => import("../../../mentor/Mentor"));
+const Mentor = lazy(() => import("@/features/mentor/Mentor"));
 
 const TABS = [
   { key: "hints", label: "Hints", icon: Lightbulb },

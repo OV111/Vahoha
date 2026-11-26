@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { Box, Ellipsis, History, Redo2, RotateCcw, ScanSearch, Undo2, Upload } from "lucide-react";
 import ExportMenu from "./ExportMenu";
 import ShareControl from "./ShareControl";
-import { isPhone } from "../lib/viewport";
+import { isPhone } from "@/features/system-map/lib/viewport";
 
 const button =
   "inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-neutral-700 px-3 text-sm text-neutral-200 transition-colors hover:border-neutral-500 hover:text-white focus-visible:outline-2 focus-visible:outline-purple-400";

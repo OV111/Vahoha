@@ -1,5 +1,5 @@
 import useCachedResource from "@/hooks/useCachedResource";
-import { fetchJourney } from "../masteryApi";
+import { fetchJourney } from "@/features/mastery/masteryApi";
 
 /** Path position, streak, XP and this week. Cached like useMastery; refreshed by lib/queryInvalidation.js. */
 const useJourney = () => {

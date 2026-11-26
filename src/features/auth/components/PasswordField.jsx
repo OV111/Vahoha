@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { errorClass, eyeBtnClass, inputClass, labelClass } from "../authStyles";
+import { errorClass, eyeBtnClass, inputClass, labelClass } from "@/features/auth/authStyles";
 
 /**
  * Password input with a show/hide button. Each field keeps its own visibility.

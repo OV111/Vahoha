@@ -1,53 +1,22 @@
-/* Console lines arrive one after another, so the order async code printed in
-   is something you watch happen, not just read. */
-@keyframes learn-line-in {
-  from {
-    opacity: 0;
-    transform: translateY(3px);
-  }
-}
-
-.learn-console-line {
-  animation: learn-line-in 180ms ease-out both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .learn-console-line {
-    animation: none;
-  }
-}
-
-/* The skill just finished, on the finish screen. */
-@keyframes learn-skill-lit {
-  from {
-    background: #34d399;
-    color: #000;
-    transform: scale(1.1);
-  }
-}
-
-.learn-skill-lit {
-  animation: learn-skill-lit 800ms ease-out;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .learn-skill-lit {
-    animation: none;
-  }
-}
-
-/* The lesson workspace: three surfaces, darkest where the code is. */
+/* Lesson pages: the site's black, with raised cards. */
 .lesson-shell {
-  --lesson-rail: #0f0b18;
-  --lesson-stage: #161122;
-  --lesson-raised: #231b35;
-  --lesson-line: #2f2644;
-  --lesson-code: #08060d;
+  --lesson-rail: #000;
+  --lesson-stage: #000;
+  --lesson-raised: #141217;
+  --lesson-line: #27242c;
+  --lesson-code: #0a0a0a;
   background: var(--lesson-stage);
 }
 
 .lesson-board {
-  background-color: #1c1530;
-  background-image: radial-gradient(#3a2d5c 1.2px, transparent 1.2px);
+  background-color: #100d16;
+  background-image: radial-gradient(#2b2439 1.2px, transparent 1.2px);
   background-size: 20px 20px;
+}
+
+/* Every scrollbar on a lesson page (side lists, code, the page itself) stays out of the way. */
+.lesson-shell *,
+html:has(.lesson-shell) {
+  scrollbar-width: thin;
+  scrollbar-color: #3a3640 transparent;
 }

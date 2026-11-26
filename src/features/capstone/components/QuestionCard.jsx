@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Clock, FileCode2 } from "lucide-react";
 import useCountdown from "@/hooks/useCountdown";
-import NoCopy from "@/components/integrity/NoCopy";
+import NoCopy from "@/components/primitives/NoCopy";
 
 /**
  * The open defense question, in the original "? question / your answer" style.

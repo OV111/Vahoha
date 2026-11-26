@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
-import { capstoneApi } from "../../../capstone/capstoneApi";
+import { capstoneApi } from "@/features/capstone/capstoneApi";
 import { Slots } from "./adminUi";
 import { activeMembers } from "./adminHelpers";
 

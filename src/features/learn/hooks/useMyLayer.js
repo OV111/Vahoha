@@ -4,7 +4,7 @@ import { queryCache } from "@/lib/queryCache";
 import { fetchRoadmapProgress } from "@/services/roadmapApi";
 import { useTrackLayers } from "@/features/roadmap/hooks/useTrackLayers";
 import { layerStatus } from "@/features/roadmap/lib/layerPrereqs";
-import { findTrack } from "../lib/tracks";
+import { findTrack } from "@/features/learn/lib/tracks";
 
 /**
  * The signed-in learner's active track and the layer to work on now: the first

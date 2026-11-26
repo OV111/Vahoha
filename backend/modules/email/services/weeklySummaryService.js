@@ -1,7 +1,7 @@
 import process from "node:process";
 import { sendEmail } from "../../../utils/emailService.js";
 import { trackEvent } from "../../../services/eventService.js";
-import { WEEKLY_SUMMARY_COPY as COPY } from "../../../../constants/weeklySummary.js";
+import { WEEKLY_SUMMARY_COPY as COPY } from "#shared/weeklySummary.js";
 import { dueWeekKey } from "../lib/schedule.js";
 import { summaryKind, weekStats } from "../lib/summary.js";
 import { createUnsubscribeToken } from "../lib/unsubscribeToken.js";

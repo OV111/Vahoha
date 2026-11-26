@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { GraduationCap, CheckCircle2, XCircle, Volume2 } from "lucide-react";
-import { speak, isSpeechSupported } from "../lib/speech";
+import { speak, isSpeechSupported } from "@/features/mentor/lib/speech";
 
 /**
  * Rendered inline after a teach-back explanation is graded via

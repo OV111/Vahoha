@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Check, Copy, Mail } from "lucide-react";
-import { FaFacebook, FaLinkedinIn } from "react-icons/fa6";
-import XLogo from "@/components/ui/XLogo";
+import { FaFacebook, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 import Popover from "./Popover";
 import { captureEvent } from "@/lib/posthog";
 
@@ -31,7 +30,7 @@ const SharePopover = ({ url, title, onClose }) => {
   const socials = [
     {
       label: "Share on X",
-      icon: <XLogo size={15} />,
+      icon: <FaXTwitter size={15} />,
       href: `https://x.com/intent/post?url=${encoded}&text=${encodedTitle}`,
       hover: "hover:border-black hover:text-black dark:hover:border-white dark:hover:text-white",
     },

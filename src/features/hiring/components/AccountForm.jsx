@@ -2,13 +2,13 @@ import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { AlertTriangle } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
-import TextField from "../../auth/components/TextField";
-import PasswordField from "../../auth/components/PasswordField";
-import { googleButtonClass } from "../../auth/authStyles";
+import TextField from "@/features/auth/components/TextField";
+import PasswordField from "@/features/auth/components/PasswordField";
+import { googleButtonClass } from "@/features/auth/authStyles";
 import FormButtons from "./FormButtons";
-import { sanitizeInput } from "../../../utils/sanitize";
-import { PASSWORD_MESSAGES, PASSWORD_RULES } from "../../../../constants/password";
-import { isFreeEmail } from "../../../../constants/emailDomains";
+import { sanitizeInput } from "@/utils/sanitize";
+import { PASSWORD_MESSAGES, PASSWORD_RULES } from "@shared/password";
+import { isFreeEmail } from "@shared/emailDomains";
 
 const passwordMax = { value: PASSWORD_RULES.maxBytes, message: `Max ${PASSWORD_RULES.maxBytes} characters.` };
 

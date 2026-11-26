@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 const apiFetch = vi.hoisted(() => vi.fn());
-vi.mock("../../../constants/api", () => ({
+vi.mock("@/constants/api", () => ({
   API_BASE_URL: "http://api.test",
   getAccessToken: () => "token",
   authHeaders: () => ({ Authorization: "Bearer token" }),

@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { Buffer } from "node:buffer";
 import { ObjectId } from "mongodb";
-import { HIRING_CODE_LENGTH } from "../../../../constants/hiringRules.js";
+import { HIRING_CODE_LENGTH } from "#shared/hiringRules.js";
 
 /**
  * One-time email codes for hiring accounts. Only a hash is stored. A code

@@ -1,4 +1,4 @@
-import UserAvatar from "@/components/ui/UserAvatar";
+import UserAvatar from "@/components/primitives/UserAvatar";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { useEffect, useMemo, useState } from "react";
 import { X, Shield, ShieldOff, UserMinus, UserPlus, LogOut } from "lucide-react";
@@ -8,7 +8,7 @@ import {
   removeGroupMember,
   setGroupMemberAdmin,
   leaveGroupChat,
-} from "../lib/groupChatApi";
+} from "@/features/chat/lib/groupChatApi";
 
 const GroupMembersModal = ({
   roomId,

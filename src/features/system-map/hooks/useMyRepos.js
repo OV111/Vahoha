@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useProfileStore from "../../../stores/useProfileStore";
+import useProfileStore from "@/stores/useProfileStore";
 
 const MAX_REPOS = 6;
 

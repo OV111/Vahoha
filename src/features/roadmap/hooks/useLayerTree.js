@@ -1,12 +1,10 @@
 import { useMemo } from "react";
-import useRoadmapStore from "@/stores/useRoadmapStore";
-import { buildLessons, lessonHrefs, lessonSlugs } from "@/features/learn/lib/curriculum";
-import { lessonMeta } from "@/features/learn/content/manifest";
-import { hasLessonContent } from "@/features/learn/content";
+import useRoadmapStore from "./useRoadmapStore";
+import { lessonHrefs, lessonSlugs } from "@/features/learn/lib/curriculum";
+import { topicMeta } from "@/features/learn/content/topics";
 import { useLayerStatuses } from "@/features/learn/lib/lessonStatus";
-import { nextLesson } from "@/features/learn/lib/nextLesson";
 import { hasLab } from "@/features/labs/content";
-import { effectiveStatuses, layerNodeProgress, layerView, parentStatus, statusOf, summarize } from "../lib/nodeProgress";
+import { effectiveStatuses, layerNodeProgress, layerView, parentStatus, statusOf, summarize } from "@/features/roadmap/lib/nodeProgress";
 
 /**
  * Everything a layer row draws, derived from the layer data + recorded progress.
@@ -15,7 +13,7 @@ import { effectiveStatuses, layerNodeProgress, layerView, parentStatus, statusOf
  * passed); nothing here writes it.
  *
  * @param {object} layer
- * @param {import("../lib/nodeProgress").LayerState} layerState  layerPrereqs.layerStatus()
+ * @param {import("@/features/roadmap/lib/nodeProgress").LayerState} layerState  layerPrereqs.layerStatus()
  */
 export const useLayerTree = (layer, layerState) => {
   const trackId = useRoadmapStore((s) => s.selectedTrack?.id);
@@ -36,8 +34,8 @@ export const useLayerTree = (layer, layerState) => {
             href: hrefFor(section.title, child.title),
             status: statusOf(statuses, slug),
             hasLab: Boolean(trackId && slug && hasLab(trackId, layer.id, slug)),
-            // Shown only when known: authored on the lesson, or from a written lesson file.
-            minutes: child.minutes ?? (slug ? lessonMeta(trackId, layer.id, slug)?.minutes : null) ?? null,
+            // Shown only when known: authored on the lesson, or from a written topic.
+            minutes: child.minutes ?? (slug ? topicMeta(trackId, layer.id, slug)?.minutes : null) ?? null,
           };
         });
         const list = lessons.map((l) => l.status);
@@ -47,10 +45,6 @@ export const useLayerTree = (layer, layerState) => {
     const { summary } = layerNodeProgress(layer, statuses);
     const view = layerView(layerState, summary);
 
-    const resume = nextLesson(buildLessons(layer), statuses, (slug) => hasLessonContent(trackId, layer.id, slug));
-    const layerHref = trackId ? `/learn/${trackId}/${layer.id}` : null;
-    const ctaHref = view.cta === "Continue" && resume && layerHref ? `${layerHref}/${resume.slug}` : layerHref;
-
-    return { left: sectionsOf(layer.sideLeft ?? []), right: sectionsOf(layer.sideRight ?? []), summary, view, ctaHref };
+    return { left: sectionsOf(layer.sideLeft ?? []), right: sectionsOf(layer.sideRight ?? []), summary, view };
   }, [layer, layerState, recorded, trackId]);
 };

@@ -4,8 +4,8 @@ import {
   MENTOR_USAGE_COPY as COPY,
   MENTOR_USAGE_DEFAULT_DAYS,
   MENTOR_USAGE_RANGES,
-} from "../../../../constants/mentorUsage";
-import { formatCompact, formatFull } from "../lib/usageFormat";
+} from "@/constants/mentorUsage";
+import { formatCompact, formatFull } from "@/features/profile/lib/usageFormat";
 import UsageToday from "./UsageToday";
 import UsageChart, { UsageDailyTable } from "./UsageChart";
 import UsageSessionsTable from "./UsageSessionsTable";

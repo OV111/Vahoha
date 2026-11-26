@@ -43,7 +43,5 @@ export default function useConsoleRunner() {
     return next;
   }, []);
 
-  const clear = useCallback(() => setLines(null), []);
-
-  return { run, running, lines, clear };
+  return { run, running, lines };
 }

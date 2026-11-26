@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { fetchRun, submitDecision } from "../api/judgmentApi";
+import { fetchRun, submitDecision } from "@/features/judgment/api/judgmentApi";
 
 /** One run: load it, send decisions. The server owns the world; this only renders it. */
 export const useJudgmentRun = (runId) => {

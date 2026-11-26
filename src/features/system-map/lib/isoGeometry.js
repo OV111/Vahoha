@@ -3,7 +3,7 @@
 // from React.
 
 import { DEFAULT_SIZE } from "./edgeRouting";
-import { shapeOf } from "../../../../constants/isoShapes";
+import { shapeOf } from "@/constants/projectMapShapes";
 
 export const TILE_W = 14;
 export const TILE_H = 7;

@@ -1,5 +1,5 @@
 import { FileCode2 } from "lucide-react";
-import { evidenceUrl } from "../lib/mapGraph";
+import { evidenceUrl } from "@/features/system-map/lib/mapGraph";
 
 export default function EvidenceList({ repo, items }) {
   if (!items?.length) return null;

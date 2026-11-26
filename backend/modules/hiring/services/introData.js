@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { HttpError } from "../../../utils/httpErrors.js";
-import { INTRO_RULES } from "../../../../constants/hiringRules.js";
+import { INTRO_RULES } from "#shared/hiringRules.js";
 import { describeLayers } from "./jobService.js";
 
 /**

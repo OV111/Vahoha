@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 const apiFetch = vi.fn();
 // A plain flag, not a mock that throws: vitest fails a test whose mock throws.
 let offline = false;
-vi.mock("../../../../constants/api", () => ({
+vi.mock("@/constants/api", () => ({
   API_BASE_URL: "http://api.test",
   authHeaders: () => ({ Authorization: "Bearer t" }),
   apiFetch: (...args) => {

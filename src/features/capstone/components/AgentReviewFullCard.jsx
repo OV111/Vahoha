@@ -1,11 +1,11 @@
-import { Bone } from "@/components/ui/Skeleton";
+import { Bone } from "@/components/feedback/Skeleton";
 import { motion as Motion } from "framer-motion";
 import ReviewCriterion from "./ReviewCriterion";
 import DefenseQuestions from "./DefenseQuestions";
 import { PrimaryButton, SURFACE, SectionLabel } from "./ui";
-import { fadeUp, hasIntroPlayed } from "../lib/motion";
-import { formatRelative } from "../lib/format";
-import { summarize } from "../lib/review";
+import { fadeUp, hasIntroPlayed } from "@/features/capstone/lib/motion";
+import { formatRelative } from "@/features/capstone/lib/format";
+import { summarize } from "@/features/capstone/lib/review";
 
 const RING = { size: 96, stroke: 8 };
 

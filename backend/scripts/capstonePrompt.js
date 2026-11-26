@@ -48,7 +48,7 @@ const roadmap = JSON.parse(fs.readFileSync(roadmapFile, "utf8"));
 const titles = Object.fromEntries(
   [
     ...fs
-      .readFileSync(path.join(root, "constants/roadmapPaths.js"), "utf8")
+      .readFileSync(path.join(root, "shared/roadmapPaths.js"), "utf8")
       .matchAll(/id: "([^"]+)",\s*\r?\n\s*title: "([^"]+)"/g),
   ].map((m) => [m[1], m[2]]),
 );

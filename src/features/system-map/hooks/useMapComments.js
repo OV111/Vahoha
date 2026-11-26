@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { addComment, deleteComment, fetchComments } from "../commentsApi";
+import { addComment, deleteComment, fetchComments } from "@/features/system-map/commentsApi";
 
 /**
  * A team map's comments. Loaded when the map opens and again each time a part

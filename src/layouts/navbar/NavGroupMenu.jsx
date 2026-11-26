@@ -1,8 +1,8 @@
 import { NavLink } from "react-router-dom";
 import { ChevronDown, Lock } from "lucide-react";
-import { TRACK_LINKS } from "../../../constants/navbar";
+import { TRACK_LINKS } from "@/constants/navbar";
 import { navItemPath } from "@/utils/navigation";
-import { focusRing, DropdownPanel } from "./parts";
+import { focusRing, DropdownPanel } from "./navbarParts";
 
 // Which motion each dropdown icon plays on hover (defined in index.css).
 const ICON_MOTION = {

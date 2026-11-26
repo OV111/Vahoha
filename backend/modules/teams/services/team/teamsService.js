@@ -11,7 +11,7 @@ import { fail } from "../../../../utils/httpErrors.js";
 import { refreshLeadService } from "./teamLevelService.js";
 import { ensureCvEstimate } from "../membership/cvService.js";
 import { derivePrefix } from "../../lib/taskRules.js";
-import { MAX_TEAM_MEMBERS as MAX_MEMBERS } from "../../../../../constants/teams.js";
+import { MAX_TEAM_MEMBERS as MAX_MEMBERS } from "#shared/teams.js";
 
 const getTeamOr404 = async (db, teamId) => {
   const team = await db.collection(TEAMS).findOne({ _id: new ObjectId(teamId) });

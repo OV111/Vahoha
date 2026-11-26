@@ -1,16 +1,16 @@
-import JohnDoe from "../assets/authors/john-doe.webp";
-import AdaByte from "../assets/authors/ada-byte.webp";
-import DmitryPetrov from "../assets/authors/dmitry-petrov.webp";
-import AliceKeyes from "../assets/authors/alice-keyes.webp";
-import WilliamChen from "../assets/authors/william-chen.webp";
-import GraceHopper from "../assets/authors/grace-hopper.webp";
+import JohnDoe from "@/features/blogs/assets/authors/john-doe.webp";
+import AdaByte from "@/features/blogs/assets/authors/ada-byte.webp";
+import DmitryPetrov from "@/features/blogs/assets/authors/dmitry-petrov.webp";
+import AliceKeyes from "@/features/blogs/assets/authors/alice-keyes.webp";
+import WilliamChen from "@/features/blogs/assets/authors/william-chen.webp";
+import GraceHopper from "@/features/blogs/assets/authors/grace-hopper.webp";
 
-import fs1React from "../assets/covers/fullstack-react.webp";
-import BuildingRestApi from "../assets/covers/building-rest-api.webp";
-import NodejsMongodb from "../assets/covers/node-mongodb.webp";
-import AuthStrategiesBack from "../assets/covers/auth-strategies.webp";
-import Caching from "../assets/covers/caching.webp";
-import ScalableDesign from "../assets/covers/scalable-design.webp";
+import fs1React from "@/features/blogs/assets/covers/fullstack-react.webp";
+import BuildingRestApi from "@/features/blogs/assets/covers/building-rest-api.webp";
+import NodejsMongodb from "@/features/blogs/assets/covers/node-mongodb.webp";
+import AuthStrategiesBack from "@/features/blogs/assets/covers/auth-strategies.webp";
+import Caching from "@/features/blogs/assets/covers/caching.webp";
+import ScalableDesign from "@/features/blogs/assets/covers/scalable-design.webp";
 
 // Built-in ("sys") posts reference local files by name; user posts use full
 // Cloudinary URLs. resolveAsset handles both.

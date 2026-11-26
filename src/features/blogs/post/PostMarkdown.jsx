@@ -1,8 +1,8 @@
 import { memo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import CodeBlock from "@/components/ui/CodeBlock";
-import { codeRehypePlugins } from "@/components/ui/codeHighlight";
+import CodeBlock from "@/components/code/CodeBlock";
+import { codeRehypePlugins } from "@/components/code/codeHighlight";
 import { slugify } from "./postModel.js";
 
 /**

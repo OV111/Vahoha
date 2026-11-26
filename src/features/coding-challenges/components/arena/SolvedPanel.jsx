@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CheckCircle2, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { C, FONT_MONO } from "../../lib/arenaTheme";
+import { C, FONT_MONO } from "@/features/coding-challenges/lib/arenaTheme";
 import SectionHead from "./SectionHead";
 import ExplainSolution from "./ExplainSolution";
 

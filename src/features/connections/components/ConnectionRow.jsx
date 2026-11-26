@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import UserAvatar from "@/components/ui/UserAvatar";
-import { displayName, isMutual, timeAgo } from "../lib/connections";
+import UserAvatar from "@/components/primitives/UserAvatar";
+import { displayName, isMutual, timeAgo } from "@/features/connections/lib/connections";
 
 const CHIP = "rounded-full border px-2 py-0.5 text-xs font-medium";
 

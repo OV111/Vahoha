@@ -2,9 +2,9 @@ import { useCallback, useImperativeHandle, useRef } from "react";
 import { ReactFlowProvider, applyEdgeChanges, applyNodeChanges, reconnectEdge, useReactFlow } from "@xyflow/react";
 import SystemCanvas from "./SystemCanvas";
 import { DRAG_TYPE } from "./NodePalette";
-import { connect } from "../lib/changes";
-import { PX_PER_TILE } from "../lib/isoGeometry";
-import { fitOptions } from "../lib/viewport";
+import { connect } from "@/features/system-map/lib/changes";
+import { PX_PER_TILE } from "@/features/system-map/lib/isoGeometry";
+import { fitOptions } from "@/features/system-map/lib/viewport";
 
 // The flat view and everything that needs React Flow. Lazy-loaded: the map opens in 3D.
 

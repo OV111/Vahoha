@@ -1,4 +1,4 @@
-import { Bone, BonePanel } from "@/components/ui/Skeleton";
+import { Bone, BonePanel } from "@/components/feedback/Skeleton";
 
 /**
  * Mirrors ChallengeCard's exact structure: same padding, same row heights,

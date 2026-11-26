@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion as Motion } from "framer-motion";
-import useCounter from "../../hooks/useCounter";
+import useCounter from "@/features/coding-challenges/hooks/useCounter";
 
 export default function StatCell({ value, unit, label, sub, index }) {
   const [started, setStarted] = useState(false);

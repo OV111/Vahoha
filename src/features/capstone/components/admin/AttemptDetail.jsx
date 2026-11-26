@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { AlertTriangle } from "lucide-react";
 import ReasonAction from "./ReasonAction";
-import { Card, ScoreBar, SectionLabel } from "../ui";
-import { formatDateTime } from "../../lib/format";
+import { Card, ScoreBar, SectionLabel } from "@/features/capstone/components/ui";
+import { formatDateTime } from "@/features/capstone/lib/format";
 
 const Flags = ({ flags }) =>
   flags?.length ? (

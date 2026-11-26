@@ -3,9 +3,9 @@ import { Link, useParams } from "react-router-dom";
 import { BadgeCheck, Code2, Compass, ExternalLink, GitPullRequest, Layers, Mic, ShieldCheck, Sparkles, Trophy, Users, Workflow } from "lucide-react";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 import { recruiterApi } from "./recruiterApi";
-import HireCta from "../hiring/components/HireCta";
-import RecruiterActions from "../hiring/components/RecruiterActions";
-import RequestIntro from "../hiring/components/intros/RequestIntro";
+import HireCta from "@/features/hiring/components/HireCta";
+import RecruiterActions from "@/features/hiring/components/RecruiterActions";
+import RequestIntro from "@/features/hiring/components/intros/RequestIntro";
 
 /**
  * Public candidate scorecard: /candidate/:username. No account needed.

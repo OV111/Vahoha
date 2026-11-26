@@ -8,7 +8,7 @@ import LoadingSuspense from "./components/feedback/LoadingSuspense";
 import AppToaster from "./components/feedback/AppToaster";
 import useAuthStore from "./stores/useAuthStore";
 import useNotificationStore from "./stores/useNotificationStore";
-import useBlogInteractionsStore from "./stores/useBlogInteractionsStore";
+import useBlogInteractionsStore from "@/features/blogs/useBlogInteractionsStore";
 import useProfileStore from "./stores/useProfileStore";
 import { setPlanRequiredHandler, setViewOnlyHandler } from "./lib/session";
 

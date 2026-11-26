@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { TABS } from "../../../constants/libsPage";
+import { TABS } from "@/constants/libraryPage";
 
 /**
  * Library filter state, kept in the URL, so Back, refresh and a shared link

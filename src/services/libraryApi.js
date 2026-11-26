@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "@/constants/api";
 
 export const fetchLibraryResources = async (params = {}, signal) => {
   const url = new URL(`${API_BASE_URL}/library`);

@@ -4,7 +4,7 @@ import {
   createPortal,
   fetchSubscription,
   syncSubscription,
-} from "../billingApi";
+} from "@/features/billing/billingApi";
 
 /**
  * Billing state for the current user, plus the two actions that leave the site.

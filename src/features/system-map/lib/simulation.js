@@ -1,4 +1,4 @@
-import { isDown } from "../../../../constants/isoShapes";
+import { isDown } from "@/constants/projectMapShapes";
 import { isUnconfirmed } from "./mapGraph";
 
 // Plays a few requests through the map by what each kind of part really does:

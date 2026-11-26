@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Check, Globe, Link2, Lock, Tag } from "lucide-react";
-import { setSharing } from "../systemMapApi";
+import { setSharing } from "@/features/system-map/systemMapApi";
 import { captureEvent } from "@/lib/posthog";
 
 const COPIED_MS = 1800;

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 const getNotifications = vi.hoisted(() => vi.fn());
 vi.mock("@/services/notificationsApi", () => ({ getNotifications: (...args) => getNotifications(...args) }));
-vi.mock("../../../constants/api", () => ({ getAccessToken: () => "token" }));
+vi.mock("@/constants/api", () => ({ getAccessToken: () => "token" }));
 
 // A Socket.IO client the test drives by hand.
 const sockets = vi.hoisted(() => []);

@@ -5,7 +5,7 @@
  *   MONGO_URI=... node backend/seeders/roadmapSeeder.js
  *
  * Source of truth is `src/data/roadmaps/<category>.json` (authored content) plus
- * `constants/roadmapPaths.js` (track titles + availability). This seeder is the
+ * `shared/roadmapPaths.js` (track titles + availability). This seeder is the
  * bridge: it flattens category -> track -> layer into two queryable collections
  * so the backend can validate layer ids, link library resources and coding
  * challenges to layers, and answer "what is the user's current layer".
@@ -25,7 +25,7 @@ import connectDB from "../config/db.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROADMAP_DIR = join(__dirname, "../../src/data/roadmaps");
-const TRACKS_FILE = join(__dirname, "../../constants/roadmapPaths.js");
+const TRACKS_FILE = join(__dirname, "#shared/roadmapPaths.js");
 
 // ── Track metadata ────────────────────────────────────────────
 // roadmapPaths.js is an ES module of plain data, so we can import it directly

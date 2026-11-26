@@ -13,7 +13,7 @@
 // Pure: no network, no database. judgeRunnerService.js does the running.
 
 import { isDeepStrictEqual } from "node:util";
-import { JUDGE_LANGUAGES } from "../../../../constants/challengeLanguages.js";
+import { JUDGE_LANGUAGES } from "#shared/challengeLanguages.js";
 import { buildCppProgram } from "./harness/cpp.js";
 import { buildGoProgram } from "./harness/go.js";
 import { buildJavaProgram } from "./harness/java.js";
@@ -166,7 +166,7 @@ export const hasHarness = (language) =>
  * @param {string} language
  * @param {string} code  the learner's file
  * @param {{ name: string, params: unknown[], returns?: string }} functionSpec
- *   typed (see constants/challengeTypes.js) for Java, C++ and Go
+ *   typed (see shared/challengeTypes.js) for Java, C++ and Go
  * @param {{ args: unknown[] }[]} cases
  */
 export const buildCaseRun = (language, code, functionSpec, cases) => {

@@ -9,7 +9,7 @@ import {
 
 // Explicit map instead of `import * as Si` — the namespace import defeats
 // tree-shaking and bundled all ~3,000 Simple Icons (~4.9 MB) into this page.
-// Add an entry here when constants/libs.js gains a new `icon` name; unknown
+// Add an entry here when src/constants/library.js gains a new `icon` name; unknown
 // names fall back to the first-letter badge below.
 const ICONS = {
   SiDjango, SiDocker, SiEslint, SiExpo, SiExpress, SiFastapi, SiFastify,

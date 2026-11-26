@@ -1,5 +1,5 @@
 import dns from "node:dns/promises";
-import { isDisposableEmail, isFreeEmail } from "../../../../constants/emailDomains.js";
+import { isDisposableEmail, isFreeEmail } from "#shared/emailDomains.js";
 import { domainsMatch, emailDomainOf, nameToken, websiteHostOf } from "../lib/domain.js";
 import { safeFetchPage } from "../lib/safeFetch.js";
 import { createTtlCache } from "../../../utils/ttlCache.js";
@@ -7,7 +7,7 @@ import { HttpError } from "../../../utils/httpErrors.js";
 
 /**
  * The company trust engine. Runs automatic checks on a hiring account and turns
- * them into a trust level (see TRUST_LEVELS in constants/hiringRules.js). No
+ * them into a trust level (see TRUST_LEVELS in shared/hiringRules.js). No
  * person reviews the normal case: the level alone decides what the account may do.
  *
  * Rules (the published logic, kept boring on purpose):

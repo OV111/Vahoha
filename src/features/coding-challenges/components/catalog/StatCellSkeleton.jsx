@@ -1,4 +1,4 @@
-import { Bone } from "@/components/ui/Skeleton";
+import { Bone } from "@/components/feedback/Skeleton";
 
 /**
  * Same padding and line heights as StatCell, so the stats row keeps its size

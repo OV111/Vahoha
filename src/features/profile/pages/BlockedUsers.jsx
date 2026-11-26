@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import PageShell from "../components/PageShell";
-import { SURFACE } from "@/components/ui/surface";
+import PageShell from "@/features/profile/components/PageShell";
+import { SURFACE } from "@/components/primitives/styles";
 import ConnectionsSkeleton from "@/features/connections/components/ConnectionsSkeleton";
 import { displayName, timeAgo } from "@/features/connections/lib/connections";
-import UserAvatar from "@/components/ui/UserAvatar";
-import { getBlockedUserList, unblockUser } from "../../chat/lib/chatControlsApi";
+import UserAvatar from "@/components/primitives/UserAvatar";
+import { getBlockedUserList, unblockUser } from "@/features/chat/lib/chatControlsApi";
 
 const LINK_BUTTON =
   "mt-1 text-sm font-medium text-purple-300 underline hover:text-purple-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400";

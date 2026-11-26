@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import StatusTabs from "./components/intros/StatusTabs";
 import SentIntroRow from "./components/intros/SentIntroRow";
 import { fetchSentIntros, withdrawIntro } from "./api/hiringApi";
-import { INTROS_PAGE_COPY as COPY } from "../../../constants/hiring";
+import { INTROS_PAGE_COPY as COPY } from "@/constants/hiring";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 
 // /hiring/intros: every intro request the company sent, newest first.

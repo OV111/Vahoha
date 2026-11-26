@@ -1,7 +1,7 @@
 import { useId, useState } from "react";
 import { Check, ChevronRight, Loader2, TriangleAlert } from "lucide-react";
-import { THINKING_COPY as COPY } from "../../../../constants/mentorTools";
-import { describeStep, summarizeTrace } from "../lib/toolSteps";
+import { THINKING_COPY as COPY } from "@/constants/mentorTools";
+import { describeStep, summarizeTrace } from "@/features/mentor/lib/toolSteps";
 import ThinkingSpinner from "./ThinkingSpinner";
 
 const MAX_RUNNING_LINES = 3;

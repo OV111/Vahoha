@@ -14,7 +14,7 @@
  */
 
 import { ObjectId } from "mongodb";
-import { CHALLENGE_LANGUAGES, JUDGE_LANGUAGES } from "../../../../constants/challengeLanguages.js";
+import { CHALLENGE_LANGUAGES, JUDGE_LANGUAGES } from "#shared/challengeLanguages.js";
 
 const COL = "challenge_attempts";
 const CHALLENGES = "challenges";

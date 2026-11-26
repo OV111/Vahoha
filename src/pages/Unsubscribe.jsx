@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { unsubscribeWithToken } from "@/services/emailPrefsApi";
-import { WEEKLY_SUMMARY_COPY } from "../../constants/weeklySummary";
+import { WEEKLY_SUMMARY_COPY } from "@shared/weeklySummary";
 
 const COPY = WEEKLY_SUMMARY_COPY.unsubscribePage;
 

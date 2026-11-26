@@ -1,7 +1,7 @@
-import { BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
+import { BoneLines, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
-import { teamsApi } from "../../teamsApi";
+import { teamsApi } from "@/features/teams/teamsApi";
 
 // Mirrors teamFlags() in backend/modules/teams/lib/teamScore.js.
 const FLAGS = {

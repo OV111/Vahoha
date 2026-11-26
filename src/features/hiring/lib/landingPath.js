@@ -1,4 +1,4 @@
-import useProfileStore from "../../../stores/useProfileStore";
+import useProfileStore from "@/stores/useProfileStore";
 
 export const HIRING_HOME = "/hiring/home";
 

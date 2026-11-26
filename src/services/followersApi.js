@@ -1,4 +1,4 @@
-import { API_BASE_URL, authHeaders, apiFetch } from "../../constants/api";
+import { API_BASE_URL, authHeaders, apiFetch } from "@/constants/api";
 
 export const fetchFollowers = async (page = 1, limit = 20) => {
   const res = await apiFetch(

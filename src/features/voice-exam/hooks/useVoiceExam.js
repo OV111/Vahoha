@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
-import { WORKING_STATES } from "../lib/examStates";
+import { WORKING_STATES } from "@/features/voice-exam/lib/examStates";
 import {
   abandonAttempt,
   getEligibility,
   getLiveAttempt,
   startAttempt,
   submitTurn,
-} from "../api/voiceExamApi";
+} from "@/features/voice-exam/api/voiceExamApi";
 
 const initial = {
   eligibility: null,

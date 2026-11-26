@@ -4,7 +4,7 @@
 import { readFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { chromium } from "playwright";
-import { OG_CARDS } from "../constants/ogCards.js";
+import { OG_CARDS } from "#shared/ogCards.js";
 
 const OUT_DIR = "public/og";
 const mark = readFileSync("src/assets/brand/vahoha-mark-circle.png").toString("base64");

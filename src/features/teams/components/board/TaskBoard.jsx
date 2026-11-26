@@ -4,8 +4,8 @@ import {
   BOARD_OPEN_STATUSES,
   TASK_STATUSES,
   TASK_STATUS_LABELS,
-} from "../../../../../constants/teams";
-import { teamsApi } from "../../teamsApi";
+} from "@shared/teams";
+import { teamsApi } from "@/features/teams/teamsApi";
 import AiPlanPanel from "./AiPlanPanel";
 import SprintBar from "./SprintBar";
 import TaskCard from "./TaskCard";

@@ -7,10 +7,10 @@ import {
   Keyboard,
   Clock,
 } from "lucide-react";
-import { useRecorder } from "../hooks/useRecorder";
-import { useMicLevel } from "../hooks/useMicLevel";
+import { useRecorder } from "@/features/voice-exam/hooks/useRecorder";
+import { useMicLevel } from "@/features/voice-exam/hooks/useMicLevel";
 import useCountdown from "@/hooks/useCountdown";
-import { formatClock } from "../lib/formatClock";
+import { formatClock } from "@/features/voice-exam/lib/formatClock";
 
 const RING = 2 * Math.PI * 58; // circumference of the progress ring around the mic button
 const LOW_TIME_SEC = 120;
@@ -57,7 +57,7 @@ function Wave({ levels, active }) {
  * Typed fallback has paste disabled so an LLM answer cannot be dropped in.
  *
  * @param {{
- *   attempt: import("../lib/examStates").AttemptView,
+ *   attempt: import("@/features/voice-exam/lib/examStates").AttemptView,
  *   isBusy: boolean,
  *   unsent: { text?: string, audio?: Blob } | null,   an answer the server never confirmed
  *   onResend: () => void,

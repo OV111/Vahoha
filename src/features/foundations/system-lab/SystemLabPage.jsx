@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { addEdge, MarkerType, useEdgesState, useNodesState } from "@xyflow/react";
 import { ArrowLeft, Check, Lock, Play, RotateCcw, X } from "lucide-react";
-import NotFound from "../../../components/feedback/NotFound";
+import NotFound from "@/components/screens/NotFound";
 import CodeEditor from "@/features/coding-challenges/components/arena/CodeEditor";
 import useConsoleRunner from "@/features/learn/hooks/useConsoleRunner";
 import SystemCanvas from "@/features/system-map/components/SystemCanvas";

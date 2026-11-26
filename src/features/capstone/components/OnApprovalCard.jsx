@@ -1,7 +1,7 @@
 import { motion as Motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { SURFACE, SectionLabel } from "./ui";
-import { fadeUp } from "../lib/motion";
+import { fadeUp } from "@/features/capstone/lib/motion";
 
 // Only what the platform really issues today.
 const APPROVAL_ITEMS = [

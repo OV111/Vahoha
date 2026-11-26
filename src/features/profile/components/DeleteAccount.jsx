@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import useAuthStore from "../../../stores/useAuthStore";
-import useProfileStore from "../../../stores/useProfileStore";
-import { deleteAccount } from "../../../services/profileApi";
+import useAuthStore from "@/stores/useAuthStore";
+import useProfileStore from "@/stores/useProfileStore";
+import { deleteAccount } from "@/services/profileApi";
 
 // Must match DELETE_CONFIRMATION in backend/modules/account/services/accountService.js.
 const CONFIRM_WORD = "DELETE";

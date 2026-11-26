@@ -1,5 +1,5 @@
-import { MENTOR_USAGE_COPY as COPY, THIN_SCROLL_CLASS } from "../../../../constants/mentorUsage";
-import { formatAgo, formatFull } from "../lib/usageFormat";
+import { MENTOR_USAGE_COPY as COPY, THIN_SCROLL_CLASS } from "@/constants/mentorUsage";
+import { formatAgo, formatFull } from "@/features/profile/lib/usageFormat";
 
 /** Per-conversation totals, newest first. A deleted chat keeps its usage but loses its title. */
 export default function UsageSessionsTable({ sessions }) {

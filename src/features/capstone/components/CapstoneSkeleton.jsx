@@ -1,4 +1,4 @@
-import { Bone, BoneControl, BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, BoneControl, BoneLines, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
 
 /**
  * Loading placeholder that mirrors CapstoneTrack's layout (hero + CTA +

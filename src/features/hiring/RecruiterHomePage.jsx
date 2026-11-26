@@ -4,8 +4,8 @@ import { ArrowRight, Bookmark, Search } from "lucide-react";
 import TrustBanner from "./components/TrustBanner";
 import IntrosSummaryCard from "./components/intros/IntrosSummaryCard";
 import { fetchRecruiterMe, fetchSaved } from "./api/hiringApi";
-import useProfileStore from "../../stores/useProfileStore";
-import { COMPANY_ROLES } from "../../../constants/hiring";
+import useProfileStore from "@/stores/useProfileStore";
+import { COMPANY_ROLES } from "@/constants/hiring";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
 
 const CARD = "rounded-2xl border border-white/10 bg-white/[0.02] p-5";

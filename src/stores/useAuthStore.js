@@ -1,10 +1,10 @@
 import { create } from "zustand";
-import { setAccessToken, clearAccessToken } from "../../constants/api";
-import { refreshSession, withSessionLock, setSessionEndHandler, setWriteHandler, startSessionWatch } from "../lib/session";
-import { queryCache } from "../lib/queryCache";
-import { createWriteHandler } from "../lib/queryInvalidation";
-import posthog, { isPostHogConfigured } from "../lib/posthog";
-import { logOut } from "../services/authApi";
+import { setAccessToken, clearAccessToken } from "@/constants/api";
+import { refreshSession, withSessionLock, setSessionEndHandler, setWriteHandler, startSessionWatch } from "@/lib/session";
+import { queryCache } from "@/lib/queryCache";
+import { createWriteHandler } from "@/lib/queryInvalidation";
+import posthog, { isPostHogConfigured } from "@/lib/posthog";
+import { logOut } from "@/services/authApi";
 
 const HINT_KEY = "hasSession";
 const PENDING_LOGOUT_KEY = "pendingLogout";

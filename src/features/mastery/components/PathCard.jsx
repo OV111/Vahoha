@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { PROGRESS_COPY } from "../../../../constants/progress";
-import { TEXT, MUTED, SOFT, BORDER, SURFACE, FOCUS } from "../lib/tone";
+import { PROGRESS_COPY } from "@/constants/progress";
+import { TEXT, MUTED, SOFT, BORDER, SURFACE, FOCUS } from "@/features/mastery/lib/tone";
 
 const COPY = PROGRESS_COPY.path;
 

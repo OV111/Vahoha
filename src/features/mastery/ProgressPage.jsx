@@ -1,4 +1,4 @@
-import { Bone, BoneControl, BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, BoneControl, BoneLines, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
 import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import MentorPanel from "@/features/mentor/components/MentorPanel";
@@ -12,8 +12,8 @@ import NextStepCard from "./components/NextStepCard";
 import TopicList from "./components/TopicList";
 import LockedTopics from "./components/LockedTopics";
 import ReadinessCard from "./components/ReadinessCard";
-import { PROGRESS_COPY as COPY } from "../../../constants/progress";
-import { PAGE } from "../../../constants/layout";
+import { PROGRESS_COPY as COPY } from "@/constants/progress";
+import { PAGE } from "@/constants/layout";
 import { TEXT, MUTED, BORDER, FOCUS } from "./lib/tone";
 
 const LoadError = ({ error, onRetry }) => (

@@ -1,14 +1,14 @@
-import { Bone } from "@/components/ui/Skeleton";
+import { Bone } from "@/components/feedback/Skeleton";
 import { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import { FileText } from "lucide-react";
-import useMentorStore from "@/stores/useMentorStore";
+import useMentorStore from "@/features/mentor/hooks/useMentorStore";
 import ThinkingTraceView from "./ThinkingTrace";
 import MarkdownMessage from "./MarkdownMessage";
 import MessageSkeleton from "./MessageSkeleton";
 import MessageActions from "./MessageActions";
 import ContextCard from "./ContextCard";
 import TeachBackCard from "./TeachBackCard";
-import { STOPPED_NOTICE } from "../../../../constants/mentor";
+import { STOPPED_NOTICE } from "@/constants/mentor";
 
 // Chat-reading size, in line with Claude and ChatGPT: 16px with roomy line height for long answers.
 const RESPONSE_TEXT = "text-[16px] leading-7 text-white";

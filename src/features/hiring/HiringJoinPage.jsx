@@ -9,16 +9,16 @@ import JoinStepper from "./components/JoinStepper";
 import VerifyEmailStep from "./components/VerifyEmailStep";
 import TrustResult from "./components/TrustResult";
 import { signUpRecruiter } from "./api/hiringApi";
-import useAuthStore from "../../stores/useAuthStore";
-import PixelBackground from "../../components/home/PixelBackground";
-import { SURFACE } from "../../components/ui/surface";
+import useAuthStore from "@/stores/useAuthStore";
+import PixelBackground from "@/components/home/PixelBackground";
+import { SURFACE } from "@/components/primitives/styles";
 import {
   COMPANY_ROLES,
   HIRING_LOGIN_PATH,
   JOIN_STEPS,
   JOIN_TITLES,
   ORG_TYPES,
-} from "../../../constants/hiring";
+} from "@/constants/hiring";
 
 const ROLE_STEP = 1;
 const EASE = [0.22, 1, 0.36, 1];

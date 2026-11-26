@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { motion as Motion } from "framer-motion";
 import { Award, Check, Clock, Lock, Play, Rocket } from "lucide-react";
 import useAuthStore from "@/stores/useAuthStore";
-import useCapstoneCatalog from "../hooks/useCapstoneCatalog";
-import { capstoneApi } from "../capstoneApi";
-import { nodeState } from "../lib/nodeState";
+import useCapstoneCatalog from "@/features/capstone/hooks/useCapstoneCatalog";
+import { capstoneApi } from "@/features/capstone/capstoneApi";
+import { nodeState } from "@/features/capstone/lib/nodeState";
 
 const LOOK = {
   coming_soon: {

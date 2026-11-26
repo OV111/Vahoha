@@ -1,5 +1,5 @@
 import useCachedResource from "@/hooks/useCachedResource";
-import { fetchMastery } from "../masteryApi";
+import { fetchMastery } from "@/features/mastery/masteryApi";
 
 /**
  * The learner's mastery view, with loading/error state and a manual reload.

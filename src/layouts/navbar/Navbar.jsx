@@ -1,13 +1,13 @@
 import { useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import useAuthStore from "../../stores/useAuthStore";
-import Wordmark from "@/components/ui/Wordmark";
+import useAuthStore from "@/stores/useAuthStore";
+import Wordmark from "@/layouts/Wordmark";
 import DesktopNav from "./DesktopNav";
 import NavSearch from "./NavSearch";
 import AvatarMenu from "./AvatarMenu";
 import MobileMenu from "./MobileMenu";
-import { focusRing, GuestActions, AvatarPlaceholder } from "./parts";
-import { useNavbarMenus, useNavbarHeightVar } from "./hooks";
+import { focusRing, GuestActions, AvatarPlaceholder } from "./navbarParts";
+import { useNavbarMenus, useNavbarHeightVar } from "./useNavbar";
 
 const HIDE_SEARCH_ROUTES = new Set(["/get-started", "/forgot-password", "/reset-password"]);
 

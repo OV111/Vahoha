@@ -3,20 +3,20 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import useAuthStore from "../stores/useAuthStore";
-import { sanitizeInput } from "../utils/sanitize";
-import { PASSWORD_RULES, PASSWORD_MESSAGES } from "../../constants/password";
-import TextField from "../features/auth/components/TextField";
-import PasswordField from "../features/auth/components/PasswordField";
-import SocialSignIn from "../features/auth/components/SocialSignIn";
-import { tapArea } from "../features/auth/authStyles";
-import { logIn, signUp } from "../services/authApi";
-import { landingPath } from "../features/hiring/lib/landingPath";
-import { HIRING_LOGIN, JOIN_AS } from "../../constants/hiring";
-import JoinAsChoice from "../features/hiring/components/JoinAsChoice";
-import PixelBackground from "../components/home/PixelBackground";
-import { SURFACE } from "../components/ui/surface";
-import { FEATURES } from "../../constants/features";
+import useAuthStore from "@/stores/useAuthStore";
+import { sanitizeInput } from "@/utils/sanitize";
+import { PASSWORD_RULES, PASSWORD_MESSAGES } from "@shared/password";
+import TextField from "@/features/auth/components/TextField";
+import PasswordField from "@/features/auth/components/PasswordField";
+import SocialSignIn from "@/features/auth/components/SocialSignIn";
+import { tapArea } from "@/features/auth/authStyles";
+import { logIn, signUp } from "@/services/authApi";
+import { landingPath } from "@/features/hiring/lib/landingPath";
+import { HIRING_LOGIN, JOIN_AS } from "@/constants/hiring";
+import JoinAsChoice from "@/features/hiring/components/JoinAsChoice";
+import PixelBackground from "@/components/home/PixelBackground";
+import { SURFACE } from "@/components/primitives/styles";
+import { FEATURES } from "@/constants/features";
 
 
 const nameRules = (label) => ({

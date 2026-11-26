@@ -1,4 +1,4 @@
-import { emailDomainOf } from "../../../../constants/emailDomains.js";
+import { emailDomainOf } from "#shared/emailDomains.js";
 
 export { emailDomainOf };
 

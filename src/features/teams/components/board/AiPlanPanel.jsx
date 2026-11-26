@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Bot } from "lucide-react";
-import { AI_LEAD } from "../../../../../constants/teams";
-import { teamsApi } from "../../teamsApi";
-import TSelect from "../TSelect";
+import { AI_LEAD } from "@shared/teams";
+import { teamsApi } from "@/features/teams/teamsApi";
+import TSelect from "@/features/teams/components/TSelect";
 
 /**
  * The AI lead's sprint plan: ask for a draft, review it task by task (keep or

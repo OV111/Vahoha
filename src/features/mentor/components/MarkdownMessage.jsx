@@ -1,7 +1,7 @@
 import { memo, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import CodeBlock from "@/components/ui/CodeBlock";
+import CodeBlock from "@/components/code/CodeBlock";
 
 /**
  * Renders an agent message as markdown.
@@ -141,7 +141,7 @@ function useCodePlugins(content) {
   useEffect(() => {
     if (!hasFence || loadedPlugins) return;
     let cancelled = false;
-    import("@/components/ui/codeHighlight").then((m) => {
+    import("@/components/code/codeHighlight").then((m) => {
       loadedPlugins = m.codeRehypePlugins;
       if (!cancelled) setPlugins(loadedPlugins);
     });

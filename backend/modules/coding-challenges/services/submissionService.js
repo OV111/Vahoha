@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { runHiddenTests, describeRunner } from "./runnerService.js";
 import { runCaseTests } from "./judgeRunnerService.js";
 import { describeJudge } from "./judge0Client.js";
-import { judgeStarter } from "../../../../constants/challengeLanguages.js";
+import { judgeStarter } from "#shared/challengeLanguages.js";
 import { consumeSubmission, limitMessage } from "./submissionQuotaService.js";
 import { getUserPlan } from "../../billing/index.js";
 import { saveChallengeResult } from "../../../services/challengeResultService.js";

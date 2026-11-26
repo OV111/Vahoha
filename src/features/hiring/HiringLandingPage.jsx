@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { HIRING_EVIDENCE, HIRING_HERO, HIRING_LOGIN_PATH, HIRING_STEPS } from "../../../constants/hiring";
+import { HIRING_EVIDENCE, HIRING_HERO, HIRING_LOGIN_PATH, HIRING_STEPS } from "@/constants/hiring";
 
 const CARD = "rounded-2xl border border-neutral-800 bg-neutral-950 p-5";
 

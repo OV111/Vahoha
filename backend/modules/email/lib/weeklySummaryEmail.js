@@ -1,5 +1,5 @@
 import { escapeHtml, BRAND } from "../../../utils/emailService.js";
-import { WEEKLY_SUMMARY_COPY as COPY } from "../../../../constants/weeklySummary.js";
+import { WEEKLY_SUMMARY_COPY as COPY } from "#shared/weeklySummary.js";
 
 /**
  * The weekly summary as { subject, html, text }. Pure, so it can be tested and

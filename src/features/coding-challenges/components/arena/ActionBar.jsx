@@ -1,5 +1,5 @@
 import { Play, RotateCcw, Sparkles } from "lucide-react";
-import { C, FONT_MONO } from "../../lib/arenaTheme";
+import { C, FONT_MONO } from "@/features/coding-challenges/lib/arenaTheme";
 
 // `viewOnly` (a hiring account): the problem stays readable, the actions are
 // replaced by a note, since the server refuses them anyway.

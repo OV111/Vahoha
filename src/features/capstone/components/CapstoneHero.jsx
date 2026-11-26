@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { motion as Motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import GradientText from "@/components/effects/GradientText";
+import GradientText from "./GradientText";
 import CapstoneStepper from "./CapstoneStepper";
 import { PrimaryButton } from "./ui";
-import { heroCopy } from "../lib/hero";
-import { fadeUp, scrollToSection } from "../lib/motion";
-import { stepState } from "../lib/steps";
+import { heroCopy } from "@/features/capstone/lib/hero";
+import { fadeUp, scrollToSection } from "@/features/capstone/lib/motion";
+import { stepState } from "@/features/capstone/lib/steps";
 
 const HIGHLIGHT = {
   success: "text-green-300",

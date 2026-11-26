@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Bookmark, Loader2 } from "lucide-react";
-import useViewOnly from "../useViewOnly";
-import { fetchSavedStatus, saveCandidate, unsaveCandidate } from "../api/hiringApi";
+import useViewOnly from "@/features/hiring/useViewOnly";
+import { fetchSavedStatus, saveCandidate, unsaveCandidate } from "@/features/hiring/api/hiringApi";
 
 const NOTE_MAX = 500;
 

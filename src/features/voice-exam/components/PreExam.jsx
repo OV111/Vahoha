@@ -1,10 +1,10 @@
-import { Bone, BoneControl, BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, BoneControl, BoneLines, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Check, Mic, MicOff, ShieldCheck, Clock } from "lucide-react";
-import { useMicLevel } from "../hooks/useMicLevel";
-import { EXPLANATION_LIMIT_SEC, FOLLOWUP_LIMIT_SEC } from "../lib/examStates";
-import { formatClock } from "../lib/formatClock";
+import { useMicLevel } from "@/features/voice-exam/hooks/useMicLevel";
+import { EXPLANATION_LIMIT_SEC, FOLLOWUP_LIMIT_SEC } from "@/features/voice-exam/lib/examStates";
+import { formatClock } from "@/features/voice-exam/lib/formatClock";
 
 const INTRO =
   "Explain it out loud, the way you would in an interview. Pass and this layer is marked Verified on your profile.";
@@ -313,7 +313,7 @@ function StartPanel({
  * mic check and a short ready list that unlocks Begin. The server also refuses
  * to start without consent and saves when it was given.
  *
- * @param {{ eligibility: import("../lib/examStates").Eligibility|null, isBusy: boolean, onBegin: () => void }} props
+ * @param {{ eligibility: import("@/features/voice-exam/lib/examStates").Eligibility|null, isBusy: boolean, onBegin: () => void }} props
  */
 const PreExam = ({ eligibility, isBusy, onBegin }) => {
   const mic = useMicLevel();

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { layerStatuses } from "@/features/learn/lib/lessonStatus";
-import { LAB_MANIFEST } from "../content/manifest";
+import { LAB_MANIFEST } from "@/features/labs/content/manifest";
 
 /**
  * The lab that fits where the learner is right now, from the lesson progress

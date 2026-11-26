@@ -1,5 +1,5 @@
 import { Clock, LogOut, AlertTriangle } from "lucide-react";
-import { EXAM_STATES } from "../lib/examStates";
+import { EXAM_STATES } from "@/features/voice-exam/lib/examStates";
 
 const COPY = {
   [EXAM_STATES.EXPIRED]: {

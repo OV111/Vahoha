@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles } from "lucide-react";
-import { ACTION_LABEL, hrefForTarget } from "../lib/statusMeta";
-import { PROGRESS_COPY as COPY } from "../../../../constants/progress";
-import { TEXT, MUTED, FOCUS } from "../lib/tone";
+import { ACTION_LABEL, hrefForTarget } from "@/features/mastery/lib/statusMeta";
+import { PROGRESS_COPY as COPY } from "@/constants/progress";
+import { TEXT, MUTED, FOCUS } from "@/features/mastery/lib/tone";
 
 const PRIMARY = `inline-flex items-center gap-2 rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-500 ${FOCUS}`;
 

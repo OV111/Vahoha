@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import LoadingSuspense from "@/components/feedback/LoadingSuspense";
-import "../project-map-theme.css";
+import "@/features/system-map/project-map-theme.css";
 import IsoView from "./IsoView";
 import MapHeader, { CANVAS, PAGE } from "./MapHeader";
 import NodePalette from "./NodePalette";
@@ -11,16 +11,16 @@ import ProjectMapTour from "./ProjectMapTour";
 import MapToolbar from "./MapToolbar";
 import MapAlerts from "./MapAlerts";
 import { MetricStrip, StageControls } from "./StageChrome";
-import useMapComments from "../hooks/useMapComments";
-import { saveOps } from "../systemMapApi";
-import { EXAMPLE_GRAPH, MAX_NODES, freeSpot, fromGraph, toGraph, withoutExample } from "../lib/mapGraph";
-import { isKind, kindInfo } from "../lib/nodeKinds";
-import { applyChanges, connect } from "../lib/changes";
-import { applyScan } from "../lib/applyScan";
-import { canRedo, canUndo, record, redo, startHistory, undo } from "../lib/history";
-import { applyOpsLenient, diffGraph } from "../lib/graphOps";
-import { mapMetrics } from "../lib/flow";
-import { SITE } from "../../../../constants/site";
+import useMapComments from "@/features/system-map/hooks/useMapComments";
+import { saveOps } from "@/features/system-map/systemMapApi";
+import { EXAMPLE_GRAPH, MAX_NODES, freeSpot, fromGraph, toGraph, withoutExample } from "@/features/system-map/lib/mapGraph";
+import { isKind, kindInfo } from "@/features/system-map/lib/nodeKinds";
+import { applyChanges, connect } from "@/features/system-map/lib/changes";
+import { applyScan } from "@/features/system-map/lib/applyScan";
+import { canRedo, canUndo, record, redo, startHistory, undo } from "@/features/system-map/lib/history";
+import { applyOpsLenient, diffGraph } from "@/features/system-map/lib/graphOps";
+import { mapMetrics } from "@/features/system-map/lib/flow";
+import { SITE } from "@/constants/site";
 
 // The editor and everything only it uses live here, so the page can lazy-load
 // them: guests never get past the sign-in screen and shouldn't download this.
@@ -333,7 +333,7 @@ export default function ProjectMapEditor({ initial }) {
   };
 
   const downloadText = async (text, type, filename) => {
-    const { downloadUrl } = await import("../lib/exportImage");
+    const { downloadUrl } = await import("@/features/system-map/lib/exportImage");
     const url = URL.createObjectURL(new Blob([text], { type }));
     downloadUrl(url, filename);
     URL.revokeObjectURL(url);
@@ -348,7 +348,7 @@ export default function ProjectMapEditor({ initial }) {
       return;
     }
     if (format === "mermaid") {
-      const { toMermaid } = await import("../lib/mermaid");
+      const { toMermaid } = await import("@/features/system-map/lib/mermaid");
       const text = toMermaid(graph, { fenced: true });
       try {
         await navigator.clipboard.writeText(text);
@@ -362,7 +362,7 @@ export default function ProjectMapEditor({ initial }) {
     }
     setExporting(true);
     try {
-      const { downloadUrl, renderMapImage } = await import("../lib/exportImage");
+      const { downloadUrl, renderMapImage } = await import("@/features/system-map/lib/exportImage");
       if (format === "card") {
         // The card is drawn from the 3D view, so it is put on screen first when the flat one is showing.
         if (!isoRef.current) {

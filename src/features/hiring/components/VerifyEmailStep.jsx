@@ -2,9 +2,9 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Loader2, Mail } from "lucide-react";
 import CodeInput from "./CodeInput";
-import { errorClass } from "../../auth/authStyles";
-import { resendRecruiterCode, verifyRecruiterEmail } from "../api/hiringApi";
-import { HIRING_CODE_LENGTH } from "../../../../constants/hiringRules";
+import { errorClass } from "@/features/auth/authStyles";
+import { resendRecruiterCode, verifyRecruiterEmail } from "@/features/hiring/api/hiringApi";
+import { HIRING_CODE_LENGTH } from "@shared/hiringRules";
 
 // Step 5: the 6-digit code we emailed. Proves the recruiter owns the work inbox,
 // which is the strongest single signal the trust engine has. The code is checked

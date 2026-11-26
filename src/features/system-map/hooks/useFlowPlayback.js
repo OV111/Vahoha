@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { FLOW_DOTS, HOP_SECONDS } from "../../../../constants/flowDots";
+import { FLOW_DOTS, HOP_SECONDS } from "@/constants/projectMapFlowDots";
 
 const TOUCH_REST_MS = 20; // between frames on phones, about 30 a second: smooth enough for dots, and half the battery
 const PAUSED_REST_MS = 100; // how often to look whether it was played again, or the map changed

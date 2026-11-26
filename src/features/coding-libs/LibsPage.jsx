@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import { Search, SlidersHorizontal, X } from "lucide-react";
-import { TABS } from "../../../constants/libsPage";
-import { LIBS_DATA } from "../../../constants/libs";
+import { TABS } from "@/constants/libraryPage";
+import { LIBS_DATA } from "@/constants/library";
 import {
   fetchLibraryResourceCounts,
   fetchSavedResourceIds,
   toggleSaveResource,
-} from "../../services/libraryApi";
+} from "@/services/libraryApi";
 import FilterSidebar from "./FilterSidebar";
 import ActiveFilters from "./ActiveFilters";
 import LibCard from "./LibCard";
@@ -245,7 +245,7 @@ export default function LibsPage() {
             {loading ? "Loading resources" : `${resultCount} results`}
           </p>
 
-          {/* Packages tab: static data from constants/libs.js */}
+          {/* Packages tab: static data from src/constants/library.js */}
           {isLibrariesTab &&
             (visibleLibs.length > 0 ? (
               <section aria-label="Packages">

@@ -1,5 +1,5 @@
-import LegalPage from "../components/legal/LegalPage";
-import { TERMS_EFFECTIVE_DATE, TERMS_SECTIONS } from "../../constants/legal";
+import LegalPage from "./LegalPage";
+import { TERMS_EFFECTIVE_DATE, TERMS_SECTIONS } from "@/constants/legal";
 
 const Terms = () => (
   <LegalPage

@@ -14,7 +14,7 @@
  */
 
 import { ObjectId } from "mongodb";
-import { PATH_SETUP, ABOUT_MAX } from "../../../../constants/pathSetup.js";
+import { PATH_SETUP, ABOUT_MAX } from "#shared/pathSetup.js";
 import { getUserProgress } from "../../../services/userProgressService.js";
 import { currentStreak } from "../../../services/learningActivity.js";
 import { getChallengeResults } from "../../../services/challengeResultService.js";
@@ -217,7 +217,7 @@ const daysSince = (at, now) => {
 
 /**
  * The learner's Path Setup answers as prompt lines. Values are phrased from
- * constants/pathSetup.js, so only known values reach the prompt; unknown ones
+ * shared/pathSetup.js, so only known values reach the prompt; unknown ones
  * are dropped. `about` is the learner's own free text: the controller already
  * flattened it and stripped quotes, and it is labelled as data here.
  */

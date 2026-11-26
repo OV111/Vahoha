@@ -1,12 +1,12 @@
-import { Bone, BoneLines, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, BoneLines, SkeletonRegion } from "@/components/feedback/Skeleton";
 import { useEffect, useState } from "react";
 import { ChevronDown, ExternalLink } from "lucide-react";
-import { teamsApi } from "../teamsApi";
-import { SIGNALS, pct } from "../lib/score";
+import { teamsApi } from "@/features/teams/teamsApi";
+import { SIGNALS, pct } from "@/features/teams/lib/score";
 
 const TOP = 10;
 
-const loadMock = (track) => import("../mocks/leaderboard").then((m) => m.mockLeaderboard(track));
+const loadMock = (track) => import("@/features/teams/mocks/leaderboard").then((m) => m.mockLeaderboard(track));
 
 // In dev, sample teams fill the list when there is no real data (or with
 // `?mock`). The DEV check drops all of this from production builds.

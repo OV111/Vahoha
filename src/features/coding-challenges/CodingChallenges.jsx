@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef } from "react";
-import Seo from "../../seo/Seo";
+import Seo from "@/seo/Seo";
 import BackgroundGrid from "./components/catalog/BackgroundGrid";
 import HeroSection from "./components/catalog/HeroSection";
 import FilterBar from "./components/catalog/FilterBar";
 import ChallengeGrid from "./components/catalog/ChallengeGrid";
 import CatalogSidebar from "./components/catalog/CatalogSidebar";
 import useChallengeFilters from "./hooks/useChallengeFilters";
-import useChallengeStore from "./store/useChallengeStore";
+import useChallengeStore from "@/features/coding-challenges/hooks/useChallengeStore";
 
 export default function CodingChallenges() {
   const heroRef = useRef(null);

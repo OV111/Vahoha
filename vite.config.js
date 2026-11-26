@@ -100,6 +100,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
+        "@shared": path.resolve(__dirname, "./shared"),
       },
     },
     // The challenge test runner worker loads sucrase on demand (TypeScript mode).

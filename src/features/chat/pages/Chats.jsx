@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
-import Sidebar from "../../profile/components/SideBar";
+import Sidebar from "@/features/profile/components/SideBar";
 import { Send, SquarePen } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation } from "react-router-dom";
@@ -14,17 +14,17 @@ import {
   unblockUser,
   sendVoiceMessage,
   sendAttachment,
-} from "../lib/chatControlsApi";
+} from "@/features/chat/lib/chatControlsApi";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-import LoadingChatSuspense from "@/components/feedback/LoadingChatSuspense";
-import ChatInterface from "../components/ChatInterface";
-import NewGroupModal from "../components/NewGroupModal";
-import ConversationRow from "../components/ConversationRow";
-import ConversationFilters from "../components/ConversationFilters";
-import RequestRow from "../components/RequestRow";
-import { getAccessToken, apiFetch } from "../../../../constants/api";
+import ChatSpinner from "@/features/chat/components/ChatSpinner";
+import ChatInterface from "@/features/chat/components/ChatInterface";
+import NewGroupModal from "@/features/chat/components/NewGroupModal";
+import ConversationRow from "@/features/chat/components/ConversationRow";
+import ConversationFilters from "@/features/chat/components/ConversationFilters";
+import RequestRow from "@/features/chat/components/RequestRow";
+import { getAccessToken, apiFetch } from "@/constants/api";
 import { closeSocket, openSocket } from "@/lib/socket";
-import useTypingIndicator from "../hooks/useTypingIndicator";
+import useTypingIndicator from "@/features/chat/hooks/useTypingIndicator";
 
 const getUserIdFromJWT = (token) => {
   if (!token) return null;
@@ -596,7 +596,7 @@ const Chats = () => {
                 )
               ) : isLoadingChats ? (
                 <div className="flex justify-center items-center px-3 py-6 text-sm text-gray-500 dark:text-gray-100">
-                  <LoadingChatSuspense />
+                  <ChatSpinner />
                 </div>
               ) : filteredConversations.length > 0 ? (
                 filteredConversations.map((item) => (

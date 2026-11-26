@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { X } from "lucide-react";
-import { MAX_TEAM_MEMBERS } from "../../../../../constants/teams";
+import { MAX_TEAM_MEMBERS } from "@shared/teams";
 import ConfirmButton from "./ConfirmButton";
 import UserPicker from "./UserPicker";
 import { Panel, Slots } from "./adminUi";

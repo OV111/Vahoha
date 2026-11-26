@@ -181,7 +181,7 @@ input:-webkit-autofill:focus {
   }
 }
 
-/* Loading placeholders, used through components/ui/Skeleton.jsx. In the components
+/* Loading placeholders, used through components/feedback/Skeleton.jsx. In the components
    layer so a size, radius or colour utility on the element wins. */
 @layer components {
   .bone {

@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { GraduationCap, Mic, MicOff, Sparkles } from "lucide-react";
-import { submitTeachBack, submitTeachBackFollowUp } from "../../../services/roadmapApi";
-import { useSpeechDictation } from "../../mentor/lib/useSpeechDictation";
-import TeachBackCard from "../../mentor/components/TeachBackCard";
+import { submitTeachBack, submitTeachBackFollowUp } from "@/services/roadmapApi";
+import { useSpeechDictation } from "@/features/mentor/lib/useSpeechDictation";
+import TeachBackCard from "@/features/mentor/components/TeachBackCard";
 
 /**
  * Teach-Back, inline on the exam results screen — no navigation to /mentor.

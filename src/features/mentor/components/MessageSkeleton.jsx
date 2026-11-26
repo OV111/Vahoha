@@ -1,4 +1,4 @@
-import { Bone, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
+import { Bone, BonePanel, SkeletonRegion } from "@/components/feedback/Skeleton";
 
 // Mirrors the real chat layout (right-aligned user bubbles, full-width agent
 // blocks), so the transcript doesn't jump when content lands.

@@ -1,4 +1,4 @@
-import { THINKING_COPY, SOURCE_ROUTES, TOOL_STEPS, TOOL_STEP_MAX_TEXT } from "../../../../constants/mentorTools";
+import { THINKING_COPY, SOURCE_ROUTES, TOOL_STEPS, TOOL_STEP_MAX_TEXT } from "@/constants/mentorTools";
 
 /** Model-provided text is untrusted display text: collapse whitespace and cap the length. */
 const clip = (value) => {

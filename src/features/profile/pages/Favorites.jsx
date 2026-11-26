@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import PageShell from "../components/PageShell";
+import PageShell from "@/features/profile/components/PageShell";
 import BlogCard from "@/features/blogs/components/BlogCard";
 import { Bookmark } from "lucide-react";
 import { Link } from "react-router-dom";

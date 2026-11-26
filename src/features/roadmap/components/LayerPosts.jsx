@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FileText } from "lucide-react";
-import { fetchBlogs } from "../../../services/blogsApi";
+import { fetchBlogs } from "@/services/blogsApi";
 
 const MAX_POSTS = 5;
 
@@ -28,7 +28,7 @@ const LayerPosts = ({ layerId, onNavigate }) => {
 
   return (
     <div>
-      <h3 className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-neutral-600 mb-3">
+      <h3 className="flex items-center gap-2 text-sm font-semibold text-neutral-200 mb-3">
         <FileText size={12} />
         Posts for this layer
       </h3>
