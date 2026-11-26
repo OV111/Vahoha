@@ -1,19 +1,20 @@
 // Single source of truth for SEO. The build-time sitemap script and the
 // <RouteSeo /> component both read from here, so a page cannot be in one
-// and forgotten in the other.
-//
-// DRAFT COPY: titles/descriptions below are placeholders built from page names
-// and the home-page tagline. Review and rewrite them (title < 60 chars,
-// description < 155 chars) before expecting them to rank.
+// and forgotten in the other. Titles stay under 60 characters and
+// descriptions under 155, or search results cut them off.
 
 export const SITE_URL = "https://vahoha.com";
 export const SITE_NAME = "Vahoha";
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
+
+// One link preview image per page type, rendered from constants/ogCards.js
+// by scripts/generateOgImages.js.
+export const ogImage = (card) => `${SITE_URL}/og/${card}.png`;
+export const DEFAULT_OG_IMAGE = ogImage("home");
 
 export const DEFAULT_META = {
-  title: "Vahoha",
+  title: "Vahoha: Go from Junior to Mid-Level Developer",
   description:
-    "Pass a graded test to unlock each step of your developer roadmap, with a mentor that knows your weak spots.",
+    "Developer roadmaps you unlock by passing graded exams, with an AI mentor that tracks your weak spots. Every path is free.",
 };
 
 // Public, indexable pages. Key = pathname.
@@ -23,26 +24,33 @@ export const PUBLIC_PAGES = {
     title: `Developer Roadmaps | ${SITE_NAME}`,
     description:
       "Browse developer roadmaps and unlock each layer by passing a graded test. Guests can explore every path.",
+    image: ogImage("roadmaps"),
   },
   "/labs": {
-    title: `Labs | ${SITE_NAME}`,
-    description: `Hands-on labs where you build real software step by step, from programming foundations to full projects on ${SITE_NAME}.`,
+    title: `Hands-on Coding Labs | ${SITE_NAME}`,
+    description: "Build real software step by step, from programming foundations to full projects.",
+    image: ogImage("labs"),
   },
   "/labs/foundations": {
-    title: `Programming Foundations | ${SITE_NAME}`,
-    description: `Start with the fundamentals every developer needs before choosing a specialty on ${SITE_NAME}.`,
+    title: `Programming Foundations for Beginners | ${SITE_NAME}`,
+    description:
+      "Free lessons on how computers work, the command line and Git: the basics every developer needs before choosing a path.",
+    image: ogImage("foundations"),
   },
   "/pricing": {
-    title: `Pricing | ${SITE_NAME}`,
-    description: `See what is free and what is included in ${SITE_NAME} Pro.`,
+    title: `Pricing: Every Roadmap Is Free | ${SITE_NAME}`,
+    description:
+      "Every roadmap and exam is free. Pro adds unlimited AI mentor messages, unlimited capstone defenses and a certificate you can show.",
+    image: ogImage("pricing"),
   },
   "/about": {
     title: `About | ${SITE_NAME}`,
-    description: `Why ${SITE_NAME} exists and how it helps developers learn through graded tests and a mentor.`,
+    description:
+      "Why Vahoha exists: junior developers grow faster when every step is proven with a graded exam and a mentor that knows their weak spots.",
   },
   "/contact": {
     title: `Contact | ${SITE_NAME}`,
-    description: `Get in touch with the ${SITE_NAME} team.`,
+    description: `Questions, feedback or a cohort to bring to ${SITE_NAME}? Get in touch.`,
   },
   "/privacy": {
     title: `Privacy Policy | ${SITE_NAME}`,

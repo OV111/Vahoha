@@ -49,7 +49,7 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g
 // Remove the generic tags from index.html (they carry data-seo-static).
 const base = template.replace(/^[ \t]*<(meta|title)\b[^>]*data-seo-static[^>]*>(.*?<\/title>)?\r?\n?/gim, "");
 
-const headTags = ({ title, description, path, noindex }) => {
+const headTags = ({ title, description, path, noindex, image = DEFAULT_OG_IMAGE }) => {
   const url = `${SITE_URL}${path}`;
   const t = esc(title);
   const d = esc(description);
@@ -64,11 +64,11 @@ const headTags = ({ title, description, path, noindex }) => {
     `<meta data-seo-static property="og:title" content="${t}" />`,
     `<meta data-seo-static property="og:description" content="${d}" />`,
     `<meta data-seo-static property="og:url" content="${esc(url)}" />`,
-    `<meta data-seo-static property="og:image" content="${DEFAULT_OG_IMAGE}" />`,
+    `<meta data-seo-static property="og:image" content="${esc(image)}" />`,
     `<meta data-seo-static name="twitter:card" content="summary_large_image" />`,
     `<meta data-seo-static name="twitter:title" content="${t}" />`,
     `<meta data-seo-static name="twitter:description" content="${d}" />`,
-    `<meta data-seo-static name="twitter:image" content="${DEFAULT_OG_IMAGE}" />`,
+    `<meta data-seo-static name="twitter:image" content="${esc(image)}" />`,
   ];
   const ld = !noindex && jsonLdFor({ title, description, path });
   if (ld) lines.push(`<script data-seo-static type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\u003c")}</script>`);

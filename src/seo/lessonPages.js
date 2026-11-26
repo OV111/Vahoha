@@ -1,4 +1,4 @@
-import { SITE_NAME } from "./siteMeta.js";
+import { SITE_NAME, ogImage } from "./siteMeta.js";
 import { TOPICS } from "../features/foundations/topics/topics.js";
 
 // SEO entries for the Foundations lesson pages. Kept out of siteMeta.js so the
@@ -8,6 +8,7 @@ import { TOPICS } from "../features/foundations/topics/topics.js";
 export const lessonMeta = (topic) => ({
   title: `${topic.title} | Foundations | ${SITE_NAME}`,
   description: topic.summary,
+  image: ogImage("foundations"),
 });
 
 // Topics without a written lesson 404, so they stay out of the sitemap.
