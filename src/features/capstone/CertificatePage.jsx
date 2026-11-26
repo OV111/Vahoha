@@ -1,6 +1,7 @@
 import { Bone, BoneLines, BonePanel, SkeletonRegion } from "@/components/ui/Skeleton";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { FaLinkedinIn } from "react-icons/fa6";
 import {
   AlertTriangle,
   BadgeCheck,
@@ -13,6 +14,8 @@ import {
 } from "lucide-react";
 import { fetchCertificate } from "./certificateApi";
 import { captureEvent } from "@/lib/posthog";
+import useProfileStore from "@/stores/useProfileStore";
+import { SITE } from "../../../constants/site";
 
 /**
  * Public certificate verification — /verify/:publicId.
@@ -81,11 +84,43 @@ function CopyLinkButton() {
   );
 }
 
+// LinkedIn's "Add licence or certification" form, filled in. It adds to the
+// profile of whoever clicks, so only the holder is shown the button.
+const linkedInAddUrl = (cert) => {
+  const issued = new Date(cert.issuedAt);
+  const params = new URLSearchParams({
+    startTask: "CERTIFICATION_NAME",
+    name: `${cert.track.title} Capstone`,
+    organizationName: SITE.name,
+    issueYear: String(issued.getFullYear()),
+    issueMonth: String(issued.getMonth() + 1),
+    certUrl: `${SITE.url}/verify/${cert.publicId}`,
+    certId: cert.publicId,
+  });
+  return `https://www.linkedin.com/profile/add?${params}`;
+};
+
+function AddToLinkedInButton({ cert }) {
+  return (
+    <a
+      href={linkedInAddUrl(cert)}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={() => captureEvent("share_created", { surface: "certificate", channel: "linkedin" })}
+      className="inline-flex items-center gap-1.5 rounded-lg bg-[#0A66C2] px-3 py-1.5 text-[12px] font-medium text-white transition-colors hover:bg-[#004182]"
+    >
+      <FaLinkedinIn size={13} aria-hidden="true" />
+      Add to LinkedIn
+    </a>
+  );
+}
+
 export default function CertificatePage() {
   const { publicId } = useParams();
   const [cert, setCert] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const myUsername = useProfileStore((s) => s.user?.username);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -210,7 +245,10 @@ export default function CertificatePage() {
                 <BadgeCheck size={16} aria-hidden="true" />
                 Valid certificate · issued by Vahoha
               </p>
-              <CopyLinkButton />
+              <div className="flex flex-wrap items-center gap-2">
+                {myUsername && myUsername === cert.holder.username && <AddToLinkedInButton cert={cert} />}
+                <CopyLinkButton />
+              </div>
             </div>
           )}
 
