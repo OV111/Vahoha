@@ -6,7 +6,7 @@ import { AlertTriangle, Check, CreditCard, Info } from "lucide-react";
 import useBilling from "./hooks/useBilling";
 import { PLANS_BY_ID } from "./plans";
 import { PAGE } from "../../../constants/layout";
-import posthog, { isPostHogConfigured } from "@/lib/posthog";
+import { captureEvent } from "@/lib/posthog";
 
 const FEATURE_WIDTHS = ["w-3/5", "w-1/2", "w-2/3", "w-2/5"];
 const SECTION = "rounded-xl border border-white/10 bg-zinc-950 p-5 sm:p-6";
@@ -79,9 +79,7 @@ const BillingPage = () => {
 
   const run = (action, event) => async () => {
     try {
-      if (isPostHogConfigured) {
-        posthog.capture(event, { current_plan: status?.plan ?? "free" });
-      }
+      captureEvent(event, { current_plan: status?.plan ?? "free" });
       await action();
     } catch (err) {
       toast.error(err.message);

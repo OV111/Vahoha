@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { capstoneApi } from "../capstoneApi";
-import posthog, { isPostHogConfigured } from "@/lib/posthog";
+import { captureEvent } from "@/lib/posthog";
 import { queryCache } from "@/lib/queryCache";
 
 // While the server holds one of these locks (possibly from another tab), poll
@@ -123,13 +123,11 @@ export default function useCapstone(trackId) {
     submit: (repoUrl) =>
       run("submit", async () => {
         const result = await capstoneApi.submit(trackId, repoUrl);
-        if (isPostHogConfigured) {
-          posthog.capture("capstone_submission_completed", {
-            track_id: trackId,
-            passed: result.submission.passed,
-            check_count: result.submission.checks?.length ?? 0,
-          });
-        }
+        captureEvent("capstone_submission_completed", {
+          track_id: trackId,
+          passed: result.submission.passed,
+          check_count: result.submission.checks?.length ?? 0,
+        });
         if (result.submission.passed) {
           setBusy("review");
           await capstoneApi.review(trackId);

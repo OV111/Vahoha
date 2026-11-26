@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import useAuthStore from "@/stores/useAuthStore";
 import useBlogInteractionsStore from "@/stores/useBlogInteractionsStore";
 import { toggleBlogFavourite, toggleBlogLike } from "../../../services/blogsApi";
-import posthog, { isPostHogConfigured } from "@/lib/posthog";
+import { captureEvent } from "@/lib/posthog";
 
 /**
  * Like / save for one post, with optimistic updates that roll back on failure.
@@ -31,9 +31,7 @@ export default function useBlogActions({ rawId, isDefault, initialLikes }) {
     try {
       const data = await toggleBlogLike(rawId);
       setLikesCount(data.likesCount);
-      if (!wasLiked && isPostHogConfigured) {
-        posthog.capture("blog_liked", { blog_id: rawId });
-      }
+      if (!wasLiked) captureEvent("blog_liked", { blog_id: rawId });
     } catch {
       toggleLiked(rawId);
       setLikesCount((n) => (wasLiked ? n + 1 : n - 1));
@@ -50,9 +48,7 @@ export default function useBlogActions({ rawId, isDefault, initialLikes }) {
     setSaveBusy(true);
     try {
       await toggleBlogFavourite(rawId);
-      if (!wasSaved && isPostHogConfigured) {
-        posthog.capture("blog_saved", { blog_id: rawId });
-      }
+      if (!wasSaved) captureEvent("blog_saved", { blog_id: rawId });
     } catch {
       toggleSaved(rawId);
       toast.error("Couldn't save this post. Try again.");

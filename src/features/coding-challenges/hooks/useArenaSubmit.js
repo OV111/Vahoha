@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import posthog, { isPostHogConfigured } from "@/lib/posthog";
+import { captureEvent } from "@/lib/posthog";
 
 /**
  * Server-side grading. Distinct from the in-browser Run: this one is
@@ -14,14 +14,12 @@ export default function useArenaSubmit(submitAttempt) {
     try {
       const nextVerdict = await submitAttempt(language, integrity);
       setVerdict(nextVerdict);
-      if (isPostHogConfigured) {
-        posthog.capture("coding_challenge_submitted", {
-          passed: nextVerdict.passed,
-          language,
-          total_tests: nextVerdict.total,
-          passed_tests: nextVerdict.passedCount,
-        });
-      }
+      captureEvent("coding_challenge_submitted", {
+        passed: nextVerdict.passed,
+        language,
+        total_tests: nextVerdict.total,
+        passed_tests: nextVerdict.passedCount,
+      });
     } catch (err) {
       setVerdict({
         passed: false,
