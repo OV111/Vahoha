@@ -1,3 +1,5 @@
+import { captureEvent } from "@/lib/posthog";
+
 // Which lessons this browser has finished. A stopgap until stage 3 stores
 // progress on the server (docs/product/LEARNING_SYSTEM.md): keep every read
 // and write behind these two functions so that swap touches one file.
@@ -40,6 +42,10 @@ export const finishedAt = (trackId, layerId) => {
 };
 
 export const markLessonFinished = (trackId, layerId, slug) => {
+  // Only the first finish counts; redoing a topic isn't a new completion.
+  if (!(id(trackId, layerId, slug) in read())) {
+    captureEvent("lesson_completed", { track_id: trackId, layer_id: layerId, topic: slug });
+  }
   try {
     localStorage.setItem(KEY, JSON.stringify({ ...read(), [id(trackId, layerId, slug)]: Date.now() }));
   } catch {

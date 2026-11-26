@@ -1,6 +1,7 @@
 import { webhooks } from "@polar-sh/sdk/2026-10";
 import { BillingError } from "../lib/billingError.js";
 import { applyPolarSubscription } from "./subscriptionService.js";
+import { trackEvent } from "../../../services/eventService.js";
 
 /**
  * Verify and apply one Polar webhook.
@@ -34,6 +35,12 @@ export const handlePolarWebhook = async (db, rawBody, headers, config) => {
   // because applyPolarSubscription ignores anything older than what we hold.
   if (event.type.startsWith("subscription.")) {
     const result = await applyPolarSubscription(db, event.data, config);
+    // Only when applied: a replayed or stale "active" event must not count twice.
+    if (event.type === "subscription.active" && result.applied) {
+      await trackEvent(db, event.data.customer.external_id, "subscription_started", {
+        interval: event.data.recurring_interval ?? null,
+      });
+    }
     return { type: event.type, ...result };
   }
 

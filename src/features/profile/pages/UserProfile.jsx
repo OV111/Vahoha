@@ -12,6 +12,7 @@ import { SectionHeader, ForHiringPanel } from "../components/ProfileSections";
 import { CertificateCard, EmptyState, ExamRow, VerifiedRow } from "@/features/profile/components/ProfileProgress";
 import ProfileBanner from "@/features/profile/components/ProfileBanner";
 import { formatLastActive, summarizeProfile } from "@/features/profile/lib/profileSummary";
+import { captureEvent } from "@/lib/posthog";
 
 const UserNotFound = () => (
   <div className="min-h-screen bg-black flex flex-col items-center justify-center text-center px-4">
@@ -289,6 +290,7 @@ export default function UserProfile() {
                           label: "Copy profile link",
                           onClick: () => {
                             navigator.clipboard.writeText(window.location.href);
+                            captureEvent("share_created", { surface: "profile", channel: "copy" });
                             toast.success("Link copied!");
                             setIsMenuOpen(false);
                           },
@@ -296,6 +298,7 @@ export default function UserProfile() {
                         {
                           label: "Share profile",
                           onClick: () => {
+                            captureEvent("share_created", { surface: "profile", channel: navigator.share ? "native" : "copy" });
                             if (navigator.share) {
                               navigator.share({ url: window.location.href });
                             } else {

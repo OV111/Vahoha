@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Check, Globe, Link2, Lock, Tag } from "lucide-react";
 import { setSharing } from "../systemMapApi";
+import { captureEvent } from "@/lib/posthog";
 
 const COPIED_MS = 1800;
 
@@ -44,6 +45,7 @@ export default function ShareControl({ mapId, initialShared, initialPublicId }) 
   const copyText = async (what, text) => {
     try {
       await navigator.clipboard.writeText(text);
+      captureEvent("share_created", { surface: "project_map", channel: what });
       setCopied(what);
       setManual(null);
     } catch {

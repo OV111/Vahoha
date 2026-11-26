@@ -12,6 +12,7 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import { fetchCertificate } from "./certificateApi";
+import { captureEvent } from "@/lib/posthog";
 
 /**
  * Public certificate verification — /verify/:publicId.
@@ -57,6 +58,7 @@ function CopyLinkButton() {
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
+      captureEvent("share_created", { surface: "certificate", channel: "copy" });
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {

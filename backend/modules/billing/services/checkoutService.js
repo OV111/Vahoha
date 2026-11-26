@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import { BillingError } from "../lib/billingError.js";
 import { isEntitled } from "../lib/entitlements.js";
 import { getSubscription } from "./subscriptionService.js";
+import { trackEvent } from "../../../services/eventService.js";
 
 /**
  * Start a Polar checkout for the Pro plan.
@@ -38,6 +39,7 @@ export const createCheckoutSession = async (db, polar, config, userId) => {
     return_url: `${config.frontendUrl}/pricing`,
   });
 
+  await trackEvent(db, userId, "checkout_started");
   return { url: checkout.url };
 };
 

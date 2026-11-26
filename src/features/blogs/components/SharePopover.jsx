@@ -3,6 +3,7 @@ import { Check, Copy, Mail } from "lucide-react";
 import { FaFacebook, FaLinkedinIn } from "react-icons/fa6";
 import XLogo from "@/components/ui/XLogo";
 import Popover from "./Popover";
+import { captureEvent } from "@/lib/posthog";
 
 const SharePopover = ({ url, title, onClose }) => {
   const [copied, setCopied] = useState(false);
@@ -13,6 +14,7 @@ const SharePopover = ({ url, title, onClose }) => {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(url);
+      captureEvent("share_created", { surface: "blog", channel: "copy" });
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
@@ -64,6 +66,7 @@ const SharePopover = ({ url, title, onClose }) => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={label}
+              onClick={() => captureEvent("share_created", { surface: "blog", channel: label })}
               className={`flex flex-1 items-center justify-center rounded-lg border border-neutral-200 py-2 text-neutral-500 transition-colors dark:border-neutral-800 dark:text-neutral-400 ${hover}`}
             >
               {icon}

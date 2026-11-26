@@ -64,3 +64,8 @@ const posthog = {
 };
 
 export default posthog;
+
+/** Capture an event when PostHog is configured; a no-op otherwise. */
+export const captureEvent = (name, props) => {
+  if (isPostHogConfigured) posthog.capture(name, props);
+};

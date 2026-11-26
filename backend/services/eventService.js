@@ -18,6 +18,7 @@ export const EVENT_TYPES = Object.freeze([
   "path_selected",
   "exam_started",
   "exam_submitted",
+  "exam_voided",
   "mentor_message",
   "teach_back",
   "active_day",
@@ -33,6 +34,8 @@ export const EVENT_TYPES = Object.freeze([
   "voice_exam_submitted",
   "weekly_summary_sent",
   "email_unsubscribed",
+  "checkout_started",
+  "subscription_started",
 ]);
 
 const COLLECTION = "userEvents";
