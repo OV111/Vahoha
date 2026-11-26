@@ -35,7 +35,7 @@ const PricingPage = () => {
       return { label: isPro ? "Included in Pro" : "Current plan", disabled: true };
     }
     if (plan.id === "teams") {
-      return { label: "Contact sales", to: "/contact" };
+      return { label: "Book a call", to: "/contact" };
     }
     // Pro
     if (!isAuthed) return { label: "Get started", to: DEVELOPER_SIGNUP_PATH };

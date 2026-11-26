@@ -56,7 +56,6 @@ const GetStarted = () => {
   const {
     register,
     handleSubmit,
-    getValues,
     reset,
     formState: { errors },
   } = useForm({ mode: "onBlur" });
@@ -195,21 +194,6 @@ const GetStarted = () => {
             })}
             error={errors.password}
           />
-
-          {isSignedUp && (
-            <PasswordField
-              id="confirmPassword"
-              label="Confirm password"
-              autoComplete="new-password"
-              maxLength={PASSWORD_RULES.maxBytes}
-              registration={register("confirmPassword", {
-                required: "Please confirm your password.",
-                maxLength: passwordMax,
-                validate: (value) => value === getValues("password") || "Passwords don't match.",
-              })}
-              error={errors.confirmPassword}
-            />
-          )}
 
           <button
             type="submit"

@@ -5,7 +5,6 @@ import RiseText from "../components/home/RiseText";
 import PixelBackground from "../components/home/PixelBackground";
 import Divider from "../components/ui/Divider";
 import vahohaMark from "@/assets/brand/vahoha-mark-96.webp";
-import { DEVELOPER_SIGNUP_PATH } from "../../constants/site";
 
 const HowItWorks = lazy(() => import("../components/home/HowItWorks"));
 
@@ -40,8 +39,8 @@ const Home = () => {
         </div>
 
         <RiseText
-          lines={["The Next Generation of", "Developer Learning."]}
-          highlight="Learning"
+          lines={["Junior to mid-level.", "Proven, not watched."]}
+          highlight="Proven"
           className="max-w-xl text-[clamp(26px,8.5vw,34px)] leading-[1.1] font-[450] tracking-[-0.48px] text-balance [--rt-underline-offset:-0.2em] min-[420px]:text-4xl sm:text-5xl md:text-[50px] md:leading-[0.96] md:[--rt-underline-offset:-0.08em] [&_.rt-line]:inline max-sm:[&_.rt-line]:whitespace-nowrap md:[&_.rt-line]:block text-white"
           style={{ fontFamily: '"Geist Variable", system-ui, sans-serif' }}
         />
@@ -50,9 +49,9 @@ const Home = () => {
           className="rt-fade mt-4 max-w-xl text-sm leading-6 sm:text-base sm:leading-7 md:text-[18px] md:leading-[29.25px] font-normal text-neutral-300"
           style={{ "--delay": "650ms" }}
         >
-          Prove what you know, unlock real progress,{" "}
+          Unlock each layer by passing a graded exam.{" "}
           <br className="hidden sm:block" />
-          guided by a mentor that knows your journey.
+          Your AI mentor tracks your weak spots.
         </p>
 
         <div
@@ -60,7 +59,7 @@ const Home = () => {
           style={{ "--delay": "800ms" }}
         >
           <Link
-            to={auth ? "/roadmaps" : DEVELOPER_SIGNUP_PATH}
+            to="/roadmaps"
             className="flex min-h-9 items-center justify-center rounded-full sm:min-h-11 bg-white px-4 py-1.5 text-[13px] sm:px-5 sm:py-2.5 sm:text-[14px] leading-[20px] font-medium text-black transition hover:bg-neutral-200"
           >
             {/* The label fits who is looking: a signed-in user is already on a path. */}
