@@ -8,14 +8,7 @@
     { "source": "/foundations/:slug", "destination": "/labs/foundations/:slug", "permanent": true }
   ],
   "rewrites": [
-    {
-      "source": "/:section(map|project-map|posts|verify|evidence|candidate|users|my-profile|get-started|forgot-password|reset-password|oauth-success|mentor|billing|progress|team|capstone|blogs|libs|coding-challenges|roadmaps/exam)/:path*",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/:section(map|project-map|get-started|forgot-password|reset-password|unsubscribe|oauth-success|mentor|billing|progress|team|capstone|blogs|libs|coding-challenges|my-profile|users)",
-      "destination": "/index.html"
-    }
+    { "source": "/((?!assets/|api/)[^.]*)", "destination": "/spa" }
   ],
   "headers": [
     {

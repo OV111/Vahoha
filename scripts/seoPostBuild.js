@@ -97,6 +97,13 @@ for (const [path, meta] of Object.entries(PAGES)) {
   }
 }
 
+// The plain app shell, for every route that isn't prerendered (vercel.json
+// rewrites to /spa). It can't be index.html: that is now the prerendered home
+// page, and serving it would give every app route the home page's content and
+// canonical. Not "/index.html" either: with cleanUrls, Vercel only serves that
+// file as "/", so a rewrite to it finds nothing and 404s.
+writeFileSync(join(DIST, "spa.html"), template);
+
 writeFileSync(
   join(DIST, "404.html"),
   render({ title: "Page not found | Vahoha", description: "This page does not exist.", path: "/404", noindex: true }),
